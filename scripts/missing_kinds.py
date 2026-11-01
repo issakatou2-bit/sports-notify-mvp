@@ -70,6 +70,11 @@ def missing(day: str = None, path: str = "data/published_videos.json") -> list:
             continue                      # まだ出そろう時刻ではない
         if (rec.get(kind) or {}).get(day):
             continue                      # 出ている
+        if kind=='daily_soccer':
+            import soccer_preview_assessment
+            try:material=json.loads(pathlib.Path('data/soccer_games.json').read_text(encoding='utf8'))
+            except (OSError,ValueError):material={}
+            if soccer_preview_assessment.assessment(material,day)[0]=='skip':continue
         out.append((kind, name, at))
     return out
 

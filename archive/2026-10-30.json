@@ -1,0 +1,335 @@
+{
+  "generated_at": "2026-10-30T09:53:46.757266+00:00",
+  "games": [
+    {
+      "game_id": "559644",
+      "league": "リーグ・アン",
+      "home_team_id": "FL1-533",
+      "away_team_id": "FL1-524",
+      "home_team_name": "ル・アーブル",
+      "away_team_name": "パリ・サンジェルマン",
+      "home_abbr": null,
+      "away_abbr": null,
+      "home_color": null,
+      "away_color": null,
+      "matchup": "パリ・サンジェルマン vs ル・アーブル",
+      "abbr_matchup": null,
+      "start_time_jst": "10/31 03:00",
+      "home_division": null,
+      "away_division": null,
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": {
+        "rank": 18,
+        "games_back": 5.0,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 15.0
+      },
+      "away_standing": {
+        "rank": 1,
+        "games_back": 0.0,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 0.0
+      },
+      "home_probable": null,
+      "away_probable": null,
+      "venue_name": null,
+      "venue_jp": null,
+      "venue_note": null,
+      "venue_runs_note": null,
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 3,
+      "game_type": "R",
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "ル・アーブルには瀬古歩夢・中村草太・水多海斗が所属",
+          "weight": 2
+        },
+        {
+          "tag": "quality",
+          "text": "パリ・サンジェルマン の試合",
+          "weight": 1
+        },
+        {
+          "tag": "quality",
+          "text": "ル・アーブル（昨季リーグ・アン14位）とパリ・サンジェルマン（昨季リーグ・アン1位）の対戦",
+          "weight": 0
+        }
+      ],
+      "log_notes": [],
+      "ai_summary": "首位パリ・サンジェルマンが敵地でル・アーブルを訪れる一戦である。昨季リーグ・アン14位のル・アーブルは今季【首位との勝ち点差15で18位】に位置しており、一方の訪問側は8試合を終えた時点で既に首位に立っている。両チームの現在地の差は大きく、リーグ全体における力関係の縮図ともいえる対戦となる。また、ル・アーブルに所属する瀬古歩夢・中村草太・水多海斗といった日本人選手らがどのようなプレーを見せるかに注目したい。",
+      "notification_hook": "首位PSGを迎え撃つル・アーブル、日本人選手の活躍なるか"
+    },
+    {
+      "game_id": "559646",
+      "league": "リーグ・アン",
+      "home_team_id": "FL1-522",
+      "away_team_id": "FL1-529",
+      "home_team_name": "ニース",
+      "away_team_name": "レンヌ",
+      "home_abbr": null,
+      "away_abbr": null,
+      "home_color": null,
+      "away_color": null,
+      "matchup": "レンヌ vs ニース",
+      "abbr_matchup": null,
+      "start_time_jst": "10/31 03:00",
+      "home_division": null,
+      "away_division": null,
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": {
+        "rank": 10,
+        "games_back": 2.0,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 6.0
+      },
+      "away_standing": {
+        "rank": 2,
+        "games_back": 0.3,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 1.0
+      },
+      "home_probable": null,
+      "away_probable": null,
+      "venue_name": null,
+      "venue_jp": null,
+      "venue_note": null,
+      "venue_runs_note": null,
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 0,
+      "game_type": "R",
+      "is_notable": false,
+      "reasons": [
+        {
+          "tag": "quality",
+          "text": "ニース（昨季リーグ・アン16位）とレンヌ（昨季リーグ・アン6位）の対戦",
+          "weight": 0
+        }
+      ]
+    },
+    {
+      "game_id": "565846",
+      "league": "ブンデスリーガ",
+      "home_team_id": "BL1-719",
+      "away_team_id": "BL1-15",
+      "home_team_name": "エルバースベルク",
+      "away_team_name": "マインツ",
+      "home_abbr": null,
+      "away_abbr": null,
+      "home_color": null,
+      "away_color": null,
+      "matchup": "マインツ vs エルバースベルク",
+      "abbr_matchup": null,
+      "start_time_jst": "10/31 04:30",
+      "home_division": null,
+      "away_division": null,
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": {
+        "rank": 8,
+        "games_back": 2.3,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 7.0
+      },
+      "away_standing": {
+        "rank": 7,
+        "games_back": 2.3,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 7.0
+      },
+      "home_probable": null,
+      "away_probable": null,
+      "venue_name": null,
+      "venue_jp": null,
+      "venue_note": null,
+      "venue_runs_note": null,
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 3,
+      "game_type": "R",
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "マインツには佐野海舟・川﨑颯太が所属",
+          "weight": 2
+        },
+        {
+          "tag": "quality",
+          "text": "エルバースベルク8位 と マインツ7位",
+          "weight": 1
+        }
+      ],
+      "log_notes": [],
+      "ai_summary": "ブンデスリーガ1部で現在7試合を消化した両チームが対戦する。ホームのエルバースベルク(8位)とアウェーのマインツ(7位)は、【首位との勝ち点差が同じ7】という極めて近い立場にある。両チームともシーズンの折り返し手前で上位チームとの差を詰める必要があり、ここからの勝負が順位争いを大きく左右する局面となる。訪れるマインツには日本代表の佐野海舟・川﨑颯太が所属しており、彼らのパフォーマンスがどう機能するかも見どころである。",
+      "notification_hook": "佐野海舟・川﨑颯太率いるマインツが首位と同じ差まで迫ったエルバースベルクに乗り込む"
+    },
+    {
+      "game_id": "564737",
+      "league": "ラ・リーガ",
+      "home_team_id": "PD-94",
+      "away_team_id": "PD-80",
+      "home_team_name": "ビジャレアル",
+      "away_team_name": "エスパニョール",
+      "home_abbr": null,
+      "away_abbr": null,
+      "home_color": null,
+      "away_color": null,
+      "matchup": "エスパニョール vs ビジャレアル",
+      "abbr_matchup": null,
+      "start_time_jst": "10/31 05:00",
+      "home_division": null,
+      "away_division": null,
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": {
+        "rank": 10,
+        "games_back": 5.0,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 15.0
+      },
+      "away_standing": {
+        "rank": 18,
+        "games_back": 6.3,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 19.0
+      },
+      "home_probable": null,
+      "away_probable": null,
+      "venue_name": null,
+      "venue_jp": null,
+      "venue_note": null,
+      "venue_runs_note": null,
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 0,
+      "game_type": "R",
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "quality",
+          "text": "ビジャレアル（昨季ラ・リーガ3位）とエスパニョール（昨季ラ・リーガ11位）の対戦",
+          "weight": 0
+        }
+      ]
+    },
+    {
+      "game_id": "559639",
+      "league": "リーグ・アン",
+      "home_team_id": "FL1-521",
+      "away_team_id": "FL1-546",
+      "home_team_name": "リール",
+      "away_team_name": "ランス",
+      "home_abbr": null,
+      "away_abbr": null,
+      "home_color": null,
+      "away_color": null,
+      "matchup": "ランス vs リール",
+      "abbr_matchup": null,
+      "start_time_jst": "10/31 05:05",
+      "home_division": null,
+      "away_division": null,
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": {
+        "rank": 3,
+        "games_back": 0.7,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 2.0
+      },
+      "away_standing": {
+        "rank": 7,
+        "games_back": 1.3,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 4.0
+      },
+      "home_probable": null,
+      "away_probable": null,
+      "venue_name": null,
+      "venue_jp": null,
+      "venue_note": null,
+      "venue_runs_note": null,
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 8,
+      "game_type": "R",
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "リールには上田綺世が所属",
+          "weight": 1
+        },
+        {
+          "tag": "quality",
+          "text": "リール（昨季リーグ・アン3位）とランス（昨季リーグ・アン2位）",
+          "weight": 3
+        },
+        {
+          "tag": "quality",
+          "text": "リール3位 と ランス7位",
+          "weight": 1
+        },
+        {
+          "tag": "div",
+          "text": "首位争い、勝ち点差は2",
+          "weight": 3
+        }
+      ],
+      "log_notes": [],
+      "ai_summary": "リーグ・アン第8節を終えた現在、リールは3位で首位との勝ち点差が2と上位争いの中心にいる。一方、訪問するランスは昨季リーグ・アン2位の実績を持ちながら現在7位に位置している。【首位との勝ち点差2のリール】が、同じく8試合を消化した相手とどこまで差をつけられるかが焦点となる。また、リールに所属する上田綺世がどのようなパフォーマンスを見せるかにも注視したい。",
+      "notification_hook": "上田綺世所属のリール、昨季2位ランスとの対戦で首位争いの行方が決まる"
+    }
+  ],
+  "schedule_date": "2026-10-30",
+  "ai_status": {
+    "targets": 3,
+    "succeeded": 3,
+    "cost_usd": 0.01521
+  }
+}

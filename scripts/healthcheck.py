@@ -193,9 +193,23 @@ def published_ids(day: str):
       ある限り、同じ形の誤報はまた起きる。誤報を出す見張りは、
       見張りが無いより悪い。実物を見に行く。
 
-      RSSなので鍵も枠も要らない。取れなければ -1 を返して、
-      記録だけの判断に戻る(取得できないことを異常とは言わない)。
+      鍵があるときはData API、なければRSS。取れなければNoneを返して、
+      記録だけの判断に戻る(取得できないことを公開0本とは言わない)。
     """
+    # RSSの404が続いているため、鍵があるときはData APIを一次経路にする。
+    # 取得失敗を空一覧（公開0本）へ変換しない。
+    key = os.environ.get('YOUTUBE_API_KEY')
+    if key:
+        import channel_feeds
+        try:
+            age = (datetime.now(JST).date() - datetime.fromisoformat(day).date()).days
+            rows = channel_feeds.fetch_uploads(key, CHANNEL_ID, hours=24 * max(2, age + 2), strict=True)
+            return {row['video_id'] for row in rows
+                    if datetime.fromisoformat(row['published_at'].replace('Z', '+00:00'))
+                    .astimezone(JST).date().isoformat() == day}
+        except Exception:
+            print('[info] Data APIの公開一覧を確認できません。台帳で判断します')
+            return None
     import re
     import time
     import urllib.request
@@ -247,6 +261,48 @@ def published_ids(day: str):
 PUBLISH_GRACE_MIN = 45
 
 
+# MLBの試合があって初めて作る枠。**試合の無い日は出ないのが正しい。**
+#
+# これらを毎日必ず出るものとして数えていたので、オールスター休み・
+# ポストシーズンの回戦の合間・11月からのオフシーズンに、毎日
+# 「出ていない」と報告することになる（PSは試合の無い日が多い）。
+# 値は「どの日の試合を見るか」: 前の晩の試合（米国の日付＝日本の前日）
+# なら -1、翌日の試合（日本の日付＝米国の日付）なら 0。
+MLB_GAME_KINDS = {"morning": -1, "morning_voices": -1, "morning_press": -1,
+                  "postseason": -1, "longform": -1, "daily": 0}
+
+
+def _mlb_games(us_date: str):
+    """その米国の日付のMLBの試合数。取れなければ None（判断しない）。"""
+    if us_date in _MLB_CACHE:
+        return _MLB_CACHE[us_date]
+    import urllib.request
+    try:
+        with urllib.request.urlopen(
+                "https://statsapi.mlb.com/api/v1/schedule?sportId=1"
+                f"&date={us_date}", timeout=20) as r:
+            n = int(json.load(r).get("totalGames") or 0)
+    except Exception:                                   # noqa: BLE001
+        n = None
+    _MLB_CACHE[us_date] = n
+    return n
+
+
+_MLB_CACHE = {}
+
+
+def _no_japanese(us_date: str) -> bool:
+    """その日の成績の記録が「集計は成功し、出場0名」と言っているか。
+
+    集計に失敗した日（collection_state が no_appearances 以外）は
+    False（欠けとして数える）。黙って見逃さない。
+    """
+    d = load(f"data/recap_history/{us_date}.json") or {}
+    return (d.get("date") == us_date
+            and d.get("collection_state") == "no_appearances"
+            and not d.get("players") and not d.get("collection_errors"))
+
+
 def check_videos(day: str, only_past: bool = False) -> tuple:
     """
     その日の動画が投稿されたか。(行, 欠けている数, 見ない数, 記録済みID) を返す。
@@ -275,18 +331,36 @@ def check_videos(day: str, only_past: bool = False) -> tuple:
             lines.append(f"| {at} | {label} | 出た | {entry.get('video_id')} |")
             if entry.get("video_id"):
                 seen.add(entry["video_id"])
+        elif kind in MLB_GAME_KINDS and _mlb_games(
+                (datetime.fromisoformat(day)
+                 + timedelta(days=MLB_GAME_KINDS[kind])).strftime("%Y-%m-%d")
+        ) == 0:
+            # 試合が無かった。**分からないとき（取得失敗）は欠けとして数える**
+            # （黙って見逃すと、サッカーのように何週間も気付かない）。
+            lines.append(f"| {at} | {label} | 見送り | MLBの試合が無い日 |")
+            skipped += 1
+        elif kind == "morning" and _no_japanese(
+                (datetime.fromisoformat(day) - timedelta(days=1))
+                .strftime("%Y-%m-%d")):
+            # 試合はあったが、日本人選手が誰も出ていない（10/1米国：PSは
+            # フィリーズ対ブレーブスだけ）。成績の回は出るはずが無い。
+            lines.append(f"| {at} | {label} | 見送り | 日本人選手の出場が無い日 |")
+            skipped += 1
         elif optional:
             # 「試合の無い日は欠けてよい」と一律に見逃していたので、
             # サッカーが1本も出ていないことに何週間も気付かなかった。
             # 開催があったかどうかは手元のデータで分かる。
-            fixtures = len(((load("data/soccer_games.json") or {})
-                            .get("games")) or [])
-            if fixtures:
+            soccer = load('data/soccer_games.json') or {}
+            import soccer_preview_assessment
+            state,count,reason=soccer_preview_assessment.assessment(soccer,day)
+            if state=='unknown':
                 missing += 1
-                lines.append(f"| {at} | {label} | **出ていない** | "
-                             f"{fixtures}試合あった日 |")
+                lines.append(f"| {at} | {label} | **要確認** | {reason} |")
+            elif state=='required':
+                missing += 1
+                lines.append(f"| {at} | {label} | **出ていない** | 注目試合{count}件 |")
             else:
-                lines.append(f"| {at} | {label} | — | 試合が無い日 |")
+                lines.append(f"| {at} | {label} | 見送り | {reason} |")
                 skipped += 1
         else:
             missing += 1
@@ -307,9 +381,14 @@ def _today_jst(iso: str) -> bool:
     return t.astimezone(JST).date() == datetime.now(JST).date()
 
 
-def check_data() -> tuple:
+def check_data(day=None) -> tuple:
     lines, stale = [], 0
+    target = day or datetime.now(JST).date().isoformat()
+    no_games = _mlb_games((datetime.fromisoformat(target) - timedelta(days=1)).date().isoformat()) == 0
     for path, label in DATA_FILES:
+        if no_games:
+            lines.append(f'| {label} | 見送り | 対象日のMLBの試合が無い日 |')
+            continue
         d = load(path)
         if d is None:
             stale += 1
@@ -375,7 +454,16 @@ def check_assets(max_gap_days: int = 2) -> tuple:
     出るはずのものが出ていないことは、結果の側からしか分からない。
     """
     a = (load("data/published_assets.json") or {}).get("assets") or {}
-    days = sorted({(v.get("published_at") or "")[:10]
+    # 停止した種類だけ残っていても制作不足としない。
+    # 生成器は保持し、選択可能な未投稿候補の有無だけを見る。
+    import asset_policy
+    candidates = [k for k, spec in asset_policy.topic_catalog().items()
+                  if k not in a and asset_policy.selectable(k, spec)
+                  and not k.startswith('ws_')]
+    if not candidates:
+        return "| 資産動画 | 選択対象なし（制作見送り） | 球場・球団まとめは停止中・補充なし |", 0
+    from sports_dates import jst_day
+    days = sorted({jst_day(v.get("published_at"))
                    for v in a.values()
                    if isinstance(v, dict) and v.get("published_at")})
     if not days:
@@ -511,35 +599,30 @@ def main() -> int:
     video_lines, missing, skipped, seen = check_videos(
         day, only_past=args.today)
 
-    # 記録が欠けていても、実際に公開されていれば異常ではない。
-    # 記録の押し合いで記録だけが失われることがあり、そのとき
-    # 見張りが「出ていない」と嘘をつく。実物と突き合わせる。
-    #
-    # **本数では比べない。**9/7、17:00の成績が出ていないのに
-    # 「問題なし」で終わった。その時刻までに出るはずの3枠に対して
-    # チャンネルに3本あったので、数だけ合っていた。中身は
-    # 20:00の枠(予約公開ぶん)で、成績はどこにも無かった。
-    #
-    # 見るのは「記録に無いのに、実際にはある動画」。それが欠けと
-    # 同じ数だけあるなら、記録の側だけが失われたと言える。
+    # 公開IDだけでは欠けた枠との対応は分からない。
+    # 10/16はコメント回が制作失敗なのに、別の資産動画3本で欠けが
+    # 0件になった。未登録の公開物は別に知らせ、種類を照合するまで
+    # 欠けた枠を解消しない（再投稿はこの診断から行わない）。
     ids = published_ids(day)
     actual = -1 if ids is None else len(ids)
     # 出るはずの無かった枠は引く。サッカーが無い日に7本を期待すると、
     # 6本出ていても足りないことになる。
     expect = len(video_lines) - skipped
     extra = (ids - seen) if ids is not None else set()
-    if missing and len(extra) >= missing:
+    if extra:
         video_lines.append(f"| — | 実際の公開 | 記録に無い動画が"
                            f"{len(extra)}本ありました | "
-                           "記録が欠けているだけです |")
-        missing = 0
+                           "種類は未照合です。欠けた枠との対応を確認してください |")
+        if missing:
+            video_lines = [line.replace("**出ていない**", "**記録なし・公開未確認**")
+                           for line in video_lines]
     # 当日の途中では、材料が古いのは当たり前(夕方の回がまだ走っていない)。
     # 動画が出たかどうかだけを見る。
-    data_lines, stale = check_data()
+    data_lines, stale = check_data(day)
     if args.today:
         # 当日の途中では、材料が古いのは当たり前(夕方の回がまだ走っていない)
         stale = 0
-    elif (actual >= expect > 0) or (actual < 0 and expect > 0 and not missing):
+    elif not missing and expect > 0 and (actual >= expect or actual < 0):
         # 動画が出ているなら、材料は揃っていたということ。
         # 古く見えるのは記録が押し合いで残らなかったからで、
         # 取れていなかったわけではない。結果の方を信じる。
@@ -576,6 +659,9 @@ def main() -> int:
             "| 対象 | 埋まり | |", "|---|---|---|"]
     out += content_lines
 
+    from ledger_compare import health_table
+    ledger_root = pathlib.Path(__file__).resolve().parents[1]
+    out += health_table(ledger_root, ledger_root / 'build/ledger-buffer')
     text = "\n".join(out)
     print(text)
     summary = os.environ.get("GITHUB_STEP_SUMMARY")

@@ -1,0 +1,107 @@
+{
+  "gameData": {
+    "teams": {
+      "away": {
+        "id": 114
+      },
+      "home": {
+        "id": 145
+      }
+    }
+  },
+  "liveData": {
+    "linescore": {
+      "teams": {
+        "away": {
+          "runs": 9
+        },
+        "home": {
+          "runs": 3
+        }
+      },
+      "innings": [
+        {
+          "num": 1,
+          "away": {
+            "runs": 0
+          },
+          "home": {
+            "runs": 1
+          }
+        },
+        {
+          "num": 2,
+          "away": {
+            "runs": 0
+          },
+          "home": {
+            "runs": 0
+          }
+        },
+        {
+          "num": 3,
+          "away": {
+            "runs": 4
+          },
+          "home": {
+            "runs": 0
+          }
+        },
+        {
+          "num": 4,
+          "away": {
+            "runs": 0
+          },
+          "home": {
+            "runs": 1
+          }
+        },
+        {
+          "num": 5,
+          "away": {
+            "runs": 1
+          },
+          "home": {
+            "runs": 0
+          }
+        },
+        {
+          "num": 6,
+          "away": {
+            "runs": 0
+          },
+          "home": {
+            "runs": 1
+          }
+        },
+        {
+          "num": 7,
+          "away": {
+            "runs": 0
+          },
+          "home": {
+            "runs": 0
+          }
+        },
+        {
+          "num": 8,
+          "away": {
+            "runs": 2
+          },
+          "home": {
+            "runs": 0
+          }
+        },
+        {
+          "num": 9,
+          "away": {
+            "runs": 2
+          },
+          "home": {
+            "runs": 0
+          }
+        }
+      ]
+    }
+  }
+}

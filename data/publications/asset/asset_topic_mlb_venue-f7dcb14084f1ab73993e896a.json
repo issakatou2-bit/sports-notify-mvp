@@ -1,0 +1,30 @@
+{
+  "publication_id": "asset:topic:mlb_venue",
+  "domain": "asset",
+  "kind": "topic",
+  "key_parts": {
+    "topic": "mlb_venue"
+  },
+  "version": 1,
+  "history": [
+    {
+      "source": "published_assets/assets/mlb_venue",
+      "service": "youtube",
+      "video_id": "UPHcL2nwmsA",
+      "state": "uploaded",
+      "scheduled_at": null,
+      "event_day": null,
+      "material_day": null,
+      "edition_day": null,
+      "run_at": "2026-08-07T00:00:00+00:00",
+      "details": {
+        "privacy": "public"
+      },
+      "run_id": "40508411617",
+      "attempt": "1",
+      "recorded_at": "2026-10-27T13:01:39.695720+00:00",
+      "fingerprint": "8a10105849a7c3784e4b462714367bbb4166702b04feec17e53273c2cc076b7b",
+      "event_id": "1ebf6e3d81b24c8aaae9001c065f741782c584b56ab44800a7d8cb0afb7c46cb"
+    }
+  ]
+}

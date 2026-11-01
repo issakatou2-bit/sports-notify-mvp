@@ -31,6 +31,11 @@ import mlb_splits  # noqa: E402
 from notability_engine import JP_PLAYERS_MLB, MLB_TEAM_NAME_JP  # noqa: E402
 
 MLB_API_BASE = "https://statsapi.mlb.com/api/v1"
+# **種類を指定しないと、レギュラーシーズンの試合しか返らない。**
+# 9/30、WCS初戦で村上宗隆が3打数1安打だったのに「出場0名」になり、
+# 17:00の成績が出ず、長編は「きょうは試合が無い日」と言った。
+# 1日ぶんの取得なので、種類を並べても同じ試合を二重に数えない。
+GAME_TYPES = "R,F,D,L,W"
 JST = timezone(timedelta(hours=9))
 
 
@@ -47,12 +52,13 @@ def fetch_day_hitting(player_id: str, day: str, season: str):
         resp = requests.get(
             f"{MLB_API_BASE}/people/{player_id}/stats",
             params={"stats": "byDateRange", "group": "hitting",
-                    "startDate": day, "endDate": day, "season": season},
+                    "startDate": day, "endDate": day, "season": season,
+                    "gameType": GAME_TYPES},
             timeout=20,
         )
         resp.raise_for_status()
-    except Exception:
-        return None
+    except Exception as e:
+        raise RuntimeError(f'{player_id}の打撃成績を取得できません') from e
     for st in resp.json().get("stats", []):
         # 1日ぶんの取得なので、ふつうは1行しか返らない。ただし
         # 移籍した日をまたぐと合計の行が付く。そのときは合計を使う。
@@ -92,12 +98,13 @@ def fetch_day_pitching(player_id: str, day: str, season: str):
         resp = requests.get(
             f"{MLB_API_BASE}/people/{player_id}/stats",
             params={"stats": "byDateRange", "group": "pitching",
-                    "startDate": day, "endDate": day, "season": season},
+                    "startDate": day, "endDate": day, "season": season,
+                    "gameType": GAME_TYPES},
             timeout=20,
         )
         resp.raise_for_status()
-    except Exception:
-        return None
+    except Exception as e:
+        raise RuntimeError(f'{player_id}の投球成績を取得できません') from e
     for st in resp.json().get("stats", []):
         for split in mlb_splits.prefer_total(st.get("splits")):
             s = split.get("stat") or {}
@@ -107,6 +114,10 @@ def fetch_day_pitching(player_id: str, day: str, season: str):
             return {
                 "type": "pitcher", "ip": ip,
                 "er": int(_f(s.get("earnedRuns"))),
+                # 失点と死球。10/4の松井は失点1・自責0で、材料に自責しか
+                # 無かったため長編が「点にならなかった」と言った。
+                "r": int(_f(s.get("runs"))),
+                "hbp": int(_f(s.get("hitByPitch"))),
                 "hits": int(_f(s.get("hits"))),
                 "so": int(_f(s.get("strikeOuts"))),
                 "bb": int(_f(s.get("baseOnBalls"))),
@@ -135,6 +146,8 @@ def _row_from_split(split: dict, group: str):
         return {
             "type": "pitcher", "ip": ip,
             "er": int(_f(s.get("earnedRuns"))),
+            "r": int(_f(s.get("runs"))),
+            "hbp": int(_f(s.get("hitByPitch"))),
             "hits": int(_f(s.get("hits"))),
             "so": int(_f(s.get("strikeOuts"))),
             "bb": int(_f(s.get("baseOnBalls"))),
@@ -207,6 +220,7 @@ def fetch_context(player_id: str, groups: list, season: str, day: str) -> dict:
     """
     per_date: dict = {}
     team = None
+    game_ids=set()
     for group in groups:
         log = fetch_game_log(player_id, group, season)
         if not log:
@@ -216,20 +230,25 @@ def fetch_context(player_id: str, groups: list, season: str, day: str) -> dict:
         team = team or (log[-1].get("team") or {}).get("id")
         for s in log:
             d = s.get("date") or ""
+            if d==day and (s.get('game') or {}).get('gamePk'):
+                game_ids.add(str(s['game']['gamePk']))
             if not d or d >= day:
                 continue
             row = _row_from_split(s, group)
             if row:
                 per_date[d] = per_date.get(d, 0) + contribution(row)
 
+    import mlb_forecast
+    extra={'game_ids':sorted(game_ids)} if mlb_forecast.enabled() else {}
     if not per_date:
-        return {"team": team} if team else {}
+        return dict({'team':team} if team else {},**extra)
 
     scored = sorted(per_date.items())
     n = RECENT_GAMES_PITCHER if "pitching" in groups else RECENT_GAMES_BATTER
     recent = scored[-n:]
     return {
         "team": team,
+        **extra,
         "prev_score": scored[-1][1],
         "prev_date": scored[-1][0],
         "avg_score": round(sum(v for _, v in recent) / len(recent)),
@@ -376,6 +395,27 @@ def build(day: str = None, season: str = None) -> dict:
     target = day or (datetime.now(JST).date() - timedelta(days=1)).isoformat()
     print(f"[info] 対象日(米国日付): {target}")
 
+    def result(rows, state, errors=(), game_count=None):
+        return {"updated_at": datetime.now(timezone.utc).isoformat(),
+                "date": target, "date_jst": jst_label(target), "players": rows,
+                "collection_state": state, "collection_errors": list(errors),
+                "game_count": game_count}
+
+    # 空日は公式日程1回で確定。選手ごとの問い合わせも前日再利用も不要。
+    try:
+        schedule = requests.get(f"{MLB_API_BASE}/schedule",
+                                params={"sportId": 1, "date": target}, timeout=30)
+        schedule.raise_for_status()
+        game_count = schedule.json().get("totalGames")
+        if type(game_count) is not int or game_count < 0:
+            raise ValueError("日程の試合数が確認できません")
+    except Exception as e:
+        print(f"[error] 対象日の公式日程を取得できません: {e}", file=sys.stderr)
+        return result([], "failed", ["schedule"])
+    if game_count == 0:
+        print("[info] 公式日程で試合なし。現在日の空材料へ更新します")
+        return result([], "no_games", game_count=0)
+
     try:
         resp = requests.get(f"{MLB_API_BASE}/sports/1/players",
                             params={"season": season}, timeout=30)
@@ -384,9 +424,10 @@ def build(day: str = None, season: str = None) -> dict:
                    for p in resp.json().get("people", [])}
     except Exception as e:
         print(f"[warn] 選手一覧の取得に失敗しました: {e}", file=sys.stderr)
-        return {"date": target, "players": []}
+        return result([], "failed", ["player_list"], game_count)
 
     rows = []
+    failures = []
     for p in JP_PLAYERS_MLB:
         pid = by_name.get(p["name_en"])
         if not pid:
@@ -394,8 +435,15 @@ def build(day: str = None, season: str = None) -> dict:
         # 投げて打った日は両方を持つ。
         # 以前は or で繋いでいたため、投げた日は打撃成績が丸ごと消えていた。
         # 二刀流はその日がいちばん見どころなのに、片方しか出せていなかった。
-        pit = fetch_day_pitching(pid, target, season)
-        bat = fetch_day_hitting(pid, target, season)
+        stats = {}
+        for group, fetch in (("pitching", fetch_day_pitching), ("hitting", fetch_day_hitting)):
+            try:
+                stats[group] = fetch(pid, target, season)
+            except Exception as e:
+                print(f"[warn] {p['name_jp']}の{group}取得失敗: {e}", file=sys.stderr)
+                failures.append({"player_id": pid, "group": group})
+                stats[group] = None
+        pit, bat = stats["pitching"], stats["hitting"]
         if not pit and not bat:
             continue
 
@@ -432,6 +480,8 @@ def build(day: str = None, season: str = None) -> dict:
         for k in ("prev_score", "prev_date", "avg_score", "avg_games"):
             if ctx.get(k) is not None:
                 r[k] = ctx[k]
+        if 'game_ids' in ctx:
+            r['game_ids']=ctx['game_ids']
 
     # 打点が「どういう場面で入ったか」を足す。
     # 同じ3ランでも逆転と大差では試合への効き方が違うのに、
@@ -458,12 +508,8 @@ def build(day: str = None, season: str = None) -> dict:
     for r in rows:
         print(f"   {r['name']}  {r['headline']}")
 
-    return {
-        "updated_at": datetime.now(timezone.utc).isoformat(),
-        "date": target,
-        "date_jst": jst_label(target),
-        "players": rows,
-    }
+    state = "partial_failure" if failures else "ready" if rows else "no_appearances"
+    return result(rows, state, failures, game_count)
 
 
 def outs_from_ip(ip) -> int:
@@ -1181,14 +1227,16 @@ def main():
     args = parser.parse_args()
 
     data = build(day=args.date, season=args.season)
-    if not data["players"]:
-        print("[info] 出場した日本人選手がいないため、ファイルは更新しません")
-        return
-
     out = pathlib.Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
     print(f"[info] 夕方のまとめを出力しました({len(data['players'])}名) -> {out}")
+    if data.get("collection_state") in ("failed", "partial_failure"):
+        raise SystemExit("取得失敗を記録しました。前日成績では公開しません")
+    if not data["players"]:
+        save_history(data)
+        print("[info] 当日の空材料を保存しました。成績の動画は作りません")
+        return
 
     # 週間ランキングの材料。こちらは日付ごとに残す。
     save_history(data)

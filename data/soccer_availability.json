@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-20T10:01:16.843688+00:00",
+  "updated_at": "2026-11-01T10:01:00.698393+00:00",
   "source": "https://fantasy.premierleague.com/api/bootstrap-static/",
   "players": {
     "遠藤航": {
@@ -20,15 +20,15 @@
       "goals": 0,
       "assists": 0,
       "chance_next": 0,
-      "news": "Hamstring injury - Expected back 10 Oct",
+      "news": "Hamstring injury - Expected back 22 Nov",
       "out": true,
-      "reason": "Hamstring injury - Expected back 10 Oct"
+      "reason": "Hamstring injury - Expected back 22 Nov"
     },
     "鎌田大地": {
       "name_en": "Daichi Kamada",
       "club_jp": "クリスタル・パレス",
-      "minutes": 351,
-      "goals": 0,
+      "minutes": 787,
+      "goals": 1,
       "assists": 3,
       "chance_next": null,
       "news": "",
@@ -38,7 +38,7 @@
     "田中碧": {
       "name_en": "Ao Tanaka",
       "club_jp": "リーズ",
-      "minutes": 188,
+      "minutes": 557,
       "goals": 0,
       "assists": 2,
       "chance_next": null,
@@ -46,16 +46,49 @@
       "out": false,
       "reason": ""
     },
-    "冨安健洋": {
-      "name_en": "Takehiro Tomiyasu",
-      "club_jp": "クリスタル・パレス",
-      "minutes": 144,
-      "goals": 0,
+    "坂元達裕": {
+      "name_en": "Tatsuhiro Sakamoto",
+      "club_jp": "コベントリー",
+      "minutes": 312,
+      "goals": 1,
       "assists": 0,
       "chance_next": null,
       "news": "",
       "out": false,
       "reason": ""
+    },
+    "前田大然": {
+      "name_en": "Daizen Maeda",
+      "club_jp": "イプスウィッチ",
+      "minutes": 446,
+      "goals": 1,
+      "assists": 0,
+      "chance_next": null,
+      "news": "",
+      "out": false,
+      "reason": ""
+    },
+    "守田英正": {
+      "name_en": "Hidemasa Morita",
+      "club_jp": "ハル・シティ",
+      "minutes": 106,
+      "goals": 0,
+      "assists": 0,
+      "chance_next": 100,
+      "news": "",
+      "out": false,
+      "reason": ""
+    },
+    "冨安健洋": {
+      "name_en": "Takehiro Tomiyasu",
+      "club_jp": "クリスタル・パレス",
+      "minutes": 189,
+      "goals": 0,
+      "assists": 0,
+      "chance_next": 0,
+      "news": "Calf injury - Expected back 8 Nov",
+      "out": true,
+      "reason": "Calf injury - Expected back 8 Nov"
     }
   }
 }

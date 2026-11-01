@@ -1,0 +1,409 @@
+{
+ "dates": [
+  {
+   "date": "2026-09-22",
+   "games": [
+    {
+     "gamePk": 824785,
+     "gameType": "R",
+     "season": "2026",
+     "gameDate": "2026-09-22T22:35:00Z",
+     "officialDate": "2026-09-23",
+     "doubleHeader": "N",
+     "gameNumber": 1,
+     "gamesInSeries": 3,
+     "seriesGameNumber": 2,
+     "seriesDescription": "Regular Season",
+     "ifNecessary": "N",
+     "rescheduleDate": "2026-09-23T17:35:00Z",
+     "status": {
+      "abstractGameState": "Final",
+      "detailedState": "Postponed",
+      "startTimeTBD": false,
+      "reason": "Rain"
+     },
+     "teams": {
+      "away": {
+       "team": {
+        "id": 141,
+        "name": "Toronto Blue Jays"
+       },
+       "probablePitcher": {
+        "id": 453286,
+        "fullName": "Max Scherzer"
+       }
+      },
+      "home": {
+       "team": {
+        "id": 110,
+        "name": "Baltimore Orioles"
+       },
+       "probablePitcher": {
+        "id": 605135,
+        "fullName": "Chris Bassitt"
+       }
+      }
+     },
+     "seriesStatus": {
+      "gameNumber": 2,
+      "totalGames": 3,
+      "isTied": false,
+      "isOver": true,
+      "wins": 2,
+      "losses": 0,
+      "description": "Regular Season",
+      "shortDescription": "Season",
+      "result": "BAL wins 2-0",
+      "abbreviation": "RS",
+      "winningTeam": {
+       "id": 110,
+       "name": "Baltimore Orioles"
+      },
+      "losingTeam": {
+       "id": 141,
+       "name": "Toronto Blue Jays"
+      }
+     },
+     "venue": {
+      "name": "Oriole Park at Camden Yards"
+     }
+    }
+   ]
+  },
+  {
+   "date": "2026-09-23",
+   "games": [
+    {
+     "gamePk": 824785,
+     "gameType": "R",
+     "season": "2026",
+     "gameDate": "2026-09-23T17:35:00Z",
+     "officialDate": "2026-09-23",
+     "doubleHeader": "S",
+     "gameNumber": 1,
+     "gamesInSeries": 3,
+     "seriesGameNumber": 2,
+     "seriesDescription": "Regular Season",
+     "ifNecessary": "N",
+     "rescheduledFrom": "2026-09-22T22:35:00Z",
+     "description": "Makeup of 9/22 PPD",
+     "status": {
+      "abstractGameState": "Final",
+      "detailedState": "Final",
+      "startTimeTBD": false
+     },
+     "teams": {
+      "away": {
+       "team": {
+        "id": 141,
+        "name": "Toronto Blue Jays"
+       },
+       "score": 2,
+       "isWinner": false,
+       "probablePitcher": {
+        "id": 453286,
+        "fullName": "Max Scherzer"
+       }
+      },
+      "home": {
+       "team": {
+        "id": 110,
+        "name": "Baltimore Orioles"
+       },
+       "score": 4,
+       "isWinner": true,
+       "probablePitcher": {
+        "id": 605135,
+        "fullName": "Chris Bassitt"
+       }
+      }
+     },
+     "seriesStatus": {
+      "gameNumber": 2,
+      "totalGames": 3,
+      "isTied": false,
+      "isOver": true,
+      "wins": 2,
+      "losses": 0,
+      "description": "Regular Season",
+      "shortDescription": "Season",
+      "result": "BAL wins 2-0",
+      "abbreviation": "RS",
+      "winningTeam": {
+       "id": 110,
+       "name": "Baltimore Orioles"
+      },
+      "losingTeam": {
+       "id": 141,
+       "name": "Toronto Blue Jays"
+      }
+     },
+     "venue": {
+      "name": "Oriole Park at Camden Yards"
+     }
+    },
+    {
+     "gamePk": 824784,
+     "gameType": "R",
+     "season": "2026",
+     "gameDate": "2026-09-23T22:35:00Z",
+     "officialDate": "2026-09-23",
+     "doubleHeader": "S",
+     "gameNumber": 2,
+     "gamesInSeries": 3,
+     "seriesGameNumber": 3,
+     "seriesDescription": "Regular Season",
+     "ifNecessary": "N",
+     "status": {
+      "abstractGameState": "Final",
+      "detailedState": "Final",
+      "startTimeTBD": false
+     },
+     "teams": {
+      "away": {
+       "team": {
+        "id": 141,
+        "name": "Toronto Blue Jays"
+       },
+       "score": 2,
+       "isWinner": false,
+       "probablePitcher": {
+        "id": 669310,
+        "fullName": "CJ Van Eyk"
+       }
+      },
+      "home": {
+       "team": {
+        "id": 110,
+        "name": "Baltimore Orioles"
+       },
+       "score": 4,
+       "isWinner": true,
+       "probablePitcher": {
+        "id": 694346,
+        "fullName": "Trey Gibson"
+       }
+      }
+     },
+     "seriesStatus": {
+      "gameNumber": 3,
+      "totalGames": 3,
+      "isTied": false,
+      "isOver": true,
+      "wins": 3,
+      "losses": 0,
+      "description": "Regular Season",
+      "shortDescription": "Season",
+      "result": "BAL wins 3-0",
+      "abbreviation": "RS",
+      "winningTeam": {
+       "id": 110,
+       "name": "Baltimore Orioles"
+      },
+      "losingTeam": {
+       "id": 141,
+       "name": "Toronto Blue Jays"
+      }
+     },
+     "venue": {
+      "name": "Oriole Park at Camden Yards"
+     }
+    }
+   ]
+  },
+  {
+   "date": "2026-09-25",
+   "games": [
+    {
+     "gamePk": 823491,
+     "gameType": "R",
+     "season": "2026",
+     "gameDate": "2026-09-25T20:05:00Z",
+     "officialDate": "2026-09-25",
+     "doubleHeader": "Y",
+     "gameNumber": 1,
+     "gamesInSeries": 3,
+     "seriesGameNumber": 1,
+     "seriesDescription": "Regular Season",
+     "ifNecessary": "N",
+     "status": {
+      "abstractGameState": "Final",
+      "detailedState": "Final",
+      "startTimeTBD": false
+     },
+     "teams": {
+      "away": {
+       "team": {
+        "id": 110,
+        "name": "Baltimore Orioles"
+       },
+       "score": 10,
+       "isWinner": true,
+       "probablePitcher": {
+        "id": 669432,
+        "fullName": "Trevor Rogers"
+       }
+      },
+      "home": {
+       "team": {
+        "id": 147,
+        "name": "New York Yankees"
+       },
+       "score": 2,
+       "isWinner": false,
+       "probablePitcher": {
+        "id": 694341,
+        "fullName": "Brendan Beck"
+       }
+      }
+     },
+     "seriesStatus": {
+      "gameNumber": 1,
+      "totalGames": 3,
+      "isTied": false,
+      "isOver": false,
+      "wins": 1,
+      "losses": 0,
+      "description": "Regular Season",
+      "shortDescription": "Season",
+      "result": "BAL leads 1-0",
+      "abbreviation": "RS",
+      "winningTeam": {
+       "id": 110,
+       "name": "Baltimore Orioles"
+      },
+      "losingTeam": {
+       "id": 147,
+       "name": "New York Yankees"
+      }
+     },
+     "venue": {
+      "name": "Yankee Stadium"
+     }
+    },
+    {
+     "gamePk": 823489,
+     "gameType": "R",
+     "season": "2026",
+     "gameDate": "2026-09-25T20:10:00Z",
+     "officialDate": "2026-09-25",
+     "doubleHeader": "Y",
+     "gameNumber": 2,
+     "gamesInSeries": 3,
+     "seriesGameNumber": 2,
+     "seriesDescription": "Regular Season",
+     "ifNecessary": "N",
+     "description": "Makeup of 9/26 PPD",
+     "status": {
+      "abstractGameState": "Final",
+      "detailedState": "Final",
+      "startTimeTBD": true
+     },
+     "teams": {
+      "away": {
+       "team": {
+        "id": 110,
+        "name": "Baltimore Orioles"
+       },
+       "score": 3,
+       "isWinner": false,
+       "probablePitcher": {
+        "id": 687064,
+        "fullName": "Brandon Young"
+       }
+      },
+      "home": {
+       "team": {
+        "id": 147,
+        "name": "New York Yankees"
+       },
+       "score": 6,
+       "isWinner": true,
+       "probablePitcher": {
+        "id": 642232,
+        "fullName": "Ryan Yarbrough"
+       }
+      }
+     },
+     "seriesStatus": {
+      "gameNumber": 2,
+      "totalGames": 3,
+      "isTied": true,
+      "isOver": false,
+      "wins": 1,
+      "losses": 1,
+      "description": "Regular Season",
+      "shortDescription": "Season",
+      "result": "Series tied 1-1",
+      "abbreviation": "RS"
+     },
+     "venue": {
+      "name": "Yankee Stadium"
+     }
+    }
+   ]
+  },
+  {
+   "date": "2026-09-27",
+   "games": [
+    {
+     "gamePk": 823490,
+     "gameType": "R",
+     "season": "2026",
+     "gameDate": "2026-09-27T17:05:00Z",
+     "officialDate": "2026-09-27",
+     "doubleHeader": "N",
+     "gameNumber": 1,
+     "gamesInSeries": 3,
+     "seriesGameNumber": 3,
+     "seriesDescription": "Regular Season",
+     "ifNecessary": "N",
+     "status": {
+      "abstractGameState": "Final",
+      "detailedState": "Cancelled",
+      "startTimeTBD": false,
+      "reason": "Rain"
+     },
+     "teams": {
+      "away": {
+       "team": {
+        "id": 110,
+        "name": "Baltimore Orioles"
+       },
+       "probablePitcher": {
+        "id": 669358,
+        "fullName": "Shane Baz"
+       }
+      },
+      "home": {
+       "team": {
+        "id": 147,
+        "name": "New York Yankees"
+       },
+       "probablePitcher": {
+        "id": 695684,
+        "fullName": "Elmer Rodríguez"
+       }
+      }
+     },
+     "seriesStatus": {
+      "gameNumber": 3,
+      "totalGames": 3,
+      "isTied": true,
+      "isOver": false,
+      "wins": 1,
+      "losses": 1,
+      "description": "Regular Season",
+      "shortDescription": "Season",
+      "result": "Series tied 1-1",
+      "abbreviation": "RS"
+     },
+     "venue": {
+      "name": "Yankee Stadium"
+     }
+    }
+   ]
+  }
+ ],
+ "_source": "statsapi.mlb.com schedule?hydrate=probablePitcher,seriesStatus gameType=R 2026-09-22〜2026-09-27 のうち TOR-BAL と BAL-NYY のカードだけ。2026-10-09 に取得。使う欄だけ残した（値は書き換えていない）"
+}

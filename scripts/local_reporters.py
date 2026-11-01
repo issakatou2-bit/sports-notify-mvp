@@ -26,6 +26,7 @@
 """
 
 import argparse
+from concurrent.futures import ThreadPoolExecutor
 import functools
 import json
 import os
@@ -41,6 +42,7 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
 from notability_engine import JP_PLAYERS_MLB, MLB_TEAM_NAME_JP  # noqa: E402
 
 import token_log  # noqa: E402
+from team_names import team_names_jp  # noqa: E402
 
 BASE = "https://public.api.bsky.app/xrpc"
 UA = {"User-Agent": "collespo/1.0 (+https://collespo.com)"}
@@ -298,7 +300,49 @@ def _jp_name_hint() -> str:
                      for p in JP_PLAYERS_MLB)
 
 
-def translate(posts: list, api_key: str) -> list:
+def placeholder_translation(source: str, translated: str) -> bool:
+    """A numbered batch label is not a translation of a substantive post."""
+    return (len((source or '').strip()) > 20 and
+            re.fullmatch(r'\s*[0-9０-９]+(?:番|[.):])?\s*[。.!]?\s*', translated or '') is not None)
+
+
+def guard_translation(source: str, translated: str) -> str:
+    """Keep baseball shorthand from inventing a run count or challenge actor."""
+    if placeholder_translation(source, translated):
+        print('[warning] 番号だけの翻訳を採用しません（原文は保持）')
+        return ''
+    # exit は敗退のことが多い。原文に移籍の語が無いのに退団と言わない（11/1 大谷の見出し）。
+    if ('退団' in translated and re.search(r'\bexits?\b', source, re.I)
+            and not re.search(r'\b(?:leav\w*|left|depart\w*|free agen\w*|sign\w*|trade\w*|released?)\b', source, re.I)):
+        print('[warning] exit を退団と訳した見出しを省略')
+        return ''
+    if re.search(r'\b(?:benching|bench(?:ed|es)?|sitting)\b', source, re.I):
+        translated = translated.replace('でのベンチ入り', 'で先発から外すこと')
+        translated = translated.replace('ベンチ入り', '先発から外すこと')
+    if (re.search(r'\b(?:pitcher|starter)\b', source, re.I) and
+            not re.search(r'\b(?:right|left|righty|lefty|RHP|LHP|southpaw)\b', source, re.I)):
+        translated = re.sub(r'右腕|左腕', '投手', translated)
+    # 勝敗と、試合中に相手のリードを許したかは別の記録（10/4の公式見出し）。
+    if re.search(r"\byet to trail this postseason\b", source, re.I):
+        translated = re.sub(r"(?:(?:ポストシーズン|PS)(?:で)?)?無敗の",
+                            "ポストシーズンでまだリードを許していない", translated)
+        if re.search(r"無敗|負け(?:ていない|なし|無し)|敗戦なし", translated):
+            print("[warning] MLB見出しのリード/勝敗の訳を確認できず、この引用を省略")
+            return ""
+    hit = re.search(r"\bRBI\s+(double|triple)\b", source, re.I)
+    counted = re.search(r"\b(?:one|two|three|four|\d+)[ -]+(?:run|RBI)\b", source, re.I)
+    if hit and not counted:
+        base = "二塁打" if hit.group(1).lower() == "double" else "三塁打"
+        translated = re.sub(r"[0-9０-９一二三四]+(?:点|打点)(?:の)?(?:適時|タイムリー)?" + base,
+                            "適時" + base, translated)
+    # The English headline says only *after* a challenge. It doesn't say who
+    # challenged. Retain the named pitcher as the actor of the strikeout only.
+    if re.fullmatch(r".+ (?:fans|strikes out) .+ after (?:an? )?ABS challenge[.!]?", source, re.I):
+        translated = re.sub(r"^(.+?)がABS判定に異議を唱えた後、", r"ABSチャレンジ後、\1が", translated)
+    return translated
+
+
+def translate(posts: list, api_key: str, _retry_placeholder: bool = True) -> list:
     """
     まとめて1回で訳す。1件ずつ呼ぶと件数ぶん課金される。
 
@@ -317,13 +361,23 @@ def translate(posts: list, api_key: str) -> list:
     prompt = (
         "次はMLBの番記者がSNSに書いた投稿です。"
         "それぞれを日本語に訳してください。\n"
-        "・1行に1件、番号をつけて出力\n"
+        "・1行に1件、番号の後に訳文の本文を出力。番号だけは不可\n"
         "・**日本語として自然に読めることを先に取る。逐語訳にしない。**\n"
         "  英語の語順をなぞると、読んでも意味が入ってこない\n"
         "・**意味の取れない直訳を作らない。**実際に出た失敗:\n"
         "    Rocchio October → ×「ロッチオクトーバーのロッチオ」\n"
         "  何のことか分からない語は、訳さずに英語のまま置く\n"
-        "・書かれていないことは足さない\n"
+        "・書かれていないことは足さない。投手の左右も原文にある場合だけ\n"
+        "・benching/sitting a playerは先発から外すこと。「ベンチ入り」ではない\n"
+        # 9/27、"held until a possible NLDS" を「ワイルドカード進出まで温存」
+        # と訳した（正しくは地区シリーズ）。「ゲーム1-2」も直訳のまま出た。
+        "・ポストシーズンの用語: Wild Card Series=ワイルドカードシリーズ、"
+        "ALDS/NLDS=地区シリーズ、ALCS/NLCS=リーグ優勝決定シリーズ、"
+        "World Series=ワールドシリーズ。Game 3=第3戦、Games 1-2=第1・2戦、"
+        "Game 162=レギュラーシーズン最終戦\n"
+        "・78-82のような球団の勝敗は「78勝82敗」と訳す\n"
+        "・RBI doubleは適時二塁打。doubleを2点、tripleを3点と解釈しない。得点数は明記された場合だけ訳す\n"
+        "・after ABS challengeはABSチャレンジ後。誰が要求したか書かれていなければ主語を補わない\n"
         "・**絵文字はそのまま残す**（書き手の熱量の一部）\n"
         "・80文字以内に収める\n"
         "・URLや記事へのリンクは訳さず省く\n"
@@ -338,16 +392,17 @@ def translate(posts: list, api_key: str) -> list:
         client = anthropic.Anthropic(api_key=api_key)
         if not token_log.allowed("reporters"):
             return posts
-        msg = client.messages.create(
-            model="claude-haiku-4-5-20251001",
-            max_tokens=1200,
+        import backstage_guard
+        import llm_models
+        msg = backstage_guard.create(client, label='local_reporters.py', category='reporters', mode='lines',
+            **llm_models.params("translate", 1200),
             messages=[{"role": "user", "content": prompt}],
         )
-        token_log.record("reporters", "claude-haiku-4-5-20251001", msg)
+        token_log.record("reporters", llm_models.model("translate"), msg)
         if msg.stop_reason == "max_tokens":
             print("[warn] 翻訳が途中で切れたため使いません", file=sys.stderr)
             return posts
-        body = msg.content[0].text
+        body = "".join(b.text for b in msg.content if b.type == "text")
     except Exception as e:  # noqa: BLE001
         print(f"[warn] 翻訳に失敗しました: {e}", file=sys.stderr)
         return posts
@@ -357,10 +412,42 @@ def translate(posts: list, api_key: str) -> list:
         m = re.match(r"\s*(\d+)[.):]\s*(.+)", line)
         if m:
             lines[int(m.group(1))] = m.group(2).strip()
+    invalid = []
     for i, p in enumerate(posts, 1):
         if i in lines:
-            p["jp"] = lines[i]
+            p["jp"] = team_names_jp(baseball_jp(guard_translation(p["text"], lines[i])))
+            if placeholder_translation(p['text'], lines[i]):
+                p['_translation_failed'] = True
+                invalid.append(p)
+            else:
+                p.pop('_translation_failed', None)
+                # 検査で訳を省いた物は、英語の見出しのまま読まない。
+                if not p["jp"]:
+                    p['_translation_dropped'] = True
+    if invalid and _retry_placeholder:
+        print(f'[warning] 番号だけの訳{len(invalid)}件をまとめて1回再翻訳します')
+        translate(invalid, api_key, _retry_placeholder=False)
     return posts
+
+
+def baseball_jp(text: str) -> str:
+    """訳文の野球の言い方を、決まった規則で直す。AIが指示を外しても効く。
+
+    ゲーム1-2 → 第1・2戦、ゲーム3 → 第3戦、ゲーム162 → レギュラーシーズン
+    最終戦、78-82（球団の勝敗）→ 78勝82敗。スコア（6-5）とは区別する:
+    どちらも30以上で合計162以下のものだけを勝敗とみなす。
+    """
+    if not text:
+        return text
+    t = re.sub(r"ゲーム\s?162", "レギュラーシーズン最終戦", text)
+    t = re.sub(r"ゲーム\s?([1-7])\s?[-–・]\s?([1-7])", r"第\1・\2戦", t)
+    t = re.sub(r"ゲーム\s?([1-7])(?![0-9])", r"第\1戦", t)
+
+    def _rec(m):
+        w, l = int(m.group(1)), int(m.group(2))
+        return (f"{w}勝{l}敗" if w >= 30 and l >= 30 and w + l <= 162
+                else m.group(0))
+    return re.sub(r"(?<![0-9.])([0-9]{2,3})-([0-9]{2,3})(?![0-9])", _rec, t)
 
 
 # ---------------------------------------------------------------------------
@@ -382,21 +469,53 @@ def fetch_headlines(query: str, limit: int = 8) -> list:
     url = NEWS_RSS.format(q=urllib.parse.quote(f"{query} when:1d"))
     r = requests.get(url, headers=UA, timeout=20)
     r.raise_for_status()
-    items = re.findall(r"<item>(.*?)</item>", r.text, re.S)
+    return article_publications(parse_headlines(r.text,query,limit))
+
+
+def article_publications(rows):
+    # 記事の日付確認で日次処理が長時間直列待ちにならないよう、取得数を限定して並行する。
+    with ThreadPoolExecutor(max_workers=4) as pool:
+        return list(pool.map(article_publication, rows))
+
+
+@functools.lru_cache(maxsize=256)
+def _article_html(url):
+    r = requests.get(url, headers=UA, timeout=20)
+    r.raise_for_status()
+    return r.text, r.url
+
+
+def article_publication(row):
+    from article_freshness import dated_article
+    from article_sources import safe_url
+    url = safe_url(row.get('url'))
+    html, resolved = '', ''
+    if url:
+        try:
+            html, resolved = _article_html(url)
+        except Exception:  # 記事を開けなくてもRSS/URLの日付は検査する。
+            pass
+    return dated_article(row, html, resolved)
+
+
+def parse_headlines(text, query, limit=8):
+    import xml.etree.ElementTree as ET
+    from article_sources import safe_url
+    items = [node for node in ET.fromstring(text).iter() if node.tag.rsplit('}',1)[-1]=='item']
+    def value(item, key):
+        return next((node.text or '' for node in item if node.tag.rsplit('}',1)[-1]==key),'')
     out = []
     for it in items[:limit]:
-        t = re.search(r"<title>(?:<!\[CDATA\[)?(.*?)(?:\]\]>)?</title>", it, re.S)
-        d = re.search(r"<pubDate>(.*?)</pubDate>", it, re.S)
-        s = re.search(r"<source[^>]*>(.*?)</source>", it, re.S)
-        if not t:
+        title = value(it,'title').strip()
+        if not title:
             continue
-        title = t.group(1).strip()
         # Google ニュースの見出しは "本文 - 媒体名" の形
-        source = s.group(1).strip() if s else ""
+        source = value(it,'source').strip()
         if source and title.endswith(f"- {source}"):
             title = title[: -len(source) - 2].strip()
         out.append({"query": query, "title": title,
-                    "source": source, "at": d.group(1) if d else ""})
+                    "source": source, "at": value(it,'pubDate'),
+                    "url": safe_url(value(it,'link'))})
     return out
 
 
@@ -461,9 +580,16 @@ LEAGUE_QUERIES = (
 )
 
 
-def collect_headlines(sleep: float = 0.4) -> list:
+def collect_headlines(sleep: float = 0.4, target_date=None) -> list:
     """現地の見出しを引く。日本人選手の名前と、リーグ全体の話題。"""
     out, dropped = [], 0
+    # PS総括は最大4件。既存の翻訳上限内で使い、APIの呼出回数は増やさない。
+    # 本文は読まない。公式の元URLと日時を残し、試合への接続側で再照合する。
+    import mlb_headlines
+    try:
+        out.extend(mlb_headlines.fetch(limit=min(4, TOP_N // 2)))
+    except Exception as e:  # noqa: BLE001
+        print(f"[warn] MLB公式見出しの取得に失敗({e})", file=sys.stderr)
     for p in JP_PLAYERS_MLB:
         try:
             got = fetch_headlines(p["name_en"], limit=4)
@@ -497,8 +623,11 @@ def collect_headlines(sleep: float = 0.4) -> list:
 
     # 同じ見出しが複数の選手で出ることがある。
     # 媒体によって "Exclusive | " のような枕が付くので、そこも落として比べる。
+    from article_freshness import fresh_articles
+    current = fresh_articles(out, target_date)
+    print(f"[info] 公開日が古い/不明/対象日より先の見出しを{len(out) - len(current)}件外しました")
     seen, uniq = set(), []
-    for h in out:
+    for h in current:
         k = _dedupe_key(h["title"])
         if k in seen:
             continue
@@ -559,13 +688,17 @@ def main():
     print(f"[info] 現地の見出し(直近1日): {len(heads)}件")
 
     key = os.environ.get("ANTHROPIC_API_KEY", "")
-    top = translate(top, key)
+    top = [p for p in translate(top, key) if not p.get("_translation_failed")]
     # 見出しも同じ形に詰めて、まとめて1回で訳す
     head_items = [{"text": h["title"]} for h in heads[:args.top]]
     head_items = translate(head_items, key)
     for h, t in zip(heads, head_items):
+        if t.get("_translation_failed") or t.get("_translation_dropped"):
+            h["_translation_failed"] = True
         if t.get("jp"):
             h["jp"] = t["jp"]
+
+    heads = [h for h in heads if not h.get("_translation_failed")]
 
     for p in top:
         print(f"   ♥{p['likes']:4} RT{p['reposts']:3}  @{p['handle'][:22]:24}"
@@ -590,7 +723,10 @@ def main():
         # 残す（訳さないので、ここを増やしても課金は増えない）。
         "headline_pool": [{"query": h.get("query", ""),
                            "title": h.get("title", ""),
-                           "source": h.get("source", "")}
+                           "source": h.get("source", ""),
+                           "url": h.get("url", ""), "at": h.get("at", ""),
+                           "publication_evidence": h.get("publication_evidence", []),
+                           "corroborated_by": h.get("corroborated_by", [])}
                           for h in heads],
     }, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"[done] {out}")

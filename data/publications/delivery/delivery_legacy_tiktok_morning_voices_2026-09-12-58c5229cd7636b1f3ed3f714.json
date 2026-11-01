@@ -1,0 +1,35 @@
+{
+  "publication_id": "delivery:legacy_tiktok:morning_voices:2026-09-12",
+  "domain": "delivery",
+  "kind": "legacy_tiktok",
+  "key_parts": {
+    "kind": "morning_voices",
+    "legacy_key": "2026-09-12"
+  },
+  "version": 1,
+  "history": [
+    {
+      "source": "published_tiktok/morning_voices/2026-09-12",
+      "service": "tiktok",
+      "video_id": null,
+      "state": "unknown",
+      "scheduled_at": null,
+      "event_day": null,
+      "material_day": null,
+      "edition_day": null,
+      "run_at": "2026-09-12T06:11:18+0000",
+      "details": {
+        "privacy": null,
+        "status": "SEND_TO_USER_INBOX",
+        "publish_id": "v_inbox_file~v2.7684527161148000272",
+        "public_post_ids": [],
+        "publicly_available": false
+      },
+      "run_id": "40669557265",
+      "attempt": "1",
+      "recorded_at": "2026-10-28T10:18:19.210116+00:00",
+      "fingerprint": "e8ca7fc04e0483d355f17955aeaf6aa89ddcaa5ac62a217a7d32ad63691642a1",
+      "event_id": "497988d9e2ddd72c44dce508faedee875ac9ae1ab1d885905d14d374a5b5c8e9"
+    }
+  ]
+}

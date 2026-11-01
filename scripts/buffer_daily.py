@@ -35,6 +35,11 @@ CHANNELS = {'twitter': '6aa114c5cd8b9c702c36144a',
 ORG = '6aa11108acee3b0c72033754'
 MAX_BYTES = 80 * 1024 * 1024
 
+# GitHub が一時的に不調なだけの応答。404・401・403・422 などは
+# やり直しても変わらないので、すぐ呼び出し元へ返す。
+RETRY_STATUSES = (500, 502, 503, 504)
+RETRY_DELAYS = (2, 5, 10)
+
 # A post Buffer is still processing is not a post that failed.
 #
 # TikTok's video ingest routinely outruns the six minutes this runner waits,
@@ -93,8 +98,18 @@ def github(path, method='GET', body=None, raw=False):
         headers={'Authorization': 'Bearer ' + os.environ['GH_TOKEN'],
                  'Accept': 'application/vnd.github+json', 'Content-Type': 'application/json',
                  'User-Agent': 'Collespo/1.0'})
-    with urllib.request.build_opener(SafeRedirect).open(req, timeout=60) as response:
-        content = response.read(MAX_BYTES + 1)
+    for attempt in range(len(RETRY_DELAYS) + 1):
+        try:
+            with urllib.request.build_opener(SafeRedirect).open(req, timeout=60) as response:
+                content = response.read(MAX_BYTES + 1)
+            break
+        except urllib.error.HTTPError as exc:
+            if exc.code not in RETRY_STATUSES or attempt >= len(RETRY_DELAYS):
+                raise
+        except (urllib.error.URLError, TimeoutError):
+            if attempt >= len(RETRY_DELAYS):
+                raise
+        time.sleep(RETRY_DELAYS[attempt])
     if len(content) > MAX_BYTES:
         raise ValueError('GitHub response exceeds allowed size')
     return content if raw else json.loads(content) if content else {}
@@ -128,6 +143,8 @@ class Ledger:
     def set(self, key, value):
         self.data['deliveries'][key] = value
         self.save()
+        from publication_writer import mirror_buffer
+        mirror_buffer(key, value, github, STATE_BRANCH)
 
 
 # 既定の枠。これまでどおり「明日の注目試合」。
@@ -160,21 +177,62 @@ def source_of(kind: str):
     return SOURCES[kind]
 
 
-def select_record(run, records, now, kind=DEFAULT_KIND):
+class MissingVideoRecord(ValueError):
+    pass
+
+
+def verified_ps_skip(run, kind):
+    """A missing record alone is an error; require this run's explicit PS skip."""
+    if kind != 'daily':return None
+    artifacts=github('/actions/runs/'+str(run['id'])+'/artifacts')['artifacts']
+    matches=[a for a in artifacts if a['name']=='collespo-video' and not a['expired']]
+    if len(matches)!=1 or matches[0]['size_in_bytes']>2*1024*1024:return None
+    raw=github('/actions/artifacts/'+str(matches[0]['id'])+'/zip',raw=True)
+    with zipfile.ZipFile(io.BytesIO(raw)) as z:
+        names=z.namelist()
+        if any(n.endswith('.mp4') for n in names):return None
+        markers=[n for n in names if n.rsplit('/',1)[-1]=='ps_forecast_status.json']
+        if len(markers)!=1 or z.getinfo(markers[0]).file_size>4096:return None
+        marker=json.loads(z.read(markers[0]))
+    if marker.get('state')!='skipped' or not marker.get('reason'):return None
+    return marker['reason']
+
+
+def eligible_editions(now, kind, late_edition=False):
+    """Only delayed evening backfill may cross midnight, before 03:00 JST.
+
+    Tomorrow's forecast is never carried over after its target day begins.
+    Ordinary/manual publication retains the current-edition-only safeguard.
+    """
+    local = now.astimezone(JST)
+    days = [local.date().isoformat()]
+    if late_edition and kind != 'daily' and local.hour < 3:
+        days.append((local.date() - timedelta(days=1)).isoformat())
+    return days
+
+
+def select_record(run, records, now, kind=DEFAULT_KIND, late_edition=False):
     key, _, _, wf = source_of(kind)
     if run.get('head_branch') != 'main' or run.get('path') != '.github/workflows/' + wf:
         raise ValueError('Source must be ' + wf)
-    if run.get('conclusion') != 'success' or run.get('event') not in ('workflow_dispatch', 'schedule', 'workflow_run'):
+    # 夕方の4本は1回の実行で4枠を作る。1枠（10/8 は 20:00 の PS がアップロードで失敗）が
+    # 落ちると実行全体が failure になり、出来ていた 17:00〜18:00 の3本まで SNS に出なかった。
+    # 夕方の枠は、その枠の動画が「この実行で作られた」ことを下で確かめたうえで、failure の実行も使う。
+    # 19:00 の日次（daily）は1本だけの実行なので、従来どおり成功した実行だけ。
+    allowed = ('success',) if kind == 'daily' else ('success', 'failure')
+    if run.get('conclusion') not in allowed or run.get('event') not in ('workflow_dispatch', 'schedule', 'workflow_run'):
         raise ValueError('Source workflow did not finish successfully')
     if run.get('repository', {}).get('full_name') != REPO:
         raise ValueError('Unexpected source repository')
     created = instant(run['created_at'])
     day = created.astimezone(JST).date().isoformat()
-    if day != now.astimezone(JST).date().isoformat():
+    if day not in eligible_editions(now, kind, late_edition):
         raise ValueError('Stale source: only the current JST edition may be posted')
     record = records.get(key, {}).get(day)
-    if not record or not re.fullmatch(r'[A-Za-z0-9_-]{11}', record.get('video_id', '')):
-        raise ValueError('No matching YouTube record for ' + key)
+    if not record:
+        raise MissingVideoRecord('No matching YouTube record for ' + key)
+    if not re.fullmatch(r'[A-Za-z0-9_-]{11}', record.get('video_id', '')):
+        raise ValueError('Malformed YouTube record for ' + key)
     if not created <= instant(record['published_at']) <= instant(run['updated_at']):
         raise ValueError('Video record was not produced during this workflow run')
     if instant(record.get('publish_at') or record['published_at']) > now:
@@ -182,13 +240,61 @@ def select_record(run, records, now, kind=DEFAULT_KIND):
     return day, record
 
 
-def latest_run(workflow: str, day: str):
-    """その日に成功した、その枠の実行。無ければ None。"""
+def run_for_record(runs, day, record, kind=DEFAULT_KIND):
+    """その日の実行のうち、この枠の動画を作った実行（記録の時刻が実行の間にあるもの）。
+
+    最後に成功した実行だけを見ると、後から別の枠だけを作り直した実行を拾い、
+    先の実行で作った枠を「この実行の動画ではない」として出せなくなる（10/8）。
+    """
+    allowed = ('success',) if kind == 'daily' else ('success', 'failure')
     try:
-        runs = github('/actions/workflows/' + workflow
-                      + '/runs?branch=main&status=success&per_page=10'
-                      )['workflow_runs']
+        at = instant(record['published_at'])
     except Exception:                                    # noqa: BLE001
+        return None
+    for run in runs:
+        try:
+            if instant(run['created_at']).astimezone(JST).date().isoformat() != day:
+                continue
+            if run.get('conclusion') in allowed and instant(run['created_at']) <= at <= instant(run['updated_at']):
+                return run
+        except Exception:                                # noqa: BLE001
+            continue
+    return None
+
+
+def day_runs(workflow: str, tries: int = 3):
+    """終わった実行の一覧（成功・失敗とも）。取れなければ None。"""
+    for attempt in range(tries):
+        try:
+            return github('/actions/workflows/' + workflow
+                          + '/runs?branch=main&status=completed&per_page=20')['workflow_runs']
+        except Exception as e:                           # noqa: BLE001
+            print('[warn] %s の実行一覧を取れません（%d回目）: %s'
+                  % (workflow, attempt + 1, e), file=sys.stderr)
+            time.sleep(2 * (attempt + 1))
+    return None
+
+
+def latest_run(workflow: str, day: str, tries: int = 3):
+    """その日に成功した、その枠の実行。無ければ None。
+
+    **取れなかったことを黙らない。**10/5の19:00、17:00〜18:00の3枠が公開済みで
+    未送信だったのに「いま投げられる枠はありません」で終わった（同じ材料で
+    あとから計算すると4枠が出る）。一覧の取得の失敗を None と区別できず、
+    そのまま見送っていたと見ている。少し待って取り直し、だめなら理由を出す。
+    """
+    runs = None
+    for attempt in range(tries):
+        try:
+            runs = github('/actions/workflows/' + workflow
+                          + '/runs?branch=main&status=success&per_page=10'
+                          )['workflow_runs']
+            break
+        except Exception as e:                           # noqa: BLE001
+            print('[warn] %s の実行一覧を取れません（%d回目）: %s'
+                  % (workflow, attempt + 1, e), file=sys.stderr)
+            time.sleep(2 * (attempt + 1))
+    if runs is None:
         return None
     for run in runs:
         try:
@@ -200,7 +306,7 @@ def latest_run(workflow: str, day: str):
     return None
 
 
-def due(services) -> list:
+def due(services, late_edition=False) -> list:
     """いま投げられる枠。**公開済みで、まだ投げていないものだけ。**
 
     なぜ要るのか:
@@ -217,25 +323,40 @@ def due(services) -> list:
         return []
     ledger = Ledger()
     now = datetime.now(timezone.utc)
-    day = now.astimezone(JST).date().isoformat()
     out = []
+    runs = {}
     for kind, (key, _artifact, _name, wf) in sorted(SOURCES.items()):
-        rec = (records.get(key) or {}).get(day)
-        if not rec or not rec.get('video_id'):
-            continue
-        try:
-            when = instant(rec.get('publish_at') or rec['published_at'])
-        except Exception:                                # noqa: BLE001
-            continue
-        if when > now:
-            continue                 # まだ公開されていない
-        if all(ledger.data['deliveries'].get(day + ':' + kind + ':' + s)
-               for s in services):
-            continue                 # もう全部投げた
-        run = latest_run(wf, day)
-        if run:
-            out.append((kind, run['id']))
+        for day in eligible_editions(now, kind, late_edition):
+            rec = (records.get(key) or {}).get(day)
+            if not rec or not rec.get('video_id'):
+                continue
+            try:
+                when = instant(rec.get('publish_at') or rec['published_at'])
+            except Exception:                            # noqa: BLE001
+                continue
+            if when > now:
+                continue             # まだ公開されていない
+            if all(ledger.data['deliveries'].get(day + ':' + kind + ':' + s)
+                   for s in services):
+                continue             # sent/処理中とも二重投入しない
+            if wf not in runs:
+                runs[wf] = day_runs(wf)
+            run = run_for_record(runs[wf] or [], day, rec, kind)
+            if run:
+                out.append((kind, run['id']))
+            else:
+                print('[warn] %s %s は公開済み・未送信だが、元の実行が見つかりません'
+                      % (day, kind), file=sys.stderr)
     return out
+
+
+class VideoNotPublic(ValueError):
+    """所有チャンネルの非公開・予約中動画。SNS配信は見送る。"""
+
+    def __init__(self, reason):
+        # asset_sns等の既存の呼び手にも従来の例外を渡す。
+        super().__init__('YouTube video is not public')
+        self.reason = reason
 
 
 def verify_youtube(record):
@@ -246,10 +367,16 @@ def verify_youtube(record):
             items = json.load(response).get('items', [])
     except Exception:
         raise RuntimeError('Unable to verify YouTube publication') from None
-    if not items or items[0]['status'].get('privacyStatus') != 'public':
-        raise ValueError('YouTube video is not public')
+    if not items:
+        raise ValueError('YouTube video could not be found')
     if items[0]['snippet']['channelId'] != 'UCpZ_j8X8uOex5VvKwwTJj3Q':
         raise ValueError('YouTube video belongs to a different channel')
+    status = items[0]['status']
+    privacy = status.get('privacyStatus')
+    if privacy in ('private', 'unlisted'):
+        raise VideoNotPublic('予約中' if status.get('publishAt') else '非公開（' + privacy + '）')
+    if privacy != 'public':
+        raise ValueError('Unknown YouTube privacy status')
     return items[0]['snippet']
 
 
@@ -313,15 +440,22 @@ def host_video(run, day, path, digest, kind=DEFAULT_KIND):
     except urllib.error.HTTPError as exc:
         if exc.code != 404:
             raise
-        release = github('/releases', 'POST', {
-            # This release hosts media, not source code. Older source commits
-            # can require workflows:write to tag when workflows changed since.
-            # Use the maintained branch, keeping media provenance below and in
-            # the delivery ledger; never broaden the publishing token's scope.
-            'tag_name': tag, 'target_commitish': 'main',
-            'name': day + ' ' + words(kind)['long'] + '・配信用動画',
-            'body': 'コレスポの自動生成動画。YouTubeでの公開を確認後、SNS配信に利用します。\n元の実行: ' + run['html_url'] + '\n動画生成元SHA: ' + run['head_sha'] + '\n動画SHA256: ' + digest,
-            'make_latest': 'false'})
+        try:
+            release = github('/releases', 'POST', {
+                # This release hosts media, not source code. Older source commits
+                # can require workflows:write to tag when workflows changed since.
+                # Use the maintained branch, keeping media provenance below and in
+                # the delivery ledger; never broaden the publishing token's scope.
+                'tag_name': tag, 'target_commitish': 'main',
+                'name': day + ' ' + words(kind)['long'] + '・配信用動画',
+                'body': 'コレスポの自動生成動画。YouTubeでの公開を確認後、SNS配信に利用します。\n元の実行: ' + run['html_url'] + '\n動画生成元SHA: ' + run['head_sha'] + '\n動画SHA256: ' + digest,
+                'make_latest': 'false'})
+        except urllib.error.HTTPError as exc:
+            # A 500 may have hidden a release that GitHub did create. The
+            # retry then reports 422 already_exists; use the existing one.
+            if exc.code != 422:
+                raise
+            release = github('/releases/tags/' + tag)
     name = 'collespo-' + kind + '-' + day + '.mp4'
     asset = next((a for a in release['assets'] if a['name'] == name), None)
     if asset:
@@ -357,7 +491,7 @@ KIND_WORDS = {
     'daily': {'short': '明日のMLB', 'long': '明日の注目試合',
               'lead': '先発と見どころを、試合の前に確かめられます',
               'cut': '｜明日の注目試合', 'sport': 'mlb'},
-    'morning': {'short': 'きょうの日本人選手', 'long': '日本人選手の成績',
+    'morning': {'short': '今日の日本人選手', 'long': '日本人選手の成績',
                 'lead': '誰がどれだけ動いたかが、成績の順に並びます',
                 'cut': '｜', 'sport': 'mlb'},
     'morning_press': {'short': '現地の報道', 'long': '現地の報道',
@@ -379,8 +513,31 @@ KIND_WORDS = {
 }
 
 
-def words(kind: str) -> dict:
-    return KIND_WORDS.get(kind) or KIND_WORDS[DEFAULT_KIND]
+def words(kind: str, record=None) -> dict:
+    result = dict(KIND_WORDS.get(kind) or KIND_WORDS[DEFAULT_KIND])
+    if kind == 'morning_postseason':
+        from race_words import ps_label
+        # Use the verified video's edition, not today's possibly newer JSON.
+        # The generator includes ps_label in the published title.
+        title = (record or {}).get('title', '')
+        if '組み合わせ確定' in title or '出場12球団決定' in title:
+            result.update(short='PS対戦表・日程', long='ポストシーズンの組み合わせと開幕日程',
+                          lead='どの球団と戦うか、初戦は日本時間の何時かをまとめました')
+            if '確認中' in title:
+                result['lead'] = '出場球団が決まりました。組み合わせと時刻は公式日程で確認中です'
+            return result
+        if '進出' in title and '確定状況' in title:
+            result.update(short='PS進出状況', long='地区優勝・PS進出の確定状況',
+                          lead='現在の順位と確定状況を確認します')
+            return result
+        if ps_label({}) in title:
+            return result
+        result.update(short=ps_label({'phase': 'postseason'}),
+                      long=ps_label({'phase': 'postseason'}),
+                      lead='各シリーズの勝敗と、勝ち上がりの状況を確認します')
+        if 'ポストシーズン' not in title:
+            result['lead'] = '公開動画で最新の状況を確認できます'
+    return result
 
 
 def first_game_reason(description):
@@ -404,6 +561,40 @@ def first_game_reason(description):
     return ''
 
 
+def headline_game_reason(title, description):
+    """Only reuse a reason from a game that explicitly matches the headline.
+
+    The highlighted game is not necessarily game 1. Match registered subjects
+    in the published text, without inferring rosters or inventing context.
+    """
+    subjects = [aliases for _, aliases in ht.entities()
+                if any(ht.present(alias, title) for alias in aliases)]
+    if not subjects:
+        return ''
+    blocks = re.split(r'(?m)^(?=\d+\.\s+\d{2}/\d{2}\s+\d{2}:\d{2}\s+)', description or '')
+    matches = []
+    for block in blocks:
+        lines = block.splitlines()
+        if not lines or not re.match(r'^\d+\.\s+\d{2}/\d{2}\s+\d{2}:\d{2}\s+', lines[0]):
+            continue
+        game = [lines[0]]
+        for line in lines[1:]:
+            if not line.strip().startswith('・'):
+                break
+            game.append(line.strip())
+        text = '\n'.join(game)
+        score = sum(any(ht.present(alias, text) for alias in aliases) for aliases in subjects)
+        if score:
+            reason = first_game_reason(re.sub(r'^\d+\.', '1.', text))
+            if reason:
+                matches.append((score, reason))
+    if not matches:
+        return ''
+    best = max(score for score, _ in matches)
+    reasons = {reason for score, reason in matches if score == best}
+    return next(iter(reasons)) if len(reasons) == 1 else ''
+
+
 def friendly_lead(title):
     # Only add grammar around facts already stated, preserving uncertainty.
     match = re.fullmatch(r'(.+?)\s+先発予定', title)
@@ -416,10 +607,20 @@ def friendly_lead(title):
 
 
 def caption(service, day, record, kind=DEFAULT_KIND):
-    w = words(kind)
-    title = ht.strip_tags(record['title'].split(w['cut'])[0].replace('【MLB】', '').strip())
+    w = words(kind, record)
+    import video_titles
+    source_title = record['title'] if w['sport'] == 'soccer' else video_titles.team_city_text(record['title'])
+    title = ht.strip_tags(source_title.split(w['cut'])[0].replace('【MLB】', '').strip())
+    if kind == DEFAULT_KIND:
+        title = re.split(r'｜\d{1,2}/\d{1,2}の注目試合', title)[0].strip()
     lead = friendly_lead(title) if kind == DEFAULT_KIND else title
-    reason = first_game_reason(record.get('description', '')) if kind == DEFAULT_KIND else ''
+    reason = headline_game_reason(title, record.get('description', '')) if kind == DEFAULT_KIND else ''
+    if record.get('program_version'):
+        lead = record['social_summary']
+        reason = ''
+        w = dict(w, short='PS試合予告' if kind == DEFAULT_KIND else 'PSカード・情勢',
+                 long='PS試合予告' if kind == DEFAULT_KIND else 'PSカード・情勢',
+                 lead='日本時間の日程とシリーズの状況を動画で紹介します')
     details = [lead] + ([reason] if reason and reason != lead else [])
     youtube = 'https://www.youtube.com/watch?v=' + record['video_id']
     stamp = day[5:].replace('-', '/')
@@ -438,9 +639,17 @@ def caption(service, day, record, kind=DEFAULT_KIND):
         raise ValueError('X caption exceeds 280 weighted characters')
     summary = '\n'.join(details)
     tags = ht.select(summary, service, sport=w['sport'])
+    import ui_voice_queue
+    voice = 'VOICEVOX:ずんだもん / VOICEVOX:四国めたん'
+    if any(line.strip().removeprefix('音声: ') == ui_voice_queue.UI_CREDIT
+           for line in record.get('description', '').splitlines()):
+        voice = ui_voice_queue.UI_CREDIT
+    import offseason_public
+    if offseason_public.social_kind(kind):
+        voice = offseason_public.description_voice(record.get('description', ''))
     return (f'{stamp}更新｜{w["long"]}\n{summary}\n\n' + w['lead'] + '。\n'
             '動画・記事はこちら：collespo.com\nYouTube：' + youtube +
-            '\n\n音声：VOICEVOX:ずんだもん\n' + ht.display(tags))
+            '\n\n音声：' + voice + '\n' + ht.display(tags))
 
 
 def x_weight(text):
@@ -456,18 +665,41 @@ def selected_services(value):
     return services
 
 
+class RecentPostsUnavailable(RuntimeError):
+    """照合を取得できない。投稿失敗や空の一覧とは区別する。"""
+
+
 def recent_posts(channel):
     posts, cursor = [], None
     for _ in range(5):
         after = ', after: ' + json.dumps(cursor) if cursor else ''
-        result = graphql('{ posts(first: 100' + after + ', input: { organizationId: ' +
+        query = ('{ posts(first: 100' + after + ', input: { organizationId: ' +
             json.dumps(ORG) + ', filter: {channelIds:[' + json.dumps(channel) +
-            ']}, sort:[{field:createdAt,direction:desc}]}) { edges {node {id text status externalLink}} pageInfo {hasNextPage endCursor} } }')['posts']
+            ']}, sort:[{field:createdAt,direction:desc}]}) { edges {node {id text status externalLink}} pageInfo {hasNextPage endCursor} } }')
+        for attempt in range(2):
+            try:
+                result = graphql(query)['posts']
+                # 欠けた応答も、空の一覧として扱わず再照合する。
+                nodes = [edge['node'] for edge in result['edges']]
+                for node in nodes:
+                    for field in ('id', 'text', 'status'):
+                        node[field]
+                page = result['pageInfo']
+                page['hasNextPage']; page['endCursor']
+                break
+            except Exception:
+                # 例外本文・応答・URLには秘密が含まれうるので出さない。
+                if attempt:
+                    print('::warning::Bufferの投稿照合を2回取得できませんでした。記録を保持し、次回照合へ引き継ぎます')
+                    raise RecentPostsUnavailable('Buffer recent_posts unavailable') from None
+                print('::warning::Bufferの投稿照合を再試行します（1回）')
+                time.sleep(1)
         posts.extend(e['node'] for e in result['edges'])
         if not result['pageInfo']['hasNextPage']:
             return posts
         cursor = result['pageInfo']['endCursor']
-    raise RuntimeError('Too many posts to reconcile safely')
+    print('::warning::Bufferの投稿一覧が照合上限を超えました。記録を保持します')
+    raise RecentPostsUnavailable('Buffer recent_posts pagination limit')
 
 
 def create_payload(service, text, media_url):
@@ -482,30 +714,78 @@ def create_payload(service, text, media_url):
     return payload
 
 
+def matched_post(posts, entry):
+    """失敗IDより一意の実投稿を優先する。本文・媒体は変えず再投稿もしない。"""
+    import unicodedata
+    def normalized(text):
+        return ' '.join(unicodedata.normalize('NFKC', text or '').split())
+    text = normalized(entry.get('text'))
+    same = [p for p in posts if text and normalized(p.get('text')) == text]
+    sent = {p['id']: p for p in same if p.get('status') == 'sent' and p.get('externalLink')}
+    if not sent:
+        # Xが受けた投稿をBufferが写し直すと、リンクはt.coに変わり画像分が増える（10/29の実例）。
+        def linkless(value):
+            return re.sub(r'\s+', '', re.sub(r'https?://\S+', '', unicodedata.normalize('NFKC', value or '')))
+        wanted = linkless(entry.get('text'))
+        sent = {p['id']: p for p in posts
+                if wanted and p.get('status') == 'sent' and p.get('externalLink')
+                and 'https://t.co/' in (p.get('text') or '') and linkless(p.get('text')) == wanted}
+    if len(sent) > 1:
+        raise RuntimeError('Buffer本文が一致する実投稿が複数あります。再送せず確認してください')
+    if sent:
+        return next(iter(sent.values()))
+    exact = [p for p in posts if p['id'] == entry.get('post_id')]
+    if exact:
+        return exact[0]
+    same = {p['id']: p for p in same}
+    if len(same) > 1:
+        raise RuntimeError('Buffer本文が一致する候補が複数あります。再送せず確認してください')
+    return next(iter(same.values()), None)
+
+
+def delivery_update(entry, post):
+    result = dict(entry, state=post['status'], post_id=post['id'],
+                  external_link=post.get('externalLink'), checked_at=datetime.now(timezone.utc).isoformat())
+    if entry.get('post_id') and entry['post_id'] != post['id']:
+        result['previous_post_ids'] = sorted(set(entry.get('previous_post_ids', [])) | {entry['post_id']})
+        result['confirmation'] = 'unique_sent_post_with_same_text'
+    return result
+
+
 def reconcile():
     """Refresh saved deliveries without creating media or posts, even after midnight."""
     ledger = Ledger()
     pending_services = {key.rsplit(':', 1)[-1] for key, entry in ledger.data['deliveries'].items()
                         if entry.get('state') != 'sent'}
-    posts_by_channel = {service: recent_posts(channel) for service, channel in CHANNELS.items()
-                       if service in pending_services}
+    posts_by_channel = {}
+    for service, channel in CHANNELS.items():
+        if service not in pending_services:
+            continue
+        try:
+            posts_by_channel[service] = recent_posts(channel)
+        except RecentPostsUnavailable:
+            continue
     if not posts_by_channel:
-        print('No pending deliveries; no Buffer request needed')
+        if not pending_services:
+            print('No pending deliveries; no Buffer request needed')
         return
     unresolved, settling = [], []
     for key, entry in list(ledger.data['deliveries'].items()):
         service = key.rsplit(':', 1)[-1]
         if entry.get('state') == 'sent' or service not in posts_by_channel:
             continue
-        post = next((p for p in posts_by_channel[service]
-                     if p['id'] == entry.get('post_id') or p['text'] == entry.get('text')), None)
+        post = matched_post(posts_by_channel[service], entry)
         if post:
-            ledger.set(key, {**entry, 'state': post['status'], 'post_id': post['id'],
-                            'external_link': post.get('externalLink'),
-                            'checked_at': datetime.now(timezone.utc).isoformat()})
+            ledger.set(key, delivery_update(entry, post))
         row = ledger.data['deliveries'][key]
         print(key, row.get('state'), row.get('external_link'))
-        if row.get('state') == 'sent':
+        if row.get('state') in ('sent', 'gave_up'):
+            continue
+        # Buffer が error と返して2日たったものは、もう出ない。毎回の実行を赤くし続けると、
+        # 新しい失敗が見えなくなる（10/7 の Instagram 1件で 10/8〜10/10 の実行がすべて赤だった）。
+        if row.get('state') == 'error' and key[:10] < (datetime.now(JST) - timedelta(days=2)).date().isoformat():
+            ledger.set(key, {**row, 'state': 'gave_up', 'checked_at': datetime.now(timezone.utc).isoformat()})
+            print('::warning::Buffer が失敗のまま2日たったので打ち切ります: ' + key)
             continue
         (settling if still_settling(row) else unresolved).append(key)
     if settling:
@@ -517,11 +797,9 @@ def reconcile():
 def submit_once(ledger, key, payload, metadata, retry_rejected=False):
     old = ledger.data['deliveries'].get(key)
     posts = recent_posts(payload['channelId'])
-    matches = [p for p in posts if (old and p['id'] == old.get('post_id')) or p['text'] == payload['text']]
-    if matches:
-        post = matches[0]
-        ledger.set(key, {**metadata, 'state': post['status'], 'post_id': post['id'],
-                         'external_link': post.get('externalLink')})
+    post = matched_post(posts, dict(old or {}, text=payload['text']))
+    if post:
+        ledger.set(key, delivery_update({**(old or {}), **metadata, 'text': payload['text']}, post))
         return post
     if old and not (old['state'] == 'rejected' and retry_rejected):
         raise RuntimeError('Existing reservation requires inspection; will not resend: ' + key)
@@ -540,6 +818,33 @@ def submit_once(ledger, key, payload, metadata, retry_rejected=False):
     return post
 
 
+def refresh_deliveries(ledger, day, kind, services):
+    """照合不能の媒体を保留し、他媒体の確認と保存は続ける。"""
+    unavailable = set()
+    for _ in range(12):
+        pending = False
+        for service in services:
+            key = day + ':' + kind + ':' + service
+            entry = ledger.data['deliveries'].get(key, {})
+            if not entry.get('post_id') or entry.get('state') == 'sent' or service in unavailable:
+                continue
+            try:
+                posts = recent_posts(CHANNELS[service])
+            except RecentPostsUnavailable:
+                unavailable.add(service)
+                continue
+            post = matched_post(posts, entry)
+            if post:
+                if entry.get('state') != post['status'] or entry.get('external_link') != post.get('externalLink'):
+                    ledger.set(key, delivery_update(entry, post))
+                print(service, post['status'], post.get('externalLink'))
+                pending |= post['status'] not in ('sent', 'error')
+        if not pending:
+            break
+        time.sleep(30)
+    return unavailable
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--source-run', type=int)
@@ -552,10 +857,12 @@ def main():
                         help='いま投げられる枠と実行IDを1行ずつ出す')
     parser.add_argument('--publish', action='store_true')
     parser.add_argument('--retry-rejected', action='store_true')
+    parser.add_argument('--late-edition', action='store_true',
+                        help='遅延した夕方枠だけ03:00 JSTまで前日版を補完（daily対象外）')
     args = parser.parse_args()
     if args.list_due:
         # 投げられる枠を1行ずつ。ワークフローがこれを読んで回す。
-        rows = due(selected_services(os.environ.get('BUFFER_CHANNELS')))
+        rows = due(selected_services(os.environ.get('BUFFER_CHANNELS')), args.late_edition)
         for kind, run_id in rows:
             print('%s\t%s' % (kind, run_id))
         if not rows:
@@ -569,10 +876,25 @@ def main():
     services = selected_services(os.environ.get('BUFFER_CHANNELS'))
     run = github('/actions/runs/' + str(args.source_run))
     records = json.loads(Path('data/published_videos.json').read_text(encoding='utf-8'))
-    day, record = select_record(run, records, datetime.now(timezone.utc),
-                                args.kind)
+    try:
+        day, record = select_record(run, records, datetime.now(timezone.utc), args.kind,
+                                    args.late_edition)
+    except MissingVideoRecord:
+        reason=verified_ps_skip(run,args.kind)
+        if not reason:raise
+        print('[info] Source PS program explicitly skipped; no SNS post: '+reason)
+        return
     _key, _artifact, _file, _wf = source_of(args.kind)
-    snippet = verify_youtube(record)
+    try:
+        snippet = verify_youtube(record)
+    except VideoNotPublic as exc:
+        message = f'{day} / {args.kind} / {record["video_id"]}: 飛ばした（{exc.reason}）'
+        print('[skip] ' + message)
+        summary = os.environ.get('GITHUB_STEP_SUMMARY')
+        if summary:
+            with open(summary, 'a', encoding='utf-8') as report:
+                report.write('\n- ' + message + '\n')
+        return
     record = {**record, 'title': snippet['title'], 'description': snippet.get('description', '')}
     available = graphql('{channels(input:{organizationId:' + json.dumps(ORG) + '}){id name service}}')['channels']
     for service in services:
@@ -599,6 +921,7 @@ def main():
     ledger = Ledger()
     url = host_video(run, day, video, digest, args.kind)
     failed = False
+    unavailable = set()
     for service in services:
         key = day + ':' + args.kind + ':' + service
         try:
@@ -606,34 +929,38 @@ def main():
                 {'source_run': args.source_run, 'youtube_id': record['video_id'], 'sha256': digest,
                  'media_url': url, 'checked_at': datetime.now(timezone.utc).isoformat()}, args.retry_rejected)
             print(service, json.dumps(post, ensure_ascii=False))
+        except RecentPostsUnavailable:
+            unavailable.add(service)
+            print('::warning::' + service + ': 照合不能のため新規送信を保留します（二重投稿防止）')
         except Exception as exc:
             print(service, 'Delivery did not complete:', type(exc).__name__, str(exc)[:300])
             failed = True
+    # 夕方の枠は Bluesky にも出す（YouTube へのリンクの投稿。動画カードつき）。
+    # 10/8 本人「各チャネル、出せる数は出せる限り出したい」。19:00 の日次は daily_notify が出しているので除く。
+    # 同じ投稿を二度作らない仕組み（asset_sns.bsky_once）をそのまま使う。
+    if args.kind != 'daily' and os.environ.get('BLUESKY_APP_PASSWORD'):
+        try:
+            import asset_sns
+            words = KIND_WORDS.get(args.kind, {})
+            bpost = asset_sns.bsky_record(caption('twitter', day, record, args.kind), record['title'],
+                                          record['video_id'], datetime.now(timezone.utc),
+                                          description='コレスポの' + (words.get('long') or 'ショート') + 'です。')
+            receipt = asset_sns.bsky_once(ledger, day + ':' + args.kind + ':bluesky', bpost,
+                                          {'source_run': args.source_run, 'youtube_id': record['video_id']})
+            print('bluesky', json.dumps(receipt, ensure_ascii=False))
+        except Exception as exc:                         # noqa: BLE001
+            # Bluesky が落ちても、ほかの媒体の結果は変えない
+            print('bluesky', 'Delivery did not complete:', type(exc).__name__, str(exc)[:300])
     # Give platforms time to process the uploaded video. This is a runner, not an interactive wait.
-    for _ in range(12):
-        pending = False
-        for service in services:
-            channel = CHANNELS[service]
-            key = day + ':' + args.kind + ':' + service
-            entry = ledger.data['deliveries'].get(key, {})
-            if not entry.get('post_id'):
-                continue
-            post = next((p for p in recent_posts(channel) if p['id'] == entry['post_id']), None)
-            if post:
-                if entry.get('state') != post['status'] or entry.get('external_link') != post.get('externalLink'):
-                    ledger.set(key, {**entry, 'state': post['status'], 'external_link': post.get('externalLink'),
-                                     'checked_at': datetime.now(timezone.utc).isoformat()})
-                print(service, post['status'], post.get('externalLink'))
-                pending |= post['status'] not in ('sent', 'error')
-        if not pending:
-            break
-        time.sleep(30)
+    unavailable.update(refresh_deliveries(ledger, day, args.kind,
+                                         [s for s in services if s not in unavailable]))
     rows = {s: ledger.data['deliveries'].get(
         day + ':' + args.kind + ':' + s, {}) for s in services}
     statuses = {s: row.get('state') for s, row in rows.items()}
     pending = [s for s, row in rows.items() if row.get('state') != 'sent']
     waiting = [s for s in pending if still_settling(rows[s])]
-    stuck = [s for s in pending if s not in waiting]
+    stuck = [s for s in pending if s not in waiting and
+             (s not in unavailable or rows[s].get('state') in FAILED_STATES)]
     summary = os.environ.get('GITHUB_STEP_SUMMARY')
     if summary:
         with open(summary, 'a', encoding='utf-8') as report:
@@ -641,6 +968,8 @@ def main():
             for service in services:
                 row = rows.get(service, {})
                 report.write(f'- {service}: {row.get("state", "未投入")} {row.get("external_link") or ""}\n')
+            if unavailable:
+                report.write('\n' + '・'.join(sorted(unavailable)) + ' は照合の取得に失敗しました。保存済みの状態を保持し、次回へ引き継ぎます。\n')
             if waiting:
                 report.write('\n' + '・'.join(waiting) + ' はBufferがまだ処理中です。'
                              '**失敗ではありません。**19:47と23:47の照合で確定します。\n')

@@ -1,0 +1,47 @@
+{
+  "publication_id": "mlb:daily:2026-10-04",
+  "domain": "mlb",
+  "kind": "daily",
+  "key_parts": {
+    "legacy_key": "2026-10-04"
+  },
+  "version": 1,
+  "history": [
+    {
+      "source": "published_videos/daily/2026-10-04",
+      "service": "youtube",
+      "video_id": "Cok9uSrfYAc",
+      "state": "scheduled",
+      "scheduled_at": "2026-10-04T10:00:00Z",
+      "event_day": null,
+      "material_day": null,
+      "edition_day": "2026-10-04",
+      "run_at": "2026-10-04T09:56:27.323492+00:00",
+      "details": {},
+      "run_id": "40508411617",
+      "attempt": "1",
+      "recorded_at": "2026-10-27T13:01:39.390946+00:00",
+      "fingerprint": "1070681841a29182ea7f6a6b36431a0098c0bd6c81a4fc59959e1e2bd9647603",
+      "event_id": "539f910e6f6a43c964d1866d93ce913eab17337d26934b9d6c0e289c9ab4b6ff"
+    },
+    {
+      "source": "bluesky_delivery/editions/daily:2026-10-04",
+      "service": "bluesky",
+      "video_id": "Cok9uSrfYAc",
+      "state": "distributed",
+      "scheduled_at": null,
+      "event_day": null,
+      "material_day": null,
+      "edition_day": null,
+      "run_at": null,
+      "details": {
+        "uri": "at://did:plc:hznbjnd6yyljefazjw3alyiq/app.bsky.feed.post/3mx25g2et7n2u"
+      },
+      "run_id": "40669557590",
+      "attempt": "1",
+      "recorded_at": "2026-10-28T10:07:40.448566+00:00",
+      "fingerprint": "1da5e413b40ff751e6c1d33b789d06f467fe240ba08d09ade51adefa52cc94b3",
+      "event_id": "6bc562f11699072a5ed0b57ed72d8c2caba9cd6cb4db0d14d8a488bc3465bb74"
+    }
+  ]
+}

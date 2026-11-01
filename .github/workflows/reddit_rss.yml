@@ -1,0 +1,47 @@
+name: Redditの公開RSS（既定オフ・制作のみ）
+on:
+  schedule:
+    - cron: '17 * * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: reddit-rss-collector
+  cancel-in-progress: false
+jobs:
+  collect:
+    if: vars.COLLESPO_REDDIT == 'on'
+    runs-on: ubuntu-latest
+    env:
+      COLLESPO_REDDIT: ${{ vars.COLLESPO_REDDIT || '' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install -r scripts/requirements.txt
+      - name: Fetch limited public RSS near a saved game
+        run: python scripts/reddit_rss.py --out data/reddit_voices.json --state data/reddit_rss_state.json
+      - name: Record limits even after an unavailable RSS
+        if: always()
+        run: |
+          bash scripts/commit_data.sh "reddit rss: ${{ github.run_id }}" data/reddit_voices.json data/reddit_rss_state.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: reddit-rss-anonymous
+          path: |
+            data/reddit_voices.json
+            data/reddit_rss_state.json
+          retention-days: 7
+
+      - name: Keep unsaved data records
+        if: always() && hashFiles('build/data-save-recovery/**/FAILED') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: unsaved-data-${{ github.job }}-${{ github.run_attempt }}
+          path: |
+            build/data-save-recovery/
+            !build/**/portrait/**
+          retention-days: 14
+          if-no-files-found: error

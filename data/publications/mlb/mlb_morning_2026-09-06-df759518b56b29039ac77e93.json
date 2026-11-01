@@ -1,0 +1,28 @@
+{
+  "publication_id": "mlb:morning:2026-09-06",
+  "domain": "mlb",
+  "kind": "morning",
+  "key_parts": {
+    "legacy_key": "2026-09-06"
+  },
+  "version": 1,
+  "history": [
+    {
+      "source": "published_videos/morning/2026-09-06",
+      "service": "youtube",
+      "video_id": "flNuOdwVT3Y",
+      "state": "scheduled",
+      "scheduled_at": "2026-09-06T08:00:00Z",
+      "event_day": null,
+      "material_day": null,
+      "edition_day": "2026-09-06",
+      "run_at": "2026-09-06T06:04:18.798805+00:00",
+      "details": {},
+      "run_id": "40508411617",
+      "attempt": "1",
+      "recorded_at": "2026-10-27T13:01:39.425083+00:00",
+      "fingerprint": "d204f6fa88ee29a2316395508165cb753e5306f8d1ade2d2da26277ecb63bb0d",
+      "event_id": "a8ea5c20b8c7023a00432d5cf53c72f0f581c13b43d1b4f604d7218a22da1a7d"
+    }
+  ]
+}

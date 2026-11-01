@@ -23,7 +23,7 @@
   数字が入っていないことと0であることは違うので、そのまま持ち回す。
 
 2026年のポストシーズン:
-  各リーグ12球団中6球団。地区優勝3つ＋ワイルドカード3つ。
+  各リーグ15球団中6球団。地区優勝3つ＋ワイルドカード3つ。
   上位2つの地区優勝はワイルドカードシリーズを免除（bye）。
   3位の地区優勝 vs 第6シード、第4 vs 第5 がワイルドカードシリーズ。
 
@@ -35,6 +35,7 @@
 
 import argparse
 import json
+from japanese_team_names import team_names
 import pathlib
 import sys
 import urllib.request
@@ -115,7 +116,12 @@ def fetch(season: str) -> list:
                 "wc_gb": _num(t.get("wildCardGamesBack")),
                 "wc_elim": _num(t.get("wildCardEliminationNumber")),
                 "clinched": bool(t.get("clinched")),
-                "div_champ": bool(t.get("divisionChamp")),
+                # **公式の divisionChamp だけでは信じない。**2026年は地区2位・
+                # 6ゲーム差のフィリーズ（ワイルドカード、clinchIndicator "w"）に
+                # True が付いていた（Opusの作業28で発見）。地区順位が分かっていて
+                # 1位でないときは付けない（順位が無いときは公式の印のまま）。
+                "div_champ": bool(t.get("divisionChamp"))
+                              and _num(t.get("divisionRank")) in (None, 1),
                 "wc_clinched": bool(t.get("wildCardClinched")),
                 "run_diff": t.get("runDifferential"),
                 "streak": (t.get("streak") or {}).get("streakCode"),
@@ -180,8 +186,28 @@ def race(teams: list) -> dict:
     return out
 
 
+def active_keys(team_id) -> set | None:
+    """その球団のいまのベンチ入り（active roster）の名前。取れなければ None。
+
+    10/4、本人「西田はPSのロースターに入っていないなら、言及も消しましょう。
+    メンバー入りしたらまた言う」。roster_snapshot は所属（40人枠を含む）で、
+    ベンチ入りかどうかは分からない。予告で「村上・西田のホワイトソックス」と
+    言っていた。
+    """
+    try:
+        import mlb_availability
+        import textkey
+        _, got = mlb_availability.roster(team_id)
+    except Exception:                                # noqa: BLE001
+        return None
+    if got.get("unavailable"):
+        return None
+    return {textkey.key(r.get("name") or "") for r in got.get("players") or []}
+
+
 def japanese(data: dict, teams: list = None,
-             roster_path: str = "data/roster_snapshot.json") -> list:
+             roster_path: str = "data/roster_snapshot.json",
+             active=active_keys) -> list:
     """日本人選手のいる球団が、いまどこにいるか。
 
     なぜこの1枚を足すのか:
@@ -211,7 +237,18 @@ def japanese(data: dict, teams: list = None,
         r = by_name.get(textkey.key(p.get("name_en") or ""))
         if not r or not r.get("team_id"):
             continue
-        where.setdefault(str(r["team_id"]), []).append(p.get("name_jp"))
+        where.setdefault(str(r["team_id"]), []).append(
+            (p.get("name_jp"), textkey.key(p.get("name_en") or "")))
+    # **ベンチ入りしている選手だけ。**取れなかった球団は所属のまま
+    # （APIの一時的な失敗で日本人選手が全員消えるのを避ける）。
+    for tid, rows in list(where.items()):
+        keys = active(tid) if active else None
+        if keys is not None:
+            rows = [x for x in rows if x[1] in keys]
+        if rows:
+            where[tid] = [x[0] for x in rows]
+        else:
+            del where[tid]
 
     # 球団ID -> いまの立ち位置
     seat = {}
@@ -341,27 +378,31 @@ def diff(now: dict, before: dict) -> list:
     return out
 
 
-def headline(data: dict) -> str:
+def headline(data: dict, changes=None) -> str:
     """その日いちばん短い一言。動画の1枚目に出す。
 
     優先順:
-      1. 今日決まった球団があれば、それ
+      1. 前日との比較で新たに進出確定した球団があれば、それ
       2. マジックが1桁の球団があれば、いちばん小さいもの
       3. ワイルドカード最終枠の差
     """
+    # clinched is a persistent state, not the date of clinching. Never pick
+    # its first entry as today's news (9/27 repeated the Rays' older clinch).
+    clinched = {t.get("name") for r in data.values()
+                for t in r.get("clinched", [])}
+    for change in changes or []:
+        name = change.get("name")
+        if change.get("kind") == "clinch" and name and name in clinched:
+            return f"{name} 進出決定"
     best = None
     for r in data.values():
-        for t in r["leaders"]:
+        for t in r.get("leaders", []):
             m = t.get("magic")
-            if isinstance(m, int) and (best is None or m < best[0]):
+            if (type(m) is int and m > 0 and not t.get("div_champ")
+                    and (best is None or m < best[0])):
                 best = (m, t)
-    done = [t for r in data.values() for t in r["clinched"]]
-    if done:
-        return f"{done[0]['name']} 進出決定"
-    if best and best[0] <= 15:
-        return f"{best[1]['name']} マジック{best[0]}"
     if best:
-        return f"{best[1]['name']} マジック{best[0]}"
+        return f"{best[1]['name']} 地区優勝マジック{best[0]}"
     return "ポストシーズン進出争い"
 
 
@@ -408,17 +449,70 @@ def main() -> int:
             before = {}
 
     changes = diff({"leagues": {str(k): v for k, v in data.items()}}, before)
+    jp_rows = japanese(data, teams)
+    flat_teams = flat(data, teams)
+    # An older/missing snapshot cannot establish that an event happened today.
+    yesterday = (datetime.now(JST).date() - timedelta(days=1)).isoformat()
+    head = headline(data, changes if before.get("date") == yesterday else None)
+
+    # --- ポストシーズン -------------------------------------------------
+    # 始まったら、話の中心を順位表からシリーズへ移す。
+    # 前日比もシリーズで取る（順位表はもう動かない）。
+    phase, series, final_day = "regular", [], []
+    import ps_series
+    dates = ps_series.season_dates(season)
+    if ps_series.in_postseason(dates):
+        # **シーズンは終わっている。**シリーズが組めない日（相手が
+        # まだ仮の名前、日程が取れない）でも、もう「今日終わったら」とは
+        # 言わない。組み合わせは確定している。
+        phase = "settled"
+        end = min(dates["end"], (datetime.now(JST).date()
+                                 + timedelta(days=7)).isoformat())
+        try:
+            games = ps_series.fetch(season, dates["start"], end)
+        except Exception as e:                       # noqa: BLE001
+            print(f"[warn] ポストシーズンの日程を取れません({e})")
+            games = []
+        series = ps_series.build(
+            games, {k: v.get("name") for k, v in flat_teams.items()},
+            {x["team_id"]: x["players"] for x in jp_rows}, strict=False)
+        # PS専用公開検査は不整合で止める。共有材料はそのシリーズを除外し、
+        # 別の成績・報道などまで前日の材料へ巻き戻さない。
+        # **シリーズが1つも組まれていない日は、まだ順位表の日。**
+        # 開始日は米国の日付なので、日本の開始日の夕方に話すのは
+        # レギュラーシーズン最終日の結果（最後の枠が決まる日）になる。
+        if series:
+            phase = "postseason"
+            # PSの初日だけ、レギュラーシーズン最終日に決まったことを残す
+            # （最後の枠や地区優勝が決まる日。シリーズの前日比で上書きすると
+            # 消える）。
+            if not before.get("series"):
+                # 「アストロズ 地区優勝」→「アストロズが地区優勝」（読み上げ用）
+                final_day = [c["text"].replace(" ", "が", 1) for c in changes
+                             if c.get("text")][:3]
+            changes = ps_series.changes(series, before.get("series") or [])
+            head = ps_series.headline(series, changes) or head
+
+    import ps_offseason
     out = {
         "updated_at": datetime.now(timezone.utc).isoformat(),
         "date": today,
         "season": season,
-        "headline": headline(data),
+        "phase": phase,
+        "series": series,
+        "ws_finished_on": ps_offseason.finished_on(games if series else [], series),
+        "final_day": final_day,
+        "headline": head,
         "changes": changes,
         "prev_date": str(before.get("date") or ""),
-        "japanese": japanese(data, teams),
-        "teams": flat(data, teams),
+        "japanese": jp_rows,
+        "teams": flat_teams,
         "leagues": {str(k): v for k, v in data.items()},
     }
+    if ps_offseason.completed_before(out, datetime.now(JST)):
+        changes = []
+        out.update(changes=changes, final_day=[])
+        print('[info] WS決着後のため、当日のPS変化はありません')
     p.parent.mkdir(parents=True, exist_ok=True)
     p.write_text(json.dumps(out, ensure_ascii=False, indent=2),
                  encoding="utf-8")
@@ -432,7 +526,7 @@ def main() -> int:
         for x in jp[:6]:
             tag = f"第{x['seed']}シード" if x["seed"] else x["route"]
             print("    %-8s %-12s %s" % (tag, x["team"],
-                                         "・".join(x["players"])))
+                                         team_names(x["players"])))
     if changes:
         print("[info] 昨日からの変化 %d件" % len(changes))
         for c in changes[:6]:

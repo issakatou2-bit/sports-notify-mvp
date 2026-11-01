@@ -14,16 +14,7 @@ import tempfile
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import jp_absence  # noqa: E402
-
-fails = 0
-
-
-def check(label, got, want):
-    global fails
-    ok = got == want
-    fails += not ok
-    print("%s %s: %r%s" % ("ok " if ok else "NG ", label, got,
-                           "" if ok else "   (期待 %r)" % (want,)))
+from checks_report import check, done  # noqa: E402
 
 
 def build(folder, days):
@@ -69,6 +60,4 @@ with tempfile.TemporaryDirectory() as tmp:
 with tempfile.TemporaryDirectory() as tmp:
     check("記録が無くても落ちない",
           jp_absence.gaps("2026-09-08", tmp), {})
-
-print(chr(10) + ("ALL OK" if not fails else "%d FAILURES" % fails))
-sys.exit(1 if fails else 0)
+sys.exit(done())

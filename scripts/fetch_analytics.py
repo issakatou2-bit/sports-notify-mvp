@@ -51,6 +51,99 @@ JST = timezone(timedelta(hours=9))
 METRICS = ("views,estimatedMinutesWatched,averageViewDuration,"
            "averageViewPercentage,likes,subscribersGained")
 
+DAILY_METRICS = "views,estimatedMinutesWatched,subscribersGained,subscribersLost"
+
+
+def channel_daily(yta, start, end, fetched_at):
+    """1照会で期間を取り直す。計上遅れの欠測を翌日以降に埋める。
+
+    day は YouTube Analytics の Pacific Time。空の応答はゼロにしない。
+    """
+    try:
+        res = yta.reports().query(
+            ids="channel==MINE", startDate=start.isoformat(),
+            endDate=end.isoformat(), dimensions="day", metrics=DAILY_METRICS,
+            sort="day", maxResults=500).execute()
+    except Exception as exc:  # noqa: BLE001
+        print(f"[info] 日別集計を取れません({type(exc).__name__})")
+        _report("日別集計は未収録（既存の値は保持）。次回に期間を取り直します")
+        return {}
+    cols = [c["name"] for c in res.get("columnHeaders", [])]
+    out = {}
+    for row in res.get("rows", []):
+        rec = dict(zip(cols, row))
+        day = rec.pop("day", None)
+        if day and start.isoformat() <= day <= end.isoformat():
+            out[day] = {**rec, "fetched_at": fetched_at}
+    return out
+
+
+CONTENT_TYPES = ("shorts", "videoOnDemand", "liveStream", "unspecified")
+CONTENT_TYPE_KEYS = {"SHORTS": "shorts", "VIDEO_ON_DEMAND": "videoOnDemand",
+                     "LIVE_STREAM": "liveStream", "UNSPECIFIED": "unspecified"}
+
+
+def registration_daily(yta, start, end, fetched_at):
+    """日単位の照会。未収録・取得失敗はゼロにせず以前の値を保持する。"""
+    out = {}
+    day = start
+    while day <= end:
+        try:
+            res = yta.reports().query(
+                ids="channel==MINE", startDate=day.isoformat(),
+                endDate=day.isoformat(), dimensions="creatorContentType",
+                metrics="subscribersGained", maxResults=10).execute()
+            cols = [c["name"] for c in res.get("columnHeaders", [])]
+            values = {}
+            for row in res.get("rows", []):
+                rec = dict(zip(cols, row))
+                raw_kind = rec.get("creatorContentType")
+                kind = CONTENT_TYPE_KEYS.get(raw_kind, raw_kind)
+                if kind not in CONTENT_TYPES:
+                    raise ValueError("unknown creatorContentType")
+                values[kind] = rec["subscribersGained"]
+            if values:
+                out[day.isoformat()] = {
+                    "subscribersGainedByContentType": {k: values.get(k, 0) for k in CONTENT_TYPES},
+                    "registration_fetched_at": fetched_at}
+        except Exception as exc:  # noqa: BLE001
+            print(f"[info] {day} の登録内訳は未収録({type(exc).__name__})")
+        day += timedelta(days=1)
+    return out
+
+
+def engagement_daily(yta, start, end):
+    out = {}
+    for field, metrics, filters in (
+            (None, "likes", None),
+            ("subscribedViews", "views", "subscribedStatus==SUBSCRIBED")):
+        try:
+            kwargs = dict(ids="channel==MINE", startDate=start.isoformat(),
+                          endDate=end.isoformat(), dimensions="day", metrics=metrics,
+                          sort="day", maxResults=500)
+            if filters:
+                kwargs["filters"] = filters
+            res = yta.reports().query(**kwargs).execute()
+            cols = [c["name"] for c in res.get("columnHeaders", [])]
+            for row in res.get("rows", []):
+                rec = dict(zip(cols, row))
+                day = rec.get("day")
+                if day and start.isoformat() <= day <= end.isoformat():
+                    out.setdefault(day, {})[field or metrics] = rec[metrics]
+        except Exception as exc:  # noqa: BLE001
+            print(f"[info] {field or metrics} は未収録({type(exc).__name__})")
+    return out
+
+
+def merge_daily(store, rows):
+    """再取得した実値だけ更新。欠測で以前の観測値を消さない。"""
+    daily = store.setdefault("daily", {})
+    for day, rec in rows.items():
+        daily[day] = {**daily.get(day, {}),
+                      **{k: v for k, v in rec.items() if v is not None}}
+    store["daily"] = {d: daily[d] for d in sorted(daily)[-120:]}
+    store["daily_timezone"] = "America/Los_Angeles"
+
 
 def client(service: str, version: str):
     cid = os.environ.get("YOUTUBE_CLIENT_ID")
@@ -351,6 +444,20 @@ def _run() -> int:
 
     end = datetime.now(JST).date()
     start = end - timedelta(days=args.days)
+    fetched_at = datetime.now(timezone.utc).isoformat()
+    store = load(args.out)
+    # 既存の曲線12回等は増やさず、日別は1回だけ。短期指定でも28日を補完。
+    daily = channel_daily(yta, min(start, end - timedelta(days=28)), end, fetched_at)
+    merge_daily(store, daily)
+    extra = registration_daily(yta, min(start, end - timedelta(days=28)), end, fetched_at)
+    merge_daily(store, extra)
+    engagement = engagement_daily(yta, min(start, end - timedelta(days=28)), end)
+    merge_daily(store, engagement)
+    if daily or extra or engagement:
+        # 動画別APIが失敗しても、取得できた日別値は失わない。
+        p = pathlib.Path(args.out)
+        p.parent.mkdir(parents=True, exist_ok=True)
+        p.write_text(json.dumps(store, ensure_ascii=False, indent=2), encoding="utf-8")
     try:
         res = yta.reports().query(
             ids="channel==MINE",
@@ -421,9 +528,10 @@ def _run() -> int:
             if c:
                 curves[r["video"]] = c
 
-    store = load(args.out)
     today = end.isoformat()
     store.setdefault("days", {})[today] = {
+        "fetched_at": fetched_at,
+        "timezone": "America/Los_Angeles",
         "range": [start.isoformat(), end.isoformat()],
         "videos": [{**r, "title": titles.get(r.get("video"), ""),
                     **({"curve": curves[r["video"]]}

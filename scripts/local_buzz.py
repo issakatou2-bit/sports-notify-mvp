@@ -109,9 +109,21 @@ def fetch_titles(name: str, url: str, retries: int = 2) -> list:
             print(f"[warn] {name} の取得に失敗しました: {e}", file=sys.stderr)
             return []
     # Atom(Reddit)とRSS2.0(MLB/ESPN)の両方に対応する
-    titles = [e.text.strip() for e in root.iter()
-              if e.tag.endswith("title") and e.text and e.text.strip()]
-    return titles[1:]   # 先頭はフィード自体の名前
+    from article_freshness import fresh_articles
+    from local_reporters import article_publications
+    rows = []
+    for item in root.iter():
+        if item.tag.rsplit('}', 1)[-1] not in ('item', 'entry'):
+            continue
+        fields = {e.tag.rsplit('}', 1)[-1]: e for e in item}
+        def value(key):
+            return fields[key].text or '' if key in fields else ''
+        link = fields.get('link')
+        url = (link.get('href') or link.text or '') if link is not None else ''
+        row = dict(title=value('title').strip(), url=url, source=name,
+                   at=value('pubDate') or value('published'))
+        rows.append(row)
+    return [row['title'] for row in fresh_articles(article_publications(rows)) if row['title']]
 
 
 def count_mentions(text: str) -> tuple:
@@ -213,12 +225,13 @@ def summarize_teams(ranked: list, titles: list, api_key: str) -> list:
     )
     try:
         client = anthropic.Anthropic(api_key=api_key)
-        msg = client.messages.create(
-            model="claude-haiku-4-5-20251001",
-            max_tokens=800,
+        import backstage_guard
+        import llm_models
+        msg = backstage_guard.create(client, label='local_buzz.py', category='buzz', mode='lines',
+            **llm_models.params("translate", 800),
             messages=[{"role": "user", "content": prompt}],
         )
-        token_log.record("buzz", "claude-haiku-4-5-20251001", msg)
+        token_log.record("buzz", llm_models.model("translate"), msg)
         text = "".join(b.text for b in msg.content if b.type == "text")
     except Exception as e:  # noqa: BLE001
         print(f"[warn] 論調をまとめられませんでした: {e}", file=sys.stderr)
@@ -249,6 +262,8 @@ def build() -> dict:
     all_titles = []       # 選手の言及数を数える対象(球団別板も含む)
     sources = []
     for i, (name, url) in enumerate(FEEDS):
+        if os.environ.get('COLLESPO_REDDIT') in ('off','on') and 'reddit.com/' in url:
+            print('[info] Redditは停止中、または少量コメントRSSの取得へ一本化します'); continue
         if i:
             time.sleep(3)   # 続けて叩くと429になるので間を空ける
         titles = fetch_titles(name, url)

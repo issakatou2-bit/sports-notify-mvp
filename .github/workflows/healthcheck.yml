@@ -87,6 +87,9 @@ jobs:
 
       - name: Backfill lost records
         continue-on-error: true
+        # RSSが404の日に、アップロード一覧で取り直すための鍵（1回1ユニット）。
+        env:
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
         run: python scripts/backfill_records.py --write
 
       # 立場の違う5人が、昨日出したものを見て指摘する。
@@ -104,11 +107,31 @@ jobs:
         continue-on-error: true
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: python scripts/review_board.py
+          DAY: ${{ inputs.date }}
+        run: |
+          if [ -n "$DAY" ]; then
+            python scripts/review_board.py --date "$DAY"
+          else
+            python scripts/review_board.py
+          fi
+
+      - name: Read Buffer ledger for comparison
+        continue-on-error: true
+        uses: actions/checkout@v4
+        with:
+          ref: codex/buffer-state
+          path: build/ledger-buffer
+          persist-credentials: false
+          sparse-checkout: |
+            data/buffer_delivery.json
+            data/publications
+            data/publication_recovery
+          sparse-checkout-cone-mode: false
 
       - name: Check
         env:
           DAY: ${{ inputs.date }}
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
         run: |
           if [ -n "$DAY" ]; then
             python scripts/healthcheck.py --date "$DAY"
@@ -119,6 +142,16 @@ jobs:
       # 取った数字を残す。1日ぶんだけでは比べようがない。
       - name: Commit the numbers
         if: always()
-        continue-on-error: true
         run: |
           bash scripts/commit_data.sh             "analytics: ${{ github.run_id }}"             data/analytics.json data/published_videos.json data/early_views.json
+
+      - name: Keep unsaved data records
+        if: always() && hashFiles('build/data-save-recovery/**/FAILED') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: unsaved-data-${{ github.job }}-${{ github.run_attempt }}
+          path: |
+            build/data-save-recovery/
+            !build/**/portrait/**
+          retention-days: 14
+          if-no-files-found: error

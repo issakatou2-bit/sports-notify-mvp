@@ -1,0 +1,30 @@
+{
+  "publication_id": "mlb:morning_press:2026-10-28",
+  "domain": "mlb",
+  "kind": "morning_press",
+  "key_parts": {
+    "legacy_key": "2026-10-28"
+  },
+  "version": 1,
+  "history": [
+    {
+      "source": "published_videos/morning_press/2026-10-28",
+      "service": "youtube",
+      "video_id": "pcmCRJMf2Z0",
+      "state": "scheduled",
+      "scheduled_at": "2026-10-28T09:00:00Z",
+      "event_day": null,
+      "material_day": null,
+      "edition_day": "2026-10-28",
+      "run_at": "2026-10-28T07:30:47.462300+00:00",
+      "details": {
+        "privacy": "public"
+      },
+      "run_id": "40648635837",
+      "attempt": "1",
+      "recorded_at": "2026-10-28T07:30:47.487631+00:00",
+      "fingerprint": "a1f4cb7669c938026adb18bb699a032c4b7fcbd3c854562a7b3668abad165d65",
+      "event_id": "19fce2965fcb2fc3026c60c9a607f7dd726dfeb26ecf56da800bbfa015e86bc3"
+    }
+  ]
+}

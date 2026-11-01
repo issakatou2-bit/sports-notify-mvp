@@ -1,0 +1,916 @@
+"""Verified PS programs for the existing daily and morning_postseason slots.
+
+No paid model calls and no new periodic workflow. A failed v2 never publishes
+the old race program. Canonical uploader and ledger remain authoritative.
+"""
+import argparse
+from japanese_team_names import team_names
+import copy
+from datetime import datetime, timedelta, timezone
+import hashlib
+import inspect
+import json
+import os
+from pathlib import Path
+import subprocess
+import sys
+import ui_voice_queue
+
+from ps_render_template import render, background_team
+from ps_daily_titles import ROUND, forecast_title, situation
+import ps_editorial as pe
+import ps_series as series
+import ps_focus as focus
+import video_common as vc
+import ps_motion_template as motion
+from notability_engine import MLB_TEAM_COLOR, MLB_TEAM_ABBR
+from ps_brand_components import TEAM_SECONDARY_COLORS
+from generate_narration import display_name, speech_name
+
+JST = timezone(timedelta(hours=9))
+ROOT = Path(__file__).resolve().parent.parent
+VERSION = 'ps-program-20260928-v2'
+
+
+def read(path):
+    return json.loads(Path(path).read_text(encoding='utf-8'))
+
+
+def write(path, value):
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(value, ensure_ascii=False, indent=2), encoding='utf-8')
+
+
+def layout():
+    value = os.getenv('PS_PROGRAM_LAYOUT', 'v2')
+    if value not in ('v2', 'legacy', 'hold'):
+        raise ValueError('Unknown PS_PROGRAM_LAYOUT; hold instead of fallback')
+    return value
+
+
+def desired(snapshot):
+    ctx = snapshot.get('editorial', {})
+    rows = snapshot.get('teams', {})
+    rows = rows.values() if isinstance(rows, dict) else rows
+    qualified = sum(bool(x.get('clinched') or x.get('div_champ') or x.get('wc_clinched')) for x in rows)
+    return (snapshot.get('phase') in ('postseason', 'settled') or qualified == 12
+            or ctx.get('stage') in ('bracket_preview', 'bracket_pending', 'series'))
+
+
+def previous(ledger, kind):
+    records = ledger.get(kind, {})
+    if not isinstance(records, dict):
+        return {}
+    return next((row for _, row in sorted(records.items(), reverse=True)
+                 if row.get('video_id') and row.get('program_version') == VERSION), {})
+
+
+def validate_source(snapshot, evidence, now):
+    stamp = datetime.fromisoformat(evidence['retrieved_at'])
+    age = now - stamp
+    if not timedelta(0) <= age <= timedelta(hours=2):
+        raise ValueError('PS日程が古いか未来の取得時刻です')
+    ctx = pe.editorial(snapshot, evidence['schedule'], now, evidence['source_url'])
+    games = []
+    for game in (g for d in evidence['schedule'].get('dates', []) for g in d.get('games', [])):
+        if game.get('gameType') not in ROUND:
+            raise ValueError('PS専用資料に対象外の試合が混入')
+        if game.get('status', {}).get('abstractGameState') == 'Final':
+            winners = [(game.get('teams', {}).get(s) or {}).get('isWinner') for s in ('home', 'away')]
+            if any(w is not None and type(w) is not bool for w in winners) or sum(w is True for w in winners) != 1:
+                reason = ('isWinnerが真偽値ではありません' if any(
+                    w is not None and type(w) is not bool for w in winners)
+                    else 'isWinner=Trueが1球団ではありません')
+                print(f'[warn] 勝者を決められず外した試合：game_pk={game.get("gamePk", "不明")}・理由={reason}',
+                      file=sys.stderr)
+                continue
+        games.append(game)
+    return ctx, games
+
+
+def common(ctx, label, day=None):
+    return dict(date=day or ctx['date_jst'], source_url=ctx['source_url'],
+                source_label='MLB公式日程', sport='MLB', label=label,
+                glossary='WCS 2勝 / DS 3勝\nLCS・WS 4勝で決着', production=True)
+
+
+def segment(card, text, ids=(), speaker=2):
+    return dict(kind='ps_program', speaker=speaker, text=text,
+                meta=dict(card=card, game_ids=list(ids)))
+
+
+def spoken_clock(value):
+    hour,minute=map(int,value.split(':'))
+    return f'{hour}時' + (f'{minute}分' if minute else '')
+
+
+def spoken_start(value):
+    day,clock=value.split()
+    month,date=map(int,day.split('/'))
+    return f'{month}月{date}日' + spoken_clock(clock)
+
+
+def club_color(team_id):
+    return MLB_TEAM_COLOR.get(str(team_id))
+
+
+def probable(team):
+    """Only a named, identified probable pitcher from this exact official game."""
+    row=team.get('probablePitcher') or {}
+    if type(row.get('id')) is not int or not row.get('fullName'):
+        return None
+    return dict(id=row['id'],name=row['fullName'],display=display_name(row['fullName']))
+
+
+def pitcher_speech(card):
+    statements=[]
+    for side in ('home','away'):
+        pitcher=card.get(side+'_pitcher')
+        if pitcher:
+            name=speech_name(pitcher['name'])
+            # Preserve unknown Latin spellings on screen, rather than guessing a reading.
+            if not any(c.isascii() and c.isalpha() for c in name):
+                statements.append(card[side]+'の先発予定は'+name+'です。')
+    return ''.join(statements)
+
+
+def focus_plan(seg):
+    """読み上げの文ごとに、画面のどの行の話か（10/3 改善案C）。
+
+    文の中身で行を探す（「ガーディアンズの先発予定は…」→ その行）。
+    文字数の割合で時間を割り当てる。どの行にも当たらない文は None。
+    スコアボードのカード（PS予告）だけ。"""
+    card=seg['meta']['card']
+    if not card.get('scoreboard'):
+        return []
+    sentences=[x+'。' for x in seg['text'].split('。') if x.strip()]
+    total=sum(len(x) for x in sentences) or 1
+    plan,pos=[],0
+    for sent in sentences:
+        idx=None
+        for k,item in enumerate(card.get('items') or []):
+            head=str(item.get('label','')).split(' / ')[0]
+            if head.startswith('日本時間') and '日本時間' in sent:
+                idx=k
+            elif head and head+'の先発' in sent:
+                idx=k
+        plan.append((pos/total,(pos+len(sent))/total,idx))
+        pos+=len(sent)
+    return plan
+
+
+def focus_at(plan,fraction):
+    for lo,hi,idx in plan:
+        if lo<=fraction<hi:
+            return idx
+    return None
+
+
+def render_segment(seg,layers=False):
+    if seg['meta']['card'].get('next_line'):
+        import next_line
+        import v3_rules
+        image=next_line.frame(3,seg['meta']['card']['next_line'])
+        errors=v3_rules.check_layout(image)
+        if errors:raise ValueError('次情報の札が安全域外です: '+str(errors))
+        manifest={'layout':'next_line','safe':True}
+        return (image,manifest,image.convert('RGBA')) if layers else (image,manifest)
+    side={2:'right',3:'left'}.get(seg['speaker'])
+    if side is None:raise ValueError('画面素材のない話者です')
+    card=seg['meta']['card']
+    return render(card,presenters=side,style=card.get('visual_style','stadium'),layers=layers)
+
+
+def forecast(ctx, games, rows, now, target_day=None, modern=None):
+    modern = os.getenv('COLLESPO_PS_DESIGN','legacy')=='v3' if modern is None else modern
+    target = target_day or (now.astimezone(JST).date() + timedelta(days=1)).isoformat()
+    target_date = datetime.fromisoformat(target).date()
+    # An unknown US start can fall on either this Japanese date or the previous
+    # one. Do not silently omit it while promising coverage of every game.
+    unresolved_days = {target_date.isoformat(), (target_date - timedelta(days=1)).isoformat()}
+    by = {row['key']: row for row in rows if row.get('teams')}
+    cards = []
+    for g in games:
+        status = g.get('status', {})
+        if (status.get('abstractGameState') == 'Final'
+                or status.get('detailedState') in ('Postponed', 'Cancelled', 'Canceled')
+                or status.get('codedGameState') in ('D', 'C')):
+            continue
+        teams = g['teams']
+        if not all(series.is_real(teams[s]['team']) for s in ('home', 'away')):
+            if status.get('startTimeTBD', True):
+                relevant = not g.get('officialDate') or g['officialDate'] in unresolved_days
+            else:
+                relevant = datetime.fromisoformat(g['gameDate'].replace('Z', '+00:00')).astimezone(JST).date().isoformat() == target
+            if relevant:
+                raise ValueError(f'試合{g["gamePk"]}の対戦相手が未確定で対象日の全試合を確定できません')
+            continue
+        ids = [teams[s]['team']['id'] for s in ('home', 'away')]
+        row = by.get(series.series_key(g['gameType'], *ids))
+        if not row or row['over']:
+            continue
+        if status.get('startTimeTBD', True):
+            if not g.get('officialDate') or g['officialDate'] in unresolved_days:
+                raise ValueError(f'試合{g["gamePk"]}の時刻未定で対象日の全試合を確定できません')
+            continue  # A dummy timestamp cannot establish tomorrow in JST.
+        start = datetime.fromisoformat(g['gameDate'].replace('Z', '+00:00')).astimezone(JST)
+        if start.date().isoformat() != target:
+            continue
+        keyed = {t['id']: t for t in row['teams']}
+        card = dict(game_id=g['gamePk'], round=g['gameType'], game_number=g['seriesGameNumber'],
+                    home_id=ids[0], away_id=ids[1],
+                    home=keyed[ids[0]]['name'], away=keyed[ids[1]]['name'],
+                    home_wins=keyed[ids[0]]['wins'], away_wins=keyed[ids[1]]['wins'],
+                    when=start.strftime('%H:%M'), conditional=g['seriesGameNumber'] > row['need'],
+                    jp_team=any(t.get('players') for t in row['teams']),
+                    jp_home=bool(keyed[ids[0]]['players']), jp_away=bool(keyed[ids[1]]['players']),
+                    home_players=keyed[ids[0]]['players'],away_players=keyed[ids[1]]['players'],
+                    home_color=club_color(ids[0]),away_color=club_color(ids[1]),
+                    home_secondary=TEAM_SECONDARY_COLORS.get(str(ids[0])),away_secondary=TEAM_SECONDARY_COLORS.get(str(ids[1])),
+                    home_pitcher=probable(teams['home']),away_pitcher=probable(teams['away']))
+        match=next((m for m in ctx.get('matchups',[]) if m.get('game_pk')==g['gamePk']),None)
+        card['bye']=match['bye']['name'] if match else None
+        situation(card)
+        cards.append(card)
+    cards.sort(key=lambda c: (c['when'], c['game_id']))
+    if not cards:
+        return None
+    lead = next((i for i, c in enumerate(cards) if c['jp_team']), 0)
+    chosen = cards[lead]
+    lead_side = 'away' if len(chosen['away_players'])>len(chosen['home_players']) else 'home'
+    title = forecast_title(cards, target, lead, lead_side)
+    if chosen[lead_side+'_players']:
+        title=title.replace(chosen[lead_side],chosen[lead_side+'_players'][0]+'が所属する'+chosen[lead_side],1)
+    pages = []
+    date_label = datetime.fromisoformat(target).strftime('%m/%d').lstrip('0')
+    for start in range(0, len(cards), 4):
+        group = cards[start:start + 4]
+        lead_name = chosen[lead_side]
+        round_label = {'F':'WCS','D':'DS','L':'LCS','W':'WS'}[chosen['round']]
+        headline = lead_name + '\n明日' + date_label + ' ' + round_label
+        cover = dict(common(ctx, 'PS予告', target), layout='schedule',
+                     headline=headline if start == 0 else 'PS全試合日程\n続き', subhead=f'第{chosen["game_number"]}戦 / 日本時間 / 全{len(cards)}試合',
+                     items=[dict(when=f'{date_label} {c["when"]}', home=c['home'], away=c['away'],home_color=c['home_color'],away_color=c['away_color'],home_secondary=c['home_secondary'],away_secondary=c['away_secondary']) for c in group],
+                     headline_colors=[chosen[lead_side+'_color'],None])
+        text = title.split('｜')[0] + '。' if start == 0 else '残りの試合の日程です。'
+        # 冒頭の一文（10/3 改善案D）: 題の読み直しではなく、いつ・誰の試合か。
+        if start == 0 and chosen[lead_side+'_players']:
+            hour=int(chosen['when'].split(':')[0]); minute=chosen['when'].split(':')[1]
+            ampm='午前' if hour<12 else '午後'
+            clock=spoken_clock(f"{hour % 12 if hour >= 12 else hour}:{minute}")
+            others=len(cards)-1
+            text=(f"{team_names(chosen[lead_side+'_players'], chosen[lead_side])}は、"
+                  f"日本時間{target_date.day}日の{ampm}{clock}から{ROUND[chosen['round']][0]}"
+                  f"第{chosen['game_number']}戦。"
+                  + (f"ほか{others}試合も、日本人選手のいる試合から見ていきます。" if others else ''))
+            headline=f"{chosen[lead_side+'_players'][0]}の{lead_name}\n明日{date_label} {round_label}"
+            cover['headline']=headline
+        pages.append(segment(cover, text, [c['game_id'] for c in group], 3))
+        if modern:
+            cover['headline']='明日の全試合の一覧'
+            for item,c in zip(cover['items'],group):
+                item.update(home_wins=c['home_wins'],away_wins=c['away_wins'])
+            pages[-1]['text']=f'日本時間{target_date.month}月{target_date.day}日の全試合です。'+''.join(
+                f'{spoken_clock(c["when"])}、{c["home"]}対{c["away"]}。{c["home"]}{c["home_wins"]}勝、{c["away"]}{c["away_wins"]}勝。' for c in group)
+            import review_render_v3 as r3
+            if r3.LOOK=='v4':
+                cover['headline']='明日の全試合'
+                cover['subhead']='時刻は日本時間 / '+target
+                for item,c in zip(cover['items'],group):item.update(home_id=c['home_id'],away_id=c['away_id'])
+                pages[-1]['text']=('明日の全試合です。' if start==0 else '残りの試合です。')+pages[-1]['text'].split('全試合です。',1)[1]
+    # **カードは日本人選手のいる試合から**（表紙の日程表は時刻順のまま）。
+    # 10/3 本人「明日の注目試合は特に、日本人選手や、日本人選手の所属する
+    # 球団に注目しましょう」。同じ組の中は時刻順。
+    ordered = sorted(cards, key=lambda c: (0 if c['jp_team'] else 1, c['when'], c['game_id']))
+    for index,c in enumerate(ordered,1):
+        state = situation(c)
+        rnd = ROUND[c['round']][0]
+        note = (('前戦の結果次第で開催される試合' if c['conditional'] else '前戦は結果未確定') if state == 'pending_results' else
+                '勝った球団がシリーズを制する試合' if state == 'decider' else
+                '世界一がかかる試合' if c['round'] == 'W' and state == 'clinch_chance' else
+                '突破と敗退回避がかかる試合' if state == 'clinch_chance' else 'シリーズの初戦' if state == 'opening' else 'シリーズの次戦')
+        first_item=dict(label='日本時間の開始予定',value=c['when'],value_size=110)
+        if state=='opening':
+            if c['home_pitcher'] or c['away_pitcher']:
+                items=[first_item]+[dict(label=c[s]+' / 先発予定',value=(c[s+'_pitcher'] or {}).get('display','確認中'),value_size=60,team_color=c[s+'_color'],team_secondary=c[s+'_secondary']) for s in ('home','away')]
+            else:
+                onward={'F':'地区シリーズ','D':'リーグ優勝決定シリーズ','L':'ワールドシリーズ','W':'世界一'}[c['round']]
+                advance=dict(label='勝者の地区シリーズの相手',value=c['bye']) if c['round']=='F' and c['bye'] else dict(label='勝者が進む先' if c['round']!='W' else 'シリーズ勝者',value=onward)
+                items=[first_item,advance,dict(label='シリーズの決着',value=f'{ROUND[c["round"]][1]//2+1}勝先取')]
+            if c['bye']:note='勝者は'+c['bye']+'とDSへ'
+        else:
+            # 勝数は上のスコアボードに出す（10/3 改善案B）。下は時刻と先発。
+            items=[first_item]+[dict(label=c[s]+' / 先発予定',value=c[s+'_pitcher']['display'],value_size=60,team_color=c[s+'_color'],team_secondary=c[s+'_secondary']) for s in ('home','away') if c[s+'_pitcher']]
+        short_round={'F':'WCS','D':'DS','L':'LCS','W':'WS'}[c['round']]
+        card = dict(common(ctx, f'PS予告 / {short_round}第{c["game_number"]}戦', target), layout='facts',
+                    headline=f'{c["home"]}\n対{c["away"]}', subhead=note,
+                    items=items,card_index=index,card_total=len(cards),headline_colors=[c['home_color'],c['away_color']],
+                    headline_secondary_colors=[c['home_secondary'],c['away_secondary']],round_game=f'{short_round} 第{c["game_number"]}戦',
+                    affiliations=[],
+                    # スコアボード（10/3 改善案B）: 略称バッジ・球団名・勝数・●○・
+                    # 日本人選手。ロゴは使わない（商標）。略称と球団色だけ。
+                    scoreboard=dict(need=ROUND[c['round']][1]//2+1, rows=[
+                        dict(abbr=MLB_TEAM_ABBR.get(str(c[s+'_id']),''), name=c[s],
+                             wins=c[s+'_wins'], color=c[s+'_color'], secondary=c[s+'_secondary'],
+                             players=c[s+'_players'][:3]) for s in ('home','away')]))
+        supplement=None
+        if c is chosen and state == 'opening' and not (c['home_pitcher'] or c['away_pitcher']):
+            raw=next(g for g in games if g['gamePk']==c['game_id'])
+            supplement=focus.venue_focus(raw,games)
+            if supplement:
+                card['subhead']=supplement['fact_text']
+                card['items']=[first_item,dict(label='開催球場',value=supplement['venue']),items[1]]
+                card['focus_evidence']=supplement
+        record = ('' if state=='opening' else
+                  ('確定済みの勝数は' if state=='pending_results' else 'ここまで')
+                  + f'{c["home"]}が{c["home_wins"]}勝、{c["away"]}が{c["away_wins"]}勝です。')
+        # 球団名に日本人選手の名前を添えて言う（「大谷翔平・山本由伸の
+        # ドジャース」）。題で名前を見て来た人が、本編でも聞ける。
+        said = {s: team_names(c[s+'_players'], c[s])
+                for s in ('home','away')}
+        # 日本人選手のいる側を主語に（片側だけのとき）。時刻は午前・午後を付ける
+        # （夜中の試合を「2時」とだけ言うと、昼の2時にも聞こえる）。
+        jp_side = [s for s in ('home','away') if c[s+'_players']]
+        if len(jp_side) == 1:
+            me = jp_side[0]; other = 'away' if me == 'home' else 'home'
+            opening = f'{said[me]}は、{c[other]}との{rnd}第{c["game_number"]}戦。'
+        else:
+            opening = f'{said["home"]}対{said["away"]}は{rnd}第{c["game_number"]}戦。'
+        hour = int(c["when"].split(':')[0])
+        ampm = '午前' if hour < 12 else '午後'
+        clock = spoken_clock(f'{hour % 12 if hour >= 12 else hour}:{c["when"].split(":")[1]}')
+        speech = (f'{opening}'
+                  f'{record}日本時間{ampm}{clock}の予定です。')
+        if state=='opening' and c['bye']:speech+='勝者は地区シリーズで'+c['bye']+'と対戦します。'
+        elif state!='opening':speech+=note+'です。'
+        speech+=pitcher_speech(c)
+        if supplement:speech+='第3戦が必要になった場合も、同じ球場で行われる予定です。'
+        pages.append(segment(card, speech, [c['game_id']]))
+    return dict(title=title, segments=pages, game_ids=[c['game_id'] for c in ordered],
+                phase='forecast', target_day=target,
+                social_summary=title.split('｜')[0] + f'。{date_label}のPS全{len(cards)}試合を日本時間でまとめました。')
+
+
+def intro(ctx, now, rows=None, games=None):
+    matches = ctx['matchups']
+    if len(matches) != 4 or any(not m['first_game']['start_utc'] for m in matches):
+        raise ValueError('WCS全4カードの実時刻を確認できません')
+    first = min(datetime.fromisoformat(m['first_game']['start_utc']).astimezone(JST).date() for m in matches)
+    days = (first - now.astimezone(JST).date()).days
+    if days<=1:
+        return None  # Card introductions live in tomorrow's all-game forecast; no duplicate NL episode.
+    # Reuse the daily construction, rather than a second competing card script.
+    program=forecast(ctx,games or [],rows or [],now,target_day=first.isoformat())
+    if not program or len(program['game_ids'])!=4:raise ValueError('紹介対象の初戦全4試合が一致しません')
+    cover=program['segments'][0]['meta']['card']
+    cover.update(headline=f'{first.month}/{first.day}開幕\nWCS全4カード',label='WCS組み合わせ')
+    program['phase']='intro_all'
+    program['title']=f'{first.month}/{first.day}開幕のWCS全4カード紹介｜'+program['title'].split('｜')[0]
+    program['social_summary']=f'日本時間{first.month}月{first.day}日にWCS開幕。全4カードの初戦時刻と勝ち上がり先をまとめました。'
+    program['segments'][0]['text']=program['social_summary']
+    return program
+
+
+def situation_program(ctx, rows, before):
+    changes = series.changes(rows, before.get('program_series', []))
+    changed = {x['key'] for x in changes}
+    old = {r['key']: r for r in before.get('program_series', [])}
+    for row in rows:
+        prior = old.get(row['key'])
+        if prior and {t['id']: t['wins'] for t in row['teams']} != {t['id']: t['wins'] for t in prior['teams']}:
+            changed.add(row['key'])  # Same game count does not hide a corrected winner.
+    selected = [r for r in rows if len(r.get('teams', [])) == 2 and r['key'] in changed]
+    if os.getenv('COLLESPO_PS_DESIGN','legacy')=='v3':
+        selected=[r for r in rows if len(r.get('teams',[]))==2 and (not r['over'] or r['key'] in changed)]
+    if not before and os.getenv('COLLESPO_PS_DESIGN','legacy')!='v3':
+        selected = [r for r in selected if r['played']]
+    if not selected:
+        return None
+    # **日本人選手のいるシリーズから**（10/3 本人）。勝ち残っている側に
+    # 日本人選手がいるものを先に。同じなら材料の順。
+    def jp_rank(r):
+        alive=[t for t in r['teams'] if t.get('players') and (not r['over'] or t['id']==r.get('winner'))]
+        return 0 if alive else 1 if any(t.get('players') for t in r['teams']) else 2
+    selected = sorted(selected, key=jp_rank)
+    pages = []
+    for row in selected:
+        teams = row['teams']
+        # 日本人選手のいる球団の側から言う（「村上宗隆・西田陸浮のホワイト
+        # ソックスは2勝0敗で今井達也のアストロズを破り、地区シリーズへ」）。
+        text = series.jp_text(row) if any(t.get('players') for t in teams) else series.text(row)
+        next_number = (row.get('next') or {}).get('game')
+        live = bool((row.get('next') or {}).get('live'))
+        next_label = (row.get('next') or {}).get('verified_label')
+        if not row['played']:
+            text = row['round_jp'] + teams[0]['name'] + '対' + teams[1]['name'] + '。'
+            text += ('初戦は' + next_label + 'の予定です。') if next_label else '初戦の開始時刻は確認中です。'
+        if live:
+            text += f'。第{next_number}戦は進行中で、この試合の結果はまだ含めていません。'
+        after = ('シリーズ終了' if row['over'] else f'第{next_number}戦進行中' if live else
+                 f'次は第{next_number}戦' if next_number else '次戦日程確認中')
+        where = '決着' if row['over'] else f'第{next_number}戦進行中' if live else f'第{next_number}戦へ' if next_number else '日程確認中'
+        items = [dict(label='シリーズの現在地', value=where)]
+        # 勝ち上がった球団の次の相手（10/3 改善案F）。材料に次の回が組まれて
+        # いるときだけ。相手待ちなら言わない。
+        if row['over'] and row.get('winner'):
+            up = next((r for r in rows if r.get('stage') == row.get('stage', 0) + 1
+                       and row['winner'] in [t['id'] for t in r.get('teams', [])]
+                       and len(r.get('teams', [])) == 2), None)
+            if up:
+                opp = next(t for t in up['teams'] if t['id'] != row['winner'])
+                win = next(t for t in teams if t['id'] == row['winner'])
+                items.append(dict(label=win['name'] + 'の次の相手',
+                                  value=up['round_jp'] + 'で' + opp['name'], value_size=60))
+                nl = (up.get('next') or {}).get('verified_label')
+                if nl:
+                    items.append(dict(label='次の試合', value=nl, value_size=60))
+        if next_label and not row['over']:
+            items.append(dict(label='次の試合', value=next_label, value_size=60))
+        card = dict(common(ctx, 'PS情勢'), layout='facts', headline=teams[0]['name'] + '\n対' + teams[1]['name'],
+                    subhead=row['round_jp'] + ' / ' + after,
+                    card_index=len(pages)+1,card_total=len(selected),headline_colors=[club_color(t['id']) for t in teams],
+                    items=items,
+                    # 勝数・●○・日本人選手は上のスコアボードに（10/3 改善案B）。
+                    scoreboard=dict(need=row['need'], rows=[
+                        dict(abbr=MLB_TEAM_ABBR.get(str(t['id']),''), name=t['name'], wins=t['wins'],
+                             color=club_color(t['id']), secondary=TEAM_SECONDARY_COLORS.get(str(t['id'])),
+                             players=(t.get('players') or [])[:3]) for t in teams]))
+        pages.append(segment(card, text, speaker=2 if len(pages) % 2 else 3))
+    top = selected[0]
+    rnd = ROUND[top['round']][0]
+    a, b = top['teams']
+    mine, other = (b,a) if b.get('players') and not a.get('players') else (a,b)
+    who = (mine['players'][0] + 'の' if mine.get('players') else '') + mine['name']
+    if top['over'] and mine['id'] == top.get('winner'):
+        title = who + ('が世界一' if top['round'] == 'W' else 'が' + rnd + '突破')
+    elif top['over']:
+        title = who + ('はワールドシリーズで敗退' if top['round'] == 'W' else 'は' + rnd + 'で敗退')
+    else:
+        title = who + 'の' + rnd + f'は{mine["wins"]}勝{other["wins"]}敗'
+    title += '｜PSシリーズの最新情勢'
+    return dict(title=title, segments=pages, game_ids=[], phase='situation',
+                social_summary=pages[0]['text'] + '。各カードの勝敗と勝ち上がりをまとめました。')
+
+
+def verify_next_games(rows, games):
+    """Do not turn provisional API timestamps into confirmed Japanese dates."""
+    for row in rows:
+        nxt = row.get('next')
+        if not nxt or row['over'] or len(row['teams']) != 2:
+            continue
+        matching = [g for g in games if g['gameType'] == row['round']
+                    and g['seriesGameNumber'] == nxt['game']
+                    and {g['teams'][s]['team']['id'] for s in ('home', 'away')} == {t['id'] for t in row['teams']}
+                    and g.get('status', {}).get('abstractGameState') != 'Final']
+        if len(matching) != 1:
+            raise ValueError('次戦を公式の1試合に対応付けられません')
+        game = matching[0]
+        nxt['live'] = game.get('status', {}).get('abstractGameState') == 'Live'
+        if not game.get('status', {}).get('startTimeTBD', True):
+            start = datetime.fromisoformat(game['gameDate'].replace('Z', '+00:00')).astimezone(JST)
+            nxt['verified_label'] = f'日本時間{start.month}月{start.day}日' + spoken_clock(start.strftime('%H:%M'))
+
+
+def previous_short_context(program, ctx, games, rows):
+    """PSが1組の日は直前の終了試合を補う。日程と同じ公式応答を根拠にする。"""
+    pairs = []
+    names = {t['id']: t['name'] for row in rows for t in row.get('teams', [])}
+    for seg in program['segments']:
+        scoreboard = (seg.get('meta', {}).get('card') or {}).get('scoreboard') or {}
+        pair = {r.get('name') for r in scoreboard.get('rows', [])}
+        if len(pair) == 2 and pair not in pairs:
+            pairs.append(pair)
+    if len(pairs) != 1:
+        return program
+    pair = pairs[0]
+    finished = []
+    for game in games:
+        if game.get('status', {}).get('abstractGameState') != 'Final':
+            continue
+        teams = game.get('teams') or {}
+        if set(names.get((teams.get(side, {}).get('team') or {}).get('id')) for side in ('away', 'home')) != pair:
+            continue
+        if not all(type(teams[side].get('score')) is int for side in ('away', 'home')):
+            continue
+        finished.append(game)
+    if not finished:
+        return program
+    game = max(finished, key=lambda g: (g.get('gameDate', ''), g['gamePk']))
+    # 取得済みの当該シリーズだけ。別回戦の同じ組合せへ遡らない。
+    relevant = [row for row in rows if {t['name'] for t in row.get('teams', [])} == pair and row['round'] == game['gameType']]
+    if not relevant:
+        return program
+    away, home = (game['teams'][side] for side in ('away', 'home'))
+    a, h = (names[team['team']['id']] for team in (away, home))
+    rnd = ROUND[game['gameType']][0]
+    number = game.get('seriesGameNumber')
+    if not isinstance(number, int):
+        return program
+    label = f'{rnd}第{number}戦'
+    result = f'{a} {away["score"]}対{home["score"]} {h}'
+    text = f'直前に終了した{label}は、{a}対{h}が{away["score"]}対{home["score"]}でした。前戦は{h}のホームでした。'
+    card = dict(common(ctx, '前戦の結果', program.get('target_day')),
+                layout='facts', short_context=True, headline=a+'\n対'+h, subhead=label+' / 終了',
+                items=[dict(label='前戦の最終結果', value=result, value_size=60),
+                       dict(label='前戦の開催地', value=h+'のホーム', value_size=44)])
+    # 同じ試合の既存の試合経過が残っていれば、決勝点も補足する。
+    # 公式日程と得点/球団IDが一致しないtopicは混ぜない。
+    import generated_topics
+    topic = generated_topics.get('season_game_'+str(game['gamePk']))
+    score = (topic.get('game_v4') or {}).get('score') or {}
+    decisive = (topic.get('game_v4') or {}).get('decisive') or {}
+    same = topic.get('game') and topic.get('game_pk') == game['gamePk'] and all(
+        (score.get(side) or {}).get('id') == game['teams'][side]['team']['id']
+        and (score.get(side) or {}).get('total') == game['teams'][side]['score'] for side in ('home','away'))
+    detail = None
+    if same and all(decisive.get(k) for k in ('inning','subject','action')):
+        detail = decisive['inning']+' '+decisive['subject']+'の'+decisive['action']
+        card['items'].append(dict(label='前戦の決勝点', value=detail, value_size=44))
+        text += '決勝点は'+detail+'でした。'
+    seg = segment(card, text)
+    seg['meta']['context_game_id'] = game['gamePk']
+    program = copy.deepcopy(program)
+    program['segments'].append(seg)
+    program['short_context_material'] = dict(source='generation.ps.previous_game', source_url=ctx['source_url'],
+        games=[dict(game_pk=game['gamePk'], home_team_name=h, away_team_name=a,
+                    final_score=dict(home=home['score'], away=away['score']))],
+        facts=[dict(label='前戦の決勝点', text=detail, source='MLB公式 liveData.plays')] if detail else [])
+    return program
+
+
+
+def prepare(snapshot, evidence, slot, now, ledger=None):
+    ctx, games = validate_source(snapshot, evidence, now)
+    if ctx['stage'] == 'offseason':
+        print('[info] PS枠は見送り：ワールドシリーズは決着済み')
+        return None
+    names = {int(k): v['name'] for k, v in snapshot.get('teams', {}).items()}
+    players = {int(k): v.get('players', []) for k, v in snapshot.get('teams', {}).items()}
+    # Canonical roster owns team eligibility and names; no invented participants.
+    for team in snapshot.get('japanese', []):
+        players[int(team['team_id'])] = team.get('players', [])
+    rows = series.build(games, names, players)
+    verify_next_games(rows, games)
+    kind = 'daily' if slot == 'forecast' else 'morning_postseason'
+    before = previous(ledger or {}, kind)
+    if slot == 'forecast':
+        program = forecast(ctx, games, rows, now)
+    elif ctx['stage'] == 'bracket_preview':
+        program = intro(ctx, now, rows, games)
+    elif ctx['stage'] == 'series':
+        program = situation_program(ctx, rows, before)
+    else:
+        program = None
+    if program is None:
+        return None
+    program = previous_short_context(program, ctx, games, rows)
+    if os.getenv('COLLESPO_PS_DESIGN','legacy')=='v3':
+        import review_render_v3 as r3
+        if r3.LOOK=='v4':
+            from content_v4 import ClubMentions
+            mentions=ClubMentions([t for row in rows for t in row.get('teams',[])])
+            displayed=ClubMentions([t for row in rows for t in row.get('teams',[])])
+            for seg in program['segments']:
+                seg['text']=mentions.text(seg['text'])
+                card=seg['meta']['card']
+                for key in ('headline','subhead'):
+                    if key in card:card[key]=displayed.text(card[key])
+                for row in (card.get('scoreboard') or {}).get('rows',[]):
+                    if row.get('players'):
+                        phrase=team_names(row['players'], row['name'])
+                        card.setdefault('v4_club_mentions',{})[row['name']]=displayed.text(phrase)
+    program['segments'][0]['text'] = 'コレスポ。' + program['segments'][0]['text']
+    if os.getenv('COLLESPO_PS_DESIGN','legacy')=='v3':
+        import review_render_v3 as r3
+        first=program['segments'][0]['meta']['card']
+        card=dict(layout='facts',date=first['date'],sport='MLB',label='コレスポ',headline='コレスポ',items=[],
+                  source_url=ctx['source_url'],source_label='MLB公式',outro=True,lineup_kind='daily' if slot=='forecast' else 'postseason')
+        ending=segment(card,r3.OUTRO_TEXT)
+        ending['kind']='outro'
+        import next_line
+        at=next_line.publication_time(now.astimezone(JST).date().isoformat(),'19:00' if slot=='forecast' else '20:00',now)
+        line=next_line.choose(evidence['schedule'],'daily' if slot=='forecast' else 'postseason',at)
+        if line:
+            upcoming=dict(card,outro=False,headline='次の試合',next_line=line,
+                          items=[dict(label='次の試合',value=line['screen'])])
+            part=segment(upcoming,line['say']);part['kind']='next_line'
+            program['segments'].append(part)
+        program['segments'].append(ending)
+    else:
+        program['segments'][-1]['text'] += 'コレスポ。'
+    edition = content_key(program)
+    if slot=='forecast' and before and os.getenv('COLLESPO_PS_DESIGN','legacy')=='v3':
+        old_program=forecast(ctx,games,rows,now,modern=False)
+        if old_program:
+            old_program['segments'][0]['text']='コレスポ。'+old_program['segments'][0]['text']
+            old_program['segments'][-1]['text']+='コレスポ。'
+            if before.get('program_edition')==content_key(old_program):
+                return None
+    if before.get('program_edition') == edition:
+        return None
+    program.update(version=VERSION, kind=kind, date_jst=ctx['date_jst'], source_url=ctx['source_url'],
+                   retrieved_at=evidence['retrieved_at'], edition_key=edition, series=rows,
+                   material_sha256=hashlib.sha256(json.dumps(evidence['schedule'], sort_keys=True).encode()).hexdigest())
+    apply_design(program)
+    import host_split
+    program = host_split.prepare(program, kind)
+    import ui_tone
+    adapted = ui_tone.narration(program)
+    if adapted != program:
+        adapted['edition_key'] = content_key(adapted)
+        if before.get('program_edition') == adapted['edition_key']:
+            return None
+    return adapted
+
+def apply_design(program):
+    choice=os.environ.get('COLLESPO_PS_DESIGN','legacy')
+    if choice not in {'legacy','v3'}:raise ValueError('COLLESPO_PS_DESIGNの設定が不明です')
+    if choice=='v3':
+        import review_render_v3 as r3
+        if r3.LOOK == 'v4':
+            # 表示専用の一覧。台本とedition_keyを作った後なので配信判定は変えない。
+            cards=[s['meta']['card'] for s in program['segments']
+                   if s['meta']['card'].get('label')=='PS情勢' and s['meta']['card'].get('scoreboard')]
+            overview=[{k:copy.deepcopy(c[k]) for k in ('scoreboard','items','subhead')} for c in cards]
+            for card in cards:card['v4_series']=overview
+        for seg in program['segments']:
+            seg['meta'].setdefault('legacy_speaker',seg['speaker'])
+            seg['speaker']=2
+            seg['meta']['card']['visual_style']='v3'
+
+
+def content_key(program):
+    payload = copy.deepcopy({k: program[k] for k in ('phase','segments','game_ids','title','social_summary')})
+    for seg in payload['segments']:
+        seg['meta']['card'].pop('date', None)
+        # 外観と新しい声は編集内容ではない。旧版の台帳キーと完全一致させる。
+        seg['meta']['card'].pop('visual_style',None)
+        seg['meta']['card'].pop('v4_series',None)
+        if 'legacy_speaker' in seg['meta']:
+            seg['speaker']=seg['meta'].pop('legacy_speaker')
+    return hashlib.sha256(json.dumps(payload,ensure_ascii=False,sort_keys=True).encode()).hexdigest()
+
+
+@ui_voice_queue.preview_portraits()
+def check_program(program):
+    cards=[s['meta']['card'] for s in program['segments']
+           if s['meta']['card'].get('label')=='PS情勢' and s['meta']['card'].get('scoreboard')]
+    overview=[{k:copy.deepcopy(c[k]) for k in ('scoreboard','items','subhead')} for c in cards]
+    if any(c.get('v4_series',overview)!=overview for c in cards):
+        raise ValueError('v4情勢一覧が検証済みの全シリーズと一致しません')
+    styles={s['meta']['card'].get('visual_style','stadium') for s in program['segments']}
+    if styles not in ({'stadium'},{'v3'}):raise ValueError('PSデザインが混在または不明です')
+    for seg in program['segments']:
+        if styles=={'v3'} and (seg['speaker']!=2 or seg['meta'].get('legacy_speaker') not in (2,3)):
+            raise ValueError('v3のPSの声と画面が四国めたんではありません')
+        if styles=={'stadium'} and 'legacy_speaker' in seg['meta']:
+            raise ValueError('旧PSデザインに新しい声の設定が混在しています')
+    if content_key(program) != program['edition_key']:
+        raise ValueError('検証後の台本・画面・題が変更されています')
+    expected_day = program.get('target_day', program['date_jst'])
+    if any(s['meta']['card']['date'] != expected_day for s in program['segments']):
+        raise ValueError('画面の対象日が台本と不一致')
+    found = {i for s in program['segments'] for i in s['meta']['game_ids']}
+    if found != set(program['game_ids']) or not program['segments']:
+        raise ValueError('素材と全画面の試合IDが一致しません')
+    numbered=[s['meta']['card'] for s in program['segments'] if s['meta']['card'].get('card_index') is not None]
+    if numbered and (any(c['card_total']!=len(numbered) for c in numbered) or
+                     [c['card_index'] for c in numbered]!=list(range(1,len(numbered)+1))):
+        raise ValueError('紹介カードの番号・総数・順番が一致しません')
+    manifests = []
+    for s in program['segments']:
+        _, manifest = render_segment(s)
+        if styles=={'v3'}:
+            import ps_unified_v3 as unified
+            manifest['safe_pages']=unified.check_layout(s['meta']['card'])
+        manifest['speaker']=s['speaker']
+        manifests.append(manifest)
+    return dict(version=VERSION, edition_key=program['edition_key'], material_sha256=program['material_sha256'],
+                expected_game_ids=program['game_ids'], represented_game_ids=sorted(found), rendered=manifests,
+                limits=['声の実聴・実媒体UI・将来の天候は別検証'])
+
+
+def script(program):
+    target=program.get('target_day',program['date_jst'])
+    import host_split
+    document = host_split.carry(program, dict(title=program['title'], date_jst=target,
+                date_label=datetime.fromisoformat(target).strftime('%m/%d'), segments=program['segments'],
+                source_url=program['source_url'], ps_program=program,
+                **({'mlb_forecast':program['mlb_forecast']} if program.get('mlb_forecast') else {})))
+    if program.get('short_context_material'):
+        import sanity_sources
+        document['sanity_materials'] = sanity_sources.capture(document) + [program['short_context_material']]
+    return document
+
+
+def movie(program, audio_dir, out):
+    import host_split
+    if host_split.enabled():
+        if content_key(program) != program['edition_key']:
+            raise ValueError('検証後の台本・画面・題が変更されています')
+        saved = host_split.use_audio(script(program), audio_dir)
+        program = dict(program, segments=saved['segments'])
+        program['edition_key'] = content_key(program)
+        host_split.render_audio(audio_dir, out)
+    __import__('slant_by_episode').set_episode('ps_situation' if program.get('mode')=='situation' else 'ps_preview')
+    audio = read(Path(audio_dir) / 'manifest.json')['segments']
+    if len(audio) != len(program['segments']):
+        raise ValueError('台本と音声の件数が不一致')
+    for a, b in zip(audio, program['segments']):
+        if (a.get('text') != b['text'] or a.get('meta') != b['meta'] or
+                a.get('speaker') != b['speaker'] or a.get('kind') != b['kind'] or
+                not a.get('file') or not Path(a['file']).exists() or not a.get('duration')):
+            raise ValueError('台本と音声の不一致または音声欠落')
+    out = Path(out); out.mkdir(parents=True, exist_ok=True)
+    durations = [max(3.0, float(a['duration']) + vc.SEGMENT_TAIL) for a in audio]
+    import short_content
+    short_content.require(program, durations, out, video_name='collespo_short.mp4' if program['kind']=='daily' else 'collespo_morning_postseason.mp4')
+    check = check_program(program)
+    track = vc.build_narration_track(audio, durations, out)
+    import fan_events
+    fan_events.prepare(program, audio, durations, out, fps=30)
+    if not track:
+        raise ValueError('音声を結合できません')
+    v3=program['segments'][0]['meta']['card'].get('visual_style')=='v3'
+    if v3:
+        import sound_mix
+        import ps_unified_v3 as unified
+        focus_card=unified.lead_card(program)
+        ticker_line=unified.program_ticker(program)
+        cues=[];start=0.0
+        for index,(seg,duration) in enumerate(zip(program['segments'],durations)):
+            cues.extend((start+at,kind,variant,db) for at,kind,variant,db in unified.cues(seg['meta']['card'],focus_card,cover=index==0,duration=duration)
+                        if at < duration)
+            start+=duration
+        bgm=sound_mix.bgm_path()
+        cues += fan_events.event_cues()
+        if not bgm.exists():raise ValueError('v3のPSのBGMがありません')
+        track=sound_mix.mix_file(track,out/'narration_mixed.wav',bgm_path=bgm,cues=cues)
+        check.update(bgm=bgm.stem,sfx_count=len(cues))
+    name = 'collespo_short.mp4' if program['kind'] == 'daily' else 'collespo_morning_postseason.mp4'
+    path = out / name
+    cmd = ['ffmpeg', '-y', '-nostats', '-loglevel', 'error', '-f', 'rawvideo', '-pix_fmt', 'rgb24',
+           '-s', '1080x1920', '-framerate', '30', '-i', '-', '-i', str(track), '-c:v', 'libx264',
+           '-preset', 'veryfast', '-crf', '23', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-b:a', '160k',
+           '-shortest', '-movflags', '+faststart', str(path)]
+    previous_frame=None
+    program_frame=0
+    with subprocess.Popen(cmd, stdin=subprocess.PIPE) as proc:
+        for i, (seg, duration) in enumerate(zip(program['segments'], durations)):
+            image, _, foreground = render_segment(seg,layers=True)
+            if v3:
+                image=unified.frame(min(3,duration/4),seg['meta']['card'],focus_card,cover=i==0,duration=duration,ticker_line=ticker_line)
+            image.save(out / f'ps_{i:02d}.png')
+            if i == 0:
+                image.save(out / ('short.png' if program['kind'] == 'daily' else 'short_postseason.png'))
+            prepared=motion.prepare(foreground,seg['meta']['card'])
+            plan=focus_plan(seg)
+            speech=float(audio[i]['duration']) or duration
+            if v3:
+                unified.r3.set_program_clock(program_frame/30)
+                unified.r3.set_caption('' if seg['meta']['card'].get('outro') else seg.get('text',''),speech,sum(durations))
+            for n in range(round(duration * 30)):
+                display_card=seg['meta']['card']
+                display_time=n/30
+                if v3:
+                    unified.r3.set_program_clock(program_frame/30)
+                frame=(unified.frame(display_time,display_card,focus_card,cover=i==0,duration=duration,ticker_line='') if v3 else motion.frame(prepared,n/30,focus_at(plan,n/30/speech),
+                                   style=seg['meta']['card'].get('visual_style','stadium'),
+                                   team_id=background_team(seg['meta']['card'])))
+                raw=(unified.transition(previous_frame,frame,n,round(vc.FADE_SECONDS*30),program_frame/30,ticker_line) if v3
+                     else vc.crossfade(previous_frame,frame,n,round(vc.FADE_SECONDS*30),(1080,1920)))
+                program_frame+=1
+                proc.stdin.write(raw)
+            previous_frame=raw
+        proc.stdin.close()
+        if proc.wait():
+            raise ValueError('PS動画の書き出しに失敗')
+    check.update(video=str(path), expected_segments=len(audio), durations=durations,
+                 motion='sequential-left-entry / subtle-background-drift / shared-crossfade')
+    write(out / 'ps_program_gate.json', check)
+    host_split.bind_video(path, audio_dir)
+
+
+def metadata(program):
+    day = datetime.fromisoformat(program['date_jst'])
+    title = f'【{day.month}/{day.day}更新】' + program['title'] + ' #Shorts'
+    if len(title) > 100:
+        raise ValueError('YouTube題が100文字を超えます')
+    body = [program['social_summary'], '', *[s['text'] for s in program['segments']], '',
+            '時刻は日本時間。未終了の結果・選手の出場は断定していません。',
+            'WCSは2勝、DSは3勝、LCSとWSは4勝で決着。',
+            '資料時点：' + program['retrieved_at'], '出典：' + program['source_url'],
+            'コレスポ：https://collespo.com/',
+            'VOICEVOX:四国めたん' if program['segments'][0]['meta']['card'].get('visual_style')=='v3' else 'VOICEVOX:ずんだもん / VOICEVOX:四国めたん',
+            '#MLB #ポストシーズン #Shorts']
+    import solo_host
+    return dict(snippet=dict(title=title, description=solo_host.credit('\n'.join(body),program['segments']), tags=['MLB', 'ポストシーズン', 'Shorts'],
+                            categoryId='17', defaultLanguage='ja', defaultAudioLanguage='ja'))
+
+
+def upload(program, argv):
+    # 制作を見送った回は投稿器を呼ばない。今回の停止理由も残す。
+    parser = argparse.ArgumentParser(add_help=False)
+    parser.add_argument('--video')
+    options, _ = parser.parse_known_args(argv)
+    video = Path(options.video) if options.video else None
+    if video is not None and not video.is_file():
+        reason = '動画がないため投稿を見送り（原稿検査・素材不足・制作失敗）'
+        mode = 'postseason' if program['kind'] == 'morning_postseason' else 'daily'
+        report = Path(f'data/sanity_{mode}.json')
+        if report.exists():
+            try:
+                sanity = read(report)
+            except (OSError, json.JSONDecodeError):
+                sanity = {}
+            stopped = (sanity.get('impossible') or []) + (sanity.get('contradictions') or [])
+            if stopped and sanity.get('date_jst') == program['date_jst']:
+                reason = '原稿検査で見送り: ' + ' / '.join(stopped)
+        write(video.parent / 'ps_program_upload_skip.json',
+              dict(status='skipped', reason=reason, kind=program['kind'],
+                   date_jst=program['date_jst'], edition_key=program.get('edition_key'), video=str(video)))
+        print('[info] ' + reason)
+        return
+    check_program(program)
+    if program.get('rehearsal'):
+        raise ValueError('再現用の仮時計で作った動画を公開しません')
+    if layout() != 'v2':
+        raise ValueError('PS新構成の公開設定がv2ではありません')
+    now = datetime.now(JST)
+    if program['date_jst'] != now.date().isoformat():
+        raise ValueError('当日以外の制作物を公開しません')
+    import upload_youtube as uploader
+    original = uploader.build_metadata
+    expected = metadata(program)
+    record = uploader.published_video(program['kind'], program['date_jst'])
+    if record.get('video_id') and record.get('program_edition') != program['edition_key']:
+        raise ValueError('この枠は投稿済みです。新版の重複再投稿を止めます')
+    def program_metadata(*args, **kwargs):
+        values = inspect.signature(original).bind_partial(*args, **kwargs).arguments
+        kind = uploader.record_kind(values.get('kind', 'daily'), values.get('morning_mode', 'players'), values.get('sport', 'mlb'))
+        return expected if kind == program['kind'] else original(*args, **kwargs)
+    original_argv = sys.argv
+    uploader.build_metadata = program_metadata
+    sys.argv = ['upload_youtube.py', *argv]
+    try:
+        uploader.main()
+    finally:
+        uploader.build_metadata = original
+        sys.argv = original_argv
+    ledger = read(uploader.VIDEOS_PATH)
+    row = ledger.get(program['kind'], {}).get(program['date_jst'], {})
+    if not row.get('video_id') or row.get('title') != expected['snippet']['title']:
+        raise ValueError('対応する今回の動画の投稿記録がありません')
+    row.update(program_version=VERSION, program_edition=program['edition_key'], program_phase=program['phase'],
+               program_series=program['series'], social_summary=program['social_summary'])
+    write(uploader.VIDEOS_PATH, ledger)
+
+
+def main():
+    p = argparse.ArgumentParser()
+    p.add_argument('--slot', choices=['forecast', 'situation'])
+    p.add_argument('--snapshot', default='data/postseason.json')
+    p.add_argument('--evidence', default='build/ps_editorial_source.json')
+    p.add_argument('--fresh', action='store_true')
+    p.add_argument('--program', default='build/ps_program_situation.json')
+    p.add_argument('--narration-out')
+    p.add_argument('--audio-dir')
+    p.add_argument('--out')
+    p.add_argument('--upload', action='store_true')
+    p.add_argument('--check', action='store_true')
+    args, rest = p.parse_known_args()
+    import ui_voice_queue
+    ui_voice_queue.configure(args)
+    if args.check:
+        program = read(args.program)
+        write(Path(args.program).with_suffix('.claims.json'), check_program(program)); return
+    if args.upload:
+        upload(read(args.program), rest); return
+    if args.audio_dir:
+        movie(read(args.program), args.audio_dir, args.out); return
+    now = datetime.now(timezone.utc)
+    snapshot = read(args.snapshot)
+    if layout() == 'hold':
+        print('[info] PS枠はhold設定です'); return
+    if args.fresh:
+        year = now.astimezone(JST).year
+        url = pe.API + f'schedule?sportId=1&season={year}&startDate={year}-09-01&endDate={year}-11-15&gameType=F,D,L,W&hydrate=team,probablePitcher'
+        evidence = dict(retrieved_at=now.isoformat(), source_url=url, schedule=pe.fetch(url))
+        write(args.evidence, evidence)
+    evidence = read(args.evidence)
+    ledger = read('data/published_videos.json') if Path('data/published_videos.json').exists() else {}
+    program = prepare(snapshot, evidence, args.slot, now, ledger)
+    if program is None:
+        Path(args.program).unlink(missing_ok=True)
+        if args.narration_out:
+            Path(args.narration_out).unlink(missing_ok=True)
+        print('[info] 試合/新しい情勢がないため正常省略'); return
+    check_program(program)
+    write(args.program, program)
+    write(args.narration_out, script(program))
+    print(f'[info] PS新構成 {program["phase"]}: {len(program["segments"])}画面 / {len(program["game_ids"])}試合')
+
+
+if __name__ == '__main__':
+    main()

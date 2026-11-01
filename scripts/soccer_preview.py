@@ -38,6 +38,7 @@ from notability_engine import (  # noqa: E402
     SOCCER_COMPETITIONS,
     _football_data_get,
     jp_players_for_club,
+    club_name_jp,
 )
 
 # 開幕節に加えて何節ぶんを「序盤」として見るか。
@@ -256,10 +257,10 @@ def score_matches(comp: dict) -> list:
             worst = max(hr, ar)
             if worst <= 6:
                 pts += W_LAST_SEASON_TOP * (7 - worst) / 6
-                reasons.append(f"昨季{hr}位と{ar}位")
+                reasons.append(f"昨季{hr}位の{club_name_jp(home)}と{ar}位の{club_name_jp(away)}")
             elif worst <= 10:
                 pts += W_LAST_SEASON_TOP * 0.2
-                reasons.append(f"昨季{hr}位と{ar}位")
+                reasons.append(f"昨季{hr}位の{club_name_jp(home)}と{ar}位の{club_name_jp(away)}")
 
         # クラブ名は正式名称で返ってくるので、名簿とは正規化して突き合わせる
         jp = jp_players_for_club(home) + jp_players_for_club(away)
@@ -310,6 +311,11 @@ def build(api_key: str) -> dict:
         "generated_at": dt.datetime.now(dt.timezone.utc).isoformat(),
         "competitions": comps,
     }
+
+
+def v4_program(data):
+    import soccer_slots_v4
+    return soccer_slots_v4.preview_program(data) if soccer_slots_v4.enabled() else None
 
 
 def main():

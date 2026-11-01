@@ -16,6 +16,7 @@ MLBは日本の朝に終わるので、起きた直後に結果を1本で確認�
 """
 
 import argparse
+from japanese_team_names import team_names
 import functools
 import json
 import os
@@ -63,10 +64,11 @@ FONT_CANDIDATES = video_common.FONT_CANDIDATES
 import local_voices
 import mlb_buzz
 import morning_recap
-from race_words import race_is_over
+from race_words import clinch_label, is_settled, ps_label, race_is_over
 
 W, H = 1080, 1920
-FPS = 24
+import calm_motion
+FPS = calm_motion.value('fps', 24)
 ANIM_END = 0.45
 # 読み終わってから次の画面へ移るまでの間。
 #
@@ -112,7 +114,12 @@ MODE_KIND = {
     "local": "morning_local",
     "press": "morning_press",
     "postseason": "postseason",
+    "soccer_week": "soccer_week",
 }
+
+# 週末の日本人選手の回。1枚に並べる人数と、全体の上限。
+WEEK_ROWS_PER_SLIDE = 4
+WEEK_ROWS_MAX = 12
 
 # 声の画面に並べる件数。読み上げと画面で別々の数を持つと、
 # 4件読んで3件しか映らない、という食い違いが静かに生まれる。
@@ -462,7 +469,8 @@ def spoken_lines(d) -> list:
         return []
     text = _SPOKEN
     if len(text) > SPOKEN_MAX:
-        text = text[:SPOKEN_MAX].rstrip("、。") + "…"
+        from press_hook import caption_prefix
+        text = caption_prefix(text, SPOKEN_MAX)
     return wrap(d, text, font(34), W - 200)[:3]
 
 
@@ -490,6 +498,8 @@ def draw_spoken(d, color=None) -> None:
     d.rounded_rectangle([60, y, 68, y + h], 4, fill=color or ACCENT)
     for i, ln in enumerate(lines):
         d.text((92, y + 18 + i * 46), ln, font=font(34), fill=DIM)
+    import render_timeline
+    render_timeline.subtitle(d._image, ''.join(lines))
 
 
 def base(progress):
@@ -504,6 +514,12 @@ def base(progress):
     draw_steps(d)
     draw_spoken(d)
     return im, d
+
+
+def readable_headline(head: dict) -> bool:
+    """声で読めない文字（ハングルなど）の媒体名や見出しを読まない（11/1「조선일보」）。"""
+    text = f"{head.get('source', '')}{head.get('jp') or head.get('title', '')}"
+    return not any("가" <= c <= "힣" or "ᄀ" <= c <= "ᇿ" for c in text)
 
 
 def usable_headline(text: str) -> bool:
@@ -667,6 +683,31 @@ def week_line(players: list, days: int = 7) -> tuple:
     return "".join(parts), rows
 
 
+def on_base_lead(p: dict) -> str:
+    """無安打でも四球・死球で出塁した打者の、冒頭の言い方。当たらなければ空。"""
+    if not p or p.get("type") == "pitcher" or (p.get("hits") or 0):
+        return ""
+    bb, hbp = int(p.get("bb") or 0), int(p.get("hbp") or 0)
+    if bb + hbp < 1:
+        return ""
+    how = "・".join(x for x in (f"四球{bb}つ" if bb else "",
+                                f"死球{hbp}つ" if hbp else "") if x)
+    return f"{p['name']}は無安打ながら、{how}で{bb + hbp}度出塁。"
+
+
+def boilerplate_headline(text: str) -> bool:
+    """中身の無い定型の見出しか。
+
+    「ロサンゼルス・ドジャース対サンフランシスコ・ジャイアンツ 09/26/2026」
+    のような試合記録ページの題は、何が起きたかを1文字も言っていない。
+    9/27の回はこれを「現地の見出し」として読んだ。
+    """
+    import re as _re
+    t = (text or "").strip()
+    return bool(_re.search(r"[0-9]{1,2}/[0-9]{1,2}/[0-9]{2,4}$", t)
+                and _re.search(r"対|vs|@", t))
+
+
 def press_premise(heads: list, pool: list = None) -> str:
     """今日の報道が何についてのものか。数えるだけで、評価はしない。
 
@@ -723,12 +764,11 @@ def spoken_list(chunk: list, start: int, said_already: str = "") -> str:
     for j, p in enumerate(chunk):
         rank = start + j + 1
         if said_already and p.get("name") == said_already:
-            score = morning_recap.score_label(p)
-            parts.append(f"{rank}位は{p['name']}。"
-                         + (f"スコア{score}。" if score else ""))
+            # 独自の点数は声で言わない（画面にはある）。初めて見る人には
+            # 「スコア44」が何か分からず、見慣れた人には公式の数字に聞こえる。
+            parts.append(f"{rank}位は{p['name']}。")
             continue
         if worth_speaking(p, rank):
-            score = morning_recap.score_label(p)
             # 名前のある記録は声にも出す。**画面に金の帯が出ているのに
             # 何も言わないと、なぜその点なのかが分からない。**
             # 呼び名を並べるだけで、こちらで評価は足さない。
@@ -737,7 +777,6 @@ def spoken_list(chunk: list, start: int, said_already: str = "") -> str:
                 f"{rank}位、{p['name']}、{yomi_stats(p['headline'])}。"
                 + (f"{'に'.join(named)}。" if named else "")
                 + (f"{p['clutch_label']}。" if p.get("clutch_label") else "")
-                + (f"スコア{score}。" if score else "")
             )
         else:
             skipped += 1
@@ -782,6 +821,11 @@ def jp_date(day: str) -> str:
 
 
 def build_narration(data: dict, mode: str = "all") -> dict:
+    import sanity_sources
+    return sanity_sources.attach(_build_narration(data, mode), data)
+
+
+def _build_narration(data: dict, mode: str = "all") -> dict:
     """
     mode で扱う内容を切り替える。
 
@@ -839,6 +883,11 @@ def build_narration(data: dict, mode: str = "all") -> dict:
         # 何の印なのか分からない）。
         named = morning_recap.badge_speech(top, limit=2) if top else []
         head = f"{top['name']}は{yomi_stats(top['headline'])}。" if top else ""
+        # **無安打で1位の日は、何が良かったかから言う。**「3打数0安打」で
+        # 始めると、初めて見る人には「なぜ無安打が1位か」が分からない。
+        walked = on_base_lead(top) if top else ""
+        if walked:
+            head = walked
         if named:
             head += "%s。" % "に".join(named)
         # 本塁打の飛距離も声に出す。画面に出しているのに黙っていると、
@@ -883,7 +932,8 @@ def build_narration(data: dict, mode: str = "all") -> dict:
             "meta": {"date": day_iso, "count": len(players), "local": True,
                      "mode": mode,
                      # 冒頭で読んだ見出しは、本編でもう一度読まない
-                     "used_headline": lead_idx},
+                     "used_headline": lead_idx,
+                     "source_headlines": [hd[lead_idx]] if lead_idx is not None else []},
         }]
     elif mode == "postseason":
         # ポストシーズン進出争いの回。
@@ -911,7 +961,7 @@ def build_narration(data: dict, mode: str = "all") -> dict:
              "meta": {"date": day_iso, "mode": mode, "who": ZUNDA,
                       "day": day}},
             {"kind": "ps_talk",
-             "text": ans + f"{day}のポストシーズン進出争いね。",
+             "text": ans + f"{day}の{ps_label(ps)}ね。",
              "speaker": PS_SPEAKER[METAN],
              "meta": {"date": day_iso, "mode": mode, "who": METAN,
                       "day": day}},
@@ -921,14 +971,20 @@ def build_narration(data: dict, mode: str = "all") -> dict:
         # 順位表は「見たい人が見るもの」。この1枚だけは
         # **「大谷のドジャースは第何シードか」**で、誰にでも入口がある。
         # 28日の実測で、題に日本人選手の名前がある動画は2.8倍見られた。
-        jps = ps.get("japanese") or []
+        # **ポストシーズンに入ったら、順位表ではなくシリーズを並べる。**
+        # 順位表とシードの話はそこで終わっている。
+        series_mode = (ps.get("phase") == "postseason"
+                       and bool(ps.get("series")))
+        if series_mode:
+            segments += ps_series_segments(ps)
+        jps = [] if series_mode else (ps.get("japanese") or [])
         if jps:
             ins = [x for x in jps if x.get("seed")]
             top = ins[0] if ins else jps[0]
             say = (f"日本人選手のいる{len(jps)}球団のうち、"
                    f"{len(ins)}球団が進出圏内です。")
             if ins:
-                say += (f"{'・'.join(top['players'])}の{top['team']}が"
+                say += (f"{team_names(top['players'], top['team'])}が"
                         f"{top['league_jp']}第{top['seed']}シード。")
                 m = top.get("magic")
                 if isinstance(m, int):
@@ -936,7 +992,8 @@ def build_narration(data: dict, mode: str = "all") -> dict:
             segments.append({"kind": "ps_japanese", "text": say, "meta": {}})
 
         first = True
-        for lid, name in (("104", "ナ・リーグ"), ("103", "ア・リーグ")):
+        for lid, name in (() if series_mode else
+                          (("104", "ナ・リーグ"), ("103", "ア・リーグ"))):
             lg = (ps.get("leagues") or {}).get(lid)
             if not lg:
                 continue
@@ -966,7 +1023,10 @@ def build_narration(data: dict, mode: str = "all") -> dict:
             # 組み合わせ。ここで用語を1つずつ置いていく。
             # 「第3シードと第6シードが当たる」は、画面の番号と
             # そのまま重なるので、聞くだけで形が入る。
-            b = ("今日終わったら、ワイルドカードシリーズは" if first
+            # 確定したあとは「今日終わったら」と言わない（9/28以降）
+            b = ((("確定した組み合わせは、ワイルドカードシリーズが"
+                   if is_settled(ps) else
+                   "今日終わったら、ワイルドカードシリーズは")) if first
                  else "こちらは、")
             if len(lead) >= 3 and len(wc) >= 3:
                 b += (f"第3シード{lead[2]['name']}と第6シード"
@@ -979,10 +1039,33 @@ def build_narration(data: dict, mode: str = "all") -> dict:
             segments.append({
                 "kind": "ps_bracket",
                 "text": b + ("同率の球団があり、順番は入れ替わりえます。"
-                             if lg.get("ties") else ""),
+                             if lg.get("ties") and not is_settled(ps)
+                             else ""),
                 "meta": {"league": lid},
             })
             first = False
+
+    elif mode == "soccer_week":
+        # 欧州の日本人選手の、直前の週末。**試合の無い日の19:30に出す。**
+        #
+        # 平日（CLの無い日）と代表戦の期間は19:30が空いていた。
+        # クラブの結果は5大リーグすべて、選手本人の出場・得点は
+        # プレミアの公式データがあるときだけ言う（soccer_jp_week）。
+        import soccer_jp_week as sjw
+        week = data.get("week") or {}
+        rows = (week.get("rows") or [])[:WEEK_ROWS_MAX]
+        head = week.get("headline") or ""
+        segments = [{
+            "kind": "week_intro",
+            "text": (f"{head}。" if head else "")
+            + "欧州5大リーグの日本人選手、週末の結果です。",
+            "meta": {"date": day_iso, "mode": mode, "day": day}}]
+        for i in range(0, len(rows), WEEK_ROWS_PER_SLIDE):
+            chunk = rows[i:i + WEEK_ROWS_PER_SLIDE]
+            segments.append({
+                "kind": "week_rows",
+                "text": "".join(sjw.spoken(r) + "。" for r in chunk),
+                "meta": {"rows": list(range(i, i + len(chunk)))}})
 
     elif mode == "soccer_race":
         # 欧州サッカーの順位争い。
@@ -1086,7 +1169,7 @@ def build_narration(data: dict, mode: str = "all") -> dict:
         teased = False
         segments = [{
             "kind": "intro",
-            "text": f"{lead}現地で最も見られた試合のコメント欄です。",
+            "text": f"{lead}MLB公式ハイライトで再生がいちばん多かった試合のコメント欄です。",
             "meta": {"date": day_iso, "count": len(players), "local": True,
                      "mode": mode,
                      # 冒頭で読んだコメントは、本編でもう一度読まない
@@ -1099,7 +1182,7 @@ def build_narration(data: dict, mode: str = "all") -> dict:
         buzz = data.get("buzz") or []
         head = ""
         if buzz:
-            head = f"現地で最も見られたのは{yomi_stats(buzz_label(buzz[0]))}。"
+            head = f"公式ハイライトで再生がいちばん多かったのは{yomi_stats(buzz_label(buzz[0]))}。"
         segments = [{
             "kind": "intro",
             "text": f"{head}{day}、現地での注目度をまとめました。",
@@ -1214,7 +1297,7 @@ def build_narration(data: dict, mode: str = "all") -> dict:
     buzz = (data.get("buzz") or []) if want_local else []
     if buzz:
         top = buzz[0]
-        parts = ["現地で最も見られた試合です。",
+        parts = ["公式ハイライトで再生がいちばん多かった試合です。",
                  f"MLB公式のハイライトで、{yomi_stats(buzz_label(top))}が"
                  f"{_yomi_views(top['views'])}再生でした。"]
         # 誰が目立った試合なのかまで言う。数字だけだと、
@@ -1277,7 +1360,7 @@ def build_narration(data: dict, mode: str = "all") -> dict:
                 if rb:
                     parts.append(f"{rb}。")
         segments.append({"kind": "thread", "text": "".join(parts),
-                         "meta": {"index": ti}})
+                         "meta": {"index": ti, "parent_read": bool(led)}})
 
     # 現地の声。ここだけは数字ではなく、翻訳を通した誰かの感想なので、
     # 読み上げでも「翻訳したもの」であることを先に断る。
@@ -1289,7 +1372,7 @@ def build_narration(data: dict, mode: str = "all") -> dict:
         src = (data.get("voices") or {}).get("source", "")
         if want_local or want_press:
             parts = [f"ここからは現地の声です。{src}の投稿を"
-                     "翻訳したもので、コレスポの見解ではありません。"]
+                     "翻訳したものです。"]
         else:
             parts = ["コメント欄から。翻訳したものです。"]
         # どれだけ支持された言葉なのかを添える。同じ感想でも、
@@ -1330,10 +1413,11 @@ def build_narration(data: dict, mode: str = "all") -> dict:
         parts = [press_premise(heads, pool) or "現地の見出しです。"]
         # 収まらない見出しは切らずに飛ばす。6件取れているので選び直せる。
         fits = [(i, h) for i, h in enumerate(heads)
-                if i != used
-                and len((h.get("jp") or h.get("title", ""))) <= HEADLINE_MAX]
+                if i != used and readable_headline(h)
+                and len((h.get("jp") or h.get("title", ""))) <= HEADLINE_MAX
+                and not boilerplate_headline(h.get("jp") or h.get("title", ""))]
         if not fits:
-            fits = [(i, h) for i, h in enumerate(heads) if i != used]
+            fits = [(i, h) for i, h in enumerate(heads) if i != used and readable_headline(h)]
         picked = []
         for i, h in fits[:HEADLINES_SHOWN]:
             body = h.get("jp") or h.get("title", "")
@@ -1346,7 +1430,8 @@ def build_narration(data: dict, mode: str = "all") -> dict:
         # 3件目は読まれるのに画面に無い、という状態だった。
         # どちらが本当なのか、見ている側には確かめようがない。
         segments.append({"kind": "headlines", "text": "".join(parts),
-                         "meta": {"picked": picked}})
+                         "meta": {"picked": picked,
+                                  "source_headlines": [heads[i] for i in picked]}})
 
     # 現地の番記者が書いたこと。ファンの声との違いは、
     # 実名で、その球団を毎日追っている人の言葉だという点。
@@ -1354,13 +1439,15 @@ def build_narration(data: dict, mode: str = "all") -> dict:
     reporters = ((data.get("reporters") or {}).get("posts") or []) \
         if want_press else []
     if reporters:
-        parts = ["現地の番記者の投稿です。翻訳したもので、"
-                 "コレスポの見解ではありません。"]
+        parts = ["現地の番記者の投稿です。翻訳したものです。"]
         # 文として終わるところまで取れた投稿だけを使う。
         # 途中で切って句点を足すと、意味の無い一文になる。
         usable = []
         for r in reporters:
-            body = clip_sentences(r.get("jp") or r.get("text", ""))
+            # 古い材料の訳文にも、野球の言い方の直しを当てる
+            import local_reporters as _lr
+            body = clip_sentences(_lr.baseball_jp(r.get("jp") or "")
+                                  or r.get("text", ""))
             if body:
                 usable.append((r, body))
             if len(usable) >= REPORTERS_SHOWN:
@@ -1384,14 +1471,43 @@ def build_narration(data: dict, mode: str = "all") -> dict:
         "meta": {},
     })
     # 成績の回は、2人が交代で読む。
+    if mode in ('voices','press'):
+        import content_v3
+        segments=content_v3.quotes(segments,data,mode)
     if mode == "players":
+        import content_v3
+        segments = content_v3.players(segments,players,day)
         assign_pair(segments)
     elif mode == "postseason":
         # 進出争いも2人が出る回なので、同じ印を付ける。
         # 読み手の交代はしない（順位表を読む12行が全部台詞になると、
         # かえって遅くなる。1枚目だけ掛け合いにしてある）。
         bookend(segments)
-    return {"label": day, "segments": segments}
+    if mode in ('players','voices','press'):
+        import content_v3
+        segments=content_v3.closing(segments,mode)
+    if mode in ('players','postseason'):
+        import next_line
+        segments=next_line.insert(segments,data.get('next_line'))
+    result={"label": day, "segments": segments}
+    if mode=='voices' and os.environ.get('COLLESPO_COMMENTS_DESIGN','legacy')=='comments':
+        import duo
+        voice_day=data.get('date_jst') or (data.get('voices') or {}).get('updated_at')
+        if duo.enabled('voices',voice_day):
+            result['segments']=duo.voices(segments)
+            result['duration_budget']={'limit':45,'grace':0}
+    if mode=='players':
+        limit,grace=post_common.duration_budget('morning')
+        result['duration_budget']={'limit':limit,'grace':grace}
+        import mlb_forecast
+        followup=mlb_forecast.answer(data)
+        if followup:
+            if result['segments']:
+                result['segments'][0]['text']=result['segments'][0]['text'].removeprefix('コレスポ。')
+            result['segments'].insert(0,followup)
+            bookend(result['segments'])
+    import ui_tone
+    return ui_tone.narration(result)
 
 
 def assign_pair(segments: list) -> None:
@@ -1737,7 +1853,7 @@ def render_intro_players(p, meta, top, extra=None):
     return im
 
 
-def render_intro(p, meta, top, extra=None):
+def render_intro(p, meta, top, extra=None, elapsed=0):
     """
     1枚目。ショートのサムネはこの絵そのものなので、ここで見る理由を出す。
 
@@ -1749,6 +1865,9 @@ def render_intro(p, meta, top, extra=None):
     暗い背景に灰色の字を並べても、一覧に並んだ小さなサムネでは読めない。
     """
     mode = meta.get("mode") or ("local" if meta.get("local") else "players")
+    if mode=='press' and meta.get('press_hook'):
+        from press_hook import frame
+        return frame(elapsed,p,meta,(extra or {}).get('reporters') or {})
     if mode == "players":
         return render_intro_players(p, meta, top, extra)
     im, d = base(p)
@@ -2008,11 +2127,16 @@ def ps_right(tm: dict):
     見出しを付けずに数字だけ出すことはしない。
     """
     m = tm.get("magic")
-    if tm.get("clinched") or tm.get("div_champ"):
-        return "決定", "地区優勝", True
+    clinch = clinch_label(tm)
+    if clinch:
+        return "決定", clinch, True
     if isinstance(m, int):
         return str(m), "優勝マジック", m <= 10
+    if tm.get("div_rank") == 1:
+        return "首位", "地区（未確定）", False
     gb = tm.get("wc_gb")
+    if tm.get("eliminated") or gb == "E":
+        return "敗退", "PS進出", False
     if gb is None:
         # 最後の枠にいる球団は、差が返らない（自分が基準なので）。
         return "圏内", "ワイルドカード最後の枠", False
@@ -2044,13 +2168,23 @@ def ps_open(ps: dict) -> tuple:
     jp = ps.get("japanese") or []
     n = len(changes)
 
+    # **組み合わせが決まった日。**ポストシーズンの初日は全シリーズが
+    # 「開幕」として動いたことになる。「動いたのだ？」で入ると、
+    # 何が決まった日なのかが伝わらない。
+    if changes and all(c.get("kind") == "start" for c in changes):
+        last = "、".join(ps.get("final_day") or [])
+        return ("ポストシーズンの組み合わせが決まったのだ？",
+                "決まったわ。"
+                + (f"レギュラーシーズン最終日で、{last}。" if last else "")
+                + changes[0]["text"] + "。")
+
     # 日本人選手のいる球団が動いた日は、そこが今日いちばんの話。
     for c in changes:
         text = c.get("text") or ""
         for x in jp:
             team = x.get("team") or ""
             if team and team in text:
-                names = "・".join(x.get("players") or [])
+                names = team_names(x.get("players") or [])
                 ask = (f"{names}のところが動いたのだ？" if names
                        else f"{team}が動いたのだ？")
                 ans = text + "。"
@@ -2125,7 +2259,7 @@ def render_ps_league(p, league: dict, lid: str = "104"):
     lead = (league.get("leaders") or [])[:3]
     wc = (league.get("wildcards") or [])[:3]
     out = (league.get("chasing") or [])[:2]
-    groups = [("地区優勝　第1〜3シード", lead, True, 1),
+    groups = [("地区首位　第1〜3シード", lead, True, 1),
               ("ワイルドカード　第4〜6シード", wc, True, 4),
               (None, out, False, None)]
 
@@ -2139,7 +2273,7 @@ def render_ps_league(p, league: dict, lid: str = "104"):
         else:
             # 枠の線。ここが画面の主題なので、はっきり引く。
             y += 12
-            s = "──── ここまでが進出 ────"
+            s = "── 今日終われば進出圏内 ──"
             d.text(((W - d.textlength(s, font=font(30))) / 2, y), s,
                    font=font(30), fill=ACCENT)
             y += 56
@@ -2248,6 +2382,58 @@ def race_lead(race: dict):
         return soccer_race.lead(race)
     except Exception:                            # noqa: BLE001
         return None
+
+
+def render_week_intro(p, week: dict, day: str = ""):
+    """週末の日本人選手の1枚目。見出し（得点した選手・勝ったクラブ）を大きく。"""
+    im, d = base(p)
+    d.text((70, 150), "欧州サッカー", font=font(40), fill=ACCENT)
+    d.text((70, 206), "日本人選手の週末", font=font(72), fill=TEXT)
+    d.text((70, 300), day or "", font=font(40), fill=DIM)
+    head = week.get("headline") or ""
+    if head:
+        lines = video_common.wrap(d, head, font(64), W - 140)
+        y = 420
+        for ln in lines[:3]:
+            d.text((70, y), ln, font=font(64), fill=JP)
+            y += 84
+    d.text((70, 1180), "クラブの結果は5大リーグ、選手本人の出場・得点は"
+           "プレミアのみ（公式）", font=font(26), fill=DIM)
+    return im
+
+
+def render_week_rows(p, week: dict, idx: list):
+    """1枚に4人。選手（クラブ）・相手・スコア・勝敗、プレミアは本人の数字。"""
+    import soccer_jp_week as sjw
+    im, d = base(p)
+    rows = [(week.get("rows") or [])[i] for i in idx
+            if i < len(week.get("rows") or [])]
+    y = 150
+    for r in rows:
+        d.rounded_rectangle([70, y, W - 70, y + 250], 18, fill=SURF)
+        d.text((100, y + 14), f"{r['league_jp']}", font=font(26), fill=DIM)
+        # 3人並ぶと右のスコアに届くので、幅に収まるまで縮める
+        ns = 52
+        while ns > 30 and d.textlength(r["name"], font=font(ns)) > W - 440:
+            ns -= 4
+        d.text((100, y + 50 + (52 - ns) // 2), r["name"], font=font(ns),
+               fill=JP)
+        d.text((100, y + 116), f"{r['club']}  {'ホーム' if r['home'] else 'アウェー'}"
+               f"  vs {r['opp']}", font=font(32), fill=TEXT)
+        res = f"{r['gf']}-{r['ga']}"
+        col = ACCENT if r["result"] == "勝ち" else (DIM if r["result"] == "負け"
+                                                    else TEXT)
+        fw = font(64)
+        d.text((W - 110 - d.textlength(res, font=fw), y + 40), res, font=fw,
+               fill=col)
+        d.text((W - 110 - d.textlength(r["result"], font=font(30)), y + 118),
+               r["result"], font=font(30), fill=col)
+        me = sjw.player_part(r)
+        if me:
+            d.text((100, y + 176), me, font=font(32),
+                   fill=ACCENT if "得点" in me or "アシスト" in me else DIM)
+        y += 272
+    return im
 
 
 def render_race_intro(p, race: dict, day: str = ""):
@@ -2413,6 +2599,9 @@ def render_race_line(p, comp: dict, line: dict):
             parts.append("出 " + "・".join(mv["out"][:2]))
         d.text((96, y + 30), "昨日から　" + "　".join(parts),
                font=font(30), fill=JP)
+    note_y = y + (100 if mv.get("in") or mv.get("out") else 40)
+    d.text((70, note_y), "現時点の順位です。出場決定ではありません", font=font(30), fill=DIM)
+    d.text((70, note_y + 46), "欧州出場枠は追加枠・カップ戦の結果等で変動", font=font(28), fill=DIM)
     return im
 
 
@@ -2562,7 +2751,7 @@ def render_ps_talk(p, data: dict, who: str, day: str = ""):
     """
     im, d = base(p)
     changes = data.get("changes") or []
-    d.text((70, 150), "ポストシーズン進出争い", font=font(38), fill=ACCENT)
+    d.text((70, 150), ps_label(data), font=font(38), fill=ACCENT)
     d.text((70, 212), day or data.get("date", ""), font=font(56), fill=TEXT)
 
     # 昨日からの変化。無い日は「変わらなかった」と書く。
@@ -2695,7 +2884,7 @@ def render_ps_japanese(p, jp: list):
                fill=TEXT if seeded else DIM)
         # 選手の名前。ここが**この画面を見る理由**なので、
         # 球団名の次に大きく、色を付けて置く。
-        d.text((x0 + 34, y + 74), "・".join(x.get("players") or []),
+        d.text((x0 + 34, y + 74), team_names(x.get("players") or []),
                font=font(38), fill=JP)
         d.text((x0 + 34, y + 110), "%s　%d勝%d敗" % (
             x.get("league_jp", ""), x.get("w") or 0, x.get("l") or 0),
@@ -2725,9 +2914,128 @@ def render_ps_japanese(p, jp: list):
     # 2行の日にこの1行が帯に潜る。帯の上端から測る。
     if rest and p > 0.32 and y + 44 < spoken_top(d):
         s = "ほか " + "、".join(
-            "%s（%s）" % (x.get("team"), "・".join(x.get("players") or []))
+            "%s（%s）" % (x.get("team"), team_names(x.get("players") or []))
             for x in rest[:2])
         d.text((80, y + 14), s, font=font(26), fill=DIM)
+    return im
+
+
+def ps_series_segments(ps: dict) -> list:
+    """ポストシーズンに入った日の本編。**シリーズごとの現在地。**
+
+    並べるのは、まだ続いているシリーズと、昨日決着したシリーズだけ。
+    回戦が入れ替わる時期は、次の回戦の日程が先に載る。最新の回戦だけを
+    見ると、まだ続いている前の回戦が画面から消える。
+
+    1枚目は日本人選手のいるシリーズ。その球団の側から勝敗を言う。
+    リーグの画面では、そこで言ったシリーズを読み直さない。
+    """
+    import ps_series
+    series = ps.get("series") or []
+    moved = {c.get("key") for c in (ps.get("changes") or [])}
+    show = [s for s in series if not s["over"] or s["key"] in moved]
+    out, said = [], set()
+    # 日本人選手の多い球団から（見出しと同じ球団が先頭に来る）
+    mine = sorted([s for s in show if any(x["players"] for x in s["teams"])],
+                  key=lambda s: (-sum(len(x["players"]) for x in s["teams"]),
+                                 -s["stage"]))[:4]
+    if mine:
+        # 冒頭の掛け合いで読んだ文は、ここで読み直さない（画面には残る）
+        lead = ((ps.get("changes") or [{}])[0]).get("text")
+        said_text = [t for t in (ps_series.jp_text(s) for s in mine)
+                     if t and t != lead]
+        out.append({"kind": "ps_series",
+                    "text": ("。".join(said_text) + "。") if said_text
+                    else "日本人選手のいるシリーズです。",
+                    "meta": {"keys": [s["key"] for s in mine],
+                             "head": "日本人選手のいるシリーズ", "league": ""}})
+        said.update(s["key"] for s in mine)
+    for lg, lid in (("ア・リーグ", "103"), ("ナ・リーグ", "104"),
+                    ("", "")):
+        rows = [s for s in show if s["league_jp"] == lg][:4]
+        # 相手待ちだけの画面は出さない（「○○は相手待ち」が並ぶだけ）
+        rest = [s for s in rows if s["key"] not in said
+                and not s.get("waiting")]
+        if not rest:
+            continue
+        head = lg or "ワールドシリーズ"
+        # 回戦が1つなら、見出しで1度だけ言う（毎行「地区シリーズ」と
+        # 読むと、そこだけで数秒かかる）。
+        rounds = {s["round_jp"] for s in rest}
+        one = len(rounds) == 1
+        say = (f"{lg}の{next(iter(rounds))}。" if lg and one else f"{head}。")
+        out.append({"kind": "ps_series",
+                    "text": say + "。".join(
+                        ps_series.text(s, with_round=bool(lg) and not one)
+                        for s in rest) + "。",
+                    "meta": {"keys": [s["key"] for s in rows],
+                             "head": head, "league": lid}})
+    return out
+
+
+def render_ps_series(p, data: dict, keys: list, head: str, league: str = ""):
+    """シリーズを1枚に最大4つ。**何勝何敗か、あと何勝か**が一目で。"""
+    import ps_series
+    im, d = base(p)
+    by = {s["key"]: s for s in (data.get("series") or [])}
+    rows = [by[k] for k in keys if k in by][:4]
+    if league:
+        league_badge(d, league, head, y=124)
+    else:
+        d.text((70, 132), head, font=font(52), fill=JP if "日本人" in head
+               else ACCENT)
+    if rows:
+        s0 = rows[0]
+        d.text((70, 212), "%d回戦制・%d勝で勝ち抜け"
+               % (s0["best_of"], s0["need"]) if len(
+                   {s["best_of"] for s in rows}) == 1 else "何勝で勝ち抜けかは回戦ごと",
+               font=font(36), fill=DIM)
+    y = 290
+    for s in rows:
+        x0, x1, ch = 70, W - 70, 234
+        d.rounded_rectangle([x0, y, x1, y + ch], 18, fill=SURF)
+        label = s["round_jp"] + ("" if not s["league_jp"] or league
+                                 else f"（{s['league_jp']}）")
+        d.text((x0 + 30, y + 12), label, font=font(28), fill=DIM)
+        # **王手はどちらの王手か**を書く。日本人選手のいる側が負けて
+        # いるとき、ただ「王手」とあるとその球団の王手に見える。
+        nday = (s.get("next") or {}).get("day") or ""
+        tag = (("相手待ち・%s 第1戦" % nday if nday else "相手待ち")
+               if s.get("waiting") else
+               ("%s 第1戦" % nday if nday else "第1戦へ")
+               if s["played"] == 0 else
+               "決着" if s["over"] else
+               ("%sが王手" % s["teams"][0]["name"])
+               if ps_series.elimination_game(s) else
+               ("第%d戦へ" % s["next"]["game"]) if s.get("next") else "")
+        if tag:
+            ft = font(30)
+            d.text((x1 - 30 - d.textlength(tag, font=ft), y + 10), tag,
+                   font=ft, fill=ACCENT if ("王手" in tag or tag == "決着")
+                   else DIM)
+        for i, t in enumerate(s["teams"][:2]):
+            ry = y + 54 + i * 88
+            lead = (s["winner"] == t["id"] if s["over"]
+                    else t["wins"] > min(x["wins"] for x in s["teams"]))
+            lost = s["over"] and s["winner"] != t["id"]
+            tint = team_tint(t["id"])
+            d.rounded_rectangle([x0 + 18, ry, x0 + 28, ry + 74], 5, fill=tint)
+            d.text((x0 + 48, ry), t["name"], font=font(46),
+                   fill=DIM if lost else TEXT)
+            if t["players"]:
+                d.text((x0 + 48, ry + 52), team_names(t["players"]),
+                       font=font(24), fill=JP)
+            if s["played"] == 0:
+                continue      # 始まる前は数字を出さない（スコアに見える）
+            fw = font(66)
+            num = str(t["wins"])
+            d.text((x1 - 40 - d.textlength(num, font=fw), ry - 4), num,
+                   font=fw, fill=ACCENT if lead else (DIM if lost else TEXT))
+        if s.get("waiting"):
+            # 相手がまだ決まっていない（免除で地区シリーズから入る球団など）
+            d.text((x0 + 48, y + 54 + 88), "相手は未定", font=font(40),
+                   fill=DIM)
+        y += ch + 14
     return im
 
 
@@ -2757,7 +3065,8 @@ def render_ps_bracket(p, data: dict, league: str = "104"):
     lg = (data.get("leagues") or {}).get(league) or {}
     lc = league_badge(d, league, lg.get("league_short")
                       or lg.get("league_jp", ""), y=124)
-    d.text((70, 212), "今日終わったら、この組み合わせ",
+    d.text((70, 212), ("確定した組み合わせ" if is_settled(data)
+                       else "今日終わったら、この組み合わせ"),
            font=font(56), fill=TEXT)
 
     seeds = (lg.get("leaders") or [])[:3] + (lg.get("wildcards") or [])[:3]
@@ -2848,7 +3157,8 @@ def render_ps_bracket(p, data: dict, league: str = "104"):
     # 同率がいる日は断る。勝敗が並んだ2球団のどちらが上かは
     # 直接対決で決まり、こちらはそれを計算していない。
     # 「今日終わったら」と言い切る画面なので、ここは正直に。
-    if lg.get("ties"):
+    # 確定したあとは入れ替わらない。
+    if lg.get("ties") and not is_settled(data):
         d.text((70, H - 196), "※ 同率の球団があり、順番は入れ替わりえます",
                font=font(30), fill=ACCENT)
     return im
@@ -3224,7 +3534,7 @@ def render_buzz(p, buzz, picks=None):
     """
     im, d = base(p)
     d.text((70, 70), "コレスポ", font=font(46), fill=ACCENT)
-    d.text((70, 200), "現地で最も見られた試合", font=font(60), fill=ACCENT)
+    d.text((70, 200), "再生が最も多かった試合", font=font(60), fill=ACCENT)
     d.text((74, 282), "MLB公式ハイライトの再生回数", font=font(32), fill=DIM)
 
     picks = picks or []
@@ -3554,6 +3864,7 @@ def render_thread(p, v):
 
 
 def render_voices(p, voices, picked=None):
+    voices = __import__('fan_privacy').voices(voices)
     """
     現地のファンが何と言っているか。
 
@@ -3651,7 +3962,7 @@ def render_voices(p, voices, picked=None):
 # 以前はここと説明文と「今日の1人」の締めで別々に書いていて、
 # 3つとも中身が違っていた。
 DAILY_LINEUP = [(name, what)
-                for _, name, what, _ in post_common.DAILY_LINEUP]
+                for _, name, what, _ in post_common.lineup()]
 
 
 def render_outro(p, mode: str = ""):
@@ -3668,7 +3979,8 @@ def render_outro(p, mode: str = ""):
     d.text((80, 380), "毎日、更新中", font=font(64), fill=TEXT)
 
     # 見ている回そのものは外す。読み上げと同じ扱いにする。
-    rows = [(name, what) for kind, name, what, _ in post_common.DAILY_LINEUP
+    # 時期で変わる枠はその日の姿で（post_common.lineup）。
+    rows = [(name, what) for kind, name, what, _ in post_common.lineup()
             if kind != MODE_KIND.get(mode, "")]
 
     # 1行ずつ滑り込ませる。全部を一度に出すと、ただの箇条書きに見える。
@@ -3728,7 +4040,10 @@ def plan_durations(segs):
     その日によって変わるものがあり(スコアボードの回数など)、
     表の固定値では、短い日は無音が伸び、長い日は追いつかない。
     """
-    return [max(float(s.get("min_duration")
+    if any((s.get('meta') or {}).get('duo') for s in segs):
+        import duo
+        return duo.durations(segs)
+    return [max(float(.5 if (s.get('meta') or {}).get('quote_rows') else s.get("min_duration")
                       or MIN_DURATION.get(s.get("kind") or "list", 5.0)),
                 float(s.get("duration") or 0) + video_common.SEGMENT_TAIL)
             for s in segs]
@@ -3775,6 +4090,8 @@ def build_player_video(args):
         segs = [{"kind": s["kind"], "file": None, "duration": 0.0,
                  "meta": s["meta"]} for s in narration["segments"]]
 
+    import render_timeline
+    timeline = render_timeline.Recorder(FPS, segs, narration)
     out_dir = pathlib.Path(args.out)
     out_dir.mkdir(parents=True, exist_ok=True)
     video_path = out_dir / "collespo_morning_player.mp4"
@@ -3796,6 +4113,9 @@ def build_player_video(args):
                         f"{'、'.join(dropped)}を外しました"
                         f"(残り{sum(durations):.0f}秒){chr(10)}")
 
+    import short_content
+    short_content.require(dict(narration, segments=segs), durations, out_dir,
+                          prof, maximum=MAX_SECONDS+post_common.BUDGET_GRACE, video_name=video_path.name)
     audio_path = build_narration_track(segs, durations, out_dir)
     if args.require_audio and not audio_path:
         print("::error::音声が作れませんでした。無音のまま投稿しないよう、"
@@ -3820,6 +4140,7 @@ def build_player_video(args):
     last_frame = None
     try:
         for seg_i, (seg, dur) in enumerate(zip(segs, durations)):
+            timeline.select(seg, seg_i)
             set_step(seg_i, len(segs))
             # その画面で読み上げている文を、画面下に出す
             set_spoken((narration["segments"][seg_i].get("text") or "")
@@ -3834,11 +4155,11 @@ def build_player_video(args):
             for k in range(n):
                 pp, settled = video_common.anim_step(k, n)
                 if settled and still is not None:
-                    proc.stdin.write(still)
+                    timeline.repeat(proc.stdin, still)
                     continue
                 im = draw(pp, prof) if draw else render_outro(pp, "player")
                 cached = video_common.crossfade(last_frame, im, k, fade, (W, H))
-                proc.stdin.write(cached)
+                timeline.write(proc.stdin, cached, im, overlap=last_frame is not None and k < fade)
                 # 動きが終わった最初の1枚。これを残りに使い回す。
                 if settled:
                     still = cached
@@ -3852,8 +4173,51 @@ def build_player_video(args):
     if proc.returncode != 0:
         print(f"::error::ffmpegが失敗しました ({proc.returncode})")
         return 1
+    timeline.save(video_path, args.audio_dir)
     print(f"[info] 書き出しました -> {video_path}")
     return 0
+
+
+def bignumber_scenes(data, narration, mode):
+    """案Bは明示指定した成績枠だけ。照合失敗時は元の画面と声を保つ。"""
+    design = os.environ.get("COLLESPO_PLAYERS_DESIGN") or data.get("players_design", "")
+    if mode != "players" or design != "bignumber":
+        return []
+    import bignumber_render as bn
+    try:
+        scenes = bn.scenes_from_morning(data, narration)
+        problems = bn.check_scenes(scenes, narration, data=data)
+        if not scenes:
+            problems.append("場面がありません")
+    except Exception as e:  # noqa: BLE001
+        scenes, problems = [], [str(e)]
+    if problems:
+        print("[warn] 数字ドーンを使わず旧デザインを維持: " + " / ".join(problems))
+        return []
+    for seg in narration["segments"]:
+        seg["speaker"] = 2
+        seg.setdefault("meta", {})["who"] = METAN
+    for scene in scenes:
+        scene["who"] = "metan"
+    return scenes
+
+
+def bignumber_sound(audio, plan, out_dir):
+    import bignumber_render as bn
+    import sound_mix
+    bgm = sound_mix.bgm_path()
+    name = bgm.stem
+    try:
+        cues = bn.plan_cues(plan)
+        import fan_events
+        cues += fan_events.event_cues()
+        out = sound_mix.mix_file(audio, out_dir / "narration_mixed.wav",
+                                 bgm if bgm.is_file() else None, cues)
+        print(f"[info] 数字ドーン: BGM {name if bgm.is_file() else 'なし'}・効果音{len(cues)}個")
+        return out
+    except Exception as e:  # noqa: BLE001
+        print(f"[warn] 数字ドーンの音を重ねられません（声だけで続けます）: {e}")
+        return audio
 
 
 def main():
@@ -3865,6 +4229,8 @@ def main():
     parser.add_argument("--postseason", default="data/postseason.json")
     parser.add_argument("--race", default="data/soccer_race.json",
                         help="--mode soccer_race のときの、順位争いの材料")
+    parser.add_argument("--week", default="data/soccer_jp_week.json",
+                        help="--mode soccer_week のときの、週末の日本人選手")
     parser.add_argument("--archive-dir", default="archive")
     parser.add_argument("--talk", default="data/local_buzz.json")
     parser.add_argument("--voices", default="data/local_voices.json")
@@ -3873,17 +4239,32 @@ def main():
     parser.add_argument("--mode", default="players",
                         choices=["players", "player", "local", "press",
                                  "voices", "postseason", "soccer_race",
-                                 "all"],
+                                 "soccer_week", "all"],
                         help="players=選手成績 / local=現地の注目度(数字) / "
                              "press=現地の報道(番記者と見出し) / "
                              "voices=ハイライトのコメント欄 / "
                              "player=今日の1人 / all=全部")
     parser.add_argument("--narration-out", default=None)
+    parser.add_argument('--narration',help='録音に使った保存原稿。描画時も同じ次情報を使う')
+    parser.add_argument('--next-schedule',help='次情報用の保存した公式日程（試作用）')
+    parser.add_argument('--publish-at',help='次情報を数える公開予約のJST時刻またはISO日時')
     parser.add_argument("--audio-dir", default="build/mr_audio")
     parser.add_argument("--require-audio", action="store_true",
                         help="音声が作れなければ動画を作らずに終わる")
     parser.add_argument("--out", default="build/morning")
     args = parser.parse_args()
+    import ui_voice_queue
+    ui_voice_queue.configure(args)
+    __import__('slant_by_episode').set_episode('morning',args.mode)
+    if args.mode in ('soccer_race','soccer_week'):
+        import soccer_slots_v4
+        if soccer_slots_v4.enabled():
+            return soccer_slots_v4.run_compat('race' if args.mode=='soccer_race' else 'week',
+                args.race if args.mode=='soccer_race' else args.week,
+                narration_out=args.narration_out, audio_dir=args.audio_dir, out=args.out,
+                narration_path=args.narration)
+    if args.narration_out:
+        pathlib.Path(args.narration_out).unlink(missing_ok=True)
 
     # 「今日の1人」は他の枠と材料が違うので、ここで分岐して先に処理する。
     # 前夜の出場に依存しないため、成績データが無い日でも作れる。
@@ -3892,9 +4273,17 @@ def main():
 
     path = pathlib.Path(args.recap)
     if not path.exists():
-        print(f"[info] {path} が無いため、夕方のショートは作りません")
-        return
-    data = json.loads(path.read_text(encoding="utf-8"))
+        data = {}
+    else:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    import recap_freshness
+    if args.mode == "players":
+        data = recap_freshness.read_for_edition(data)
+    else:
+        # コメント・報道・サッカーは当日の成績の有無に巻き込まない。
+        # 古い成績を混ぜず、各枠の独立した材料とその日付を使う。
+        data = recap_freshness.read_for_edition(data) or {"players": []}
+        data["date_jst"] = recap_freshness.current_day().isoformat()
     # 並べ替えはここで一度だけ行う。
     # build_narration の中だけで並べ替えていたとき、原稿は貢献度順なのに
     # 画面は元の順のままで、「1位 34点、3位 44点」と食い違った。
@@ -3902,7 +4291,7 @@ def main():
     # 原稿と画面が同じリストを見るようにする。
     players = sort_players(data.get("players") or [])
     data["players"] = players
-    if not players:
+    if not players and args.mode == "players":
         print("[info] 出場した日本人選手がいないため作りません")
         return
 
@@ -3943,6 +4332,13 @@ def main():
         except (json.JSONDecodeError, OSError):
             reporters_data = {}
     data["reporters"] = reporters_data
+    import topic_hub
+    if args.mode == 'press' and topic_hub.enabled():
+        reporters_data = topic_hub.reporter_material(topic_hub.load('data/topic_hub.json'))
+        data['reporters'] = reporters_data
+    from article_freshness import fresh_material
+    reporters_data = fresh_material(reporters_data, data.get('date_jst'))
+    data['reporters'] = reporters_data
 
     # ポストシーズン進出争い。9月と10月だけ材料がある。
     # 取れていなければ、その枠を作らないだけ。
@@ -3969,6 +4365,16 @@ def main():
         except (json.JSONDecodeError, OSError):
             race = {}
     data["race"] = race
+    week = {}
+    wp_ = pathlib.Path(args.week)
+    if args.mode == "soccer_week" and wp_.exists():
+        try:
+            week = json.loads(wp_.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError):
+            week = {}
+        if week.get("date"):
+            data["date_jst"] = week["date"]
+    data["week"] = week
     # 順位争いは「今日の順位」なので、日付をずらさない。
     # 成績の回は米国日付を1日進めてJSTにするが、ここはその相手がいない。
     if args.mode == "soccer_race" and race.get("date_jst"):
@@ -3984,7 +4390,28 @@ def main():
         print(f"[info] 現地の話題: {len(talk['teams'])}チーム / "
               f"{talk.get('titles_count', 0)}件の見出しから")
 
-    narration = build_narration(data, args.mode)
+    if args.narration:
+        narration=json.loads(pathlib.Path(args.narration).read_text(encoding='utf-8'))
+    else:
+        if args.narration_out and args.mode in ('players','postseason'):
+            import next_line
+            clock=args.publish_at or ('17:00' if args.mode=='players' else '20:00')
+            at=next_line.publication_time(recap_day(data),clock)
+            data['next_line']=next_line.acquire(MODE_KIND.get(args.mode,''),at,players[0].get('team_id') if players else None,args.next_schedule)
+        narration = build_narration(data, args.mode)
+        if args.mode == 'press':
+            import hook_ab
+            narration = hook_ab.prepare(narration, 'morning_press', hook_ab.publication_day(args.publish_at))
+    bn_scenes = bignumber_scenes(data, narration, args.mode)
+    import daily_v3
+    daily_design = daily_v3.prepare(data, narration, args.mode)
+    import host_split
+    split_kind = 'morning' if args.mode == 'players' else ('morning_'+args.mode)
+    if split_kind in host_split.KINDS:
+        narration = host_split.adapt(narration, split_kind)
+        if not args.narration_out:
+            narration = host_split.use_audio(narration, args.audio_dir)
+            host_split.render_audio(args.audio_dir, args.out)
     kinds = [s["kind"] for s in narration["segments"]]
     print(f"[info] mode={args.mode} / 画面 {len(kinds)}枚: {kinds}")
     # 材料が1つも無い日は作らない。
@@ -4066,6 +4493,8 @@ def main():
         segs = [{"kind": s["kind"], "file": None, "duration": 0.0,
                  "meta": s["meta"]} for s in narration["segments"]]
 
+    import render_timeline
+    timeline = render_timeline.Recorder(FPS, segs, narration)
     out_dir = pathlib.Path(args.out)
     out_dir.mkdir(parents=True, exist_ok=True)
     # モードごとに別ファイルにする。同じ名前だと2本目が1本目を上書きする
@@ -4074,7 +4503,45 @@ def main():
                             else "collespo_morning.mp4")
 
     durations = plan_durations(segs)
+    if args.mode=='players':
+        limit,grace=post_common.duration_budget('morning')
+        keep,dropped=fit_budget(segs,durations,('week','reach','praise'),limit,grace)
+        if dropped:
+            segs=[segs[i] for i in keep];durations=[durations[i] for i in keep]
+            narration=dict(narration,segments=[narration['segments'][i] for i in keep])
+            bn_scenes=bignumber_scenes(data,narration,args.mode)
+            (out_dir/'final_narration.json').write_text(json.dumps(narration,ensure_ascii=False),encoding='utf-8')
+            if args.narration:
+                pathlib.Path(args.narration).write_text(json.dumps(narration,ensure_ascii=False),encoding='utf-8')
+        if sum(durations)>limit+grace:
+            raise ValueError(f'17:00の尺が予算{limit}+{grace}秒を超えています: {sum(durations):.2f}秒。声の設定を変えず原稿を短くしてください')
+    import short_content
+    # 夕方の上限は 17:00 の players だけ。voices・press は以前から上限なし（10/27 voices 75.4秒）。
+    # 55+6秒を当てると 10/28 voices 79秒が止まった。ショートの上限3分だけを守る
+    short_content.require(dict(narration, segments=segs), durations, out_dir,
+                          dict(data, players=players), maximum=sum(post_common.duration_budget('morning')) if args.mode=='players' else 180.0,
+                          video_name=video_path.name)
     audio_path = build_narration_track(segs, durations, out_dir)
+    if any((s.get('meta') or {}).get('duo') for s in narration['segments']):
+        import duo
+        errors=duo.check(segs,durations)
+        if errors:raise ValueError('掛け合いの実音声: '+str(errors))
+    import fan_events
+    fan_events.prepare(data, segs, durations, out_dir)
+    if daily_design and audio_path:
+        daily_v3.validate_audio(segs, narration)
+        audio_path = daily_v3.mix(audio_path, segs, durations, daily_design, out_dir)
+    bn_plan = []
+    if bn_scenes:
+        import bignumber_render as bn
+        import motion
+        if motion.enabled():motion.measured(segs)
+        bn_plan = bn.timeline(bn_scenes, durations)
+        if audio_path:
+            # 古いずんだもん音声の使い回しによる、めたん立ち絵との不一致を止める。
+            if any(s.get("speaker") != 2 for s in segs):
+                raise ValueError("数字ドーンの音声を四国めたん（話者2）で作り直してください")
+            audio_path = bignumber_sound(audio_path, bn_plan, out_dir)
 
     # 音声が作れなかった場合、これまでは無音のまま書き出して投稿していた。
     # 無音の動画が出るくらいなら、その日は出さない方がよい。
@@ -4102,8 +4569,13 @@ def main():
     total = 0
     # 直前の画面の最後のフレーム。切り替わりの頭だけ、これと混ぜる。
     last_frame = None
+    bn_time = 0.0
+    duo_scene_elapsed=0.0
+    import hook_ab
+    hook_scenes = hook_ab.SceneRecorder()
     try:
         for seg_i, (seg, dur) in enumerate(zip(segs, durations)):
+            timeline.select(seg, seg_i)
             set_step(seg_i, len(segs))
             # その画面で読み上げている文を、画面下に出す
             set_spoken((narration["segments"][seg_i].get("text") or "")
@@ -4114,25 +4586,73 @@ def main():
             still = None
             # 最初の画面は前が無いので混ぜない
             fade = 0 if seg_i == 0 else int(video_common.FADE_SECONDS * FPS)
+            if daily_design or bn_plan:
+                import review_render_v3 as r3
+                r3.set_program_clock(total / FPS)
+                # 字幕（v4）: その画面で読む文。締めは画面に文が出ているので出さない
+                same=(seg_i>0 and meta.get('duo') and meta.get('screen')==
+                      (segs[seg_i-1].get('meta') or {}).get('screen'))
+                if not same:duo_scene_elapsed=0.0
+                r3.set_caption((narration['segments'][seg_i].get('text') or '')
+                               if meta.get('duo') or kind!='outro' else '',
+                               float(seg.get("duration") or dur), sum(durations),
+                               speaker=seg.get('speaker',2),duo=meta.get('duo',False),hide_caption=kind=='outro')
+                r3._CAPTION['scene_elapsed']=duo_scene_elapsed
             for k in range(n):
+                if daily_design or bn_plan:
+                    import review_render_v3 as r3
+                    r3.set_program_clock(total / FPS)
+                if daily_design:
+                    speech = float(seg.get('duration') or dur)
+                    im = daily_v3.frame(k / FPS, narration["segments"][seg_i], daily_design, speech)
+                    if narration.get('hook_ab'):
+                        hook_scenes.observe(im, total, FPS, meta.get('screen', seg_i))
+                    same=(seg_i>0 and meta.get('duo') and meta.get('screen')==
+                          (segs[seg_i-1].get('meta') or {}).get('screen'))
+                    cached = video_common.short_transition(None if same else last_frame,im,k,FPS,r3.LOOK=='v4')
+                    if k < fade:
+                        cached = r3.redraw_ticker(cached, (W, H))
+                    timeline.write(proc.stdin, cached, im, overlap=not same and r3.LOOK!='v4' and last_frame is not None and k < fade)
+                    total += 1
+                    continue
+                if bn_plan:
+                    image=bn.frame(bn_time+k/FPS,bn_plan)
+                    cached=video_common.short_transition(last_frame,image,k,FPS,True) if r3.LOOK=='v4' else image.tobytes()
+                    timeline.write(proc.stdin, cached, image, overlap=r3.LOOK!='v4' and last_frame is not None and k < fade)
+                    total += 1
+                    continue
                 pp, settled = video_common.anim_step(k, n)
+                if kind=='intro' and meta.get('press_hook'):
+                    settled=False  # 3秒の引用札切替を静止画キャッシュで止めない。
                 if settled and still is not None:
-                    proc.stdin.write(cached)
+                    timeline.repeat(proc.stdin, cached, overlap=last_frame is not None and k < fade)
                     total += 1
                     continue
                 if kind == "outro":
                     set_spoken("")
-                if kind == "intro":
+                if kind == 'forecast_check':
+                    import bignumber_render as bn
+                    f=meta['forecast'];unit='奪三振' if f['field']=='so' else '安打'
+                    im=bn.scene(k/FPS,{'layout':'cards','head':'昨夜の注目数字の結果',
+                        'label':narration.get('label',''),'cards':[{'title':f['name'],'body':f'期待 {f["threshold"]}{unit}以上 → 結果 {meta["actual"]}{unit}'}],
+                        'say':seg['text']})
+                elif kind == "intro":
                     im = render_intro(pp, meta, top,
                                      {"buzz": buzz,
                                       "voices": voices_data,
                                       "reporters": reporters_data,
-                                      "players": players})
+                                      "players": players},elapsed=k/FPS)
                 elif kind == "list":
                     im = render_list(pp, players, meta.get("start", 0),
                                      meta.get("count", 1))
                 elif kind == "buzz":
                     im = render_buzz(pp, buzz, picks)
+                elif kind == "week_intro":
+                    im = render_week_intro(pp, data.get("week") or {},
+                                           meta.get("day", ""))
+                elif kind == "week_rows":
+                    im = render_week_rows(pp, data.get("week") or {},
+                                          meta.get("rows") or [])
                 elif kind == "race_intro":
                     im = render_race_intro(pp, race, meta.get("day", ""))
                 elif kind == "race_japanese":
@@ -4155,6 +4675,11 @@ def main():
                 elif kind == "ps_japanese":
                     im = render_ps_japanese(pp,
                                             postseason.get("japanese") or [])
+                elif kind == "ps_series":
+                    im = render_ps_series(pp, postseason,
+                                          meta.get("keys") or [],
+                                          meta.get("head", ""),
+                                          meta.get("league", ""))
                 elif kind == "ps_bracket":
                     im = render_ps_bracket(pp, postseason,
                                            meta.get("league", "104"))
@@ -4206,15 +4731,21 @@ def main():
                     draw_peek(im, ImageDraw.Draw(im), who,
                               expr={who: mine, other: yours},
                               names=False, edge=250)
+                if narration.get('hook_ab') and meta.get('press_hook'):
+                    hook_scenes.observe(im,total,FPS,meta.get('screen',seg_i))
                 cached = video_common.crossfade(last_frame, im, k, fade, (W, H))
-                proc.stdin.write(cached)
+                timeline.write(proc.stdin, cached, im, overlap=last_frame is not None and k < fade)
                 # 動きが終わった最初の1枚。これを残りに使い回す。
                 if settled:
                     still = cached
                 total += 1
             last_frame = cached
+            bn_time += dur
+            duo_scene_elapsed+=dur
             print(f"[info] {kind}: {dur:.1f}秒")
     finally:
+        import review_render_v3 as _r3
+        _r3.set_program_clock(None)
         if proc.stdin:
             proc.stdin.close()
         proc.wait()
@@ -4226,7 +4757,11 @@ def main():
               file=sys.stderr)
         sys.exit(1)
 
+    timeline.save(video_path, args.audio_dir)
     secs = total / FPS
+    host_split.bind_video(video_path, args.audio_dir)
+    import hook_ab
+    hook_ab.bind_video(video_path, narration, segs, durations, FPS, hook_scenes.starts)
     print(f"[info] 夕方のショートを生成しました: {video_path} "
           f"({video_path.stat().st_size / 1024 / 1024:.1f}MB, {secs:.0f}秒)")
 

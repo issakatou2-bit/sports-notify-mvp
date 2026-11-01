@@ -1,0 +1,353 @@
+import copy
+import hashlib
+import json
+import os
+from pathlib import Path
+import subprocess
+import sys
+import tempfile
+import unittest
+
+import game_hook_guard as guard
+
+
+NOOTBAAR_HOOK = 'ワイルドカード争い続行の守護神ヌートバー、ポストシーズン決定パドレスに挑む'
+DODGERS_HOOK = 'ドジャース99勝vs4連敗中のジャイアンツ、伝統の好カードが決定戦'
+
+
+def fixture(game_id='823246', hook=NOOTBAAR_HOOK, league='MLB'):
+    return {'game_id': game_id, 'league': league, 'notification_hook': hook,
+            'jp_players': ['松井裕樹', 'ヌートバー'], 'jp_starters': [],
+            'reasons': [{'tag': 'jp_team', 'text': 'ダイヤモンドバックスにはヌートバーが所属'},
+                        {'tag': 'ps_race', 'text': 'パドレス はポストシーズン圏内'}],
+            'ai_summary': 'パドレスはポストシーズン進出を決めている。',
+            'result': {'home': 2, 'away': 1}}
+
+
+def write_json(path, data):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(data, ensure_ascii=False), encoding='utf-8')
+
+
+class GameHookGuard(unittest.TestCase):
+    def test_published_september_27_failures(self):
+        for hook, term in [(NOOTBAAR_HOOK, '守護神'), (DODGERS_HOOK, '決定戦')]:
+            with self.subTest(term=term):
+                game = fixture(hook=hook)
+                if term == '決定戦':
+                    game['game_id'] = '823164'
+                    game['reasons'] = [
+                        {'tag': 'ps_race', 'text': 'ドジャース はポストシーズン圏内'},
+                        {'tag': 'rivalry', 'text': 'ドジャース vs ジャイアンツ は伝統の好カード'}]
+                    game['ai_summary'] = 'ドジャースは地区優勝を既に決めている。'
+                original = copy.deepcopy(game)
+                self.assertEqual(guard.validated_hook(game), '')
+                self.assertEqual(len(guard.rejection_reasons(game)), 1)
+                self.assertIn(term, guard.rejection_reasons(game)[0])
+                self.assertEqual(game, original)
+
+    def test_hook_game_number_must_match_rule_reason(self):
+        # 10/28 第5戦の通知が「王手の第4戦へ」になった
+        game = fixture(hook='Jacob Misiorowski防御率1.80、ブリュワーズはワールドシリーズ王手の第4戦へ')
+        game['reasons'] = [{'tag': 'postseason', 'text': 'ワールドシリーズ 第5戦(ブリュワーズが3勝1敗で王手、レイズは負ければ敗退)'}]
+        self.assertIn('一言の「第N戦」がルール由来のreasons.textの試合番号と違う', guard.rejection_reasons(game))
+        game['notification_hook'] = 'ブリュワーズはワールドシリーズ王手の第5戦へ'
+        self.assertEqual(guard.rejection_reasons(game), [])
+
+    def test_safe_hook_is_preserved_verbatim(self):
+        game = fixture(hook='  菊池雄星、1勝6敗の状況でマリナーズと対戦へ\n')
+        self.assertEqual(guard.validated_hook(game), game['notification_hook'])
+        self.assertEqual(guard.rejection_reasons(game), [])
+
+    def test_each_term_needs_explicit_rule_evidence(self):
+        for term in guard.GUARDED_TERMS:
+            with self.subTest(term=term):
+                game = fixture(hook=f'{term}に注目')
+                self.assertEqual(guard.validated_hook(game), '')
+                game['reasons'].append({'tag': 'manual', 'text': f'公式確認済みの{term}'})
+                self.assertEqual(guard.validated_hook(game), game['notification_hook'])
+
+    def test_names_ai_summary_and_other_labels_do_not_prove_role(self):
+        game = fixture()
+        game['jp_players'] = ['守護神ヌートバー']
+        game['jp_starters'] = [{'name': '守護神ヌートバー'}]
+        game['ai_summary'] = '守護神ヌートバーが登板する。'
+        game['reasons'].extend([{'tag': '守護神', 'text': '所属選手'},
+                                {'text': {'caption': '守護神'}}])
+        self.assertEqual(guard.validated_hook(game), '')
+
+    def test_all_claimed_terms_need_evidence_not_just_one(self):
+        game = fixture(hook='守護神が決定戦に臨む')
+        game['reasons'] = [{'text': '守護神についての確認済み資料'}]
+        self.assertEqual(guard.validated_hook(game), '')
+        self.assertIn('決定戦', guard.rejection_reasons(game)[0])
+
+    def test_empty_or_malformed_optional_values_are_safe(self):
+        for value in [None, '', 7]:
+            self.assertEqual(guard.validated_hook({'notification_hook': value}), '')
+        for reasons in [None, '守護神', [{'text': None}], [None]]:
+            game = fixture()
+            game['reasons'] = reasons
+            self.assertEqual(guard.validated_hook(game), '')
+
+    def test_soccer_uses_the_same_guard(self):
+        game = fixture(game_id='soccer-1', hook='今日の一戦で優勝決定戦', league='SOCCER')
+        self.assertEqual(guard.validated_hook(game), '')
+        game['reasons'] = [{'text': '優勝決定戦に該当することを確認'}]
+        self.assertEqual(guard.validated_hook(game), game['notification_hook'])
+
+    def test_cli_json_report_and_exact_archive_changes_are_idempotent(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            games_path, archive_dir, report_path = root/'games.json', root/'archive', root/'report.json'
+            unsafe = fixture()
+            soccer_bad = fixture('soccer-1', '根拠のない決定戦', 'SOCCER')
+            safe = fixture('823084', '菊池雄星が先発予定')
+            payload = {'generated_at': '2026-09-27T18:53:55+09:00',
+                       'games': [unsafe, safe, soccer_bad], 'ai_status': {'succeeded': 3},
+                       'results': [copy.deepcopy(unsafe)]}
+            other_game = fixture('other-id')
+            other_league = fixture('823246', NOOTBAAR_HOOK, 'SOCCER')
+            different_hook = fixture('823246', '以前の守護神という文面')
+            archive = {'generated_at': '2026-09-27T18:52:00+09:00',
+                       'games': [copy.deepcopy(unsafe), other_game, other_league,
+                                 different_hook, copy.deepcopy(soccer_bad)],
+                       'results': [copy.deepcopy(unsafe)]}
+            write_json(games_path, payload)
+            write_json(archive_dir/'2026-09-27.json', archive)
+            write_json(archive_dir/'2026-09-26.json', archive)
+            original_sha = hashlib.sha256(games_path.read_bytes()).hexdigest()
+            older_bytes = (archive_dir/'2026-09-26.json').read_bytes()
+            command = [sys.executable, '-B', str(Path(guard.__file__)), '--games', str(games_path),
+                       '--archive-dir', str(archive_dir), '--report', str(report_path)]
+            result = subprocess.run(command, capture_output=True, text=True, encoding='utf-8',
+                                    env={**os.environ, 'PYTHONUTF8': '1'})
+            self.assertEqual(result.returncode, 0, result.stderr)
+            report = json.loads(result.stdout)
+            self.assertEqual(json.loads(report_path.read_text(encoding='utf-8')), report)
+            self.assertEqual(report['input']['sha256'], original_sha)
+            self.assertEqual((report['checked_games'], report['rejected_count']), (3, 2))
+            self.assertEqual(report['archive']['modified_games'], 2)
+            expected = copy.deepcopy(payload)
+            del expected['games'][0]['notification_hook']
+            del expected['games'][2]['notification_hook']
+            self.assertEqual(json.loads(games_path.read_text(encoding='utf-8')), expected)
+            expected_archive = copy.deepcopy(archive)
+            del expected_archive['games'][0]['notification_hook']
+            del expected_archive['games'][4]['notification_hook']
+            self.assertEqual(json.loads((archive_dir/'2026-09-27.json').read_text(encoding='utf-8')),
+                             expected_archive)
+            self.assertEqual((archive_dir/'2026-09-26.json').read_bytes(), older_bytes)
+            first_games = games_path.read_bytes()
+            first_archive = (archive_dir/'2026-09-27.json').read_bytes()
+            again = guard.sanitize_files(games_path, archive_dir)
+            self.assertEqual(again['modified_games'], 0)
+            self.assertEqual(again['archive']['modified_games'], 0)
+            self.assertEqual(games_path.read_bytes(), first_games)
+            self.assertEqual((archive_dir/'2026-09-27.json').read_bytes(), first_archive)
+
+    def test_other_date_inside_named_archive_is_not_changed(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            games = root/'games.json'
+            archive = root/'archive'/'2026-09-27.json'
+            write_json(games, {'generated_at': '2026-09-27T18:00:00+09:00', 'games': [fixture()]})
+            write_json(archive, {'generated_at': '2026-09-26T18:00:00+09:00', 'games': [fixture()]})
+            before = archive.read_bytes()
+            report = guard.sanitize_files(games, archive.parent)
+            self.assertEqual(report['archive']['status'], 'skipped_generated_date_mismatch')
+            self.assertEqual(archive.read_bytes(), before)
+
+    def test_bad_archive_cannot_partially_change_main_file(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            games = root/'games.json'
+            write_json(games, {'generated_at': '2026-09-27T18:00:00+09:00', 'games': [fixture()]})
+            write_json(root/'2026-09-27.json', {'games': 'not a list'})
+            before = games.read_bytes()
+            with self.assertRaises(ValueError):
+                guard.sanitize_files(games, root)
+            self.assertEqual(games.read_bytes(), before)
+
+    def test_report_cannot_overwrite_input(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            games = Path(tmp)/'games.json'
+            write_json(games, {'games': [fixture()]})
+            before = games.read_bytes()
+            with self.assertRaises(ValueError):
+                guard.sanitize_files(games, report_path=games)
+            self.assertEqual(games.read_bytes(), before)
+
+
+
+class PostseasonPurposeGuard(unittest.TestCase):
+    def test_current_game_objective_is_rejected_in_each_round(self):
+        for round_code in ('F', 'D', 'L', 'W'):
+            game = {'league': 'MLB', 'game_type': round_code,
+                    'notification_hook': 'PS戦。ポストシーズン進出を決める第3戦',
+                    'ai_summary': 'この第3戦は、ポストシーズンへの進出をかけた一戦。'}
+            self.assertTrue(guard.rejection_reasons(game))
+            self.assertTrue(guard.postseason_rejections(game, 'ai_summary'))
+            self.assertEqual(guard.validated_hook(game), '')
+
+    def test_regular_season_and_soccer_stay_untouched(self):
+        for league, kind in [('MLB', 'R'), ('MLB', None), ('soccer', 'F')]:
+            game = {'league': league, 'game_type': kind,
+                    'notification_hook': 'ポストシーズン進出を決める第3戦',
+                    'ai_summary': 'この試合はポストシーズンへの進出をかけた一戦。'}
+            self.assertFalse(guard.rejection_reasons(game))
+            self.assertFalse(guard.postseason_rejections(game, 'ai_summary'))
+
+    def test_correct_stage_and_historical_mentions_are_preserved(self):
+        for text in ['この第3戦は地区シリーズへの進出をかけた一戦。',
+                     '昨年ポストシーズン進出を決めた第3戦。',
+                     'レギュラーシーズンでポストシーズン進出を決めた。']:
+            self.assertFalse(guard.postseason_rejections(
+                {'league': 'MLB', 'game_type': 'F', 'ai_summary': text}, 'ai_summary'))
+
+    def test_matching_rss_archive_and_other_items_are_preserved(self):
+        import xml.etree.ElementTree as ET
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp); game = {'league': 'MLB', 'game_type': 'F', 'game_id': '849844',
+                'notification_hook': 'ポストシーズン進出を決める第3戦',
+                'ai_summary': 'この第3戦はポストシーズンへの進出をかけた最終戦。',
+                'reasons': [{'text': 'WCS第3戦。1勝1敗。'}]}
+            data = {'generated_at': '2026-10-01T09:52:31Z', 'games': [game]}
+            write_json(root/'games.json', data); write_json(root/'archive/2026-10-01.json', data)
+            rss = ET.Element('rss'); channel = ET.SubElement(rss, 'channel')
+            for guid in ('849844-2026-10-01', '849844-2026-09-30', 'soccer-2026-10-01'):
+                item = ET.SubElement(channel, 'item'); ET.SubElement(item, 'guid').text = guid
+                ET.SubElement(item, 'pubDate').text = 'Thu, 01 Oct 2026 09:52:31 +0000'
+                desc = ET.SubElement(item, 'description'); desc.text = game['ai_summary']
+                ET.SubElement(desc, 'br').tail = '・WCS第3戦。1勝1敗。'
+            feed = root/'feed.xml'; ET.ElementTree(rss).write(feed,encoding='utf-8')
+            result = guard.sanitize_files(root/'games.json', root/'archive', feed_path=feed)
+            self.assertEqual(result['rejected_count'], 2)
+            self.assertEqual(result['modified_games'], 1)
+            self.assertEqual(result['archive']['modified_games'], 1)
+            self.assertEqual(result['rss_refreshed'], 1)
+            items = ET.parse(feed).findall('.//item')
+            self.assertEqual(items[0].findtext('description'), '・WCS第3戦。1勝1敗。')
+            self.assertEqual(items[1].findtext('description'), game['ai_summary'])
+            self.assertEqual(items[2].findtext('description'), game['ai_summary'])
+            self.assertEqual(items[0].findtext('guid'), '849844-2026-10-01')
+            self.assertEqual(items[0].findtext('pubDate'), 'Thu, 01 Oct 2026 09:52:31 +0000')
+            self.assertEqual(json.loads((root/'games.json').read_text(encoding='utf-8'))['games'][0]['reasons'],game['reasons'])
+            before = feed.read_bytes()
+            self.assertEqual(guard.sanitize_files(root/'games.json', feed_path=feed)['rss_refreshed'],0)
+            self.assertEqual(feed.read_bytes(), before)
+
+    def test_invalid_feed_never_partially_changes_inputs(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp); games = root/'games.json'; feed = root/'feed.xml'
+            data = {'games': [{'league': 'MLB', 'game_type': 'F', 'game_id': '1',
+                    'notification_hook': 'ポストシーズン進出を決める第3戦'}]}
+            write_json(games,data); feed.write_text('invalid')
+            before = games.read_bytes()
+            with self.assertRaises(Exception): guard.sanitize_files(games,feed_path=feed)
+            self.assertEqual(games.read_bytes(),before)
+
+class PostseasonDivisionRaceGuard(unittest.TestCase):
+    def test_live_division_race_is_rejected_in_all_rounds(self):
+        for round_code in ('F', 'D', 'L', 'W'):
+            for text in ('ガーディアンズは中地区で首位を守るチーム。',
+                         'ホワイトソックスは2位で1.0ゲーム差に迫り、好調だ。',
+                         'この試合で地区優勝を目指す。'):
+                for field in ('ai_summary', 'notification_hook'):
+                    with self.subTest(round_code=round_code, text=text, field=field):
+                        self.assertTrue(guard.postseason_rejections(
+                            {'league': 'MLB', 'game_type': round_code, field: text}, field))
+
+    def test_series_lead_final_standings_and_history_are_kept(self):
+        for text in ('ホワイトソックスが1勝0敗でリードする地区シリーズ第2戦。',
+                     'レギュラーシーズンは首位を守る戦いだった。',
+                     '昨年は1.0ゲーム差に迫った。',
+                     'レイズは最終成績で東地区首位。',
+                     'レギュラーシーズンで首位を守って地区優勝を決めた。'):
+            self.assertFalse(guard.postseason_rejections(
+                {'league': 'MLB', 'game_type': 'D', 'ai_summary': text}, 'ai_summary'))
+
+    def test_regular_season_and_soccer_are_not_reinterpreted(self):
+        for league, kind in [('MLB', 'R'), ('soccer', 'D'), ('MLB', None)]:
+            self.assertFalse(guard.postseason_rejections(
+                {'league': league, 'game_type': kind, 'ai_summary': '首位を守るチーム。'}, 'ai_summary'))
+
+    def test_only_invalid_summary_is_removed_and_second_run_is_noop(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            p = Path(tmp)/'games.json'
+            game = {'league': 'MLB', 'game_type': 'D', 'game_id': '849834',
+                    'start_time': '2026-10-06T06:00:00+09:00',
+                    'ai_summary': 'ガーディアンズは中地区で首位を守るチーム。',
+                    'reasons': [{'text': '地区シリーズ第2戦。CWSが1勝0敗。'}],
+                    'notification_hook': '地区シリーズ第2戦'}
+            valid = dict(game, game_id='849839', ai_summary='レイズが1勝0敗でリード。')
+            write_json(p, {'games': [game, valid]})
+            before = p.read_bytes()
+            result = guard.sanitize_files(p)
+            self.assertEqual(result['modified_games'], 1)
+            actual = json.loads(p.read_text(encoding='utf-8'))['games']
+            self.assertEqual(actual[0], {k:v for k,v in game.items() if k != 'ai_summary'})
+            self.assertEqual(actual[1], valid)
+            fixed = p.read_bytes()
+            self.assertEqual(guard.sanitize_files(p)['modified_games'], 0)
+            self.assertEqual(p.read_bytes(), fixed)
+
+
+class PostseasonStreakGuard(unittest.TestCase):
+    def game(self, text, field='notification_hook', **extra):
+        return dict(league='MLB', game_type='D', home_team_name='ガーディアンズ',
+                    away_team_name='ホワイトソックス',
+                    series_context={'home_wins_in_stretch':0, 'away_wins_in_stretch':1},
+                    **{field:text}, **extra)
+
+    def test_winless_team_cannot_extend_streak_in_either_field(self):
+        for field in ('notification_hook', 'ai_summary'):
+            for text in ('投手力で勝るガーディアンズは連勝か', 'ガーディアンズが連勝を狙う'):
+                self.assertTrue(guard.postseason_rejections(self.game(text,field),field))
+
+    def test_winner_history_and_player_streak_are_kept(self):
+        for text in ('ホワイトソックスは連勝か', '昨年ガーディアンズは連勝した。',
+                     'ガーディアンズ先発Williamsは連勝を狙う'):
+            self.assertFalse(guard.postseason_rejections(self.game(text),'notification_hook'))
+
+    def test_unknown_context_regular_season_and_soccer_are_not_guessed(self):
+        game=self.game('ガーディアンズは連勝か')
+        for field,value in (('series_context',{}),('game_type','R'),('league','soccer')):
+            with self.subTest(field=field):
+                candidate=dict(game,**{field:value})
+                self.assertFalse(guard.postseason_rejections(candidate,'notification_hook'))
+
+
+
+class PostseasonRecentFormGuard(unittest.TestCase):
+    def test_october_6_public_lad_summary_is_rejected(self):
+        text = '【100勝62敗で地区優勝のドジャース】は3連勝中、直近10試合で8勝2敗と勢いに乗っている。シリーズは1勝1敗。'
+        for field in ('ai_summary', 'notification_hook'):
+            game = {'league':'MLB', 'game_type':'D', field:text}
+            self.assertTrue(guard.postseason_rejections(game, field))
+
+    def test_each_round_bare_recent_wins_losses_need_period(self):
+        for kind in ('F','D','L','W'):
+            for text in ('ドジャースは3連勝中。','パドレスは2連敗中。','ブレーブスは直近10試合が5勝5敗。'):
+                self.assertTrue(guard.postseason_rejections({'league':'MLB','game_type':kind,'ai_summary':text}, 'ai_summary'))
+
+    def test_scoped_ps_history_and_cross_round_streak_are_kept(self):
+        for text in ('レギュラーシーズン終盤は3連勝中だった。',
+                     'レギュラーシーズンの直近10試合は8勝2敗。',
+                     'ホワイトソックスはポストシーズンで4連勝中。',
+                     'PSでは4連勝中、地区シリーズは2勝0敗。',
+                     '昨年は3連勝中だった。', 'シリーズは1勝1敗。'):
+            self.assertFalse(guard.postseason_rejections({'league':'MLB','game_type':'D','ai_summary':text}, 'ai_summary'))
+
+    def test_unrelated_clinch_clause_does_not_license_current_form(self):
+        self.assertTrue(guard.postseason_rejections({'league':'MLB','game_type':'D',
+            'ai_summary':'ドジャースは地区優勝を決めた強豪であり、3連勝中だ。'}, 'ai_summary'))
+
+    def test_soccer_regular_season_and_player_hits_are_unchanged(self):
+        for league, kind, text in [('soccer','D','3連勝中、直近10試合で8勝2敗。'),
+                                  ('MLB','R','3連勝中、直近10試合で8勝2敗。'),
+                                  ('MLB','D','村上は4試合連続安打中。')]:
+            self.assertFalse(guard.postseason_rejections({'league':league,'game_type':kind,'ai_summary':text}, 'ai_summary'))
+
+if __name__ == '__main__':
+    unittest.main(argv=['test_game_hook_guard'])

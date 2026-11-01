@@ -1,0 +1,33 @@
+{
+  "publication_id": "delivery:legacy_tiktok:morning_player:2026-08-23",
+  "domain": "delivery",
+  "kind": "legacy_tiktok",
+  "key_parts": {
+    "kind": "morning_player",
+    "legacy_key": "2026-08-23"
+  },
+  "version": 1,
+  "history": [
+    {
+      "source": "published_tiktok/morning_player/2026-08-23",
+      "service": "tiktok",
+      "video_id": null,
+      "state": "unknown",
+      "scheduled_at": null,
+      "event_day": null,
+      "material_day": null,
+      "edition_day": null,
+      "run_at": null,
+      "details": {
+        "privacy": null,
+        "status": "SEND_TO_USER_INBOX",
+        "publish_id": "v_inbox_file~v2.7677103683129362449"
+      },
+      "run_id": "40669557265",
+      "attempt": "1",
+      "recorded_at": "2026-10-28T10:18:19.191426+00:00",
+      "fingerprint": "ea70986e4832e7460836a72bc5cb286497a3eef6aea5b50486a9282ab3929c40",
+      "event_id": "d0f15f2d3f3ebba18c3522c9b2ee055387cb1e7be312921ac9acbc000eb44489"
+    }
+  ]
+}

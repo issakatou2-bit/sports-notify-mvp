@@ -253,6 +253,9 @@ def caption(title: str) -> str:
         # どちらとも決まらないものはMLB扱い。本数が圧倒的に多い。
         tags = TAGS_MLB
     sport = 'soccer' if tags == TAGS_SOCCER else 'mlb'
+    if sport == 'mlb':
+        import video_titles
+        t = video_titles.team_city_text(t)
     return f"{t}\n\n{ht.display(ht.select(t, 'tiktok', sport=sport))}"
 
 
@@ -385,6 +388,8 @@ def main():
     }
     rec.write_text(json.dumps(data, ensure_ascii=False, indent=2),
                    encoding="utf-8")
+    from publication_writer import mirror_file
+    mirror_file(rec, ledger_name='published_tiktok')
     print(f"\n{message} ({rec})")
     return exit_code
 

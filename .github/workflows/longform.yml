@@ -47,6 +47,9 @@ on:
         description: '主題 (numbers=その日の数字 / voices=公式コメント欄)'
         required: false
         default: 'numbers'
+      reviewed_script:
+        description: '全行確認済みのnumbers原稿（空なら従来の生成、公開前に検査はすべて実行）'
+        required: false
   workflow_run:
     workflows: ["毎日 17:00-20:00　夕方の4本"]
     types: [completed]
@@ -59,15 +62,29 @@ on:
 permissions:
   contents: write
 
+# 長編の見た目（v3 = 新デザイン「電光掲示板」、本人の確認後に変数で切り替える）
+env:
+  COLLESPO_MOTION: ${{ vars.COLLESPO_MOTION || '' }}
+  COLLESPO_BUBBLE: ${{ vars.COLLESPO_BUBBLE || '' }}
+  COLLESPO_CAPTION_BREAKS: ${{ vars.COLLESPO_CAPTION_BREAKS || '' }}
+  COLLESPO_GLASS_BACKGROUND: ${{ vars.COLLESPO_GLASS_BACKGROUND || 'stripes' }}
+  COLLESPO_SLANT_VARIANT: ${{ vars.COLLESPO_SLANT_VARIANT || 'cream' }}
+  # 選手ごとのシリーズの題（本人OK後にリポジトリ変数 SERIES_TITLE=1）
+  SERIES_TITLE: ${{ vars.SERIES_TITLE }}
+  COLLESPO_LONGFORM_STYLE: ${{ vars.COLLESPO_LONGFORM_STYLE || 'legacy' }}
+
 jobs:
   build:
     runs-on: ubuntu-latest
-    # 前の枠が落ちた日は、材料が揃っていない可能性がある。
-    # ただし長編は材料を取り直すので、落ちていても作れることはある。
-    # 「成功したときだけ」にしておく。取りこぼしは watchdog が拾う。
+    # 15:10開始から17:30のBatch締切＋制作・検査の時間を確保。
+    timeout-minutes: 180
+    # 独立した長編の検査で判断する。短編1本の失敗を連鎖させない。
+    # 取り消し・他の枝・外部のコピーからの完了通知では起動しない。
     if: >-
       github.event_name != 'workflow_run'
-      || github.event.workflow_run.conclusion == 'success'
+      || (github.event.workflow_run.conclusion != 'cancelled'
+          && github.event.workflow_run.head_branch == 'main'
+          && github.event.workflow_run.head_repository.full_name == github.repository)
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -135,13 +152,32 @@ jobs:
         run: |
           python scripts/mlb_transactions.py --days 21             --out data/transactions.json | tee -a "$GITHUB_STEP_SUMMARY"
 
+      # **作らない日は、後の手順を飛ばして終える。**10/3、試合の無い日に
+      # 「話せる数字が無いため、作りません」と正しく判断したのに、後の
+      # 検査が無い台本を探して赤くなった。
       - name: Write the dialogue
+        id: dialogue
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          REVIEWED_SCRIPT: ${{ inputs.reviewed_script }}
+          COLLESPO_DIALOGUE_BATCH: ${{ vars.COLLESPO_DIALOGUE_BATCH || 'auto' }}
+          COLLESPO_BATCH_DEADLINE: '17:30'
+          COLLESPO_BATCH_COMMIT: '1'
         run: |
           mkdir -p build/lf
+          ARGS=()
+          if [ -n "$REVIEWED_SCRIPT" ]; then
+            printf '%s' "$REVIEWED_SCRIPT" > build/lf/dialogue.reviewed.txt
+            ARGS+=(--reviewed-text build/lf/dialogue.reviewed.txt)
+          fi
           python scripts/generate_dialogue.py --out build/lf/dialogue.json \
-            --mode "${{ inputs.mode || 'numbers' }}"
+            --mode "${{ inputs.mode || 'numbers' }}" "${ARGS[@]}"
+          if [ -f build/lf/dialogue.json ]; then
+            echo "made=1" >> "$GITHUB_OUTPUT"
+          else
+            echo "::notice::きょうの長編は作りません（台本が無い日）"
+            echo "made=0" >> "$GITHUB_OUTPUT"
+          fi
 
       # 言ったことが、渡した材料と一致しているか。
       #
@@ -152,9 +188,10 @@ jobs:
       #
       # 新しくAPIは叩かない。台本の facts に渡した数字が入っている。
       - name: Verify the numbers against the material
+        if: steps.dialogue.outputs.made == '1'
         run: |
           python scripts/verify_numbers.py \
-            --dialogue build/lf/dialogue.json --strict
+            --dialogue build/lf/dialogue.json --omit-unsupported
 
       # 用語を勝手に作っていないか。**ここで落ちたら公開しない。**
       #
@@ -167,6 +204,7 @@ jobs:
       # 見てからっていうのは手間すぎます」）。機械で決められるところは
       # 機械で止める。ここは辞書と突き合わせるだけで、判断は入れない。
       - name: Verify the wording
+        if: steps.dialogue.outputs.made == '1'
         run: |
           python scripts/verify_terms.py \
             --dialogue build/lf/dialogue.json --strict
@@ -174,20 +212,22 @@ jobs:
       # 台本にありえない数字が混ざっていないか。短編と同じ検査を通す。
       # 長編だからといって緩めない。
       - name: Sanity check the script
+        if: steps.dialogue.outputs.made == '1'
         env:
+          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
-          python scripts/sanity.py --general --strict \
-            --narration build/lf/dialogue.json \
-            --out data/sanity_longform.json
+          python scripts/sanity.py --general --strict --narration build/lf/dialogue.json --out data/sanity_longform.json --hold-record build/sanity_hold_longform.json --kind longform
 
       - name: Synthesize both voices
+        if: steps.dialogue.outputs.made == '1'
         run: |
           python scripts/synthesize_narration.py \
             --narration build/lf/dialogue.json \
             --out-dir build/lf/audio
 
       - name: Build the video
+        if: steps.dialogue.outputs.made == '1'
         run: |
           python scripts/generate_longform.py \
             --dialogue build/lf/dialogue.json \
@@ -195,6 +235,7 @@ jobs:
             --out build/lf --require-audio
 
       - name: Thumbnail
+        if: steps.dialogue.outputs.made == '1'
         continue-on-error: true
         run: |
           TOPIC=$(python -c "import json;print(json.load(open('build/lf/dialogue.json',encoding='utf-8')).get('top',''))" || echo "")
@@ -209,14 +250,24 @@ jobs:
         with:
           name: longform
           path: |
+            data/sanity*.json
+            build/sanity*hold*.json
+            data/postseason.json
+            data/best_of_day.json
+            data/roster_stats.json
+            notable_games.json
+            archive/*.json
             build/lf/collespo_longform.mp4
             build/lf/dialogue.json
+            build/lf/dialogue.model-*.txt
+            build/lf/dialogue.reviewed.txt
             build/lf/thumb.png
           if-no-files-found: warn
 
       - name: Upload to YouTube
-        if: ${{ inputs.upload != 'false' }}
+        if: ${{ inputs.upload != 'false' && steps.dialogue.outputs.made == '1' }}
         env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
@@ -230,16 +281,19 @@ jobs:
             --privacy "${{ inputs.privacy || 'public' }}" \
             ${{ inputs.force == 'true' && '--force' || '' }} \
             --publish-at "${{ github.event_name == 'workflow_run' && '21:00' || inputs.publish_at }}"
+          # 札を出した「名前のある指標」を記録（同じ選手・同じ指標は7日あける）
+          python scripts/numbers_material.py --mark-rare-seen build/lf/dialogue.json || true
 
       # 投稿の記録を残す。ここが無いと、上げたこと自体が
       # ランナーの中で消える。
       - name: Commit the record
-        if: ${{ inputs.upload != 'false' }}
-        continue-on-error: true
+        # 検査で停止しても、既に発生したAPI使用量を失わない。
+        # 投稿しない制作でも費用は生じる。既存の投稿記録は変更された場合のみ保存。
+        if: always()
         run: |
           bash scripts/commit_data.sh \
             "longform: ${{ github.run_id }}" \
-            data/published_videos.json data/token_usage.json data/transactions.json
+            data/published_videos.json data/token_usage.json data/transactions.json data/dialogue_batch.json data/longform_rare_seen.json
 
       - name: Say what happened
         if: always()
@@ -282,3 +336,48 @@ jobs:
           PY
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Keep unsaved data records
+        if: always() && hashFiles('build/data-save-recovery/**/FAILED') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: unsaved-data-${{ github.job }}-${{ github.run_attempt }}
+          path: |
+            build/data-save-recovery/
+            !build/**/portrait/**
+          retention-days: 14
+          if-no-files-found: error
+
+      - name: Save sanity gate records
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sanity-gate-${{ github.job }}
+          path: |
+            data/sanity*.json
+            build/sanity*hold*.json
+            !build/**/portrait/**
+          retention-days: 14
+
+      - name: Save quota-exceeded thumbnails
+        if: always() && hashFiles('build/thumbnail_pending/**') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: thumbnail-pending
+          path: |
+            build/thumbnail_pending/
+            !build/**/portrait/**
+          retention-days: 3
+          if-no-files-found: ignore
+
+      - name: Save voice and render records
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: voice-render-records-${{ github.job }}-${{ github.run_attempt }}
+          path: |
+            build/**/voice_manifest.json
+            build/**/render_timeline.json
+            !build/**/portrait/**
+          retention-days: 14
+          if-no-files-found: ignore

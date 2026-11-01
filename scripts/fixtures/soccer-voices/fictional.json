@@ -1,0 +1,36 @@
+{
+ "sample_fictional": true,
+ "note": "見本用の架空のコメント。実在の投稿ではない（soccer_buzz.json が手元に無く、公開の YouTube のページからは取らない決まりのため）。訳も見本として手で書いた。",
+ "video": {
+  "video_id": "SAMPLE",
+  "url": "",
+  "title": "Cagliari-Juventus | Highlights (見本)",
+  "competition": "セリエA",
+  "clubs": ["Cagliari", "Juventus"],
+  "home_en": "Cagliari Calcio",
+  "away_en": "Juventus FC",
+  "matchup_jp": "カリアリ 対 ユベントス",
+  "jp_players": ["菅原由勢"]
+ },
+ "comments": [
+  {"title": "Sugawara on the right flank for Cagliari was everywhere tonight, what a signing", "likes": 412,
+   "ja": "カリアリの右サイドのSugawara、どこにでもいたな。いい補強だ", "tone": "称賛", "replies": 2,
+   "reply_texts": ["Sugawara reads the game so well"],
+   "reply_ja": [{"original": "Sugawara reads the game so well", "ja": "菅原は試合をよく読んでいる。", "tone": "称賛"}]},
+  {"title": "Great atmosphere in the stadium tonight, forza ragazzi!", "likes": 380,
+   "ja": "今夜のスタジアムの雰囲気は最高。がんばれ、みんな！", "tone": "称賛"},
+  {"title": "Che partita di Sugawara! Corre per tutta la fascia destra 🔥", "likes": 288,
+   "ja": "Sugawara、なんて試合だ！右サイドをずっと走ってる🔥", "tone": "称賛"},
+  {"title": "Sugawara is trash, sell him already", "likes": 210,
+   "ja": "（悪口なので訳さない）", "tone": "批判"},
+  {"title": "Sugawara è il miglior acquisto dell'estate, senza dubbio", "likes": 175,
+   "ja": "間違いなく、Sugawaraはこの夏いちばんの補強だ", "tone": "称賛"},
+  {"title": "Sugawara gave the ball away too often in the first half", "likes": 150,
+   "ja": "前半のSugawaraはボールを失いすぎ", "tone": "批判"},
+  {"title": "Sugawara's crosses were dangerous all game long, keep him on the right", "likes": 96,
+   "ja": "Sugawaraのクロスは試合中ずっと危なかった。右で使い続けてほしい", "tone": "称賛"},
+  {"title": "Sugawara on the right flank was simply everywhere tonight, what a signing!!", "likes": 40,
+   "ja": "今夜のSugawara、右サイドのどこにでもいた。いい補強！", "tone": "称賛"},
+  {"title": "ok", "likes": 5, "ja": "OK", "tone": "中立"}
+ ]
+}

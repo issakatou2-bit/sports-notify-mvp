@@ -1,0 +1,116 @@
+name: PS新構成の音声付き確認（投稿しない）
+on:
+  workflow_dispatch:
+    inputs:
+      look:
+        description: 'ショートの見た目（v4 は字幕・大きめの立ち絵・進み具合の線）'
+        type: choice
+        options: [v3, v4]
+        default: v3
+      design:
+        description: '外観（v3は10/7の保存公式材料で2枠を再生）'
+        type: choice
+        options: [v3, legacy]
+        default: v3
+  push:
+    branches: [codex/ps-template-rollout-20260928]
+    paths:
+      - 'scripts/ps_*'
+      - 'scripts/video_design/**'
+      - '.github/workflows/ps_program_preview.yml'
+permissions:
+  contents: write
+# ショートの見た目（v4 は字幕・大きめの立ち絵・進み具合の線）。review_render_v3.LOOK
+env:
+  COLLESPO_SOLO_HOST: ${{ vars.COLLESPO_SOLO_HOST || 'metan' }}
+  COLLESPO_HOST_SPLIT: ${{ vars.COLLESPO_HOST_SPLIT || '' }}
+  COLLESPO_UI_VOICE_STOCK: ${{ vars.COLLESPO_UI_VOICE_STOCK || '' }}
+  COLLESPO_UI_PARTS_KEY: ${{ secrets.COLLESPO_UI_PARTS_KEY }}
+  COLLESPO_UI_VOICE_WAIT_MINUTES: ${{ vars.COLLESPO_UI_VOICE_WAIT_MINUTES || '15' }}
+  COLLESPO_BUBBLE: ${{ vars.COLLESPO_BUBBLE || '' }}
+  COLLESPO_MOTION: ${{ vars.COLLESPO_MOTION || '' }}
+  COLLESPO_CAPTION_BREAKS: ${{ vars.COLLESPO_CAPTION_BREAKS || '' }}
+  COLLESPO_SLANT_VARIANT: ${{ vars.COLLESPO_SLANT_VARIANT || 'cream' }}
+  COLLESPO_GLASS_BACKGROUND: ${{ vars.COLLESPO_GLASS_BACKGROUND || 'stripes' }}
+  COLLESPO_OUTRO_NEXT: ${{ vars.COLLESPO_OUTRO_NEXT == 'on' && 'on' || 'off' }}
+  COLLESPO_SHORT_LOOK: ${{ inputs.look || 'v3' }}
+  COLLESPO_MLB_BADGE: ${{ vars.COLLESPO_MLB_BADGE || '' }}
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: ${{ (vars.COLLESPO_SOLO_HOST == 'ui' || vars.COLLESPO_HOST_SPLIT == 'half') && 120 || 18 }}
+    env:
+      PS_PROGRAM_LAYOUT: v2
+      COLLESPO_PS_DESIGN: ${{ inputs.design == 'v3' && 'v3' || 'legacy' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install the existing production dependencies
+        run: |
+          pip install -r scripts/requirements.txt
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg fonts-noto-cjk
+      - name: Start existing VOICEVOX
+        run: |
+          docker run -d --rm -p 50021:50021 voicevox/voicevox_engine:cpu-latest
+          for i in $(seq 1 30); do
+            if curl -sf http://127.0.0.1:50021/version; then exit 0; fi
+            sleep 2
+          done
+          exit 1
+      - name: Prepare and voice the current situation program
+        if: inputs.design != 'v3'
+        run: |
+          python scripts/ps_voice_gate.py
+          python scripts/ps_program.py --slot situation --fresh \
+            --program build/ps_program_situation.json \
+            --narration-out build/ps_situation_narration.json
+          if [ -f build/ps_program_situation.json ]; then
+            python scripts/synthesize_narration.py --narration build/ps_situation_narration.json --out-dir build/ps_situation_audio
+            python scripts/ps_program.py --program build/ps_program_situation.json --audio-dir build/ps_situation_audio --out build/ps_situation_preview
+          fi
+      - name: Rehearse all four forecast cards with visibly dated saved fixtures
+        if: inputs.design != 'v3'
+        run: |
+          # Tomorrow's program is a rehearsal, never an upload path.
+          python scripts/ps_program_rehearsal.py --out build/ps_forecast_narration.json
+          if [ -f build/ps_forecast_narration.json ]; then
+            python scripts/synthesize_narration.py --narration build/ps_forecast_narration.json --out-dir build/ps_forecast_audio
+            python scripts/ps_program.py --program build/ps_program_forecast.json --audio-dir build/ps_forecast_audio --out build/ps_forecast_preview
+          fi
+      - name: Rehearse both v3 programs with saved official material
+        if: inputs.design == 'v3'
+        run: |
+          python scripts/ps_voice_gate.py
+          python scripts/preview_ps_v3.py
+          for slot in forecast situation; do
+            python scripts/synthesize_narration.py --narration "build/ps-design/$slot-narration.json" --out-dir "build/ps-design/$slot-audio"
+            python scripts/ps_program.py --program "build/ps-design/$slot-program.json" --audio-dir "build/ps-design/$slot-audio" --out "build/ps-design/$slot-preview"
+          done
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ps-program-preview
+          path: |
+            build/ps_*preview/
+            build/ps_program_*.json
+            build/ps_*narration.json
+            build/ps_editorial_source.json
+            build/ps_voice_check.json
+            build/ps-design/
+            !build/**/portrait/**
+
+      - name: Save voice and render records
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: voice-render-records-${{ github.job }}-${{ github.run_attempt }}
+          path: |
+            build/**/voice_manifest.json
+            build/**/render_timeline.json
+            !build/**/portrait/**
+          retention-days: 14
+          if-no-files-found: ignore

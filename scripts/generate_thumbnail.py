@@ -449,8 +449,17 @@ def _pick_from_dialogue(path: str) -> str:
     return " ".join(str(d.get("pick") or "").split())
 
 
+def _mode_from_dialogue(path: str) -> str:
+    """台本の回の種類（"numbers" など）。読めなければ空。"""
+    try:
+        return str(json.loads(pathlib.Path(path).read_text(
+            encoding="utf-8")).get("mode") or "")
+    except (OSError, ValueError, TypeError):
+        return ""
+
+
 def draw_longform(im, d, topic: str, day: str, portrait_dir: str,
-                  jp_names=None, pick: str = "", shape=None):
+                  jp_names=None, pick: str = "", shape=None, mode: str = ""):
     """長編（対話）。サムネイルは「目に入った瞬間」だけを担当する。
 
     題（検索）とサムネイル（一目）で役割が違う。
@@ -542,7 +551,12 @@ def draw_longform(im, d, topic: str, day: str, portrait_dir: str,
     else:
         who = short_topic or "MLB"
         lines.append((who, shrink(who, 100), TEXT))
-    lines.append(("海外の反応", 156, ACCENT))
+    # **数字の回に「海外の反応」と描かない。**9/14に長編を「数字で」の
+    # 回へ切り替えたあとも、表紙だけコメント欄の回の形のままで、
+    # 「ヌートバー 3打数0安打 2四球」を「現地のコメント（翻訳）」として
+    # 載せていた（9/28に表紙を見て気づいた）。題とも食い違う。
+    numbers = mode == "numbers"
+    lines.append(("今日の数字" if numbers else "海外の反応", 156, ACCENT))
 
     y = 168
     for text, size, color in lines:
@@ -567,10 +581,13 @@ def draw_longform(im, d, topic: str, day: str, portrait_dir: str,
             vc.pop_text(d, (70, y + 8), ln, font(ps), TEXT,
                         stroke=(8, 10, 15), stroke_w=6, shadow=(0, 0, 0))
             y += ps + 8
-        vc.pop_text(d, (70, y + 6), "現地のコメント（翻訳）", font(26), DIM,
-                    stroke=(8, 10, 15), stroke_w=4)
+        vc.pop_text(d, (70, y + 6),
+                    "今日の成績" if numbers else "現地のコメント（翻訳）",
+                    font(26), DIM, stroke=(8, 10, 15), stroke_w=4)
     else:
-        vc.pop_text(d, (70, y + 8), "公式コメント欄を読む", font(40), DIM,
+        vc.pop_text(d, (70, y + 8),
+                    "成績と指標を数字で" if numbers else "公式コメント欄を読む",
+                    font(40), DIM,
                     stroke=(8, 10, 15), stroke_w=6, shadow=(0, 0, 0))
 
     # 番組名は左下。右下は再生時間の表示と重なるので置かない。
@@ -685,6 +702,7 @@ def draw_morning_postseason(d, day: str,
     変わらない日は、いちばん近い決着（マジックの小さい球団）を出す。
     毎日同じ絵にしないのが、この枠を毎日見る理由になる。
     """
+    from race_words import ps_label as _ps_label
     ps = {}
     try:
         ps = json.loads(pathlib.Path(path).read_text(encoding="utf-8"))
@@ -693,22 +711,29 @@ def draw_morning_postseason(d, day: str,
     d.text((70, 90), day, font=font(50), fill=DIM)
     changes = ps.get("changes") or []
     if changes:
-        d.text((70, 170), "順位が動いた", font=font(100), fill=TEXT)
+        d.text((70, 170), ("シリーズが動いた" if ps.get("phase") == "postseason"
+                           else "順位が動いた"), font=font(100), fill=TEXT)
         s = fit(d, changes[0]["text"], W - 140, (80, 64, 50, 40))
         d.text((70, 290), changes[0]["text"], font=font(s), fill=ACCENT)
         sub = (f"ほか{len(changes) - 1}件" if len(changes) > 1
-               else "ポストシーズン進出争い")
+               else _ps_label(ps))
         d.text((70, 430), sub, font=font(50), fill=TEXT)
     else:
         d.text((70, 170), "ポストシーズン", font=font(100), fill=TEXT)
-        d.text((70, 280), "進出争い", font=font(100), fill=ACCENT)
+        if ps.get("phase") not in ("postseason", "settled"):
+            d.text((70, 280), "進出争い", font=font(100), fill=ACCENT)
         head = ps.get("headline") or ""
         if head:
             s = fit(d, head, W - 140, (64, 50, 40))
             d.text((70, 430), head, font=font(s), fill=TEXT)
-    d.text((70, 520), "マジック・ワイルドカード・今日終わったらの組み合わせ",
+    # 時期で言い方を変える。**確定したあとに「今日終わったら」と言わない。**
+    from race_words import is_settled as _settled
+    d.text((70, 520), ("シリーズごとの勝敗と勝ち上がり" if _settled(ps)
+                       else "マジック・ワイルドカード・今日終わったらの組み合わせ"),
            font=font(32), fill=DIM)
-    d.text((70, H - 78), "コレスポ  進出争い", font=font(40), fill=JP)
+    d.text((70, H - 78), "コレスポ  " + ("ポストシーズン" if _settled(ps)
+                                        else "進出争い"),
+           font=font(40), fill=JP)
 
 
 def draw_verdict(d, label: str):
@@ -763,6 +788,8 @@ def main():
                         help="週次で --label を省いたときの期間の算出元")
     parser.add_argument("--out", default="build/thumb.png")
     args = parser.parse_args()
+    import ui_voice_queue
+    ui_voice_queue.configure(args)
 
     im, d = base()
 
@@ -777,7 +804,8 @@ def main():
         draw_longform(im, d, args.topic, day, args.portrait_dir,
                       _jp_from_dialogue(args.dialogue),
                       _pick_from_dialogue(args.dialogue),
-                      shape_from_dialogue(args.dialogue))
+                      shape_from_dialogue(args.dialogue),
+                      _mode_from_dialogue(args.dialogue))
     elif args.kind == "morning":
         try:
             rec = json.loads(pathlib.Path(args.recap).read_text(encoding="utf-8"))

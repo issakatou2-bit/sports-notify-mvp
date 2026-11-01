@@ -1,0 +1,680 @@
+{
+  "source_commit": "7b326df2",
+  "offseason_source": "data/postseason.json",
+  "offseason": {
+    "updated_at": "2026-10-30T09:52:37.612434+00:00",
+    "date": "2026-10-30",
+    "season": "2026",
+    "phase": "postseason",
+    "ws_finished_on": "2026-10-29",
+    "series": [
+      {
+        "key": "F:111-147",
+        "round": "F",
+        "round_jp": "ワイルドカードシリーズ",
+        "stage": 1,
+        "league_jp": "ア・リーグ",
+        "best_of": 3,
+        "need": 2,
+        "played": 2,
+        "over": true,
+        "winner": 147,
+        "next": null,
+        "teams": [
+          {
+            "id": 147,
+            "name": "ヤンキース",
+            "wins": 2,
+            "players": []
+          },
+          {
+            "id": 111,
+            "name": "レッドソックス",
+            "wins": 0,
+            "players": [
+              "吉田正尚"
+            ]
+          }
+        ]
+      },
+      {
+        "key": "F:117-145",
+        "round": "F",
+        "round_jp": "ワイルドカードシリーズ",
+        "stage": 1,
+        "league_jp": "ア・リーグ",
+        "best_of": 3,
+        "need": 2,
+        "played": 2,
+        "over": true,
+        "winner": 145,
+        "next": null,
+        "teams": [
+          {
+            "id": 145,
+            "name": "ホワイトソックス",
+            "wins": 2,
+            "players": [
+              "村上宗隆",
+              "西田陸浮"
+            ]
+          },
+          {
+            "id": 117,
+            "name": "アストロズ",
+            "wins": 0,
+            "players": [
+              "今井達也"
+            ]
+          }
+        ]
+      },
+      {
+        "key": "F:112-135",
+        "round": "F",
+        "round_jp": "ワイルドカードシリーズ",
+        "stage": 1,
+        "league_jp": "ナ・リーグ",
+        "best_of": 3,
+        "need": 2,
+        "played": 2,
+        "over": true,
+        "winner": 135,
+        "next": null,
+        "teams": [
+          {
+            "id": 135,
+            "name": "パドレス",
+            "wins": 2,
+            "players": [
+              "松井裕樹"
+            ]
+          },
+          {
+            "id": 112,
+            "name": "カブス",
+            "wins": 0,
+            "players": []
+          }
+        ]
+      },
+      {
+        "key": "F:143-144",
+        "round": "F",
+        "round_jp": "ワイルドカードシリーズ",
+        "stage": 1,
+        "league_jp": "ナ・リーグ",
+        "best_of": 3,
+        "need": 2,
+        "played": 3,
+        "over": true,
+        "winner": 144,
+        "next": null,
+        "teams": [
+          {
+            "id": 144,
+            "name": "ブレーブス",
+            "wins": 2,
+            "players": []
+          },
+          {
+            "id": 143,
+            "name": "フィリーズ",
+            "wins": 1,
+            "players": []
+          }
+        ]
+      },
+      {
+        "key": "D:114-145",
+        "round": "D",
+        "round_jp": "地区シリーズ",
+        "stage": 2,
+        "league_jp": "ア・リーグ",
+        "best_of": 5,
+        "need": 3,
+        "played": 5,
+        "over": true,
+        "winner": 114,
+        "next": null,
+        "teams": [
+          {
+            "id": 114,
+            "name": "ガーディアンズ",
+            "wins": 3,
+            "players": []
+          },
+          {
+            "id": 145,
+            "name": "ホワイトソックス",
+            "wins": 2,
+            "players": [
+              "村上宗隆",
+              "西田陸浮"
+            ]
+          }
+        ]
+      },
+      {
+        "key": "D:139-147",
+        "round": "D",
+        "round_jp": "地区シリーズ",
+        "stage": 2,
+        "league_jp": "ア・リーグ",
+        "best_of": 5,
+        "need": 3,
+        "played": 3,
+        "over": true,
+        "winner": 139,
+        "next": null,
+        "teams": [
+          {
+            "id": 139,
+            "name": "レイズ",
+            "wins": 3,
+            "players": []
+          },
+          {
+            "id": 147,
+            "name": "ヤンキース",
+            "wins": 0,
+            "players": []
+          }
+        ]
+      },
+      {
+        "key": "D:119-144",
+        "round": "D",
+        "round_jp": "地区シリーズ",
+        "stage": 2,
+        "league_jp": "ナ・リーグ",
+        "best_of": 5,
+        "need": 3,
+        "played": 4,
+        "over": true,
+        "winner": 119,
+        "next": null,
+        "teams": [
+          {
+            "id": 119,
+            "name": "ドジャース",
+            "wins": 3,
+            "players": [
+              "大谷翔平",
+              "佐々木朗希",
+              "山本由伸"
+            ]
+          },
+          {
+            "id": 144,
+            "name": "ブレーブス",
+            "wins": 1,
+            "players": []
+          }
+        ]
+      },
+      {
+        "key": "D:135-158",
+        "round": "D",
+        "round_jp": "地区シリーズ",
+        "stage": 2,
+        "league_jp": "ナ・リーグ",
+        "best_of": 5,
+        "need": 3,
+        "played": 4,
+        "over": true,
+        "winner": 158,
+        "next": null,
+        "teams": [
+          {
+            "id": 158,
+            "name": "ブリュワーズ",
+            "wins": 3,
+            "players": []
+          },
+          {
+            "id": 135,
+            "name": "パドレス",
+            "wins": 1,
+            "players": [
+              "松井裕樹"
+            ]
+          }
+        ]
+      },
+      {
+        "key": "L:119-158",
+        "round": "L",
+        "round_jp": "リーグ優勝決定シリーズ",
+        "stage": 3,
+        "league_jp": "ナ・リーグ",
+        "best_of": 7,
+        "need": 4,
+        "played": 4,
+        "over": true,
+        "winner": 158,
+        "next": null,
+        "teams": [
+          {
+            "id": 158,
+            "name": "ブリュワーズ",
+            "wins": 4,
+            "players": []
+          },
+          {
+            "id": 119,
+            "name": "ドジャース",
+            "wins": 0,
+            "players": [
+              "大谷翔平",
+              "佐々木朗希",
+              "山本由伸"
+            ]
+          }
+        ]
+      },
+      {
+        "key": "W:139-158",
+        "round": "W",
+        "round_jp": "ワールドシリーズ",
+        "stage": 4,
+        "league_jp": "",
+        "best_of": 7,
+        "need": 4,
+        "played": 5,
+        "over": true,
+        "winner": 158,
+        "next": null,
+        "teams": [
+          {
+            "id": 158,
+            "name": "ブリュワーズ",
+            "wins": 4,
+            "players": []
+          },
+          {
+            "id": 139,
+            "name": "レイズ",
+            "wins": 1,
+            "players": []
+          }
+        ]
+      }
+    ],
+    "changes": []
+  },
+  "active_source": "scripts/fixtures/ps-design/2026-10-07.json:snapshot",
+  "active": {
+    "updated_at": "2026-10-07T09:52:34.009274+00:00",
+    "date": "2026-10-07",
+    "season": "2026",
+    "phase": "postseason",
+    "series": [
+      {
+        "key": "F:111-147",
+        "round": "F",
+        "round_jp": "ワイルドカードシリーズ",
+        "stage": 1,
+        "league_jp": "ア・リーグ",
+        "best_of": 3,
+        "need": 2,
+        "played": 2,
+        "over": true,
+        "winner": 147,
+        "next": null,
+        "teams": [
+          {
+            "id": 147,
+            "name": "ヤンキース",
+            "wins": 2,
+            "players": []
+          },
+          {
+            "id": 111,
+            "name": "レッドソックス",
+            "wins": 0,
+            "players": [
+              "吉田正尚"
+            ]
+          }
+        ]
+      },
+      {
+        "key": "F:117-145",
+        "round": "F",
+        "round_jp": "ワイルドカードシリーズ",
+        "stage": 1,
+        "league_jp": "ア・リーグ",
+        "best_of": 3,
+        "need": 2,
+        "played": 2,
+        "over": true,
+        "winner": 145,
+        "next": null,
+        "teams": [
+          {
+            "id": 145,
+            "name": "ホワイトソックス",
+            "wins": 2,
+            "players": [
+              "村上宗隆"
+            ]
+          },
+          {
+            "id": 117,
+            "name": "アストロズ",
+            "wins": 0,
+            "players": [
+              "今井達也"
+            ]
+          }
+        ]
+      },
+      {
+        "key": "F:112-135",
+        "round": "F",
+        "round_jp": "ワイルドカードシリーズ",
+        "stage": 1,
+        "league_jp": "ナ・リーグ",
+        "best_of": 3,
+        "need": 2,
+        "played": 2,
+        "over": true,
+        "winner": 135,
+        "next": null,
+        "teams": [
+          {
+            "id": 135,
+            "name": "パドレス",
+            "wins": 2,
+            "players": [
+              "松井裕樹"
+            ]
+          },
+          {
+            "id": 112,
+            "name": "カブス",
+            "wins": 0,
+            "players": [
+              "今永昇太",
+              "鈴木誠也"
+            ]
+          }
+        ]
+      },
+      {
+        "key": "F:143-144",
+        "round": "F",
+        "round_jp": "ワイルドカードシリーズ",
+        "stage": 1,
+        "league_jp": "ナ・リーグ",
+        "best_of": 3,
+        "need": 2,
+        "played": 3,
+        "over": true,
+        "winner": 144,
+        "next": null,
+        "teams": [
+          {
+            "id": 144,
+            "name": "ブレーブス",
+            "wins": 2,
+            "players": []
+          },
+          {
+            "id": 143,
+            "name": "フィリーズ",
+            "wins": 1,
+            "players": []
+          }
+        ]
+      },
+      {
+        "key": "D:114-145",
+        "round": "D",
+        "round_jp": "地区シリーズ",
+        "stage": 2,
+        "league_jp": "ア・リーグ",
+        "best_of": 5,
+        "need": 3,
+        "played": 2,
+        "over": false,
+        "winner": null,
+        "next": {
+          "day": "10月8日",
+          "game": 3
+        },
+        "teams": [
+          {
+            "id": 145,
+            "name": "ホワイトソックス",
+            "wins": 2,
+            "players": [
+              "村上宗隆"
+            ]
+          },
+          {
+            "id": 114,
+            "name": "ガーディアンズ",
+            "wins": 0,
+            "players": []
+          }
+        ]
+      },
+      {
+        "key": "D:139-147",
+        "round": "D",
+        "round_jp": "地区シリーズ",
+        "stage": 2,
+        "league_jp": "ア・リーグ",
+        "best_of": 5,
+        "need": 3,
+        "played": 2,
+        "over": false,
+        "winner": null,
+        "next": {
+          "day": "10月8日",
+          "game": 3
+        },
+        "teams": [
+          {
+            "id": 139,
+            "name": "レイズ",
+            "wins": 2,
+            "players": []
+          },
+          {
+            "id": 147,
+            "name": "ヤンキース",
+            "wins": 0,
+            "players": []
+          }
+        ]
+      },
+      {
+        "key": "D:119-144",
+        "round": "D",
+        "round_jp": "地区シリーズ",
+        "stage": 2,
+        "league_jp": "ナ・リーグ",
+        "best_of": 5,
+        "need": 3,
+        "played": 3,
+        "over": false,
+        "winner": null,
+        "next": {
+          "day": "10月8日",
+          "game": 4
+        },
+        "teams": [
+          {
+            "id": 119,
+            "name": "ドジャース",
+            "wins": 2,
+            "players": [
+              "大谷翔平",
+              "佐々木朗希",
+              "山本由伸"
+            ]
+          },
+          {
+            "id": 144,
+            "name": "ブレーブス",
+            "wins": 1,
+            "players": []
+          }
+        ]
+      },
+      {
+        "key": "D:135-158",
+        "round": "D",
+        "round_jp": "地区シリーズ",
+        "stage": 2,
+        "league_jp": "ナ・リーグ",
+        "best_of": 5,
+        "need": 3,
+        "played": 3,
+        "over": false,
+        "winner": null,
+        "next": {
+          "day": "10月8日",
+          "game": 4
+        },
+        "teams": [
+          {
+            "id": 158,
+            "name": "ブリュワーズ",
+            "wins": 2,
+            "players": []
+          },
+          {
+            "id": 135,
+            "name": "パドレス",
+            "wins": 1,
+            "players": [
+              "松井裕樹"
+            ]
+          }
+        ]
+      }
+    ],
+    "changes": [
+      {
+        "key": "D:119-144",
+        "kind": "game",
+        "text": "大谷翔平・佐々木朗希・山本由伸のドジャースは地区シリーズでブレーブスに2勝1敗、突破に王手",
+        "jp": true,
+        "stage": 2
+      },
+      {
+        "key": "D:135-158",
+        "kind": "game",
+        "text": "松井裕樹のパドレスは地区シリーズでブリュワーズに1勝2敗、負ければ敗退",
+        "jp": true,
+        "stage": 2
+      }
+    ]
+  },
+  "no_games_source": "data/morning_recap.json",
+  "no_games": {
+    "updated_at": "2026-10-30T06:01:32.906946+00:00",
+    "date": "2026-10-29",
+    "date_jst": "2026-10-30",
+    "players": [],
+    "collection_state": "no_games",
+    "collection_errors": [],
+    "game_count": 0
+  },
+  "game_day_source": "data/recap_history/2026-10-28.json",
+  "game_day": {
+    "updated_at": "2026-10-29T07:20:44.586686+00:00",
+    "date": "2026-10-28",
+    "date_jst": "2026-10-29",
+    "players": [],
+    "collection_state": "no_appearances",
+    "collection_errors": [],
+    "game_count": 1
+  },
+  "active_lineup": [
+    [
+      "morning",
+      "日本人選手の成績",
+      "その日活躍した順に紹介",
+      "17:00"
+    ],
+    [
+      "postseason",
+      "ポストシーズン",
+      "シリーズごとの勝敗と勝ち上がり",
+      "20:00"
+    ],
+    [
+      "morning_voices",
+      "ファンのコメント欄",
+      "最も見られたハイライトの反応を翻訳",
+      "17:30"
+    ],
+    [
+      "daily",
+      "明日の注目試合",
+      "なぜ注目なのかの理由つき",
+      "19:00"
+    ],
+    [
+      "daily_soccer",
+      "欧州サッカー",
+      "その夜の注目カード",
+      "19:30"
+    ],
+    [
+      "morning_press",
+      "現地の報道",
+      "番記者の投稿と見出しを翻訳",
+      "18:00"
+    ],
+    [
+      "longform",
+      "今日のMLB、数字で（3分）",
+      "ずんだもんと四国めたんが成績とポストシーズンを追う",
+      "21:00"
+    ]
+  ],
+  "decisive_day_lineup": [
+    [
+      "morning",
+      "日本人選手の成績",
+      "その日活躍した順に紹介",
+      "17:00"
+    ],
+    [
+      "morning_voices",
+      "ファンのコメント欄",
+      "最も見られたハイライトの反応を翻訳",
+      "17:30"
+    ],
+    [
+      "daily",
+      "明日の注目試合",
+      "なぜ注目なのかの理由つき",
+      "19:00"
+    ],
+    [
+      "daily_soccer",
+      "欧州サッカー",
+      "その夜の注目カード",
+      "19:30"
+    ],
+    [
+      "morning_press",
+      "現地の報道",
+      "番記者の投稿と見出しを翻訳",
+      "18:00"
+    ],
+    [
+      "longform",
+      "今日のMLB、数字で（3分）",
+      "ずんだもんと四国めたんが成績とポストシーズンを追う",
+      "21:00"
+    ]
+  ]
+}

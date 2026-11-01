@@ -1,0 +1,187 @@
+{
+  "generated_at": "2026-10-15T09:53:56.805003+00:00",
+  "games": [
+    {
+      "game_id": "849818",
+      "league": "MLB",
+      "home_team_id": "114",
+      "away_team_id": "139",
+      "home_team_name": "ガーディアンズ",
+      "away_team_name": "レイズ",
+      "home_abbr": "CLE",
+      "away_abbr": "TB",
+      "home_color": "#00385D",
+      "away_color": "#092C5C",
+      "matchup": "レイズ vs ガーディアンズ",
+      "abbr_matchup": "TB vs CLE",
+      "start_time_jst": "10/16 02:00",
+      "home_division": "ALC",
+      "away_division": "ALE",
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": {
+        "rank": 1,
+        "games_back": 0.0,
+        "streak": -1,
+        "wins": 85,
+        "losses": 77,
+        "last_ten": "8勝2敗",
+        "points_back": null
+      },
+      "away_standing": {
+        "rank": 1,
+        "games_back": 0.0,
+        "streak": -1,
+        "wins": 98,
+        "losses": 64,
+        "last_ten": "5勝5敗",
+        "points_back": null
+      },
+      "home_probable": {
+        "name": "Gavin Williams",
+        "name_en": "Gavin Williams",
+        "player_id": "668909",
+        "era": "3.76",
+        "wins": 14,
+        "losses": 8,
+        "strikeouts": 248
+      },
+      "away_probable": {
+        "name": "Griffin Jax",
+        "name_en": "Griffin Jax",
+        "player_id": "643377",
+        "era": "3.53",
+        "wins": 8,
+        "losses": 10,
+        "strikeouts": 116
+      },
+      "venue_name": "Progressive Field",
+      "venue_jp": "プログレッシブ・フィールド",
+      "venue_note": "湖からの風の影響を受けやすく、季節によって球場の性格が変わる",
+      "venue_runs_note": "この球場の2026年シーズンの1試合平均得点は8.31点で、MLB30球場中23位",
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 6,
+      "game_type": "L",
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "postseason",
+          "text": "リーグ優勝決定シリーズ 第3戦(1勝1敗のタイ)",
+          "weight": 6
+        }
+      ],
+      "series_context": {
+        "series_game_number": 3,
+        "games_in_series": 7,
+        "home_wins_in_stretch": 1,
+        "away_wins_in_stretch": 1
+      },
+      "log_notes": [],
+      "ai_summary": "リーグ優勝決定シリーズは各リーグの頂点を決める舞台であり、レギュラーシーズンで【ア・リーグ東地区を98勝64敗で制したレイズ】と、【中地区の1位ガーディアンズ】が対戦している。1勝1敗のタイで迎える第3戦は、シリーズの流れを左右する重要な一戦になる。ガーディアンズの先発Gavin Williamsは防御率3.76で14勝を挙げており、レイズのGriffin Jaxは防御率3.53ながら8勝10敗と勝ち星に恵まれていない。プログレッシブ・フィールドは得点が出にくい球場の傾向にあるだけに、先発投手の投げ合いがどう展開するかに注目したい。",
+      "notification_hook": "シリーズ1勝1敗の第3戦。Gavin Williamsの14勝vs低勝率のGriffin Jaxの先発対決",
+      "availability_checked_at": "2026-10-15T09:52:48.505711+00:00",
+      "final_score": {
+        "home": 3,
+        "away": 2,
+        "winner": "home"
+      }
+    },
+    {
+      "game_id": "849810",
+      "league": "MLB",
+      "home_team_id": "119",
+      "away_team_id": "158",
+      "home_team_name": "ドジャース",
+      "away_team_name": "ブリュワーズ",
+      "home_abbr": "LAD",
+      "away_abbr": "MIL",
+      "home_color": "#005A9C",
+      "away_color": "#12284B",
+      "matchup": "ブリュワーズ vs ドジャース",
+      "abbr_matchup": "MIL vs LAD",
+      "start_time_jst": "10/16 09:00",
+      "home_division": "NLW",
+      "away_division": "NLC",
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [
+        "大谷翔平",
+        "佐々木朗希",
+        "山本由伸"
+      ],
+      "home_standing": {
+        "rank": 1,
+        "games_back": 0.0,
+        "streak": 3,
+        "wins": 100,
+        "losses": 62,
+        "last_ten": "8勝2敗",
+        "points_back": null
+      },
+      "away_standing": {
+        "rank": 1,
+        "games_back": 0.0,
+        "streak": 5,
+        "wins": 103,
+        "losses": 59,
+        "last_ten": "8勝2敗",
+        "points_back": null
+      },
+      "home_probable": {
+        "name": "Tyler Glasnow",
+        "name_en": "Tyler Glasnow",
+        "player_id": "607192",
+        "era": "3.53",
+        "wins": 5,
+        "losses": 2,
+        "strikeouts": 98
+      },
+      "away_probable": null,
+      "venue_name": "UNIQLO Field at Dodger Stadium",
+      "venue_jp": "ドジャー・スタジアム",
+      "venue_note": "1962年開場、MLBで3番目に古い現役球場",
+      "venue_runs_note": "この球場の2026年シーズンの1試合平均得点は8.52点で、MLB30球場中19位",
+      "home_has_jp": true,
+      "away_has_jp": false,
+      "score": 8,
+      "game_type": "L",
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "大谷、山本、佐々木のドジャース",
+          "weight": 2
+        },
+        {
+          "tag": "postseason",
+          "text": "リーグ優勝決定シリーズ 第4戦(ブリュワーズが3勝0敗で王手、ドジャースは負ければ敗退)",
+          "weight": 6
+        }
+      ],
+      "series_context": {
+        "series_game_number": 3,
+        "games_in_series": 7,
+        "home_wins_in_stretch": 0,
+        "away_wins_in_stretch": 3
+      },
+      "log_notes": [],
+      "ai_summary": "ナ・リーグ中地区で103勝59敗の【ブリュワーズが3勝0敗で王手】をかけるリーグ優勝決定シリーズ第4戦。敵地ドジャー・スタジアムで迎える本シリーズで、ナ・リーグ西地区首位のドジャース(100勝62敗)は敗れば敗退が決まる状況に置かれている。防御率3.53のTyler Glasnowが先発するドジャースが、どこまで粘りを見せるかが焦点となる。1962年開場というMLB現役球場の中でも古い歴史を持つドジャー・スタジアムでの采配と投げ合いの行方に注目したい。",
+      "notification_hook": "大谷・山本・佐々木のドジャース、敗退回避へ王手を阻止できるか",
+      "availability_checked_at": "2026-10-15T09:52:48.505711+00:00",
+      "final_score": {
+        "home": 4,
+        "away": 6,
+        "winner": "away"
+      }
+    }
+  ],
+  "ai_status": {
+    "targets": 0,
+    "succeeded": 0,
+    "cost_usd": 0.0
+  }
+}

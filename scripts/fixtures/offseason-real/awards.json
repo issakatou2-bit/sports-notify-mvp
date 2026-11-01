@@ -1,0 +1,992 @@
+{
+  "ALCY": {
+    "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+    "awards": [
+      {
+        "id": "ALCY",
+        "name": "AL Cy Young",
+        "date": "2025-11-12",
+        "season": "2025",
+        "team": {
+          "id": 116,
+          "link": "/api/v1/teams/116"
+        },
+        "player": {
+          "id": 669373,
+          "link": "/api/v1/people/669373",
+          "primaryPosition": {
+            "code": "1",
+            "name": "Pitcher",
+            "type": "Pitcher",
+            "abbreviation": "P"
+          },
+          "nameFirstLast": "Tarik Skubal"
+        }
+      }
+    ]
+  },
+  "ALGG": {
+    "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+    "awards": [
+      {
+        "id": "ALGG",
+        "name": "Rawlings AL Gold Glove",
+        "date": "2025-11-02",
+        "season": "2025",
+        "team": {
+          "id": 118,
+          "link": "/api/v1/teams/118"
+        },
+        "player": {
+          "id": 677951,
+          "link": "/api/v1/people/677951",
+          "primaryPosition": {
+            "code": "6",
+            "name": "Shortstop",
+            "type": "Infielder",
+            "abbreviation": "SS"
+          },
+          "nameFirstLast": "Bobby Witt Jr."
+        }
+      },
+      {
+        "id": "ALGG",
+        "name": "Rawlings AL Gold Glove",
+        "date": "2025-11-02",
+        "season": "2025",
+        "team": {
+          "id": 111,
+          "link": "/api/v1/teams/111"
+        },
+        "player": {
+          "id": 678882,
+          "link": "/api/v1/people/678882",
+          "primaryPosition": {
+            "code": "8",
+            "name": "Outfielder",
+            "type": "Outfielder",
+            "abbreviation": "CF"
+          },
+          "nameFirstLast": "Ceddanne Rafaela"
+        }
+      },
+      {
+        "id": "ALGG",
+        "name": "Rawlings AL Gold Glove",
+        "date": "2025-11-02",
+        "season": "2025",
+        "team": {
+          "id": 116,
+          "link": "/api/v1/teams/116"
+        },
+        "player": {
+          "id": 693307,
+          "link": "/api/v1/people/693307",
+          "primaryPosition": {
+            "code": "2",
+            "name": "Catcher",
+            "type": "Catcher",
+            "abbreviation": "C"
+          },
+          "nameFirstLast": "Dillon Dingler"
+        }
+      },
+      {
+        "id": "ALGG",
+        "name": "Rawlings AL Gold Glove",
+        "date": "2025-11-02",
+        "season": "2025",
+        "team": {
+          "id": 118,
+          "link": "/api/v1/teams/118"
+        },
+        "player": {
+          "id": 672580,
+          "link": "/api/v1/people/672580",
+          "primaryPosition": {
+            "code": "5",
+            "name": "Third Base",
+            "type": "Infielder",
+            "abbreviation": "3B"
+          },
+          "nameFirstLast": "Maikel Garcia"
+        }
+      },
+      {
+        "id": "ALGG",
+        "name": "Rawlings AL Gold Glove",
+        "date": "2025-11-02",
+        "season": "2025",
+        "team": {
+          "id": 140,
+          "link": "/api/v1/teams/140"
+        },
+        "player": {
+          "id": 543760,
+          "link": "/api/v1/people/543760",
+          "primaryPosition": {
+            "code": "4",
+            "name": "Second Base",
+            "type": "Infielder",
+            "abbreviation": "2B"
+          },
+          "nameFirstLast": "Marcus Semien"
+        }
+      },
+      {
+        "id": "ALGG",
+        "name": "Rawlings AL Gold Glove",
+        "date": "2025-11-02",
+        "season": "2025",
+        "team": {
+          "id": 117,
+          "link": "/api/v1/teams/117"
+        },
+        "player": {
+          "id": 643289,
+          "link": "/api/v1/people/643289",
+          "primaryPosition": {
+            "code": "U",
+            "name": "Utility",
+            "type": "Infielder",
+            "abbreviation": "UT"
+          },
+          "nameFirstLast": "Mauricio Dubón"
+        }
+      },
+      {
+        "id": "ALGG",
+        "name": "Rawlings AL Gold Glove",
+        "date": "2025-11-02",
+        "season": "2025",
+        "team": {
+          "id": 147,
+          "link": "/api/v1/teams/147"
+        },
+        "player": {
+          "id": 608331,
+          "link": "/api/v1/people/608331",
+          "primaryPosition": {
+            "code": "1",
+            "name": "Pitcher",
+            "type": "Pitcher",
+            "abbreviation": "P"
+          },
+          "nameFirstLast": "Max Fried"
+        }
+      },
+      {
+        "id": "ALGG",
+        "name": "Rawlings AL Gold Glove",
+        "date": "2025-11-02",
+        "season": "2025",
+        "team": {
+          "id": 114,
+          "link": "/api/v1/teams/114"
+        },
+        "player": {
+          "id": 680757,
+          "link": "/api/v1/people/680757",
+          "primaryPosition": {
+            "code": "7",
+            "name": "Outfielder",
+            "type": "Outfielder",
+            "abbreviation": "LF"
+          },
+          "nameFirstLast": "Steven Kwan"
+        }
+      },
+      {
+        "id": "ALGG",
+        "name": "Rawlings AL Gold Glove",
+        "date": "2025-11-02",
+        "season": "2025",
+        "team": {
+          "id": 141,
+          "link": "/api/v1/teams/141"
+        },
+        "player": {
+          "id": 664034,
+          "link": "/api/v1/people/664034",
+          "primaryPosition": {
+            "code": "3",
+            "name": "First Base",
+            "type": "Infielder",
+            "abbreviation": "1B"
+          },
+          "nameFirstLast": "Ty France"
+        }
+      },
+      {
+        "id": "ALGG",
+        "name": "Rawlings AL Gold Glove",
+        "date": "2025-11-02",
+        "season": "2025",
+        "team": {
+          "id": 111,
+          "link": "/api/v1/teams/111"
+        },
+        "player": {
+          "id": 677800,
+          "link": "/api/v1/people/677800",
+          "primaryPosition": {
+            "code": "9",
+            "name": "Outfielder",
+            "type": "Outfielder",
+            "abbreviation": "RF"
+          },
+          "nameFirstLast": "Wilyer Abreu"
+        }
+      }
+    ]
+  },
+  "ALROY": {
+    "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+    "awards": [
+      {
+        "id": "ALROY",
+        "name": "Jackie Robinson AL Rookie of the Year",
+        "date": "2025-11-10",
+        "season": "2025",
+        "team": {
+          "id": 133,
+          "link": "/api/v1/teams/133"
+        },
+        "player": {
+          "id": 701762,
+          "link": "/api/v1/people/701762",
+          "primaryPosition": {
+            "code": "3",
+            "name": "First Base",
+            "type": "Infielder",
+            "abbreviation": "1B"
+          },
+          "nameFirstLast": "Nick Kurtz"
+        }
+      }
+    ]
+  },
+  "ALSS": {
+    "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+    "awards": [
+      {
+        "id": "ALSS",
+        "name": "AL Silver Slugger",
+        "date": "2025-11-07",
+        "season": "2025",
+        "team": {
+          "id": 147,
+          "link": "/api/v1/teams/147"
+        },
+        "player": {
+          "id": 592450,
+          "link": "/api/v1/people/592450",
+          "primaryPosition": {
+            "code": "O",
+            "name": "Outfield",
+            "type": "Outfielder",
+            "abbreviation": "OF"
+          },
+          "nameFirstLast": "Aaron Judge"
+        }
+      },
+      {
+        "id": "ALSS",
+        "name": "AL Silver Slugger",
+        "date": "2025-11-07",
+        "season": "2025",
+        "team": {
+          "id": 118,
+          "link": "/api/v1/teams/118"
+        },
+        "player": {
+          "id": 677951,
+          "link": "/api/v1/people/677951",
+          "primaryPosition": {
+            "code": "6",
+            "name": "Shortstop",
+            "type": "Infielder",
+            "abbreviation": "SS"
+          },
+          "nameFirstLast": "Bobby Witt Jr."
+        }
+      },
+      {
+        "id": "ALSS",
+        "name": "AL Silver Slugger",
+        "date": "2025-11-07",
+        "season": "2025",
+        "team": {
+          "id": 142,
+          "link": "/api/v1/teams/142"
+        },
+        "player": {
+          "id": 621439,
+          "link": "/api/v1/people/621439",
+          "primaryPosition": {
+            "code": "O",
+            "name": "Outfield",
+            "type": "Outfielder",
+            "abbreviation": "OF"
+          },
+          "nameFirstLast": "Byron Buxton"
+        }
+      },
+      {
+        "id": "ALSS",
+        "name": "AL Silver Slugger",
+        "date": "2025-11-07",
+        "season": "2025",
+        "team": {
+          "id": 136,
+          "link": "/api/v1/teams/136"
+        },
+        "player": {
+          "id": 663728,
+          "link": "/api/v1/people/663728",
+          "primaryPosition": {
+            "code": "2",
+            "name": "Catcher",
+            "type": "Catcher",
+            "abbreviation": "C"
+          },
+          "nameFirstLast": "Cal Raleigh"
+        }
+      },
+      {
+        "id": "ALSS",
+        "name": "AL Silver Slugger",
+        "date": "2025-11-07",
+        "season": "2025",
+        "team": {
+          "id": 141,
+          "link": "/api/v1/teams/141"
+        },
+        "player": {
+          "id": 543807,
+          "link": "/api/v1/people/543807",
+          "primaryPosition": {
+            "code": "10",
+            "name": "Designated Hitter",
+            "type": "Hitter",
+            "abbreviation": "DH"
+          },
+          "nameFirstLast": "George Springer"
+        }
+      },
+      {
+        "id": "ALSS",
+        "name": "AL Silver Slugger",
+        "date": "2025-11-07",
+        "season": "2025",
+        "team": {
+          "id": 147,
+          "link": "/api/v1/teams/147"
+        },
+        "player": {
+          "id": 665862,
+          "link": "/api/v1/people/665862",
+          "primaryPosition": {
+            "code": "4",
+            "name": "Second Base",
+            "type": "Infielder",
+            "abbreviation": "2B"
+          },
+          "nameFirstLast": "Jazz Chisholm Jr."
+        }
+      },
+      {
+        "id": "ALSS",
+        "name": "AL Silver Slugger",
+        "date": "2025-11-07",
+        "season": "2025",
+        "team": {
+          "id": 114,
+          "link": "/api/v1/teams/114"
+        },
+        "player": {
+          "id": 608070,
+          "link": "/api/v1/people/608070",
+          "primaryPosition": {
+            "code": "5",
+            "name": "Third Base",
+            "type": "Infielder",
+            "abbreviation": "3B"
+          },
+          "nameFirstLast": "José Ramírez"
+        }
+      },
+      {
+        "id": "ALSS",
+        "name": "AL Silver Slugger",
+        "date": "2025-11-07",
+        "season": "2025",
+        "team": {
+          "id": 133,
+          "link": "/api/v1/teams/133"
+        },
+        "player": {
+          "id": 701762,
+          "link": "/api/v1/people/701762",
+          "primaryPosition": {
+            "code": "3",
+            "name": "First Base",
+            "type": "Infielder",
+            "abbreviation": "1B"
+          },
+          "nameFirstLast": "Nick Kurtz"
+        }
+      },
+      {
+        "id": "ALSS",
+        "name": "AL Silver Slugger",
+        "date": "2025-11-07",
+        "season": "2025",
+        "team": {
+          "id": 116,
+          "link": "/api/v1/teams/116"
+        },
+        "player": {
+          "id": 682985,
+          "link": "/api/v1/people/682985",
+          "primaryPosition": {
+            "code": "O",
+            "name": "Outfield",
+            "type": "Outfielder",
+            "abbreviation": "OF"
+          },
+          "nameFirstLast": "Riley Greene"
+        }
+      },
+      {
+        "id": "ALSS",
+        "name": "AL Silver Slugger",
+        "date": "2025-11-07",
+        "season": "2025",
+        "team": {
+          "id": 116,
+          "link": "/api/v1/teams/116"
+        },
+        "player": {
+          "id": 656716,
+          "link": "/api/v1/people/656716",
+          "primaryPosition": {
+            "code": "U",
+            "name": "Utility",
+            "type": "Infielder",
+            "abbreviation": "UT"
+          },
+          "nameFirstLast": "Zach McKinstry"
+        }
+      }
+    ]
+  },
+  "NLCY": {
+    "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+    "awards": [
+      {
+        "id": "NLCY",
+        "name": "NL Cy Young",
+        "date": "2025-11-12",
+        "season": "2025",
+        "team": {
+          "id": 134,
+          "link": "/api/v1/teams/134"
+        },
+        "player": {
+          "id": 694973,
+          "link": "/api/v1/people/694973",
+          "primaryPosition": {
+            "code": "1",
+            "name": "Pitcher",
+            "type": "Pitcher",
+            "abbreviation": "P"
+          },
+          "nameFirstLast": "Paul Skenes"
+        }
+      }
+    ]
+  },
+  "NLGG": {
+    "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+    "awards": [
+      {
+        "id": "NLGG",
+        "name": "Rawlings NL Gold Glove",
+        "date": "2025-11-02",
+        "season": "2025",
+        "team": {
+          "id": 135,
+          "link": "/api/v1/teams/135"
+        },
+        "player": {
+          "id": 665487,
+          "link": "/api/v1/people/665487",
+          "primaryPosition": {
+            "code": "9",
+            "name": "Outfielder",
+            "type": "Outfielder",
+            "abbreviation": "RF"
+          },
+          "nameFirstLast": "Fernando Tatis Jr."
+        }
+      },
+      {
+        "id": "NLGG",
+        "name": "Rawlings NL Gold Glove",
+        "date": "2025-11-02",
+        "season": "2025",
+        "team": {
+          "id": 112,
+          "link": "/api/v1/teams/112"
+        },
+        "player": {
+          "id": 664023,
+          "link": "/api/v1/people/664023",
+          "primaryPosition": {
+            "code": "7",
+            "name": "Outfielder",
+            "type": "Outfielder",
+            "abbreviation": "LF"
+          },
+          "nameFirstLast": "Ian Happ"
+        }
+      },
+      {
+        "id": "NLGG",
+        "name": "Rawlings NL Gold Glove",
+        "date": "2025-11-02",
+        "season": "2025",
+        "team": {
+          "id": 146,
+          "link": "/api/v1/teams/146"
+        },
+        "player": {
+          "id": 691594,
+          "link": "/api/v1/people/691594",
+          "primaryPosition": {
+            "code": "U",
+            "name": "Utility",
+            "type": "Infielder",
+            "abbreviation": "UT"
+          },
+          "nameFirstLast": "Javier Sanoja"
+        }
+      },
+      {
+        "id": "NLGG",
+        "name": "Rawlings NL Gold Glove",
+        "date": "2025-11-02",
+        "season": "2025",
+        "team": {
+          "id": 113,
+          "link": "/api/v1/teams/113"
+        },
+        "player": {
+          "id": 663647,
+          "link": "/api/v1/people/663647",
+          "primaryPosition": {
+            "code": "5",
+            "name": "Third Base",
+            "type": "Infielder",
+            "abbreviation": "3B"
+          },
+          "nameFirstLast": "Ke'Bryan Hayes"
+        }
+      },
+      {
+        "id": "NLGG",
+        "name": "Rawlings NL Gold Glove",
+        "date": "2025-11-02",
+        "season": "2025",
+        "team": {
+          "id": 137,
+          "link": "/api/v1/teams/137"
+        },
+        "player": {
+          "id": 657277,
+          "link": "/api/v1/people/657277",
+          "primaryPosition": {
+            "code": "1",
+            "name": "Pitcher",
+            "type": "Pitcher",
+            "abbreviation": "P"
+          },
+          "nameFirstLast": "Logan Webb"
+        }
+      },
+      {
+        "id": "NLGG",
+        "name": "Rawlings NL Gold Glove",
+        "date": "2025-11-02",
+        "season": "2025",
+        "team": {
+          "id": 138,
+          "link": "/api/v1/teams/138"
+        },
+        "player": {
+          "id": 691026,
+          "link": "/api/v1/people/691026",
+          "primaryPosition": {
+            "code": "6",
+            "name": "Shortstop",
+            "type": "Infielder",
+            "abbreviation": "SS"
+          },
+          "nameFirstLast": "Masyn Winn"
+        }
+      },
+      {
+        "id": "NLGG",
+        "name": "Rawlings NL Gold Glove",
+        "date": "2025-11-02",
+        "season": "2025",
+        "team": {
+          "id": 144,
+          "link": "/api/v1/teams/144"
+        },
+        "player": {
+          "id": 621566,
+          "link": "/api/v1/people/621566",
+          "primaryPosition": {
+            "code": "3",
+            "name": "First Base",
+            "type": "Infielder",
+            "abbreviation": "1B"
+          },
+          "nameFirstLast": "Matt Olson"
+        }
+      },
+      {
+        "id": "NLGG",
+        "name": "Rawlings NL Gold Glove",
+        "date": "2025-11-02",
+        "season": "2025",
+        "team": {
+          "id": 112,
+          "link": "/api/v1/teams/112"
+        },
+        "player": {
+          "id": 663538,
+          "link": "/api/v1/people/663538",
+          "primaryPosition": {
+            "code": "4",
+            "name": "Second Base",
+            "type": "Infielder",
+            "abbreviation": "2B"
+          },
+          "nameFirstLast": "Nico Hoerner"
+        }
+      },
+      {
+        "id": "NLGG",
+        "name": "Rawlings NL Gold Glove",
+        "date": "2025-11-02",
+        "season": "2025",
+        "team": {
+          "id": 137,
+          "link": "/api/v1/teams/137"
+        },
+        "player": {
+          "id": 672275,
+          "link": "/api/v1/people/672275",
+          "primaryPosition": {
+            "code": "2",
+            "name": "Catcher",
+            "type": "Catcher",
+            "abbreviation": "C"
+          },
+          "nameFirstLast": "Patrick Bailey"
+        }
+      },
+      {
+        "id": "NLGG",
+        "name": "Rawlings NL Gold Glove",
+        "date": "2025-11-02",
+        "season": "2025",
+        "team": {
+          "id": 112,
+          "link": "/api/v1/teams/112"
+        },
+        "player": {
+          "id": 691718,
+          "link": "/api/v1/people/691718",
+          "primaryPosition": {
+            "code": "8",
+            "name": "Outfielder",
+            "type": "Outfielder",
+            "abbreviation": "CF"
+          },
+          "nameFirstLast": "Pete Crow-Armstrong"
+        }
+      }
+    ]
+  },
+  "NLMVP": {
+    "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+    "awards": [
+      {
+        "id": "NLMVP",
+        "name": "NL MVP",
+        "date": "2025-11-13",
+        "season": "2025",
+        "team": {
+          "id": 119,
+          "link": "/api/v1/teams/119"
+        },
+        "player": {
+          "id": 660271,
+          "link": "/api/v1/people/660271",
+          "primaryPosition": {
+            "code": "Y",
+            "name": "Two-Way Player",
+            "type": "Two-Way Player",
+            "abbreviation": "TWP"
+          },
+          "nameFirstLast": "Shohei Ohtani"
+        }
+      }
+    ]
+  },
+  "NLROY": {
+    "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+    "awards": [
+      {
+        "id": "NLROY",
+        "name": "Jackie Robinson NL Rookie of the Year",
+        "date": "2025-11-10",
+        "season": "2025",
+        "team": {
+          "id": 144,
+          "link": "/api/v1/teams/144"
+        },
+        "player": {
+          "id": 686948,
+          "link": "/api/v1/people/686948",
+          "primaryPosition": {
+            "code": "2",
+            "name": "Catcher",
+            "type": "Catcher",
+            "abbreviation": "C"
+          },
+          "nameFirstLast": "Drake Baldwin"
+        }
+      }
+    ]
+  },
+  "NLSS": {
+    "copyright": "Copyright 2026 MLB Advanced Media, L.P.  Use of any content on this page acknowledges agreement to the terms posted here http://gdx.mlb.com/components/copyright.txt",
+    "awards": [
+      {
+        "id": "NLSS",
+        "name": "NL Silver Slugger",
+        "date": "2025-11-06",
+        "season": "2025",
+        "team": {
+          "id": 138,
+          "link": "/api/v1/teams/138"
+        },
+        "player": {
+          "id": 676475,
+          "link": "/api/v1/people/676475",
+          "primaryPosition": {
+            "code": "U",
+            "name": "Utility",
+            "type": "Infielder",
+            "abbreviation": "UT"
+          },
+          "nameFirstLast": "Alec Burleson"
+        }
+      },
+      {
+        "id": "NLSS",
+        "name": "NL Silver Slugger",
+        "date": "2025-11-06",
+        "season": "2025",
+        "team": {
+          "id": 109,
+          "link": "/api/v1/teams/109"
+        },
+        "player": {
+          "id": 682998,
+          "link": "/api/v1/people/682998",
+          "primaryPosition": {
+            "code": "O",
+            "name": "Outfield",
+            "type": "Outfielder",
+            "abbreviation": "OF"
+          },
+          "nameFirstLast": "Corbin Carroll"
+        }
+      },
+      {
+        "id": "NLSS",
+        "name": "NL Silver Slugger",
+        "date": "2025-11-06",
+        "season": "2025",
+        "team": {
+          "id": 109,
+          "link": "/api/v1/teams/109"
+        },
+        "player": {
+          "id": 672695,
+          "link": "/api/v1/people/672695",
+          "primaryPosition": {
+            "code": "6",
+            "name": "Shortstop",
+            "type": "Infielder",
+            "abbreviation": "SS"
+          },
+          "nameFirstLast": "Geraldo Perdomo"
+        }
+      },
+      {
+        "id": "NLSS",
+        "name": "NL Silver Slugger",
+        "date": "2025-11-06",
+        "season": "2025",
+        "team": {
+          "id": 115,
+          "link": "/api/v1/teams/115"
+        },
+        "player": {
+          "id": 696100,
+          "link": "/api/v1/people/696100",
+          "primaryPosition": {
+            "code": "2",
+            "name": "Catcher",
+            "type": "Catcher",
+            "abbreviation": "C"
+          },
+          "nameFirstLast": "Hunter Goodman"
+        }
+      },
+      {
+        "id": "NLSS",
+        "name": "NL Silver Slugger",
+        "date": "2025-11-06",
+        "season": "2025",
+        "team": {
+          "id": 121,
+          "link": "/api/v1/teams/121"
+        },
+        "player": {
+          "id": 665742,
+          "link": "/api/v1/people/665742",
+          "primaryPosition": {
+            "code": "O",
+            "name": "Outfield",
+            "type": "Outfielder",
+            "abbreviation": "OF"
+          },
+          "nameFirstLast": "Juan Soto"
+        }
+      },
+      {
+        "id": "NLSS",
+        "name": "NL Silver Slugger",
+        "date": "2025-11-06",
+        "season": "2025",
+        "team": {
+          "id": 109,
+          "link": "/api/v1/teams/109"
+        },
+        "player": {
+          "id": 606466,
+          "link": "/api/v1/people/606466",
+          "primaryPosition": {
+            "code": "4",
+            "name": "Second Base",
+            "type": "Infielder",
+            "abbreviation": "2B"
+          },
+          "nameFirstLast": "Ketel Marte"
+        }
+      },
+      {
+        "id": "NLSS",
+        "name": "NL Silver Slugger",
+        "date": "2025-11-06",
+        "season": "2025",
+        "team": {
+          "id": 112,
+          "link": "/api/v1/teams/112"
+        },
+        "player": {
+          "id": 663656,
+          "link": "/api/v1/people/663656",
+          "primaryPosition": {
+            "code": "O",
+            "name": "Outfield",
+            "type": "Outfielder",
+            "abbreviation": "OF"
+          },
+          "nameFirstLast": "Kyle Tucker"
+        }
+      },
+      {
+        "id": "NLSS",
+        "name": "NL Silver Slugger",
+        "date": "2025-11-06",
+        "season": "2025",
+        "team": {
+          "id": 135,
+          "link": "/api/v1/teams/135"
+        },
+        "player": {
+          "id": 592518,
+          "link": "/api/v1/people/592518",
+          "primaryPosition": {
+            "code": "5",
+            "name": "Third Base",
+            "type": "Infielder",
+            "abbreviation": "3B"
+          },
+          "nameFirstLast": "Manny Machado"
+        }
+      },
+      {
+        "id": "NLSS",
+        "name": "NL Silver Slugger",
+        "date": "2025-11-06",
+        "season": "2025",
+        "team": {
+          "id": 121,
+          "link": "/api/v1/teams/121"
+        },
+        "player": {
+          "id": 624413,
+          "link": "/api/v1/people/624413",
+          "primaryPosition": {
+            "code": "3",
+            "name": "First Base",
+            "type": "Infielder",
+            "abbreviation": "1B"
+          },
+          "nameFirstLast": "Pete Alonso"
+        }
+      },
+      {
+        "id": "NLSS",
+        "name": "NL Silver Slugger",
+        "date": "2025-11-06",
+        "season": "2025",
+        "team": {
+          "id": 119,
+          "link": "/api/v1/teams/119"
+        },
+        "player": {
+          "id": 660271,
+          "link": "/api/v1/people/660271",
+          "primaryPosition": {
+            "code": "10",
+            "name": "Designated Hitter",
+            "type": "Hitter",
+            "abbreviation": "DH"
+          },
+          "nameFirstLast": "Shohei Ohtani"
+        }
+      }
+    ]
+  }
+}

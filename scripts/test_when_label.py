@@ -17,16 +17,7 @@ sys.stdout.reconfigure(encoding="utf-8")
 sys.path.insert(0, "scripts")
 
 import post_common as pc  # noqa: E402
-
-fails = 0
-
-
-def check(label, got, want):
-    global fails
-    ok = got == want
-    if not ok:
-        fails += 1
-    print(f"{'ok ' if ok else 'NG '} {label}: {got}" + ("" if ok else f" (期待 {want})"))
+from checks_report import check, section, done  # noqa: E402
 
 
 class FakeDT:
@@ -51,7 +42,7 @@ def g(t):
 
 # --- MLB: 19時に生成し、翌日の試合を予告する -------------------------------
 # 実測(94試合)の開始分布は JST 01〜11時。07〜08時台が最多。
-print("--- MLB 日次(19:00生成) ---")
+section("MLB 日次(19:00生成)")
 at(2026, 8, 15, 19)
 check("翌08:15 は明日", pc.when_label("08/16 08:15"), "明日")
 check("翌11:10 は明日", pc.when_label("08/16 11:10"), "明日")
@@ -108,5 +99,4 @@ check("サッカー 翌22:00 は明日",
       pc.today_or_tomorrow_label([_g("プレミアリーグ", "22:00")]), "明日の注目試合")
 
 pc.datetime = _orig
-print("\nALL OK" if not fails else f"\n{fails} FAILURES")
-sys.exit(1 if fails else 0)
+sys.exit(done())

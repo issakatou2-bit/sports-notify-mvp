@@ -36,9 +36,28 @@ concurrency:
   group: soccer-daily
   cancel-in-progress: false
 
+env:
+  COLLESPO_HOST_SPLIT: ${{ vars.COLLESPO_HOST_SPLIT || '' }}
+  COLLESPO_UI_VOICE_STOCK: ${{ vars.COLLESPO_UI_VOICE_STOCK || '' }}
+  COLLESPO_UI_PARTS_KEY: ${{ secrets.COLLESPO_UI_PARTS_KEY }}
+  COLLESPO_UI_VOICE_WAIT_MINUTES: ${{ vars.COLLESPO_UI_VOICE_WAIT_MINUTES || '15' }}
+
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      # 初回の通常点検＋追加1回。限定再点検も次点制作も、この1つを共有する。
+      COLLESPO_SANITY_BUDGET_FILE: build/soccer_sanity_budget.json
+      # サッカーの3枠は専用の変数で切り替える（本人が試作を見てから COLLESPO_SOCCER_LOOK=v4。10/10 エマ）
+      COLLESPO_BUBBLE: ${{ vars.COLLESPO_BUBBLE || '' }}
+      COLLESPO_MOTION: ${{ vars.COLLESPO_MOTION || '' }}
+      COLLESPO_CAPTION_BREAKS: ${{ vars.COLLESPO_CAPTION_BREAKS || '' }}
+      COLLESPO_SLANT_VARIANT: ${{ vars.COLLESPO_SLANT_VARIANT || 'cream' }}
+      COLLESPO_GLASS_BACKGROUND: ${{ vars.COLLESPO_GLASS_BACKGROUND || 'stripes' }}
+      COLLESPO_OUTRO_NEXT: ${{ vars.COLLESPO_OUTRO_NEXT == 'on' && 'on' || 'off' }}
+      COLLESPO_SHORT_LOOK: ${{ vars.COLLESPO_SOCCER_LOOK || 'v3' }}
+      COLLESPO_SOCCER_TITLE_V2: ${{ vars.COLLESPO_SOCCER_TITLE_V2 == 'on' && 'on' || 'off' }}
+      COLLESPO_SOCCER_LOOK: ${{ vars.COLLESPO_SOCCER_LOOK || 'v3' }}
     # 起動の合図にするだけで、材料には依存しない。
     #
     # 以前は日次の成功を条件にしていたが、8/16に日次が通知の失敗で落ちた回、
@@ -111,23 +130,12 @@ jobs:
 
       # 開幕前やオフの日は試合が無い。無い日に空の動画を出すより、
       # 何も出さない方がよい。ここで打ち切る。
-      - name: Stop when there are no fixtures
+      - name: Fetch supported cups and European fixtures
+        run: python scripts/soccer_extra_fixtures.py | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: Select fixtures by material score
         id: gate
-        run: |
-          COUNT=$(python -c "
-          import json
-          try:
-              d = json.load(open('data/soccer_games.json', encoding='utf-8'))
-              print(len([g for g in d.get('games', []) if g.get('is_notable')]))
-          except Exception:
-              print(0)
-          ")
-          echo "count=$COUNT" >> "$GITHUB_OUTPUT"
-          if [ "$COUNT" -eq 0 ]; then
-            echo "::notice::この日は対象の試合がないため、動画は作りません"
-          else
-            echo "注目試合 ${COUNT}件"
-          fi
+        run: python scripts/soccer_selection.py --github-output "$GITHUB_OUTPUT" | tee -a "$GITHUB_STEP_SUMMARY"
 
       - name: Install video tools
         if: steps.gate.outputs.count != '0'
@@ -163,16 +171,18 @@ jobs:
       # 種類の壊れ方を、ここで止める。数字の幅は記録より広く取って
       # あるので、引っかかったらまず組み立てを疑う。
       - name: Sanity check
+        if: steps.gate.outputs.count != '0'
         id: sanity
         # ここで落ちても回は続ける。止めるのは公開だけ。
         # サイトもポッドキャストも記録も、この回の他の仕事は関係がない。
         continue-on-error: true
         env:
+          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: python scripts/sanity.py --general --strict --narration build/soccer_narration.json
+        run: python scripts/sanity.py --general --strict --narration build/soccer_narration.json --out data/sanity_soccer.json --hold-record build/sanity_soccer_hold.json --kind daily_soccer
 
       - name: Synthesize narration
-        if: steps.gate.outputs.count != '0'
+        if: steps.gate.outputs.count != '0' && steps.sanity.outcome == 'success'
         continue-on-error: true
         run: |
           python scripts/synthesize_narration.py \
@@ -180,12 +190,27 @@ jobs:
             --out-dir build/soccer_audio
 
       - name: Generate video
-        if: steps.gate.outputs.count != '0'
+        id: video
+        if: steps.gate.outputs.count != '0' && steps.sanity.outcome == 'success'
+        continue-on-error: true
         run: |
           python scripts/generate_video.py \
             --games data/soccer_games.json --sport soccer \
             --audio-dir build/soccer_audio \
             --out build/soccer --require-audio
+
+      - name: Retry the selected runner-up once
+        id: retry
+        if: >-
+          steps.gate.outputs.count != '0' &&
+          (steps.sanity.outcome == 'failure' || steps.video.outcome == 'failure')
+        env:
+          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: >-
+          python scripts/soccer_daily_retry.py
+          --sanity-outcome '${{ steps.sanity.outcome }}'
+          --video-outcome '${{ steps.video.outcome }}'
 
       - name: Generate thumbnail
         if: steps.gate.outputs.count != '0'
@@ -200,15 +225,20 @@ jobs:
       # ショート用に、動画の1枚目(1080x1920)を切り出す。
       # 16:9はショート棚で中央405pxに切り抜かれ、文字が外へ出る。
       - name: Vertical thumbnail
+        if: steps.gate.outputs.count != '0'
         run: |
           bash scripts/shorts_thumbnail.sh build/soccer/collespo_short.mp4 build/soccer/short.png
 
       # 20:00に出す。この回は20:10前後に終わるので、間に合わなければ
       # そのまま即時公開に倒れる(予約が過去になるとAPIが弾くため)。
       - name: Upload to YouTube
-        if: steps.gate.outputs.count != '0' && steps.sanity.outcome == 'success'
+        id: upload
+        if: >-
+          steps.gate.outputs.count != '0' &&
+          ((steps.sanity.outcome == 'success' && steps.video.outcome == 'success') || steps.retry.outcome == 'success')
         continue-on-error: true
         env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           BLUESKY_HANDLE: ${{ secrets.BLUESKY_HANDLE }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
@@ -225,8 +255,12 @@ jobs:
       # SNSは競技ごとに別の投稿にする。MLBは19時に「明日の注目試合」、
       # こちらは20時に「今夜の注目試合」で、1つにまとめると
       # どちらかの言い方が必ず嘘になる。
+      - name: Save the actually published preview
+        if: steps.gate.outputs.count != '0' && steps.upload.outputs.uploaded == 'true'
+        run: python scripts/soccer_preview_history.py
+
       - name: Post to Bluesky
-        if: steps.gate.outputs.count != '0' && steps.sanity.outcome == 'success'
+        if: steps.gate.outputs.count != '0' && ((steps.sanity.outcome == 'success' && steps.video.outcome == 'success') || steps.retry.outcome == 'success')
         continue-on-error: true
         env:
           BLUESKY_HANDLE: ${{ secrets.BLUESKY_HANDLE }}
@@ -236,7 +270,7 @@ jobs:
         run: python scripts/post_bluesky.py --games data/soccer_games.json --kind daily_soccer
 
       - name: Post to Threads
-        if: steps.gate.outputs.count != '0' && steps.sanity.outcome == 'success'
+        if: steps.gate.outputs.count != '0' && ((steps.sanity.outcome == 'success' && steps.video.outcome == 'success') || steps.retry.outcome == 'success')
         continue-on-error: true
         env:
           THREADS_USER_ID: ${{ secrets.THREADS_USER_ID }}
@@ -245,7 +279,7 @@ jobs:
         run: python scripts/post_threads.py --games data/soccer_games.json
 
       - name: Post to TikTok
-        if: steps.gate.outputs.count != '0' && steps.sanity.outcome == 'success'
+        if: steps.gate.outputs.count != '0' && ((steps.sanity.outcome == 'success' && steps.video.outcome == 'success') || steps.retry.outcome == 'success')
         continue-on-error: true
         env:
           TIKTOK_CLIENT_KEY: ${{ secrets.TIKTOK_CLIENT_KEY }}
@@ -264,22 +298,82 @@ jobs:
 
       - name: Commit record
         if: always()
-        continue-on-error: true
         run: |
           bash scripts/commit_data.sh \
             "soccer daily: ${{ github.run_id }}" \
-            data/published_videos.json data/published_tiktok.json data/soccer_games.json data/token_usage.json data/soccer_availability.json
+            data/published_videos.json data/published_tiktok.json data/soccer_games.json data/token_usage.json data/soccer_availability.json data/soccer_preview_history.json
 
       - name: Save video as artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: collespo-soccer
-          path: build/soccer/
+          path: |
+            data/sanity*.json
+            build/sanity*hold*.json
+            data/postseason.json
+            data/best_of_day.json
+            data/roster_stats.json
+            notable_games.json
+            archive/*.json
+            build/soccer_narration.json
+            build/soccer_retry/
+            build/soccer_sanity_budget.json
+            data/soccer_games.json
+            data/soccer_availability.json
+            build/soccer/
+            !build/**/portrait/**
           if-no-files-found: ignore
 
       # 試合があった回だけ検品する。開催が無い日は作らないのが正しいので、
       # そこを赤くすると毎週何度も嘘の警報が鳴る。
       - name: Confirm the video went out
         if: always() && steps.gate.outputs.count != '0'
-        run: python scripts/verify_published.py --kind daily_soccer
+        run: |
+          python scripts/verify_published.py --kind daily_soccer \
+            --games data/soccer_games.json --narration build/soccer_narration.json
+
+      - name: Keep unsaved data records
+        if: always() && hashFiles('build/data-save-recovery/**/FAILED') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: unsaved-data-${{ github.job }}-${{ github.run_attempt }}
+          path: |
+            build/data-save-recovery/
+            !build/**/portrait/**
+          retention-days: 14
+          if-no-files-found: error
+
+      - name: Save sanity gate records
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sanity-gate-${{ github.job }}
+          path: |
+            data/sanity*.json
+            build/sanity*hold*.json
+            !build/**/portrait/**
+          retention-days: 14
+
+      - name: Save quota-exceeded thumbnails
+        if: always() && hashFiles('build/thumbnail_pending/**') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: thumbnail-pending
+          path: |
+            build/thumbnail_pending/
+            !build/**/portrait/**
+          retention-days: 3
+          if-no-files-found: ignore
+
+      - name: Save voice and render records
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: voice-render-records-${{ github.job }}-${{ github.run_attempt }}
+          path: |
+            build/**/voice_manifest.json
+            build/**/render_timeline.json
+            !build/**/portrait/**
+          retention-days: 14
+          if-no-files-found: ignore

@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-19T15:31:32.580789+00:00",
+  "updated_at": "2026-09-22T23:31:42.946345+00:00",
   "source": "MLB Stats API (Hall of Fame recipients)",
   "teams": {
     "137": {
@@ -299,11 +299,11 @@
           "type": "batter"
         },
         {
-          "name": "Whitey Herzog",
-          "position": "Unknown",
-          "hof_year": "2010",
-          "line": "通算 打率.257　25本塁打　414安打",
-          "type": "batter"
+          "name": "Bruce Sutter",
+          "position": "Pitcher",
+          "hof_year": "2006",
+          "line": "通算 68勝　防御率2.83　861奪三振",
+          "type": "pitcher"
         }
       ]
     },
@@ -351,11 +351,11 @@
           "type": "pitcher"
         },
         {
-          "name": "Tommy Lasorda",
-          "position": "Unknown",
-          "hof_year": "1997",
-          "line": "通算 打率.071　0本塁打　1安打",
-          "type": "batter"
+          "name": "Don Drysdale",
+          "position": "Pitcher",
+          "hof_year": "1984",
+          "line": "通算 209勝　防御率2.95　2486奪三振",
+          "type": "pitcher"
         }
       ]
     },
@@ -545,10 +545,10 @@
           "type": "batter"
         },
         {
-          "name": "Sparky Anderson",
-          "position": "Unknown",
+          "name": "Tony Perez",
+          "position": "First Base",
           "hof_year": "2000",
-          "line": "通算 打率.218　0本塁打　104安打",
+          "line": "通算 打率.279　379本塁打　2732安打",
           "type": "batter"
         }
       ]
@@ -576,17 +576,17 @@
           "type": "batter"
         },
         {
-          "name": "Dick Williams",
-          "position": "Unknown",
-          "hof_year": "2008",
-          "line": "通算 打率.260　70本塁打　768安打",
-          "type": "batter"
-        },
-        {
           "name": "Dennis Eckersley",
           "position": "Pitcher",
           "hof_year": "2004",
           "line": "通算 197勝　防御率3.50　2401奪三振",
+          "type": "pitcher"
+        },
+        {
+          "name": "Rollie Fingers",
+          "position": "Pitcher",
+          "hof_year": "1992",
+          "line": "通算 114勝　防御率2.91　1299奪三振",
           "type": "pitcher"
         }
       ]
@@ -607,6 +607,13 @@
           "hof_year": "2003",
           "line": "通算 打率.287　504本塁打　3255安打",
           "type": "batter"
+        },
+        {
+          "name": "Jim Palmer",
+          "position": "Pitcher",
+          "hof_year": "1990",
+          "line": "通算 268勝　防御率2.86　2212奪三振",
+          "type": "pitcher"
         }
       ]
     },

@@ -1,0 +1,31 @@
+name: 道具　API のモデルの試し
+
+# 役割ごとのモデルと設定（scripts/llm_models.py）が API に通るかを1回ずつ確かめる。手動のみ。
+# 何も公開・書き込みしない。費用は1回1セント未満。
+
+on:
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install
+        run: pip install -r scripts/requirements.txt
+      - name: Try each role
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          COLLESPO_LLM_REVIEW: ${{ vars.COLLESPO_LLM_REVIEW }}
+          COLLESPO_LLM_BOARD: ${{ vars.COLLESPO_LLM_BOARD }}
+          COLLESPO_LLM_TRANSLATE: ${{ vars.COLLESPO_LLM_TRANSLATE }}
+          COLLESPO_LLM_NARRATION: ${{ vars.COLLESPO_LLM_NARRATION }}
+          COLLESPO_LLM_LOCALIZE: ${{ vars.COLLESPO_LLM_LOCALIZE }}
+          COLLESPO_LLM_TOPIC: ${{ vars.COLLESPO_LLM_TOPIC }}
+        run: python scripts/llm_smoke.py

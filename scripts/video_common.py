@@ -14,6 +14,7 @@
 import array
 import functools
 import json
+import math
 import os
 import re
 import random
@@ -142,7 +143,8 @@ def anim_step(k: int, n: int, still_after: float = STILL_AFTER):
     止まる時点をちゃんと後ろに取れば、丸める必要は無い。
     """
     p = k / max(1, n - 1)
-    return p, p >= still_after
+    import motion
+    return p, p >= still_after and not motion.enabled()
 
 
 def pop_text(d, xy, text, fnt, fill, stroke=None, stroke_w=0,
@@ -293,6 +295,9 @@ def crossfade(prev_bytes, im, k: int, fade_frames: int, size):
     混ぜるのは頭だけで、そのあとは素通し。全編に効かせると
     動きのある画面(スコアボードが左から開く等)が濁る。
     """
+    import motion
+    moved = motion.transition(prev_bytes, im, k, max(1, round(fade_frames / FADE_SECONDS)))
+    if moved is not None:return moved
     raw = im.tobytes()
     if not prev_bytes or k >= fade_frames or fade_frames <= 0:
         return raw
@@ -303,6 +308,80 @@ def crossfade(prev_bytes, im, k: int, fade_frames: int, size):
     # 文字が二重に読めて、かえって読みにくい。
     a = ((k + 1) / fade_frames) ** 0.6
     return Image.blend(prev, im, a).tobytes()
+
+
+SHORT_WIPE_SECONDS = .5
+
+
+def short_transition(prev_bytes, im, k, fps=30, v4=False):
+    """v4だけ円ワイプ。字幕・帯は次のコマの一枚を保つ。v3は従来通り。"""
+    import motion
+    moved = motion.transition(prev_bytes, im, k, fps)
+    if moved is not None:return moved
+    if not v4:
+        return crossfade(prev_bytes,im,k,round(FADE_SECONDS*fps),im.size)
+    frames=round(SHORT_WIPE_SECONDS*fps)
+    if not prev_bytes or k>=frames:return im.tobytes()
+    import review_render_v3 as r3
+    prev=Image.frombytes('RGB',im.size,prev_bytes)
+    p=k/max(1,frames-1);radius=round(1300*(1-(1-p)**3))
+    mask=Image.new('L',im.size,0);d=ImageDraw.Draw(mask)
+    cx,cy=im.width//2,760
+    d.ellipse((cx-radius,cy-radius,cx+radius,cy+radius),fill=255)
+    out=Image.composite(im,prev,mask)
+    ImageDraw.Draw(out).ellipse((cx-radius,cy-radius,cx+radius,cy+radius),outline=r3.GOLD,width=10)
+    # Stable shared chrome: no ghosted subtitles, ticker dates or double portraits.
+    out.paste(im.crop((0,0,im.width,r3.CONTENT_TOP)),(0,0))
+    out.paste(im.crop((0,r3.CONTENT_BOTTOM,im.width,im.height)),(0,r3.CONTENT_BOTTOM))
+    if 'duo_portraits' in im.info:
+        # 立ち絵は CONTENT_BOTTOM より上にもかかる。前の画面の立ち絵が上半分だけ残らないように
+        import characters
+        box=characters.portrait_strip();out.paste(im.crop(box),box[:2])
+    return out.tobytes()
+
+
+def short_effects(im,t,quote=False,score=False):
+    """札の光は着地後一回、引用のウィンドウ、表紙のスコアだけ小さなパンチ。"""
+    import review_render_v3 as r3
+    if r3.LOOK!='v4' or im.info.get('v4_effects_applied'):return im
+    info=im.info.copy();box=(r3.LEFT,r3.CONTENT_TOP,r3.SAFE_RIGHT,r3.CONTENT_BOTTOM)
+    out=im.copy();content=im.crop(box)
+    if quote and t<.4:
+        if info.get('duo_layer'):
+            # 立ち絵は札の外。札といっしょに縮めないよう背景で消してから切り出し、最後に描き直す
+            clean=im.copy();bg_full=r3.background(t,None)
+            for rec in info.get('duo_portraits',[]):
+                b=tuple(rec['box']);clean.paste(bg_full.crop(b),b[:2])
+            content=clean.crop(box)
+        p=max(0,min(1,t/.4));w=max(2,round(content.width*(1-(1-min(1,p/.4))**3)))
+        h=max(2,round(content.height*(1-(1-max(0,(p-.4)/.6))**3)))
+        bg=r3.background(t,None).crop(box);out.paste(bg,box[:2])
+        piece=content.resize((w,h),Image.Resampling.BICUBIC)
+        out.paste(piece,(box[0]+(content.width-w)//2,box[1]+(content.height-h)//2))
+    if score and 0<t<.45:
+        # Only the title score rectangle; never enlarge the heading or other stat tiles.
+        score_box=(r3.LEFT,400,r3.SAFE_RIGHT,730)
+        p=t/.45;area=im.crop(score_box);scale=1+.045*math.sin(math.pi*p)
+        larger=area.resize((round(area.width*scale),round(area.height*scale)),Image.Resampling.BICUBIC)
+        dx=(larger.width-area.width)//2;dy=(larger.height-area.height)//2
+        out.paste(larger.crop((dx,dy,dx+area.width,dy+area.height)),score_box[:2])
+    if .65<t<1.2:
+        # Light is clipped to actual panels, so it cannot obscure subtitles/source.
+        mask=Image.new('L',im.size,0);d=ImageDraw.Draw(mask)
+        p=(t-.65)/.55;x=r3.LEFT-240+p*(r3.SAFE_RIGHT-r3.LEFT+480)
+        d.polygon([(x,236),(x+70,236),(x-170,1150),(x-240,1150)],fill=28)
+        mask=mask.filter(ImageFilter.GaussianBlur(12))
+        clip=Image.new('L',im.size,0);cd=ImageDraw.Draw(clip)
+        for entry in info.get('v3_layout',[]):
+            if entry['role']=='card':cd.rectangle(entry['box'],fill=255)
+        mask=ImageChops.multiply(mask,clip)
+        out=Image.composite(Image.new('RGB',im.size,(255,246,220)),out,mask)
+    if info.get('duo_layer'):
+        import characters
+        characters.redraw(out,info['duo_layer'])
+    out.info.update(info)
+    out.info['v4_effects_applied']=True
+    return out
 
 
 # ---------------------------------------------------------------------------
@@ -324,6 +403,10 @@ def crossfade(prev_bytes, im, k: int, fade_frames: int, size):
 # 4つとも少しずつ違っていて、統合は別途(短編を測っている最中に
 # 4か所を同時に触らない)。ここは長編のための正本。
 def build_narration_track(segs, durations, out_dir):
+    import solo_host
+    solo_host.validate_audio(segs)
+    import lipsync
+    lipsync.prepare(segs, durations, out_dir)
     if not any(s.get("file") for s in segs):
         return None
     params = None

@@ -1,0 +1,420 @@
+{
+  "generated_at": "2026-10-12T09:54:12.214323+00:00",
+  "games": [
+    {
+      "game_id": "558579",
+      "league": "セリエA",
+      "home_team_id": "SA-102",
+      "away_team_id": "SA-454",
+      "home_team_name": "アタランタ",
+      "away_team_name": "ベネチア",
+      "home_abbr": null,
+      "away_abbr": null,
+      "home_color": null,
+      "away_color": null,
+      "matchup": "ベネチア vs アタランタ",
+      "abbr_matchup": null,
+      "start_time_jst": "10/13 01:30",
+      "home_division": null,
+      "away_division": null,
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": {
+        "rank": 11,
+        "games_back": 3.3,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 10.0
+      },
+      "away_standing": {
+        "rank": 20,
+        "games_back": 5.3,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 16.0
+      },
+      "home_probable": null,
+      "away_probable": null,
+      "venue_name": null,
+      "venue_jp": null,
+      "venue_note": null,
+      "venue_runs_note": null,
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 0,
+      "game_type": "R",
+      "is_notable": true,
+      "reasons": []
+    },
+    {
+      "game_id": "558587",
+      "league": "セリエA",
+      "home_team_id": "SA-586",
+      "away_team_id": "SA-115",
+      "home_team_name": "トリノ",
+      "away_team_name": "ウディネーゼ",
+      "home_abbr": null,
+      "away_abbr": null,
+      "home_color": null,
+      "away_color": null,
+      "matchup": "ウディネーゼ vs トリノ",
+      "abbr_matchup": null,
+      "start_time_jst": "10/13 03:45",
+      "home_division": null,
+      "away_division": null,
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": {
+        "rank": 15,
+        "games_back": 4.0,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 12.0
+      },
+      "away_standing": {
+        "rank": 14,
+        "games_back": 4.0,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 12.0
+      },
+      "home_probable": null,
+      "away_probable": null,
+      "venue_name": null,
+      "venue_jp": null,
+      "venue_note": null,
+      "venue_runs_note": null,
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 0,
+      "game_type": "R",
+      "is_notable": false,
+      "reasons": [
+        {
+          "tag": "quality",
+          "text": "トリノ（昨季セリエA13位）とウディネーゼ（昨季セリエA10位）の対戦",
+          "weight": 0
+        }
+      ]
+    },
+    {
+      "game_id": "560597",
+      "league": "プレミアリーグ",
+      "home_team_id": "PL-1076",
+      "away_team_id": "PL-67",
+      "home_team_name": "コベントリー",
+      "away_team_name": "ニューカッスル",
+      "home_abbr": null,
+      "away_abbr": null,
+      "home_color": null,
+      "away_color": null,
+      "matchup": "ニューカッスル vs コベントリー",
+      "abbr_matchup": null,
+      "start_time_jst": "10/13 04:00",
+      "home_division": null,
+      "away_division": null,
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": {
+        "rank": 19,
+        "games_back": 5.0,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 15.0
+      },
+      "away_standing": {
+        "rank": 11,
+        "games_back": 3.3,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 10.0
+      },
+      "home_probable": null,
+      "away_probable": null,
+      "venue_name": null,
+      "venue_jp": null,
+      "venue_note": null,
+      "venue_runs_note": null,
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 1,
+      "game_type": "R",
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "コベントリーには坂元達裕が所属",
+          "weight": 1
+        }
+      ],
+      "log_notes": [],
+      "ai_summary": "プレミアリーグはシーズン通じて全チームが対等に戦う総当たり戦であり、現在5試合を消化した段階では順位変動がまだ大きい。コベントリーは【リーグ19位で首位との勝ち点差が15】という状況にある一方、ニューカッスルは11位で首位との差が10となっており、両チームともシーズン序盤での立て直しが求められる局面での対戦となる。この試合では、コベントリーに所属する坂元達裕の活躍に注目したい。",
+      "notification_hook": "首位と15勝ち点差、追い込まれたコベントリーの坂元達裕に注目。"
+    },
+    {
+      "game_id": "564704",
+      "league": "ラ・リーガ",
+      "home_team_id": "PD-88",
+      "away_team_id": "PD-559",
+      "home_team_name": "レバンテ",
+      "away_team_name": "セビージャ",
+      "home_abbr": null,
+      "away_abbr": null,
+      "home_color": null,
+      "away_color": null,
+      "matchup": "セビージャ vs レバンテ",
+      "abbr_matchup": null,
+      "start_time_jst": "10/13 04:00",
+      "home_division": null,
+      "away_division": null,
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": {
+        "rank": 18,
+        "games_back": 6.3,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 19.0
+      },
+      "away_standing": {
+        "rank": 5,
+        "games_back": 3.7,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 11.0
+      },
+      "home_probable": null,
+      "away_probable": null,
+      "venue_name": null,
+      "venue_jp": null,
+      "venue_note": null,
+      "venue_runs_note": null,
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 0,
+      "game_type": "R",
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "quality",
+          "text": "レバンテ（昨季ラ・リーガ18位）とセビージャ（昨季ラ・リーガ15位）の対戦",
+          "weight": 0
+        }
+      ],
+      "log_notes": []
+    },
+    {
+      "game_id": "849812",
+      "league": "MLB",
+      "home_team_id": "158",
+      "away_team_id": "119",
+      "home_team_name": "ブリュワーズ",
+      "away_team_name": "ドジャース",
+      "home_abbr": "MIL",
+      "away_abbr": "LAD",
+      "home_color": "#12284B",
+      "away_color": "#005A9C",
+      "matchup": "ドジャース vs ブリュワーズ",
+      "abbr_matchup": "LAD vs MIL",
+      "start_time_jst": "10/13 06:00",
+      "home_division": "NLC",
+      "away_division": "NLW",
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [
+        {
+          "name": "山本由伸",
+          "context": "先発予定"
+        }
+      ],
+      "jp_players": [
+        "山本由伸",
+        "大谷翔平",
+        "佐々木朗希"
+      ],
+      "home_standing": {
+        "rank": 1,
+        "games_back": 0.0,
+        "streak": 5,
+        "wins": 103,
+        "losses": 59,
+        "last_ten": "8勝2敗",
+        "points_back": null
+      },
+      "away_standing": {
+        "rank": 1,
+        "games_back": 0.0,
+        "streak": 3,
+        "wins": 100,
+        "losses": 62,
+        "last_ten": "8勝2敗",
+        "points_back": null
+      },
+      "home_probable": {
+        "name": "Logan Henderson",
+        "name_en": "Logan Henderson",
+        "player_id": "701656",
+        "era": "2.47",
+        "wins": 11,
+        "losses": 3,
+        "strikeouts": 110
+      },
+      "away_probable": {
+        "name": "山本由伸",
+        "name_en": "Yoshinobu Yamamoto",
+        "player_id": "808967",
+        "era": "2.53",
+        "wins": 14,
+        "losses": 9,
+        "strikeouts": 182
+      },
+      "venue_name": "American Family Field",
+      "venue_jp": "アメリカン・ファミリー・フィールド",
+      "venue_note": "開閉式屋根を持ち、天候に左右されにくい球場",
+      "venue_runs_note": "この球場の2026年シーズンの1試合平均得点は8.85点で、MLB30球場中12位",
+      "home_has_jp": false,
+      "away_has_jp": true,
+      "score": 12,
+      "game_type": "L",
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "JP",
+          "text": "山本由伸が先発予定",
+          "weight": 6
+        },
+        {
+          "tag": "postseason",
+          "text": "リーグ優勝決定シリーズ 第2戦(ブリュワーズが1勝0敗でリード)",
+          "weight": 6
+        }
+      ],
+      "series_context": {
+        "series_game_number": 2,
+        "games_in_series": 7,
+        "home_wins_in_stretch": 1,
+        "away_wins_in_stretch": 0
+      },
+      "log_notes": [],
+      "availability_checked_at": "2026-10-12T09:53:00.827881+00:00",
+      "final_score": {
+        "home": 7,
+        "away": 4,
+        "winner": "home"
+      }
+    },
+    {
+      "game_id": "849820",
+      "league": "MLB",
+      "home_team_id": "139",
+      "away_team_id": "114",
+      "home_team_name": "レイズ",
+      "away_team_name": "ガーディアンズ",
+      "home_abbr": "TB",
+      "away_abbr": "CLE",
+      "home_color": "#092C5C",
+      "away_color": "#00385D",
+      "matchup": "ガーディアンズ vs レイズ",
+      "abbr_matchup": "CLE vs TB",
+      "start_time_jst": "10/13 09:00",
+      "home_division": "ALE",
+      "away_division": "ALC",
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": {
+        "rank": 1,
+        "games_back": 0.0,
+        "streak": -1,
+        "wins": 98,
+        "losses": 64,
+        "last_ten": "5勝5敗",
+        "points_back": null
+      },
+      "away_standing": {
+        "rank": 1,
+        "games_back": 0.0,
+        "streak": -1,
+        "wins": 85,
+        "losses": 77,
+        "last_ten": "8勝2敗",
+        "points_back": null
+      },
+      "home_probable": {
+        "name": "Drew Rasmussen",
+        "name_en": "Drew Rasmussen",
+        "player_id": "656876",
+        "era": "2.67",
+        "wins": 16,
+        "losses": 5,
+        "strikeouts": 174
+      },
+      "away_probable": {
+        "name": "Foster Griffin",
+        "name_en": "Foster Griffin",
+        "player_id": "656492",
+        "era": "3.60",
+        "wins": 15,
+        "losses": 6,
+        "strikeouts": 158
+      },
+      "venue_name": "Tropicana Field",
+      "venue_jp": "トロピカーナ・フィールド",
+      "venue_note": "MLBで数少ないドーム球場。天候に左右されない",
+      "venue_runs_note": "この球場の2026年シーズンの1試合平均得点は8.46点で、MLB30球場中20位",
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 6,
+      "game_type": "L",
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "postseason",
+          "text": "リーグ優勝決定シリーズ 第1戦(0勝0敗のタイ)",
+          "weight": 6
+        }
+      ],
+      "log_notes": [
+        "Drew Rasmussenは直近4登板を自責1以下に抑えている"
+      ],
+      "ai_summary": "ア・リーグの両地区を代表する強豪チームが、ポストシーズンの優勝決定シリーズで激突する。レギュラーシーズンで【98勝64敗の地区首位】に輝いたレイズが、敵地トロピカーナ・フィールドで、【85勝77敗で地区1位のガーディアンズ】を迎える。先発はレイズのDrew Rasmussenで、今季16勝5敗、防御率2.67という成績を記録。直近4登板では自責点1以下に抑えるなど、好調さが目立つ投手である。一方のガーディアンズはFoster Griffinの15勝6敗で対抗する。ドーム球場であるため天候に左右されない環境での、両先発投手の投げ合いがどう展開するかに注目したい。",
+      "notification_hook": "地区首位同士のポストシーズン初戦。防御率2.67のRasmussenが敵地で先発。",
+      "availability_checked_at": "2026-10-12T09:53:00.827881+00:00",
+      "final_score": {
+        "home": 3,
+        "away": 7,
+        "winner": "away"
+      }
+    }
+  ],
+  "ai_status": {
+    "targets": 2,
+    "succeeded": 1,
+    "cost_usd": 0.01162
+  }
+}

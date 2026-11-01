@@ -1,0 +1,11 @@
+{
+  "note": "固定の試験材料。実試合の予告/公開記録ではない。",
+  "created_at": "2026-09-22T15:00:00+09:00",
+  "game": {"game_id": "900001", "start_time_jst": "09/23 09:00", "jp_players": [], "home_probable": {"name": "山本由伸", "name_en": "Yoshinobu Yamamoto", "player_id": "808967"}},
+  "samples": [
+    {"date_jst": "2026-09-03", "updated_at": "2026-09-03T06:00:00+00:00", "players": [{"name": "山本由伸", "player_id": "808967", "type": "pitcher", "gs": 1, "so": 8}]},
+    {"date_jst": "2026-09-10", "updated_at": "2026-09-10T06:00:00+00:00", "players": [{"name": "山本由伸", "player_id": "808967", "type": "pitcher", "gs": 1, "so": 10}]},
+    {"date_jst": "2026-09-16", "updated_at": "2026-09-16T06:00:00+00:00", "players": [{"name": "山本由伸", "player_id": "808967", "type": "pitcher", "gs": 1, "so": 7}]}
+  ],
+  "result": {"date_jst": "2026-09-23", "players": [{"name": "山本由伸", "player_id": "808967", "type": "pitcher", "game_ids": ["900001"], "gs": 1, "ip": "6.0", "so": 10, "er": 1, "hits": 3, "wins": 1, "losses": 0, "headline": "6.0回 10奪三振 自責1", "team_id": "119", "team_jp": "ドジャース"}]}
+}

@@ -1,0 +1,391 @@
+{
+  "generated_at": "2026-09-30T09:53:54.238840+00:00",
+  "games": [
+    {
+      "game_id": "849841",
+      "league": "MLB",
+      "home_team_id": "144",
+      "away_team_id": "143",
+      "home_team_name": "ブレーブス",
+      "away_team_name": "フィリーズ",
+      "home_abbr": "ATL",
+      "away_abbr": "PHI",
+      "home_color": "#CE1141",
+      "away_color": "#E81828",
+      "matchup": "フィリーズ vs ブレーブス",
+      "abbr_matchup": "PHI vs ATL",
+      "start_time_jst": "10/01 03:00",
+      "home_division": "NLE",
+      "away_division": "NLE",
+      "same_division": true,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": {
+        "rank": 1,
+        "games_back": 0.0,
+        "streak": -1,
+        "wins": 94,
+        "losses": 68,
+        "last_ten": "5勝5敗",
+        "points_back": null
+      },
+      "away_standing": {
+        "rank": 2,
+        "games_back": 6.0,
+        "streak": 1,
+        "wins": 88,
+        "losses": 74,
+        "last_ten": "4勝6敗",
+        "points_back": null
+      },
+      "home_probable": {
+        "name": "Tyler Mahle",
+        "name_en": "Tyler Mahle",
+        "player_id": "641816",
+        "era": null,
+        "wins": null,
+        "losses": null,
+        "strikeouts": null
+      },
+      "away_probable": {
+        "name": "Cristopher Sánchez",
+        "name_en": "Cristopher Sánchez",
+        "player_id": "650911",
+        "era": null,
+        "wins": null,
+        "losses": null,
+        "strikeouts": null
+      },
+      "venue_name": "Truist Park",
+      "venue_jp": "トゥルーイスト・パーク",
+      "venue_note": "2017年開場。球場の外に商業施設が一体で作られた、比較的新しい形の球場",
+      "venue_runs_note": "この球場の2026年シーズンの1試合平均得点は8.67点で、MLB30球場中15位",
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 4,
+      "game_type": "F",
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "postseason",
+          "text": "ワイルドカードシリーズ 第2戦(ブレーブスが1勝0敗で王手、フィリーズは負ければ敗退)",
+          "weight": 4
+        }
+      ],
+      "log_notes": [],
+      "availability_checked_at": "2026-09-30T09:52:46.208064+00:00",
+      "final_score": {
+        "home": 3,
+        "away": 4,
+        "winner": "away"
+      }
+    },
+    {
+      "game_id": "849846",
+      "league": "MLB",
+      "home_team_id": "117",
+      "away_team_id": "145",
+      "home_team_name": "アストロズ",
+      "away_team_name": "ホワイトソックス",
+      "home_abbr": "HOU",
+      "away_abbr": "CWS",
+      "home_color": "#002D62",
+      "away_color": "#27251F",
+      "matchup": "ホワイトソックス vs アストロズ",
+      "abbr_matchup": "CWS vs HOU",
+      "start_time_jst": "10/01 06:00",
+      "home_division": "ALW",
+      "away_division": "ALC",
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [
+        "今井達也",
+        "村上宗隆"
+      ],
+      "home_standing": {
+        "rank": 1,
+        "games_back": 0.0,
+        "streak": 2,
+        "wins": 81,
+        "losses": 81,
+        "last_ten": "5勝5敗",
+        "points_back": null
+      },
+      "away_standing": {
+        "rank": 2,
+        "games_back": 1.0,
+        "streak": 1,
+        "wins": 84,
+        "losses": 78,
+        "last_ten": "7勝3敗",
+        "points_back": null
+      },
+      "home_probable": {
+        "name": "Hunter Brown",
+        "name_en": "Hunter Brown",
+        "player_id": "686613",
+        "era": "3.19",
+        "wins": 6,
+        "losses": 4,
+        "strikeouts": 124
+      },
+      "away_probable": {
+        "name": "Sean Burke",
+        "name_en": "Sean Burke",
+        "player_id": "680732",
+        "era": "3.34",
+        "wins": 11,
+        "losses": 7,
+        "strikeouts": 185
+      },
+      "venue_name": "Daikin Park",
+      "venue_jp": "ダイキン・パーク",
+      "venue_note": "左翼が浅く、開閉式屋根を持つ球場",
+      "venue_runs_note": "この球場の2026年シーズンの1試合平均得点は8.92点で、MLB30球場中11位",
+      "home_has_jp": true,
+      "away_has_jp": true,
+      "score": 6,
+      "game_type": "F",
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "アストロズには今井達也が所属",
+          "weight": 1
+        },
+        {
+          "tag": "jp_team",
+          "text": "ホワイトソックスには村上宗隆が所属",
+          "weight": 1
+        },
+        {
+          "tag": "postseason",
+          "text": "ワイルドカードシリーズ 第2戦(ホワイトソックスが1勝0敗で王手、アストロズは負ければ敗退)",
+          "weight": 4
+        }
+      ],
+      "series_context": {
+        "series_game_number": 2,
+        "games_in_series": 3,
+        "home_wins_in_stretch": 0,
+        "away_wins_in_stretch": 1
+      },
+      "log_notes": [
+        "Hunter Brownは直近3登板を自責1以下に抑えている",
+        "Sean Burkeは直近3登板を自責1以下に抑えている"
+      ],
+      "ai_summary": "ワイルドカードシリーズ第2戦を迎える両チームは、異なる立場で試合に臨む。ホワイトソックスは第1戦を制し、あと1勝でシリーズ突破が決まる状況にある。一方のアストロズは【2連勝中】ながらも、この一戦を落とせばシリーズ敗退が決定する。先発はホワイトソックスのSean Burke（11勝7敗、防御率3.34）とアストロズのHunter Brown（6勝4敗、防御率3.19）が対豪し、両投手ともに直近3登板を自責1以下に抑える好調ぶりを見せている。左翼が浅く本塁打が出やすい開閉式球場ダイキン・パークでの投げ合いが、このシリーズの行方を左右するポイントになるかに注目したい。",
+      "notification_hook": "Sean Burkeの11勝とHunter Brownの好調投手戦。ワイルドカード第2戦の鍵は？",
+      "availability_checked_at": "2026-09-30T09:52:46.208064+00:00",
+      "final_score": {
+        "home": 3,
+        "away": 7,
+        "winner": "away"
+      }
+    },
+    {
+      "game_id": "849848",
+      "league": "MLB",
+      "home_team_id": "147",
+      "away_team_id": "111",
+      "home_team_name": "ヤンキース",
+      "away_team_name": "レッドソックス",
+      "home_abbr": "NYY",
+      "away_abbr": "BOS",
+      "home_color": "#003087",
+      "away_color": "#BD3039",
+      "matchup": "レッドソックス vs ヤンキース",
+      "abbr_matchup": "BOS vs NYY",
+      "start_time_jst": "10/01 09:00",
+      "home_division": "ALE",
+      "away_division": "ALE",
+      "same_division": true,
+      "rivalry_type": "historic",
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": {
+        "rank": 2,
+        "games_back": 4.5,
+        "streak": 1,
+        "wins": 93,
+        "losses": 68,
+        "last_ten": "5勝5敗",
+        "points_back": null
+      },
+      "away_standing": {
+        "rank": 3,
+        "games_back": 11.0,
+        "streak": -1,
+        "wins": 87,
+        "losses": 75,
+        "last_ten": "5勝5敗",
+        "points_back": null
+      },
+      "home_probable": {
+        "name": "Max Fried",
+        "name_en": "Max Fried",
+        "player_id": "608331",
+        "era": "2.80",
+        "wins": 5,
+        "losses": 5,
+        "strikeouts": 104
+      },
+      "away_probable": {
+        "name": "Sonny Gray",
+        "name_en": "Sonny Gray",
+        "player_id": "543243",
+        "era": "2.72",
+        "wins": 18,
+        "losses": 5,
+        "strikeouts": 149
+      },
+      "venue_name": "Yankee Stadium",
+      "venue_jp": "ヤンキー・スタジアム",
+      "venue_note": "右翼が浅く、左打者の本塁打が出やすい形状",
+      "venue_runs_note": "この球場の2026年シーズンの1試合平均得点は8.8点で、MLB30球場中13位",
+      "home_has_jp": false,
+      "away_has_jp": true,
+      "score": 6,
+      "game_type": "F",
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "rivalry",
+          "text": "レッドソックス vs ヤンキース は伝統の好カード — 1919年のベーブ・ルース移籍に端を発する、MLBで最も長く続くライバル関係",
+          "weight": 2
+        },
+        {
+          "tag": "postseason",
+          "text": "ワイルドカードシリーズ 第2戦(ヤンキースが1勝0敗で王手、レッドソックスは負ければ敗退)",
+          "weight": 4
+        }
+      ],
+      "series_context": {
+        "series_game_number": 1,
+        "games_in_series": 3,
+        "home_wins_in_stretch": 1,
+        "away_wins_in_stretch": 0
+      },
+      "log_notes": [],
+      "ai_summary": "【ワイルドカード1勝1敗の同点】で迎えるレッドソックス対ヤンキースの第2戦。MLBで最も長く続くライバル関係の両チームが、ポストシーズン最初の関門で激突する。ヤンキースはMax Friedが防御率2.80で安定した投球を見せ、レッドソックスはSonny Gray(18勝5敗)の今季の好成績を頼みにする投手戦の様相だ。右翼が浅く、左打者の本塁打が出やすいヤンキー・スタジアムでの一戦だけに、先発両投手がどこまでこの球場の特性を抑え込めるかに注目したい。",
+      "notification_hook": "Gray18勝 vs Fried防御率2.80。ヤンキー・スタジアムでの投手戦が決する",
+      "availability_checked_at": "2026-09-30T09:52:46.208064+00:00",
+      "final_score": {
+        "home": 9,
+        "away": 2,
+        "winner": "home"
+      }
+    },
+    {
+      "game_id": "849842",
+      "league": "MLB",
+      "home_team_id": "135",
+      "away_team_id": "112",
+      "home_team_name": "パドレス",
+      "away_team_name": "カブス",
+      "home_abbr": "SD",
+      "away_abbr": "CHC",
+      "home_color": "#2F241D",
+      "away_color": "#0E3386",
+      "matchup": "カブス vs パドレス",
+      "abbr_matchup": "CHC vs SD",
+      "start_time_jst": "10/01 11:00",
+      "home_division": "NLW",
+      "away_division": "NLC",
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [
+        "松井裕樹",
+        "今永昇太",
+        "鈴木誠也"
+      ],
+      "home_standing": {
+        "rank": 2,
+        "games_back": 9.0,
+        "streak": 2,
+        "wins": 91,
+        "losses": 71,
+        "last_ten": "8勝2敗",
+        "points_back": null
+      },
+      "away_standing": {
+        "rank": 2,
+        "games_back": 14.0,
+        "streak": 1,
+        "wins": 89,
+        "losses": 73,
+        "last_ten": "5勝5敗",
+        "points_back": null
+      },
+      "home_probable": {
+        "name": "Nick Pivetta",
+        "name_en": "Nick Pivetta",
+        "player_id": "601713",
+        "era": "2.86",
+        "wins": 3,
+        "losses": 2,
+        "strikeouts": 42
+      },
+      "away_probable": {
+        "name": "Kevin Gausman",
+        "name_en": "Kevin Gausman",
+        "player_id": "592332",
+        "era": "4.51",
+        "wins": 9,
+        "losses": 12,
+        "strikeouts": 184
+      },
+      "venue_name": "Petco Park",
+      "venue_jp": "ペトコ・パーク",
+      "venue_note": "広い外野と海沿いの気候により、投手有利とされる球場",
+      "venue_runs_note": "この球場の2026年シーズンの1試合平均得点は8.05点で、MLB30球場中28位",
+      "home_has_jp": true,
+      "away_has_jp": true,
+      "score": 7,
+      "game_type": "F",
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "パドレスには松井裕樹が所属",
+          "weight": 1
+        },
+        {
+          "tag": "jp_team",
+          "text": "カブスには今永昇太・鈴木誠也が所属",
+          "weight": 2
+        },
+        {
+          "tag": "postseason",
+          "text": "ワイルドカードシリーズ 第2戦(パドレスが1勝0敗で王手、カブスは負ければ敗退)",
+          "weight": 4
+        }
+      ],
+      "series_context": {
+        "series_game_number": 1,
+        "games_in_series": 3,
+        "home_wins_in_stretch": 1,
+        "away_wins_in_stretch": 0
+      },
+      "highlight_title": "EVERY PLAY from Cubs vs. Padres NL Wild Card Series Game 1",
+      "highlight_video_id": "qj1z1J3r_6A",
+      "log_notes": [],
+      "ai_summary": "ナ・リーグのワイルドカードシリーズ第1戦。パドレスは防御率2.86の先発Nick Pivettaを投じ、カブスはKevin Gausman(防御率4.51)で対抗する。直近10試合で8勝2敗と好調なパドレスに対し、5勝5敗で足踏みするカブスという戦績の差が出ている。【投手有利の球場】ペトコ・パークでの投げ合いがどう展開するかが、試合の趨勢を大きく左右する要因となる。",
+      "notification_hook": "防御率2.86のPivetta vs 防御率4.51のGausman。投手戦の行方は。",
+      "availability_checked_at": "2026-09-30T09:52:46.208064+00:00",
+      "final_score": {
+        "home": 4,
+        "away": 1,
+        "winner": "home"
+      }
+    }
+  ],
+  "ai_status": {
+    "targets": 0,
+    "succeeded": 0,
+    "cost_usd": 0.0
+  }
+}

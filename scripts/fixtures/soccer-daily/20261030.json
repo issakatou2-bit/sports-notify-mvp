@@ -1,0 +1,378 @@
+{
+  "generated_at": "2026-10-30T09:53:46.757266+00:00",
+  "games": [
+    {
+      "game_id": "559644",
+      "league": "リーグ・アン",
+      "home_team_id": "FL1-533",
+      "away_team_id": "FL1-524",
+      "home_team_name": "ル・アーブル",
+      "away_team_name": "パリ・サンジェルマン",
+      "home_abbr": null,
+      "away_abbr": null,
+      "home_color": null,
+      "away_color": null,
+      "matchup": "パリ・サンジェルマン vs ル・アーブル",
+      "abbr_matchup": null,
+      "start_time_jst": "10/31 03:00",
+      "home_division": null,
+      "away_division": null,
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": {
+        "rank": 18,
+        "games_back": 5.0,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 15.0
+      },
+      "away_standing": {
+        "rank": 1,
+        "games_back": 0.0,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 0.0
+      },
+      "home_probable": null,
+      "away_probable": null,
+      "venue_name": null,
+      "venue_jp": null,
+      "venue_note": null,
+      "venue_runs_note": null,
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 3,
+      "game_type": "R",
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "ル・アーブルには瀬古歩夢・中村草太・水多海斗が所属",
+          "weight": 2
+        },
+        {
+          "tag": "quality",
+          "text": "パリ・サンジェルマン の試合",
+          "weight": 1
+        },
+        {
+          "tag": "quality",
+          "text": "ル・アーブル（昨季リーグ・アン14位）とパリ・サンジェルマン（昨季リーグ・アン1位）の対戦",
+          "weight": 0
+        }
+      ],
+      "log_notes": [],
+      "ai_summary": "首位パリ・サンジェルマンが敵地でル・アーブルを訪れる一戦である。昨季リーグ・アン14位のル・アーブルは今季【首位との勝ち点差15で18位】に位置しており、一方の訪問側は8試合を終えた時点で既に首位に立っている。両チームの現在地の差は大きく、リーグ全体における力関係の縮図ともいえる対戦となる。また、ル・アーブルに所属する瀬古歩夢・中村草太・水多海斗といった日本人選手らがどのようなプレーを見せるかに注目したい。",
+      "notification_hook": "首位PSGを迎え撃つル・アーブル、日本人選手の活躍なるか",
+      "fixture_sources": [
+        "ESPN",
+        "football-data.org"
+      ],
+      "espn_event_id": "401876421",
+      "competition_code": "FL1",
+      "start_time_utc": "2026-10-31T03:00:00+09:00",
+      "season_players": [],
+      "preview_out_names": [],
+      "preview_rating": {
+        "score": 30,
+        "factors": [
+          {
+            "key": "competition",
+            "points": 10,
+            "evidence": "リーグ・アン"
+          },
+          {
+            "key": "leader",
+            "points": 10,
+            "evidence": {
+              "kind": "leader",
+              "text": "18位ルアーブル対首位パリ・サンジェルマン",
+              "ranks": [
+                18,
+                1
+              ]
+            }
+          },
+          {
+            "key": "marquee_away",
+            "points": 10,
+            "evidence": "Paris Saint-Germain FC"
+          }
+        ],
+        "interest": {
+          "reasons": [
+            {
+              "kind": "leader",
+              "text": "18位ルアーブル対首位パリ・サンジェルマン",
+              "ranks": [
+                18,
+                1
+              ]
+            },
+            {
+              "kind": "points",
+              "text": "勝点差15",
+              "gap": 15.0
+            }
+          ],
+          "player": null
+        },
+        "japanese": false
+      }
+    }
+  ],
+  "ai_status": {
+    "targets": 3,
+    "succeeded": 3,
+    "cost_usd": 0.01521
+  },
+  "source_errors": [],
+  "fixture_coverage": [
+    {
+      "competition": "PL",
+      "status": "success",
+      "events": 11,
+      "label": "取得成功"
+    },
+    {
+      "competition": "PD",
+      "status": "success",
+      "events": 11,
+      "label": "取得成功"
+    },
+    {
+      "competition": "BL1",
+      "status": "success",
+      "events": 10,
+      "label": "取得成功"
+    },
+    {
+      "competition": "SA",
+      "status": "success",
+      "events": 11,
+      "label": "取得成功"
+    },
+    {
+      "competition": "FL1",
+      "status": "success",
+      "events": 10,
+      "label": "取得成功"
+    },
+    {
+      "competition": "CL",
+      "status": "success",
+      "events": 18,
+      "label": "取得成功"
+    },
+    {
+      "competition": "EL",
+      "status": "success",
+      "events": 18,
+      "label": "取得成功"
+    },
+    {
+      "competition": "UECL",
+      "status": "success",
+      "events": 18,
+      "label": "取得成功"
+    },
+    {
+      "competition": "FAC",
+      "status": "success",
+      "events": 2,
+      "label": "取得成功"
+    },
+    {
+      "competition": "EFL",
+      "status": "no_games",
+      "events": 0,
+      "label": "試合なし"
+    },
+    {
+      "competition": "CDR",
+      "status": "success",
+      "events": 11,
+      "label": "取得成功"
+    },
+    {
+      "competition": "DFB",
+      "status": "no_games",
+      "events": 0,
+      "label": "試合なし"
+    },
+    {
+      "competition": "CI",
+      "status": "no_games",
+      "events": 0,
+      "label": "試合なし"
+    },
+    {
+      "competition": "CDF",
+      "status": "no_games",
+      "events": 0,
+      "label": "試合なし"
+    }
+  ],
+  "club_registration_check": {
+    "days": 7,
+    "checked_at": "2026-10-30T19:01:17.511241+09:00",
+    "missing": [
+      {
+        "club": "Albacete",
+        "game_ids": [
+          "espn-401928506"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Amorebieta",
+        "game_ids": [
+          "espn-401928519"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Anaitasuna",
+        "game_ids": [
+          "espn-401928514"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Badajoz",
+        "game_ids": [
+          "espn-401928532"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Barakaldo",
+        "game_ids": [
+          "espn-401928500"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "CD Minera",
+        "game_ids": [
+          "espn-401928524"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "CD Pamplona",
+        "game_ids": [
+          "espn-401928516"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "CD Sabadell",
+        "game_ids": [
+          "espn-401928497"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "CD Tarancon",
+        "game_ids": [
+          "espn-401928527"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Calvo Sotelo",
+        "game_ids": [
+          "espn-401928506"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Eibar",
+        "game_ids": [
+          "espn-401928516"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "FC Cartagena",
+        "game_ids": [
+          "espn-401928524"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Mallorca",
+        "game_ids": [
+          "espn-401928505"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Portugalete",
+        "game_ids": [
+          "espn-401928518"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Real Unión Irun",
+        "game_ids": [
+          "espn-401928518"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Reus FC Reddis",
+        "game_ids": [
+          "espn-401928500"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Tenerife",
+        "game_ids": [
+          "espn-401928532"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "UD Logroñés",
+        "game_ids": [
+          "espn-401928519"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Utebo",
+        "game_ids": [
+          "espn-401928497"
+        ],
+        "candidates": []
+      }
+    ],
+    "source_errors": []
+  },
+  "source": "ESPN・football-data.org",
+  "preview_selection": {
+    "day": "2026-10-30",
+    "threshold": 30,
+    "max_games": 4,
+    "policy_sha256": "585b6eb07dd181762e53d0d10718ce0f8109e330863ca80770cf4a8e305d9faf",
+    "selected_ids": [
+      "559644"
+    ],
+    "count": 1,
+    "reason": "",
+    "rejected": [],
+    "source_errors": [],
+    "rescued": []
+  },
+  "schedule_date": "2026-10-30"
+}

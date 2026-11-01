@@ -25,16 +25,7 @@ sys.path.insert(0, str(HERE))
 
 import morning_recap as mr  # noqa: E402
 import verify_terms as vt  # noqa: E402
-
-fails = 0
-
-
-def check(label, got, want):
-    global fails
-    ok = got == want
-    fails += not ok
-    print("%s %s: %r%s" % ("ok " if ok else "NG ", label, got,
-                           "" if ok else "   (期待 %r)" % (want,)))
+from checks_report import check, section, done  # noqa: E402
 
 
 def run(lines, players=None) -> int:
@@ -56,7 +47,7 @@ def run(lines, players=None) -> int:
 
 PIT = [{"name": "山本由伸", "type": "pitcher"}]
 
-print("--- 9/16に実際に出た誤り ---")
+section("9/16に実際に出た誤り")
 check("HQSを「ヒットクオリティスタート」と読む",
       run(["7回1失点、ヒットクオリティスタートの内容ね。"]), 1)
 check("投手に「打率」と書く",
@@ -64,8 +55,7 @@ check("投手に「打率」と書く",
 check("投手に「OPS」と書く",
       run(["山本由伸は終盤の接戦でOPS.864よ。"], PIT), 1)
 
-print()
-print("--- 正しい書き方は通す ---")
+section("正しい書き方は通す")
 check("ハイクオリティスタート",
       run(["7回1失点、ハイクオリティスタートと素晴らしい投球だったわ。"]), 0)
 check("クオリティスタート", run(["6回2失点でクオリティスタートね。"]), 0)
@@ -75,8 +65,7 @@ check("投手には被OPS", run(["山本由伸は終盤の接戦で被OPS.864よ
 check("打者の打率は止めない",
       run(["村上宗隆は得点圏で打率.160よ。"], PIT), 0)
 
-print()
-print("--- 辞書に無い開き方 ---")
+section("辞書に無い開き方")
 check("ノーヒットノーランの崩れ",
       run(["きょうはパーフェクトヒットノーランね。"]), 1)
 check("正しいノーヒットノーランは通す",
@@ -86,8 +75,7 @@ check("サイクルヒットの崩れ",
 check("正しいサイクルヒットは通す",
       run(["サイクルヒットを達成したわ。"]), 0)
 
-print()
-print("--- 読み仮名は全部の記録にある ---")
+section("読み仮名は全部の記録にある")
 # ユーザーの提案:「ネームド記録に読み仮名もつければいける？」
 # 辞書にあれば、モデルが読み方を作る余地がなくなる。
 _names = set()
@@ -97,8 +85,7 @@ for group in (mr.PITCHER_BADGES, mr.BATTER_BADGES):
 for name in sorted(_names):
     check("%s に読み方がある" % name, name in mr.BADGE_SPEECH, True)
 
-print()
-print("--- 壊れた材料で落ちない ---")
+section("壊れた材料で落ちない")
 check("台本が無い",
       subprocess.run([sys.executable, str(HERE / "verify_terms.py"),
                       "--dialogue", "no-such-file.json", "--strict"],
@@ -106,6 +93,4 @@ check("台本が無い",
 check("台詞が空", run([]), 0)
 check("投手が分からなければ、打率を止めない",
       run(["山本由伸は初球で打率.338。"]), 0)
-
-print(chr(10) + ("ALL OK" if not fails else "%d FAILURES" % fails))
-sys.exit(1 if fails else 0)
+sys.exit(done())

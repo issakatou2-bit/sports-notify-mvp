@@ -1,0 +1,158 @@
+name: 道具　新デザインの試作動画（投稿しない）
+
+# 新デザイン（電光掲示板・review_render_v3）と BGM・効果音を、声つきで確かめる。
+# YouTube には上げない。できた動画は実行ページの成果物（3日）から見る。
+# 材料はその場で作る。過去材料は確認用に明示指定したときだけ使う。
+
+on:
+  workflow_dispatch:
+    inputs:
+      look:
+        description: 'ショートの見た目（v4 は字幕・大きめの立ち絵・進み具合の線）'
+        type: choice
+        options: [v3, v4]
+        default: v3
+      topic_type:
+        description: 話題の種類
+        type: choice
+        options: [momentum, game, odds, spotlight]
+        default: momentum
+      duo:
+        description: '問いだけの掛け合い（v4の試合の話題のみ）'
+        type: choice
+        options: ['off', game]
+        default: 'off'
+      snapshot:
+        description: 保存済み材料で試作（当日の情報として投稿しない）
+        type: boolean
+        default: false
+      bgm:
+        description: BGM
+        type: choice
+        options: [fx_more2, everyday, scoreboard, nighter, dugout, comeback]
+        default: fx_more2
+
+permissions:
+  contents: write
+
+# ショートの見た目（v4 は字幕・大きめの立ち絵・進み具合の線）。review_render_v3.LOOK
+env:
+  COLLESPO_SOLO_HOST: ${{ vars.COLLESPO_SOLO_HOST || 'metan' }}
+  COLLESPO_HOST_SPLIT: ${{ vars.COLLESPO_HOST_SPLIT || '' }}
+  COLLESPO_UI_VOICE_STOCK: ${{ vars.COLLESPO_UI_VOICE_STOCK || '' }}
+  COLLESPO_UI_PARTS_KEY: ${{ secrets.COLLESPO_UI_PARTS_KEY }}
+  COLLESPO_UI_VOICE_WAIT_MINUTES: ${{ vars.COLLESPO_UI_VOICE_WAIT_MINUTES || '15' }}
+  COLLESPO_BUBBLE: ${{ vars.COLLESPO_BUBBLE || '' }}
+  COLLESPO_MOTION: ${{ vars.COLLESPO_MOTION || '' }}
+  COLLESPO_CAPTION_BREAKS: ${{ vars.COLLESPO_CAPTION_BREAKS || '' }}
+  COLLESPO_SLANT_VARIANT: ${{ vars.COLLESPO_SLANT_VARIANT || 'cream' }}
+  COLLESPO_GLASS_BACKGROUND: ${{ vars.COLLESPO_GLASS_BACKGROUND || 'stripes' }}
+  COLLESPO_OUTRO_NEXT: ${{ vars.COLLESPO_OUTRO_NEXT == 'on' && 'on' || 'off' }}
+  COLLESPO_SHORT_LOOK: ${{ inputs.look || 'v3' }}
+  COLLESPO_MLB_BADGE: ${{ vars.COLLESPO_MLB_BADGE || '' }}
+  COLLESPO_DUO: ${{ inputs.duo || 'off' }}
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r scripts/requirements.txt
+
+      - name: Build topic
+        id: topic
+        env:
+          PREVIEW_TOPIC_TYPE: ${{ inputs.topic_type || 'momentum' }}
+          PREVIEW_SNAPSHOT: ${{ inputs.snapshot }}
+        run: |
+          case "$PREVIEW_TOPIC_TYPE" in
+            momentum) SCRIPT=ps_momentum; FILE=data/ps_momentum_topics.json ;;
+            game) SCRIPT=ps_game_story; FILE=data/ps_game_topics.json ;;
+            odds) SCRIPT=ps_odds; FILE=data/ps_odds_topics.json ;;
+            spotlight) SCRIPT=ps_spotlight; FILE=data/ps_spotlight_topics.json ;;
+            *) exit 1 ;;
+          esac
+          if [ "$PREVIEW_SNAPSHOT" != true ]; then
+            python "scripts/$SCRIPT.py" --out "$FILE"
+          fi
+          T="$(python scripts/prepare_design_preview.py --material "$FILE")"
+          echo "key=$T" >> "$GITHUB_OUTPUT"
+          echo "試作する話題: ${T:-なし} / 保存済み材料: $PREVIEW_SNAPSHOT" | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: Install video tools
+        if: steps.topic.outputs.key != ''
+        timeout-minutes: 16
+        run: bash scripts/install_video_tools.sh
+
+      - name: Start VOICEVOX engine
+        if: steps.topic.outputs.key != ''
+        run: |
+          docker run -d --rm -p 50021:50021 --name voicevox voicevox/voicevox_engine:cpu-latest
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:50021/version >/dev/null; then exit 0; fi
+            sleep 2
+          done
+          exit 1
+
+      - name: Build voiced preview
+        if: steps.topic.outputs.key != ''
+        env:
+          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
+          COLLESPO_BGM: ${{ inputs.bgm }}
+          # 数値検査だけ。AIの検算は呼ばず、秘密も渡さない。
+          ANTHROPIC_API_KEY: ''
+        run: |
+          T="${{ steps.topic.outputs.key }}"
+          python scripts/generate_asset_video.py --topic "$T" --narration-out "build/narr_$T.json"
+          python scripts/sanity.py --general --strict --narration "build/narr_$T.json" --out "data/sanity_${T}.json" --hold-record "build/sanity_hold_${T}.json" --kind asset
+          python scripts/synthesize_narration.py --narration "build/narr_$T.json" --out-dir "build/audio_$T"
+          python scripts/prepare_design_preview.py --manifest "build/audio_$T/manifest.json"
+          python scripts/generate_asset_video.py --topic "$T" --audio-dir "build/audio_$T" --out build/preview
+
+      - name: Save preview
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: design-preview
+          retention-days: 3
+          path: |
+            data/sanity*.json
+            build/sanity*hold*.json
+            data/postseason.json
+            data/best_of_day.json
+            data/roster_stats.json
+            notable_games.json
+            archive/*.json
+            build/preview/*.mp4
+            build/narr_*.json
+            build/audio_*/manifest.json
+            !build/**/portrait/**
+
+      - name: Save sanity gate records
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sanity-gate-${{ github.job }}
+          path: |
+            data/sanity*.json
+            build/sanity*hold*.json
+            !build/**/portrait/**
+          retention-days: 14
+
+      - name: Save voice and render records
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: voice-render-records-${{ github.job }}-${{ github.run_attempt }}
+          path: |
+            build/**/voice_manifest.json
+            build/**/render_timeline.json
+            !build/**/portrait/**
+          retention-days: 14
+          if-no-files-found: ignore

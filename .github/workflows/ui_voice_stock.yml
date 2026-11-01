@@ -1,0 +1,44 @@
+name: 雨衣のため録り注文（既定オフ）
+on:
+  schedule:
+    - cron: '20 1 * * 1'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: ui-voice-stock-orders
+  cancel-in-progress: false
+jobs:
+  orders:
+    if: (vars.COLLESPO_SOLO_HOST == 'ui' || vars.COLLESPO_HOST_SPLIT == 'half') && vars.COLLESPO_UI_VOICE_STOCK == 'on'
+    runs-on: ubuntu-latest
+    env:
+      COLLESPO_SOLO_HOST: ui
+      COLLESPO_HOST_SPLIT: ${{ vars.COLLESPO_HOST_SPLIT || '' }}
+      COLLESPO_UI_VOICE_STOCK: ${{ vars.COLLESPO_UI_VOICE_STOCK || '' }}
+      COLLESPO_UI_PARTS_KEY: ${{ secrets.COLLESPO_UI_PARTS_KEY }}
+      COLLESPO_OUTRO_NEXT: ${{ vars.COLLESPO_OUTRO_NEXT == 'on' && 'on' || 'off' }}
+      COLLESPO_SHORT_LOOK: ${{ vars.COLLESPO_SHORT_LOOK || 'v3' }}
+      COLLESPO_BUBBLE: ${{ vars.COLLESPO_BUBBLE || '' }}
+      COLLESPO_GLASS_BACKGROUND: ${{ vars.COLLESPO_GLASS_BACKGROUND || 'stripes' }}
+      COLLESPO_CAPTION_BREAKS: ${{ vars.COLLESPO_CAPTION_BREAKS || '' }}
+      COLLESPO_MOTION: ${{ vars.COLLESPO_MOTION || '' }}
+      COLLESPO_MLB_BADGE: ${{ vars.COLLESPO_MLB_BADGE || '' }}
+      COLLESPO_EXPR: ${{ vars.COLLESPO_EXPR || '' }}
+      COLLESPO_SLANT_VARIANT: ${{ vars.COLLESPO_SLANT_VARIANT || 'cream' }}
+      COLLESPO_DUO: ${{ vars.COLLESPO_DUO || 'off' }}
+      COLLESPO_UI_VOICE_STOCK_COUNT: ${{ vars.COLLESPO_UI_VOICE_STOCK_COUNT || '3' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: pip install -r scripts/requirements.txt
+      - name: Refresh official materials
+        run: |
+          python scripts/team_topics.py --out data/team_topics.json
+          python scripts/season_topics.py
+          python scripts/legend_topics.py
+      - name: Queue scripts only
+        run: python scripts/ui_voice_stock.py --count "$COLLESPO_UI_VOICE_STOCK_COUNT"

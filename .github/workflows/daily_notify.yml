@@ -16,18 +16,40 @@ permissions:
   pages: write
   id-token: write
 
+env:
+  COLLESPO_SOLO_HOST: ${{ vars.COLLESPO_SOLO_HOST || 'metan' }}
+  COLLESPO_HOST_SPLIT: ${{ vars.COLLESPO_HOST_SPLIT || '' }}
+  COLLESPO_UI_VOICE_STOCK: ${{ vars.COLLESPO_UI_VOICE_STOCK || '' }}
+  COLLESPO_UI_PARTS_KEY: ${{ secrets.COLLESPO_UI_PARTS_KEY }}
+  COLLESPO_UI_VOICE_WAIT_MINUTES: ${{ vars.COLLESPO_UI_VOICE_WAIT_MINUTES || '15' }}
+  # 選手ごとのシリーズの題（本人OK後にリポジトリ変数 SERIES_TITLE=1）
+  SERIES_TITLE: ${{ vars.SERIES_TITLE }}
+  COLLESPO_BUBBLE: ${{ vars.COLLESPO_BUBBLE || '' }}
+  COLLESPO_MOTION: ${{ vars.COLLESPO_MOTION || '' }}
+  COLLESPO_CAPTION_BREAKS: ${{ vars.COLLESPO_CAPTION_BREAKS || '' }}
+  COLLESPO_SLANT_VARIANT: ${{ vars.COLLESPO_SLANT_VARIANT || 'cream' }}
+  COLLESPO_GLASS_BACKGROUND: ${{ vars.COLLESPO_GLASS_BACKGROUND || 'stripes' }}
+  COLLESPO_OUTRO_NEXT: ${{ vars.COLLESPO_OUTRO_NEXT == 'on' && 'on' || 'off' }}
+  COLLESPO_SHORT_LOOK: ${{ vars.COLLESPO_SHORT_LOOK || 'v3' }}
+  COLLESPO_MLB_BADGE: ${{ vars.COLLESPO_MLB_BADGE || '' }}
+  COLLESPO_MLB_FORECAST: ${{ vars.COLLESPO_MLB_FORECAST || '' }}
+  COLLESPO_EXPR: ${{ vars.COLLESPO_EXPR || '' }}
+  # v2 / hold / legacy. Old producer is retained; failed v2 never falls back.
+  PS_PROGRAM_LAYOUT: ${{ vars.PS_PROGRAM_LAYOUT || 'v2' }}
+  COLLESPO_PS_DESIGN: ${{ vars.COLLESPO_PS_DESIGN || 'legacy' }}
+
 # deploy_site.yml と同じグループにしておく。両方が同時にPagesへ出すと、
 # 後から終わった方が相手の成果物で上書きしてしまう。
 # cancel-in-progress: false なので、日次実行が途中で止められることはない。
 concurrency:
-  group: pages
+  group: ${{ vars.COLLESPO_EN_CAPTIONS == 'on' && 'collespo-en-captions' || 'pages' }}
   cancel-in-progress: false
 
 jobs:
   build_and_notify:
     runs-on: ubuntu-latest
     outputs:
-      standings_ready: ${{ steps.standings.outcome == 'success' && steps.archive.outcome == 'success' }}
+      standings_ready: ${{ steps.standings.outcome == 'success' && steps.archive.outcome == 'success' && steps.site_analytics.outcome == 'success' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -57,6 +79,7 @@ jobs:
           python scripts/postseason.py --out data/postseason.json || true
           python notability_engine.py --source mlb --out notable_games.json
           # 所属・欠場日数と出場可能な登録を区別。全配信より前に適用する。
+          python scripts/game_hook_guard.py --games notable_games.json --archive-dir archive --report build/mlb_hook_claims.json
           python scripts/mlb_availability.py --games notable_games.json --archive-dir archive
           # 誰が故障者リストから復帰したか。**推測しない。**
           #
@@ -87,6 +110,18 @@ jobs:
         run: |
           python notability_engine.py --source soccer \
             --out data/soccer_games.json
+          python scripts/game_hook_guard.py --games data/soccer_games.json --archive-dir archive --report build/soccer_hook_claims.json
+
+      - name: Save hook validation evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: collespo-game-hook-checks
+          path: |
+            build/*hook_claims.json
+            !build/**/portrait/**
+          retention-days: 7
+          if-no-files-found: ignore
 
       # ニュースが取れなくても、動画もサイトも作れる。
       - name: Detect roster changes
@@ -225,6 +260,10 @@ jobs:
       # いたが、逆向きが一つも無く、サイトに来た人は同じ内容を動画でも
       # 見られることを知らないまま帰っていた。
       # 用語集は特に相性が良い(「OPSとは」を調べに来た人へ、同じ説明の動画)。
+      - name: Adjust offseason public wording
+        continue-on-error: true
+        run: python scripts/offseason_text.py --site public
+
       - name: Inject video links into the site
         continue-on-error: true
         run: python scripts/inject_video_links.py --site public
@@ -270,7 +309,7 @@ jobs:
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
-          python scripts/generate_narration.py \
+          python scripts/ps_daily_entry.py --stage narration \
             --games notable_games.json \
             --news public/news.json \
             --out public/narration.json
@@ -285,10 +324,17 @@ jobs:
         # サイトもポッドキャストも記録も、この回の他の仕事は関係がない。
         continue-on-error: true
         env:
+          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
-          python scripts/mlb_availability.py --games notable_games.json --check-narration public/narration.json
-          python scripts/sanity.py --general --strict
+          # 注目試合が無くて原稿を作らなかった日は、確かめる原稿が無い。
+          # 9/21はここがファイル無しで落ちていた。
+          if [ -f build/narration_skipped.txt ]; then
+            echo "注目試合が無い日なので、出場の確認はしません"
+          else
+            python scripts/mlb_availability.py --games notable_games.json --check-narration public/narration.json
+          fi
+          python scripts/sanity.py --general --strict --narration public/narration.json --out data/sanity.json --hold-record build/sanity_hold.json --kind daily
 
       - name: Synthesize narration
         continue-on-error: true
@@ -307,15 +353,26 @@ jobs:
             --audio-dir build/audio \
             --store podcast \
             --public public/podcast \
-            --games notable_games.json
+            --games notable_games.json \
+            --narration public/narration.json
 
       # ポッドキャストのmp3をpublic/へ出した後に、Pagesへ渡す。
       # 順序が逆だと、その日のエピソードが公開されない。
       - name: Preserve published corrections
-        run: python scripts/apply_content_corrections.py --site public
+        run: |
+          python scripts/apply_content_corrections.py --site public
+          if [ -f public/podcast/feed.xml ]; then
+            python scripts/refresh_podcast_metadata.py --feed public/podcast/feed.xml
+          fi
+
+      - name: Configure cookie-free site analytics
+        id: site_analytics
+        if: steps.archive.outcome == 'success'
+        continue-on-error: true
+        run: python scripts/site_analytics.py --site public
 
       - name: Upload Pages artifact
-        if: steps.standings.outcome == 'success' && steps.archive.outcome == 'success'
+        if: steps.standings.outcome == 'success' && steps.archive.outcome == 'success' && steps.site_analytics.outcome == 'success'
         # サイトが1日古くなるより、動画が出ない方が痛い。
         # 動画の生成はこれらより後ろに並んでいる。
         continue-on-error: true
@@ -331,7 +388,6 @@ jobs:
 
       - name: Commit podcast episode
         if: steps.sanity.outcome == 'success'
-        continue-on-error: true
         run: |
           bash scripts/commit_data.sh \
             "podcast: ${{ github.run_id }}" \
@@ -340,7 +396,7 @@ jobs:
       - name: Generate video
         continue-on-error: true
         run: |
-          python scripts/generate_video.py \
+          python scripts/ps_daily_entry.py --stage video \
             --games notable_games.json \
             --audio-dir build/audio \
             --out build/video --require-audio
@@ -351,7 +407,7 @@ jobs:
       - name: Generate thumbnail
         continue-on-error: true
         run: |
-          python scripts/generate_thumbnail.py \
+          python scripts/ps_daily_entry.py --stage thumbnail \
             --kind daily \
             --games notable_games.json \
             --narration public/narration.json \
@@ -360,7 +416,7 @@ jobs:
       # 原稿と同じ主役・事実から専用表紙。失敗時のみ動画のコマへ戻す。
       - name: Vertical thumbnail
         run: |
-          if ! python scripts/render_shorts_cover.py \
+          if ! python scripts/ps_daily_entry.py --stage cover \
             --games notable_games.json --narration public/narration.json \
             --out build/video/short.png; then
             echo "::warning::専用表紙を生成できなかったため動画のコマを使用します"
@@ -371,17 +427,22 @@ jobs:
         if: steps.sanity.outcome == 'success'
         continue-on-error: true
         env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           BLUESKY_HANDLE: ${{ secrets.BLUESKY_HANDLE }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
         run: |
-          python scripts/upload_youtube.py \
+          python scripts/ps_daily_entry.py --stage upload \
             --video build/video/collespo_short.mp4 \
             --games notable_games.json \
             --narration public/narration.json \
             --thumbnail build/video/short.png \
             --privacy public --publish-at "19:00"
+
+      - name: Save published MLB expectation
+        if: steps.sanity.outcome == 'success' && vars.COLLESPO_MLB_FORECAST == 'check'
+        run: python scripts/mlb_forecast.py --narration public/narration.json
 
       # 19時まで待って、通知とSNSを出す。
       #
@@ -425,7 +486,7 @@ jobs:
           BLUESKY_APP_PASSWORD: ${{ secrets.BLUESKY_APP_PASSWORD }}
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
           SITE_URL: https://collespo.com/
-        run: python scripts/post_bluesky.py
+        run: python scripts/post_bluesky.py --defer-ps
 
       # Threadsは投稿ごとの確認画面を要求しないので、完全に自動で出せる。
       # 未設定なら黙って飛ぶ。落として毎日ノイズを出す価値は無い。
@@ -466,6 +527,24 @@ jobs:
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
         run: |
           python scripts/captions.py             --narration public/narration.json             --audio-dir build/audio --kind daily
+
+      - name: Add English captions
+        if: steps.sanity.outcome == 'success' && vars.COLLESPO_EN_CAPTIONS == 'on'
+        continue-on-error: true
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          COLLESPO_EN_CAPTIONS: ${{ vars.COLLESPO_EN_CAPTIONS }}
+          COLLESPO_EN_CAPTIONS_DAILY_MAX: ${{ vars.COLLESPO_EN_CAPTIONS_DAILY_MAX || '1' }}
+          COLLESPO_EN_CAPTIONS_RESERVE: ${{ vars.COLLESPO_EN_CAPTIONS_RESERVE || '1000' }}
+          YOUTUBE_SHARED_QUOTA_URL: ${{ vars.YOUTUBE_SHARED_QUOTA_URL }}
+          YOUTUBE_SHARED_QUOTA_TOKEN: ${{ secrets.YOUTUBE_SHARED_QUOTA_TOKEN }}
+          YOUTUBE_SHARED_QUOTA_SNAPSHOT: ${{ vars.YOUTUBE_SHARED_QUOTA_SNAPSHOT }}
+          COLLESPO_LLM_TRANSLATE: ${{ vars.COLLESPO_LLM_TRANSLATE }}
+        run: |
+          python scripts/captions.py             --narration public/narration.json             --audio-dir build/audio --kind daily --language en
 
       # 同じ動画をTikTokへも出す。タイトルはYouTube側の記録から借りるので、
       # 先にUpload to YouTubeが終わっている必要がある。
@@ -523,20 +602,35 @@ jobs:
       # コミットしないと記録が毎回消えてしまう。
       - name: Commit video record
         if: always()
-        continue-on-error: true
         run: |
           bash scripts/commit_data.sh \
             "video record: ${{ github.run_id }}" \
-            data/published_videos.json data/published_tiktok.json data/playlists.json data/localized.json data/base_rates.json data/soccer_games.json data/soccer_preview.json data/token_usage.json
+            data/published_videos.json data/bluesky_delivery.json data/published_tiktok.json data/playlists.json data/localized.json data/base_rates.json data/soccer_games.json data/soccer_preview.json data/token_usage.json data/mlb_forecast_history.json data/en_caption_state.json
 
       - name: Save video as artifact
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: collespo-video
           path: |
+            data/sanity*.json
+            build/sanity*hold*.json
+            data/postseason.json
+            data/best_of_day.json
+            data/roster_stats.json
+            notable_games.json
+            archive/*.json
+            public/narration.json
+            public/soccer_narration.json
+            public/games.json
             build/video/collespo_short.mp4
             build/video/short.png
             build/video/short.json
+            build/video/ps_program_gate.json
+            build/ps_program_forecast*.json
+            build/ps_forecast_status.json
+            build/ps_forecast_source.json
+            !build/**/portrait/**
           retention-days: 7
           if-no-files-found: ignore
 
@@ -546,12 +640,56 @@ jobs:
       # 途中では止めず、最後に落とす。順序はそのまま、結果だけ正直にする。
       - name: Confirm the video went out
         if: always()
-        run: python scripts/verify_published.py --kind daily
+        run: |
+          # **出さなかった日と、出し損ねた日は別。**
+          # 注目試合が無いと決めたのは原稿を作る段で、そこが印を置く。
+          # 印が無いのに動画が無ければ、これまでどおり落とす。
+          # 9/21は見送りの日を「出し損ね」として実行全体を赤にした。
+          if [ -f build/narration_skipped.txt ] && [ "${{ steps.sanity.outcome }}" != "failure" ]; then
+            echo "### 注目試合が無い日のため、今日の注目試合の動画は作っていません（見送りで、失敗ではありません）" >> "$GITHUB_STEP_SUMMARY"
+            echo "注目試合が無い日なので、公開の確認はしません"
+            exit 0
+          fi
+          python scripts/verify_published.py --kind daily --hold-record build/sanity_hold.json
 
       - name: Explain a skipped site update
         if: always() && (steps.standings.outcome != 'success' || steps.archive.outcome != 'success')
         run: echo "::warning::順位表またはアーカイブを更新できなかったため、公開中のサイトを維持します。動画の投稿とは別の結果です。"
 
+      - name: Keep unsaved data records
+        if: always() && hashFiles('build/data-save-recovery/**/FAILED') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: unsaved-data-${{ github.job }}-${{ github.run_attempt }}
+          path: |
+            build/data-save-recovery/
+            !build/**/portrait/**
+          retention-days: 14
+          if-no-files-found: error
+
+      - name: Save quota-exceeded thumbnails
+        if: always() && hashFiles('build/thumbnail_pending/**') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: thumbnail-pending
+          path: |
+            build/thumbnail_pending/
+            !build/**/portrait/**
+          retention-days: 3
+          if-no-files-found: ignore
+
+
+      - name: Save voice and render records
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: voice-render-records-${{ github.job }}-${{ github.run_attempt }}
+          path: |
+            build/**/voice_manifest.json
+            build/**/render_timeline.json
+            !build/**/portrait/**
+          retention-days: 14
+          if-no-files-found: ignore
   deploy:
     needs: build_and_notify
     if: needs.build_and_notify.outputs.standings_ready == 'true'
@@ -563,3 +701,14 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+      - name: Save sanity gate records
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sanity-gate-${{ github.job }}
+          path: |
+            data/sanity*.json
+            build/sanity*hold*.json
+            !build/**/portrait/**
+          retention-days: 14

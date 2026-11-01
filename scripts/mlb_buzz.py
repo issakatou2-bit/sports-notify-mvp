@@ -53,7 +53,8 @@ OFFICIAL_CHANNEL_TITLE = "MLB"
 
 # ハイライトのタイトルは "Angels vs. Dodgers Game Highlights (8/9/26) | MLB Highlights"
 # のような形をしている。対戦カード部分だけを取り出す。
-TOPIC_MODEL = "claude-haiku-4-5-20251001"
+import llm_models
+TOPIC_MODEL = llm_models.model("topic")
 
 MATCHUP_RE = re.compile(r"^(.+?)\s+Game Highlights", re.I)
 
@@ -77,13 +78,14 @@ def fetch_recent_highlights(api_key: str, hours: int = 30,
     # 投稿一覧のプレイリストIDは、チャンネルIDの2文字目をUに変えたもの。
     # channels.list を1回叩いても取れるが、この対応は公開仕様。
     uploads = "UU" + cid[2:]
-    after = datetime.now(timezone.utc) - timedelta(hours=hours)
+    now = datetime.now(timezone.utc)
+    after = now - timedelta(hours=min(hours, 48))
 
     items = []
     try:
         resp = requests.get(
             f"{YOUTUBE_API}/playlistItems",
-            params={"key": api_key, "part": "snippet",
+            params={"key": api_key, "part": "snippet,contentDetails",
                     "playlistId": uploads, "maxResults": 50},
             timeout=20)
         resp.raise_for_status()
@@ -94,14 +96,15 @@ def fetch_recent_highlights(api_key: str, hours: int = 30,
     for it in resp.json().get("items", []):
         sn = it.get("snippet") or {}
         vid = (sn.get("resourceId") or {}).get("videoId")
-        pub = sn.get("publishedAt", "")
+        # snippet.publishedAtはプレイリストへ追加された日時で、元動画の公開日ではない。
+        pub = (it.get('contentDetails') or {}).get('videoPublishedAt') or ''
         if not vid or not pub:
             continue
         try:
             when = datetime.fromisoformat(pub.replace("Z", "+00:00"))
         except ValueError:
             continue
-        if when < after:
+        if not when.tzinfo or not after <= when <= now:
             continue
         # 公式は試合以外(特集・記者会見)も出す。ランキングに混ぜない。
         if "Highlights" not in sn.get("title", ""):
@@ -340,6 +343,77 @@ def _f(v, default=0.0):
         return default
 
 
+def batting_facts(box: dict) -> list:
+    """boxの得点を保存。未取得と0を区別し、日本人は材料の氏名を使う。"""
+    sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
+    from notability_engine import JP_PLAYERS_MLB
+    from press_names import SURNAME
+    names = {p['name_en']:p['name_jp'] for p in JP_PLAYERS_MLB}
+    out = []
+    for side in ('home','away'):
+        for row in (box.get('teams',{}).get(side,{}).get('players') or {}).values():
+            stats = row.get('stats',{}).get('batting') or {}
+            name = (row.get('person') or {}).get('fullName')
+            if not stats or not name:
+                continue
+            shown = names.get(name, name)
+            out.append({'name':shown, 'name_en':name, 'type':'batter',
+                        'aliases':[SURNAME[shown]] if shown in SURNAME else [],
+                        'runs':stats.get('runs'), 'hits':stats.get('hits'), 'rbi':stats.get('rbi')})
+    return out
+
+
+def series_facts(g: dict, ss: dict, res: dict) -> dict:
+    """シリーズの中のこの試合。勝敗は試合のあと（seriesStatus）と、この試合を引いた試合の前。"""
+    desc = ss.get("description") or ""
+    name = next((jp for en, jp in (("Wild Card", "ワイルドカードシリーズ"), ("Division", "地区シリーズ"),
+                                    ("Championship", "リーグ優勝決定シリーズ"), ("World Series", "ワールドシリーズ"))
+                 if en in desc), desc)
+    num, total = int(ss.get("gameNumber") or 0), int(ss.get("totalGames") or 0)
+    win_jp = res["home_jp"] if res["home_score"] > res["away_score"] else res["away_jp"]
+    lose_jp = res["away_jp"] if win_jp == res["home_jp"] else res["home_jp"]
+    after = ss.get("result") or ""
+    out = {"name": name, "game_number": num, "games_in_series": total,
+           "after": after, "is_over": bool(ss.get("isOver")),
+           "winner_today": win_jp}
+    w, l = int(ss.get("wins") or 0), int(ss.get("losses") or 0)
+    if ss.get("isTied"):
+        # 試合のあと同点 → 試合の前は今日の勝者が1つ少なかった
+        out["after_jp"] = f"{w}勝{l}敗の五分"
+        out["before_jp"] = f"{lose_jp}の{w}勝{w - 1}敗"
+    else:
+        out["after_jp"] = f"{w}勝{l}敗（{after}）"
+    if not out["is_over"] and total:
+        out["next"] = f"第{num + 1}戦" + ("で決着する" if ss.get("isTied") and num + 1 == total else "")
+        out["next_game_number"] = num + 1
+    # 数値の時点を台詞検査へ残す。winningTeamはシリーズのリード側で、今日の勝者とは別。
+    sides = g.get("teams") or {}
+    leader = (ss.get("winningTeam") or {}).get("id")
+    team_ids = {(sides.get(side, {}).get('team') or {}).get('id') for side in ('home','away')}
+    by_team = {}
+    if w + l == num and num > 0:
+        for side in ("home", "away"):
+            team_id = (sides.get(side, {}).get("team") or {}).get("id")
+            if ss.get("isTied") and w == l:
+                wins = w
+            elif leader is not None and leader in team_ids and team_id is not None:
+                wins = w if leader == team_id else l
+            else:
+                by_team = {}
+                break
+            by_team[res[side+"_jp"]] = {"wins": wins, "losses": num-wins}
+    if len(by_team) == 2:
+        before = {name: {"wins": r["wins"]-(name == win_jp),
+                         "losses": r["losses"]-(name != win_jp)}
+                  for name, r in by_team.items()}
+        if all(v >= 0 for r in before.values() for v in r.values()):
+            out.update(after_by_team=by_team, before_by_team=before,
+                       before_jp="、".join(f"{n}{r['wins']}勝{r['losses']}敗" for n,r in before.items()))
+            out["is_decider"] = (all(r['wins'] == total//2 for r in before.values())
+                                  if total > 0 else None)
+    return out
+
+
 def fetch_result(date: str, teams: list) -> dict:
     """
     その日のその対戦の結果と、最も目立った選手を取る。
@@ -352,7 +426,8 @@ def fetch_result(date: str, teams: list) -> dict:
         return {}
     try:
         sch = requests.get(f"{MLB_API}/schedule",
-                           params={"sportId": 1, "date": date}, timeout=25)
+                           params={"sportId": 1, "date": date,
+                                   "hydrate": "seriesStatus"}, timeout=25)
         sch.raise_for_status()
         games = [g for d in sch.json().get("dates", [])
                  for g in d.get("games", [])]
@@ -373,6 +448,12 @@ def fetch_result(date: str, teams: list) -> dict:
             "away_jp": jp_team(an), "home_jp": jp_team(hn),
             "away_score": away["score"], "home_score": home["score"],
         }
+        # ポストシーズンは「第何戦か・試合の前と後の勝敗・決着したか」を別に持つ。
+        # 10/9 の長編が、第4戦（試合後2勝2敗）を決着の試合として語った。
+        # 材料に無いと、モデルは勝敗の数から「決着戦」を推してしまう。
+        ss = g.get("seriesStatus") or {}
+        if g.get("gameType") in ("F", "D", "L", "W") and ss.get("gameNumber"):
+            res["series"] = series_facts(g, ss, res)
         # イニングごとの点。スコアボードを描くのに要る。
         # 最終スコアだけだと「7対6だった」しか言えないが、
         # 回ごとの並びがあれば、どこで動いた試合なのかが一目で分かる。
@@ -398,6 +479,7 @@ def fetch_result(date: str, teams: list) -> dict:
                               timeout=25)
             bx.raise_for_status()
             data = bx.json()
+            res["batting_facts"] = batting_facts(data)
             # どちらのチームの選手かを一緒に持つ。
             #
             # 名前と成績だけを渡していたため、対話の台本を書かせたとき
@@ -603,8 +685,9 @@ def topic_jp(video: dict) -> str:
         client = anthropic.Anthropic(api_key=key)
         if not token_log.allowed("topic"):
             return raw
-        resp = client.messages.create(
-            model=TOPIC_MODEL, max_tokens=200,
+        import backstage_guard
+        resp = backstage_guard.create(client, label='mlb_buzz.py', category='topic', mode='whole',
+            **llm_models.params("topic", 200),
             messages=[{"role": "user", "content":
                        "次はMLB公式のハイライト動画の題です。"
                        "何が起きたかを日本語のひと言(30字以内)にしてください。"
@@ -703,13 +786,18 @@ def load(path: str = "data/mlb_buzz.json", max_age_hours: int = 30) -> list:
         return []
     try:
         updated = datetime.fromisoformat(data.get("updated_at", ""))
-    except ValueError:
+    except (TypeError, ValueError):
+        return []
+    if updated.tzinfo is None:
         return []
     age = (datetime.now(timezone.utc) - updated).total_seconds() / 3600
+    if age < 0:
+        return []
     if age > max_age_hours:
         print(f"[info] 注目度データが古いため使いません({age:.0f}時間前)")
         return []
-    return data.get("videos") or []
+    from article_freshness import fresh_articles
+    return fresh_articles(data.get("videos") or [])
 
 
 def main():

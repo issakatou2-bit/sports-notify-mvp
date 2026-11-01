@@ -27,6 +27,7 @@ AIを使う箇所:
 """
 
 import argparse
+from japanese_team_names import team_names
 import datetime
 import functools
 import json
@@ -60,10 +61,15 @@ try:
 except ImportError:
     anthropic = None
 
-MODEL = "claude-haiku-4-5-20251001"
+import llm_models
+MODEL = llm_models.model("narration")
 # ショート動画(60秒以内)に収まる範囲で、情報量も確保する。
 # 1試合75文字前後 × 3試合 + 前後 で、1.3倍速で40秒前後になる。
 MAX_GAMES = 3
+# 注目試合が無くて原稿を作らなかった日に置く印。後の段がこれを見て、
+# 「出し損ねた」ではなく「出さなかった」と分かる。
+# public/ に置くとサイトへそのまま公開されるので、build/ に置く。
+SKIPPED_PATH = pathlib.Path("build") / "narration_skipped.txt"
 
 # 競技の見分けは notability_engine に寄せる。ここでコードだけを並べて
 # いたが、データに入っているのは日本語のリーグ名なので一度も一致せず、
@@ -330,6 +336,16 @@ def game_day(g: dict) -> str:
                              int(m.group(1)), int(m.group(2)))
 
 
+def _ps_round(g: dict) -> str:
+    """ポストシーズンの試合なら「地区シリーズ 第1戦」。違えば空。"""
+    for r in g.get("reasons") or []:
+        if r.get("tag") == "postseason":
+            m = re.match(r"^(.+?第[0-9]+戦)", (r.get("text") or "").strip())
+            if m:
+                return m.group(1)
+    return ""
+
+
 def pick_hook(games: list, availability=None) -> dict:
     """
     動画の1枚目に出す「最も具体的な事実」を選ぶ。
@@ -365,7 +381,32 @@ def pick_hook(games: list, availability=None) -> dict:
     for at, g in enumerate(games):
         for p in g.get("jp_starters") or []:
             if p.get("name"):
-                return {"big": "先発予定", "sub": p["name"], "at": at}
+                # PSなら回戦も言う（「地区シリーズ 第1戦に先発予定」）
+                rnd = _ps_round(g)
+                return {"big": (f"{rnd}に先発予定" if rnd else "先発予定"),
+                        "sub": p["name"], "at": at}
+
+    # 1.5 ポストシーズン。**回戦と第何戦、どちらが王手か**が、その日を
+    # 選んだ理由そのもの。これが無いと、PSの日の題が「所属チームの一戦」
+    # になる（レギュラーシーズンの言い方のまま）。
+    for at, g in enumerate(games):
+        for r in g.get("reasons") or []:
+            if r.get("tag") != "postseason":
+                continue
+            m = re.match(r"^(?P<what>.+?第[0-9]+戦)(?:\((?P<note>[^)]*)\))?$",
+                         (r.get("text") or "").strip())
+            if m:
+                note = m.group("note") or ""
+                # 表示用の「対」と元データの「vs」を文字一致で混同しない。
+                key = g.get("matchup") or g.get("abbr_matchup") or r["text"]
+                if "王手" in note or "リード" in note:
+                    # 「ドジャースが2勝1敗で王手、フィリーズは負ければ敗退」は長い
+                    return {"big": m.group("what"), "sub": note.split("、")[0],
+                            "at": at, "key": key}
+                # タイ・第1戦は球団名が入らないので、対戦カードを主語に
+                card = f"{g.get('away_team_name')}対{g.get('home_team_name')}"
+                return {"big": m.group("what") + (f"（{note}）" if note else ""),
+                        "sub": card, "at": at, "key": key}
 
     # 2. 故障者リストから復帰したばかりの選手がいる球団の試合。
     #
@@ -557,7 +598,7 @@ def pick_hook(games: list, availability=None) -> dict:
     for at, g in enumerate(games):
         names = [n for n in (g.get("jp_players") or []) if n]
         if names:
-            return {"big": "・".join(names[:3]), "sub": "", "at": at}
+            return {"big": team_names(names), "sub": "", "at": at}
 
     # 13. サッカーは、大会名を最後の手がかりにする。
     #     クラブ名だけのタイトルだと、どのリーグの話か分からない。
@@ -900,9 +941,9 @@ def narrate_game(client, game: dict, index: int, total: int) -> str:
         "- 記号(【】・「」等)や箇条書きは使わず、そのまま読める文章だけを書く\n"
         "- 前置きや説明は不要。原稿本文のみを出力する"
     )
-    resp = client.messages.create(
-        model=MODEL,
-        max_tokens=300,
+    import backstage_guard
+    resp = backstage_guard.create(client, label='generate_narration.py', category='narration', mode='whole',
+        **llm_models.params("narration", 300),
         messages=[{"role": "user", "content": prompt}],
     )
     token_log.record("narration", MODEL, resp)
@@ -925,6 +966,9 @@ def main():
     args = parser.parse_args()
 
     data = _load(args.games, {})
+    import soccer_slots_v4
+    if soccer_slots_v4.enabled() and data.get('games') and all(_is_soccer_league(g.get('league')) for g in data['games']):
+        return soccer_slots_v4.run_compat('preview', args.games, narration_out=args.out)
     games = [g for g in mlb_availability.prepare(data.get("games", []))
              if g.get("is_notable")][:MAX_GAMES]
 
@@ -945,9 +989,18 @@ def main():
             note = _br.venue_line(rates, venue) if venue else ""
             if note:
                 g["base_rate_note"] = note
+    # **見送ったことを残す。**原稿が無い理由は2つあって、ここで
+    # 「注目試合が無い」と決めた場合と、作るのに失敗した場合。後の段は
+    # 原稿の有無しか見られないので、9/21は見送りを「出し損ね」として
+    # 実行全体を赤にした。決めたのはここなので、ここで印を置く。
+    skipped = SKIPPED_PATH
     if not games:
         print("[info] 注目試合が無いため、ナレーション原稿は作りません")
+        skipped.parent.mkdir(parents=True, exist_ok=True)
+        skipped.write_text("注目に値する試合が無い日", encoding="utf-8")
         return
+    if skipped.exists():
+        skipped.unlink()
 
     date_label = (games[0].get("start_time_jst") or "").split(" ")[0]
     news = (_load(args.news, {}).get("news") or [])[:1]
@@ -981,6 +1034,7 @@ def main():
     #   画面側(generate_video.py)は notable_games.json をそのまま読むので、
     #   ここで並べ替えるだけだと読み上げと画面が別の試合を指す。
     #   元の位置を覚えて meta で渡す。
+    forecast_games=list(games)
     order = list(range(len(games)))
     at = hook.get("at")
     if isinstance(at, int) and 0 < at < len(games):
@@ -1108,10 +1162,15 @@ def main():
         "meta": {},
     })
 
+    import mlb_forecast
+    value=mlb_forecast.decorate({'date_label':date_label,'segments':segments},
+        forecast_games, data.get('generated_at') or __import__('datetime').datetime.now(mlb_forecast.JST).isoformat())
+    import sanity_sources
+    value = sanity_sources.attach(value, data)
     out = pathlib.Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
     with open(out, "w", encoding="utf-8") as f:
-        json.dump({"date_label": date_label, "segments": segments}, f, ensure_ascii=False)
+        json.dump(value, f, ensure_ascii=False)
 
     total_chars = sum(len(s["text"]) for s in segments)
     print(f"[info] ナレーション原稿を生成しました({len(segments)}セグメント、"

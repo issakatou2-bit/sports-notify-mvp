@@ -1,0 +1,29 @@
+{
+  "width": 1080,
+  "height": 1920,
+  "boxes": [
+    {
+      "id": "caption",
+      "rect": [
+        40,
+        1200,
+        700,
+        150
+      ],
+      "avoid": [
+        "face"
+      ]
+    },
+    {
+      "id": "face",
+      "rect": [
+        800,
+        1400,
+        250,
+        520
+      ],
+      "role": "character",
+      "facing": "left"
+    }
+  ]
+}

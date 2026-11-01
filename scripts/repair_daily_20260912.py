@@ -96,7 +96,9 @@ def publish():
                '音声：VOICEVOX:ずんだもん\nhttps://collespo.com/\n'+MARKER,
                'categoryId':'17','defaultLanguage':'ja'},
               'status':{'privacyStatus':'private','selfDeclaredMadeForKids':False}}
-        response=yt.videos().insert(part='snippet,status',body=body,
+        import localize_videos
+        body = localize_videos.prepare_upload(body)
+        response=yt.videos().insert(part=localize_videos.upload_parts(body),body=body,
                  media_body=MediaFileUpload(str(path),mimetype='video/mp4',resumable=True)).execute()
         vid=response['id']
         pilot_upload.record(KEY,{'state':'uploaded','video_id':vid,'old_video_id':OLD,'sha256':digest})

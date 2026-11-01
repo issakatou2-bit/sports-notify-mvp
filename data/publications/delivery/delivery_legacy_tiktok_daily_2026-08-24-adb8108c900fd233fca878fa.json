@@ -1,0 +1,33 @@
+{
+  "publication_id": "delivery:legacy_tiktok:daily:2026-08-24",
+  "domain": "delivery",
+  "kind": "legacy_tiktok",
+  "key_parts": {
+    "kind": "daily",
+    "legacy_key": "2026-08-24"
+  },
+  "version": 1,
+  "history": [
+    {
+      "source": "published_tiktok/daily/2026-08-24",
+      "service": "tiktok",
+      "video_id": null,
+      "state": "unknown",
+      "scheduled_at": null,
+      "event_day": null,
+      "material_day": null,
+      "edition_day": null,
+      "run_at": null,
+      "details": {
+        "privacy": null,
+        "status": "SEND_TO_USER_INBOX",
+        "publish_id": "v_inbox_file~v2.7677535731836946449"
+      },
+      "run_id": "40669557265",
+      "attempt": "1",
+      "recorded_at": "2026-10-28T10:18:19.156303+00:00",
+      "fingerprint": "f09bceb4491138620c038336de44b954ec3bb09365a9566bab20cd57a5c21135",
+      "event_id": "9aec1f9d9c7351cf680a355a4ac4d331e69cc82946e9ebfdbf8791d6992e0e5e"
+    }
+  ]
+}

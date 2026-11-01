@@ -47,10 +47,19 @@ PATH = "data/token_usage.json"
 PRICES = {
     "claude-opus-5": {"in": 5.00, "out": 25.00},
     "claude-sonnet-5": {"in": 2.00, "out": 10.00},
+    "claude-sonnet-5-5": {"in": 2.00, "out": 10.00},
+    "claude-haiku-5-5": {"in": 0.10, "out": 0.50},
+    "claude-opus-5-5": {"in": 4.00, "out": 20.00},
     "claude-haiku-4-5": {"in": 1.00, "out": 5.00},
     "claude-haiku-4-5-20251001": {"in": 1.00, "out": 5.00},
 }
 DEFAULT_PRICE = {"in": 1.00, "out": 5.00}
+
+# Message Batches API で出した呼び出しは、入力・出力とも半額。
+# 公式: https://platform.claude.com/docs/en/build-with-claude/batch-processing
+#   「All usage is charged at 50% of the standard API prices.」（2026-10-07 確認）
+# 単価表を2つに分けない（上の PRICES が正本）。掛けるだけにする。
+BATCH_DISCOUNT = 0.5
 
 
 # 1日に使ってよい上限(ドル)。これを超えたら、その日はもう呼ばない。
@@ -96,12 +105,14 @@ def _load(path: str = PATH) -> dict:
         return {"days": {}}
 
 
-def cost(model: str, tin: int, tout: int) -> float:
+def cost(model: str, tin: int, tout: int, batch: bool = False) -> float:
     p = PRICES.get(model, DEFAULT_PRICE)
-    return tin / 1_000_000 * p["in"] + tout / 1_000_000 * p["out"]
+    usd = tin / 1_000_000 * p["in"] + tout / 1_000_000 * p["out"]
+    return usd * BATCH_DISCOUNT if batch else usd
 
 
-def record(who: str, model: str, resp, path: str = PATH) -> None:
+def record(who: str, model: str, resp, path: str = PATH,
+           batch: bool = False) -> None:
     """1回ぶんを足す。失敗しても本編は止めない。
 
     **ただし黙らない。** 例外を握りつぶしていたので、単価表を
@@ -121,11 +132,14 @@ def record(who: str, model: str, resp, path: str = PATH) -> None:
         d["calls"] += 1
         d["in"] += tin
         d["out"] += tout
-        d["usd"] = round(d["usd"] + cost(model, tin, tout), 5)
+        d["usd"] = round(d["usd"] + cost(model, tin, tout, batch), 5)
         b = d["by"].setdefault(who, {"calls": 0, "in": 0, "out": 0})
         b["calls"] += 1
         b["in"] += tin
         b["out"] += tout
+        if batch:
+            # トークン数だけでは半額で払ったかが分からないので、回数を別に持つ。
+            b["batch"] = b.get("batch", 0) + 1
         # 30日より古いものは落とす。積もると読みづらくなるだけ。
         cut = (datetime.now(JST) - timedelta(days=30)).strftime("%Y-%m-%d")
         data["days"] = {k: v for k, v in data["days"].items() if k >= cut}
@@ -134,7 +148,8 @@ def record(who: str, model: str, resp, path: str = PATH) -> None:
         p.write_text(json.dumps(data, ensure_ascii=False, indent=2),
                      encoding="utf-8")
         print(f"[info] {who}: 入力{tin} 出力{tout} "
-              f"(${cost(model, tin, tout):.5f})")
+              f"(${cost(model, tin, tout, batch):.5f}"
+              f"{'・Batchで半額' if batch else ''})")
     except Exception as e:                       # noqa: BLE001
         print(f"[warn] 使用量を記録できませんでした: {e}")
 

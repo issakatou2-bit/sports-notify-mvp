@@ -160,13 +160,76 @@ def load_sources(path: str) -> list:
     return d.get("channels") or []
 
 
-def fetch_feed(channel_id: str, hours: int = LOOKBACK_HOURS) -> list:
-    """
-    そのチャンネルの直近の投稿。RSSなので枠を消費しない。
+def fetch_uploads(api_key: str, channel_id: str,
+                  hours: int = LOOKBACK_HOURS, *, strict: bool = False) -> list:
+    """アップロード一覧をData APIで引く。strictでは取得失敗を例外で区別。
 
-    APIの search を使うと1回100ユニットかかるが、ここは0。
-    足すチャンネルを増やしても費用が増えない。
+    **9/19から毎日、GitHubの実行環境だけRSSが404を返している**
+    （同じURLが手元からは200）。5〜6チャンネルすべてが落ち、材料が
+    作られない日が続いていた。
+
+    playlistItems.list は1回1ユニット（search の100分の1）。
+    アップロード一覧のIDは、チャンネルIDの先頭 "UC" を "UU" にしたもの。
     """
+    if not channel_id.startswith("UC"):
+        return []
+    try:
+        params = {'part': 'snippet,contentDetails', 'maxResults': 50 if strict else 25,
+                  'playlistId': 'UU' + channel_id[2:], 'key': api_key}
+        got = []
+        cutoff = datetime.now(timezone.utc) - timedelta(hours=hours)
+        for _ in range(20 if strict else 1):
+            r = requests.get(f'{YOUTUBE_API}/playlistItems', params=params, timeout=20)
+            r.raise_for_status()
+            page = r.json()
+            items = page.get('items') or []
+            got.extend(items)
+            # 健康診断は日付で見る。先頭25本に対象日が無い場合も読む。
+            stamps = [(item.get('contentDetails') or {}).get('videoPublishedAt') for item in items]
+            reached = any(stamp and datetime.fromisoformat(stamp.replace('Z', '+00:00')) < cutoff
+                          for stamp in stamps)
+            if not strict or not page.get('nextPageToken') or reached:
+                break
+            params['pageToken'] = page['nextPageToken']
+        else:
+            raise RuntimeError('対象日の一覧を最後まで確認できません')
+    except Exception as e:  # noqa: BLE001
+        if strict:
+            raise RuntimeError('アップロード一覧を取得できません') from e
+        print(f"[warn] {channel_id} のアップロード一覧を取れませんでした: {type(e).__name__}",
+              file=sys.stderr)
+        return []
+    cutoff = datetime.now(timezone.utc) - timedelta(hours=hours)
+    out = []
+    for it in got:
+        sn = it.get("snippet") or {}
+        vid = ((sn.get("resourceId") or {}).get("videoId")
+               or (it.get("contentDetails") or {}).get("videoId"))
+        pub = ((it.get("contentDetails") or {}).get("videoPublishedAt")
+               or sn.get("publishedAt"))
+        if not (vid and sn.get("title") and pub):
+            continue
+        try:
+            when = datetime.fromisoformat(pub.replace("Z", "+00:00"))
+        except ValueError:
+            continue
+        if when < cutoff:
+            continue
+        out.append({"video_id": vid, "title": sn["title"],
+                    "published_at": pub})
+    return out
+
+
+def fetch_feed(channel_id: str, hours: int = LOOKBACK_HOURS,
+               api_key: str = "") -> list:
+    """
+    そのチャンネルの直近の投稿。鍵があればData APIで取得する。
+
+    RSSの404が続くので、鍵があるときは1ユニットのアップロード一覧を使う。
+    鍵のない環境ではRSSを読み、取得不可は空で返す。
+    """
+    if api_key:
+        return fetch_uploads(api_key, channel_id, hours)
     url = FEED.format(channel_id)
     try:
         req = urllib.request.Request(url, headers={"User-Agent": "collespo/1.0"})
@@ -175,7 +238,11 @@ def fetch_feed(channel_id: str, hours: int = LOOKBACK_HOURS) -> list:
     except Exception as e:  # noqa: BLE001
         print(f"[warn] {channel_id} のRSSを取れませんでした: {e}",
               file=sys.stderr)
-        return []
+        if not api_key:
+            return []
+        got = fetch_uploads(api_key, channel_id, hours)
+        print(f"[info] {channel_id} はアップロード一覧から{len(got)}本")
+        return got
 
     cutoff = datetime.now(timezone.utc) - timedelta(hours=hours)
     out = []
@@ -254,10 +321,11 @@ def main() -> int:
         return 0
 
     rows = []
+    key_for_fallback = os.environ.get("YOUTUBE_API_KEY") or ""
     for ch in channels:
         hours = int(ch.get("lookback_hours") or LOOKBACK_HOURS)
         keep = ch.get("keep_pattern") or ""
-        items = [v for v in fetch_feed(ch["id"], hours)
+        items = [v for v in fetch_feed(ch["id"], hours, key_for_fallback)
                  if wanted(v["title"], keep)]
         items = items[:PER_CHANNEL]
         for v in items:

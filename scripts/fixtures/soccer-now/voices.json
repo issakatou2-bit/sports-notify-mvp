@@ -1,0 +1,10 @@
+{
+  "sample_fictional": true,
+  "note": "架空のコメント。実在の声ではない。試合の数字は既存の保存ESPN材料。",
+  "video": {"video_id":"SAMPLE", "clubs":["Nice","Lille"], "jp_players":["上田綺世"], "competition":"リーグ・アン", "matchup_jp":"ニース対リール"},
+  "comments": [
+    {"title":"Ayase Ueda scored a good goal today", "ja":"上田は今日いいゴールを決めた", "tone":"称賛", "likes":3},
+    {"title":"Ayase Ueda kept looking for space", "ja":"上田はスペースを探し続けた", "tone":"中立", "likes":2},
+    {"title":"Ayase Ueda worked hard for Lille", "ja":"上田はリールのために懸命に動いた", "tone":"称賛", "likes":1}
+  ]
+}

@@ -95,9 +95,12 @@ def load(path: str) -> dict:
 def check(d: dict) -> list:
     """食い違いの一覧。空なら問題なし。"""
     facts = d.get("facts") or {}
+    from longform_editorial import check as editorial_check
+    from game_fact_guard import check as game_check
+    editorial = editorial_check(d) + game_check(d)
     if not facts:
-        return []
-    bad = []
+        return editorial
+    bad = list(editorial)
     for seg in (d.get("segments") or []):
         text = (seg.get("text") or "").strip()
         if not text:
@@ -120,8 +123,25 @@ def check(d: dict) -> list:
                 # 投球回は小数で出る（1.0回、0.2回）。
                 pat = (re.escape(name) + "[^。]{0,%d}?([0-9]+(?:[.][0-9]+)?)"
                        % NEAR + re.escape(unit))
+                if unit == "回":
+                    # **読み上げでは「0回3分の1」になっている。**
+                    # 原稿は投球回を声で読める形に直してから渡される
+                    # （yomi_stats）。9/21、正しく「千賀滉大、0回3分の1」と
+                    # 言っていたのに、ここが「0回」までしか拾わず、材料の
+                    # 0.1回と違うとして日本人成績の回を止めた。
+                    pat += "(?:3分の([12]))?"
                 for m in re.finditer(pat, text):
+                    # **「アストロズに1勝0敗」の1勝はアストロズのものではない。**
+                    # 相手を表す「に」「相手に」「との」のすぐ後の勝敗は、
+                    # 文の主語（ホワイトソックス）の数字。9/30、WCS初戦に
+                    # 勝ったホワイトソックスを正しく言った長編を止めた。
+                    if unit == "勝" and re.match(
+                            re.escape(name) + r"(?:を?相手に|に|との|を)",
+                            m.group(0)):
+                        continue
                     got = float(m.group(1))
+                    if unit == "回" and m.group(2):
+                        got = int(got) + int(m.group(2)) / 10.0
                     if abs(got - float(want)) > 1e-9:
                         bad.append(
                             "%s: 「%s」と言っていますが、材料は%s%s です"
@@ -135,16 +155,26 @@ def main() -> int:
     ap.add_argument("--dialogue", required=True)
     ap.add_argument("--strict", action="store_true",
                     help="食い違いがあれば異常終了する")
+    ap.add_argument('--omit-unsupported', action='store_true',
+                    help='未取得の得点/シリーズ勝敗を断定した行だけ除外して保存する')
     args = ap.parse_args()
 
     d = load(args.dialogue)
     if not d:
         return 0                     # 読めない日は判定しない
+    import game_fact_guard
+    original = d
+    prepared, confirmed = game_fact_guard.prepare(d)
+    if args.omit_unsupported:
+        d = prepared
     facts = d.get("facts") or {}
-    bad = check(d)
+    bad = list(dict.fromkeys(check(d) + confirmed))
+    if args.omit_unsupported and not bad and d['segments'] != original.get('segments'):
+        pathlib.Path(args.dialogue).write_text(json.dumps(d,ensure_ascii=False,indent=2),encoding='utf-8')
+        print('[info] 未取得の値の断定行だけ除外して保存しました')
 
     print("--- 言ったことと、渡した材料 ---")
-    if not facts:
+    if not facts and not bad:
         print("  材料が添えられていません（古い台本）。見ません")
         return 0
     if not bad:

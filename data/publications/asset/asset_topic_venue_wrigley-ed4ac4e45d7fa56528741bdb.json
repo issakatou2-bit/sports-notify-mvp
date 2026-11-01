@@ -1,0 +1,30 @@
+{
+  "publication_id": "asset:topic:venue_wrigley",
+  "domain": "asset",
+  "kind": "topic",
+  "key_parts": {
+    "topic": "venue_wrigley"
+  },
+  "version": 1,
+  "history": [
+    {
+      "source": "published_assets/assets/venue_wrigley",
+      "service": "youtube",
+      "video_id": "uijQruCN32A",
+      "state": "uploaded",
+      "scheduled_at": null,
+      "event_day": null,
+      "material_day": null,
+      "edition_day": null,
+      "run_at": "2026-08-07T15:08:27.721753+00:00",
+      "details": {
+        "privacy": "public"
+      },
+      "run_id": "40508411617",
+      "attempt": "1",
+      "recorded_at": "2026-10-27T13:01:39.700508+00:00",
+      "fingerprint": "5d89d414415c5409d698faf4b62a6ca1eec90615eebe76526df6454fb473bfd4",
+      "event_id": "0c1969c990f7dfb25f3791f670572d560b06a186095257111ecc3ec87ec6c24d"
+    }
+  ]
+}

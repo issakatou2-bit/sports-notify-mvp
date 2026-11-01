@@ -41,6 +41,7 @@
 
 import argparse
 import json
+import os
 import pathlib
 import re
 import subprocess
@@ -354,17 +355,27 @@ def layout_talk(d, text: str):
     初版は lines[:5] で黙って切っていて、長い台詞は
     読み上げだけが続いて画面が止まって見えた。
     """
+    import caption_breaks
+    import bubble_styles
+    if bubble_styles.selected():
+        return 36,bubble_styles.page_lines(text,bubble_styles.longform_box(legacy=True))
     avail_w = COL_X1 - COL_X0 - TALK_PAD * 2
     avail_h = TALK_Y1 - TALK_Y0 - TALK_PAD * 2
     for size in TALK_SIZES:
-        lines = wrap(d, text, font(size), avail_w)
+        try:
+            lines = caption_breaks.wrap(text,lambda s:video_common.text_width(d,s,font(size)),avail_w) if caption_breaks.enabled() else wrap(d,text,font(size),avail_w)
+        except ValueError:continue
         per = max(1, avail_h // (size + TALK_LEAD))
         if len(lines) <= per:
             return size, [lines]
     # いちばん小さくしても入らない。画面を分ける。
     size = TALK_SIZES[-1]
-    lines = wrap(d, text, font(size), avail_w)
+    lines = caption_breaks.wrap(text,lambda s:video_common.text_width(d,s,font(size)),avail_w) if caption_breaks.enabled() else wrap(d,text,font(size),avail_w)
     per = max(1, avail_h // (size + TALK_LEAD))
+    if caption_breaks.enabled():
+        measure=lambda s:video_common.text_width(d,s,font(size))
+        values=caption_breaks.pages(text,fits=lambda s:len(caption_breaks.wrap(s,measure,avail_w))<=per)
+        return size,[caption_breaks.wrap(s,measure,avail_w) for s in values]
     return size, [lines[i:i + per] for i in range(0, len(lines), per)]
 
 
@@ -577,7 +588,7 @@ _TITLES = {"score": "回ごとの得点",
            "stat": "確かめた数字（MLB公式）",
            "star": "目立った選手",
            "group": "そろっている顔ぶれ（MLB公式）",
-           "topic": "きょうの話"}
+           "topic": "今日の話"}
 
 
 def render_panel(d, panel, topic):
@@ -686,6 +697,11 @@ def render_intro(p, topic="", day=""):
     return im
 
 
+def r3_time():
+    import review_render_v3 as r3
+    return r3._PROGRAM_CLOCK[0] or 0
+
+
 def render_stage(p, seg, portrait_dir="", topic="", panel=None,
                  score=None):
     """立ち絵以外の全部。下地・札・台詞・名前。
@@ -716,52 +732,64 @@ def render_stage(p, seg, portrait_dir="", topic="", panel=None,
         d.text((x - d.textlength(s["name"], font=f) / 2, cy + r + 24),
                s["name"], font=f, fill=col if talking else DIM)
 
-    # 台詞。置ける場所は決まっている。中身をそこへ収める。
-    size = seg.get("_size")
-    lines = seg.get("_lines")
-    if lines is None:
-        size, pages = layout_talk(d, seg.get("text", ""))
-        lines = pages[0]
-
-    # 箱の高さは**毎回同じ**にする。
-    #
-    # 中身に合わせて縮めていたので、1行の台詞のときだけ箱が小さくなって
-    # 札との間に穴が空いた。札と同じで、ここも「台詞が出る場所」。
-    # 場所が動くと、そう見えない。
-    # 代わりに、行が少ない日は上下の真ん中へ寄せる。
-    y0 = TALK_Y0
-    d.rounded_rectangle([COL_X0, y0, COL_X1, TALK_Y1], 24, fill=SURF)
-    # 喋っている側の縁に色の帯。吹き出しの尻尾の代わり。
-    left = who["side"] == "left"
-    if left:
-        d.rounded_rectangle([COL_X0, y0, COL_X0 + 10, TALK_Y1], 5,
-                            fill=who["color"])
+    import bubble_styles
+    if bubble_styles.selected():
+        import characters
+        key=characters.SPEAKERS.get(seg.get('speaker'),'metan')
+        lines=seg.get('_lines')
+        text=''.join(lines) if lines is not None else seg.get('text','')
+        if text:bubble_styles.draw(im,key,text,seconds=r3_time(),box=bubble_styles.longform_box(legacy=True),episode='longform')
+        from PIL import ImageDraw
+        d=ImageDraw.Draw(im)
     else:
-        d.rounded_rectangle([COL_X1 - 10, y0, COL_X1, TALK_Y1], 5,
-                            fill=who["color"])
+        # 台詞。置ける場所は決まっている。中身をそこへ収める。
+        size = seg.get("_size")
+        lines = seg.get("_lines")
+        if lines is None:
+            size, pages = layout_talk(d, seg.get("text", ""))
+            lines = pages[0]
 
-    # 名前の札。箱の上端に、喋っている側から出す。
-    #
-    # 文字が札の中で上に寄っていた。anchor="lm"（左・上下中央）で
-    # 置くと、書体が変わっても真ん中のまま。座標の足し算で合わせると
-    # フォントを替えたときにずれる。
-    nm, fn = who["name"], font(32)
-    nw = d.textlength(nm, font=fn) + 48
-    nx = COL_X0 + 24 if left else COL_X1 - 24 - nw
-    ny0, ny1 = y0 - NAME_H + 8, y0 + 12
-    d.rounded_rectangle([nx, ny0, nx + nw, ny1], 13, fill=who["color"])
-    d.text((nx + 24, (ny0 + ny1) / 2), nm, font=fn, fill=(16, 22, 18),
-           anchor="lm")
+        # 箱の高さは**毎回同じ**にする。
+        #
+        # 中身に合わせて縮めていたので、1行の台詞のときだけ箱が小さくなって
+        # 札との間に穴が空いた。札と同じで、ここも「台詞が出る場所」。
+        # 場所が動くと、そう見えない。
+        # 代わりに、行が少ない日は上下の真ん中へ寄せる。
+        y0 = TALK_Y0
+        d.rounded_rectangle([COL_X0, y0, COL_X1, TALK_Y1], 24, fill=SURF)
+        # 喋っている側の縁に色の帯。吹き出しの尻尾の代わり。
+        left = who["side"] == "left"
+        if left:
+            d.rounded_rectangle([COL_X0, y0, COL_X0 + 10, TALK_Y1], 5,
+                                fill=who["color"])
+        else:
+            d.rounded_rectangle([COL_X1 - 10, y0, COL_X1, TALK_Y1], 5,
+                                fill=who["color"])
 
-    # 1行ずつ出す。ANIM_END までに出し切る。
-    shown = len(lines) if p >= ANIM_END else max(
-        1, int(len(lines) * (p / ANIM_END)))
-    # 上下の真ん中から書き出す。
-    block = len(lines) * (size + TALK_LEAD) - TALK_LEAD
-    yy = y0 + max(TALK_PAD, ((TALK_Y1 - TALK_Y0) - block) // 2)
-    for ln in lines[:shown]:
-        d.text((COL_X0 + TALK_PAD, yy), ln, font=font(size), fill=TEXT)
-        yy += size + TALK_LEAD
+        # 名前の札。箱の上端に、喋っている側から出す。
+        #
+        # 文字が札の中で上に寄っていた。anchor="lm"（左・上下中央）で
+        # 置くと、書体が変わっても真ん中のまま。座標の足し算で合わせると
+        # フォントを替えたときにずれる。
+        nm, fn = who["name"], font(32)
+        nw = d.textlength(nm, font=fn) + 48
+        nx = COL_X0 + 24 if left else COL_X1 - 24 - nw
+        ny0, ny1 = y0 - NAME_H + 8, y0 + 12
+        d.rounded_rectangle([nx, ny0, nx + nw, ny1], 13, fill=who["color"])
+        d.text((nx + 24, (ny0 + ny1) / 2), nm, font=fn, fill=(16, 22, 18),
+               anchor="lm")
+
+        # 1行ずつ出す。ANIM_END までに出し切る。
+        shown = len(lines) if p >= ANIM_END else max(
+            1, int(len(lines) * (p / ANIM_END)))
+        # 上下の真ん中から書き出す。
+        block = len(lines) * (size + TALK_LEAD) - TALK_LEAD
+        yy = y0 + max(TALK_PAD, ((TALK_Y1 - TALK_Y0) - block) // 2)
+        for ln in lines[:shown]:
+            d.text((COL_X0 + TALK_PAD, yy), ln, font=font(size), fill=TEXT)
+            yy += size + TALK_LEAD
+        import render_timeline
+        render_timeline.subtitle(im, ''.join(lines), visible=bool(lines[:shown]))
 
     # 音声の表記。立ち絵が画面の下端まで来ているので、
     # 左右の隅ではなく中央の列の下に置く(重ならない唯一の場所)。
@@ -798,6 +826,9 @@ def main() -> int:
                     help="立ち絵の置き場。無ければ丸と名前で代用する")
     ap.add_argument("--require-audio", action="store_true")
     args = ap.parse_args()
+    import ui_voice_queue
+    ui_voice_queue.configure(args)
+    __import__('slant_by_episode').set_episode('longform')
 
     try:
         dia = json.loads(
@@ -839,6 +870,9 @@ def main() -> int:
     out_dir = pathlib.Path(args.out)
     out_dir.mkdir(parents=True, exist_ok=True)
     video_path = out_dir / "collespo_longform.mp4"
+    import render_timeline
+    timeline = render_timeline.Recorder(FPS, segs)
+    segs = [dict(s, _source_line_ids=[s.get('index', i) + 1]) for i, s in enumerate(segs)]
 
     # 冒頭。2人ぶんの「コレスポ」を1つに重ねて、1枚の札にする。
     # 重ねられなかったら(音が無い日など)、そのまま前へ出さずに落とす。
@@ -855,6 +889,7 @@ def main() -> int:
         dur = max(float(s.get("duration") or 0) for s in pair)
         card = {"kind": kind, "text": "", "speaker": 3, "panel": None,
                 "file": str(mixed), "duration": dur}
+        card['_source_line_ids'] = [n for s in pair for n in s['_source_line_ids']]
         if where == 0:
             body.insert(0, card)
         else:
@@ -882,9 +917,14 @@ def main() -> int:
 
     # 画面の割りつけは、音を繋いだ**あと**でやる。
     # 長い台詞は画面を分けるので、音の区間数と画面の数が変わる。
+    # 新デザイン「電光掲示板」（10/8 本人「長編のデザイン感は良い」）。COLLESPO_LONGFORM_STYLE=v3 のときだけ。
+    # 描画は longform_render_v3（Opus-18 の下書き＋エマの直し）。尺は変えない。
+    v3 = os.environ.get("COLLESPO_LONGFORM_STYLE") == "v3"
+    if v3:
+        import longform_render_v3 as lr3
     pages = []
     for s, dur in zip(segs, durations):
-        for pg in paginate([s]):
+        for pg in (lr3.paginate([s]) if v3 else paginate([s])):
             pages.append((pg, dur * pg["_share"]))
     split = len(pages) - len(segs)
     print(f"[info] {len(segs)}台詞 / {total:.0f}秒"
@@ -892,6 +932,12 @@ def main() -> int:
 
     shown = sum(1 for pg, _ in pages if pg.get("panel"))
     print(f"[info] 中央の札: {len(cards)}枚のうち {shown}回指定あり")
+
+    chapters = dia.get("chapters")
+    if v3 and audio_path:
+        audio_path = lr3.add_sound(audio_path, pages, cards, out_dir, topic=topic, chapters=chapters)
+        rows = lr3.timeline(pages, cards, FPS)
+        video_total = sum(r["frames"] for r in rows) / FPS or 1.0
 
     cmd = ["ffmpeg", "-y", "-nostats", "-loglevel", "error",
            "-f", "rawvideo", "-pix_fmt", "rgb24",
@@ -918,6 +964,7 @@ def main() -> int:
     frame0 = 0
     try:
         for i, (seg, dur) in enumerate(pages):
+            timeline.select(seg, i, page=i)
             if seg.get("panel"):
                 current = cards.get(seg["panel"])
             n = int(dur * FPS)
@@ -934,8 +981,20 @@ def main() -> int:
             stage = None                # 止まったあとの下地
             last_frame = None
             for k in range(n):
+                if v3:
+                    # 新デザインは背景が動き続けるので、下地を使い回さない
+                    r, tk = rows[i], k / FPS
+                    im = lr3.render_line(tk, seg, args.portrait_dir, topic, r["panel"], None, score,
+                                         chapters=chapters, progress=(r["start"] + tk) / video_total,
+                                         panel_t=r["panel_since"] + tk, chapter_t=r["chapter_since"] + tk,
+                                         dur=dur)
+                    last_frame = video_common.crossfade(last, im, k, fade, (W, H))
+                    timeline.write(proc.stdin, last_frame, im, overlap=last is not None and k < fade)
+                    continue
                 p, settled = video_common.anim_step(k, n)
-                if settled and stage is not None:
+                if __import__('bubble_styles').selected():
+                    __import__('review_render_v3').set_program_clock((frame0+k)/FPS)
+                if settled and stage is not None and not __import__('bubble_styles').selected():
                     im = stage.copy()
                 elif is_intro:
                     im = render_intro(p, topic, day_label)
@@ -960,7 +1019,7 @@ def main() -> int:
                                 args.portrait_dir, state,
                                 "冒頭" if is_intro else "対話")
                 last_frame = video_common.crossfade(last, im, k, fade, (W, H))
-                proc.stdin.write(last_frame)
+                timeline.write(proc.stdin, last_frame, im, overlap=last is not None and k < fade)
             last = last_frame
             frame0 += n
     except BrokenPipeError:
@@ -983,6 +1042,7 @@ def main() -> int:
             encoding="utf-8", errors="replace")[:600])
         return 1
     mb = video_path.stat().st_size / 1024 / 1024
+    timeline.save(video_path, args.audio_dir)
     print(f"[info] 動画を出力しました -> {video_path} "
           f"({total:.0f}秒 / {mb:.1f}MB)")
     return 0

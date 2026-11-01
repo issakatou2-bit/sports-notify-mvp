@@ -1,0 +1,30 @@
+{
+  "publication_id": "asset:topic:venue_oracle",
+  "domain": "asset",
+  "kind": "topic",
+  "key_parts": {
+    "topic": "venue_oracle"
+  },
+  "version": 1,
+  "history": [
+    {
+      "source": "published_assets/assets/venue_oracle",
+      "service": "youtube",
+      "video_id": "cH0EtOWUxcg",
+      "state": "uploaded",
+      "scheduled_at": null,
+      "event_day": null,
+      "material_day": null,
+      "edition_day": null,
+      "run_at": "2026-08-07T15:09:04.740472+00:00",
+      "details": {
+        "privacy": "public"
+      },
+      "run_id": "40508411617",
+      "attempt": "1",
+      "recorded_at": "2026-10-27T13:01:39.701091+00:00",
+      "fingerprint": "100574a2d5660cb753339345b7045fe7df882515fb7d9ff0a393961285285e44",
+      "event_id": "4983bf949f5b6c9f7ac5654b0985563794710549fb73f162a9c94b384364e2b3"
+    }
+  ]
+}

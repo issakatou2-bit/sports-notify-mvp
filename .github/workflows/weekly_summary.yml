@@ -35,6 +35,15 @@ on:
 permissions:
   contents: write
 
+env:
+  COLLESPO_MOTION: ${{ vars.COLLESPO_MOTION || '' }}
+  COLLESPO_BUBBLE: ${{ vars.COLLESPO_BUBBLE || '' }}
+  COLLESPO_CAPTION_BREAKS: ${{ vars.COLLESPO_CAPTION_BREAKS || '' }}
+  COLLESPO_GLASS_BACKGROUND: ${{ vars.COLLESPO_GLASS_BACKGROUND || 'stripes' }}
+  COLLESPO_SLANT_VARIANT: ${{ vars.COLLESPO_SLANT_VARIANT || 'cream' }}
+  # 選手ごとのシリーズの題（本人OK後にリポジトリ変数 SERIES_TITLE=1）
+  SERIES_TITLE: ${{ vars.SERIES_TITLE }}
+
 jobs:
   # 日曜かどうかだけを見る。JSTで判定する(UTCだと日曜の朝までが土曜になる)。
   gate:
@@ -111,6 +120,14 @@ jobs:
             --archive-dir archive \
             --out build/weekly_narration.json
 
+      - name: Sanity gate (weekly)
+        id: sanity_weekly
+        continue-on-error: true
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
+        run: python scripts/sanity.py --general --strict --narration build/weekly_narration.json --out data/sanity_weekly.json --hold-record build/sanity_hold_weekly.json --kind weekly
+
       - name: Synthesize weekly narration
         continue-on-error: true
         run: |
@@ -145,8 +162,10 @@ jobs:
       # 深夜に無言で現れても、誰の目にも触れない。
       # 22:00に置く。日次の枠(17:00〜20:00)とぶつからない時刻。
       - name: Upload to YouTube
+        if: steps.sanity_weekly.outcome == 'success'
         continue-on-error: true
         env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
@@ -171,6 +190,14 @@ jobs:
             --archive-dir archive \
             --base-rates data/base_rates.json \
             --narration-out build/vs_narration.json
+
+      - name: Sanity gate (verdict)
+        id: sanity_verdict
+        continue-on-error: true
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
+        run: python scripts/sanity.py --general --strict --narration build/vs_narration.json --out data/sanity_verdict.json --hold-record build/sanity_hold_verdict.json --kind verdict
 
       - name: Synthesize verdict narration
         continue-on-error: true
@@ -198,8 +225,10 @@ jobs:
           bash scripts/shorts_thumbnail.sh build/verdict/collespo_verdict.mp4 build/verdict/short.png
 
       - name: Upload verdict short to YouTube
+        if: steps.sanity_verdict.outcome == 'success'
         continue-on-error: true
         env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
@@ -219,7 +248,6 @@ jobs:
       # 残しておけば2本目は弾かれる。健康診断も週次を確認できるようになる。
       - name: Commit video record
         if: always()
-        continue-on-error: true
         run: |
           bash scripts/commit_data.sh \
             "weekly record: ${{ github.run_id }}" \
@@ -242,4 +270,49 @@ jobs:
             build/weekly/collespo_weekly.mp4
             build/verdict/collespo_verdict.mp4
           retention-days: 7
+          if-no-files-found: ignore
+
+      - name: Keep unsaved data records
+        if: always() && hashFiles('build/data-save-recovery/**/FAILED') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: unsaved-data-${{ github.job }}-${{ github.run_attempt }}
+          path: |
+            build/data-save-recovery/
+            !build/**/portrait/**
+          retention-days: 14
+          if-no-files-found: error
+
+      - name: Save sanity gate records
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sanity-gate-${{ github.job }}
+          path: |
+            data/sanity*.json
+            build/sanity*hold*.json
+            !build/**/portrait/**
+          retention-days: 14
+
+      - name: Save quota-exceeded thumbnails
+        if: always() && hashFiles('build/thumbnail_pending/**') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: thumbnail-pending
+          path: |
+            build/thumbnail_pending/
+            !build/**/portrait/**
+          retention-days: 3
+          if-no-files-found: ignore
+
+      - name: Save voice and render records
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: voice-render-records-${{ github.job }}-${{ github.run_attempt }}
+          path: |
+            build/**/voice_manifest.json
+            build/**/render_timeline.json
+            !build/**/portrait/**
+          retention-days: 14
           if-no-files-found: ignore

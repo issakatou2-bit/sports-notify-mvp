@@ -3,6 +3,36 @@
 # 5本を作るようになったあとも古い名前が残り、探しても見つからなかった。
 name: 毎日 17:00-20:00　夕方の4本
 
+env:
+  COLLESPO_HOOK_AB: ${{ vars.COLLESPO_HOOK_AB || '' }}
+  COLLESPO_SOLO_HOST: ${{ vars.COLLESPO_SOLO_HOST || 'metan' }}
+  COLLESPO_HOST_SPLIT: ${{ vars.COLLESPO_HOST_SPLIT || '' }}
+  COLLESPO_UI_VOICE_STOCK: ${{ vars.COLLESPO_UI_VOICE_STOCK || '' }}
+  COLLESPO_UI_PARTS_KEY: ${{ secrets.COLLESPO_UI_PARTS_KEY }}
+  COLLESPO_UI_VOICE_WAIT_MINUTES: ${{ vars.COLLESPO_UI_VOICE_WAIT_MINUTES || '15' }}
+  COLLESPO_TOPIC_HUB: ${{ vars.COLLESPO_TOPIC_HUB || 'off' }}
+  COLLESPO_REDDIT: ${{ vars.COLLESPO_REDDIT || '' }}
+  # 選手ごとのシリーズの題（本人OK後にリポジトリ変数 SERIES_TITLE=1）
+  SERIES_TITLE: ${{ vars.SERIES_TITLE }}
+  COLLESPO_BUBBLE: ${{ vars.COLLESPO_BUBBLE || '' }}
+  COLLESPO_MOTION: ${{ vars.COLLESPO_MOTION || '' }}
+  COLLESPO_CAPTION_BREAKS: ${{ vars.COLLESPO_CAPTION_BREAKS || '' }}
+  COLLESPO_SLANT_VARIANT: ${{ vars.COLLESPO_SLANT_VARIANT || 'cream' }}
+  COLLESPO_GLASS_BACKGROUND: ${{ vars.COLLESPO_GLASS_BACKGROUND || 'stripes' }}
+  COLLESPO_OUTRO_NEXT: ${{ vars.COLLESPO_OUTRO_NEXT == 'on' && 'on' || 'off' }}
+  COLLESPO_SHORT_LOOK: ${{ vars.COLLESPO_SHORT_LOOK || 'v3' }}
+  COLLESPO_MLB_BADGE: ${{ vars.COLLESPO_MLB_BADGE || '' }}
+  COLLESPO_DUO: ${{ vars.COLLESPO_DUO || 'off' }}
+  COLLESPO_EXPR: ${{ vars.COLLESPO_EXPR || '' }}
+  COLLESPO_MLB_FORECAST: ${{ vars.COLLESPO_MLB_FORECAST || '' }}
+  COLLESPO_LIPSYNC: ${{ vars.COLLESPO_LIPSYNC || '' }}
+  PS_PROGRAM_LAYOUT: ${{ vars.PS_PROGRAM_LAYOUT || 'v2' }}
+  COLLESPO_PS_DESIGN: ${{ vars.COLLESPO_PS_DESIGN || 'legacy' }}
+  # エマの試作確認後に bignumber を指定。未指定/legacy なら現行のまま。
+  COLLESPO_PLAYERS_DESIGN: ${{ vars.COLLESPO_PLAYERS_DESIGN || 'legacy' }}
+  COLLESPO_COMMENTS_DESIGN: ${{ vars.COLLESPO_COMMENTS_DESIGN || 'legacy' }}
+  COLLESPO_PRESS_DESIGN: ${{ vars.COLLESPO_PRESS_DESIGN || 'legacy' }}
+
 # 「その日の日本人選手の成績」を配信する。
 # 19時の予告(これから起きること)に対して、こちらは結果(終わったこと)。
 #
@@ -42,6 +72,11 @@ on:
       player:
         description: '「今日の1人」をこの選手で作る (例: Pete Crow-Armstrong)'
         required: false
+      tiktok_inbox:
+        description: 'TikTokアプリの受信箱へも送る（公開は別操作、通常はBufferのみ）'
+        required: false
+        type: boolean
+        default: false
       force:
         description: 'true にすると、その日に投稿済みでも上げ直す'
         required: false
@@ -110,19 +145,16 @@ jobs:
       # 成績データを常識で見ておく。ここは知らせるだけ。
       # 止めるのは1本ずつ、下のループの中で判断する——
       # 1行おかしいからといって、関係のない4本まで落とす理由はない。
-      - name: Sanity check
-        continue-on-error: true
-        env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: python scripts/sanity.py --narration
 
       - name: Install video tools
         timeout-minutes: 16
         run: bash scripts/install_video_tools.sh
 
       # 出場した選手が1人もいない日(オールスター休みなど)は、
-      # ここでファイルが更新されず、以降のステップが自然に何も作らない
+      # 当日の空材料へ更新する。取得失敗も記録し、独立した枠は続ける。
       - name: Fetch last night's results
+        id: recap_results
+        continue-on-error: true
         run: python scripts/morning_recap.py --out data/morning_recap.json
 
       # 本塁打の飛距離と打球速度。
@@ -168,6 +200,16 @@ jobs:
         continue-on-error: true
         run: |
           python scripts/rarity.py --season "$(date -u +%Y)"             --out data/rarity.json | tee -a "$GITHUB_STEP_SUMMARY"
+
+      # 進出争い・ポストシーズンの材料を、作る直前に取り直す。
+      #
+      # これまでは19:00の注目試合の処理でしか作っておらず、20:00の回は
+      # 前日19:00の材料を読んでいた。米国の夜の試合は日本の昼に終わるので、
+      # **前の晩の試合がいつも入っていなかった。**短期決戦では、昨夜の
+      # 1勝が話のすべてになる。落ちても前回の材料で続ける。
+      - name: Refresh the postseason picture
+        continue-on-error: true
+        run: python scripts/postseason.py --out data/postseason.json
 
       # 球場ごとの実測(1試合平均得点)。日次の注目試合の解説や資産動画が
       # これを読むが、更新する場所がどこにも無いと古い数字を使い続けてしまう。
@@ -229,6 +271,9 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: python scripts/local_reporters.py --out data/local_reporters.json
 
+      - name: Build shared topics when enabled
+        if: vars.COLLESPO_TOPIC_HUB == 'on'
+        run: python scripts/topic_hub.py --out data/topic_hub.json
       - name: Start VOICEVOX engine
         continue-on-error: true
         run: |
@@ -246,9 +291,16 @@ jobs:
       # 主題が3つ混ざってタイトルもサムネイルも1つしか表せなくなる。
       # 実際、最も見られた動画は単一主題のもので、情報を詰めたものほど
       # 視聴率が落ちていた。2本に分けて、それぞれ主題を1つにする。
+      - name: Verify PS editorial stage from official fixtures
+        id: ps_editorial
+        continue-on-error: true
+        run: python scripts/ps_editorial.py --input data/postseason.json
+
       - name: Build and upload both shorts
+        id: shorts
         continue-on-error: true
         env:
+          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           BLUESKY_HANDLE: ${{ secrets.BLUESKY_HANDLE }}
@@ -257,6 +309,8 @@ jobs:
           TIKTOK_CLIENT_KEY: ${{ secrets.TIKTOK_CLIENT_KEY }}
           TIKTOK_CLIENT_SECRET: ${{ secrets.TIKTOK_CLIENT_SECRET }}
           TIKTOK_REFRESH_TOKEN: ${{ secrets.TIKTOK_REFRESH_TOKEN }}
+          # The user approved this two-slot shift on 9/28. Explicit false still holds.
+          PS_PREVIEW_APPROVED: ${{ vars.PS_PREVIEW_APPROVED || 'true' }}
         run: |
           set +e
           # 定期実行では4本とも作る。手動実行では絞れるようにしてある。
@@ -264,17 +318,36 @@ jobs:
           # 同じ試合をコメント欄の回が扱っていたので、そちらへ寄せた。
           # 1本だけ落ちた日に、成功した分まで上げ直すと重複するため。
           MODES="${{ inputs.modes }}"
+          CLAIM_FAILED=0
+          if [ "${{ steps.recap_results.outcome }}" != "success" ]; then
+            echo "::error::成績取得に失敗。成績の回を止め、独立した枠は続行します"
+            CLAIM_FAILED=1
+          fi
+          TIKTOK_FAILED=0
           for mode in ${MODES:-players postseason voices press}; do
             echo "::group::$mode"
+            if [ "$mode" = "postseason" ] && [ "${{ steps.ps_editorial.outcome }}" != "success" ]; then
+              echo "::error::PS日程/編集段階を確認できないため、古い資料で公開しません"
+              CLAIM_FAILED=1
+              echo "::endgroup::"; continue
+            fi
+            if [ "$mode" = "postseason" ] && python -c "import json, os, sys; sys.path.insert(0, 'scripts'); from ps_editorial import preview_review_required; sys.exit(0 if preview_review_required(json.load(open('data/postseason.json', encoding='utf-8')), os.getenv('PS_PREVIEW_APPROVED', '')) else 1)"; then
+              echo "新しいPS構成はプレビュー確認待ちのため公開しません" | tee -a "$GITHUB_STEP_SUMMARY"
+              echo "::endgroup::"; continue
+            fi
             if [ "$mode" = "players" ]; then
               VIDEO="build/morning/collespo_morning.mp4"
             else
               VIDEO="build/morning/collespo_morning_${mode}.mp4"
             fi
 
-            python scripts/generate_morning_short.py \
+            if ! python scripts/generate_ps_preview.py \
               --recap data/morning_recap.json --mode "$mode" \
-              --narration-out "build/mr_narration_${mode}.json"
+              --narration-out "build/mr_narration_${mode}.json"; then
+              echo "::error::$mode の原稿作成に失敗しました"
+              if [ "$mode" = "postseason" ]; then CLAIM_FAILED=1; fi
+              echo "::endgroup::"; continue
+            fi
             if [ ! -f "build/mr_narration_${mode}.json" ]; then
               echo "素材が無いため $mode は作りません"
               echo "::endgroup::"; continue
@@ -289,22 +362,23 @@ jobs:
             #
             # 新しくAPIは叩かない。原稿の facts を読むだけ。
             # この枠は登録者の8割が来ているので、いちばん守りたい。
-            if ! python scripts/verify_numbers.py \
-                --dialogue "build/mr_narration_${mode}.json" --strict; then
-              echo "::warning::$mode の数字が材料と違うため出しません"
-              echo "::endgroup::"; continue
-            fi
+            python scripts/verify_numbers.py \
+                --dialogue "build/mr_narration_${mode}.json" --omit-unsupported
+            # 停止判断と1回の再点検は、下の共通入口にまとめる。
 
             # 原稿ができた時点で、常識で読み直す。
             #
             # ありえない数字が原稿に入っていたら、この1本だけ出さない。
             # 他の枠は別の材料で別の原稿を作っているので、巻き込まない。
-            # 通し読み(--general)のほうは止めない。言語模型の違和感で
-            # 正しい日の投稿を潰すと、その損のほうが大きい。
+            # 通し読みの重大な指摘(high)も予約前に止める。
             if ! python scripts/sanity.py --general --strict \
                 --narration "build/mr_narration_${mode}.json" \
-                --out "data/sanity_${mode}.json"; then
-              echo "::warning::$mode の原稿にありえない数字があるため出しません"
+                --out "data/sanity_${mode}.json" \
+                --hold-record "build/sanity_hold_${mode}.json" \
+                --kind "$([ "$mode" = players ] && echo morning || echo morning_${mode})"; then
+              echo "::error::$mode の原稿に重大な指摘または矛盾があるため予約を止めました"
+              echo "$mode: 原稿の重大な指摘または矛盾のため予約停止。data/sanity_${mode}.json を確認してください。" >> "$GITHUB_STEP_SUMMARY"
+              CLAIM_FAILED=1
               echo "::endgroup::"; continue
             fi
 
@@ -312,18 +386,27 @@ jobs:
               --narration "build/mr_narration_${mode}.json" \
               --out-dir "build/mr_audio_${mode}"
 
-            python scripts/generate_morning_short.py \
+            python scripts/generate_ps_preview.py \
               --recap data/morning_recap.json --mode "$mode" \
+              --narration "build/mr_narration_${mode}.json" \
               --audio-dir "build/mr_audio_${mode}" --out build/morning \
               --require-audio
             if [ $? -ne 0 ]; then
               echo "::warning::$mode の動画生成に失敗しました"
+              if [ "$mode" = "postseason" ]; then CLAIM_FAILED=1; fi
               echo "::endgroup::"; continue
             fi
 
-            python scripts/generate_thumbnail.py \
-              --kind "morning" --recap data/morning_recap.json \
-              --mode "$mode" --out "build/morning/thumb_${mode}.png"
+            # Evidence is lightweight and must not stop publication. No frame files.
+            timeout 180 python scripts/visual_capture.py video --video "$VIDEO" --out "build/visual/$(TZ=Asia/Tokyo date +%Y%m%d)" || echo "::warning::visual contact sheet failed: $mode"
+
+            if [ "$mode" = "postseason" ]; then
+              python scripts/generate_ps_preview.py --thumbnail-out "build/morning/thumb_${mode}.png"
+            else
+              python scripts/generate_thumbnail.py \
+                --kind "morning" --recap data/morning_recap.json \
+                --mode "$mode" --out "build/morning/thumb_${mode}.png"
+            fi
 
             # ショート用に、動画の1枚目(1080x1920)を切り出す。
             # 上の16:9は、ショート棚では中央405pxに切り抜かれて
@@ -398,7 +481,27 @@ jobs:
             # どの回が何を読むのかがここで分かるように明示しておく。
             #   voices → mlb_buzz(その日いちばん見られたハイライト)
             #   player → player_profile(今日の1人)
-            if python scripts/upload_youtube.py \
+            if [ "$mode" = "postseason" ]; then
+              if [ "$PS_PROGRAM_LAYOUT" = "v2" ]; then
+                python scripts/ps_program.py --check --program build/ps_program_situation.json
+                PS_CHECK=$?
+              else
+                python scripts/check_rendered_claims.py --kind postseason \
+                  --input data/postseason.json --out build/ps_rendered_claims.json
+                PS_CHECK=$?
+              fi
+              if [ "$PS_CHECK" -ne 0 ]; then
+                echo "::error::PSの描画と根拠が一致しないためYouTube/SNS公開を止めました"
+                CLAIM_FAILED=1
+                echo "::endgroup::"; continue
+              fi
+            fi
+            if [ ! -s "$VIDEO" ]; then
+              echo "::warning::$mode: 動画がないため投稿を見送りました"
+              if [ "$mode" = "postseason" ]; then CLAIM_FAILED=1; fi
+              echo "::endgroup::"; continue
+            fi
+            if python scripts/generate_ps_preview.py --upload \
               --video "$VIDEO" --kind morning --morning-mode "$mode" \
               --recap data/morning_recap.json \
               --buzz data/mlb_buzz.json \
@@ -413,13 +516,20 @@ jobs:
               cp data/published_videos.json build/social_shorts/published_videos.json
             else
               echo "::error::$mode の投稿に失敗しました"
+              if [ "$mode" = "postseason" ]; then CLAIM_FAILED=1; fi
             fi
 
-            # TikTokへも同じものを出す。タイトルはYouTube側の記録から借りる。
+            # 通常のTikTok公開はBufferが担当。受信箱への二重転送を避けるため、
+            # アプリ側で仕上げる場合だけ手動入力で明示的に指定する。
             # 記録上の区分は players→morning / それ以外→morning_<mode>。
-            if [ -n "$TIKTOK_REFRESH_TOKEN" ]; then
+            if [ "${{ github.event_name }}" = "workflow_dispatch" ] && \
+                [ "${{ inputs.tiktok_inbox }}" = "true" ] && \
+                [ -n "$TIKTOK_REFRESH_TOKEN" ]; then
               if [ "$mode" = "players" ]; then TK=morning; else TK="morning_${mode}"; fi
-              python scripts/post_tiktok.py --video "$VIDEO" --kind "$TK"
+              if ! python scripts/post_tiktok.py --video "$VIDEO" --kind "$TK"; then
+                echo "::warning::$mode のTikTok受信箱への転送に失敗しました（他の枠は続行します）"
+                TIKTOK_FAILED=1
+              fi
             fi
             echo "::endgroup::"
 
@@ -427,7 +537,27 @@ jobs:
             # 分散するためだったが、公開時刻をYouTubeに予約するように
             # したので、アップロードが何分に終わろうと公開は散る。
           done
+          echo "claims_failed=$CLAIM_FAILED" >> "$GITHUB_OUTPUT"
+          echo "tiktok_failed=$TIKTOK_FAILED" >> "$GITHUB_OUTPUT"
           set -e
+
+      # Bufferは成功した実行の成果物だけを配信する。任意の受信箱転送の
+      # 失敗で、YouTube投稿済みの動画まで配信対象から外さない。
+      - name: Record optional TikTok inbox transfer failures
+        if: always() && steps.shorts.outputs.tiktok_failed == '1'
+        continue-on-error: true
+        run: |
+          echo "::warning::明示指定されたTikTok受信箱への転送に失敗しました"
+          {
+            echo "### TikTok受信箱への転送"
+            echo "明示指定された転送に失敗しました。ほかの枠の制作は継続しました。"
+            echo "この転送結果はTikTokでの公開結果ではありません。Buffer配信は別に確認してください。"
+          } >> "$GITHUB_STEP_SUMMARY"
+          exit 1
+
+      - name: 原稿と描画の検査失敗を実行結果に反映
+        if: steps.shorts.outputs.claims_failed == '1'
+        run: exit 1
 
       - name: Add to playlists
         continue-on-error: true
@@ -462,14 +592,43 @@ jobs:
         run: |
           bash scripts/commit_data.sh \
             "recap: ${{ github.run_id }}" \
-            data/morning_recap.json data/venue_stats.json data/published_videos.json data/mlb_buzz.json data/local_buzz.json data/published_tiktok.json data/local_reporters.json data/local_voices.json data/playlists.json data/localized.json data/recap_history data/best_of_day.json data/player_profile.json data/player_kana.json data/roster_stats.json data/featured_players.json data/statcast.json data/rarity.json data/token_usage.json
+            data/topic_hub.json \
+            data/morning_recap.json data/venue_stats.json data/published_videos.json data/mlb_buzz.json data/local_buzz.json data/published_tiktok.json data/local_reporters.json data/local_voices.json data/playlists.json data/localized.json data/recap_history data/best_of_day.json data/player_profile.json data/player_kana.json data/roster_stats.json data/featured_players.json data/statcast.json data/rarity.json data/token_usage.json data/postseason.json data/postseason_prev.json
+
+      - name: Save postseason claim evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: collespo-ps-rendered-claims
+          path: |
+            data/sanity*.json
+            build/sanity*hold*.json
+            data/postseason.json
+            data/best_of_day.json
+            data/roster_stats.json
+            notable_games.json
+            archive/*.json
+            data/morning_recap.json
+            data/player_profile.json
+            build/ps_rendered_claims.json
+            build/ps_program_situation*.json
+            build/ps_editorial_source.json
+            build/morning/ps_program_gate.json
+            build/morning/ps_program_upload_skip.json
+            build/mr_narration_*.json
+            build/morning/quote_alignment.json
+            !build/**/portrait/**
+          retention-days: 7
+          if-no-files-found: ignore
 
       - name: Save video as artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: collespo-morning
-          path: build/morning/collespo_morning.mp4
+          path: |
+            build/morning/collespo_morning.mp4
+            !build/**/portrait/**
           retention-days: 7
           if-no-files-found: ignore
 
@@ -478,6 +637,65 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: collespo-social-shorts
-          path: build/social_shorts/
+          path: |
+            build/social_shorts/
+            !build/**/portrait/**
           retention-days: 7
+          if-no-files-found: ignore
+
+      - name: Keep unsaved data records
+        if: always() && hashFiles('build/data-save-recovery/**/FAILED') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: unsaved-data-${{ github.job }}-${{ github.run_attempt }}
+          path: |
+            build/data-save-recovery/
+            !build/**/portrait/**
+          retention-days: 14
+          if-no-files-found: error
+
+      - name: Save visual contact sheets
+        if: always()
+        continue-on-error: true
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-morning-four
+          path: |
+            build/visual/**/video/*-contact-*.jpg
+            !build/**/portrait/**
+          retention-days: 7
+          if-no-files-found: ignore
+
+      - name: Save sanity gate records
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sanity-gate-${{ github.job }}
+          path: |
+            data/sanity*.json
+            build/sanity*hold*.json
+            !build/**/portrait/**
+          retention-days: 14
+
+      - name: Save quota-exceeded thumbnails
+        if: always() && hashFiles('build/thumbnail_pending/**') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: thumbnail-pending
+          path: |
+            build/thumbnail_pending/
+            !build/**/portrait/**
+          retention-days: 3
+          if-no-files-found: ignore
+
+      - name: Save voice and render records
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: voice-render-records-${{ github.job }}-${{ github.run_attempt }}
+          path: |
+            build/**/voice_manifest.json
+            build/**/render_timeline.json
+            !build/**/portrait/**
+          retention-days: 14
           if-no-files-found: ignore

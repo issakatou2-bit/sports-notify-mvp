@@ -1,0 +1,48 @@
+name: 配信　公開確認後のBluesky PS予告
+on:
+  workflow_run:
+    workflows: ['毎日 19:00頃　明日の注目試合']
+    types: [completed]
+  workflow_dispatch: {}
+permissions:
+  contents: write
+concurrency:
+  group: bluesky-ps-publication
+  cancel-in-progress: false
+jobs:
+  reconcile:
+    if: github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main' && github.event.workflow_run.head_repository.full_name == github.repository)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install -r scripts/requirements.txt
+      - name: Publish only an unsent current PS edition with a public video
+        env:
+          BLUESKY_HANDLE: ${{ secrets.BLUESKY_HANDLE }}
+          BLUESKY_APP_PASSWORD: ${{ secrets.BLUESKY_APP_PASSWORD }}
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+        run: python scripts/post_bluesky.py --ps-only
+      - name: Keep the exact post receipt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bluesky-delivery-receipt
+          path: data/bluesky_delivery.json
+      - name: Save delivery ledger
+        run: bash scripts/commit_data.sh "Bluesky PS delivery $GITHUB_RUN_ID" data/bluesky_delivery.json
+
+      - name: Keep unsaved data records
+        if: always() && hashFiles('build/data-save-recovery/**/FAILED') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: unsaved-data-${{ github.job }}-${{ github.run_attempt }}
+          path: |
+            build/data-save-recovery/
+            !build/**/portrait/**
+          retention-days: 14
+          if-no-files-found: error

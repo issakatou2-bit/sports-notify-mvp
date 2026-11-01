@@ -1,0 +1,30 @@
+{
+  "publication_id": "soccer:results:2026-10-30",
+  "domain": "soccer",
+  "kind": "results",
+  "key_parts": {
+    "material_day": "2026-10-30"
+  },
+  "version": 1,
+  "history": [
+    {
+      "source": "published_videos/soccer_results/2026-10-30",
+      "service": "youtube",
+      "video_id": "rJcA29QbOEg",
+      "state": "scheduled",
+      "scheduled_at": "2026-10-31T02:00:00Z",
+      "event_day": null,
+      "material_day": "2026-10-30",
+      "edition_day": "2026-10-31",
+      "run_at": "2026-10-31T01:45:38.723271+00:00",
+      "details": {
+        "privacy": "public"
+      },
+      "run_id": "41156248978",
+      "attempt": "1",
+      "recorded_at": "2026-10-31T01:45:38.742727+00:00",
+      "fingerprint": "f366e3e04efe1eaea5a865b82dbf4e16a64d00b3af0a43ea8380afcb5ea1042f",
+      "event_id": "ef8b1ea570a626fe84186674607eff0b5460be8714552c52a9dd642f1ba24fd0"
+    }
+  ]
+}

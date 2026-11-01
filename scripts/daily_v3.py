@@ -1,0 +1,127 @@
+"""既存の日次原稿を案Dへ。明示指定時のみ、投稿と有料生成は持たない。"""
+import os
+import json
+from pathlib import Path
+
+
+def prepare(data, narration, mode):
+    comments_on = mode == "voices" and os.environ.get("COLLESPO_COMMENTS_DESIGN", "legacy") == "comments"
+    press_on = mode == "press" and os.environ.get("COLLESPO_PRESS_DESIGN", "legacy") == "v3"
+    if not comments_on and not press_on:
+        return None
+    import comment_render as cr
+    vd = data.get("voices") or {}
+    for seg in narration["segments"]:
+        kind = seg["kind"]
+        supported = {"intro", "headlines", "reporters", "outro"} if press_on else {"intro", "voices", "thread", "outro"}
+        if kind not in supported:
+            raise ValueError(f"案Dの未対応画面: {kind}")
+        if kind in {"voices", "thread"} and not cr.voices_for_segment(seg, vd):
+            raise ValueError("読み上げるコメントが画面の材料にありません")
+        if press_on:
+            import press_v3
+            press_v3.bubbles(seg, data.get("reporters") or {})
+    # 検査後に全場面の表示・声・表記をそろえる。旧声を使い回さない。
+    for seg in narration["segments"]:
+        if not (seg.get('meta') or {}).get('duo'):
+            seg["speaker"] = 2
+            seg.setdefault("meta", {})["who"] = "四国めたん"
+        if seg['kind']=='outro':
+            import review_render_v3 as r3
+            seg['text']=r3.OUTRO_TEXT
+            seg['meta']['lineup_kind']='morning_press' if press_on else 'morning_voices'
+    return {"mode": mode, "voices": vd, "reporters": data.get("reporters") or {}}
+
+
+def frame(t, seg, design, duration):
+    import review_render_v3 as r3
+    if design['mode']=='press' and seg['kind']=='intro' and seg.get('meta',{}).get('press_hook'):
+        from press_hook import frame as hook_frame
+        return hook_frame(t,min(1,t),seg['meta'],design['reporters'],modern=True)
+    if (seg.get('meta') or {}).get('duo_ask'):
+        seg=dict(seg,text=seg['meta']['answer_text'])
+    if seg['kind']=='outro':
+        if (seg.get('meta') or {}).get('duo'):
+            return r3.outro(t,{},'morning_voices','音声: VOICEVOX:四国めたん・ずんだもん')
+        import v3_slot_render as common
+        closing=common.outro(t,{'heading':'コレスポ','v3':{},'text':seg['text']},'morning_press' if design['mode']=='press' else 'morning_voices')
+        if closing is not None:
+            return closing
+    if design["mode"] == "press":
+        import press_v3
+        return press_v3.frame(t, seg, design["reporters"], duration)
+    import comment_render as cr
+    vd = design["voices"]
+    if seg["kind"] in {"voices", "thread"}:
+        return cr.voices_screen(t,seg,vd,duration)
+    if seg["kind"] == "intro":
+        rows = vd.get("voices") or []
+        index = (seg.get('meta') or {}).get('used_voice')
+        chosen = rows[index] if type(index) is int and 0 <= index < len(rows) else {}
+        match = cr.jp_matchup(chosen.get('matchup',''))
+        voices=cr.voices_for_segment(seg,vd)
+        if not voices:
+            voices=[{'said':seg['text'],'who':'概要','fact':True}]
+        return cr.unified_comments(t,cr.reading_times(voices,seg['text'],duration),None,cr.strip_for_voices(vd),
+                                   live=match or '現地のファンの声',source_lines=cr._voices_source(vd))
+    return cr.unified_comments(t, [{"said": seg["text"], "who": "コレスポ", "fact": True}],
+                       None, "", title="コレスポ", live="",
+                       source_lines=("音声：VOICEVOX:四国めたん",))
+
+
+def mix(audio, segments, durations, design, out_dir):
+    import comment_render as cr
+    import sound_mix
+    if any(s.get('speaker') not in ((2,3) if (s.get('meta') or {}).get('duo') else (2,)) for s in segments):
+        raise ValueError("案Dの音声を四国めたん（話者2）で作り直してください")
+    cues, start = [], 0.0
+    quote_issues = []
+    previous_screen=None
+    for index, (seg, dur) in enumerate(zip(segments, durations)):
+        speech = float(seg.get('duration') or dur)
+        spoken_seg=(dict(seg,text=seg['meta']['answer_text'])
+                    if (seg.get('meta') or {}).get('duo_ask') else seg)
+        if seg['kind']=='outro':
+            import review_render_v3 as r3
+            local=r3.outro_cues('morning_press' if design['mode']=='press' else 'morning_voices')
+        elif design["mode"] == "press":
+            import press_v3
+            local = press_v3.cues(seg, design["reporters"], speech)
+        else:
+            issues = []
+            local = (cr.voices_cues(spoken_seg, design["voices"], speech, issues=issues)
+                 if seg["kind"] in {"voices", "thread"}
+                 else [(0.0, "transition", "a", -6)])
+            if seg['kind'] == 'intro':
+                cr.reading_times(cr.voices_for_segment(spoken_seg, design['voices']),
+                                 spoken_seg.get('text') or '', speech, issues=issues)
+            quote_issues.extend(dict(issue, segment=index, kind=seg['kind']) for issue in issues)
+        if not ((seg.get('meta') or {}).get('duo') and
+                seg['meta'].get('screen')==previous_screen):
+            cues.extend((start + at, kind, variant, db) for at, kind, variant, db in local)
+        previous_screen=(seg.get('meta') or {}).get('screen')
+        start += dur
+    if design['mode'] == 'voices':
+        report = Path(out_dir) / 'quote_alignment.json'
+        report.parent.mkdir(parents=True, exist_ok=True)
+        report.write_text(json.dumps(dict(mode='voices', omissions=quote_issues),
+                                     ensure_ascii=False, indent=2), encoding='utf-8')
+        for issue in quote_issues:
+            print(f"[warn] 引用の画面表示を省略: segment={issue['segment']} "
+                  f"{issue['reason']} {issue['said']}（記録: {report}）")
+    bgm = sound_mix.bgm_path()
+    import fan_events
+    cues += fan_events.event_cues()
+    if not bgm.exists():
+        raise ValueError("案DのBGMがありません")
+    print(f"[info] 案D: BGM {bgm.stem}・効果音{len(cues)}個")
+    return sound_mix.mix_file(audio, Path(out_dir) / "narration_mixed.wav", bgm_path=bgm, cues=cues)
+
+
+def validate_audio(segments, narration):
+    expected = narration["segments"]
+    if len(segments) != len(expected):
+        raise ValueError("新デザインの音声区間数が原稿と合いません")
+    for actual, wanted in zip(segments, expected):
+        if (actual.get("kind"), actual.get("text"), actual.get("speaker")) != (wanted["kind"], wanted["text"], wanted.get('speaker',2)):
+            raise ValueError("新デザインの音声・話者が原稿と合いません")

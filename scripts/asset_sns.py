@@ -1,0 +1,291 @@
+"""公開済みv3資産動画のSNS入口。既定は検証のみ、公開は切替後だけ。"""
+import argparse
+from datetime import datetime, timezone
+import hashlib
+import json
+import os
+from pathlib import Path
+import re
+import io
+import zipfile
+
+import requests
+import buffer_daily as bd
+import generated_topics as gt
+
+WORKFLOWS = {'season_review.yml': 'season-review', 'ps_game_now.yml': 'ps-game-now',
+             'offseason_news.yml': 'offseason-news'}
+TOPIC = re.compile(r'(?:season_(?:momentum|game|odds)_[A-Za-z0-9_]+|offseason_(?:schedule|awards|transactions)_\d{4}_[a-f0-9]{12})\Z')
+
+
+def select(run, assets, topics, now):
+    """同じmain実行が実際に制作した当日版だけ。過去の在庫は出さない。"""
+    wf = run.get('path', '').rsplit('/', 1)[-1]
+    if (wf not in WORKFLOWS or run.get('head_branch') != 'main'
+            or run.get('conclusion') != 'success'
+            or run.get('repository', {}).get('full_name') != bd.REPO
+            or run.get('event') not in ('schedule', 'workflow_run', 'workflow_dispatch')):
+        raise ValueError('Require an owned successful main production run')
+    start, end = bd.instant(run['created_at']), bd.instant(run['updated_at'])
+    day = start.astimezone(bd.JST).date().isoformat()
+    if day != now.astimezone(bd.JST).date().isoformat():
+        return []
+    rows = []
+    for topic, record in sorted(assets.items()):
+        offseason = topic.startswith('offseason_')
+        if offseason != (wf == 'offseason_news.yml'):
+            continue
+        if offseason:
+            import offseason_switches
+            if not offseason_switches.enabled():
+                continue
+        if not TOPIC.fullmatch(topic) or topics.get(topic, {}).get('style') != 'v3':
+            continue
+        stamp = bd.instant(record['published_at'])
+        if not start <= stamp <= end or stamp > now:
+            continue
+        if not re.fullmatch(r'[A-Za-z0-9_-]{11}', record.get('video_id', '')):
+            raise ValueError('Malformed YouTube ID for ' + topic)
+        if record.get('privacy') != 'public':
+            continue
+        rows.append((day, topic, record, WORKFLOWS[wf]))
+    return rows
+
+
+def register(topic, artifact, run):
+    if not TOPIC.fullmatch(topic):
+        raise ValueError('Invalid asset topic')
+    kind = 'asset_' + topic
+    filename = 'collespo_asset_' + topic + '.mp4'
+    bd.SOURCES[kind] = (topic, artifact, filename, run['path'].rsplit('/', 1)[-1])
+    offseason = topic.startswith('offseason_')
+    bd.KIND_WORDS[kind] = dict(short='MLB' if offseason else 'PSの話題', long='MLB公式の話題' if offseason else 'PSの話題',
+                              lead='MLB公式に確認できたオフの話題です' if offseason else '試合とシリーズの状況を公式の数字で紹介します',
+                              cut='\x00', sport='mlb')
+    return kind, filename
+
+
+def bsky_record(text, title, video_id, now, description='コレスポのPSの話題です。'):
+    import video_titles
+    title = video_titles.public_title(title)
+    if len(text) > 300:
+        raise ValueError('Bluesky caption is longer than 300 characters')
+    url = 'https://www.youtube.com/watch?v=' + video_id
+    facets = []
+    for match in re.finditer(r'https?://[^\s]+', text):
+        facets.append({'index': {'byteStart': len(text[:match.start()].encode()),
+                                  'byteEnd': len(text[:match.end()].encode())},
+                       'features': [{'$type': 'app.bsky.richtext.facet#link', 'uri': match[0]}]})
+    return {'$type': 'app.bsky.feed.post', 'text': text, 'facets': facets,
+            'createdAt': now.isoformat().replace('+00:00', 'Z'),
+            'embed': {'$type': 'app.bsky.embed.external', 'external': {
+                'uri': url, 'title': title, 'description': description}}}
+
+
+S32 = '234567abcdefghijklmnopqrstuvwxyz'
+
+
+def tid(now, key):
+    """Bluesky の TID（13字）。上位はマイクロ秒の時刻、下位10ビットはキーから。"""
+    micros = int(now.timestamp() * 1_000_000)
+    clock = int(hashlib.sha256(key.encode()).hexdigest(), 16) & 0x3FF
+    n = (micros << 10) | clock
+    return ''.join(S32[(n >> (5 * i)) & 31] for i in range(12, -1, -1))
+
+
+def bsky_once(ledger, key, record, metadata, http=requests):
+    """予約・確定rkey・新規のみのCAS。応答不明でも別の投稿を作らない。"""
+    old = ledger.data['deliveries'].get(key)
+    if old and old.get('state') == 'sent':
+        return old
+    handle = os.environ.get('BLUESKY_HANDLE', '')
+    password = os.environ.get('BLUESKY_APP_PASSWORD', '')
+    if handle != 'collespo.bsky.social' or not password:
+        raise RuntimeError('Collespo Bluesky credentials are required')
+    endpoint = 'https://bsky.social/xrpc/'
+    auth = http.post(endpoint + 'com.atproto.server.createSession',
+                     json={'identifier': handle, 'password': password}, timeout=30)
+    auth.raise_for_status()
+    session = auth.json()
+    if session.get('handle') != handle:
+        raise RuntimeError('Unexpected Bluesky account')
+    # app.bsky.feed.post の rkey は TID（時刻から作る13字）でなければ 400 になる。
+    # 10/9〜10/10 の夕方の枠は 'collespo-…' の rkey で毎回 400 だった。予約に残した rkey を使い回し、
+    # 無ければ今の時刻とキーから作る（同じ予約の再挑戦で別の投稿を作らない）。
+    prev = str((old or {}).get('rkey') or '')
+    broken = prev.startswith('collespo-')      # 400 で必ず失敗していた予約（投稿は作られていない）
+    rkey = prev if prev and not broken else tid(datetime.now(timezone.utc), key)
+    query = {'repo': session['did'], 'collection': 'app.bsky.feed.post', 'rkey': rkey}
+    headers = {'Authorization': 'Bearer ' + session['accessJwt']}
+    existing = http.get(endpoint + 'com.atproto.repo.getRecord', params=query,
+                        headers=headers, timeout=30)
+    if existing.status_code == 200:
+        found = existing.json()
+        if found['value'].get('text') != record['text'] or found['value'].get('embed') != record['embed']:
+            raise RuntimeError('Existing deterministic Bluesky post differs')
+        receipt = dict(metadata, state='sent', uri=found['uri'], rkey=rkey)
+        ledger.set(key, receipt)
+        return receipt
+    if existing.status_code != 400 or existing.json().get('error') != 'RecordNotFound':
+        existing.raise_for_status()
+        raise RuntimeError('Cannot establish absence of Bluesky post')
+    if old and not broken:
+        raise RuntimeError('Uncertain Bluesky reservation needs inspection; no automatic resend')
+    ledger.set(key, dict(metadata, state='reserved', rkey=rkey, text=record['text'],
+                         reserved_at=datetime.now(timezone.utc).isoformat()))
+    # 新規だけを作る（同じ rkey があれば失敗する）。putRecord に swapRecord=null を送ると
+    # 10/9 に HTTPError で2件とも落ちていたので、作る専用の createRecord にする。
+    result = http.post(endpoint + 'com.atproto.repo.createRecord',
+                       json=dict(query, record=record, validate=True),
+                       headers=headers, timeout=30)
+    if result.status_code >= 400:
+        raise RuntimeError(f'Bluesky createRecord {result.status_code}: {result.text[:300]}')
+    response = result.json()
+    receipt = dict(metadata, state='sent', uri=response['uri'], rkey=rkey)
+    ledger.set(key, receipt)
+    return receipt
+
+
+def artifacts_of(run):
+    available = bd.github('/actions/runs/' + str(run['id']) + '/artifacts')['artifacts']
+    name = WORKFLOWS[run['path'].rsplit('/', 1)[-1]]
+    selected = [a for a in available if a['name'] == name and not a['expired']]
+    if len(selected) != 1 or selected[0]['size_in_bytes'] > bd.MAX_BYTES:
+        raise ValueError('Require one unexpired owned video artifact')
+    return bd.github('/actions/artifacts/' + str(selected[0]['id']) + '/zip', raw=True)
+
+
+def write_receipts(directory):
+    """制作時点の版と画素を結び付け、後日JSONがv3になっても旧版を配らない。"""
+    topics = gt.all_topics(refresh=True)
+    for video in Path(directory).glob('collespo_asset_*.mp4'):
+        topic = video.stem.removeprefix('collespo_asset_')
+        if TOPIC.fullmatch(topic) and topics.get(topic, {}).get('style') == 'v3':
+            receipt = dict(topic=topic, style='v3', sha256=hashlib.sha256(video.read_bytes()).hexdigest())
+            video.with_suffix('.sns.json').write_text(json.dumps(receipt), encoding='utf-8')
+
+
+def verify_receipt(archive, filename, topic, digest):
+    wanted = filename.removesuffix('.mp4') + '.sns.json'
+    with zipfile.ZipFile(io.BytesIO(archive)) as zipped:
+        entries = [e for e in zipped.infolist() if e.filename.rsplit('/', 1)[-1] == wanted]
+        if not entries:
+            return False  # No provenance on old artifacts; do not backfill them.
+        if len(entries) != 1 or entries[0].file_size > 4096:
+            raise ValueError('Invalid rendering receipt')
+        receipt = json.loads(zipped.read(entries[0]))
+    if receipt != dict(topic=topic, style='v3', sha256=digest):
+        raise ValueError('Rendering receipt differs from the source media')
+    return True
+
+
+def distribute(run, rows, publish=False):
+    if not rows:
+        print('[info] この実行に当日公開のv3資産動画はありません')
+        return
+    if publish and os.environ.get('V3_SNS_ENABLED') != 'true':
+        raise RuntimeError('V3_SNS_ENABLED must be enabled after review')
+    if publish and any(topic.startswith('offseason_') for _, topic, _, _ in rows):
+        import offseason_switches
+        if not offseason_switches.enabled():
+            raise RuntimeError('オフの話題の公開スイッチが停止中です')
+    services = bd.selected_services(os.environ.get('BUFFER_CHANNELS'))
+    ledger = bd.Ledger() if publish else None
+    archive = None
+    failed = []
+    for day, topic, record, artifact in rows:
+        kind, filename = register(topic, artifact, run)
+        try:
+            keys = {s: day + ':' + kind + ':' + s for s in (*services, 'bluesky')}
+            if publish and all(ledger.data['deliveries'].get(k, {}).get('state') == 'sent'
+                               for k in keys.values()):
+                continue
+            try:
+                snippet = bd.verify_youtube(record)
+            except ValueError as exc:
+                if str(exc) == 'YouTube video is not public':
+                    print('[info] まだ公開されていません（次の補完で再確認）: ' + topic)
+                    continue
+                raise
+            verified = dict(record, title=snippet['title'], description=snippet.get('description', ''))
+            if archive is None:
+                archive = artifacts_of(run)
+            out = Path('build/asset-sns'); out.mkdir(parents=True, exist_ok=True)
+            video = out / filename
+            digest = bd.extract_video(archive, video, filename)
+            if not verify_receipt(archive, filename, topic, digest):
+                print('[info] 制作時のv3証明が無い旧成果物は配信しません: ' + topic)
+                continue
+            duration = bd.verify_media(video)
+            texts = {s: bd.caption(s, day, verified, kind) for s in services}
+            if not __import__('offseason_public').social_kind(kind):
+                texts = {s: text.replace('音声：VOICEVOX:ずんだもん / VOICEVOX:四国めたん',
+                                         '音声：VOICEVOX:四国めたん') for s, text in texts.items()}
+            # Bluesky uses the compact published title and an external video card.
+            btext = bd.caption('twitter', day, verified, kind)
+            description = 'MLB公式で確認できたオフの話題です。' if topic.startswith('offseason_') else 'コレスポのPSの話題です。'
+            bpost = bsky_record(btext, verified['title'], record['video_id'], datetime.now(timezone.utc), description)
+            print(json.dumps(dict(topic=topic, video_id=record['video_id'], duration=duration,
+                                  sha256=digest, captions=texts, bluesky=bpost), ensure_ascii=False))
+            if not publish:
+                continue
+            channels = bd.graphql('{channels(input:{organizationId:' + json.dumps(bd.ORG)
+                                  + '}){id name service}}')['channels']
+            for s in services:
+                if not any(c['id'] == bd.CHANNELS[s] and c['service'] == s and
+                           c['name'] == ('collespo' if s == 'tiktok' else 'collespo_jp') for c in channels):
+                    raise ValueError('Owned channel missing: ' + s)
+            url = bd.host_video(run, day, video, digest, kind)
+            metadata = dict(source_run=run['id'], youtube_id=record['video_id'], sha256=digest,
+                            media_url=url, checked_at=datetime.now(timezone.utc).isoformat())
+            for s in services:
+                try:
+                    post = bd.submit_once(ledger, keys[s], bd.create_payload(s, texts[s], url), metadata)
+                    print(s, post['status'], post.get('externalLink'))
+                except Exception as exc:
+                    print('[error] ' + s + ': ' + type(exc).__name__)
+                    failed.append(topic + ':' + s)
+            try:
+                bsky_once(ledger, keys['bluesky'], bpost, metadata)
+            except Exception as exc:
+                # 応答の中身も出す（10/9 は種類だけで原因が分からなかった。鍵は含まれない）
+                resp = getattr(exc, 'response', None)
+                detail = (' %s %s' % (resp.status_code, resp.text[:200])) if resp is not None else ''
+                print('[error] bluesky: ' + type(exc).__name__ + detail)
+                failed.append(topic + ':bluesky')
+        except Exception as exc:
+            print('[error] ' + topic + ': ' + type(exc).__name__ + ' ' + str(exc)[:120])
+            failed.append(topic)
+    if failed:
+        raise RuntimeError('Asset SNS delivery needs inspection: ' + ', '.join(failed))
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--source-run', type=int)
+    parser.add_argument('--publish', action='store_true')
+    parser.add_argument('--receipt-dir', help='制作時点の版を動画に結び付ける（投稿なし）')
+    args = parser.parse_args()
+    if args.receipt_dir:
+        write_receipts(args.receipt_dir)
+        return
+    now = datetime.now(timezone.utc)
+    assets = json.loads(Path('data/published_assets.json').read_text(encoding='utf-8'))['assets']
+    topics = gt.all_topics(refresh=True)
+    import offseason_switches
+    saved = Path('data/offseason_published.json')
+    if offseason_switches.enabled() and saved.exists():
+        topics = dict(topics, **json.loads(saved.read_text(encoding='utf-8')).get('topics', {}))
+    if args.source_run:
+        runs = [bd.github('/actions/runs/' + str(args.source_run))]
+    else:
+        runs = []
+        for workflow in WORKFLOWS:
+            runs.extend(bd.github('/actions/workflows/' + workflow +
+                                  '/runs?branch=main&status=success&per_page=10')['workflow_runs'])
+    for run in sorted(runs, key=lambda r: r['created_at']):
+        distribute(run, select(run, assets, topics, now), args.publish)
+
+
+if __name__ == '__main__':
+    main()

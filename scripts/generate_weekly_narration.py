@@ -41,7 +41,8 @@ try:
 except ImportError:
     anthropic = None
 
-MODEL = "claude-haiku-4-5-20251001"
+import llm_models
+MODEL = llm_models.model("narration")
 
 # 1試合あたりの目標文字数。VOICEVOXの読み上げ速度(speedScale=1.3)では
 # おおよそ 6文字/秒 × 1.3 ≒ 7.8文字/秒 なので、220文字で約28秒になる。
@@ -128,8 +129,9 @@ def narrate(client, date_str: str, g: dict, index: int, total: int) -> str:
         "- 記号や箇条書きは使わず、そのまま読める文章だけを出力する\n"
         "- 前置きや説明は不要。原稿本文のみ"
     )
-    resp = client.messages.create(
-        model=MODEL, max_tokens=700,
+    import backstage_guard
+    resp = backstage_guard.create(client, label='generate_weekly_narration.py', category='weekly', mode='whole',
+        **llm_models.params("narration", 700),
         messages=[{"role": "user", "content": prompt}],
     )
     token_log.record("weekly", MODEL, resp)
@@ -345,8 +347,12 @@ def main():
 
     out = pathlib.Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
+    import sanity_sources
+    document = sanity_sources.attach(dict(label=label, segments=segments), dict(
+        date_jst=week[-1][0], source='archive', games=[dict(g, date_jst=day) for day, g in week],
+        players=ops_players + league_players))
     out.write_text(
-        json.dumps({"label": label, "segments": segments}, ensure_ascii=False),
+        json.dumps(document, ensure_ascii=False),
         encoding="utf-8",
     )
     chars = sum(len(s["text"]) for s in segments)

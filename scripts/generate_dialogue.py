@@ -106,7 +106,144 @@ except ImportError:
 # 数日出して見比べる。落ちるようなら1行戻す。
 #
 #   COLLESPO_DIALOGUE_MODEL=claude-opus-5  で元に戻せる
-MODEL = os.environ.get("COLLESPO_DIALOGUE_MODEL") or "claude-sonnet-5"
+#
+# 2026-10-04: Sonnet 5 から Sonnet 5.5 へ（本人「Sonnetって今5.5出てる」）。
+# 単価は同じ（$2/$10）。呼び方（thinking・temperature・tool_choice を
+# 指定しない素の呼び出し）はそのまま通る。**呼べなかったときだけ**
+# Sonnet 5 で1度やり直す（FALLBACK_MODEL）。新しいモデル名で
+# 長編が丸ごと止まるのを避けるため。
+MODEL = os.environ.get("COLLESPO_DIALOGUE_MODEL") or "claude-sonnet-5-5"
+FALLBACK_MODEL = "claude-sonnet-5"
+# 考える深さ。Sonnet 5.5 は既定が high。台本は1日1本の文章書きで、
+# 事実の誤りは後段の機械の検査が止める。**medium で質が保てるか見る**
+# （本人「Sonnet5.5なら中でもいい感じの出来そう」10/4）。
+# 落ちるようなら COLLESPO_DIALOGUE_EFFORT=high で戻せる。
+EFFORT = os.environ.get("COLLESPO_DIALOGUE_EFFORT") or "medium"
+
+
+def _create(client, **kw):
+    """台本の呼び出し。モデル名が通らなければ Sonnet 5 で1度だけ。
+
+    断られた（stop_reason == "refusal"）ときは中身が空なので、
+    理由を出して止める。黙って空の台本を検査へ回さない。
+    """
+    import anthropic
+    global MODEL
+    kw.setdefault("output_config", {"effort": EFFORT})
+    try:
+        resp = client.messages.create(model=MODEL, **kw)
+    except (anthropic.NotFoundError, anthropic.BadRequestError) as e:
+        if MODEL == FALLBACK_MODEL:
+            raise
+        print(f"::warning::{MODEL} を呼べません({e})。{FALLBACK_MODEL} でやり直します")
+        MODEL = FALLBACK_MODEL
+        resp = client.messages.create(model=MODEL, **kw)
+    if getattr(resp, "stop_reason", None) == "refusal":
+        det = getattr(resp, "stop_details", None)
+        cat = getattr(det, "category", None) if det else None
+        raise SystemExit(f"[error] 台本の生成を断られました（{cat}）")
+    return resp
+
+
+# 2026-10-07: 台本の呼び出しを Message Batches API（料金が半分）で出す。
+#
+# 長編は 15:10 ごろに作り始め、21:00 に予約公開。Batch はたいてい1時間以内、
+# 最長24時間で返る。**締め切り（COLLESPO_BATCH_DEADLINE、既定 17:30）までに
+# 返らなければ取り消して、いままでどおり _create で作る。**
+# プロンプト・モデル・effort・後ろの検査は変えない（同じ params を載せるだけ）。
+#
+#   COLLESPO_DIALOGUE_BATCH=off   で、いままでの呼び方に戻せる
+#   手で動かした回（workflow_dispatch）と手元のPCでは、待たずに今すぐ作る
+#   （既定の auto のとき。COLLESPO_DIALOGUE_BATCH=on ならどこでも Batch）
+#
+# 費用は token_log.record(..., batch=True) で半額として残す。
+# 中身は scripts/dialogue_batch.py（説明もそこに）。
+def _ask(client, stage, *, guard_audit=None, **kw):
+    """台本の呼び出し1回。Batch か、だめならいまの _create。費用もここで残す。"""
+    import dialogue_batch
+    import backstage_guard
+    kw = backstage_guard.with_instruction(kw)
+
+    def first():
+        return dialogue_batch.run(
+            client, stage, kw, model=MODEL, effort=EFFORT,
+            direct=lambda: _create(client, **kw),
+            record=lambda r, batch: token_log.record("dialogue", MODEL, r, batch=batch),
+            after_submit=(_commit_batch_state
+                          if os.environ.get("COLLESPO_BATCH_COMMIT") == "1"
+                          else None))
+
+    def retry():
+        resp = _create(client, **kw)
+        token_log.record("dialogue", MODEL, resp)
+        return resp
+
+    return backstage_guard.guard_response(first, retry, label='dialogue:'+stage,
+                                           mode='lines',
+                                           allowed=lambda: token_log.allowed('dialogue'),
+                                           diagnostics=guard_audit)
+
+
+def verified_fallback(m, mode, ps):
+    """制作語で原稿を使えない場合も、取得済みの値/訳だけで短く作る。"""
+    import backstage_guard
+    lines = []
+    def add(text, panel=None):
+        if text and not backstage_guard.violations(text):
+            tag = f'[{panel}]' if panel in ps else ''
+            lines.append(f'めたん{tag}：{text}')
+    if mode == 'numbers':
+        import numbers_material as nmat
+        for p in m.get('players') or []:
+            name = p.get('name')
+            row = p.get('_row') or p
+            if row.get('type') == 'two_way':
+                row = row.get('batting') or {}
+            panel = next((key for key,value in ps.items() if value.get('name') == name),None)
+            for unit,value in nmat._numbers(row).items():
+                if not name or value is None:
+                    continue
+                shown = str(value)+unit
+                if unit == '回' and re.fullmatch(r'\d+\.[12]',str(value)):
+                    whole,part = str(value).split('.')
+                    shown = f'{whole}回3分の{part}'
+                add(f'{name}は{shown}です。',panel)
+    else:
+        result = (m.get('top') or {}).get('result') or {}
+        if all(result.get(k) is not None for k in ('home_score','away_score','home_jp','away_jp')):
+            add(f"{result['home_jp']}対{result['away_jp']}は{result['home_score']}対{result['away_score']}でした。",'score')
+        import comment_actors
+        for voice in m.get('voices') or []:
+            if not comment_actors.check(voice.get('title'),voice.get('ja')):
+                add(voice.get('ja'))
+            for reply in voice.get('reply_ja') or []:
+                if not comment_actors.check(reply.get('original'),reply.get('ja'),voice.get('title')):
+                    add(reply.get('ja'))
+    return '\n'.join(lines)
+
+
+def _ask_or_fallback(client, stage, m, mode, ps, audit, **kw):
+    import backstage_guard
+    try:
+        return _ask(client,stage,guard_audit=audit,**kw)
+    except backstage_guard.BackstageError:
+        # 訂正にも制作語が残っただけで日次動画を丸ごと失わない。
+        # 危険な初稿には戻らず、モデルが書いていない取得値へ戻す。
+        from types import SimpleNamespace
+        audit['fallback'] = True
+        text = verified_fallback(m,mode,ps)
+        print('::warning::楽屋表現の原稿を不採用。取得済みの値/訳だけの短い原稿へ戻します')
+        return SimpleNamespace(content=[SimpleNamespace(type='text',text=text)])
+
+
+def _commit_batch_state(path):
+    """出した直後に状態ファイルを押す。ジョブをやり直したとき、
+    同じ依頼を二重に出さずに続きから待てるように。"""
+    import subprocess
+    subprocess.run(["bash", str(HERE / "commit_data.sh"),
+                    "台本の Batch を出した", str(path)], check=False)
+
+
 MLB_API = "https://statsapi.mlb.com/api/v1"
 
 # 話者ID(VOICEVOX)。
@@ -785,7 +922,7 @@ def material(buzz_path: str, voices_path: str) -> dict:
             return json.loads(pathlib.Path(p).read_text(encoding="utf-8"))
         except (OSError, json.JSONDecodeError):
             return {}
-    b, v = load(buzz_path), load(voices_path)
+    b, v = load(buzz_path), __import__('fan_privacy').material(load(voices_path))
     vids = b.get("videos") or []
     if not vids:
         return {}
@@ -1007,6 +1144,22 @@ def situation(m: dict) -> dict:
             out["flow"] += ("。" if out["flow"] else "") +                 f"{len(inn)}回まで延長" + (f"、最後の回に{got}点入った"
                                           if got else "")
 
+    # ポストシーズンのシリーズの中の位置。**この試合が決着の試合だったかを取り違えない。**
+    # 10/9 の長編が第4戦（試合後2勝2敗）を「2勝2敗の決着戦」と語った。
+    se = res.get("series") or {}
+    if se.get("game_number"):
+        line = f"この試合は{se.get('name') or 'シリーズ'}の第{se['game_number']}戦"
+        if se.get("before_jp"):
+            line += f"。試合の前は{se['before_jp']}"
+        line += f"。この試合のあと{se.get('after_jp') or se.get('after')}"
+        if se.get("is_over"):
+            line += "。この試合でシリーズが決着した"
+        else:
+            line += "。シリーズはまだ決着していない（この試合を決着戦・最終戦と呼ばない）"
+            if se.get("next"):
+                line += f"。次の{se['next']}"
+        out["notes"].append(line)
+
     # 守備と安打。大敗の日はここに理由が出ていることが多い。
     for side, key in (("away_jp", "away"), ("home_jp", "home")):
         e = res.get(key + "_errors")
@@ -1089,6 +1242,9 @@ def facts(m: dict, extra: list) -> str:
     if res.get("away_jp"):
         lines.append(f"結果: {res['away_jp']} {res.get('away_score')} "
                      f"- {res.get('home_score')} {res['home_jp']}")
+        for player in res.get('batting_facts') or []:
+            if player.get('runs') is not None:
+                lines.append(f"この試合の得点: {player['name']} {player['runs']}得点。安打数とは別の値。")
         # 対戦している2球団自身の、いまの勝敗と地区順位。
         # コメントが「Cincinnatiはあそこよりマシ」のように自チームの
         # 強さを主張していたら、その主張を数字で受けられるようにする。
@@ -1356,7 +1512,7 @@ def panel_menu(ps: dict) -> str:
              "star": "目立った選手の成績",
              "starter_away": "先攻の先発投手の成績",
              "starter_home": "後攻の先発投手の成績",
-             "topic": "きょうの話（締めに使う）"}
+             "topic": "今日の話（締めに使う）"}
     rows = []
     for k, v in ps.items():
         # 札が自分で説明を持っているなら、それを使う。
@@ -1408,7 +1564,6 @@ CAST = """あなたは、日本語のスポーツ番組の台本を書く放送�
        → 1回は3アウト。3つ取ったなら「ほとんど」ではなく全部
   こう書く:
     ◯「走者を2人置いた場面で回ってきたのだ」
-    ◯「安打の数と打点は、別々に動くのだ」
     ◯「3つとも三振なのだ。被安打2があるから、走者を出した上で
         3人斬ってるのだ」
 - めたん … 語り手。**落ち着いた大人の女性で、野球に詳しい**。
@@ -1671,61 +1826,69 @@ PROMPT = CAST + """
 # 数字の誤りではなく解釈の誤りで、数字を突き合わせる仕組みでは捕まらない。
 # 数字を主題にすれば、三段目の照合が台本の全文に効く。
 NUMBERS_PROMPT = CAST + """
-条件:
-- **略記を勝手に開かない。**材料に書いてある呼び方をそのまま使う。
-  「HQS」を「ヒットクオリティスタート」と読んだ回があった
-  （正しくはハイクオリティスタート）。**分からない略記は使わずに、
-  中身のほうを言う**（「7回1失点」など）。
-- **★が付いた選手は、はっきり称賛する。**
-  「7回1失点、ハイクオリティスタートと、素晴らしい投球だったわ」は
-  書いてよい。数字を並べるだけの回にしない。
-  ★が付いていない選手は、淡々と数字を置く（無理に褒めない）。
-  **褒めるのは材料に出ている範囲まで。**「来季も期待できる」のような、
-  材料に無い先の話はしない。
-- **数字を読み上げるだけにしない。比べる。**
-  「3打数1安打、1本塁打」と言って次へ行くのは、表を音読しているのと同じ。
-  前の試合と比べる、他の選手と比べる、今季の中での位置を言う。
-  **比べられる材料が無いなら、その選手は短く済ませて次へ行く。**
-- **コレスポの点数を主題にしない。**
-  点数は並べるための独自指標で、公式の記録ではない。
-  「95点でした」を話の中心にしない。順番の理由として軽く触れる程度。
-- **投手の被安打・被本塁打を、打った数として書かない。**
-  材料には「被安打3」と書いてある。そのまま被安打と言う。
-- **推測を断定しない。**
-  「明日も打つ」「そろそろ本塁打が出る」は書かない。
-  材料に書いてあることだけを言う。**この番組は予想をしない。**
-- **数字から理由を決めつけない。**
-  「初球の被打率が高い」は言える。「だから狙われている」は言えない。
-  差があることと、その理由は別のもの。材料に理由が書いていなければ、
-  **差があるという事実までで止める。**
-  材料の「偶然でこうなる確率」は判定に使った数字なので、声にしない。
-- 進出争いは、**圏内なのか圏外なのかを言葉で言う。**
-  「1.5ゲーム差」だけでは、中にいるのか外にいるのか伝わらない。
-  材料の言い方（「ワイルドカード圏内で6位に1.5ゲーム差」）をそのまま使う。
-- 名前のある指標（アダム・ダン率、WHIPなど）は、**数字よりも
-  「どれくらい珍しいか」を話す。**136人中1位、という位置が本体。
-- **用語の意味は画面に出る。声では説明しない。**
-  「アダム・ダン率とは、本塁打・四球・三振で終わった打席の割合です」を
-  読み上げると、そこで話が止まる。3分の回でそれを何度もやると、
-  用語集を読み上げているのと変わらない。
-  材料の「（画面に出る・読まない）」と書かれた行は、**声にしない。**
-  気になる人は画面を止めて読める。
-  声で言うのは「136人中1位」「アダム・ダン本人の記録を超えている」。
-- **見ている人はMLBを見ている人。**用語を教える番組ではない。
-  投手の被打率、救援と先発の違い、マジックナンバーは説明しない。
-- **ずんだもんの一言に、毎回なにか足す。**
-  「そうなのだ」だけの行を続けない。直前に出た数字のどこが
-  引っかかったのかを言ってから聞く。
-- コレスポが毎日出しているのは、日本人選手の成績、今日の1人、
-  ファンのコメント欄、明日の注目試合、欧州サッカー、現地の報道。
-  これ以外を挙げない
-- 前置きや説明は書かない。台本だけを出力する
+## この回の目的
+その日の日本人選手の成績と、名前のある指標・ポストシーズンでの位置を、
+MLBを見ている人に向けて3分前後で話す。**見どころが先、細部は後。**
 
-書き出しの例（この通りでなくてよい）:
-ずんだもん：きょうの日本人選手、誰がいちばん動いたのだ？
-めたん[jp1]：岡本和真ね。3打数1安打だけど、その1本が本塁打よ。
-ずんだもん：本塁打のわりに、打数が少ないのだ。
-めたん[jp1]：四球も1つ選んでいるから、出塁は2回。
+## 組み立て
+1. **最初の2行で、その日いちばんの出来事を言い切る**（誰が・何を・どんな場面で）。
+   材料に「場面」（先制・決勝点など）があれば、ここで言う。問いかけで始めない。
+2. 日本人選手を材料の上から順に。1人ごとに「成績 → 場面や比較 → 一言」。
+   ★の選手は厚く、★の無い選手は成績と、あれば「今日以外の材料」を1文。
+3. 名前のある指標（あれば）。**今季通算の数字**なので「今季通算で」と言ってから、選手名と値 → 対象の人数の中の順位 → 1位や上下の選手との差。その日の試合の数字のように言わない。
+4. ポストシーズン・進出争い（あれば）。日本人選手の球団から、材料の言い方で。
+5. 締めは1〜2行。その日の中身を材料の数字のまま短くまとめる。新しい評価や先の話を足さない。
+札（[鍵]）は話している内容と合わせて切り替える。
+長さは台詞の合計で1600字前後。足りなければ比較を足す。言葉数で埋めない。
+
+## 事実の扱い（ここを外すと公開前の検査で止まる）
+- 材料に書いてあることだけを言う。予想・先の話・理由の決めつけはしない
+  （差があることは言えるが、なぜそうなるかは言わない）。
+  材料の「偶然でこうなる確率」は判定に使った数字なので声にしない。
+- **順位や比較を言う前に、その選手の名前と数字を先に言う。**既出の選手でも、
+  指標が変わるたびに名前と値から入る。
+- 順位と人数は材料の言い方のまま、1人ずつ言う。数え直してまとめない
+  （「1位が2人」「上位が3人」など）。対象条件（MLB全体・300打席以上・
+  60投球回以上）はそのまま言い、規定到達者やリーグ順位と言い換えない。
+- 「1位寄り」「〜に近い」は、同じ指標の値の差を計算してから言う。
+  同じ順位でも上と下への差が等しいとは限らない。
+- 値の向き: Savantの評価と値の大小を混ぜない。打者の三振率が
+  「高い方から1%・評価は下位」なら三振が多い側。投手の奪三振率は多いほど良い。
+- 投手の被安打・被本塁打は、打たれた数として言う。被安打0・四球0だけから
+  「走者なし」「きれいに抑えた」とは言わない（死球・失策がありうる）。
+- 数字を言葉で大きくしない（WHIP 0.80 を「走者をほとんど出さない」など）。
+- 略記は材料の呼び方のまま。読み方の分からない略記は使わず、中身（「7回1失点」）を言う。
+- 選手名はカタカナか漢字で書く。英字のまま書かない（音声が1文字ずつ読む）。
+  材料に名前が無く値だけの選手は、名前を出さずに値で言う。「Savant」は「サバント」と書く。
+- コレスポの点数は並べ順のための独自指標。順番の理由として軽く触れる程度にする。
+- 進出争いは「圏内か圏外か」を材料の言い方で言う（「ワイルドカード圏内で6位に1.5ゲーム差」）。
+- 出場者が0の日は、その日の成績紹介を名乗らない。
+
+## 台詞の質
+- 表の音読にしない。前の試合・他の選手・今季の中での位置と比べる。
+  比べる材料が無い選手は、成績を言って次へ進む。
+- **視聴者に要らない台詞を書かない**: 台本の作り方の説明（何を言う・言わない・
+  どう数えるか）、材料やデータが無い・渡されていない・分からない・何とも言えない、
+  進行の断り（「ここは短く」「今日はシンプル」）。答えの出ない問いを置かなければ、
+  断る台詞も要らない。
+- ★の選手は、材料の範囲ではっきり称賛してよい（「7回1失点、素晴らしい投球だったわ」）。
+  ★の無い選手は無理に褒めない。
+- 用語の意味は画面に出る。材料の「（画面に出る・読まない）」の行は声にしない。
+  声では「どれくらい珍しいか」（対象の人数の中の順位、本人の記録を超えた等）を言う。
+- 見ている人はMLBを見ている人。被打率・救援と先発の違い・マジックナンバーは説明しない。
+- ずんだもんの一言には毎回なにか足す（直前の数字のどこが引っかかったか）。
+  「そうなのだ」だけの行を続けない。
+- コレスポの他の回に触れるなら、出しているのは: 日本人選手の成績、現地の声、現地の報道、
+  明日の注目試合、ポストシーズンの情勢と試合の話題、シーズンまとめ、欧州サッカー。
+  これ以外を挙げない。
+
+## 出力
+台本だけ。前置き・説明・見出しは書かない。1行に1人の台詞で
+「名前[鍵]：台詞」または「名前：台詞」。
+
+書き出しの形（〇〇は材料から。材料に無い選手・数字を入れない）:
+ずんだもん：今日は〇〇の〇〇で、試合が決まったのだ。
+めたん[jp1]：〇回〇の〇〇ね。〇打数〇安打、〇打点よ。
 """
 
 
@@ -1792,6 +1955,16 @@ def parse(text: str, keys=()) -> list:
     return out
 
 
+def reviewed_segments(text, keys):
+    """確認済み原稿を黙って欠落させずに読み、通常の後段検査へ渡す。"""
+    lines = [line for line in text.splitlines() if line.strip()]
+    segs = parse(text, keys=set(keys))
+    tags = re.findall(r"[\[［]([A-Za-z0-9_]+)[\]］]", text)
+    if not lines or len(segs) != len(lines) or any(tag not in keys for tag in tags):
+        raise ValueError("確認済み原稿に読み取れない行・未知の画面指定があります")
+    return segs
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--buzz", default="data/mlb_buzz.json")
@@ -1803,7 +1976,10 @@ def main() -> int:
                     help="voices=公式コメント欄 / numbers=その日の数字")
     ap.add_argument("--data", default="data",
                     help="numbers のとき読む材料の場所")
+    ap.add_argument("--reviewed-text", help="全行確認済みnumbers原稿。再生成せず通常の検査を通す")
     args = ap.parse_args()
+    if args.reviewed_text and args.mode != "numbers":
+        ap.error("--reviewed-text は numbers 専用です")
 
     if args.mode == "numbers":
         import numbers_material as nmat
@@ -1825,67 +2001,75 @@ def main() -> int:
     print("\n--- 画面に出せる札 ---")
     print(panel_menu(ps))
 
-    key = os.environ.get("ANTHROPIC_API_KEY")
-    if not (key and anthropic is not None):
-        print("[info] ANTHROPIC_API_KEY未設定のため、台本は作りません")
-        return 0
-    if not token_log.allowed("dialogue"):
-        return 0
+    guard_audit = {}
+    if args.reviewed_text:
+        text = pathlib.Path(args.reviewed_text).read_text(encoding="utf-8")
+        segs = reviewed_segments(text, ps)
+        print("[info] 全行確認済み原稿を使用。台本生成APIの呼び出しなし")
+    else:
+        key = os.environ.get("ANTHROPIC_API_KEY")
+        if not (key and anthropic is not None):
+            print("[info] ANTHROPIC_API_KEY未設定のため、台本は作りません")
+            return 0
+        if not token_log.allowed("dialogue"):
+            return 0
 
-    client = anthropic.Anthropic(api_key=key)
-    ask = prompt.format(facts=body, menu=panel_menu(ps))
-    resp = client.messages.create(
-        model=MODEL, max_tokens=16000,
-        messages=[{"role": "user", "content": ask}],
-    )
-    token_log.record("dialogue", MODEL, resp)
-    text = "".join(b.text for b in resp.content if b.type == "text")
-
-    segs = parse(text, keys=set(ps))
-    chars = sum(len(s["text"]) for s in segs)
-
-    # 短ければ、1度だけ書き足してもらう。
-    #
-    # 「1600〜1900字」と書いても939字で返ってきた。指示だけでは
-    # 長さは決まらない。ただし**足りないぶんを言葉で埋めさせない。**
-    # 使っていない材料を指して、そこを書けと言う。
-    # それでも足りなければ、短いまま出す。水増しよりましなので。
-    if chars < MIN_CHARS and token_log.allowed("dialogue"):
-        unused = [k for k in ps if k not in
-                  {s.get("panel") for s in segs if s.get("panel")}]
-        print(f"\n[info] {chars}字で短いので、書き足してもらいます"
-              f"（未使用の材料 {len(unused)}件）")
-        more = client.messages.create(
-            model=MODEL, max_tokens=16000,
-            messages=[
-                {"role": "user", "content": ask},
-                {"role": "assistant", "content": text},
-                {"role": "user", "content": (
-                    f"いまの台本は{chars}字で、"
-                    f"{TARGET_CHARS}字に足りません。\n"
-                    "**同じ形式のまま、全部を書き直してください。**\n"
-                    "足すのは中身であって、言葉数ではありません。\n"
-                    + ("まだ触れていない材料があります: "
-                       + "、".join(unused) + "\n" if unused else "")
-                    + ("・数字は前の試合や他の選手と比べる\n"
-                       "・順位や差は、圏内なのか圏外なのかまで言う\n"
-                       if args.mode == "numbers" else
-                       "・コメントは返信まで読む\n"
-                       "・賛否が割れているところを、両方そのまま出す\n")
-                    + "・上に無い事実は、やはり一切足さない\n"
-                    "台本だけを出力してください。")},
-            ],
+        client = anthropic.Anthropic(api_key=key)
+        ask = prompt.format(facts=body, menu=panel_menu(ps))
+        resp = _ask_or_fallback(
+            client, "draft", m, args.mode, ps, guard_audit, max_tokens=16000,
+            messages=[{"role": "user", "content": ask}],
         )
-        token_log.record("dialogue", MODEL, more)
-        text2 = "".join(b.text for b in more.content if b.type == "text")
-        segs2 = parse(text2, keys=set(ps))
-        chars2 = sum(len(s["text"]) for s in segs2)
-        if chars2 > chars and len(segs2) >= 8:
-            print(f"[info] {chars}字 → {chars2}字")
-            segs, text = segs2, text2
-        else:
-            print(f"[info] 書き足しても{chars2}字だったので、"
-                  f"最初のものを使います")
+        text = "".join(b.text for b in resp.content if b.type == "text")
+        raw = pathlib.Path(args.out).with_suffix(".model-1.txt")
+        raw.parent.mkdir(parents=True, exist_ok=True)
+        raw.write_text(text, encoding="utf-8")
+
+        segs = parse(text, keys=set(ps))
+        chars = sum(len(s["text"]) for s in segs)
+
+        # 短ければ、1度だけ書き足してもらう。
+        #
+        # 「1600〜1900字」と書いても939字で返ってきた。指示だけでは
+        # 長さは決まらない。ただし**足りないぶんを言葉で埋めさせない。**
+        # 使っていない材料を指して、そこを書けと言う。
+        # それでも足りなければ、短いまま出す。水増しよりましなので。
+        if chars < MIN_CHARS and not guard_audit and token_log.allowed("dialogue"):
+            unused = [k for k in ps if k not in
+                      {s.get("panel") for s in segs if s.get("panel")}]
+            print(f"\n[info] {chars}字で短いので、書き足してもらいます"
+                  f"（未使用の材料 {len(unused)}件）")
+            more = _ask_or_fallback(
+                client, "more", m, args.mode, ps, guard_audit, max_tokens=16000,
+                messages=[
+                    {"role": "user", "content": ask},
+                    {"role": "assistant", "content": text},
+                    {"role": "user", "content": (
+                        f"いまの台本は{chars}字で、"
+                        f"{TARGET_CHARS}字に足りません。\n"
+                        "**同じ形式のまま、全部を書き直してください。**\n"
+                        "足すのは中身であって、言葉数ではありません。\n"
+                        + ("まだ触れていない材料があります: "
+                           + "、".join(unused) + "\n" if unused else "")
+                        + ("・数字は前の試合や他の選手と比べる\n"
+                           "・順位や差は、圏内なのか圏外なのかまで言う\n"
+                           if args.mode == "numbers" else
+                           "・コメントは返信まで読む\n"
+                           "・賛否が割れているところを、両方そのまま出す\n")
+                        + "・上に無い事実は、やはり一切足さない\n"
+                        "台本だけを出力してください。")},
+                ],
+            )
+            text2 = "".join(b.text for b in more.content if b.type == "text")
+            pathlib.Path(args.out).with_suffix(".model-2.txt").write_text(text2, encoding="utf-8")
+            segs2 = parse(text2, keys=set(ps))
+            chars2 = sum(len(s["text"]) for s in segs2)
+            if chars2 > chars and len(segs2) >= 8:
+                print(f"[info] {chars}字 → {chars2}字")
+                segs, text = segs2, text2
+            else:
+                print(f"[info] 書き足しても{chars2}字だったので、"
+                      f"最初のものを使います")
     print("\n--- できた台本 ---")
     for s in segs:
         tag = "[%s]" % s["panel"] if s.get("panel") else ""
@@ -1914,9 +2098,12 @@ def main() -> int:
     if chars < MIN_CHARS:
         print(f"::warning::台本が{chars}字しかありません(目安{TARGET_CHARS}字)")
 
-    if len(segs) < 8:
+    if len(segs) < 8 and not guard_audit:
         print("[warn] 行が少なすぎます。台本として使いません")
         return 1
+    if not segs:
+        print('::warning::取得済みの読み上げ内容がありません。古い原稿は使いません')
+        return 0
     if args.print_only:
         return 0
 
@@ -1945,16 +2132,34 @@ def main() -> int:
     out = pathlib.Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
     payload = {"kind": "dialogue", "segments": segs, "panels": ps}
-    payload.update(nmat.meta(m) if args.mode == "numbers"
+    payload.update(nmat.meta(m, segs) if args.mode == "numbers"
                    else _voices_meta(m))
+    payload['sanity_date_jst'] = m.get('date') or m.get('date_jst') or datetime.datetime.now(
+        datetime.timezone(datetime.timedelta(hours=9))).date().isoformat()
+    import game_fact_guard
+    payload['game_material'] = game_fact_guard.material(m, args.mode)
+    payload, game_issues = game_fact_guard.prepare(payload)
     if args.mode == "numbers":
         # 照合の材料も、材料の作り方ごとに違う。
         payload["facts"] = nmat.checkable(m)
         # 用語の検査が「誰が投手か」を知るために要る。
         # 投手の回に「打率」と書いていないかを見る（被打率であるべき）。
-        payload["material"] = {
-            "players": [{"name": p["name"], "type": p["type"]}
-                        for p in m["players"]]}
+        from longform_editorial import material as editorial_material
+        payload["material"] = editorial_material(m)
+        from longform_editorial import check as editorial_check
+        issues = editorial_check(payload)
+        if issues:
+            for issue in issues:
+                print("::error::" + issue)
+            print("[error] 編集検査で停止。原文は保存済み。追加APIでの再生成はしません")
+            return 1
+    if game_issues:
+        for issue in game_issues:
+            print('::error::'+issue)
+        print('[error] 試合の材料との照合で停止。追加APIでの再生成はしません')
+        return 1
+    import sanity_sources
+    payload['sanity_materials'] = sanity_sources.capture(payload, m)
     out.write_text(json.dumps(payload, ensure_ascii=False, indent=2),
                    encoding="utf-8")
     print(f"[info] 台本を出力しました -> {out}")

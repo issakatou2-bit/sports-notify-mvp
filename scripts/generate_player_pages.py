@@ -23,6 +23,10 @@ import json
 import pathlib
 import re
 
+import site_videos
+from site_analytics import analytics_script
+from site_theme import THEME_HEAD
+
 SITE_URL = "https://collespo.com/"
 DATE_FILE_RE = re.compile(r"^(\d{4})-(\d{2})-(\d{2})\.json$")
 
@@ -114,7 +118,7 @@ HEAD = """<!DOCTYPE html>
 </head>
 <body>
 <a class="back" href="../">&larr; コレスポ トップへ</a>
-"""
+""".replace('</head>', THEME_HEAD + '\n</head>')
 
 
 def collect_player_games(archive_dir: pathlib.Path) -> dict:
@@ -193,7 +197,9 @@ def render_game(date_str: str, g: dict) -> str:
     return "\n".join(parts)
 
 
-def render_player_page(name: str, games: list) -> str:
+def render_player_page(name: str, games: list, videos=None) -> str:
+    ledger = site_videos.load_published_videos() if videos is None else videos
+    related = site_videos.player_videos(name, ledger)
     slug = PLAYER_SLUGS[name]
     team = latest_team_of(name, games)
     team_part = f"{team}所属の" if team else ""
@@ -205,8 +211,8 @@ def render_player_page(name: str, games: list) -> str:
         title=f"{name} | 注目試合の記録 | コレスポ",
         description=html.escape(description),
         canonical=f"{SITE_URL}players/{slug}.html",
-        style=STYLE,
-        extra_head="",
+        style=STYLE + site_videos.VIDEO_STYLE,
+        extra_head=site_videos.video_jsonld(related) + analytics_script(),
     )
     body = [head]
     body.append(f"<h1>{html.escape(name)}</h1>")
@@ -215,6 +221,9 @@ def render_player_page(name: str, games: list) -> str:
         body.append(
             f'<p class="team-line">直近の掲載時点での所属: <strong>{html.escape(team)}</strong></p>'
         )
+    if related:
+        body.append("<h2>公開済みの関連動画</h2>")
+        body.append(site_videos.render_videos(related))
     body.append(f"<h2>取り上げた試合({len(games)}件)</h2>")
     for date_str, g in games:
         body.append(render_game(date_str, g))
@@ -230,7 +239,7 @@ def render_index(by_player: dict) -> str:
         "取り上げた記録をまとめています。",
         canonical=f"{SITE_URL}players/",
         style=STYLE,
-        extra_head="",
+        extra_head=analytics_script(),
     )
     body = [head]
     body.append("<h1>日本人選手から探す</h1>")
@@ -263,6 +272,10 @@ def main():
         return
 
     by_player = collect_player_games(archive_dir)
+    videos = site_videos.load_published_videos()
+    for name in PLAYER_SLUGS:
+        if site_videos.player_videos(name, videos):
+            by_player.setdefault(name, [])
     if not by_player:
         print("[warn] 対象となる選手の試合が見つかりませんでした")
         return
@@ -272,7 +285,7 @@ def main():
 
     for name, games in by_player.items():
         (out_dir / f"{PLAYER_SLUGS[name]}.html").write_text(
-            render_player_page(name, games), encoding="utf-8"
+            render_player_page(name, games, videos), encoding="utf-8"
         )
     (out_dir / "index.html").write_text(render_index(by_player), encoding="utf-8")
 

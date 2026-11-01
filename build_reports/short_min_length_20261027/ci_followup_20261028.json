@@ -1,0 +1,512 @@
+{
+  "period_jst": [
+    "2026-10-14",
+    "2026-10-27"
+  ],
+  "archive": [
+    {
+      "kind": "morning",
+      "total": 1,
+      "held": 1,
+      "passed": 0,
+      "unknown": 0,
+      "evidence": [
+        {
+          "day": "2026-10-16",
+          "kind": "morning",
+          "key": "2026-10-16",
+          "video_id": "63gbUaygi9s",
+          "title": "【MLB】ドジャース大谷、4打数1安打　1本塁打　3打点｜10月16日の日本人選手 #Shorts",
+          "privacy": "public",
+          "seconds": 28.3,
+          "duration_source": "build\\channel-audit-20261016\\morning\\players.mp4",
+          "information": 2,
+          "information_basis": "build\\channel-audit-20261016\\claims\\build\\mr_narration_players.json（引用は発言数）",
+          "sources": [
+            "data/published_videos.json"
+          ],
+          "analytics_saved": true
+        }
+      ]
+    },
+    {
+      "kind": "daily_soccer",
+      "total": 4,
+      "held": 1,
+      "passed": 0,
+      "unknown": 3,
+      "evidence": [
+        {
+          "day": "2026-10-14",
+          "kind": "daily_soccer",
+          "key": "2026-10-14",
+          "video_id": "vnMBOjZ1o0Q",
+          "title": "【欧州サッカー】今夜の注目試合｜マンチェスター・シティ vs パリ・サンジェルマン ほか #Shorts",
+          "privacy": "記載なし",
+          "seconds": 17.13,
+          "duration_source": "build\\channel-audit-20261014\\soccer\\collespo_short.mp4",
+          "information": null,
+          "information_basis": "全編の原稿未保存。題の主事実1件以上",
+          "sources": [
+            "data/published_videos.json"
+          ],
+          "analytics_saved": true
+        }
+      ]
+    },
+    {
+      "kind": "soccer_race",
+      "total": 11,
+      "held": 1,
+      "passed": 0,
+      "unknown": 10,
+      "evidence": [
+        {
+          "day": "2026-10-15",
+          "kind": "soccer_race",
+          "key": "2026-10-15",
+          "video_id": "wDqkt4M96SA",
+          "title": "上田綺世のリール、CL圏内。落ちるまで勝点2｜リーグ・アン 順位争い【欧州サッカー】#Shorts",
+          "privacy": "記載なし",
+          "seconds": 18.43,
+          "duration_source": "build\\channel-audit-20261015\\soccer-race\\race\\collespo_morning_soccer_race.mp4",
+          "information": 6,
+          "information_basis": "build\\channel-audit-20261015\\soccer-race\\race_narration.json",
+          "sources": [
+            "data/published_videos.json"
+          ],
+          "analytics_saved": true
+        }
+      ]
+    },
+    {
+      "kind": "morning_postseason",
+      "total": 12,
+      "held": 2,
+      "passed": 0,
+      "unknown": 10,
+      "evidence": [
+        {
+          "day": "2026-10-14",
+          "kind": "morning_postseason",
+          "key": "2026-10-14",
+          "video_id": "pqG9757XUv0",
+          "title": "【10/14更新】大谷翔平のドジャースのリーグ優勝決定シリーズは0勝2敗｜PSシリーズの最新情勢 #Shorts",
+          "privacy": "記載なし",
+          "seconds": 26.69,
+          "duration_source": "build\\channel-audit-20261014\\morning\\postseason.mp4",
+          "information": null,
+          "information_basis": "全編の原稿未保存。題の主事実1件以上",
+          "sources": [
+            "data/published_videos.json"
+          ],
+          "analytics_saved": true
+        },
+        {
+          "day": "2026-10-15",
+          "kind": "morning_postseason",
+          "key": "2026-10-15",
+          "video_id": "Nsykm04es6U",
+          "title": "【10/15更新】大谷翔平のドジャースのリーグ優勝決定シリーズは0勝3敗｜PSシリーズの最新情勢 #Shorts",
+          "privacy": "記載なし",
+          "seconds": 25.71,
+          "duration_source": "build\\channel-audit-20261015\\morning\\postseason.mp4",
+          "information": null,
+          "information_basis": "全編の原稿未保存。題の主事実1件以上",
+          "sources": [
+            "data/published_videos.json"
+          ],
+          "analytics_saved": true
+        }
+      ]
+    },
+    {
+      "kind": "soccer_week",
+      "total": 1,
+      "held": 1,
+      "passed": 0,
+      "unknown": 0,
+      "evidence": [
+        {
+          "day": "2026-10-15",
+          "kind": "soccer_week",
+          "key": "2026-10-15",
+          "video_id": "qNqzkqsk4sU",
+          "title": "【欧州サッカー】鎌田大地が1得点、クリスタルパレスは勝ち｜日本人選手の週末 #Shorts",
+          "privacy": "記載なし",
+          "seconds": 23.7,
+          "duration_source": "build\\channel-audit-20261015\\soccer-week\\week\\collespo_morning_soccer_week.mp4",
+          "information": 15,
+          "information_basis": "build\\channel-audit-20261015\\soccer-week\\week_narration.json",
+          "sources": [
+            "data/published_videos.json"
+          ],
+          "analytics_saved": true
+        }
+      ]
+    }
+  ],
+  "recreated": [
+    {
+      "version": "short-content-20261027-v1",
+      "status": "passed",
+      "minimum_seconds": 28.0,
+      "target_seconds": 30.0,
+      "maximum_seconds": 45,
+      "planned_seconds": 29.0,
+      "information_count": 3,
+      "supplementary_count": 2,
+      "information": [
+        {
+          "subject": "松井裕樹",
+          "fact": "当日成績",
+          "value": "1.1回　0奪三振　自責0　1被安打　ホールド",
+          "source": "MLB公式 / 生成入力:players",
+          "segments": [
+            2
+          ]
+        },
+        {
+          "subject": "佐々木朗希",
+          "fact": "当日成績",
+          "value": "2.0回　1奪三振　自責0",
+          "source": "MLB公式 / 生成入力:players",
+          "segments": [
+            3
+          ]
+        },
+        {
+          "subject": "大谷翔平",
+          "fact": "当日成績",
+          "value": "4打数1安打",
+          "source": "MLB公式 / 生成入力:players",
+          "segments": [
+            4
+          ]
+        }
+      ],
+      "reasons": [],
+      "action": "",
+      "kind": "morning",
+      "source": "scripts/fixtures/bignumber/morning_recap.json",
+      "voice": "未合成。6字/秒の字幕確認用。実音声の尺は未確認",
+      "durations": [
+        3.966666666666667,
+        2.3,
+        5.966666666666667,
+        3.8,
+        2.8,
+        10.166666666666666
+      ]
+    },
+    {
+      "version": "short-content-20261027-v1",
+      "status": "passed",
+      "minimum_seconds": 28.0,
+      "target_seconds": 30.0,
+      "maximum_seconds": 55,
+      "planned_seconds": 34.3,
+      "information_count": 3,
+      "supplementary_count": 2,
+      "information": [
+        {
+          "subject": "パリ・サンジェルマン対リヨン",
+          "fact": "開始予定",
+          "value": [
+            "10月27日（火）",
+            "04:30"
+          ],
+          "source": "生成入力:公式日程",
+          "segments": [
+            1
+          ]
+        },
+        {
+          "subject": "パリ・サンジェルマン",
+          "fact": "当該大会順位",
+          "value": 5,
+          "source": "生成入力:同大会順位表",
+          "segments": [
+            1
+          ]
+        },
+        {
+          "subject": "リヨン",
+          "fact": "当該大会順位",
+          "value": 4,
+          "source": "生成入力:同大会順位表",
+          "segments": [
+            1
+          ]
+        }
+      ],
+      "reasons": [],
+      "action": "",
+      "kind": "daily_soccer",
+      "source": "scripts/fixtures/soccer-daily/20261026.json",
+      "voice": "未合成。6字/秒の字幕確認用。実音声の尺は未確認",
+      "durations": [
+        4,
+        20.133333333333333,
+        10.166666666666666
+      ]
+    },
+    {
+      "version": "short-content-20261027-v1",
+      "status": "held",
+      "minimum_seconds": 28.0,
+      "target_seconds": 30.0,
+      "maximum_seconds": 40,
+      "planned_seconds": 27.433333333333334,
+      "information_count": 5,
+      "supplementary_count": 4,
+      "information": [
+        {
+          "subject": "Brighton & Hove Albion FC",
+          "fact": "順位と勝点",
+          "value": [
+            3,
+            16
+          ],
+          "source": "生成入力:同大会順位表",
+          "segments": [
+            1
+          ]
+        },
+        {
+          "subject": "Liverpool FC",
+          "fact": "順位と勝点",
+          "value": [
+            4,
+            15
+          ],
+          "source": "生成入力:同大会順位表",
+          "segments": [
+            1,
+            2
+          ]
+        },
+        {
+          "subject": "Chelsea FC",
+          "fact": "順位と勝点",
+          "value": [
+            5,
+            13
+          ],
+          "source": "生成入力:同大会順位表",
+          "segments": [
+            1,
+            2
+          ]
+        },
+        {
+          "subject": "Brentford FC",
+          "fact": "順位と勝点",
+          "value": [
+            6,
+            11
+          ],
+          "source": "生成入力:同大会順位表",
+          "segments": [
+            1,
+            2
+          ]
+        },
+        {
+          "subject": "Leeds United FC",
+          "fact": "順位と勝点",
+          "value": [
+            7,
+            11
+          ],
+          "source": "生成入力:同大会順位表",
+          "segments": [
+            2
+          ]
+        }
+      ],
+      "reasons": [
+        "長さ27.433秒が下限28秒未満です"
+      ],
+      "action": "材料を増やして再作成・他の回とまとめる・見送り。言い換えや無音で延ばさない",
+      "kind": "soccer_race",
+      "source": "data/soccer_race.json",
+      "voice": "未合成。6字/秒の字幕確認用。実音声の尺は未確認",
+      "durations": [
+        4.466666666666667,
+        8.333333333333334,
+        4.466666666666667,
+        10.166666666666666
+      ]
+    },
+    {
+      "version": "short-content-20261027-v1",
+      "status": "passed",
+      "minimum_seconds": 28.0,
+      "target_seconds": 30.0,
+      "maximum_seconds": 60,
+      "planned_seconds": 29.466666666666665,
+      "information_count": 4,
+      "supplementary_count": 3,
+      "information": [
+        {
+          "subject": "ブリュワーズ対レイズ",
+          "fact": "シリーズ勝敗",
+          "value": [
+            [
+              "ブリュワーズ",
+              3
+            ],
+            [
+              "レイズ",
+              0
+            ]
+          ],
+          "source": "https://statsapi.mlb.com/api/v1/schedule?sportId=1&season=2026&startDate=2026-09-15&endDate=2026-11-10&gameType=F,D,L,W&hydrate=team,probablePitcher",
+          "segments": [
+            0
+          ]
+        },
+        {
+          "subject": "ブリュワーズ\n対レイズ",
+          "fact": "前戦の最終結果",
+          "value": "ブリュワーズ 10対1 レイズ",
+          "source": "https://statsapi.mlb.com/api/v1/schedule?sportId=1&season=2026&startDate=2026-09-15&endDate=2026-11-10&gameType=F,D,L,W&hydrate=team,probablePitcher",
+          "segments": [
+            1
+          ]
+        },
+        {
+          "subject": "ブリュワーズ\n対レイズ",
+          "fact": "前戦の開催地",
+          "value": "レイズのホーム",
+          "source": "https://statsapi.mlb.com/api/v1/schedule?sportId=1&season=2026&startDate=2026-09-15&endDate=2026-11-10&gameType=F,D,L,W&hydrate=team,probablePitcher",
+          "segments": [
+            1
+          ]
+        },
+        {
+          "subject": "ブリュワーズ\n対レイズ",
+          "fact": "前戦の決勝点",
+          "value": "3回表 ウィリアム・コントレラスのタイムリー",
+          "source": "https://statsapi.mlb.com/api/v1/schedule?sportId=1&season=2026&startDate=2026-09-15&endDate=2026-11-10&gameType=F,D,L,W&hydrate=team,probablePitcher",
+          "segments": [
+            1
+          ]
+        }
+      ],
+      "reasons": [],
+      "action": "",
+      "kind": "morning_postseason",
+      "source": "build\\channel-audit-20261014",
+      "voice": "未合成。6字/秒の字幕確認用。実音声の尺は未確認",
+      "durations": [
+        5.133333333333334,
+        14.166666666666666,
+        10.166666666666666
+      ]
+    },
+    {
+      "version": "short-content-20261027-v1",
+      "status": "passed",
+      "minimum_seconds": 28.0,
+      "target_seconds": 30.0,
+      "maximum_seconds": 40,
+      "planned_seconds": 31.766666666666666,
+      "information_count": 3,
+      "supplementary_count": 2,
+      "information": [
+        {
+          "subject": "鎌田大地",
+          "fact": "当週の成績",
+          "value": {
+            "name": "鎌田大地",
+            "club": "クリスタル・パレス",
+            "values": [
+              [
+                1,
+                "得点"
+              ],
+              [
+                0,
+                "A"
+              ],
+              [
+                89,
+                "分"
+              ]
+            ],
+            "note": ""
+          },
+          "source": "生成入力:公式試合と名簿",
+          "segments": [
+            0
+          ]
+        },
+        {
+          "subject": "冨安健洋",
+          "fact": "当週の成績",
+          "value": {
+            "name": "冨安健洋",
+            "club": "クリスタル・パレス",
+            "values": [],
+            "note": "出場なし"
+          },
+          "source": "生成入力:公式試合と名簿",
+          "segments": [
+            0
+          ]
+        },
+        {
+          "subject": "坂元達裕",
+          "fact": "当週の成績",
+          "value": {
+            "name": "坂元達裕",
+            "club": "コベントリー",
+            "values": [
+              [
+                0,
+                "得点"
+              ],
+              [
+                0,
+                "A"
+              ],
+              [
+                29,
+                "分"
+              ]
+            ],
+            "note": ""
+          },
+          "source": "生成入力:公式試合と名簿",
+          "segments": [
+            0
+          ]
+        }
+      ],
+      "reasons": [],
+      "action": "",
+      "kind": "soccer_week",
+      "source": "data/soccer_jp_week.json",
+      "voice": "未合成。6字/秒の字幕確認用。実音声の尺は未確認",
+      "durations": [
+        4,
+        9.466666666666667,
+        8.133333333333333,
+        10.166666666666666
+      ]
+    }
+  ],
+  "note": "再構成は6字/秒の字幕確認用見積り。実音声と翌朝の公開停止本数は未確認。",
+  "final_recheck_directory": "build/shortlen-recheck-20261028-final",
+  "comparison_with_previous_plan": [],
+  "local_verification": {
+    "start": "2026-10-28T10:05:15.368833",
+    "end": "2026-10-28T10:33:50.471114",
+    "exit_code": 0,
+    "test_files": 209,
+    "elapsed_seconds": 1715.102281,
+    "log": "build/shortlen-run-checks-verified.log"
+  }
+}

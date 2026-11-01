@@ -31,9 +31,13 @@ from datetime import date
 HERE = pathlib.Path(__file__).resolve().parent
 if str(HERE) not in sys.path:
     sys.path.insert(0, str(HERE))
+# notability_engine はリポジトリ直下（選手名のカタカナ化で使う）
+if str(HERE.parent) not in sys.path:
+    sys.path.insert(0, str(HERE.parent))
 
 import morning_recap as mr  # noqa: E402
 import race_words as rw  # noqa: E402
+import recap_freshness as rf  # noqa: E402
 
 try:
     import statcast as sc
@@ -54,10 +58,16 @@ MAX_PLAYERS = 4      # 全員並べると点呼になる。上位だけ
 # いる日の44点と、最高が50点の日の44点では、意味がまるで違う。
 RELATIVE_FLOOR = 0.45
 MAX_RARE = 2
+# 名前のある指標（シーズン通算）を、同じ選手・同じ指標で何日あけて出すか。
+# 10/7 本人「村上のアダム・ダン率、今日触れるのは脈絡がない。毎日触れてない？
+# まるで今日の数字かのように言ってる」。毎日材料に入れていたので、7日に1度に。
+RARE_REPEAT_DAYS = 7
+RARE_SEEN = "longform_rare_seen.json"
 MAX_TRENDS = 3      # 主役1人ぶんの切り口。多いと読み切れない
 MAX_CHANGES = 4      # 進出争いで動いたこと
 MAX_SOCCER = 1       # 1本1大会。長編でも大会は1つに絞る
 MAX_ROWS = 4         # 1枚の札に並ぶ行数（描画側の上限）
+MAX_BEYOND = 2       # 今日以外の節目を引く人数（問い合わせの数）
 
 # 材料が何日前までなら使うか。
 #
@@ -85,7 +95,8 @@ def _day(value) -> date | None:
     if not value:
         return None
     try:
-        return date.fromisoformat(str(value)[:10])
+        from sports_dates import jst_day
+        return date.fromisoformat(jst_day(value))
     except ValueError:
         return None
 
@@ -105,12 +116,12 @@ def fresh(data: dict, today: date = None, days: int = MAX_AGE_DAYS,
     return False
 
 
-def _fresh_read(path, today: date, *keys: str) -> dict:
+def _fresh_read(path, today: date, *keys: str, days=MAX_AGE_DAYS) -> dict:
     """新しければそのまま、古ければ空。何を落としたかは言う。"""
     data = _read(path)
     if not data:
         return {}
-    if fresh(data, today, MAX_AGE_DAYS, *keys):
+    if fresh(data, today, days, *keys):
         return data
     print("[info] %s が古いので使いません（%s）"
           % (pathlib.Path(path).name,
@@ -175,6 +186,12 @@ def readings(row: dict) -> list:
             out.append("取ったアウト%d個すべてが三振" % got)
         elif got and so:
             out.append("アウト%d個のうち%d個が三振" % (got, so))
+        runs, er = row.get("r"), row.get("er") or 0
+        if runs and runs > er:
+            out.append("失点%dのうち自責は%d。自責の付かない失点で、点は入っている"
+                       "（「点にならなかった」「無失点」とは言わない）" % (runs, er))
+        if row.get("hbp"):
+            out.append("死球%d。安打と四球のほかにも走者を出している" % row["hbp"])
         if row.get("saves"):
             out.append("セーブがついた")
         if row.get("holds"):
@@ -193,6 +210,88 @@ def readings(row: dict) -> list:
         out.append("安打%d本がすべて本塁打" % hits)
     if ab and not hits and (nums.get("四球") or nums.get("死球")):
         out.append("安打は無いが出塁はしている")
+    # 得点（ホームを踏んだ数）は成績の行に入っていない。10/8 の長編で、大谷は0安打でも
+    # 失策で生還して1得点していたのに「どちらも点には結びついていない」と言った。
+    runs = row.get("runs") or 0
+    if runs:
+        out.append("得点%d（本人がホームを踏んだ。%s「点に結びつかなかった」とは言わない）"
+                   % (runs, "安打は無くても、" if not hits else ""))
+    return out
+
+
+EVENT_SPEECH = {"single": "タイムリー", "double": "タイムリー二塁打",
+                "triple": "タイムリー三塁打", "sac_fly": "犠牲フライ",
+                "walk": "押し出し四球", "hit_by_pitch": "押し出し死球",
+                "field_out": "内野ゴロ", "force_out": "内野ゴロ",
+                "grounded_into_double_play": "併殺打", "fielders_choice": "野選",
+                "field_error": "失策"}
+
+
+def _play_speech(p: dict) -> str:
+    if p.get("event_type") == "home_run":
+        return {1: "ソロ本塁打", 2: "2点本塁打", 3: "3点本塁打", 4: "満塁本塁打"}.get(
+            p.get("rbi") or 1, "本塁打")
+    return EVENT_SPEECH.get(p.get("event_type"), "%d打点の一打" % (p.get("rbi") or 1))
+
+
+def scenes(row: dict) -> list:
+    """打点の場面（公式の試合経過から clutch.py が判定したもの）を、言える形に。
+
+    10/4、本人「村上の先制2ラン決勝HR、という素晴らしい内容」。長編の材料は
+    4打数2安打・1本塁打・2打点だけで、**それが先制で決勝点だったこと**が
+    渡っていなかった。
+    """
+    plays = row.get("clutch_plays") or []
+    out = []
+    win = next((p for p in plays if p.get("kind") == "決勝打"), None)
+    used_win = False
+    for p in plays:
+        kind = p.get("kind") or ""
+        if kind in ("決勝打", "2試合連続本塁打") or not p.get("inning"):
+            continue
+        where = "%d回%s" % (p["inning"], {"top": "表", "bottom": "裏"}.get(p.get("half"), ""))
+        word = kind.replace("本塁打", "")
+        what = _play_speech(p)
+        text = "%sに%s" % (where, (word + "の" + what) if word else what)
+        if win and win.get("inning") == p["inning"] and win.get("half") == p.get("half") \
+                and win.get("event_type") == p.get("event_type"):
+            text += "。これが決勝点（相手はこのあと同点にも追いつけなかった）"
+            used_win = True
+        out.append(text)
+    if win and not used_win and win.get("inning"):
+        where = "%d回%s" % (win["inning"], {"top": "表", "bottom": "裏"}.get(win.get("half"), ""))
+        out.append("%sの%sが決勝点（相手はこのあと同点にも追いつけなかった）"
+                   % (where, _play_speech(win)))
+    return out
+
+
+def _kana(name: str) -> str:
+    """英字の選手名をカタカナに。引けなければ空（台詞に英字を渡さない）。
+
+    10/5の長編で「Logan Henderson」「Jacob Misiorowski」を英字のまま
+    渡し、台本もそのまま読んだ。音声はアルファベットを1文字ずつ読む。
+    """
+    if not name or not re.search(r"[A-Za-z]", name):
+        return name or ""
+    try:
+        import ps_story
+        import notability_engine as ne
+        jp = {p["name_en"]: p["name_jp"] for p in ne.JP_PLAYERS_MLB}
+        if not hasattr(_kana, "table"):
+            try:
+                _kana.table = json.loads(pathlib.Path("data/player_kana.json")
+                                         .read_text(encoding="utf-8")).get("names") or {}
+            except (OSError, ValueError):
+                _kana.table = {}
+        return ps_story.kana_of(name, _kana.table, jp)
+    except Exception:                                  # noqa: BLE001
+        return ""
+
+
+def _person(other: dict) -> dict:
+    out = dict(other or {})
+    if out.get("name"):
+        out["name"] = _kana(out["name"])
     return out
 
 
@@ -221,6 +320,11 @@ def _line(row: dict) -> str:
                       ("so", "奪三振"), ("bb", "四球")):
         if row.get(key) is not None:
             bits.append("%s%s" % (unit, row[key]))
+    # 自責の付かない失点と死球。**無いことにしない。**
+    if row.get("r") and row.get("r") != row.get("er"):
+        bits.append("失点%s" % row["r"])
+    if row.get("hbp"):
+        bits.append("死球%s" % row["hbp"])
     for key, unit in (("saves", "セーブ"), ("holds", "ホールド")):
         if row.get(key):
             bits.append(unit)
@@ -244,7 +348,8 @@ def _numbers(row: dict) -> dict:
     out = {}
     if is_pitcher(row):
         for key, unit in (("ip", "回"), ("hits", "被安打"), ("er", "自責"),
-                          ("so", "奪三振"), ("bb", "四球"),
+                          ("so", "奪三振"), ("bb", "四球"), ("r", "失点"),
+                          ("hbp", "死球"),
                           ("saves", "セーブ"), ("holds", "ホールド")):
             if row.get(key) is not None:
                 out[unit] = row[key]
@@ -254,6 +359,8 @@ def _numbers(row: dict) -> dict:
         out[unit] = int(value)
     if row.get("hits") is not None:
         out.setdefault("安打", row["hits"])
+    if row.get("runs") is not None:
+        out["得点"] = row["runs"]
     return out
 
 
@@ -264,8 +371,8 @@ def load(root: str = "data", today: date = None) -> dict:
     止まった材料で毎日同じ動画を作り続けることになる。
     """
     base = pathlib.Path(root)
-    today = today or date.today()
-    recap = _fresh_read(base / "morning_recap.json", today)
+    today = today or rf.current_day()
+    recap = rf.read_for_edition(_read(base / "morning_recap.json"), today)
     # **その日「何かした」選手だけを渡す。**
     #
     # 出場した順に上から4人を渡していたので、4打数1安打の選手が
@@ -305,13 +412,35 @@ def load(root: str = "data", today: date = None) -> dict:
             "type": row.get("type") or "",
             "player_id": str(row.get("player_id") or ""),
             "numbers": _numbers(row),
+            # _rowを落とした後も、事実検査に当日成績を渡す（欠測と0を区別）。
+            "game_facts": {k: ((row.get("batting") or {}) if row.get("type") == "two_way" else row).get(k)
+                           for k in ("runs", "hits", "rbi")},
             "readings": readings(row),
+            "scenes": scenes(row),
+            "_row": row,
         })
+    # **今日以外の材料。**出番が短い選手（称賛の印も名前のある記録も
+    # 無い）は、長編で「5打数1安打ね。今日はここは短く」の3行で終わって
+    # いた。いちばん見られる大谷がいちばん短い日がある。足すのは公式の
+    # 通算・今季の数字から作った節目だけ（milestones。17:00の回と同じ）。
+    # 問い合わせを増やしすぎないよう2人まで。
+    quiet = [p for p in players if not p["standout"] and not p["badges"]]
+    for p in quiet[:MAX_BEYOND]:
+        try:
+            import milestones
+            got = milestones.best_for(p["_row"])
+        except Exception:                              # noqa: BLE001
+            got = {}
+        if got.get("text"):
+            p["beyond"] = got["text"]
+    for p in players:
+        p.pop("_row", None)
 
     # 打球は {名前: [本塁打, ...]}。言い方は statcast.phrase に任せる。
     shots = []
-    for name, hits in (_fresh_read(base / "statcast.json", today)
-                       .get("japanese") or {}).items():
+    tracking = _read(base / "statcast.json")
+    tracked = (tracking.get("japanese") or {}) if recap and tracking.get("date") == recap.get("date") else {}
+    for name, hits in tracked.items():
         text = sc.phrase(hits) if sc else ""
         if text:
             shots.append({"name": name, "text": text})
@@ -323,16 +452,28 @@ def load(root: str = "data", today: date = None) -> dict:
     # ただし更新が止まったまま年を越すと去年の数字になるので、
     # 他と同じ幅で切る（`updated_at` を見る）。
     rare = []
-    for name, row in (_fresh_read(base / "rarity.json", today)
-                      .get("players") or {}).items():
+    rarity_data = _fresh_read(base / "rarity.json", today)
+    seen = (_read(base / RARE_SEEN) or {}).get("seen") or {}
+
+    def _recent(name, label):
+        day = _day(seen.get("%s|%s" % (name, label)))
+        return day is not None and 0 <= (today - day).days < RARE_REPEAT_DAYS
+
+    for name, row in (rarity_data.get("players") or {}).items():
         for item in (row.get("items") or []):
             if (item.get("ties") or 1) > 1 or not item.get("label"):
                 continue
-            above = item.get("above") or {}
+            if _recent(name, item["label"]):
+                continue
+            above = _person(item.get("above"))
+            leader = _person(item.get("leader") or (above if item.get("at") == 2 else {}))
+            below = _person(item.get("below"))
             rare.append({"name": name, "stat": item["label"],
                          "value": item.get("shown") or "",
-                         "rank": "%s人中%s位" % (item.get("of"),
-                                                item.get("at")),
+                         "rank": "%s人中%s位" % (item.get("of"), item.get("at")),
+                         "scope": ("MLB全体・%s打席以上" % rarity_data.get("min_pa", 300)
+                                   if item.get("group") == "hitting" else
+                                   "MLB全体・%s投球回以上" % rarity_data.get("min_ip", 60)),
                          "note": item.get("note") or "",
                          "namesake": item.get("namesake") or "",
                          # 「1位は誰か」を聞かれたときに答えられるように。
@@ -340,9 +481,14 @@ def load(root: str = "data", today: date = None) -> dict:
                          # 分からない」と言う回になった（9/15）。
                          "above": ("%s %s" % (above.get("name") or "",
                                               above.get("shown") or "")
-                                   ).strip()})
+                                   ).strip(),
+                         "leader": leader,
+                         "below": below})
             break
-    rare = rare[:MAX_RARE]
+    # その日に出場した選手の指標だけ（出ていない選手の通算の数字は脈絡がない。
+    # 10/7 試合の無かった村上のアダム・ダン率を、その日の話の流れで言っていた）
+    played = {pl.get("name") for pl in players}
+    rare = [r for r in rare if r["name"] in played][:MAX_RARE]
 
     # 主役の1人だけ、切り口ごとの成績を足す。
     #
@@ -365,14 +511,21 @@ def load(root: str = "data", today: date = None) -> dict:
         except Exception as e:                       # noqa: BLE001
             print("[info] 切り口ごとの成績を取れません(%s)" % e)
 
-    post = _fresh_read(base / "postseason.json", today)
+    post = _fresh_read(base / "postseason.json", today, days=0)
+    import ps_offseason
+    if ps_offseason.completed_before(post, today):
+        print('[info] WS決着後のため、PSを当日の数字の材料にしません')
+        post = {}
     race = {"headline": post.get("headline") or "",
             "changes": (post.get("changes") or [])[:MAX_CHANGES],
-            "japanese": post.get("japanese") or []}
+            "japanese": post.get("japanese") or [],
+            # 確定後・PS中はシリーズで話す（順位表はもう動かない）
+            "phase": post.get("phase") or "regular",
+            "series": post.get("series") or []}
 
     soccer = {}
-    for comp in (_fresh_read(base / "soccer_race.json", today)
-                 .get("competitions") or []):
+    soccer_data = _fresh_read(base / "soccer_race.json", today)
+    for comp in (soccer_data.get("competitions") or []):
         # round_complete（全クラブが同じ試合数）は求めない。
         # **次の節が始まった瞬間に False になる**ので、これを条件に
         # するとサッカーが長編に入らない（9/20のラ・リーガがそうだった）。
@@ -380,9 +533,26 @@ def load(root: str = "data", today: date = None) -> dict:
             soccer = comp
             break
 
-    return {"date": recap.get("date_jst") or recap.get("date") or "",
+    import soccer_sanity_material
+    sanity_sources = []
+    if post:
+        sanity_sources.append(dict(source='data/postseason.json', date_jst=post.get('date'),
+            retrieved_at=post.get('updated_at'), series=post.get('series') or [],
+            source_url='https://statsapi.mlb.com/api/v1/schedule'))
+    if soccer:
+        sanity_sources.append(dict(soccer_sanity_material.compact(dict(soccer_data,
+            competitions=[soccer])), sport='soccer', source='data/soccer_race.json'))
+    return {"date": recap.get("date_jst") or recap.get("date") or today.isoformat(),
+            "_sanity_sources": sanity_sources,
             "players": players, "trends": trends, "shots": shots, "rare": rare,
             "race": race, "soccer": soccer}
+
+
+def _live_series(race: dict) -> list:
+    """まだ続いているシリーズと、昨日決着したシリーズ。"""
+    moved = {c.get("key") for c in (race.get("changes") or [])}
+    return [x for x in (race.get("series") or [])
+            if not x.get("over") or x.get("key") in moved]
 
 
 def has_enough(m: dict) -> bool:
@@ -390,9 +560,48 @@ def has_enough(m: dict) -> bool:
     return bool(m.get("players")) or bool(m.get("race", {}).get("changes"))
 
 
+def _soccer_head(c: dict, short: bool = False) -> str:
+    """大会と節の言い方。**終わっていない節を「終わった」と書かない。**
+
+    `round` は「全クラブが終えた節」（played の最小値）で、順位表は
+    その節までの姿。次の節が始まると `round_complete` が False になる
+    が、順位表の中身は変わらないので、「終了時点」か「進行中」かだけ
+    書き分ける。
+    """
+    name = c.get("name_jp") or c.get("jp") or ""
+    rnd = c.get("round")
+    if not rnd:
+        return name
+    if short:
+        return "%s 第%s節" % (name, rnd)
+    if c.get("round_complete"):
+        return "%s 第%s節終了時点" % (name, rnd)
+    return "%s 第%s節まで（第%s節は進行中）" % (name, rnd, rnd + 1)
+
+
+def _soccer_line(j: dict) -> str:
+    """日本人選手1人の現在地。
+
+    言い回し（「CL圏内。落ちるまで勝点1」など）は soccer_race が
+    作ったものをそのまま使う。**ここで言い換えない。**同じことを
+    2か所で決めると、片方だけ直した日に食い違う。
+    """
+    bits = ["%s（%s・%s位・勝点%s）"
+            % (j.get("name") or "", j.get("club_jp") or "",
+               j.get("position"), j.get("points"))]
+    texts = [ln.get("text") for ln in (j.get("lines") or []) if ln.get("text")]
+    if texts:
+        bits.append(texts[0])
+    if j.get("out"):
+        # **出ていない選手を「きょう活躍した」と書かせない。**
+        # out_note は英語で来るので、こちらで言い切る。
+        bits.append("負傷などで離脱中")
+    return "・".join(bits)
+
+
 def facts(m: dict) -> str:
     """モデルに渡す事実。ここに無いことは書かせない。"""
-    out = ["## きょうの日本人選手（点数の高い順）",
+    out = ["## 今日の日本人選手（点数の高い順）",
            "※ 点数はコレスポの独自指標。活躍の大きさを並べるためのもので、",
            "  公式の記録ではない。**点数そのものを主題にしない。**"]
     if not m["players"]:
@@ -404,12 +613,20 @@ def facts(m: dict) -> str:
             row += " ／ " + "・".join(p["badges_speech"])
         out.append(row)
         if p.get("standout"):
-            out.append("  ★きょうの主役。**はっきり称賛してよい内容。**"
+            out.append("  ★今日の主役。**はっきり称賛してよい内容。**"
                        "「素晴らしい投球だった」と書いてよい")
+        # 打点の場面。決勝点なら、その選手を紹介するときに言う。
+        for sc in p.get("scenes") or []:
+            out.append("  ・場面（MLB公式の試合経過）: %s。**決勝点・先制なら、"
+                       "この選手を紹介する最初のやりとりで言う**" % sc)
         # **その数字が普通か珍しいかを、ここで渡す。**
         # 渡さないと、当たり前のことを珍しがる台詞になる。
         for note in p.get("readings") or []:
             out.append("  ・%s" % note)
+        if p.get("beyond"):
+            out.append("  ・今日以外の材料（公式の今季・通算の数字）: %sは%s。"
+                       "**言うなら1文。今日の成績と混ぜない**"
+                       % (p["name"], p["beyond"]))
 
     if m["shots"]:
         out.append("")
@@ -421,7 +638,7 @@ def facts(m: dict) -> str:
         out.append("")
         out.append("## %s の、切り口ごとの成績" % m["players"][0]["name"])
         out.append("※ ここは**その日の成績ではなく今季の傾向。**")
-        out.append("  「きょう」と混ぜない。確からしさが low のものは")
+        out.append("  「今日」と混ぜない。確からしさが low のものは")
         out.append("  傾向として語らず、起きたことをそのまま置く。")
         out.append("※ **確率から理由を決めつけない。**")
         out.append("  「偶然でこうなる確率0%だから狙われている」は書かない。")
@@ -436,17 +653,28 @@ def facts(m: dict) -> str:
 
     if m["rare"]:
         out.append("")
-        out.append("## 名前のある指標での位置")
-        out.append("※ 公式記録ではないが、今季の規定到達者の中での実際の順位。")
+        out.append("## 名前のある指標での位置（今季通算）")
+        out.append("※ **今季通算の数字。その日の試合の数字ではない。**"
+                   "「今季通算で」と言ってから話す。その日の成績から続けて、"
+                   "今日の数字のように言わない。")
+        out.append("※ 指標の値は公式成績から計算。順位は下記の対象条件での順位。"
+                   "規定打席・規定投球回到達者の順位やア・ナ各リーグ順位とは呼ばない。")
         out.append("※ **「とは」の行は画面に出る。声では説明しない。**")
         out.append("  用語の意味を読み上げると、そこで話が止まる。")
         out.append("  気になる人は画面を止めて読める。声で話すのは")
         out.append("  **どれくらい珍しいか**のほう。")
         for r in m["rare"]:
-            out.append("- %s の%s %s（%s）"
-                       % (r["name"], r["stat"], r["value"], r["rank"]))
+            out.append("- %s の%s %s（%s・%s）"
+                       % (r["name"], r["stat"], r["value"],
+                          r.get("scope") or "対象条件未確認", r["rank"]))
             if r.get("above"):
                 out.append("  1つ上にいるのは %s" % r["above"])
+            for label, key in (("1位", "leader"), ("1つ下", "below")):
+                other = r.get(key) or {}
+                if other.get("name") and other.get("shown"):
+                    out.append("  %s: %s %s" % (label, other["name"], other["shown"]))
+                elif other.get("shown"):
+                    out.append("  %sの値: %s" % (label, other["shown"]))
             if r.get("note"):
                 out.append("  %s とは（画面に出る・読まない）: %s"
                            % (r["stat"], r["note"]))
@@ -454,7 +682,27 @@ def facts(m: dict) -> str:
                 out.append("  %s" % r["namesake"])
 
     race = m["race"]
-    if race.get("headline") or race.get("changes"):
+    if rw.is_settled(race) and (race.get("series") or race.get("changes")):
+        # **確定後は順位表の話をしない。**勝敗はシリーズの勝敗だけ。
+        import ps_series
+        out.append("")
+        out.append("## ポストシーズン")
+        out.append("※ レギュラーシーズンは終わっている。**シーズンの勝敗・"
+                   "マジック・進出争い・「今日終わったら」の話はしない。**"
+                   "勝敗はシリーズの勝敗（下のとおり）だけ。")
+        if race.get("headline"):
+            out.append("見出し: %s" % race["headline"])
+        for c in race["changes"]:
+            out.append("- %s" % (c.get("text") or ""))
+        said = {c.get("text") for c in race["changes"]}
+        mine = [ps_series.jp_text(x) for x in _live_series(race)
+                if any(t["players"] for t in x["teams"])]
+        mine = [t for t in mine if t and t not in said]   # 同じ文を2度渡さない
+        if mine:
+            out.append("日本人選手のいる球団のシリーズ:")
+            for t in mine[:6]:
+                out.append("- " + t)
+    elif race.get("headline") or race.get("changes"):
         out.append("")
         out.append("## 進出争い")
         if race.get("headline"):
@@ -476,10 +724,10 @@ def facts(m: dict) -> str:
     if m["soccer"]:
         c = m["soccer"]
         out.append("")
-        out.append("## 欧州サッカー（%s 第%s節が終わった）"
-                   % (c.get("name_jp") or c.get("jp") or "", c.get("round")))
-        for line in (c.get("lines") or [])[:3]:
-            out.append("- %s" % (line.get("text") or line))
+        out.append("## 欧州サッカー（%s）" % _soccer_head(c))
+        out.append("※ 順位表そのものではなく、**日本人選手のいるクラブ**の位置。")
+        for j in (c.get("jp") or [])[:MAX_ROWS]:
+            out.append("- " + _soccer_line(j))
 
     return "\n".join(out)
 
@@ -497,7 +745,7 @@ def panels(m: dict) -> dict:
             line = (line + " " + "・".join(p["badges"])).strip()
         out["jp%d" % i] = {"type": "star", "name": p["name"],
                            "team": p["team"], "line": line,
-                           "menu": "%sのきょうの成績" % p["name"]}
+                           "menu": "%sの今日の成績" % p["name"]}
     for i, s in enumerate(m["shots"][:2], 1):
         out["shot%d" % i] = {"type": "star", "name": s["name"],
                              "team": "本塁打の打球", "line": s["text"],
@@ -509,31 +757,61 @@ def panels(m: dict) -> dict:
                              # 用語の意味は**画面にだけ**出す。声で
                              # 説明すると、そこで話が止まる。
                              "note": r.get("note") or "",
+                             # 順位の対象の条件（画面の札にだけ出す）
+                             "scope": r.get("scope") or "",
                              "menu": "%sの%s" % (r["name"], r["stat"])}
 
-    rows = [{"name": j["team"], "value": rw.short(j)}
-            for j in (m["race"].get("japanese") or []) if j.get("team")]
-    if rows:
-        out["race"] = {"type": "group", "head": "進出争い",
-                       "rows": rows[:MAX_ROWS], "menu": "進出争いの現在地"}
+    if rw.is_settled(m["race"]):
+        rows = []
+        for x in _live_series(m["race"]):
+            for t in x["teams"]:
+                if not t["players"]:
+                    continue
+                opp = [o for o in x["teams"] if o is not t]
+                day = (x.get("next") or {}).get("day") or ""
+                # 始まる前は「0勝0敗」と出さない（スコアに見える）
+                val = ("%s 第1戦" % day if (x.get("waiting")
+                                              or not x["played"]) and day
+                       else "%d勝%d敗" % (t["wins"], opp[0]["wins"]) if opp
+                       else "")
+                rows.append({"name": t["name"], "value": val,
+                             "_n": len(t["players"])})
+        # 日本人選手の多い球団から（4行で切れてもドジャースが残る）
+        rows.sort(key=lambda r: -r["_n"])
+        for r in rows:
+            r.pop("_n")
+        if rows:
+            out["race"] = {"type": "group", "head": "ポストシーズン",
+                           "rows": rows[:MAX_ROWS],
+                           "menu": "日本人選手のいる球団のシリーズ"}
+    else:
+        rows = [{"name": j["team"], "value": rw.short(j)}
+                for j in (m["race"].get("japanese") or []) if j.get("team")]
+        if rows:
+            out["race"] = {"type": "group", "head": "進出争い",
+                           "rows": rows[:MAX_ROWS],
+                           "menu": "進出争いの現在地"}
 
     if m["soccer"]:
         c = m["soccer"]
+        # **`clubs` はクラブ数（20 という int）で、クラブの一覧ではない。**
+        # ここを一覧だと思って添字で切っていたため、サッカーの材料が
+        # 実際に出た9/21と9/22の長編が2日続けて落ちた。
+        # 並べたいのは日本人選手と、その所属クラブの順位。
         srows = []
-        for club in (c.get("clubs") or [])[:MAX_ROWS]:
-            if club.get("name_jp") or club.get("name"):
-                srows.append({"name": club.get("name_jp") or club.get("name"),
-                              "value": "%s位" % club.get("position", "")})
+        for j in (c.get("jp") or [])[:MAX_ROWS]:
+            if j.get("name") and j.get("position"):
+                srows.append({"name": "%s（%s）"
+                                      % (j["name"], j.get("club_jp") or ""),
+                              "value": "%s位" % j["position"]})
         if srows:
             out["soccer"] = {"type": "group",
-                             "head": "%s 第%s節"
-                                     % (c.get("name_jp") or c.get("jp") or "",
-                                        c.get("round")),
+                             "head": _soccer_head(c, short=True),
                              "rows": srows,
-                             "menu": "欧州サッカーの順位"}
+                             "menu": "日本人選手の所属クラブの順位"}
 
-    out["topic"] = {"type": "topic", "topic": "きょうのMLB、数字で",
-                    "menu": "きょうの話（締めに使う）"}
+    out["topic"] = {"type": "topic", "topic": "日本人選手の成績と指標",
+                    "menu": "今日の話（締めに使う）"}
     return out
 
 
@@ -545,6 +823,25 @@ def checkable(m: dict) -> dict:
     """
     out = {p["name"]: dict(p["numbers"]) for p in m["players"]
            if p["numbers"]}
+    if rw.is_settled(m["race"]):
+        # **照合もシリーズの勝敗で。**シーズンの「90勝」のままだと、
+        # 台本が正しく「カブスは1勝0敗」と言っても食い違いで止まる。
+        # **決着した回と次の回の両方に出る球団は照合しない。**10/1、
+        # ホワイトソックスは昨日WCSを2勝0敗で突破し、地区シリーズは0勝0敗。
+        # 後の0勝で上書きして、正しい「2勝0敗で破り」を止めた。
+        # 台詞がどちらのシリーズの話かは、数字だけでは決められない。
+        seen = {}
+        for x in _live_series(m["race"]):
+            if x.get("waiting") or len(x["teams"]) < 2:
+                continue
+            a, b = x["teams"][0], x["teams"][1]
+            for me, opp in ((a, b), (b, a)):
+                seen.setdefault(me["name"], []).append(
+                    {"勝": me["wins"], "敗": opp["wins"]})
+        for name, rows in seen.items():
+            if len(rows) == 1:
+                out[name] = rows[0]
+        return out
     for j in (m["race"].get("japanese") or []):
         if j.get("team") and j.get("w") is not None:
             row = {"勝": j["w"], "敗": j["l"]}
@@ -554,7 +851,7 @@ def checkable(m: dict) -> dict:
     return out
 
 
-def meta(m: dict) -> dict:
+def meta(m: dict, segments=None) -> dict:
     """台本に添える、題とサムネイルの材料。
 
     **長編の弱さは題だった**（8本で平均11再生、名前のある回だけが伸びた）。
@@ -562,14 +859,30 @@ def meta(m: dict) -> dict:
     """
     names = [p["name"] for p in m["players"]]
     best = m["players"][0] if m["players"] else {}
+    # 表紙の引用は、その日いちばん珍しい数字から。名前のある指標で
+    # リーグ1位がいればそれ（「3打数0安打」を引用していた日があった）。
+    top_rare = next((r for r in m.get("rare") or []
+                     if "中1位" in str(r.get("rank") or "")), None)
+    pick = (("%s %s %s（%s）" % (top_rare["name"], top_rare["stat"],
+                                top_rare["value"], top_rare["rank"]))
+            if top_rare else
+            ("%s %s" % (best.get("name", ""), best.get("line", ""))))
+    # 出場0の日の題を、実際に扱う記録かシリーズの話に合わせる。
+    if not names:
+        used = [r for r in m.get("rare") or [] if segments is None or
+                any(r["name"] in s.get("text", "") and r["stat"] in s.get("text", "")
+                    for s in segments)]
+        focus = next((r for r in used if "中1位" in r["rank"]), next(iter(used), None))
+        pick = ("%s %s %s（%s）" % (focus["name"], focus["stat"],
+                                   focus["value"], focus["rank"]) if focus else
+                m.get("race", {}).get("headline") or "ポストシーズンの最新情勢")
     return {"mode": "numbers",
-            "top": "きょうのMLB、数字で",
-            "title": "",
+            "top": "日本人選手の成績と指標",
+            "title": pick.strip() if not names else "",
             "jp": names,
             "jp_team": [],
             "jp_team_name": best.get("team", ""),
-            "pick": (("%s %s" % (best.get("name", ""), best.get("line", "")))
-                     .strip()[:60]),
+            "pick": pick.strip()[:60],
             "source": "その日の成績・進出争い・指標"}
 
 
@@ -581,13 +894,36 @@ def outline(m: dict) -> str:
     if m["rare"]:
         bits.append("指標%d" % len(m["rare"]))
     if m["race"].get("changes"):
-        bits.append("進出争い%d件" % len(m["race"]["changes"]))
+        bits.append(("ポストシーズン%d件" if rw.is_settled(m["race"])
+                     else "進出争い%d件") % len(m["race"]["changes"]))
     if m["soccer"]:
         bits.append("サッカー%s" % (m["soccer"].get("name_jp") or ""))
     return "・".join(bits)
 
 
+def mark_rare_seen(dialogue_path, root: str = "data", today: date = None) -> list:
+    """長編で実際に札を出した指標を、出した日として残す（7日あけるため）。"""
+    base = pathlib.Path(root)
+    today = today or rf.current_day()
+    m = load(root, today)
+    dia = json.loads(pathlib.Path(dialogue_path).read_text(encoding="utf-8"))
+    keys = {s.get("panel") for s in dia.get("segments") or [] if str(s.get("panel") or "").startswith("rare")}
+    used = [m["rare"][int(k[4:]) - 1] for k in sorted(keys) if k[4:].isdigit() and int(k[4:]) <= len(m["rare"])]
+    path = base / RARE_SEEN
+    data = _read(path) or {}
+    seen = data.get("seen") or {}
+    for r in used:
+        seen["%s|%s" % (r["name"], r["stat"])] = today.isoformat()
+    # 古い記録は落とす
+    seen = {k: v for k, v in seen.items() if (_day(v) and (today - _day(v)).days < 60)}
+    path.write_text(json.dumps({"seen": seen}, ensure_ascii=False, indent=2), encoding="utf-8")
+    return ["%s %s" % (r["name"], r["stat"]) for r in used]
+
+
 if __name__ == "__main__":
+    if len(sys.argv) > 2 and sys.argv[1] == "--mark-rare-seen":
+        print("指標を記録:", mark_rare_seen(sys.argv[2], sys.argv[3] if len(sys.argv) > 3 else "data"))
+        raise SystemExit(0)
     material = load(sys.argv[1] if len(sys.argv) > 1 else "data")
     print(outline(material))
     print()
