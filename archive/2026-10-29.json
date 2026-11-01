@@ -1,0 +1,132 @@
+{
+  "generated_at": "2026-10-29T09:53:46.801252+00:00",
+  "games": [
+    {
+      "game_id": "558558",
+      "league": "セリエA",
+      "home_team_id": "SA-470",
+      "away_team_id": "SA-5890",
+      "home_team_name": "フロジノーネ",
+      "away_team_name": "レッチェ",
+      "home_abbr": null,
+      "away_abbr": null,
+      "home_color": null,
+      "away_color": null,
+      "matchup": "レッチェ vs フロジノーネ",
+      "abbr_matchup": null,
+      "start_time_jst": "10/30 02:30",
+      "home_division": null,
+      "away_division": null,
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": {
+        "rank": 7,
+        "games_back": 3.7,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 11.0
+      },
+      "away_standing": {
+        "rank": 14,
+        "games_back": 5.3,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 16.0
+      },
+      "home_probable": null,
+      "away_probable": null,
+      "venue_name": null,
+      "venue_jp": null,
+      "venue_note": null,
+      "venue_runs_note": null,
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 0,
+      "game_type": "R",
+      "is_notable": true,
+      "reasons": [],
+      "final_score": {
+        "home": 5,
+        "away": 1,
+        "winner": "home"
+      }
+    },
+    {
+      "game_id": "558551",
+      "league": "セリエA",
+      "home_team_id": "SA-99",
+      "away_team_id": "SA-102",
+      "home_team_name": "フィオレンティーナ",
+      "away_team_name": "アタランタ",
+      "home_abbr": null,
+      "away_abbr": null,
+      "home_color": null,
+      "away_color": null,
+      "matchup": "アタランタ vs フィオレンティーナ",
+      "abbr_matchup": null,
+      "start_time_jst": "10/30 04:45",
+      "home_division": null,
+      "away_division": null,
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": {
+        "rank": 19,
+        "games_back": 7.0,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 21.0
+      },
+      "away_standing": {
+        "rank": 12,
+        "games_back": 5.0,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 15.0
+      },
+      "home_probable": null,
+      "away_probable": null,
+      "venue_name": null,
+      "venue_jp": null,
+      "venue_note": null,
+      "venue_runs_note": null,
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 0,
+      "game_type": "R",
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "quality",
+          "text": "フィオレンティーナ（昨季セリエA15位）とアタランタ（昨季セリエA7位）の対戦",
+          "weight": 0
+        }
+      ],
+      "log_notes": [],
+      "ai_summary": "セリエA第8節を終えた時点で、フィオレンティーナは19位と下位に沈み、首位との勝ち点差は21に広がっている。一方のアタランタは12位に位置し、首位との差は15である。昨季セリエA15位だったフィオレンティーナと、7位だったアタランタが対戦する本試合は、両チームの現在地を測る重要な機会となる。敵地に赴くアタランタが、下位のホームチームをどう攻略するか、またはフィオレンティーナが格上相手にどう対抗するかが見どころである。",
+      "notification_hook": "昨季7位のアタランタが下位フィオレンティーナの本拠地へ。順位差を詰める一戦",
+      "final_score": {
+        "home": 2,
+        "away": 2,
+        "winner": "draw"
+      }
+    }
+  ],
+  "schedule_date": "2026-10-29",
+  "ai_status": {
+    "targets": 1,
+    "succeeded": 1,
+    "cost_usd": 0.0038
+  }
+}

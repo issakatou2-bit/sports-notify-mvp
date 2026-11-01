@@ -22,9 +22,12 @@ import json
 import os
 import pathlib
 import sys
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from email.utils import parsedate_to_datetime
 import post_common  # noqa: E402
+import solo_host
+from longform_links import replace_longform_link  # noqa: E402
+import race_words as _rw  # noqa: E402
 from morning_recap import jst_label as _jst_label  # noqa: E402
 
 try:
@@ -377,6 +380,12 @@ DAILY_LINEUP_LINES = [
 ]
 
 
+def daily_lineup_lines():
+    if not post_common.mlb_offseason():
+        return DAILY_LINEUP_LINES
+    return ["コレスポでは、次の内容をお届けしています。", "", *post_common.lineup_lines()]
+
+
 def generated_topic(topic: str) -> dict:
     """自動で作ったトピックの材料。無ければ空。"""
     import generated_topics as gt
@@ -396,6 +405,50 @@ def asset_meta_from_spec(spec: dict) -> dict:
     hook = spec.get("hook", "")
     where = spec.get("where", "")
     items = spec.get("items") or []
+    import offseason_public
+    if offseason_public.applies(spec):
+        return offseason_public.metadata(spec)
+    # シーズンまとめ（season_topics.py）は題を材料の側で決めている。
+    # 球場の言い方（「○○の本拠地」「（所在地）を」）は合わない。
+    if spec.get("title"):
+        lead = [spec.get("intro") or "", ""]
+        lead += [f"・{head}　{body}" for head, body in items]
+        lead += [f"・{j['name']}　{j['line']}"
+                 for j in (spec.get("japanese") or [])]
+        src = spec.get("source") or {}
+        if not isinstance(src, dict):
+            src = {}  # 出典が文字だけの話題（記者の引用ではない）
+        if spec.get("ws"):
+            lead += ["", "数字はMLB公式の過去のワールドシリーズの結果と、今季の順位表・日程です。"]
+        elif spec.get("odds"):
+            lead += ["", "過去の数は、MLB公式の試合結果（1995年から昨季までの地区シリーズ）を集計したものです。予想ではありません。"]
+        elif spec.get("momentum"):
+            lead += ["", "数字はMLB公式の試合の成績表と順位表（レギュラーシーズン）です。"]
+        elif spec.get("game") or spec.get("spotlight"):
+            lead += ["", "数字はMLB公式の試合経過・成績表・計測（Statcast）です。"]
+        elif spec.get("story"):
+            lead += ["", "数字はMLB公式の試合の成績表をシリーズで集計したものです。"]
+        else:
+            lead += ["", "数字はMLB公式（レギュラーシーズン）です。"]
+        # 引用は出典を必ず書く（記者・媒体・投稿）。訳はコレスポによるもの。
+        if src.get("author"):
+            lead += [f"引用: {src['author']}" + (f"（{src['outlet']}）" if src.get("outlet") else "")
+                     + "の投稿（日本語訳はコレスポ）", src.get("url") or "",
+                     f"原文: {src.get('text') or ''}"[:300]]
+        voice = spec.get("voice") or {}
+        if voice.get("url"):
+            lead += ["引用: MLB公式ハイライトのコメント欄（日本語訳はコレスポ）", voice["url"],
+                     f"原文: {voice.get('text') or ''}"[:300]]
+        headline = spec.get("headline") or {}
+        if headline.get("url"):
+            lead += ["引用: MLB.comの試合総括の見出し（日本語訳はコレスポ）", headline["url"],
+                     f"原文: {headline.get('text') or ''}"[:300]]
+        who = (spec.get("jp") or "").strip()
+        names = [j["name"] for j in (spec.get("japanese") or [])]
+        return {"title": spec["title"], "lead": lead,
+                "tags": ["MLB", "メジャーリーグ", "野球", label,
+                         "シーズンまとめ", "コレスポ"]
+                        + ([who] if who else []) + names[:3]}
     lead = [f"{label}（{where}）を、MLB公式データの数字で見ていきます。", ""]
     lead += [f"・{head}　{body}" for head, body in items]
     # 日本人選手の本拠地なら、名前を題の先頭に置く。
@@ -541,8 +594,12 @@ def subject_tags(kind: str, morning_mode: str, games: list,
     return out
 
 
-def build_asset_metadata(topic: str) -> dict:
+def build_asset_metadata(topic: str, narration=None) -> dict:
+    import offseason_public
+    off_spec = generated_topic(topic) if topic.startswith('offseason_') else {}
     meta = ASSET_META.get(topic)
+    if topic in {"collespo_guide", "mlb_watch", "mlb_terms"} and meta:
+        meta = __import__("offseason_text").guide(meta)
     if not meta:
         spec = generated_topic(topic)
         if spec:
@@ -555,17 +612,31 @@ def build_asset_metadata(topic: str) -> dict:
         ht.display(ht.select(meta["title"] + "\n" + "\n".join(meta["lead"]),
                              'youtube', subjects=meta["tags"], shorts=True)),
         "",
-        *DAILY_LINEUP_LINES,
+        *daily_lineup_lines(),
         "",
         *OTHER_CHANNEL_LINES,
         "",
         "―――",
         "音声: VOICEVOX:ずんだもん / 四国めたん",
     ]
+    if offseason_public.applies(off_spec):
+        lines = [line.replace('ポッドキャスト(同じ内容を音声で)',
+                              'ポッドキャスト(シーズン中の試合予告)') for line in lines]
+        if narration is None:
+            import generate_asset_video as asset_video
+            narration = asset_video.build_narration(topic)
+        lines[-1] = '音声: ' + offseason_public.voice_credit(narration)
+    elif solo_host.selected() == 'ui':
+        import generate_asset_video as asset_video
+        if (asset_video.LIST_TOPICS.get(topic) or {}).get('style') == 'v3':
+            segments = asset_video.build_narration(topic)['segments']
+            for segment in segments:
+                segment.setdefault('speaker', 2)
+            lines = solo_host.credit('\n'.join(lines), segments).splitlines()
     return {
         "snippet": {
-            "title": meta["title"][:100],
-            "description": "\n".join(lines)[:5000],
+            "title": __import__('video_titles').public_title(meta["title"]),
+            "description": __import__('video_titles').description_head("\n".join(lines))[:5000],
             "tags": meta["tags"][:15],
             "categoryId": CATEGORY_SPORTS,
             "defaultLanguage": "ja",
@@ -590,7 +661,7 @@ def load_published(path: str = PUBLISHED_PATH) -> dict:
 
 
 def record_published(topic: str, video_id: str, privacy: str,
-                     path: str = PUBLISHED_PATH) -> None:
+                     path: str = PUBLISHED_PATH, experiment: dict | None = None) -> None:
     """
     投稿できたトピックを控える。
 
@@ -614,9 +685,13 @@ def record_published(topic: str, video_id: str, privacy: str,
         "privacy": privacy,
         "published_at": datetime.now(timezone.utc).isoformat(),
     }
+    if experiment:
+        assets[topic].update(experiment)
     p.parent.mkdir(parents=True, exist_ok=True)
     p.write_text(json.dumps({"assets": assets}, ensure_ascii=False, indent=2),
                  encoding="utf-8")
+    from publication_writer import mirror_documents, root_for
+    mirror_documents({'published_assets': {'assets': {topic: assets[topic]}}}, root=root_for(p))
     print(f"[info] 投稿済みとして記録しました: {topic} -> {path}")
 
 
@@ -648,7 +723,7 @@ def record_kind(kind: str, morning_mode: str = "players",
 # 資産動画(asset)だけは日付ではなく話題で引くので、別の分岐が受け持つ。
 # --kind の選択肢と食い違っていないかは test_consistency が見る。
 DATED_KINDS = ("daily", "morning", "longform", "weekly", "verdict",
-               "soccer_race")
+               "soccer_race", "soccer_week", "soccer_results", "soccer_voices", "player_story")
 
 
 def published_video(kind: str, date_key: str,
@@ -661,7 +736,27 @@ def published_video(kind: str, date_key: str,
         data = json.loads(p.read_text(encoding="utf-8"))
     except (json.JSONDecodeError, OSError):
         return {}
-    return (data.get(kind) or {}).get(date_key) or {}
+    entry = (data.get(kind) or {}).get(date_key) or {}
+    import backfill_records
+    return entry if backfill_records.matches_kind(kind, entry) else {}
+
+
+def material_date_key(kind: str, sport: str, games: dict, explicit: str | None = None) -> str:
+    """サッカーの結果は材料日、予告は材料取得日の日本日付で照合する。"""
+    from datetime import datetime, timedelta, timezone
+    expected = None
+    if kind == 'soccer_results':
+        expected = games['date_jst']
+    elif record_kind(kind, sport=sport) == 'daily_soccer':
+        at = datetime.fromisoformat(games['generated_at'].replace('Z', '+00:00'))
+        if at.tzinfo is None:
+            raise ValueError('サッカー材料の取得日時にタイムゾーンがありません')
+        expected = at.astimezone(timezone(timedelta(hours=9))).date().isoformat()
+    if expected:
+        datetime.strptime(expected, '%Y-%m-%d')
+        if explicit and explicit != expected:
+            raise ValueError('動画の日付とサッカー材料の日付が一致しません')
+    return explicit or expected or datetime.now(timezone.utc).date().isoformat()
 
 
 def resolve_publish_at(spec: str | None) -> str | None:
@@ -714,7 +809,7 @@ def link_short_to_longform(yt, date_key: str, long_id: str,
       登録者14人の段階では関連にも出ない。
 
       いま人が来ているのはショートのほうなので、そこから繋ぐ。
-      同じ試合のコメント欄を扱っているので、話も繋がる。
+      同じ日の成績とポストシーズンを扱う長編へ案内する。
 
       短編を先に上げて、長編を後に上げる順なので、
       短編を作る時点では長編のURLがまだ無い。だから後から足す。
@@ -730,8 +825,6 @@ def link_short_to_longform(yt, date_key: str, long_id: str,
     if not rec or not rec.get("video_id"):
         return f"{date_key} のコメント欄ショートが記録にありません"
     vid = rec["video_id"]
-    line = ("▼ この試合のコメント欄を、もっと詳しく読んでいます（3分）"
-            + chr(10) + f"https://youtu.be/{long_id}")
     try:
         got = yt.videos().list(part="snippet", id=vid).execute()
         items = got.get("items") or []
@@ -739,9 +832,10 @@ def link_short_to_longform(yt, date_key: str, long_id: str,
             return f"{vid} が見つかりません"
         sn = items[0]["snippet"]
         desc = sn.get("description") or ""
-        if long_id in desc:
+        linked = replace_longform_link(desc, long_id)
+        if linked == desc:
             return "既に入っています"
-        sn["description"] = (line + chr(10) + chr(10) + desc)[:5000]
+        sn["description"] = linked
         yt.videos().update(part="snippet", body={
             "id": vid, "snippet": sn}).execute()
         return f"{vid} の説明欄に足しました"
@@ -751,7 +845,9 @@ def link_short_to_longform(yt, date_key: str, long_id: str,
 
 def record_video(kind: str, date_key: str, video_id: str,
                  title: str, path: str = VIDEOS_PATH,
-                 publish_at: str | None = None) -> None:
+                 publish_at: str | None = None, preview_binding: dict | None = None,
+                 host_tracking: dict | None = None, privacy: str | None = None,
+                 experiment: dict | None = None) -> None:
     """
     その日の動画のIDを残す。
 
@@ -778,9 +874,19 @@ def record_video(kind: str, date_key: str, video_id: str,
     # その間リンクを踏んだ人が見られない動画に当たる。
     if publish_at:
         entry["publish_at"] = publish_at
+    if preview_binding is not None:
+        entry['preview_binding']=preview_binding
+    if experiment:
+        entry.update(experiment)
+    if host_tracking:
+        entry.update(host_tracking)
+    if privacy is not None or host_tracking:
+        entry['privacy'] = privacy or 'public'
     data.setdefault(kind, {})[date_key] = entry
     p.parent.mkdir(parents=True, exist_ok=True)
     p.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+    from publication_writer import mirror_documents, root_for
+    mirror_documents({'published_videos': {kind: {date_key: entry}}}, root=root_for(p))
     print(f"[info] 動画を記録しました: {kind}/{date_key} -> {path}")
 
 
@@ -1067,6 +1173,32 @@ def top_talked_team(path: str = "data/local_buzz.json") -> str:
     return top.get("name") or ""
 
 
+def us_and_jp_day(us_date: str) -> str:
+    """米国の試合日を「米国9月20日（日本時間9月21日）」の形に。
+
+    MLBの試合は米国東部の11時より前には始まらないので、日本時間では
+    必ず翌日になる。
+    """
+    try:
+        d = datetime.strptime(us_date or "", "%Y-%m-%d")
+    except ValueError:
+        return ""
+    jp = d + timedelta(days=1)
+    return (f"米国{d.month}月{d.day}日（日本時間{jp.month}月{jp.day}日）")
+
+
+def jst_stamp(utc_text: str) -> str:
+    """UTCの時刻を「9月22日15時」の形に。数字がいつの値かを添えるために。"""
+    try:
+        t = datetime.fromisoformat((utc_text or "").replace("Z", "+00:00"))
+    except ValueError:
+        return ""
+    if t.tzinfo is None:
+        return ""
+    t = t.astimezone(timezone(timedelta(hours=9)))
+    return f"{t.month}月{t.day}日{t.hour}時"
+
+
 def buzz_top(path: str) -> dict:
     """
     その日いちばん見られたMLB公式ハイライト。無ければ空。
@@ -1076,15 +1208,20 @@ def buzz_top(path: str) -> dict:
     表記は日本語にする(mlb_buzz.json は英語の対戦名で持っている)。
     """
     try:
-        vids = json.loads(pathlib.Path(path).read_text(
-            encoding="utf-8")).get("videos") or []
+        data = json.loads(pathlib.Path(path).read_text(encoding="utf-8"))
     except (json.JSONDecodeError, OSError):
         return {}
+    vids = data.get("videos") or []
     if not vids:
         return {}
     v = vids[0]
     res = v.get("result") or {}
-    out = {"views": v.get("views")}
+    # 日付は3つあって、どれも違う。**更新した日を試合の日として書かない。**
+    out = {"views": v.get("views"),
+           "game_date": v.get("game_date"),        # 米国の日付
+           "video_id": v.get("video_id"),
+           "published_at": v.get("published_at"),  # 元動画の公開(UTC)
+           "fetched_at": data.get("updated_at")}   # 再生回数を取った時刻(UTC)
     if res.get("away_jp") and res.get("home_jp"):
         out["matchup_jp"] = f"{res['away_jp']} vs {res['home_jp']}"
         if res.get("away_score") is not None:
@@ -1149,6 +1286,28 @@ def _postseason_data(path: str = "data/postseason.json") -> dict:
         return {}
 
 
+def morning_who(players: list, n: int = 3) -> tuple:
+    """朝の成績ショートの主役の並べ方。**題と説明文で同じものを使う。**
+
+    9/22は岡本和真1人だけだったのに、題が「岡本和真 ほか｜…ランキング」、
+    説明が「岡本和真ほか。」になった。題と説明の2か所で、どちらも人数を
+    見ずに「ほか」を付けていた。
+
+    返り値: (先頭に出す名前, 残りがいるか, 名前のある人数)
+    """
+    # **動画と同じ順（その日の貢献度の高い順）で。**材料のファイルの順
+    # （投手が先）のまま先頭3人を取っていて、本塁打の選手が題から
+    # 落ちた日が9月に10日あった（Cloud-02 の調べ）。
+    try:
+        import generate_morning_short as _g
+        players = _g.sort_players([p for p in (players or []) if p.get("name")])
+    except Exception:                                    # noqa: BLE001
+        players = list(players or [])
+    names = [p.get("name") for p in players if p.get("name")]
+    shown = names[:n]
+    return shown, len(names) > len(shown), len(names)
+
+
 def weekly_jp_names(path: str = "data/weekly_ops.json", n: int = 3) -> str:
     """今週いちばん打った日本人選手の名前を、題の先頭に置く形で返す。
 
@@ -1183,6 +1342,13 @@ def _soccer_race_title() -> str:
         return ""
 
 
+def _json_or_empty(path: str) -> dict:
+    try:
+        return json.loads(pathlib.Path(path).read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return {}
+
+
 def _soccer_race_lines() -> list:
     """説明文に並べる、線の前後。**画面に出したものと同じ数字。**"""
     race = _race_data()
@@ -1211,6 +1377,18 @@ def _soccer_race_lines() -> list:
     return out
 
 
+def club_display_title(title: str) -> str:
+    """題のクラブの古い書き方（「マンチェスター・シティ」など）を表示名に（Opus-33、10/14）。
+
+    表は notability_engine の1か所（data/club_display_names.json、帯・説明欄と同じ。Opus-32 の
+    club_display_text）。その関数がまだ無い版では、題をそのまま返す（ここで別の表は持たない）。
+    """
+    sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
+    import notability_engine as ne
+    fix = getattr(ne, "club_display_text", None)
+    return fix(title) if fix else title
+
+
 def build_metadata(games_path: str, date_label: str, kind: str = "daily",
                    narration_path: str = "public/narration.json",
                    archive_dir: str = "archive",
@@ -1223,8 +1401,17 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
                    jp_names: list | None = None,
                    jp_team: list | None = None,
                    jp_team_name: str = "",
-                   longform_mode: str = "voices") -> dict:
+                   longform_mode: str = "voices",
+                   longform_subject: str = "") -> dict:
     """タイトル・説明文・タグを、その日のデータから組み立てる"""
+    if kind == 'player_story':
+        import player_story
+        narr = _json_or_empty(narration_path)
+        player_story.validate(narr)
+        return {'snippet': {'title': __import__('video_titles').public_title(narr['title']), 'description': __import__('host_split').credit(__import__('video_titles').description_head(narr['description'])),
+                            'tags': ['MLB', narr['player']['name_jp'], 'コレスポ'],
+                            'categoryId': CATEGORY_SPORTS, 'defaultLanguage': 'ja',
+                            'defaultAudioLanguage': 'ja'}}
     try:
         data = json.loads(pathlib.Path(games_path).read_text(encoding="utf-8"))
         games = [g for g in data.get("games", []) if g.get("is_notable")][:3]
@@ -1269,11 +1456,11 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
         if ch:
             lead = ch[0]["text"].replace(" が", "が")
             title = (f"【MLB】{lead}｜{date_label} "
-                     f"ポストシーズン進出争い #Shorts")
+                     f"{_rw.ps_label(ps)} #Shorts")
         else:
             head = ps.get("headline") or "進出争い"
             title = (f"【MLB】{head}｜{date_label} "
-                     f"ポストシーズン進出争い #Shorts")
+                     f"{_rw.ps_label(ps)} #Shorts")
     elif kind == "morning" and morning_mode == "voices":
         # コメント欄の回。何の試合かがタイトルで分かるようにする。
         # 「現地の声」だけでは、どの試合の話なのか見当が付かない。
@@ -1281,11 +1468,22 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
         m = (buzz_top(buzz_path) or {})
         # 対戦カードがあればそれ、無ければ何のハイライトかを日本語で。
         card = m.get("matchup_jp") or m.get("topic_jp") or ""
+        # **訳せなかった日は英語の動画名がそのまま来る。**9/29の題が
+        # 「大谷翔平｜2026 MLB Season Leaders in HR (Schwarber/PCA), Ks
+        # (Miz), AVG (Yordan), AND MORE! 現地のファンは…」になった。
+        # 日本語が無ければ使わない。長すぎる時も使わない。
+        import re as _re
+        if card and (not _re.search(r"[ぁ-んァ-ヶ一-龠]", card)
+                     or len(card) > 30):
+            card = ""
         # 返信が付いた一言を扱った回は、その件数を出す。
         # 「ファンの反応」は毎日同じ言い方になるが、件数はその日だけの数字で、
         # しかも「何を言ったらそんなに返ってきたのか」が残る。
         n = thread_replies()
-        tail = f"｜返信{n}件ついたコメント {date_label} #Shorts" if n else             f"｜{date_label} 最も見られたハイライトのコメント欄 #Shorts"
+        # 日付は「更新した日」。付けないと試合の日に読める
+        # （9/22の回の試合は米国9/20、日本9/21だった）。
+        tail = (f"｜返信{n}件ついたコメント {date_label}更新 #Shorts" if n else
+                f"｜{date_label}更新 MLB公式ハイライトのコメント欄 #Shorts")
         # コメントで名前が挙がった日本人選手がいれば、先頭へ。
         # 所属しているだけの日は出さない(voiced_japanese の説明を参照)。
         who = "・".join(voiced_japanese()[:2])
@@ -1296,7 +1494,9 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
         elif card:
             title = f"【MLB】{card} 現地のファンは何と言ったか{tail}"
         else:
-            title = f"【MLB】現地で最も見られた試合のコメント欄{tail}"
+            # 試合名が取れない日の予備。「現地で最も見られた」は集めた範囲の1位を言い過ぎる
+            # （説明文の決まりと同じ。10/13 にこの予備の題で出て、説明文の検査が落ちた）。
+            title = f"【MLB】MLB公式ハイライト 現地のファンは何と言ったか{tail}"
     elif kind == "morning" and morning_mode == "press":
         # 言葉の回。数字の回(local)と主題を分けてあるので、
         # タイトルでも「誰が何と言ったか」を前に出す。
@@ -1334,12 +1534,18 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
                  f"｜{date_label} 再生回数と話題のチーム #Shorts")
     elif kind == "morning":
         # 検索されるのは選手名なので、貢献度の高い順に先頭へ置く。
-        # 「成績まとめ」だけだと淡々と読み上げるだけの動画に見えるので、
-        # 順位をつけていることをタイトルにも出す。
-        names = [p.get("name") for p in (morning_players or [])][:3]
-        who = "・".join(n for n in names if n)
-        if who:
-            title = (f"【MLB】{who} ほか｜{date_label} 日本人選手 "
+        # 2人以上の日は、順位をつけていることを題にも出す。
+        # **1人の日は並べていないので「ほか」も「ランキング」も言わない。**
+        shown, more, count = morning_who(morning_players)
+        if count == 1:
+            p = next(x for x in morning_players if x.get("name"))
+            team = f"{p['team_jp']} " if p.get("team_jp") else ""
+            line = f"、{p['headline']}" if p.get("headline") else ""
+            title = (f"【MLB】{team}{shown[0]}{line}｜{date_label}の"
+                     f"日本人選手 #Shorts")
+        elif shown:
+            who = "・".join(shown) + (" ほか" if more else "")
+            title = (f"【MLB】{who}｜{date_label} 日本人選手 "
                      f"勝利貢献スコア ランキング #Shorts")
         else:
             title = (f"【MLB】{date_label} 日本人選手 "
@@ -1383,11 +1589,14 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
             # 名前を先に置くのは同じ（実測で再生2.8倍・登録は全部こちら）。
             # 数字の回は出場した選手を必ず拾えるので、名前が毎回入る。
             # 題に名前が無いことが長編のいちばんの弱さだった。
+            # 確定後は「進出争い」ではない（race_words.ps_label と同じ判断）
+            race = ("ポストシーズン" if _rw.is_settled(_postseason_data())
+                    else "進出争い")
             if jp:
-                title = (f"【MLB】{'・'.join(jp)}のきょう｜"
-                         f"成績と進出争い {date_label}")
+                title = (f"【MLB】{'・'.join(jp)}の今日｜"
+                         f"成績と{race} {date_label}")
             else:
-                title = f"【MLB】きょうの日本人選手と進出争い｜{date_label}"
+                title = f"【MLB】{longform_subject or race + 'の最新情勢'}｜{date_label}"
         elif jp:
             who = "・".join(jp)
             title = (f"【海外の反応】{who}への現地の声｜"
@@ -1412,6 +1621,21 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
                      f"MLB公式コメント欄を読み解く {date_label}")
         else:
             title = f"【海外の反応】MLB公式コメント欄を読み解く｜{date_label}"
+    elif kind == "soccer_voices":
+        import soccer_voices
+        _voices_material = _json_or_empty(games_path)
+        soccer_voices.validate_data(_voices_material, publish=True)
+        title = _voices_material['title']
+    elif kind == "soccer_results":
+        import soccer_results
+        title = soccer_results.title(_json_or_empty(games_path))
+        if not title:
+            raise ValueError("出場した日本人選手がいない日はサッカー結果を投稿しません")
+    elif kind == "soccer_week":
+        # 欧州の日本人選手の週末。見出し（得点した選手・勝ったクラブ）を先に。
+        wk = _json_or_empty("data/soccer_jp_week.json")
+        head = wk.get("headline") or "欧州の日本人選手"
+        title = f"【欧州サッカー】{head}｜日本人選手の週末 #Shorts"
     elif kind == "soccer_race":
         # 欧州サッカーの順位争い。
         #
@@ -1495,8 +1719,38 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
     else:
         title = (f"{SPORTS.get(sport, SPORTS['mlb'])['badge']}"
                  f"{date_label}の注目試合 #Shorts")
+    _soccer_v4 = _json_or_empty(narration_path) if narration_path else {}
+    _soccer_mode = 'preview' if kind == 'daily' and sport == 'soccer' else 'race' if kind == 'soccer_race' else 'week' if kind == 'soccer_week' else None
+    if os.environ.get('COLLESPO_SHORT_LOOK') == 'v4' and _soccer_mode and _soccer_v4.get('soccer_v4_mode') == _soccer_mode:
+        title = _soccer_v4['title']
     title = title.replace("  ", " ").strip()
-    title = title[:100]  # YouTubeのタイトル上限
+    # 選手ごとのシリーズ（作業153・本人 10/9「今日」に）: 題の頭を「【MLB】〇〇の今日｜…」にそろえ、
+    # 説明欄の2行目にその選手の回の一覧を置く。リポジトリ変数 SERIES_TITLE=1 のときだけ。
+    series_main = []
+    if os.environ.get("SERIES_TITLE") == "1":
+        try:
+            import series as _series
+            rk = record_kind(kind, morning_mode, sport)
+            series_main = _series.main_players(title, rk, _series.load_roster())
+            if series_main:
+                title = _series.series_title(title, series_main, rk)
+        except Exception as e:                      # noqa: BLE001  題が作れないなら元の題で出す
+            print(f"[warn] シリーズの題を作れません（元の題のまま）: {e}")
+            series_main = []
+    # 選手名と球団名を新聞の書き方に（「村上宗隆のホワイトソックス」→「村上ホワイトソックス」。10/10 本人）
+    import video_titles
+    title = video_titles.public_title(title, soccer=(sport == 'soccer' or kind in (
+        'soccer_race', 'soccer_week', 'soccer_results', 'soccer_voices')))
+    import soccer_title_v2
+    _title_v2_data = None
+    if soccer_title_v2.enabled() and (kind == 'soccer_results' or kind == 'daily' and sport == 'soccer'):
+        _title_v2_data = _json_or_empty(games_path)
+        if kind == 'soccer_results':
+            title = soccer_title_v2.results_title(_title_v2_data)
+        else:
+            _focus = soccer_title_v2.preview_head(_title_v2_data)
+            if _focus:
+                title = soccer_title_v2.title(_focus['head'], _focus['league'])
 
     # 説明文の冒頭。YouTubeは「もっと見る」より前の数行しか出さないので、
     # そこに定型文を置くと、一覧でも検索結果でも情報がゼロになる。
@@ -1528,33 +1782,58 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
     elif kind == "morning" and morning_mode == "postseason":
         ps = _postseason_data()
         ch = ps.get("changes") or []
-        lines = ["MLBのポストシーズン進出争いを、毎日その日の数字で。", ""]
+        lines = (["MLBのポストシーズンを、シリーズごとの勝敗で毎日。", ""]
+                 if ps.get("phase") == "postseason" else
+                 ["MLBのポストシーズン進出争いを、毎日その日の数字で。", ""])
         if ch:
-            lines.append("きょう動いたところ:")
+            lines.append("今日動いたところ:")
             lines += ["・" + c["text"] for c in ch[:5]]
         else:
-            lines.append("きょうは順位に動きがありませんでした。")
-        lines += ["",
-                  "・マジックナンバー … あと何勝（または相手の何敗）で"
-                  "地区優勝が決まるか",
-                  "・ワイルドカード … 地区優勝を逃しても進出できる3枠",
-                  "・今日終わったら … いまの順位のままなら、"
-                  "どの組み合わせになるか",
-                  "",
-                  "数字はMLB公式データ（statsapi.mlb.com）から"
-                  "そのまま引いています。",
-                  "同率の球団がいる日は、直接対決の結果で順番が"
-                  "入れ替わることがあります。", ""]
+            lines.append("今日は順位に動きがありませんでした。")
+        if _rw.is_settled(ps):
+            # **確定したあとは、マジックも「今日終わったら」も無い。**
+            lines += ["",
+                      "・ワイルドカードシリーズ … 3戦制、2勝で勝ち抜け",
+                      "・地区シリーズ … 5戦制、3勝で勝ち抜け",
+                      "・リーグ優勝決定シリーズ／ワールドシリーズ … "
+                      "7戦制、4勝で勝ち抜け",
+                      "・王手 … あと1勝で勝ち抜け",
+                      "",
+                      "数字はMLB公式データ（statsapi.mlb.com）から"
+                      "そのまま引いています。", ""]
+        else:
+            lines += ["",
+                      "・マジックナンバー … あと何勝（または相手の何敗）で"
+                      "地区優勝が決まるか",
+                      "・ワイルドカード … 地区優勝を逃しても進出できる3枠",
+                      "・今日終わったら … いまの順位のままなら、"
+                      "どの組み合わせになるか",
+                      "",
+                      "数字はMLB公式データ（statsapi.mlb.com）から"
+                      "そのまま引いています。",
+                      "同率の球団がいる日は、直接対決の結果で順番が"
+                      "入れ替わることがあります。", ""]
     elif kind == "morning" and morning_mode == "voices":
         top = buzz_top(buzz_path) or {}
-        lines = [f"{date_label}のメジャーリーグで、"
-                 "現地で最も見られたハイライトのコメント欄を紹介します。", ""]
+        # **更新した日・試合の日・元動画は別。**以前は
+        # 「{date_label}のメジャーリーグで」と書き、更新日を試合日に見せて
+        # いた（9/22の回は米国9/20の試合）。「現地で最も見られた」も、
+        # 集めた範囲の中での1位を言い過ぎていた（Codexの内容点検）。
+        lines = [f"{date_label}更新。MLB公式ハイライトのうち、取得した時点で"
+                 "いちばん再生されていた動画のコメント欄を紹介します。", ""]
         if top.get("matchup_jp"):
             lines.append(f"・試合: {top['matchup_jp']}")
+        game_day = us_and_jp_day(top.get("game_date"))
+        if game_day:
+            lines.append(f"・試合日: {game_day}")
         if top.get("score_line"):
             lines.append(f"・結果: {top['score_line']}")
+        if top.get("video_id"):
+            lines.append(f"・元動画: https://youtu.be/{top['video_id']}")
         if top.get("views"):
-            lines.append(f"・MLB公式ハイライトの再生回数: {top['views']:,}回")
+            when = jst_stamp(top.get("fetched_at"))
+            lines.append(f"・MLB公式ハイライトの再生回数: {top['views']:,}回"
+                         + (f"（{when}時点）" if when else ""))
         n = thread_replies()
         if n:
             lines.append(f"・最も返信の付いたコメント: 返信{n}件"
@@ -1571,6 +1850,8 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
                  "いずれも翻訳したもので、コレスポの見解ではありません。",
                  "ファンのコメント欄と、数字で見る「現地での注目度」は"
                  "別の動画で出しています。"]
+        from article_sources import references
+        lines += references(_json_or_empty(narration_path))
     elif kind == "morning" and morning_mode == "local":
         lines = [f"{date_label}のメジャーリーグについて、"
                  "現地でどれだけ注目されたかをまとめました。", "",
@@ -1580,13 +1861,22 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
                  "数字はいずれも公開されているものです。"
                  "「現地の声」は翻訳であり、当チャンネルの見解ではありません。", ""]
     elif kind == "morning":
-        who = "、".join(p.get("name", "") for p in (morning_players or [])[:3])
-        head = f"{who}ほか。" if who else ""
-        lines = [f"{head}{date_label}のメジャーリーグから、"
-                 "日本人選手の成績をまとめました。", ""]
+        shown, more, count = morning_who(morning_players)
+        if count == 1:
+            lines = [f"{date_label}のメジャーリーグから、"
+                     f"{shown[0]}の成績です。", ""]
+        else:
+            head = ("、".join(shown) + ("ほか" if more else "") + "。"
+                    if shown else "")
+            lines = [f"{head}{date_label}のメジャーリーグから、"
+                     "日本人選手の成績をまとめました。", ""]
         for p in (morning_players or [])[:8]:
             lines.append(f"・{p.get('name')} … {p.get('headline')}")
-        lines += ["", "数字はMLB公式データをそのまま集計したものです。", ""]
+        # **公式なのは成績だけ。**点数はコレスポが付けている。
+        # 以前は「MLB公式データをそのまま集計」と書き、点数まで公式に
+        # 見えていた（9/22 Codexの内容点検で指摘）。
+        lines += ["", "成績はMLB公式データです。動画内の「勝利貢献スコア」は"
+                  "コレスポ独自の指標で、公式の記録ではありません。", ""]
     elif kind == "verdict":
         lines = [
             "コレスポが先週「◯連勝中だから注目」として取り上げた試合が、"
@@ -1601,15 +1891,20 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
         # 中身と1文字も合っていないものを、公開した動画に付けていた。
         # 通常動画は検索から引かれるので、説明文はそのまま検索の材料。
         if longform_mode == "numbers":
+            settled = _rw.is_settled(_postseason_data())
             lines = [
-                "その日の日本人選手の成績、進出争いの動き、"
-                "名前のある指標での位置を、"
+                ("その日の日本人選手の成績、" if jp_names else "")
+                + ("ポストシーズンのシリーズの勝敗、" if settled
+                   else "進出争いの動き、")
+                + "名前のある指標での位置を、"
                 "ずんだもんと四国めたんが数字で追います。",
                 "",
                 "・成績と順位はMLB公式データ（statsapi.mlb.com）"
                 "から引いたものだけを使っています",
                 "・打球の飛距離と速度はBaseball Savant（Statcast）の計測値です",
-                "・進出争いは、圏内か圏外かまで言葉で書いています",
+                ("・シリーズの勝敗は、どちらの球団から見た数字かまで書いています"
+                 if settled else
+                 "・進出争いは、圏内か圏外かまで言葉で書いています"),
                 "・**予想はしません。**記録として確定していることだけを話します",
                 "",
             ]
@@ -1629,6 +1924,22 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
                 "コレスポは、その動画とコメント欄を毎日見て話す番組です。",
                 "",
             ]
+    elif kind == "soccer_results":
+        import soccer_results
+        lines = soccer_results.description_lines(_json_or_empty(games_path))
+    elif kind == "soccer_voices":
+        import soccer_voices
+        lines = soccer_voices.description_lines(_json_or_empty(games_path))
+    elif kind == "soccer_week":
+        import soccer_jp_week as _sjw
+        wk = _json_or_empty("data/soccer_jp_week.json")
+        lines = ["欧州5大リーグの日本人選手の、週末の結果です。", ""]
+        lines += ["・" + _sjw.line(r) for r in (wk.get("rows") or [])[:12]]
+        lines += ["",
+                  "クラブの結果は5大リーグすべて（football-data.org）。"
+                  "選手本人の出場時間・得点・アシストは、公式データがある"
+                  "プレミアリーグのみ載せています。ほかのリーグの選手の"
+                  "出場は、この動画では扱っていません。", ""]
     elif kind == "soccer_race":
         lines = ["欧州サッカーの順位争いを、CL圏内・EL圏内の境目で"
                  "区切って見ます。順位と勝ち点はすべて公式の順位表の"
@@ -1650,7 +1961,7 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
     # 長編の説明文に「明日の注目試合」が並んでいて、中身と合わなかった。
     # 試合の一覧は「明日の注目試合」のためのもの。
     # 長編にも進出争いにも関係が無い（中身と食い違う）。
-    _no_games = kind in ("longform", "weekly", "morning")
+    _no_games = kind in ("longform", "weekly", "morning", "soccer_results", "soccer_voices")
     for i, g in enumerate([] if _no_games else games, 1):
         lines.append(
             f"{i}. {g.get('start_time_jst')} "
@@ -1663,14 +1974,14 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
     editorial_text = title + "\n" + "\n".join(lines)
     # 順位争いは必ずサッカー。**渡し忘れると #MLB が付く。**
     # 区分から分かることを、呼ぶ側の引数に頼らない。
-    if kind == "soccer_race":
+    if kind in ("soccer_race", "soccer_week", "soccer_results", "soccer_voices"):
         sport = "soccer"
     public_hashtags = ht.select(editorial_text, 'youtube', sport=sport,
                                 shorts=kind not in LANDSCAPE_KINDS)
     lines += [
         ht.display(public_hashtags),
         "",
-        *DAILY_LINEUP_LINES,
+        *daily_lineup_lines(),
         "",
         # 同じ枠の前回まで。検索から来た人が次の1本へ行けるように。
         *related_lines("morning_" + morning_mode
@@ -1684,9 +1995,9 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
         "",
         "―――",
         ("音声: VOICEVOX:ずんだもん / VOICEVOX:四国めたん"
-         if kind == "longform" else "音声: VOICEVOX:ずんだもん"),
+         if kind == "longform" else "音声: VOICEVOX:四国めたん" if kind in ("soccer_results", "soccer_voices") or (os.environ.get('COLLESPO_SHORT_LOOK') == 'v4' and _soccer_mode and _soccer_v4.get('soccer_v4_mode') == _soccer_mode) else "音声: VOICEVOX:ずんだもん"),
         # 出典は競技で変わる。サッカーの動画にMLBのAPI名が出ていては嘘になる。
-        SPORTS.get(sport, SPORTS["mlb"])["source"],
+        _voices_material['screen_source'] if kind == "soccer_voices" else "出典: ESPN・football-data.org（取得時にスコア照合）" if kind == "soccer_results" else SPORTS.get(sport, SPORTS["mlb"])["source"],
     ]
 
     # その回の主役を先に入れる。
@@ -1710,7 +2021,9 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
         # 検索から引かれるための言葉。フィードが無いぶん、ここが効く。
         # **中身に無い言葉は入れない。**数字の回に「海外の反応」を
         # 付けると、その語で来た人が違うものを見ることになる。
-        tags += (["MLB 成績", "日本人選手", "進出争い", "解説"]
+        tags += (["MLB 成績", "日本人選手",
+                  ("ポストシーズン" if _rw.is_settled(_postseason_data())
+                   else "進出争い"), "解説"]
                  if longform_mode == "numbers"
                  else ["海外の反応", "MLB 海外の反応", "コメント欄", "解説"])
     else:
@@ -1726,10 +2039,24 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
                 if ht.present(name, editorial_text) and name not in tags:
                     tags.append(name)
 
+    if _title_v2_data is not None:
+        _full_names = soccer_title_v2.metadata_names(_title_v2_data, results=kind == 'soccer_results')
+        if _full_names:
+            lines.insert(1, '選手名：'+'・'.join(_full_names))
+            tags = _full_names+[t for t in tags if t not in _full_names]
+
+    if series_main:
+        try:
+            import series as _series
+            head = _series.description_head(series_main, _series.load_store(), _series.load_slugs())
+            if head:
+                lines = lines[:1] + head[:-1] + lines[1:]
+        except Exception as e:                      # noqa: BLE001
+            print(f"[warn] シリーズの一覧の行を足せません: {e}")
     return {
         "snippet": {
             "title": title,
-            "description": "\n".join(lines)[:5000],
+            "description": solo_host.credit(video_titles.description_head("\n".join(lines)), _json_or_empty(narration_path).get('segments', []))[:5000],
             # 上限は500文字。15本に絞っていたが、主役の名前を前に置くように
             # したので、そのぶん後ろの一般語が押し出されていた。
             "tags": _fit_tags(tags),
@@ -1743,13 +2070,29 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
     }
 
 
+def club_display_description(text: str) -> str:
+    """説明欄のクラブの古い書き方（「アストン・ヴィラ」など）を表示名に。表は notability_engine の1か所。"""
+    sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
+    import club_display_names
+    return club_display_names.display_text(text, include_short=True)[:5000]
+
+
+def workflow_upload_result(uploaded):
+    path=os.environ.get('GITHUB_OUTPUT')
+    if path:
+        with open(path,'a',encoding='utf8') as output:
+            output.write('uploaded='+('true' if uploaded else 'false')+'\n')
+
+
 def main():
+    workflow_upload_result(False)
     parser = argparse.ArgumentParser()
     parser.add_argument("--video", default="build/video/collespo_short.mp4")
     parser.add_argument("--games", default="notable_games.json")
     parser.add_argument("--kind", default="daily",
                         choices=["daily", "weekly", "asset", "verdict",
-                                 "morning", "longform", "soccer_race"],
+                                 "morning", "longform", "soccer_race",
+                                 "soccer_week", "soccer_results", "soccer_voices", "player_story"],
                         help="daily=ショート / weekly=週次まとめ / "
                              "asset=資産動画 / verdict=答え合わせ / "
                              "morning=夕方の5本 / longform=対話の通常動画 / "
@@ -1792,6 +2135,27 @@ def main():
                         help="JSTの公開時刻 HH:MM。指定すると予約投稿になる。"
                              "過ぎている場合はそのまま公開する")
     args = parser.parse_args()
+    import ui_voice_queue
+    ui_voice_queue.configure(args)
+    if args.kind == 'player_story':
+        if os.environ.get('COLLESPO_PLAYER_STORY') != 'on' or os.environ.get('PLAYER_STORY_PUBLISH') != 'true':
+            print('[info] 選手の話題の回の生成・公開スイッチは既定オフです')
+            return
+        import player_story
+        player_story.validate(_json_or_empty(args.narration), publish=True)
+
+    if args.kind == 'asset' and (args.asset_topic or '').startswith('offseason_'):
+        import offseason_news
+        import generated_topics
+        spec = generated_topics.get(args.asset_topic)
+        if not offseason_news.enabled() or not offseason_news.available(spec):
+            raise ValueError('オフの話題は既定停止、または当日の公式材料がありません')
+        __import__('jp_future_series').validate_pending(spec, _json_or_empty('data/offseason_published.json'))
+        narration = _json_or_empty(args.narration)
+        errors = offseason_news.check(narration)
+        if (not narration.get('offseason') or narration.get('offseason_sample') or errors
+                or narration.get('offseason') != spec.get('offseason')):
+            raise ValueError('オフの公式材料と原稿を確認できません: '+str(errors))
 
     video_path = pathlib.Path(args.video)
     if not video_path.exists():
@@ -1823,9 +2187,7 @@ def main():
     #
     # 日付で引ける枠は全部ここで止める。資産動画は日付ではなく
     # 話題で引くので、上の分岐がそのまま受け持つ。
-    from datetime import datetime as _dt, timezone as _tz
-
-    date_key = args.video_date or _dt.now(_tz.utc).date().isoformat()
+    date_key = material_date_key(args.kind, args.sport, _json_or_empty(args.games), args.video_date)
     rec_kind = record_kind(args.kind, args.morning_mode, args.sport)
     if args.kind in DATED_KINDS and not args.force:
         already = published_video(rec_kind, date_key)
@@ -1859,7 +2221,18 @@ def main():
 
     if args.kind == "asset":
         # 資産動画は試合データを一切参照しない(日付に依存しないため)
-        body = build_asset_metadata(args.asset_topic or "mlb_abbr")
+        topic = args.asset_topic or "mlb_abbr"
+        if topic.startswith('offseason_'):
+            narration = _json_or_empty(args.narration)
+            import host_split
+            receipt = host_split.read(host_split.video_receipt(args.video))
+            if receipt.get('voice_resolution'):
+                import hashlib
+                narration = __import__('offseason_public').saved_voice(
+                    narration, receipt, hashlib.sha256(pathlib.Path(args.video).read_bytes()).hexdigest())
+            body = build_asset_metadata(topic, narration=narration)
+        else:
+            body = build_asset_metadata(topic)
     else:
         date_label = ""
         try:
@@ -1909,6 +2282,7 @@ def main():
         # 28日間の実測で、名前が題にある動画は再生2.8倍・登録12人 vs 0人。
         jp_names, jp_team, jp_team_name = [], [], ""
         longform_mode = "voices"
+        longform_subject = ""
         if args.dialogue:
             try:
                 _d = json.loads(pathlib.Path(args.dialogue).read_text(
@@ -1921,6 +2295,7 @@ def main():
                 # 数字の回に「海外の反応」と書くと、コメント欄を
                 # 読んでいないのに読んだことになる。
                 longform_mode = _d.get("mode") or "voices"
+                longform_subject = _d.get("title") or ""
             except (OSError, json.JSONDecodeError) as e:
                 print(f"[info] 台本から日本人選手を読めません({e})")
         body = build_metadata(args.games, date_label, args.kind,
@@ -1929,10 +2304,22 @@ def main():
                               args.profile, args.topic,
                               jp_names=jp_names, jp_team=jp_team,
                               jp_team_name=jp_team_name,
-                              longform_mode=longform_mode)
+                              longform_mode=longform_mode,
+                              longform_subject=longform_subject)
+    # 説明欄のクラブ名は表示名の表（帯と同じ1か所）を通す。古い書き方を残さない（Opus-32）。
+    # 題は Opus-33 で同じ関数を通す。
+    if _json_or_empty(args.narration).get('offseason', {}).get('series_number'):
+        body['snippet']['description'] += '\n' + __import__('jp_future_series').DESCRIPTION
+    body["snippet"]["description"] = __import__('fan_privacy').description(club_display_description(body["snippet"]["description"]))
     # publishAt は privacyStatus が private のときだけ有効。
     # public のまま渡すと予約は無視され、その場で公開される。
     publish_at = resolve_publish_at(args.publish_at)
+    import hook_ab
+    experiment = hook_ab.publication(args.video, publish_at)
+    import outro_next
+    outro_record = outro_next.publication(args.video, hook_ab.publication_day(publish_at), _json_or_empty(args.narration))
+    if outro_record:
+        experiment = dict(experiment or {}, **outro_record)
     body["status"] = {
         "privacyStatus": "private" if publish_at else args.privacy,
         "selfDeclaredMadeForKids": False,
@@ -1946,14 +2333,48 @@ def main():
     if publish_at:
         body["status"]["publishAt"] = publish_at
 
+    import player_publications as player_pubs
+    # 複数選手の比較・所属回は予約する時点でも全員を再照合する。
+    if args.kind == 'asset' and args.asset_topic:
+        import jp_assets
+        spec = __import__('generated_topics').get(args.asset_topic)
+        guarded = args.asset_topic.startswith(('season_compare_', 'season_momentum_rs2026_')) or args.asset_topic == 'season_game_823818'
+        if guarded and not spec:
+            print('[info] 日本人資産の材料が無いため公開を見送ります')
+            return
+        if guarded or spec.get('stock_kind') in ('compare', 'momentum', 'game'):
+            if not __import__('asset_policy').selectable(args.asset_topic, spec):
+                print('[info] 日本人資産の選択条件を満たさないため公開を見送ります')
+                return
+            at = datetime.fromisoformat(publish_at.replace('Z', '+00:00')) if publish_at else datetime.now(timezone.utc)
+            if not jp_assets.publication_available(args.asset_topic, spec, jp_assets.publication_ledgers(), at):
+                print('[info] 公開済み・選手の7日間重複・公開日の型または本数上限のため見送ります')
+                return
+            experiment = dict(experiment or {}, player_ids=sorted(jp_assets.ids(args.asset_topic, spec)))
+            if publish_at:
+                experiment['publish_at'] = publish_at
+    player_kind = 'player_story' if args.kind == 'player_story' else 'season_player' if args.kind == 'asset' and player_pubs.topic_id(args.asset_topic) else None
+    if player_kind:
+        player_id = (player_pubs.identity(_json_or_empty(args.narration)['player']) if player_kind == 'player_story'
+                     else player_pubs.topic_id(args.asset_topic))
+        at = datetime.fromisoformat(publish_at.replace('Z', '+00:00')) if publish_at else datetime.now(timezone.utc)
+        player_record = player_pubs.publication(player_id, player_kind, at)
+        if player_record is None:
+            print('[info] 同じMLB選手の別枠が7日以内にあるため公開を見送ります')
+            return
+        if publish_at:
+            player_record['publish_at'] = publish_at
+        experiment = dict(experiment or {}, **player_record)
+
+    # 即時の非公開確認は公開対象外。予約はprivateで送る場合も公開前検査が必要。
+    if args.kind not in ('longform', 'weekly') and (args.privacy != 'private' or publish_at):
+        import short_content
+        quality = short_content.validate_upload(video_path)
+        experiment = dict(experiment or {}, **short_content.publication_fields(quality))
+
     try:
         youtube = build("youtube", "v3", credentials=creds, cache_discovery=False)
-        media = MediaFileUpload(str(video_path), chunksize=-1, resumable=True,
-                                mimetype="video/mp4")
-        request = youtube.videos().insert(
-            part="snippet,status", body=body, media_body=media
-        )
-        response = request.execute()
+        response = insert_with_retry(youtube, body, video_path)
         vid = response.get("id")
         print(f"[info] アップロードしました: https://youtu.be/{vid}")
         print(f"[info] タイトル: {body['snippet']['title']}")
@@ -1963,24 +2384,19 @@ def main():
         # ここで失敗しても動画自体は上がっているので、警告に留める。
         thumb = pathlib.Path(args.thumbnail) if args.thumbnail else None
         if thumb and thumb.exists() and vid:
-            try:
-                youtube.thumbnails().set(
-                    videoId=vid,
-                    media_body=MediaFileUpload(str(thumb), mimetype="image/png"),
-                ).execute()
-                print(f"[info] サムネイルを設定しました: {thumb}")
-            except Exception as e:
-                # カスタムサムネイルはアカウントの電話番号確認が必要。
-                # 未確認だとここで必ず失敗するので、原因が分かるように書く
-                print(f"[warn] サムネイルの設定に失敗しました: {e}", file=sys.stderr)
-                print("       YouTubeアカウントの電話番号確認が済んでいるか"
-                      "確認してください(未確認だとカスタムサムネイルは使えません)",
-                      file=sys.stderr)
+            set_thumbnail(youtube, thumb, vid,
+                          record_kind(args.kind, args.morning_mode, args.sport),
+                          body["snippet"]["title"])
         elif thumb:
             print(f"[info] サムネイル画像が無いためスキップします: {thumb}")
 
         if args.kind == "asset" and vid:
-            record_published(args.asset_topic or "mlb_abbr", vid, args.privacy)
+            record_published(args.asset_topic or "mlb_abbr", vid, args.privacy, experiment=experiment)
+            import host_split
+            tracking = host_split.publication(args.video, args.narration)
+            if tracking or experiment:
+                record_video('asset', args.asset_topic or 'mlb_abbr', vid, body['snippet']['title'],
+                             publish_at=publish_at, host_tracking=tracking, privacy=args.privacy, experiment=experiment)
         elif vid:
             # 日付ものは、アーカイブページから辿れるよう日付で記録する。
             # キーはUTC日付にする。archive/YYYY-MM-DD.json と同じ決め方なので、
@@ -1989,8 +2405,22 @@ def main():
             # ここで組み立て直すと、片方だけ直したときにすれ違う。
             key, rec_kind = date_key, record_kind(
                 args.kind, args.morning_mode, args.sport)
+            preview_binding=None
+            if rec_kind=='daily':
+                import mlb_forecast
+                if mlb_forecast.enabled():
+                    preview_binding=mlb_forecast.binding(_json_or_empty(args.narration))
+            if rec_kind=='daily_soccer':
+                import soccer_preview_history
+                try:
+                    preview_binding=soccer_preview_history.binding(_json_or_empty(args.games),_json_or_empty(args.narration))
+                except (OSError,ValueError,TypeError):
+                    print('[omit] 予告の材料/原稿hashを記録できません')
             record_video(rec_kind, key, vid, body["snippet"]["title"],
-                         publish_at=publish_at)
+                         publish_at=publish_at,preview_binding=preview_binding,
+                         host_tracking=__import__('host_split').publication(args.video, args.narration), privacy=args.privacy,
+                         experiment=experiment)
+            workflow_upload_result(True)
             # 長編を上げたら、同じ日のコメント欄ショートから繋ぐ。
             # ショートにはフィードがあるが、長編には無い。
             # 人が来ているほうから、来ていないほうへ道を作る。
@@ -2001,6 +2431,54 @@ def main():
         # アップロードに失敗しても、通知やサイト更新は既に済んでいるので
         # ワークフロー全体を落とさない
         print(f"[warn] アップロードに失敗しました: {e}", file=sys.stderr)
+
+
+# 一時的な失敗は、少し待ってやり直す（3回まで）。
+# 10/8、20:00 の PS の回が「410 Gone」（アップロードの受け口が切れた）で1回だけ落ち、
+# 同じ実行の失敗扱いで長編（後続）まで止まった。410 と 5xx は送り直せば通ることが多い。
+# 受け口が切れた・サーバー側の失敗のときは動画は作られていないので、二重にはならない。
+RETRY_STATUS = {410, 500, 502, 503, 504}
+
+
+def set_thumbnail(youtube, thumb, vid, kind, title):
+    """投稿後の失敗は警告に留め、枠切れの画像だけ保存する。"""
+    try:
+        youtube.thumbnails().set(
+            videoId=vid,
+            media_body=MediaFileUpload(str(thumb), mimetype="image/png"),
+        ).execute()
+        print(f"[info] サムネイルを設定しました: {thumb}")
+    except Exception as error:
+        import thumbnail_pending
+        try:
+            if thumbnail_pending.remember(error, thumb, vid, kind, title):
+                print("[warn] 使用枠切れのサムネイルを付け直し用に保存しました", file=sys.stderr)
+        except (OSError, ValueError, TypeError) as pending_error:
+            print(f"[warn] サムネイルの付け直し記録を保存できません: "
+                  f"{type(pending_error).__name__}", file=sys.stderr)
+        print(f"[warn] サムネイルの設定に失敗しました: {error}", file=sys.stderr)
+        print("       YouTubeアカウントの電話番号確認が済んでいるか"
+              "確認してください(未確認だとカスタムサムネイルは使えません)", file=sys.stderr)
+
+
+def insert_with_retry(youtube, body, video_path, waits=(15, 45)):
+    import time
+    import localize_videos
+    from googleapiclient.errors import HttpError
+    body = localize_videos.prepare_upload(body)
+    for attempt in range(len(waits) + 1):
+        media = MediaFileUpload(str(video_path), chunksize=-1, resumable=True,
+                                mimetype="video/mp4")
+        try:
+            return youtube.videos().insert(
+                part=localize_videos.upload_parts(body), body=body, media_body=media).execute()
+        except HttpError as e:
+            status = getattr(getattr(e, "resp", None), "status", None)
+            if int(status or 0) not in RETRY_STATUS or attempt == len(waits):
+                raise
+            print(f"[warn] アップロードが一時的に失敗しました（{status}）。"
+                  f"{waits[attempt]}秒後にやり直します（{attempt + 2}回目）", file=sys.stderr)
+            time.sleep(waits[attempt])
 
 
 if __name__ == "__main__":

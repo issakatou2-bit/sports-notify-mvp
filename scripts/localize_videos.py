@@ -24,6 +24,7 @@
 """
 
 import argparse
+import copy
 import json
 import os
 import pathlib
@@ -44,7 +45,8 @@ try:
 except ImportError:
     anthropic = None
 
-MODEL = "claude-haiku-4-5-20251001"
+import llm_models
+MODEL = llm_models.model("localize")
 TOKEN_URI = "https://oauth2.googleapis.com/token"
 STORE = "data/localized.json"
 
@@ -112,7 +114,8 @@ def translate(ai, title: str, description: str) -> tuple:
         "- #Shorts は残す\n"
         "- URLはそのまま残す"
     )
-    resp = ai.messages.create(model=MODEL, max_tokens=1600,
+    import backstage_guard
+    resp = backstage_guard.create(ai, label='localize_videos.py', category='localize', mode='whole', **llm_models.params('localize', 1600),
                               messages=[{"role": "user", "content": prompt}])
     token_log.record("localize", MODEL, resp)
     if resp.stop_reason == "max_tokens":
@@ -135,6 +138,43 @@ def translate(ai, title: str, description: str) -> tuple:
 REPORT: list = []
 
 
+def english_complete(value):
+    return (isinstance(value, dict)
+            and isinstance(value.get('title'), str) and bool(value['title'].strip())
+            and isinstance(value.get('description'), str) and bool(value['description'].strip()))
+
+
+def prepare_upload(body, ai=None):
+    """全種類の登録前に英語を添える。訳せなくても日本語の登録を続ける。"""
+    result = copy.deepcopy(body)
+    snippet = result.get('snippet', {})
+    if not snippet.get('title'):
+        return result
+    snippet['defaultLanguage'] = 'ja'
+    if english_complete((result.get('localizations') or {}).get('en')):
+        result['localizations']['en']['title'] = result['localizations']['en']['title'][:100]
+        return result
+    try:
+        if ai is None:
+            key = os.getenv('ANTHROPIC_API_KEY')
+            if not key or anthropic is None:
+                print('[warn] 英訳用の認証情報/部品がないため日本語だけで登録します')
+                return result
+            ai = anthropic.Anthropic(api_key=key)
+        title, description = translate(ai, snippet['title'], snippet.get('description', ''))
+        if not title.strip() or not description.strip():
+            raise ValueError('英語の題または説明が空です')
+        result.setdefault('localizations', {})['en'] = {
+            'title': title.strip()[:100], 'description': description.strip()}
+    except Exception as exc:  # noqa: BLE001
+        print(f'[warn] 英訳に失敗したため日本語だけで登録します: {exc}')
+    return result
+
+
+def upload_parts(body):
+    return 'snippet,status,localizations' if body.get('localizations') else 'snippet,status'
+
+
 def localize(yt, ai, video_id: str, store: dict, dry: bool = False) -> bool:
     res = yt.videos().list(part="snippet,localizations", id=video_id).execute()
     items = res.get("items") or []
@@ -144,7 +184,7 @@ def localize(yt, ai, video_id: str, store: dict, dry: bool = False) -> bool:
     v = items[0]
     sn = v["snippet"]
 
-    if (v.get("localizations") or {}).get("en"):
+    if english_complete((v.get("localizations") or {}).get("en")):
         return False
 
     try:
@@ -153,7 +193,8 @@ def localize(yt, ai, video_id: str, store: dict, dry: bool = False) -> bool:
     except Exception as e:  # noqa: BLE001
         print(f"[warn] {video_id} の英訳に失敗: {e}")
         return False
-    if not title_en:
+    title_en = title_en.strip()[:100]
+    if not title_en or not desc_en.strip():
         print(f"[warn] {video_id} のタイトルが訳せませんでした")
         return False
 

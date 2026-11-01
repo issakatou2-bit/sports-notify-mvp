@@ -1,0 +1,1148 @@
+[
+  {
+    "text": "1本",
+    "expected": [
+      "イッポン"
+    ],
+    "observed": "イッポン"
+  },
+  {
+    "text": "2本",
+    "expected": [
+      "ニホン"
+    ],
+    "observed": "ニホン"
+  },
+  {
+    "text": "3本",
+    "expected": [
+      "サンボン"
+    ],
+    "observed": "サンボン"
+  },
+  {
+    "text": "4本",
+    "expected": [
+      "ヨンホン"
+    ],
+    "observed": "ヨンホン"
+  },
+  {
+    "text": "5本",
+    "expected": [
+      "ゴホン"
+    ],
+    "observed": "ゴホン"
+  },
+  {
+    "text": "6本",
+    "expected": [
+      "ロッポン"
+    ],
+    "observed": "ロッポン"
+  },
+  {
+    "text": "7本",
+    "expected": [
+      "ナナホン"
+    ],
+    "observed": "ナナホン"
+  },
+  {
+    "text": "8本",
+    "expected": [
+      "ハッポン"
+    ],
+    "observed": "ハッポン"
+  },
+  {
+    "text": "9本",
+    "expected": [
+      "キュウホン"
+    ],
+    "observed": "キュウホン"
+  },
+  {
+    "text": "10本",
+    "expected": [
+      "ジッポン",
+      "ジュッポン"
+    ],
+    "observed": "ジュッポン"
+  },
+  {
+    "text": "1杯",
+    "expected": [
+      "イッパイ"
+    ],
+    "observed": "イッパイ"
+  },
+  {
+    "text": "2杯",
+    "expected": [
+      "ニハイ"
+    ],
+    "observed": "ニハイ"
+  },
+  {
+    "text": "3杯",
+    "expected": [
+      "サンバイ"
+    ],
+    "observed": "サンバイ"
+  },
+  {
+    "text": "4杯",
+    "expected": [
+      "ヨンハイ"
+    ],
+    "observed": "ヨンハイ"
+  },
+  {
+    "text": "5杯",
+    "expected": [
+      "ゴハイ"
+    ],
+    "observed": "ゴハイ"
+  },
+  {
+    "text": "6杯",
+    "expected": [
+      "ロッパイ"
+    ],
+    "observed": "ロッパイ"
+  },
+  {
+    "text": "7杯",
+    "expected": [
+      "ナナハイ"
+    ],
+    "observed": "ナナハイ"
+  },
+  {
+    "text": "8杯",
+    "expected": [
+      "ハッパイ"
+    ],
+    "observed": "ハッパイ"
+  },
+  {
+    "text": "9杯",
+    "expected": [
+      "キュウハイ"
+    ],
+    "observed": "キュウハイ"
+  },
+  {
+    "text": "10杯",
+    "expected": [
+      "ジッパイ",
+      "ジュッパイ"
+    ],
+    "observed": "ジュッパイ"
+  },
+  {
+    "text": "1回",
+    "expected": [
+      "イッカイ"
+    ],
+    "observed": "イッカイ"
+  },
+  {
+    "text": "2回",
+    "expected": [
+      "ニカイ"
+    ],
+    "observed": "ニカイ"
+  },
+  {
+    "text": "3回",
+    "expected": [
+      "サンカイ"
+    ],
+    "observed": "サンカイ"
+  },
+  {
+    "text": "4回",
+    "expected": [
+      "ヨンカイ"
+    ],
+    "observed": "ヨンカイ"
+  },
+  {
+    "text": "5回",
+    "expected": [
+      "ゴカイ"
+    ],
+    "observed": "ゴカイ"
+  },
+  {
+    "text": "6回",
+    "expected": [
+      "ロッカイ"
+    ],
+    "observed": "ロッカイ"
+  },
+  {
+    "text": "7回",
+    "expected": [
+      "ナナカイ"
+    ],
+    "observed": "ナナカイ"
+  },
+  {
+    "text": "8回",
+    "expected": [
+      "ハチカイ",
+      "ハッカイ"
+    ],
+    "observed": "ハッカイ"
+  },
+  {
+    "text": "9回",
+    "expected": [
+      "キュウカイ"
+    ],
+    "observed": "キュウカイ"
+  },
+  {
+    "text": "10回",
+    "expected": [
+      "ジッカイ",
+      "ジュッカイ"
+    ],
+    "observed": "ジュッカイ"
+  },
+  {
+    "text": "1匹",
+    "expected": [
+      "イッピキ"
+    ],
+    "observed": "イッピキ"
+  },
+  {
+    "text": "2匹",
+    "expected": [
+      "ニヒキ"
+    ],
+    "observed": "ニヒキ"
+  },
+  {
+    "text": "3匹",
+    "expected": [
+      "サンビキ"
+    ],
+    "observed": "サンビキ"
+  },
+  {
+    "text": "4匹",
+    "expected": [
+      "ヨンヒキ"
+    ],
+    "observed": "ヨンヒキ"
+  },
+  {
+    "text": "5匹",
+    "expected": [
+      "ゴヒキ"
+    ],
+    "observed": "ゴヒキ"
+  },
+  {
+    "text": "6匹",
+    "expected": [
+      "ロッピキ"
+    ],
+    "observed": "ロッピキ"
+  },
+  {
+    "text": "7匹",
+    "expected": [
+      "ナナヒキ"
+    ],
+    "observed": "ナナヒキ"
+  },
+  {
+    "text": "8匹",
+    "expected": [
+      "ハッピキ"
+    ],
+    "observed": "ハッピキ"
+  },
+  {
+    "text": "9匹",
+    "expected": [
+      "キュウヒキ"
+    ],
+    "observed": "キュウヒキ"
+  },
+  {
+    "text": "10匹",
+    "expected": [
+      "ジッピキ",
+      "ジュッピキ"
+    ],
+    "observed": "ジュッピキ"
+  },
+  {
+    "text": "1人",
+    "expected": [
+      "ヒトリ"
+    ],
+    "observed": "ヒトリ"
+  },
+  {
+    "text": "2人",
+    "expected": [
+      "フタリ"
+    ],
+    "observed": "フタリ"
+  },
+  {
+    "text": "3人",
+    "expected": [
+      "サンニン"
+    ],
+    "observed": "サンニン"
+  },
+  {
+    "text": "4人",
+    "expected": [
+      "ヨニン"
+    ],
+    "observed": "ヨニン"
+  },
+  {
+    "text": "5人",
+    "expected": [
+      "ゴニン"
+    ],
+    "observed": "ゴニン"
+  },
+  {
+    "text": "6人",
+    "expected": [
+      "ロクニン"
+    ],
+    "observed": "ロクニン"
+  },
+  {
+    "text": "7人",
+    "expected": [
+      "ナナニン",
+      "シチニン"
+    ],
+    "observed": "シチニン"
+  },
+  {
+    "text": "8人",
+    "expected": [
+      "ハチニン"
+    ],
+    "observed": "ハチニン"
+  },
+  {
+    "text": "9人",
+    "expected": [
+      "キュウニン"
+    ],
+    "observed": "キュウニン"
+  },
+  {
+    "text": "10人",
+    "expected": [
+      "ジュウニン"
+    ],
+    "observed": "ジュウニン"
+  },
+  {
+    "text": "1分",
+    "expected": [
+      "イップン"
+    ],
+    "observed": "イップン"
+  },
+  {
+    "text": "2分",
+    "expected": [
+      "ニフン"
+    ],
+    "observed": "ニフン"
+  },
+  {
+    "text": "3分",
+    "expected": [
+      "サンプン"
+    ],
+    "observed": "サンプン"
+  },
+  {
+    "text": "4分",
+    "expected": [
+      "ヨンプン"
+    ],
+    "observed": "ヨンプン"
+  },
+  {
+    "text": "5分",
+    "expected": [
+      "ゴフン"
+    ],
+    "observed": "ゴフン"
+  },
+  {
+    "text": "6分",
+    "expected": [
+      "ロップン"
+    ],
+    "observed": "ロップン"
+  },
+  {
+    "text": "7分",
+    "expected": [
+      "ナナフン"
+    ],
+    "observed": "ナナフン"
+  },
+  {
+    "text": "8分",
+    "expected": [
+      "ハップン"
+    ],
+    "observed": "ハップン"
+  },
+  {
+    "text": "9分",
+    "expected": [
+      "キュウフン"
+    ],
+    "observed": "キュウフン"
+  },
+  {
+    "text": "10分",
+    "expected": [
+      "ジップン",
+      "ジュップン"
+    ],
+    "observed": "ジュップン"
+  },
+  {
+    "text": "1時",
+    "expected": [
+      "イチジ"
+    ],
+    "observed": "イチジ"
+  },
+  {
+    "text": "2時",
+    "expected": [
+      "ニジ"
+    ],
+    "observed": "ニジ"
+  },
+  {
+    "text": "3時",
+    "expected": [
+      "サンジ"
+    ],
+    "observed": "サンジ"
+  },
+  {
+    "text": "4時",
+    "expected": [
+      "ヨジ"
+    ],
+    "observed": "ヨジ"
+  },
+  {
+    "text": "5時",
+    "expected": [
+      "ゴジ"
+    ],
+    "observed": "ゴジ"
+  },
+  {
+    "text": "6時",
+    "expected": [
+      "ロクジ"
+    ],
+    "observed": "ロクジ"
+  },
+  {
+    "text": "7時",
+    "expected": [
+      "シチジ"
+    ],
+    "observed": "シチジ"
+  },
+  {
+    "text": "8時",
+    "expected": [
+      "ハチジ"
+    ],
+    "observed": "ハチジ"
+  },
+  {
+    "text": "9時",
+    "expected": [
+      "クジ"
+    ],
+    "observed": "クジ"
+  },
+  {
+    "text": "10時",
+    "expected": [
+      "ジュウジ"
+    ],
+    "observed": "ジュウジ"
+  },
+  {
+    "text": "1個",
+    "expected": [
+      "イッコ"
+    ],
+    "observed": "イッコ"
+  },
+  {
+    "text": "2個",
+    "expected": [
+      "ニコ"
+    ],
+    "observed": "ニコ"
+  },
+  {
+    "text": "3個",
+    "expected": [
+      "サンコ"
+    ],
+    "observed": "サンコ"
+  },
+  {
+    "text": "4個",
+    "expected": [
+      "ヨンコ"
+    ],
+    "observed": "ヨンコ"
+  },
+  {
+    "text": "5個",
+    "expected": [
+      "ゴコ"
+    ],
+    "observed": "ゴコ"
+  },
+  {
+    "text": "6個",
+    "expected": [
+      "ロッコ"
+    ],
+    "observed": "ロッコ"
+  },
+  {
+    "text": "7個",
+    "expected": [
+      "ナナコ"
+    ],
+    "observed": "ナナコ"
+  },
+  {
+    "text": "8個",
+    "expected": [
+      "ハチコ",
+      "ハッコ"
+    ],
+    "observed": "ハッコ"
+  },
+  {
+    "text": "9個",
+    "expected": [
+      "キュウコ"
+    ],
+    "observed": "キュウコ"
+  },
+  {
+    "text": "10個",
+    "expected": [
+      "ジッコ",
+      "ジュッコ"
+    ],
+    "observed": "ジュッコ"
+  },
+  {
+    "text": "1枚",
+    "expected": [
+      "イチマイ"
+    ],
+    "observed": "イチマイ"
+  },
+  {
+    "text": "2枚",
+    "expected": [
+      "ニマイ"
+    ],
+    "observed": "ニマイ"
+  },
+  {
+    "text": "3枚",
+    "expected": [
+      "サンマイ"
+    ],
+    "observed": "サンマイ"
+  },
+  {
+    "text": "4枚",
+    "expected": [
+      "ヨンマイ"
+    ],
+    "observed": "ヨンマイ"
+  },
+  {
+    "text": "5枚",
+    "expected": [
+      "ゴマイ"
+    ],
+    "observed": "ゴマイ"
+  },
+  {
+    "text": "6枚",
+    "expected": [
+      "ロクマイ"
+    ],
+    "observed": "ロクマイ"
+  },
+  {
+    "text": "7枚",
+    "expected": [
+      "ナナマイ"
+    ],
+    "observed": "ナナマイ"
+  },
+  {
+    "text": "8枚",
+    "expected": [
+      "ハチマイ"
+    ],
+    "observed": "ハチマイ"
+  },
+  {
+    "text": "9枚",
+    "expected": [
+      "キュウマイ"
+    ],
+    "observed": "キュウマイ"
+  },
+  {
+    "text": "10枚",
+    "expected": [
+      "ジュウマイ"
+    ],
+    "observed": "ジュウマイ"
+  },
+  {
+    "text": "1台",
+    "expected": [
+      "イチダイ"
+    ],
+    "observed": "イチダイ"
+  },
+  {
+    "text": "2台",
+    "expected": [
+      "ニダイ"
+    ],
+    "observed": "ニダイ"
+  },
+  {
+    "text": "3台",
+    "expected": [
+      "サンダイ"
+    ],
+    "observed": "サンダイ"
+  },
+  {
+    "text": "4台",
+    "expected": [
+      "ヨンダイ"
+    ],
+    "observed": "ヨンダイ"
+  },
+  {
+    "text": "5台",
+    "expected": [
+      "ゴダイ"
+    ],
+    "observed": "ゴダイ"
+  },
+  {
+    "text": "6台",
+    "expected": [
+      "ロクダイ"
+    ],
+    "observed": "ロクダイ"
+  },
+  {
+    "text": "7台",
+    "expected": [
+      "ナナダイ"
+    ],
+    "observed": "ナナダイ"
+  },
+  {
+    "text": "8台",
+    "expected": [
+      "ハチダイ"
+    ],
+    "observed": "ハチダイ"
+  },
+  {
+    "text": "9台",
+    "expected": [
+      "キュウダイ"
+    ],
+    "observed": "キュウダイ"
+  },
+  {
+    "text": "10台",
+    "expected": [
+      "ジュウダイ"
+    ],
+    "observed": "ジュウダイ"
+  },
+  {
+    "text": "1球",
+    "expected": [
+      "イッキュウ"
+    ],
+    "observed": "イッキュウ"
+  },
+  {
+    "text": "2球",
+    "expected": [
+      "ニキュウ"
+    ],
+    "observed": "ニキュウ"
+  },
+  {
+    "text": "3球",
+    "expected": [
+      "サンキュウ"
+    ],
+    "observed": "サンキュウ"
+  },
+  {
+    "text": "4球",
+    "expected": [
+      "ヨンキュウ"
+    ],
+    "observed": "ヨンキュウ"
+  },
+  {
+    "text": "5球",
+    "expected": [
+      "ゴキュウ"
+    ],
+    "observed": "ゴキュウ"
+  },
+  {
+    "text": "6球",
+    "expected": [
+      "ロッキュウ"
+    ],
+    "observed": "ロッキュウ"
+  },
+  {
+    "text": "7球",
+    "expected": [
+      "ナナキュウ"
+    ],
+    "observed": "ナナキュウ"
+  },
+  {
+    "text": "8球",
+    "expected": [
+      "ハチキュウ",
+      "ハッキュウ"
+    ],
+    "observed": "ハッキュウ"
+  },
+  {
+    "text": "9球",
+    "expected": [
+      "キュウキュウ"
+    ],
+    "observed": "キュウキュウ"
+  },
+  {
+    "text": "10球",
+    "expected": [
+      "ジッキュウ",
+      "ジュッキュウ"
+    ],
+    "observed": "ジュッキュウ"
+  },
+  {
+    "text": "1勝",
+    "expected": [
+      "イッショウ",
+      "イッショオ"
+    ],
+    "observed": "イッショオ"
+  },
+  {
+    "text": "2勝",
+    "expected": [
+      "ニショウ",
+      "ニショオ"
+    ],
+    "observed": "ニショオ"
+  },
+  {
+    "text": "3勝",
+    "expected": [
+      "サンショウ",
+      "サンショオ"
+    ],
+    "observed": "サンショオ"
+  },
+  {
+    "text": "4勝",
+    "expected": [
+      "ヨンショウ",
+      "ヨンショオ"
+    ],
+    "observed": "ヨンショオ"
+  },
+  {
+    "text": "5勝",
+    "expected": [
+      "ゴショウ",
+      "ゴショオ"
+    ],
+    "observed": "ゴショオ"
+  },
+  {
+    "text": "6勝",
+    "expected": [
+      "ロクショウ",
+      "ロクショオ"
+    ],
+    "observed": "ロクショオ"
+  },
+  {
+    "text": "7勝",
+    "expected": [
+      "ナナショウ",
+      "ナナショオ"
+    ],
+    "observed": "ナナショオ"
+  },
+  {
+    "text": "8勝",
+    "expected": [
+      "ハッショウ",
+      "ハッショオ"
+    ],
+    "observed": "ハッショオ"
+  },
+  {
+    "text": "9勝",
+    "expected": [
+      "キュウショウ",
+      "キュウショオ"
+    ],
+    "observed": "キュウショオ"
+  },
+  {
+    "text": "10勝",
+    "expected": [
+      "ジッショウ",
+      "ジュッショウ",
+      "ジッショオ",
+      "ジュッショオ"
+    ],
+    "observed": "ジュッショオ"
+  },
+  {
+    "text": "1敗",
+    "expected": [
+      "イッパイ"
+    ],
+    "observed": "イッパイ"
+  },
+  {
+    "text": "2敗",
+    "expected": [
+      "ニハイ"
+    ],
+    "observed": "ニハイ"
+  },
+  {
+    "text": "3敗",
+    "expected": [
+      "サンパイ"
+    ],
+    "observed": "サンパイ"
+  },
+  {
+    "text": "4敗",
+    "expected": [
+      "ヨンハイ",
+      "ヨンパイ"
+    ],
+    "observed": "ヨンパイ"
+  },
+  {
+    "text": "5敗",
+    "expected": [
+      "ゴハイ"
+    ],
+    "observed": "ゴハイ"
+  },
+  {
+    "text": "6敗",
+    "expected": [
+      "ロッパイ"
+    ],
+    "observed": "ロッパイ"
+  },
+  {
+    "text": "7敗",
+    "expected": [
+      "ナナハイ"
+    ],
+    "observed": "ナナハイ"
+  },
+  {
+    "text": "8敗",
+    "expected": [
+      "ハッパイ"
+    ],
+    "observed": "ハッパイ"
+  },
+  {
+    "text": "9敗",
+    "expected": [
+      "キュウハイ"
+    ],
+    "observed": "キュウハイ"
+  },
+  {
+    "text": "10敗",
+    "expected": [
+      "ジッパイ",
+      "ジュッパイ"
+    ],
+    "observed": "ジュッパイ"
+  },
+  {
+    "text": "1点",
+    "expected": [
+      "イッテン"
+    ],
+    "observed": "イッテン"
+  },
+  {
+    "text": "2点",
+    "expected": [
+      "ニテン"
+    ],
+    "observed": "ニテン"
+  },
+  {
+    "text": "3点",
+    "expected": [
+      "サンテン"
+    ],
+    "observed": "サンテン"
+  },
+  {
+    "text": "4点",
+    "expected": [
+      "ヨンテン"
+    ],
+    "observed": "ヨンテン"
+  },
+  {
+    "text": "5点",
+    "expected": [
+      "ゴテン"
+    ],
+    "observed": "ゴテン"
+  },
+  {
+    "text": "6点",
+    "expected": [
+      "ロクテン"
+    ],
+    "observed": "ロクテン"
+  },
+  {
+    "text": "7点",
+    "expected": [
+      "ナナテン"
+    ],
+    "observed": "ナナテン"
+  },
+  {
+    "text": "8点",
+    "expected": [
+      "ハッテン"
+    ],
+    "observed": "ハッテン"
+  },
+  {
+    "text": "9点",
+    "expected": [
+      "キュウテン"
+    ],
+    "observed": "キュウテン"
+  },
+  {
+    "text": "10点",
+    "expected": [
+      "ジッテン",
+      "ジュッテン"
+    ],
+    "observed": "ジュッテン"
+  },
+  {
+    "text": "1打数",
+    "expected": [
+      "イチダスウ"
+    ],
+    "observed": "イチダスウ"
+  },
+  {
+    "text": "2打数",
+    "expected": [
+      "ニダスウ"
+    ],
+    "observed": "ニダスウ"
+  },
+  {
+    "text": "3打数",
+    "expected": [
+      "サンダスウ"
+    ],
+    "observed": "サンダスウ"
+  },
+  {
+    "text": "4打数",
+    "expected": [
+      "ヨンダスウ"
+    ],
+    "observed": "ヨンダスウ"
+  },
+  {
+    "text": "5打数",
+    "expected": [
+      "ゴダスウ"
+    ],
+    "observed": "ゴダスウ"
+  },
+  {
+    "text": "6打数",
+    "expected": [
+      "ロクダスウ"
+    ],
+    "observed": "ロクダスウ"
+  },
+  {
+    "text": "7打数",
+    "expected": [
+      "ナナダスウ"
+    ],
+    "observed": "ナナダスウ"
+  },
+  {
+    "text": "8打数",
+    "expected": [
+      "ハチダスウ"
+    ],
+    "observed": "ハチダスウ"
+  },
+  {
+    "text": "9打数",
+    "expected": [
+      "キュウダスウ"
+    ],
+    "observed": "キュウダスウ"
+  },
+  {
+    "text": "10打数",
+    "expected": [
+      "ジュウダスウ"
+    ],
+    "observed": "ジュウダスウ"
+  },
+  {
+    "text": "1安打",
+    "expected": [
+      "イチアンダ"
+    ],
+    "observed": "イチアンダ"
+  },
+  {
+    "text": "2安打",
+    "expected": [
+      "ニアンダ"
+    ],
+    "observed": "ニアンダ"
+  },
+  {
+    "text": "3安打",
+    "expected": [
+      "サンアンダ"
+    ],
+    "observed": "サンアンダ"
+  },
+  {
+    "text": "4安打",
+    "expected": [
+      "ヨンアンダ"
+    ],
+    "observed": "ヨンアンダ"
+  },
+  {
+    "text": "5安打",
+    "expected": [
+      "ゴアンダ"
+    ],
+    "observed": "ゴアンダ"
+  },
+  {
+    "text": "6安打",
+    "expected": [
+      "ロクアンダ"
+    ],
+    "observed": "ロクアンダ"
+  },
+  {
+    "text": "7安打",
+    "expected": [
+      "ナナアンダ"
+    ],
+    "observed": "ナナアンダ"
+  },
+  {
+    "text": "8安打",
+    "expected": [
+      "ハチアンダ"
+    ],
+    "observed": "ハチアンダ"
+  },
+  {
+    "text": "9安打",
+    "expected": [
+      "キュウアンダ"
+    ],
+    "observed": "キュウアンダ"
+  },
+  {
+    "text": "10安打",
+    "expected": [
+      "ジュウアンダ"
+    ],
+    "observed": "ジュウアンダ"
+  }
+]

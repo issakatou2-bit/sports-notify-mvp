@@ -52,7 +52,7 @@ def targets(path: str = VIDEOS) -> list:
             if not isinstance(v, dict) or not v.get("video_id"):
                 continue
             now = v.get("title") or ""
-            fixed = mentioned.to_kanji(now)
+            fixed = __import__('upload_youtube').club_display_title(mentioned.to_kanji(now))
             if fixed != now:
                 out.append({"id": v["video_id"], "kind": kind, "day": day,
                             "now": now, "fixed": fixed})
@@ -68,7 +68,7 @@ def one(yt, vid: str) -> dict:
         return {}
     sn = items[0].get("snippet") or {}
     now = sn.get("title") or ""
-    fixed = mentioned.to_kanji(now)
+    fixed = __import__('upload_youtube').club_display_title(mentioned.to_kanji(now))
     if fixed == now:
         print(f"[info] {vid} は直すところがありません")
         return {}

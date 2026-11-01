@@ -7,8 +7,8 @@
   ところが手で書いた24本を出し終えて在庫がゼロになり、
   いちばんよく見られている種類が止まっていた。
 
-  球場のトピックは venue_topics.py が公式APIから作るので、
-  玉は増え続ける。あとは毎日1本ずつ出せばよい。
+  球場・球団まとめは2026-10-26の本人判断で停止。
+  asset_policy の停止条件を先に適用し、在庫が無ければ制作を見送る。
 
 選び方:
   **実測でよく見られている種類から先に出す。**
@@ -41,13 +41,17 @@
 使い方:
   python3 scripts/next_asset.py            # 次に出すトピック名だけを表示
   python3 scripts/next_asset.py --report   # 残りの本数も出す
+  python3 scripts/next_asset.py --check-daily-limit  # 材料取得前の日次上限確認
 """
 
 import argparse
 import json
+from datetime import datetime, timezone
 import os
 import pathlib
 import sys
+
+import asset_policy
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 
@@ -67,7 +71,8 @@ def published(path: str) -> set:
     return set((d.get("assets") or {}).keys())
 
 
-def posted_today(path: str, today=None) -> bool:
+def posted_today(path: str, today=None, kinds=None, count=False,
+                 exclude=(), extra=None):
     """きょう、もう1本出したか。
 
     **起動する入口が2つある。**cron-job.org（JST 22:00）と、
@@ -81,9 +86,17 @@ def posted_today(path: str, today=None) -> bool:
         rows = (json.loads(pathlib.Path(path).read_text(encoding="utf-8"))
                 .get("assets") or {})
     except (json.JSONDecodeError, OSError):
-        return False
-    for rec in rows.values():
-        stamp = (rec or {}).get("published_at")
+        rows = {}
+    rows = merge_records(extra or {}, rows)
+    hits = 0
+    for key, rec in rows.items():
+        # 種類を絞るとき（シーズンまとめの枠は、自分の本数だけ数える。
+        # 資産動画の枠はシーズンまとめを数えない）。
+        if kinds is not None and kind_of(key) not in kinds:
+            continue
+        if kind_of(key) in exclude:
+            continue
+        stamp = (rec or {}).get("publish_at") or (rec or {}).get("published_at")
         if not stamp:
             continue
         try:
@@ -91,13 +104,28 @@ def posted_today(path: str, today=None) -> bool:
         except ValueError:
             continue
         if when.astimezone(jst).date() == today:
-            return True
-    return False
+            hits += 1
+    return hits if count else hits > 0
 
 
 def kind_of(key: str) -> str:
     """トピックの種類。キーの頭で決まる（team_ana → team）。"""
     return (key or "").split("_")[0] or "?"
+
+
+def merge_records(older, newer):
+    """片方の旧記録で予約日などの補足を消さず、同じ鍵は一度だけ数える。"""
+    return asset_policy.merge_records(older, newer)
+
+
+def daily_limit_reached(path: str, requested_topic="next", again=False) -> bool:
+    """自動選択の日次上限だけ先に見る。指定トピックの制作は止めない。
+
+    在庫判定は材料更新後に行う。ここで古い在庫を読んで見送らない。
+    force は投稿済みトピックの再制作用で、next の日次上限とは別。
+    """
+    return ((requested_topic or "next") == "next" and not again
+            and posted_today(path, exclude={"season"}))
 
 
 def measured(published_path: str, analytics_path: str) -> dict:
@@ -127,6 +155,151 @@ def measured(published_path: str, analytics_path: str) -> dict:
     return {k: sum(g) / len(g) for k, g in got.items() if g}
 
 
+def season_order(key: str, spec: dict) -> tuple:
+    """シーズンまとめの順番。PSで終わったばかり → 日本人選手 → その他。"""
+    # PSの話題（ps_story）がいちばん先。決着の翌日が見られる時。
+    # 試合ごとの話題（ps_game_story）は日本人選手が出た試合から。鮮度が
+    # 30時間しかないので、シリーズの総括より先に出す。
+    if spec.get("game") or spec.get("spotlight"):
+        # 同じ組の中は試合の早い順（キーの番号順だと10/4は村上の試合が2本目に回った）。
+        return (-1, 0 if spec.get("jp_first") else 1, spec.get("game_date") or "", key)
+    # 0勝2敗・2勝0敗の過去の数（ps_odds）は、次の試合の前でないと意味が無い。
+    # 日本人選手の試合の話題の次、それ以外の試合の話題より先。連勝の流れ（ps_momentum）も同じ。
+    if spec.get("odds") or spec.get("momentum"):
+        return (-1, 1, "", key)
+    if spec.get("story"):
+        return (-1, 2, key)
+    return (0 if spec.get("ps_ended") else 1,
+            0 if spec.get("jp") else
+            1 if spec.get("japanese") or key.startswith("season_league") else 2,
+            key)
+
+
+def started(spec: dict, now=None) -> bool:
+    """「次の試合の前」だけの話題（2勝0敗の過去・連勝の流れ）で、その試合がもう始まった。"""
+    from datetime import datetime, timezone
+    at = spec.get("next_game")
+    if not at:
+        return False
+    try:
+        return datetime.fromisoformat(at.replace("Z", "+00:00")) <= (now or datetime.now(timezone.utc))
+    except ValueError:
+        return False
+
+
+def superseded(spec: dict) -> bool:
+    """試合の話題で、同じシリーズの次の試合がもう始まっている・終わっているもの。
+
+    10/8 本人「その日に出すってことは、その日の試合のことを言ってると思って見に来るはず」。
+    パドレスの第3戦（1勝2敗に）の回が、第4戦の最中に出て、その日に敗退した。
+    次の試合が始まったら、前の試合の回は出さない。確かめられないときも出さない（あとで選び直せる）。
+    """
+    pk = spec.get("game_pk") if spec.get("game") else None
+    if not pk:
+        return False
+    import ps_offseason
+    try:
+        snapshot = json.loads(pathlib.Path('data/postseason.json').read_text(encoding='utf-8'))
+    except (OSError, ValueError):
+        snapshot = {}
+    if ps_offseason.completed_before(snapshot, datetime.now(timezone.utc)):
+        print(f'[info] {pk} はWS決着後のため当日の試合の回に選びません', file=sys.stderr)
+        return True
+    try:
+        import series_check
+        later = series_check.later_games(pk)
+    except Exception as e:                                # noqa: BLE001
+        print(f"[warn] {pk} の次の試合を確かめられないので、きょうは出しません: {e}", file=sys.stderr)
+        return True
+    if later:
+        print(f"[info] {pk} は同じシリーズの次の試合（{later}）が始まっているので出しません", file=sys.stderr)
+    return bool(later)
+
+
+def pick_season(args) -> int:
+    """シーズンまとめを、その日の残りの本数まで選ぶ。
+
+    **同じ型を一度に大量に出さない。**1日の上限（--season）を決め、
+    その日に出したぶんを引く。資産動画の枠とは別に数える。
+    """
+    import generate_asset_video as gav
+    import player_publications as publications
+    ledgers = publications.load(assets_path=args.published)
+    done = published(args.published)
+    left = max(0, args.season - posted_today(args.published,
+                                             kinds={"season"}, count=True, extra=ledgers[0].get('asset', {})))
+    todo = sorted((k for k, v in gav.LIST_TOPICS.items()
+                   if kind_of(k) == "season" and k not in done and not started(v)
+                   and asset_policy.selectable(k, v)),
+                  key=lambda k: season_order(k, gav.LIST_TOPICS[k]))
+    todo = [k for k in todo if not publications.topic_id(k) or not publications.recent(publications.topic_id(k), 'season_player', ledgers=ledgers)]
+    import jp_assets
+    todo = [k for k in todo if jp_assets.available(k, gav.LIST_TOPICS[k], ledgers)]
+    todo = [k for k in todo if season_material_ready(gav, k)]
+    import ui_voice_stock
+    todo = ui_voice_stock.prioritize(todo)
+    picked = []
+    used = season_kinds_today(args.published, extra=ledgers[0].get('asset', {}))
+    used_players = set()
+    for k in todo:
+        if len(picked) >= left:
+            break
+        kind = season_kind(k)
+        players = jp_assets.ids(k, gav.LIST_TOPICS[k])
+        if kind in used or players & used_players:
+            continue
+        if not superseded(gav.LIST_TOPICS[k]):
+            picked.append(k)
+            used.add(kind)
+            used_players.update(players)
+    print(" ".join(picked))
+    print(f"[info] シーズンまとめ: 残り{len(todo)}本、きょう{len(picked)}本",
+          file=sys.stderr)
+    return 0
+
+
+def season_kind(key):
+    """PS・通年振り返りに共通の型。同じ日に同じ型を繰り返さない。"""
+    return asset_policy.season_kind(key)
+
+
+def season_material_ready(generator, key):
+    """制作器と同じ情報数で先に判定。薄い1本で日次の選択枠を使わない。"""
+    import short_content
+    try:
+        document = generator.build_narration(key)
+        units = short_content.information(document, generator.LIST_TOPICS[key])
+    except (KeyError, TypeError, ValueError) as error:
+        print(f'[warn] {key}: 材料の情報数を確認できないため選びません: {error}', file=sys.stderr)
+        return False
+    if len(units) < short_content.MIN_INFORMATION:
+        print(f'[info] {key}: 独立情報{len(units)}件で既存下限未満のため選びません', file=sys.stderr)
+        return False
+    return True
+
+
+def season_kinds_today(path, today=None, extra=None):
+    from datetime import timedelta
+    jst = timezone(timedelta(hours=9))
+    today = today or datetime.now(jst).date()
+    try:
+        rows = json.loads(pathlib.Path(path).read_text(encoding='utf-8')).get('assets') or {}
+    except (OSError, ValueError):
+        rows = {}
+    rows = merge_records(extra or {}, rows)
+    used = set()
+    for key, row in rows.items():
+        if not key.startswith('season_'):
+            continue
+        try:
+            at = datetime.fromisoformat(str(row.get('publish_at') or row['published_at']).replace('Z', '+00:00'))
+            if at.astimezone(jst).date() == today:
+                used.add(season_kind(key))
+        except (ValueError, KeyError):
+            continue
+    return used
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--published", default="data/published_assets.json")
@@ -134,11 +307,28 @@ def main() -> int:
     ap.add_argument("--report", action="store_true")
     ap.add_argument("--again", action="store_true",
                     help="きょう既に出していても、もう1本選ぶ")
+    ap.add_argument("--season", type=int, default=0,
+                    help="シーズンまとめをこの本数まで選ぶ（1日の上限）")
+    ap.add_argument("--check-daily-limit", action="store_true",
+                    help="生成器を読み込まず、材料取得前に日次上限を確認する")
+    ap.add_argument("--requested-topic", default="next",
+                    help="事前判定する実行のトピック。next以外は制作へ進める")
     args = ap.parse_args()
+    if args.check_daily_limit:
+        skip = daily_limit_reached(args.published, args.requested_topic, args.again)
+        build = "false" if skip else "true"
+        out = os.environ.get("GITHUB_OUTPUT")
+        if out:
+            with open(out, "a", encoding="utf-8") as f:
+                f.write(f"build={build}\n")
+        print(f"build={build}")
+        if skip:
+            print("[info] きょうはもう1本出しています。材料取得を省略します", file=sys.stderr)
+        return 0
+    if args.season:
+        return pick_season(args)
 
-    import generate_asset_video as gav
-
-    if not args.again and posted_today(args.published):
+    if daily_limit_reached(args.published, again=args.again):
         print("[info] きょうはもう1本出しています", file=sys.stderr)
         out = os.environ.get("GITHUB_OUTPUT")
         if out:
@@ -148,8 +338,14 @@ def main() -> int:
             print("")
         return 0
 
+    import generate_asset_video as gav
+
     done = published(args.published)
-    todo = sorted(k for k in gav.LIST_TOPICS if k not in done)
+    import player_publications as publications
+    ledgers = publications.load(assets_path=args.published)
+    todo = sorted(k for k in gav.LIST_TOPICS if k not in done
+                  and asset_policy.selectable(k, gav.LIST_TOPICS[k])
+                  and (not publications.topic_id(k) or not publications.recent(publications.topic_id(k), 'season_player', ledgers=ledgers)))
 
     # よく見られている種類から先に。まだ測れない種類は真ん中に置く
     # （後回しにすると永久に測れないままになる）。
@@ -172,6 +368,17 @@ def main() -> int:
               % ("、".join(sorted(dead)), len(todo) - len(alive)),
               file=sys.stderr)
         todo = alive
+
+    # **シーズンまとめはここでは選ばない。**専用の枠（season_review.yml）が
+    # 1日の本数を決めて出す。両方が同じ時刻に動くので、ここでも選ぶと
+    # 同じ回を2度上げる。
+    todo = [k for k in todo if kind_of(k) != "season"]
+    # ワールドシリーズの話題（ws_）は本人が試作を見てから手で出す（10/21）。
+    todo = [k for k in todo if kind_of(k) != "ws"]
+    # 日付を持つオフの速報は専用workflowでのみ選ぶ。
+    todo = [k for k in todo if not k.startswith('offseason_')]
+    import ui_voice_stock
+    todo = ui_voice_stock.prioritize(todo)
 
     if args.report:
         print(f"トピック {len(gav.LIST_TOPICS)}件 / 投稿済み {len(done)}件 / "

@@ -1,0 +1,49 @@
+{
+  "publication_id": "asset:topic:season_player_672960",
+  "domain": "asset",
+  "kind": "topic",
+  "key_parts": {
+    "topic": "season_player_672960"
+  },
+  "version": 1,
+  "history": [
+    {
+      "source": "published_videos/asset/season_player_672960",
+      "service": "youtube",
+      "video_id": "J4wWh8qT4co",
+      "state": "scheduled",
+      "scheduled_at": "2026-10-18T13:00:00Z",
+      "event_day": null,
+      "material_day": null,
+      "edition_day": "2026-10-18",
+      "run_at": "2026-10-18T06:49:31.166575+00:00",
+      "details": {
+        "privacy": "public"
+      },
+      "run_id": "40508411617",
+      "attempt": "1",
+      "recorded_at": "2026-10-27T13:01:39.671860+00:00",
+      "fingerprint": "47cc17d5217550a2336b1565c9e23097526ac10c6cee7571a6e679d87b193ea0",
+      "event_id": "9e8450989d99facecb1430a0e4687a35f0243bc54e77381096cba8fe4c4b23d5"
+    },
+    {
+      "source": "published_assets/assets/season_player_672960",
+      "service": "youtube",
+      "video_id": "J4wWh8qT4co",
+      "state": "uploaded",
+      "scheduled_at": null,
+      "event_day": null,
+      "material_day": null,
+      "edition_day": null,
+      "run_at": "2026-10-18T06:49:31.158418+00:00",
+      "details": {
+        "privacy": "public"
+      },
+      "run_id": "40508411617",
+      "attempt": "1",
+      "recorded_at": "2026-10-27T13:01:39.790084+00:00",
+      "fingerprint": "5da5783fc96053eaf4907cb7ade89a0cfcfc86d5046ad8e9cfa97c716284ef64",
+      "event_id": "b7e4d5816d4d60b725e5253913231aa46e5a71e1f4bac2fcdd4005bd89aab48f"
+    }
+  ]
+}

@@ -29,6 +29,7 @@ MLBの球場ごとに、資産動画1本ぶんの材料を作る。
 
 import argparse
 import json
+from venue_capacity import apply_capacity, capacity_note
 import pathlib
 import sys
 from datetime import datetime, timezone
@@ -73,6 +74,7 @@ def fetch() -> list:
                       headers=UA, timeout=30).json().get("venues", [])
     out = []
     for v in vs:
+        v = apply_capacity(v)
         if v["id"] not in home:
             continue
         f = v.get("fieldInfo") or {}
@@ -97,7 +99,7 @@ def build_items(v: dict, all_v: list, where: str = "") -> list:
 
     cap = f["capacity"]
     cr = rank_of(cap, [x["field"]["capacity"] for x in all_v])
-    items.append((f"収容 {cap:,}人",
+    items.append((f"収容 {cap:,}人{capacity_note(v['name'])}",
                   f"MLB{n}球場のなかで{cr}番目の大きさです"))
 
     cen = f["center"]
@@ -185,10 +187,10 @@ def hook_of(v: dict, all_v: list, gist: str = "") -> str:
         cands.append((1, f"中堅{f['center']}フィート、"
                          f"{n}球場でいちばん浅い部類"))
     if cap_rank <= 3:
-        cands.append((cap_rank, f"収容{f['capacity']:,}人、"
+        cands.append((cap_rank, f"収容{f['capacity']:,}人{capacity_note(v['name'])}、"
                                 f"{n}球場で{cap_rank}番目に大きい"))
     if cap_rank >= n - 2:
-        cands.append((1, f"収容{f['capacity']:,}人、"
+        cands.append((1, f"収容{f['capacity']:,}人{capacity_note(v['name'])}、"
                          f"{n}球場でいちばん小さい部類"))
     if el_rank <= 3:
         cands.append((el_rank, f"標高{el}フィート、"
@@ -222,7 +224,7 @@ def hook_of(v: dict, all_v: list, gist: str = "") -> str:
             head = ""   # 球場名の言い換えでしかなく、特徴になっていない
         if 6 <= len(head) <= 26:
             return head
-    return f"収容{f['capacity']:,}人　中堅{f['center']}フィート"
+    return f"収容{f['capacity']:,}人{capacity_note(v['name'])}　中堅{f['center']}フィート"
 
 
 def main() -> int:
@@ -276,6 +278,7 @@ def main() -> int:
     p.write_text(json.dumps({
         "updated_at": datetime.now(timezone.utc).isoformat(),
         "source": "MLB Stats API",
+        "capacity_source": "data/venue_capacities.json",
         "topics": topics,
     }, ensure_ascii=False, indent=2), encoding="utf-8")
 

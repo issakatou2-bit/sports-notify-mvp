@@ -83,6 +83,27 @@ def career(pid: int, position: str = "", timeout: int = 25) -> dict:
     return {}
 
 
+NOT_PLAYER = ("Unknown", "")
+
+
+def is_player(p: dict) -> bool:
+    """**選手として**殿堂入りした人か。
+
+    殿堂のAPIは選出の区分（選手・監督・経営者・審判）を返さない。
+    ただ、選手以外として選ばれた69人は守備位置が「Unknown」になっている
+    （監督のトーリ、ラソーダ、ステンゲル、コミッショナーのセリグ、
+    審判のクレム、草創期のカートライトなど）。
+
+    9/21、レッズの回で監督として選ばれたスパーキー・アンダーソンを
+    選手として並べ、選手時代（1959年フィリーズの1年だけ）の打率.218を
+    出した。選手としても実績のある人（トーリなど）もこの中にいるが、
+    殿堂は選手としては選んでいないので、選手の枠には入れない。
+    """
+    pos = ((p.get("primaryPosition") or {}).get("name")
+           if "primaryPosition" in p else p.get("position"))
+    return (pos or "") not in NOT_PLAYER
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default="data/team_legends.json")
@@ -103,6 +124,8 @@ def main() -> int:
         tid = str(((a.get("team") or {}).get("id")) or "")
         p = a.get("player") or {}
         if not tid or not p.get("id"):
+            continue
+        if not is_player(p):
             continue
         by_team.setdefault(tid, []).append({
             "id": p["id"], "name": p.get("nameFirstLast", ""),

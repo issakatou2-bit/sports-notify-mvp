@@ -1,0 +1,16 @@
+{"competitions": [
+  {"code":"PL","name":"プレミアリーグ","espn":"eng.1","football_free":true},
+  {"code":"PD","name":"ラ・リーガ","espn":"esp.1","football_free":true},
+  {"code":"BL1","name":"ブンデスリーガ","espn":"ger.1","football_free":true},
+  {"code":"SA","name":"セリエA","espn":"ita.1","football_free":true},
+  {"code":"FL1","name":"リーグ・アン","espn":"fra.1","football_free":true},
+  {"code":"CL","name":"チャンピオンズリーグ","espn":"uefa.champions","football_free":true},
+  {"code":"EL","name":"ヨーロッパリーグ","espn":"uefa.europa","football_free":false},
+  {"code":"UECL","name":"カンファレンスリーグ","espn":"uefa.europa.conf","football_free":false},
+  {"code":"FAC","name":"FA杯","espn":"eng.fa","football_free":false},
+  {"code":"EFL","name":"リーグ杯","espn":"eng.league_cup","football_free":false},
+  {"code":"CDR","name":"コパ・デル・レイ","espn":"esp.copa_del_rey","football_free":false},
+  {"code":"DFB","name":"DFBポカール","espn":"ger.dfb_pokal","football_free":false},
+  {"code":"CI","name":"コッパ・イタリア","espn":"ita.coppa_italia","football_free":false},
+  {"code":"CDF","name":"クープ・ドゥ・フランス","espn":"fra.coupe_de_france","football_free":false}
+]}

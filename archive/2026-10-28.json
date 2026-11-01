@@ -1,0 +1,431 @@
+{
+  "generated_at": "2026-10-28T09:54:05.966826+00:00",
+  "games": [
+    {
+      "game_id": "558550",
+      "league": "セリエA",
+      "home_team_id": "SA-454",
+      "away_team_id": "SA-108",
+      "home_team_name": "ベネチア",
+      "away_team_name": "インテル",
+      "home_abbr": null,
+      "away_abbr": null,
+      "home_color": null,
+      "away_color": null,
+      "matchup": "インテル vs ベネチア",
+      "abbr_matchup": null,
+      "start_time_jst": "10/29 02:30",
+      "home_division": null,
+      "away_division": null,
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": {
+        "rank": 20,
+        "games_back": 7.3,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 22.0
+      },
+      "away_standing": {
+        "rank": 2,
+        "games_back": 1.0,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 3.0
+      },
+      "home_probable": null,
+      "away_probable": null,
+      "venue_name": null,
+      "venue_jp": null,
+      "venue_note": null,
+      "venue_runs_note": null,
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 3,
+      "game_type": "R",
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "quality",
+          "text": "インテル の試合",
+          "weight": 1
+        },
+        {
+          "tag": "quality",
+          "text": "インテル（昨季セリエA1位）",
+          "weight": 2
+        }
+      ],
+      "log_notes": [],
+      "ai_summary": "昨季セリエA1位のインテルが敵地・ベネチアを訪れる一戦である。現在【首位と勝ち点差3】で追う2位のインテルにとって、勝ち点を積み重ねることが不可欠な局面が続いている。一方、首位との差が勝ち点差22に及ぶベネチアは、リーグ下位の立場から反発を見せたいところとなる。インテルの攻撃力がリーグ下位のチームの守備にどう機能するか、その攻防の質に注目したい。",
+      "notification_hook": "首位と3点差のインテル、下位ベネチア相手に勝点を奪えるか",
+      "final_score": {
+        "home": 0,
+        "away": 2,
+        "winner": "away"
+      }
+    },
+    {
+      "game_id": "558549",
+      "league": "セリエA",
+      "home_team_id": "SA-98",
+      "away_team_id": "SA-103",
+      "home_team_name": "ACミラン",
+      "away_team_name": "ボローニャ",
+      "home_abbr": null,
+      "away_abbr": null,
+      "home_color": null,
+      "away_color": null,
+      "matchup": "ボローニャ vs ACミラン",
+      "abbr_matchup": null,
+      "start_time_jst": "10/29 02:30",
+      "home_division": null,
+      "away_division": null,
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": {
+        "rank": 5,
+        "games_back": 2.3,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 7.0
+      },
+      "away_standing": {
+        "rank": 13,
+        "games_back": 5.7,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 17.0
+      },
+      "home_probable": null,
+      "away_probable": null,
+      "venue_name": null,
+      "venue_jp": null,
+      "venue_note": null,
+      "venue_runs_note": null,
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 2,
+      "game_type": "R",
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "quality",
+          "text": "ACミラン の試合",
+          "weight": 1
+        },
+        {
+          "tag": "quality",
+          "text": "ACミラン（昨季セリエA5位）とボローニャ（昨季セリエA8位）の対戦",
+          "weight": 1
+        }
+      ],
+      "log_notes": [],
+      "ai_summary": "セリエAの首位と勝ち点差7のACミランが、昨季8位から今季13位へと順位を下げたボローニャを本拠地に迎える。8試合を消化した現在、ミランは上位進出を狙う立場にあり、訪問するボローニャとの対戦は両者の現在地を測る指標となる。昨季セリエA5位のミランが昨季8位のボローニャに対してどのような試合運びを見せるのか、注目したい。",
+      "notification_hook": "昨季5位ミランが首位と7差の現在、13位ボローニャとの直接対決で何を示すか",
+      "final_score": {
+        "home": 2,
+        "away": 4,
+        "winner": "away"
+      }
+    },
+    {
+      "game_id": "558553",
+      "league": "セリエA",
+      "home_team_id": "SA-112",
+      "away_team_id": "SA-115",
+      "home_team_name": "パルマ",
+      "away_team_name": "ウディネーゼ",
+      "home_abbr": null,
+      "away_abbr": null,
+      "home_color": null,
+      "away_color": null,
+      "matchup": "ウディネーゼ vs パルマ",
+      "abbr_matchup": null,
+      "start_time_jst": "10/29 02:30",
+      "home_division": null,
+      "away_division": null,
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": {
+        "rank": 19,
+        "games_back": 7.0,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 21.0
+      },
+      "away_standing": {
+        "rank": 17,
+        "games_back": 7.0,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 21.0
+      },
+      "home_probable": null,
+      "away_probable": null,
+      "venue_name": null,
+      "venue_jp": null,
+      "venue_note": null,
+      "venue_runs_note": null,
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 1,
+      "game_type": "R",
+      "is_notable": false,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "パルマには鈴木彩艶が所属",
+          "weight": 1
+        },
+        {
+          "tag": "quality",
+          "text": "パルマ（昨季セリエA12位）とウディネーゼ（昨季セリエA10位）の対戦",
+          "weight": 0
+        }
+      ],
+      "final_score": {
+        "home": 0,
+        "away": 0,
+        "winner": "draw"
+      }
+    },
+    {
+      "game_id": "558554",
+      "league": "セリエA",
+      "home_team_id": "SA-5911",
+      "away_team_id": "SA-113",
+      "home_team_name": "モンツァ",
+      "away_team_name": "ナポリ",
+      "home_abbr": null,
+      "away_abbr": null,
+      "home_color": null,
+      "away_color": null,
+      "matchup": "ナポリ vs モンツァ",
+      "abbr_matchup": null,
+      "start_time_jst": "10/29 04:45",
+      "home_division": null,
+      "away_division": null,
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": {
+        "rank": 15,
+        "games_back": 6.0,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 18.0
+      },
+      "away_standing": {
+        "rank": 10,
+        "games_back": 4.7,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 14.0
+      },
+      "home_probable": null,
+      "away_probable": null,
+      "venue_name": null,
+      "venue_jp": null,
+      "venue_note": null,
+      "venue_runs_note": null,
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 2,
+      "game_type": "R",
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "quality",
+          "text": "ナポリ（昨季セリエA2位）",
+          "weight": 2
+        }
+      ],
+      "log_notes": [],
+      "ai_summary": "ナポリが敵地モンツァを訪れる一戦は、セリエA全体の順位争いの現在地を映す試合になる。モンツァはリーグ15位で首位との勝ち点差が18に達する一方、ナポリはリーグ10位で勝ち点差14と、昨季セリエA2位の実績を持つチームにしては【首位から14勝ち点後塵を拝している】状況にある。本拠地モンツァを迎える立場でも、訪問側ナポリにとっても、現在地から這い上がるための重要な局面となる試合であり、各チームの攻撃の組み立てや守備の安定感がどう機能するかに注目したい。",
+      "notification_hook": "昨季セリエA2位ナポリ、敵地モンツァで首位との勝ち点差縮められるか。",
+      "final_score": {
+        "home": 1,
+        "away": 4,
+        "winner": "away"
+      }
+    },
+    {
+      "game_id": "558552",
+      "league": "セリエA",
+      "home_team_id": "SA-107",
+      "away_team_id": "SA-109",
+      "home_team_name": "ジェノア",
+      "away_team_name": "ユベントス",
+      "home_abbr": null,
+      "away_abbr": null,
+      "home_color": null,
+      "away_color": null,
+      "matchup": "ユベントス vs ジェノア",
+      "abbr_matchup": null,
+      "start_time_jst": "10/29 04:45",
+      "home_division": null,
+      "away_division": null,
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": {
+        "rank": 16,
+        "games_back": 6.0,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 18.0
+      },
+      "away_standing": {
+        "rank": 7,
+        "games_back": 3.7,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 11.0
+      },
+      "home_probable": null,
+      "away_probable": null,
+      "venue_name": null,
+      "venue_jp": null,
+      "venue_note": null,
+      "venue_runs_note": null,
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 1,
+      "game_type": "R",
+      "is_notable": false,
+      "reasons": [
+        {
+          "tag": "quality",
+          "text": "ユベントス の試合",
+          "weight": 1
+        },
+        {
+          "tag": "quality",
+          "text": "ジェノア（昨季セリエA16位）とユベントス（昨季セリエA6位）の対戦",
+          "weight": 0
+        }
+      ],
+      "final_score": {
+        "home": 2,
+        "away": 0,
+        "winner": "home"
+      }
+    },
+    {
+      "game_id": "849799",
+      "league": "MLB",
+      "home_team_id": "139",
+      "away_team_id": "158",
+      "home_team_name": "レイズ",
+      "away_team_name": "ブリュワーズ",
+      "home_abbr": "TB",
+      "away_abbr": "MIL",
+      "home_color": "#092C5C",
+      "away_color": "#12284B",
+      "matchup": "ブリュワーズ vs レイズ",
+      "abbr_matchup": "MIL vs TB",
+      "start_time_jst": "10/29 09:00",
+      "home_division": "ALE",
+      "away_division": "NLC",
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": {
+        "rank": 1,
+        "games_back": 0.0,
+        "streak": -1,
+        "wins": 98,
+        "losses": 64,
+        "last_ten": "5勝5敗",
+        "points_back": null
+      },
+      "away_standing": {
+        "rank": 1,
+        "games_back": 0.0,
+        "streak": 5,
+        "wins": 103,
+        "losses": 59,
+        "last_ten": "8勝2敗",
+        "points_back": null
+      },
+      "home_probable": null,
+      "away_probable": {
+        "name": "Jacob Misiorowski",
+        "name_en": "Jacob Misiorowski",
+        "player_id": "694819",
+        "era": "1.80",
+        "wins": 16,
+        "losses": 5,
+        "strikeouts": 252
+      },
+      "venue_name": "Tropicana Field",
+      "venue_jp": "トロピカーナ・フィールド",
+      "venue_note": "MLBで数少ないドーム球場。天候に左右されない",
+      "venue_runs_note": "この球場の2026年シーズンの1試合平均得点は8.46点で、MLB30球場中20位",
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 8,
+      "game_type": "W",
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "postseason",
+          "text": "ワールドシリーズ 第5戦(ブリュワーズが3勝1敗で王手、レイズは負ければ敗退)",
+          "weight": 8
+        }
+      ],
+      "series_context": {
+        "series_game_number": 4,
+        "games_in_series": 7,
+        "home_wins_in_stretch": 1,
+        "away_wins_in_stretch": 3
+      },
+      "highlight_title": "EVERY PLAY from Brewers vs. Rays World Series Game 4",
+      "highlight_video_id": "3M3kgqfwdEY",
+      "log_notes": [],
+      "ai_summary": "ワールドシリーズでブリュワーズが3勝1敗で王手をかけた一戦である。ブリュワーズはレギュラーシーズンでナ・リーグ中地区を【14.0ゲーム差で制した】ナ・リーグの最高勝率チームで、Jacob Misiorowski投手は防御率1.80、16勝5敗と安定した成績を残している。迎えるレイズは、本拠地トロピカーナ・フィールドのドーム環境を活かし、ア・リーグ東地区を4.5ゲーム差でリードしたチームである。この敵地での対戦がどのような展開になるかに注目したい。",
+      "notification_hook": "Jacob Misiorowski防御率1.80、ブリュワーズはワールドシリーズ王手の第4戦へ",
+      "availability_checked_at": "2026-10-28T09:52:55.339595+00:00",
+      "final_score": {
+        "home": 1,
+        "away": 4,
+        "winner": "away"
+      }
+    }
+  ],
+  "ai_status": {
+    "targets": 3,
+    "succeeded": 3,
+    "cost_usd": 0.01116
+  }
+}

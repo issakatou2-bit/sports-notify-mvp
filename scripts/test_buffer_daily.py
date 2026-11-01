@@ -2,15 +2,151 @@ import io
 import json
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
+import sys
 import tempfile
 import unittest
 from unittest.mock import patch
 import zipfile
+from contextlib import ExitStack
 
 import buffer_daily as daily
 
 
+class RecentPostsRecovery(unittest.TestCase):
+    def page(self, posts=(), more=False, cursor=None):
+        return {'posts': {'edges': [{'node': p} for p in posts],
+                          'pageInfo': {'hasNextPage': more, 'endCursor': cursor}}}
+
+    def ledger(self, rows):
+        ledger = daily.Ledger.__new__(daily.Ledger)
+        ledger.data = {'version': 1, 'deliveries': rows}
+        ledger.set = lambda key, value: ledger.data['deliveries'].__setitem__(key, value)
+        return ledger
+
+    def test_page_is_retried_once_without_repeating_previous_page(self):
+        first = dict(id='p1', text='first', status='sent')
+        second = dict(id='p2', text='second', status='sending')
+        with patch.object(daily, 'graphql', side_effect=[self.page([first], True, 'cursor'),
+                         RuntimeError('private-token'), self.page([second])]) as api, \
+             patch.object(daily.time, 'sleep'), patch('sys.stdout', new_callable=io.StringIO) as log:
+            self.assertEqual(daily.recent_posts('x'), [first, second])
+        self.assertEqual(api.call_count, 3)
+        self.assertEqual(api.call_args_list[1], api.call_args_list[2])
+        self.assertNotIn('private-token', log.getvalue())
+
+    def test_double_failure_warns_and_never_creates_a_post(self):
+        ledger = self.ledger({})
+        with patch.object(daily, 'graphql', side_effect=RuntimeError('private-token')) as api, \
+             patch.object(daily.time, 'sleep'), patch('sys.stdout', new_callable=io.StringIO) as log:
+            with self.assertRaises(daily.RecentPostsUnavailable):
+                daily.submit_once(ledger, 'key', dict(channelId='x', text='today'), {})
+        self.assertEqual(api.call_count, 2)
+        self.assertTrue(all('mutation' not in c.args[0] for c in api.call_args_list))
+        self.assertEqual(ledger.data['deliveries'], {})
+        self.assertIn('::warning::', log.getvalue()); self.assertNotIn('private-token', log.getvalue())
+
+    def test_refresh_preserves_sent_and_continues_other_channels(self):
+        prefix = '2026-10-15:daily:'
+        sent = dict(state='sent', post_id='x1', external_link='https://x.com/receipt')
+        ledger = self.ledger({prefix+'twitter': dict(sent),
+                              prefix+'instagram': dict(state='sending', post_id='i1'),
+                              prefix+'tiktok': dict(state='sending', post_id='t1')})
+        def query(channel):
+            if channel == daily.CHANNELS['instagram']:
+                raise daily.RecentPostsUnavailable()
+            self.assertEqual(channel, daily.CHANNELS['tiktok'])
+            return [dict(id='t1', text='today', status='sent', externalLink='https://tiktok.com/receipt')]
+        with patch.object(daily, 'recent_posts', side_effect=query), patch.object(daily.time, 'sleep'):
+            unavailable = daily.refresh_deliveries(ledger, '2026-10-15', 'daily', daily.CHANNELS)
+        self.assertEqual(unavailable, {'instagram'})
+        self.assertEqual(ledger.data['deliveries'][prefix+'twitter'], sent)
+        self.assertEqual(ledger.data['deliveries'][prefix+'instagram']['state'], 'sending')
+        self.assertEqual(ledger.data['deliveries'][prefix+'tiktok']['state'], 'sent')
+
+    def test_reconcile_double_failure_keeps_durable_records(self):
+        entry = dict(state='sending', post_id='i1')
+        ledger = self.ledger({'2026-10-15:daily:instagram': dict(entry)})
+        with patch.object(daily, 'Ledger', return_value=ledger), \
+             patch.object(daily, 'graphql', side_effect=RuntimeError('private-token')) as api, \
+             patch.object(daily.time, 'sleep'), patch('sys.stdout', new_callable=io.StringIO):
+            daily.reconcile()
+        self.assertEqual(api.call_count, 2)
+        self.assertEqual(ledger.data['deliveries']['2026-10-15:daily:instagram'], entry)
+
+    def test_main_keeps_success_after_confirmation_outage(self):
+        day = '2026-10-15'; record = dict(video_id='abc12345678', title='title')
+        ledger = self.ledger({day+':daily:twitter': dict(state='sent', post_id='x1'),
+                              day+':daily:instagram': dict(state='sending', post_id='i1')})
+        available = [dict(id=daily.CHANNELS[s], service=s, name='collespo_jp')
+                     for s in ('twitter', 'instagram')]
+        def graphql(query, *args):
+            if 'channels(input' in query:
+                return dict(channels=available)
+            raise RuntimeError('private-token')
+        def github(path, *args, **kwargs):
+            if path.endswith('/artifacts'):
+                return dict(artifacts=[dict(name=daily.SOURCES['daily'][1], expired=False, size_in_bytes=10, id=1)])
+            return dict(id=1)
+        with tempfile.TemporaryDirectory() as directory, ExitStack() as stack:
+            summary = Path(directory) / 'summary.md'
+            for name, kwargs in {
+                'Ledger': dict(return_value=ledger), 'github': dict(side_effect=github),
+                'select_record': dict(return_value=(day, record)),
+                'verify_youtube': dict(return_value=dict(title='title')),
+                'extract_video': dict(return_value='digest'), 'verify_media': dict(return_value=51),
+                'host_video': dict(return_value='https://example.test/video'),
+                'submit_once': dict(return_value=dict(id='existing')),
+                'graphql': dict(side_effect=graphql),
+            }.items():
+                stack.enter_context(patch.object(daily, name, **kwargs))
+            stack.enter_context(patch.object(daily.time, 'sleep'))
+            stack.enter_context(patch.object(daily.os, 'environ',
+                {'BUFFER_CHANNELS': 'twitter,instagram', 'GITHUB_STEP_SUMMARY': str(summary)}))
+            stack.enter_context(patch('sys.argv', ['buffer_daily.py', '--source-run', '1', '--publish']))
+            stack.enter_context(patch.object(Path, 'read_text', return_value='{}'))
+            output = stack.enter_context(patch('sys.stdout', new_callable=io.StringIO))
+            daily.main()  # 照合障害だけではSystemExitにならない。
+            self.assertNotIn('private-token', output.getvalue())
+        self.assertEqual(ledger.data['deliveries'][day+':daily:twitter']['state'], 'sent')
+        self.assertEqual(ledger.data['deliveries'][day+':daily:instagram']['state'], 'sending')
+
+
 class BufferTests(unittest.TestCase):
+    def test_ps_skip_requires_explicit_same_run_artifact_without_video(self):
+        def archive(state,video=False):
+            out=io.BytesIO()
+            with zipfile.ZipFile(out,'w') as z:
+                z.writestr('ps_forecast_status.json',json.dumps({'state':state,'reason':'No PS games tomorrow'}))
+                if video:z.writestr('video/collespo_short.mp4',b'video')
+            return out.getvalue()
+        meta={'artifacts':[{'id':8,'name':'collespo-video','expired':False,'size_in_bytes':1000}]}
+        for state,video,accepted in [('skipped',False,True),('blocked',False,False),('v2',False,False),('skipped',True,False)]:
+            with patch.object(daily,'github',side_effect=[meta,archive(state,video)]) as read:
+                self.assertEqual(bool(daily.verified_ps_skip({'id':99},'daily')),accepted)
+                self.assertEqual(read.call_args_list[0].args[0],'/actions/runs/99/artifacts')
+        with patch.object(daily,'github') as read:
+            self.assertIsNone(daily.verified_ps_skip({'id':99},'morning'))
+            read.assert_not_called()
+        with self.assertRaises(daily.MissingVideoRecord):daily.select_record(self.run,{},self.now)
+        with self.assertRaises(ValueError) as bad:
+            daily.select_record(self.run,{'daily':{'2026-09-11':{'video_id':'bad'}}},self.now)
+        self.assertNotIsInstance(bad.exception,daily.MissingVideoRecord)
+
+    def test_evening_slot_from_partly_failed_run_but_daily_stays_strict(self):
+        # 10/8: 夕方の実行は 20:00 だけ失敗、17:00〜18:00 は出来ていた。夕方の枠は使える。日次は成功だけ。
+        run = {**self.run, 'conclusion': 'failure', 'path': '.github/workflows/morning_recap.yml'}
+        records = {'morning': {'2026-09-11': self.record}}
+        self.assertEqual(daily.select_record(run, records, self.now, 'morning')[0], '2026-09-11')
+        with self.assertRaises(ValueError):
+            daily.select_record({**self.run, 'conclusion': 'failure'}, self.records, self.now)
+
+    def test_picks_the_run_that_made_the_slot(self):
+        early = {'id': 1, 'conclusion': 'failure', 'created_at': '2026-09-11T06:00:00Z', 'updated_at': '2026-09-11T06:10:00Z'}
+        late = {'id': 2, 'conclusion': 'success', 'created_at': '2026-09-11T06:15:00Z', 'updated_at': '2026-09-11T06:20:00Z'}
+        rec = {'published_at': '2026-09-11T06:05:00Z'}
+        self.assertEqual(daily.run_for_record([late, early], '2026-09-11', rec, 'morning')['id'], 1)
+        self.assertIsNone(daily.run_for_record([late, early], '2026-09-11', rec, 'daily'))
+
     def test_reconcile_skips_buffer_when_every_delivery_is_confirmed(self):
         ledger = self.ledger()
         ledger.data['deliveries'] = {'2026-09-11:daily:twitter': {'state': 'sent'}}
@@ -61,6 +197,63 @@ class BufferTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             daily.select_record(self.run, self.records, datetime(2026,9,11,15,0,tzinfo=timezone.utc))
 
+    def test_delayed_backfill_is_bounded_and_forecast_stays_excluded(self):
+        before = datetime(2026,9,11,17,59,tzinfo=timezone.utc)  # JST 02:59
+        cutoff = datetime(2026,9,11,18,0,tzinfo=timezone.utc)  # JST 03:00
+        run = {**self.run, 'path': '.github/workflows/morning_recap.yml'}
+        records = {'morning': {'2026-09-11': self.record}}
+        self.assertEqual(daily.select_record(run,records,before,'morning',True)[0], '2026-09-11')
+        for now, kind, late in [(cutoff,'morning',True),(before,'morning',False),
+                                (before,'daily',True)]:
+            with self.subTest(kind=kind,late=late), self.assertRaises(ValueError):
+                daily.select_record(run if kind=='morning' else self.run,
+                                    records if kind=='morning' else self.records,now,kind,late)
+
+    def test_late_mode_keeps_source_and_publication_validation(self):
+        now = datetime(2026,9,11,16,31,tzinfo=timezone.utc)
+        run = {**self.run, 'path': '.github/workflows/morning_recap.yml'}
+        records = {'morning': {'2026-09-11': self.record}}
+        # 夕方の枠は failure の実行も使える（その枠の動画がこの実行で作られていれば）。取り消し等は使わない
+        for change in ({'conclusion':'cancelled'},{'head_branch':'feature'},
+                       {'repository':{'full_name':'other/repo'}},
+                       {'created_at':'2026-09-10T09:00:00Z'}):
+            with self.subTest(change=change), self.assertRaises(ValueError):
+                daily.select_record({**run,**change},records,now,'morning',True)
+        for change in ({'publish_at':'2026-09-12T10:00:00Z'},
+                       {'published_at':'2026-09-11T08:00:00Z'}):
+            with self.subTest(change=change), self.assertRaises(ValueError):
+                daily.select_record(run,{'morning':{'2026-09-11':{**self.record,**change}}},now,'morning',True)
+
+    def test_delayed_due_reproduces_missing_four_slots_without_duplicates(self):
+        class Clock(datetime):
+            @classmethod
+            def now(cls, tz=None):
+                return datetime(2026,9,11,16,31,tzinfo=timezone.utc)
+        records = {key:{'2026-09-11':self.record} for key, *_ in daily.SOURCES.values()}
+        entries = {'2026-09-11:morning:twitter':{'state':'sent'},
+                   '2026-09-11:morning:instagram':{'state':'sending'}}
+        with patch.object(daily,'datetime',Clock), patch.object(daily.Path,'read_text',return_value=json.dumps(records)), \
+             patch.object(daily,'Ledger') as ledger, patch.object(daily,'day_runs',return_value=[{'id':99,'conclusion':'success','created_at':'2026-09-11T00:00:00Z','updated_at':'2026-09-11T23:00:00Z'}]) as runs:
+            ledger.return_value.data={'deliveries':entries}
+            self.assertEqual(daily.due(('twitter','instagram')), [])
+            ledger.return_value.data={'deliveries':{}}
+            self.assertEqual(len(daily.due(('twitter','instagram'),True)),4)
+            runs.reset_mock()
+            ledger.return_value.data={'deliveries':entries}
+            rows=daily.due(('twitter','instagram'),True)
+            self.assertEqual({kind for kind,_ in rows}, {'morning_voices','morning_press','morning_postseason'})
+            self.assertEqual(runs.call_count,1)  # 同じ素材実行は1回だけ取得
+            entries['2026-09-11:morning:instagram']={'state':'sent'}
+            self.assertNotIn(('morning',99),daily.due(('twitter','instagram'),True))
+
+    def test_late_caption_preserves_original_edition(self):
+        now=datetime(2026,9,11,16,31,tzinfo=timezone.utc)
+        run={**self.run,'path':'.github/workflows/morning_recap.yml'}
+        day,record=daily.select_record(run,{'morning':{'2026-09-11':self.record}},now,'morning',True)
+        text=daily.caption('twitter',day,record,'morning')
+        self.assertIn('09/11更新',text)
+        self.assertNotIn('09/12更新',text)
+
     def test_caption_and_platform_options(self):
         x = daily.caption('twitter', '2026-09-11', self.record)
         self.assertLessEqual(daily.x_weight(x), 280)
@@ -77,10 +270,27 @@ class BufferTests(unittest.TestCase):
         for service in daily.CHANNELS:
             text=daily.caption(service,'2026-09-14',record)
             self.assertIn('菅野智之が先発予定です。',text)
-            self.assertIn('パドレスは7連勝中。',text)
+            self.assertNotIn('パドレスは7連勝中。',text)
             self.assertNotIn('別の試合',text)
             self.assertNotIn('正念場',text)
             self.assertNotIn('プロフィールの',text)
+
+    def test_caption_matches_headline_to_third_game_not_first(self):
+        record = {**self.record, 'title': 'エンゼルス 菊池雄星、先発予定｜9/23の注目試合【MLB】#Shorts',
+                  'description': '1. 09/23 11:10 パドレス vs ドジャース\n・パドレスには松井裕樹が所属\n\n'
+                                 '3. 09/23 10:40 エンゼルス vs アスレチックス\n・菊池雄星が先発予定\n\n・広告'}
+        for service in daily.CHANNELS:
+            text = daily.caption(service, '2026-09-22', record)
+            self.assertIn('菊池雄星が先発予定。', text)
+            self.assertNotIn('松井裕樹', text)
+            self.assertNotIn('9/23の注目試合', text)
+            self.assertNotIn('広告', text)
+
+    def test_ambiguous_or_unmatched_games_do_not_add_a_reason(self):
+        description = ('1. 09/23 10:00 エンゼルス vs アスレチックス\n・第1試合\n\n'
+                       '2. 09/23 15:00 エンゼルス vs アスレチックス\n・第2試合')
+        self.assertEqual(daily.headline_game_reason('エンゼルス', description), '')
+        self.assertEqual(daily.headline_game_reason('ドジャース', description), '')
 
     def test_caption_missing_description_and_long_reason_remain_safe(self):
         self.assertEqual(daily.first_game_reason('・別枠の宣伝'), '')
@@ -100,6 +310,27 @@ class BufferTests(unittest.TestCase):
     def test_overlong_x_fails_instead_of_bad_post(self):
         with self.assertRaises(ValueError):
             daily.caption('twitter', '2026-09-11', {**self.record,'title':'今'*200})
+
+    def test_postseason_caption_tracks_the_video_not_the_wall_clock(self):
+        for service in daily.CHANNELS:
+            for day, title in [('2026-09-29', 'カブス 0勝1敗｜ポストシーズン'),
+                               ('2026-10-31', 'ドジャース WS制覇｜ポストシーズン')]:
+                text = daily.caption(service, day, {**self.record, 'title': title},
+                                     'morning_postseason')
+                self.assertNotIn('進出争い', text)
+                self.assertNotIn('マジック', text)
+                self.assertIn('勝敗', text)
+            regular = daily.caption(service, '2026-09-26', {**self.record,
+                'title': 'ガーディアンズ M1｜ポストシーズン進出争い'}, 'morning_postseason')
+            self.assertIn('進出争い', regular)
+            self.assertIn('マジック', regular)
+
+    def test_unknown_postseason_title_does_not_invent_a_phase_or_mutate_defaults(self):
+        text = daily.caption('instagram', '2026-11-05', {**self.record,
+            'title': 'シーズンを振り返る'}, 'morning_postseason')
+        self.assertNotIn('マジック', text)
+        self.assertNotIn('各シリーズの勝敗', text)
+        self.assertEqual(daily.KIND_WORDS['morning_postseason']['short'], '進出争い')
 
     def test_rollout_selects_only_verified_channels(self):
         self.assertEqual(daily.selected_services('twitter,instagram'), ('twitter','instagram'))
@@ -242,6 +473,105 @@ class ReleaseIsolation(unittest.TestCase):
             upload.assert_not_called()
 
 
+class Response:
+    def __init__(self, payload=b'{}'):
+        self.payload = payload
+
+    def read(self, size=-1):
+        return self.payload
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *exc):
+        return False
+
+
+class Opener:
+    def __init__(self, outcomes):
+        self.outcomes = list(outcomes)
+        self.urls = []
+        self.calls = 0
+
+    def open(self, request, timeout=None):
+        self.urls.append(request.full_url)
+        self.calls += 1
+        outcome = self.outcomes.pop(0)
+        if isinstance(outcome, Exception):
+            raise outcome
+        return outcome
+
+
+def http_error(code):
+    return daily.urllib.error.HTTPError(
+        'https://example.test', code, str(code), {}, None)
+
+
+class GitHubTransientFailures(unittest.TestCase):
+    def run_github(self, outcomes):
+        opener = Opener(outcomes)
+        sleeps = []
+        with patch.object(daily.urllib.request, 'build_opener',
+                          return_value=opener), \
+                patch.object(daily.time, 'sleep', side_effect=sleeps.append), \
+                patch.dict(daily.os.environ, {'GH_TOKEN': 'dummy'}):
+            try:
+                result = daily.github('/x')
+            except Exception as exc:
+                return opener, sleeps, exc
+        return opener, sleeps, result
+
+    def test_500_is_retried_then_succeeds(self):
+        opener, sleeps, result = self.run_github(
+            [http_error(500), Response(b'{"ok": true}')])
+        self.assertEqual(result, {'ok': True})
+        self.assertEqual(opener.calls, 2)
+        self.assertEqual(sleeps, [2])
+
+    def test_404_is_not_retried(self):
+        opener, sleeps, error = self.run_github([http_error(404)])
+        self.assertIsInstance(error, daily.urllib.error.HTTPError)
+        self.assertEqual(error.code, 404)
+        self.assertEqual(opener.calls, 1)
+        self.assertEqual(sleeps, [])
+
+    def test_four_500s_give_up_after_the_third_delay(self):
+        opener, sleeps, error = self.run_github([http_error(500)] * 4)
+        self.assertIsInstance(error, daily.urllib.error.HTTPError)
+        self.assertEqual(error.code, 500)
+        self.assertEqual(opener.calls, 4)
+        self.assertEqual(sleeps, [2, 5, 10])
+
+    def test_connection_error_is_retried_too(self):
+        opener, sleeps, result = self.run_github(
+            [daily.urllib.error.URLError('down'), Response(b'{"ok": true}')])
+        self.assertEqual(result, {'ok': True})
+        self.assertEqual(opener.calls, 2)
+        self.assertEqual(sleeps, [2])
+
+    def test_post_500_then_422_reads_the_existing_tag(self):
+        release = {'assets': [{'name': 'collespo-morning-2026-09-19.mp4',
+                               'digest': 'sha256:media',
+                               'browser_download_url': 'https://example.test/video'}]}
+        opener = Opener([http_error(404), http_error(500), http_error(422),
+                         Response(json.dumps(release).encode())])
+        sleeps = []
+        run = {'head_sha': 'old-source-sha',
+               'html_url': 'https://example.test/run/1'}
+        with patch.object(daily.urllib.request, 'build_opener',
+                          return_value=opener), \
+                patch.object(daily.time, 'sleep', side_effect=sleeps.append), \
+                patch.dict(daily.os.environ, {'GH_TOKEN': 'dummy'}):
+            url = daily.host_video(run, '2026-09-19', None, 'media', 'morning')
+        self.assertEqual(url, 'https://example.test/video')
+        self.assertEqual(opener.calls, 4)
+        self.assertEqual(sleeps, [2])
+        posts = [u for u in opener.urls if u.endswith('/releases')]
+        self.assertEqual(len(posts), 2)
+        self.assertTrue(opener.urls[-1].endswith(
+            '/releases/tags/social-morning-2026-09-19'))
+
+
 class EachKindSpeaksForItself(unittest.TestCase):
     """枠ごとに、1行目でその回が何なのかを言い切るか。
 
@@ -368,5 +698,41 @@ class StillProcessingIsNotAFailure(unittest.TestCase):
         self.assertEqual(daily.STUCK_AFTER_HOURS, 12)
 
 
+class SnapshotCaption(unittest.TestCase):
+    def test_confirmed_bracket_title_promotes_schedule_not_results(self):
+        title = '【9/28更新】MLBポストシーズン 組み合わせ確定｜日本時間9/30開幕 #Shorts'
+        words = daily.words('morning_postseason', {'title': title})
+        self.assertIn('日程', words['long'])
+        self.assertNotIn('勝敗', words['lead'])
+        self.assertNotIn('進出争い', words['long'])
+
+    def test_clinch_status_title_is_not_series_results(self):
+        title = '【9/27更新】MLBポストシーズン最新情勢｜地区優勝・PS進出の確定状況 #Shorts'
+        words = daily.words('morning_postseason', {'title': title})
+        self.assertEqual(words['long'], '地区優勝・PS進出の確定状況')
+        self.assertNotIn('シリーズ', words['lead'])
+
+
+    def test_run_lookup_retries_and_reports_failure(self):
+        # 10/5 19:00、公開済み・未送信の3枠が「投げられる枠はありません」で見送られた。
+        # 一覧の取得の失敗を黙って None にしない（取り直し、だめなら理由を出す）。
+        day = '2026-10-05'
+        run = {'id': 7, 'created_at': '2026-10-05T06:00:46Z'}
+        calls = []
+
+        def flaky(path, *a, **k):
+            calls.append(path)
+            if len(calls) < 3:
+                raise OSError('temporary')
+            return {'workflow_runs': [run]}
+        with patch.object(daily, 'github', side_effect=flaky),                 patch.object(daily.time, 'sleep'):
+            self.assertEqual(daily.latest_run('morning_recap.yml', day), run)
+        self.assertEqual(len(calls), 3)
+        err = io.StringIO()
+        with patch.object(daily, 'github', side_effect=OSError('down')),                 patch.object(daily.time, 'sleep'), patch('sys.stderr', err):
+            self.assertIsNone(daily.latest_run('morning_recap.yml', day))
+        self.assertIn('実行一覧を取れません', err.getvalue())
+
+
 if __name__ == '__main__':
-    unittest.main(argv=['test_buffer_daily'])
+    unittest.main(argv=[sys.argv[0]])

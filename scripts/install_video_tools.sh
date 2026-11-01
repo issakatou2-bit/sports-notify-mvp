@@ -32,6 +32,33 @@ if have_font && have_ffmpeg; then
   exit 0
 fi
 
+# ffmpeg は apt を待たずに GitHub から取る（BtbN の静的ビルド、数秒）。
+# 10/9、apt が3回とも応答せずシーズンまとめが「動画を書き出せません」で止まった。
+# apsc-video でも同じ形で準備が30分→29秒になった（1005 の共有ノウハウ）。
+if ! have_ffmpeg; then
+  echo "[info] ffmpeg を GitHub から取ります"
+  tmp=$(mktemp -d)
+  if curl -fsSL --max-time 180 -o "$tmp/ff.tar.xz" \
+      "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linux64-gpl.tar.xz" \
+     && tar -xJf "$tmp/ff.tar.xz" -C "$tmp" \
+     && sudo install -m 755 "$tmp"/ffmpeg-*/bin/ffmpeg "$tmp"/ffmpeg-*/bin/ffprobe /usr/local/bin/; then
+    echo "[info] ffmpeg を配置しました"
+  else
+    echo "::warning title=ffmpegの直接取得に失敗::apt で入れます"
+  fi
+  rm -rf "$tmp"
+fi
+
+if have_font && have_ffmpeg; then
+  echo "[info] フォントもffmpegも使えます"
+  fc-list :lang=ja | head -3
+  ffmpeg -version | head -1
+  exit 0
+fi
+
+PKGS="fonts-noto-cjk fonts-noto-cjk-extra"
+have_ffmpeg || PKGS="$PKGS ffmpeg"
+
 for attempt in 1 2 3; do
   echo "::group::apt 試行 ${attempt}回目"
 
@@ -50,7 +77,7 @@ for attempt in 1 2 3; do
 
   if sudo timeout 150 apt-get update -qq \
      && sudo timeout 240 apt-get install -y -qq \
-          fonts-noto-cjk fonts-noto-cjk-extra ffmpeg; then
+          $PKGS; then
     echo "::endgroup::"
     echo "[info] apt での導入に成功しました(${attempt}回目)"
     break
@@ -66,6 +93,10 @@ done
 if ! have_font; then
   echo "[info] フォントを直接取得して配置します"
   mkdir -p "$HOME/.fonts"
+  for w in Regular Black; do
+    curl -fsSL --max-time 120 -o "$HOME/.fonts/NotoSansJP-$w.otf" \
+      "https://github.com/notofonts/noto-cjk/raw/main/Sans/SubsetOTF/JP/NotoSansJP-$w.otf" || true
+  done
   if curl -fsSL --max-time 120 -o "$HOME/.fonts/NotoSansJP.ttf" \
       "https://github.com/notofonts/noto-cjk/raw/main/Sans/SubsetOTF/JP/NotoSansJP-Bold.otf"; then
     fc-cache -f >/dev/null 2>&1 || true

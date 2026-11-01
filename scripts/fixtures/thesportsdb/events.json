@@ -1,0 +1,9 @@
+{
+  "source": "https://www.thesportsdb.com/api/v1/json/123/eventsday.php?d=2026-09-19&l=4328",
+  "retrieved_date": "2026-10-14",
+  "events": [
+    {"idEvent":"2494040","idLeague":"4328","strHomeTeam":"Newcastle United","strAwayTeam":"Hull City","intHomeScore":"2","intAwayScore":"1","dateEvent":"2026-09-19","strStatus":"FT"},
+    {"idEvent":"2494043","idLeague":"4328","strHomeTeam":"Everton","strAwayTeam":"Ipswich Town","intHomeScore":"1","intAwayScore":"0","dateEvent":"2026-09-19","strStatus":"FT"},
+    {"idEvent":"2494044","idLeague":"4328","strHomeTeam":"Tottenham Hotspur","strAwayTeam":"Aston Villa","intHomeScore":"2","intAwayScore":"3","dateEvent":"2026-09-19","strStatus":"FT"}
+  ]
+}

@@ -1,0 +1,247 @@
+{
+  "generated_at": "2026-10-11T09:54:03.072543+00:00",
+  "games": [
+    {
+      "game_id": "560596",
+      "league": "プレミアリーグ",
+      "home_team_id": "PL-354",
+      "away_team_id": "PL-351",
+      "home_team_name": "クリスタル・パレス",
+      "away_team_name": "ノッティンガム・フォレスト",
+      "home_abbr": null,
+      "away_abbr": null,
+      "home_color": null,
+      "away_color": null,
+      "matchup": "ノッティンガム・フォレスト vs クリスタル・パレス",
+      "abbr_matchup": null,
+      "start_time_jst": "10/11 22:00",
+      "home_division": null,
+      "away_division": null,
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": {
+        "rank": 15,
+        "games_back": 3.7,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 11.0
+      },
+      "away_standing": {
+        "rank": 13,
+        "games_back": 3.3,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 10.0
+      },
+      "home_probable": null,
+      "away_probable": null,
+      "venue_name": null,
+      "venue_jp": null,
+      "venue_note": null,
+      "venue_runs_note": null,
+      "home_has_jp": true,
+      "away_has_jp": false,
+      "score": 2,
+      "game_type": "R",
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "クリスタル・パレスには鎌田大地・冨安健洋が所属",
+          "weight": 2
+        },
+        {
+          "tag": "quality",
+          "text": "クリスタル・パレス（昨季プレミアリーグ15位）とノッティンガム・フォレスト（昨季プレミアリーグ16位）の対戦",
+          "weight": 0
+        }
+      ],
+      "start_time_utc": "2026-10-11T22:00:00+09:00",
+      "season_players": [
+        {
+          "name": "鎌田大地",
+          "club": "クリスタル・パレス",
+          "scope": "season",
+          "goals": 0,
+          "assists": 3,
+          "minutes": 441,
+          "out": false,
+          "as_of": "2026-10-11T10:01:35.184184+00:00",
+          "source": "https://fantasy.premierleague.com/api/bootstrap-static/"
+        },
+        {
+          "name": "冨安健洋",
+          "club": "クリスタル・パレス",
+          "scope": "season",
+          "goals": 0,
+          "assists": 0,
+          "minutes": 189,
+          "out": true,
+          "as_of": "2026-10-11T10:01:35.184184+00:00",
+          "source": "https://fantasy.premierleague.com/api/bootstrap-static/"
+        }
+      ],
+      "jp_by_side": {
+        "home": [
+          "鎌田大地",
+          "冨安健洋"
+        ],
+        "away": []
+      }
+    },
+    {
+      "game_id": "565816",
+      "league": "ブンデスリーガ",
+      "home_team_id": "BL1-17",
+      "away_team_id": "BL1-6",
+      "home_team_name": "フライブルク",
+      "away_team_name": "シャルケ",
+      "home_abbr": null,
+      "away_abbr": null,
+      "home_color": null,
+      "away_color": null,
+      "matchup": "シャルケ vs フライブルク",
+      "abbr_matchup": null,
+      "start_time_jst": "10/12 00:30",
+      "home_division": null,
+      "away_division": null,
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": null,
+      "away_standing": null,
+      "home_probable": null,
+      "away_probable": null,
+      "venue_name": null,
+      "venue_jp": null,
+      "venue_note": null,
+      "venue_runs_note": null,
+      "home_has_jp": true,
+      "away_has_jp": true,
+      "score": 3,
+      "game_type": "R",
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "フライブルクには鈴木唯人・後藤啓介・山本理仁が所属",
+          "weight": 2
+        },
+        {
+          "tag": "jp_team",
+          "text": "シャルケには田中聡が所属",
+          "weight": 1
+        }
+      ],
+      "log_notes": [],
+      "ai_summary": "ブンデスリーガのシーズン開幕直後となるこの一戦は、【日本人選手4名が参加】する貴重な対戦となる。フライブルクに所属する鈴木唯人、後藤啓介、山本理仁と、シャルケから田中聡が出場する可能性があり、日本人選手たちが欧州の舞台でどのようなパフォーマンスを見せるかが焦点となる。両チームは今季まだ試合を重ねている途上にあり、開幕からの調子を掴むために重要な一戦である。試合では、本拠地で迎えるフライブルクの日本人選手たちがホームの利を活かせるかどうかに注目したい。",
+      "notification_hook": "日本人選手4名が激突。鈴木唯人ら対・田中聡、欧州の舞台での活躍は。",
+      "start_time_utc": "2026-10-12T00:30:00+09:00",
+      "season_players": [],
+      "jp_by_side": {
+        "home": [
+          "鈴木唯人",
+          "後藤啓介",
+          "山本理仁"
+        ],
+        "away": [
+          "田中聡"
+        ]
+      }
+    },
+    {
+      "game_id": "558584",
+      "league": "セリエA",
+      "home_team_id": "SA-104",
+      "away_team_id": "SA-109",
+      "home_team_name": "カリアリ",
+      "away_team_name": "ユベントス",
+      "home_abbr": null,
+      "away_abbr": null,
+      "home_color": null,
+      "away_color": null,
+      "matchup": "ユベントス vs カリアリ",
+      "abbr_matchup": null,
+      "start_time_jst": "10/12 03:45",
+      "home_division": null,
+      "away_division": null,
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": {
+        "rank": 4,
+        "games_back": 1.3,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 4.0
+      },
+      "away_standing": {
+        "rank": 7,
+        "games_back": 2.0,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 6.0
+      },
+      "home_probable": null,
+      "away_probable": null,
+      "venue_name": null,
+      "venue_jp": null,
+      "venue_note": null,
+      "venue_runs_note": null,
+      "home_has_jp": true,
+      "away_has_jp": false,
+      "score": 3,
+      "game_type": "R",
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "カリアリには菅原由勢が所属",
+          "weight": 1
+        },
+        {
+          "tag": "quality",
+          "text": "ユベントス の試合",
+          "weight": 1
+        },
+        {
+          "tag": "quality",
+          "text": "カリアリ（昨季セリエA14位）とユベントス（昨季セリエA6位）の対戦",
+          "weight": 0
+        },
+        {
+          "tag": "quality",
+          "text": "カリアリ4位 と ユベントス7位",
+          "weight": 1
+        }
+      ],
+      "start_time_utc": "2026-10-12T03:45:00+09:00",
+      "season_players": [],
+      "jp_by_side": {
+        "home": [
+          "菅原由勢"
+        ],
+        "away": []
+      }
+    }
+  ],
+  "ai_status": {
+    "targets": 3,
+    "succeeded": 3,
+    "cost_usd": 0.01149
+  },
+  "source": "ESPN・football-data.org",
+  "preview_provenance": "保存された実カード/日時＋既存名簿による表示試作。新しい出場確認/公開は行わない。"
+}

@@ -52,3 +52,23 @@ def kind_for_video(video_id: str, title: str, recorded: dict) -> str | None:
     if video_id in recorded:
         return recorded[video_id]
     return classify(title)
+
+
+def sync_entries(published: dict, supported) -> list:
+    """台帳の実キーを正規化して、重複/種類の矛盾を除いた古い順の同期候補。"""
+    known = recorded_kinds(published, {}, supported)
+    out, seen = [], set()
+    candidates = []
+    for source_kind, entries in published.items():
+        kind = KIND_ALIASES.get(source_kind, source_kind)
+        if kind not in supported or not isinstance(entries, dict):
+            continue
+        for day, entry in entries.items():
+            if isinstance(entry, dict) and isinstance(entry.get('video_id'), str):
+                candidates.append((str(day), kind, entry['video_id']))
+    for day, kind, video_id in sorted(candidates):
+        if not video_id or video_id in seen or known.get(video_id) != kind:
+            continue
+        seen.add(video_id)
+        out.append({'day': day, 'kind': kind, 'video_id': video_id})
+    return out

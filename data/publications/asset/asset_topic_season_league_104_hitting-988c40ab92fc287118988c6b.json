@@ -1,0 +1,49 @@
+{
+  "publication_id": "asset:topic:season_league_104_hitting",
+  "domain": "asset",
+  "kind": "topic",
+  "key_parts": {
+    "topic": "season_league_104_hitting"
+  },
+  "version": 1,
+  "history": [
+    {
+      "source": "published_videos/asset/season_league_104_hitting",
+      "service": "youtube",
+      "video_id": "nPX10OMwAAU",
+      "state": "scheduled",
+      "scheduled_at": "2026-10-19T14:00:00Z",
+      "event_day": null,
+      "material_day": null,
+      "edition_day": "2026-10-19",
+      "run_at": "2026-10-19T06:51:56.215470+00:00",
+      "details": {
+        "privacy": "public"
+      },
+      "run_id": "40508411617",
+      "attempt": "1",
+      "recorded_at": "2026-10-27T13:01:39.674453+00:00",
+      "fingerprint": "5279bca00abef92fafe4a66fc0561b29dc279f7d10c9d2147b7e585b4b07073d",
+      "event_id": "1968cf797de49ee22e23becc58e303f7715dee3a765aab5f37855c1be79ce2db"
+    },
+    {
+      "source": "published_assets/assets/season_league_104_hitting",
+      "service": "youtube",
+      "video_id": "nPX10OMwAAU",
+      "state": "uploaded",
+      "scheduled_at": null,
+      "event_day": null,
+      "material_day": null,
+      "edition_day": null,
+      "run_at": "2026-10-19T06:51:56.208608+00:00",
+      "details": {
+        "privacy": "public"
+      },
+      "run_id": "40508411617",
+      "attempt": "1",
+      "recorded_at": "2026-10-27T13:01:39.794360+00:00",
+      "fingerprint": "de0405fcf535b21103653b57c1a4cb12d03dc0f051a28589dc4acacb370b44c4",
+      "event_id": "b98fd47ed777bc64cf62f221435c4a5a1bf596d21c3d39cc6283016c7225d55c"
+    }
+  ]
+}

@@ -18,16 +18,7 @@ HERE = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 sys.path.insert(0, str(HERE.parent))
 import soccer_race as sr  # noqa: E402
-
-fails = 0
-
-
-def check(label, got, want):
-    global fails
-    ok = got == want
-    fails += not ok
-    print("%s %s: %r%s" % ("ok " if ok else "NG ", label, got,
-                           "" if ok else "   (期待 %r)" % (want,)))
+from checks_report import check, section, done  # noqa: E402
 
 
 def table(code, pts, played=6, teams=None):
@@ -51,7 +42,7 @@ def preview(code, pts, played=6, teams=None, name="プレミアリーグ"):
                               "table": table(code, pts, played, teams)}]}
 
 
-print("--- 節が足りない大会は出さない ---")
+section("節が足りない大会は出さない")
 # 開幕直後は順位に意味が無い。**黙って省くと「データが無い」のか
 # 「まだ早い」のか区別できない**ので、ready を False にして返す。
 d = sr.build(preview("PL", [9, 7, 6, 5, 4, 3], played=3))
@@ -63,8 +54,7 @@ d = sr.build(preview("PL", [14, 12, 11, 10, 8, 7], played=6))
 check("6節なら出す", d["competitions"][0]["ready"], True)
 check("使う大会に入る", d["picked"], ["PL"])
 
-print()
-print("--- 線の前後 ---")
+section("線の前後")
 c = d["competitions"][0]
 lines = {ln["label"]: ln for ln in c["lines"]}
 check("CL圏内の線がある", "CL圏内" in lines, True)
@@ -79,8 +69,7 @@ check("折り返しを過ぎたら残留も出す",
       "残留" in {ln["label"] for ln in d19["competitions"][0]["lines"]},
       True)
 
-print()
-print("--- クラブ名は日本語表記 ---")
+section("クラブ名は日本語表記")
 d = sr.build(preview("PL", [14, 12, 11, 10, 8, 7, 6, 5, 4, 3],
                      played=6, teams=PL_TEAMS))
 c = d["competitions"][0]
@@ -89,8 +78,7 @@ check("英語名が残っていない",
       [n for n in names if any(ch.isascii() and ch.isalpha() for ch in n)],
       [])
 
-print()
-print("--- 日本人選手と、その線までの差 ---")
+section("日本人選手と、その線までの差")
 # リバプール6位、ブライトン10位、リーズ9位。
 jp = {x["name"]: x for x in c["jp"]}
 check("リバプールの遠藤航が入る", "遠藤航" in jp, True)
@@ -102,8 +90,7 @@ check("線までの差が付く", bool(jp["遠藤航"].get("lines")), True)
 check("そのまま読める形の文が付く",
       bool(jp["遠藤航"]["lines"][0].get("text")), True)
 
-print()
-print("--- 言い方 ---")
+section("言い方")
 check("圏外で差あり",
       sr.phrase({"label": "CL圏内", "side": "outside", "diff": 3}),
       "CL圏内まで勝点3")
@@ -122,8 +109,7 @@ check("材料が無ければ空", sr.phrase({}), "")
 check("差が欠けていれば空",
       sr.phrase({"label": "CL圏内", "side": "inside"}), "")
 
-print()
-print("--- 線から遠すぎる話はしない（勝ち点で見る） ---")
+section("線から遠すぎる話はしない（勝ち点で見る）")
 # **9/13に順位の差から勝ち点の差へ変えた。**本番で初めて分かった。
 # ラ・リーガ6節の日、久保建英のレアル・ソシエダは11位で、線
 # （CL圏内4位・EL圏内5位）から6〜7つ離れていた。だが勝ち点では
@@ -183,8 +169,7 @@ check("勝ち点で離れていれば落とす",
       _far_jp.get("久保建英", {}).get("lines"), [])
 check("上限は定数", sr.MAX_POINT_GAP, 6)
 
-print()
-print("--- 順位が離れていても勝ち点が近ければ出す（旧・順位差の検査） ---")
+section("順位が離れていても勝ち点が近ければ出す（旧・順位差の検査）")
 # 16位のクラブに「CL圏内まで勝点6」と言っても、間に12クラブいる。
 far = sr.build(preview(
     "PL", [20, 19, 18, 17, 16, 15, 14, 13, 12, 11,
@@ -198,8 +183,7 @@ check("16位のクラブに上位の線を付けない",
       _far_jp.get("三笘薫", {}).get("lines"), [])
 check("それでも順位表には出る", _far_jp.get("三笘薫", {}).get("position"), 16)
 
-print()
-print("--- 昨日からの動き ---")
+section("昨日からの動き")
 now = preview("PL", [14, 12, 11, 10, 8, 7], played=6,
               teams=["A", "B", "C", "D", "E", "F"])
 before = preview("PL", [14, 12, 11, 10, 8, 7], played=5,
@@ -214,8 +198,7 @@ check("昨日の記録が無い日は空",
       [ln["moved"] for ln in d0["competitions"][0]["lines"]][0], {})
 
 
-print()
-print("--- 動いた日かどうかを数える ---")
+section("動いた日かどうかを数える")
 # **順位は毎日は変わらない。**欧州5大リーグは週2回が基本で、間の日は
 # 昨日と同じ表になる。同じ表をもう一度出しても見る理由が無いので、
 # 呼ぶ側が「動いた日だけ出す」を選べるようにしておく。
@@ -237,8 +220,7 @@ _no_before = sr.build(_now)
 check("前日の記録が無い日は0", _no_before["moved_count"], 0)
 check("だが持っていないことが分かる", _no_before["have_before"], False)
 
-print()
-print("--- 出す順 ---")
+section("出す順")
 # 題に日本人選手の名前があると平均395再生、無いと192再生。
 # **先頭に来た大会が題になる**ので、名前がある大会を先に。
 two = {"generated_at": "x", "competitions": [
@@ -254,8 +236,7 @@ d = sr.build(two)
 check("日本人選手がいる大会を先に", d["picked"][0], "PL")
 
 
-print()
-print("--- 画面と読み上げで、差の言い方が同じか ---")
+section("画面と読み上げで、差の言い方が同じか")
 # **別々に組み立てない。**画面が「勝点で並んでいる」で読み上げが
 # 「0点差」になると、どちらが本当か見ている側には確かめようがない。
 import generate_morning_short as gms  # noqa: E402
@@ -265,8 +246,7 @@ check("差あり", gms.race_gap_text(2), "勝点2差")
 check("負の差も絶対値で", gms.race_gap_text(-2), "勝点2差")
 check("材料が無ければ空", gms.race_gap_text(None), "")
 
-print()
-print("--- 順位争いの読み上げ ---")
+section("順位争いの読み上げ")
 _race = sr.build(preview("PD", [14, 12, 11, 10, 8, 7], played=6,
                          teams=["Real Madrid CF", "FC Barcelona",
                                 "Sevilla FC", "Real Sociedad de Futbol",
@@ -294,8 +274,7 @@ _intro = _n["segments"][0]["text"]
 check("渡した日付がそのまま出る", "9月13日" in _intro, True)
 
 
-print()
-print("--- いま出られない選手を題と1枚目に出さない ---")
+section("いま出られない選手を題と1枚目に出さない")
 # 9/13の実行で「9位 ブライトン 三笘薫（EL圏内まで勝点1）」が材料に
 # 入った。**三笘薫は今季まだ1分も出ていない**（ハムストリングの
 # 怪我、プレミアリーグ公式が復帰見込みを10月10日と公表）。
@@ -327,8 +306,7 @@ check("出ている選手に印は付かない",
 check("材料が無い日は空", isinstance(sr._unavailable(), set), True)
 
 
-print()
-print("--- 節の終わりで出す ---")
+section("節の終わりで出す")
 # **「昨日から動いたか」では6大会あるのでほぼ毎日出る。**しかも
 # 同じリーグの話を何度もする。節の終わりなら区切りに意味があり、
 # 題も「プレミアリーグ 第5節終了」と決まる。
@@ -347,8 +325,7 @@ check("1クラブ遅れていれば進行中", (_mid["round"], _mid["complete"])
       (4, False))
 check("空の順位表", sr.round_state([]), {"round": 0, "complete": False})
 
-print()
-print("--- 何節から出してよいか ---")
+section("何節から出してよいか")
 # **割合と絶対の下限の両方で見る。**一律5節だとCL（全8節）は
 # 12月まで出せない。かといって割合だけだとCLは1節からになり、
 # **1節の順位表は勝点0・1・3の3種類しかなく大半が同順位**になる。
@@ -359,8 +336,7 @@ check("知らない大会は既定", sr.min_round("XX"),
       sr.SOCCER_TABLE_MIN_MATCHES)
 check("下限は定数", sr.MIN_ROUNDS_FLOOR, 3)
 
-print()
-print("--- いま出すべき大会 ---")
+section("いま出すべき大会")
 check("節が終わっていなければ出さない",
       sr.due(table_mixed("PL", [4, 5, 5])), [])
 check("最低節数に満たなければ出さない",
@@ -379,8 +355,7 @@ check("CLの2節はまだ出さない",
 check("CLの3節は出す",
       len(sr.due(table_mixed("CL", [3, 3, 3]))), 1)
 
-print()
-print("--- 1本1大会 ---")
+section("1本1大会")
 _two = {"generated_at": "2026-09-13T00:00:00Z", "competitions": [
     {"code": "PD", "name_jp": "ラ・リーガ",
      "table": [{"position": i + 1, "team": "S%d" % (i + 1),
@@ -401,8 +376,7 @@ _c = [c for c in _b["competitions"] if c["code"] == "PL"][0]
 check("何節まで終わったかを持つ", _c["round"], 6)
 check("節が完了しているか", _c["round_complete"], True)
 
-print()
-print("--- CLの線は国内リーグと違う ---")
+section("CLの線は国内リーグと違う")
 # 36クラブが8試合だけ戦い、上位8が直行、9〜24がプレーオフ、
 # 25位以下が敗退。**「CL圏内」という言葉を当てると嘘になる。**
 import cutline as _ctl  # noqa: E402
@@ -413,8 +387,7 @@ check("24位までがプレーオフ", _ctl.lines_for("CL")[1],
 check("CLに「CL圏内」という線は無い",
       any("CL圏内" == lab for _, lab in _ctl.lines_for("CL")), False)
 
-print()
-print("--- 欠けても落ちない ---")
+section("欠けても落ちない")
 check("空の材料", sr.build({})["picked"], [])
 check("順位表が空の大会",
       sr.build({"competitions": [{"code": "PL", "table": []}]})
@@ -429,8 +402,7 @@ check("played が欠けている行",
       ["competitions"][0]["played"], 0)
 check("要約が落ちない", isinstance(sr.summary(sr.build({})), str), True)
 
-print()
-print("--- 次の節が始まっていても、終わった節は出せる ---")
+section("次の節が始まっていても、終わった節は出せる")
 # **9/20に初回が出なかった原因。**
 #
 # ラ・リーガは min(played)=5 / max=6 で、第5節は全クラブ終えているのに
@@ -464,6 +436,4 @@ check("出した節は繰り返さない",
       sr.due(_table([5] * 20), {"PD:2026": 5}), [])
 check("次の節になれば出す",
       [d["round"] for d in sr.due(_table([6] * 20), {"PD:2026": 5})], [6])
-
-print(chr(10) + ("ALL OK" if not fails else "%d FAILURES" % fails))
-sys.exit(1 if fails else 0)
+sys.exit(done())

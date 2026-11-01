@@ -1,0 +1,35 @@
+{
+  "publication_id": "delivery:legacy_tiktok:morning_postseason:2026-09-21",
+  "domain": "delivery",
+  "kind": "legacy_tiktok",
+  "key_parts": {
+    "kind": "morning_postseason",
+    "legacy_key": "2026-09-21"
+  },
+  "version": 1,
+  "history": [
+    {
+      "source": "published_tiktok/morning_postseason/2026-09-21",
+      "service": "tiktok",
+      "video_id": null,
+      "state": "unknown",
+      "scheduled_at": null,
+      "event_day": null,
+      "material_day": null,
+      "edition_day": null,
+      "run_at": "2026-09-21T06:05:53+0000",
+      "details": {
+        "privacy": null,
+        "status": "SEND_TO_USER_INBOX",
+        "publish_id": "v_inbox_file~v2.7687865296664741906",
+        "public_post_ids": [],
+        "publicly_available": false
+      },
+      "run_id": "40669557265",
+      "attempt": "1",
+      "recorded_at": "2026-10-28T10:18:19.256789+00:00",
+      "fingerprint": "a12cbeac5d08c02d437c474b326e936b5719971ef416d115df81603c107661f8",
+      "event_id": "b09f3861cb3174f0d478e0a878936165a926e55347c1b3053ac558af00d4a371"
+    }
+  ]
+}

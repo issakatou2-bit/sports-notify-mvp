@@ -31,6 +31,15 @@ def candidate(records, kind, now):
     return row
 
 
+def edition_metadata(kind, path='data/published_videos.json', now=None):
+    """Current due edition for factual caption context; this does not prove video access."""
+    try:
+        return candidate(json.loads(Path(path).read_text(encoding='utf-8')), kind,
+                         now or datetime.now(timezone.utc))
+    except (OSError, ValueError, TypeError):
+        return None
+
+
 def public_short(kind, path='data/published_videos.json', now=None):
     now = now or datetime.now(timezone.utc)
     key = os.environ.get('YOUTUBE_API_KEY')
@@ -38,7 +47,7 @@ def public_short(kind, path='data/published_videos.json', now=None):
         print('[info] Short link: API key unavailable; use channel link')
         return None
     try:
-        row = candidate(json.loads(Path(path).read_text(encoding='utf-8')), kind, now)
+        row = edition_metadata(kind, path, now)
         if not row:
             print('[info] Short link: no eligible current-edition record; use channel link')
             return None
@@ -60,8 +69,11 @@ def public_short(kind, path='data/published_videos.json', now=None):
                         print('[info] Short link: video/channel mismatch; use channel link')
                         return None
                     if video['status'].get('privacyStatus') == 'public' and video['status'].get('embeddable'):
-                        return {'video_id': row['video_id'], 'url': 'https://www.youtube.com/watch?v=' + row['video_id'],
-                                'title': video['snippet']['title']}
+                        result = {'video_id': row['video_id'], 'url': 'https://www.youtube.com/watch?v=' + row['video_id'],
+                                  'title': video['snippet']['title']}
+                        if row.get('program_version'):
+                            result.update(program_version=row['program_version'], social_summary=row['social_summary'])
+                        return result
                 reason = 'public embeddable video not yet confirmed'
             except Exception:
                 # Network exceptions may include the key-bearing URL.

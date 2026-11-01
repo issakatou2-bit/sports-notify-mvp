@@ -1,0 +1,8 @@
+BudouX Japanese model and text-only parsing algorithm
+Copyright 2021 Google LLC. Apache License 2.0.
+Source: https://github.com/google/budoux
+Retrieved: 2026-10-14 via the GitHub connector (no runtime network dependency).
+Japanese model Git blob: 10914865ae24b402cdfb3330f2f70ffc86631ca4
+Parser source Git blob: 28daa78419c914ff9aff83eff0f5ca516e9e5380
+Local changes: text-only adapter, protected sports quantities, kinsoku, page preference.
+The model is unchanged. HTML processing and other languages are not included.

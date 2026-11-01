@@ -549,6 +549,10 @@ LIST_TOPICS = {
     },
 }
 
+# サービス紹介の約束を原稿と画面で揃える。
+for _seasonal_topic in ("collespo_guide", "mlb_watch", "mlb_terms"):
+    LIST_TOPICS[_seasonal_topic] = __import__("offseason_text").guide(LIST_TOPICS[_seasonal_topic])
+
 
 def load_generated_topics() -> dict:
     """
@@ -629,7 +633,30 @@ def rivalry_items() -> list:
 
 def build_narration(topic: str) -> dict:
     if topic in LIST_TOPICS:
-        return _narration_list(topic)
+        narration=_narration_list(topic)
+        if LIST_TOPICS[topic].get('style')=='v3':
+            import review_render_v3 as r3
+            import v3_rules
+            errors=v3_rules.check_speech(LIST_TOPICS[topic],list_items(topic))
+            if errors:
+                raise ValueError('話し言葉の数字が画面の材料と一致しません: '+str(errors))
+            for seg in narration['segments']:
+                if seg['kind']=='outro':
+                    seg['text']=(__import__('offseason_news').OUTRO_TEXT if LIST_TOPICS[topic].get('offseason') else r3.OUTRO_TEXT)
+            if r3.LOOK=='v4':
+                from content_v4 import ClubMentions, affiliations
+                tracker=ClubMentions(affiliations(s['text'] for s in narration['segments']))
+                for seg in narration['segments']:seg['text']=tracker.text(seg['text'])
+            import next_line
+            narration['segments']=next_line.insert(narration['segments'],LIST_TOPICS[topic].get('next_line'))
+            import duo
+            if LIST_TOPICS[topic].get('game') and duo.enabled('game'):
+                narration['segments']=duo.game(narration['segments'],LIST_TOPICS[topic],list_items(topic))
+                narration['duration_budget']={'limit':45,'grace':0}
+        import ps_comment_facts
+        narration = ps_comment_facts.attach(narration, LIST_TOPICS[topic])
+        narration = __import__('short_context').attach_asset(narration, LIST_TOPICS[topic])
+        return __import__('offseason_news').attach(narration, LIST_TOPICS[topic])
     if topic == "mlb_venue":
         return _narration_venue()
     if topic == "mlb_rivalry":
@@ -663,8 +690,9 @@ def build_narration(topic: str) -> dict:
 def _outro_segment() -> dict:
     return {
         "kind": "outro",
-        "text": "コレスポでは、毎日午後七時に、その日の注目試合を"
-                "理由つきでお届けしています。",
+        "text": __import__("offseason_text").seasonal(
+            "コレスポでは、毎日午後七時に、その日の注目試合を"
+            "理由つきでお届けしています。"),
         "meta": {},
     }
 
@@ -972,6 +1000,11 @@ def _intro_text(topic: str, items: list) -> str:
     元の説明文の1文目に戻す。
     """
     spec = LIST_TOPICS[topic]
+    # 材料の側で前置きを書き切っているもの（シーズンまとめ）は、そのまま。
+    # 項目名を並べると「今季の成績、昨季、Statcastで見ると、…まとめて
+    # 見ていきます」と機械的に聞こえる。
+    if spec.get("intro_as_is"):
+        return spec["intro"]
     hook = (spec.get("hook") or "").strip()
     if hook and not hook.endswith(("？", "。", "！")):
         hook += "。"
@@ -1009,6 +1042,13 @@ def _intro_text(topic: str, items: list) -> str:
             return c
     # どれも収まらなければ、いちばん短いものを使う
     return min(candidates, key=_spoken_len)
+
+
+def _list_item_speech(spec: dict, head: str, body: str) -> str:
+    """一覧の1項目の読み上げ。原稿と、読み上げている札を決める所（calm_motion）が同じものを見る。"""
+    if spec.get('offseason'):
+        return __import__('offseason_news').item_speech(head, body)
+    return (spec.get("speech") or {}).get(head) or f"{head.replace('｜', '、')}。{body}。"
 
 
 def _narration_list(topic: str) -> dict:
@@ -1052,7 +1092,8 @@ def _narration_list(topic: str) -> dict:
         chunk = items[i:i + 2]
         segments.append({
             "kind": "list",
-            "text": "".join(f"{t.replace('｜', '、')}。{b}。" for t, b in chunk),
+            # 材料に話し言葉（speech）があれば、それを読む（数字は画面と同じもの）
+            "text": "".join(_list_item_speech(spec, t, b) for t, b in chunk),
             "meta": {"topic": topic, "start": i, "count": len(chunk)},
         })
     # 数字のあとに、人を出す。
@@ -1074,7 +1115,7 @@ def _narration_list(topic: str) -> dict:
                 else x["name"] for x in jps]
         segments.append({
             "kind": "people",
-            "text": "今シーズンの成績は、" + "、".join(said) + "。",
+            "text": (spec.get("japanese_lead") or "今シーズンの成績は、") + "、".join(said) + "。",
             "meta": {"topic": topic, "group": "japanese",
                      "heading": "日本人選手"},
         })
@@ -1624,15 +1665,145 @@ def render_rivalry(p, item, index, total):
     return im
 
 
+def render_v2(p, kind, meta, spec, topic):
+    """新デザインの画面（review_render）。材料の style="v2" のときだけ。"""
+    import review_render as rr
+    root = pathlib.Path(__file__).resolve().parents[1]
+    tag = "PSの話題" if spec.get("story") else "シーズンまとめ"
+    if kind == "intro":
+        return rr.intro(p, spec, root, tag)
+    if kind == "list":
+        items = list_items(meta.get("topic", topic))
+        start = meta.get("start", 0)
+        return rr.list_page(p, spec, items, start, meta.get("count", 1),
+                            start // 2 + 1, (len(items) + 1) // 2, root, tag)
+    return rr.people(p, spec, spec.get(meta.get("group", "japanese")) or [],
+                     meta.get("heading", ""), root, tag)
+
+
+def _v3_focus(t, kind, meta, spec, topic, seg, dur):
+    """COLLESPO_MOTION=on のときだけ: いま読み上げている札（行ごとの上がり具合）。決められなければ None。
+
+    画面全体は動かさず、読み上げている札だけを少し大きく・明るくする（Opus-32）。
+    区切りは原稿を作ったのと同じ関数（_list_item_speech）の字数で決める。合わなければ見出しの位置で。"""
+    import calm_motion
+    import review_render_v3 as r3
+    if not calm_motion.enabled() or not seg or kind not in ("list", "people"):
+        return None
+    text = seg.get("text") or ""
+    speech = float(seg.get("duration") or 0) or dur
+    if kind == "list":
+        name = meta.get("topic", topic)
+        material = LIST_TOPICS.get(name) or spec
+        start, count = meta.get("start", 0), meta.get("count", 1)
+        chunk = list_items(name)[start:start + count]
+        parts = [_list_item_speech(material, h, b) for h, b in chunk]
+        markers = [h.replace("｜", "、") for h, _ in chunk]
+    else:
+        rows = (spec.get(meta.get("group", "japanese")) or [])[:3]
+        if meta.get('duo') and 'row' in meta:rows=rows[meta['row']:meta['row']+1]
+        parts, markers = None, [r.get("name", "") for r in rows]
+    # 札が出そろう（最後の札が入りきる）までは上げない
+    settle = r3.T_CARD0 + (len(markers) - 1) * r3.T_CARD_GAP + r3.SLIDE
+    return calm_motion.focus_for(t, text, speech, len(markers), parts=parts, markers=markers, settle=settle)
+
+
+def render_v3(t, kind, meta, spec, topic, seg=None, dur=None):
+    """新デザイン「電光掲示板」（review_render_v3）。材料の style="v3" のときだけ。"""
+    import review_render_v3 as r3
+    if r3.LOOK == 'v4' and spec.get('game') and kind != 'outro':
+        import game_ui_short
+        material = dict(spec, items=list_items(meta.get('topic', topic)))
+        return game_ui_short.frame(t, kind, meta, material,
+                                   spec.get('kind_label') or ('PSの話題' if spec.get('story') else 'シーズンまとめ'))
+    focus = _v3_focus(t, kind, meta, spec, topic, seg, dur)
+    if kind=='next_line':
+        import next_line
+        return next_line.frame(t,meta['next_line'])
+    def decorate(im):
+        if r3.LOOK=='v4':
+            from short_v4_cards import ensure_team_badges
+            im.info['v4_ticker_text']=(spec.get('v3') or {}).get('ticker','')
+            ensure_team_badges(im)
+            state=im.info.get('asset_v4',{})
+            im=video_common.short_effects(im,state.get('animation_time',t),quote=state.get('kind')=='quote',
+                                          score=kind=='intro' and bool(spec.get('game')))
+        return im
+    if r3.LOOK=='v4':
+        from content_v4 import asset_display
+        material_items=list_items(meta.get('topic',topic))
+        spec=asset_display(dict(spec,items=material_items),_intro_text(topic,material_items))
+    tag = spec.get("kind_label") or ("PSの話題" if spec.get("story") else "シーズンまとめ")
+    if kind == "intro":
+        return decorate(r3.intro(t, spec, tag))
+    if kind == "outro":
+        # 共通の締め（毎日の番組表・チャンネル登録・音声の表記）
+        return r3.outro(t, spec, spec.get("lineup_kind", ""), VOICE_CREDIT + "　データ: " + spec.get('data_credit', 'MLB Stats API'))
+    if kind == "people":
+        rows=spec.get(meta.get('group','japanese')) or []
+        if meta.get('duo') and 'row' in meta:rows=rows[meta['row']:meta['row']+1]
+        return decorate(r3.people(t, spec, rows,
+                         meta.get("heading", "日本人選手"), tag, focus=focus))
+    items = list(spec.get('items') or []) if r3.LOOK=='v4' else list_items(meta.get("topic", topic))
+    start = meta.get("start", 0)
+    return decorate(r3.list_page(t, spec, items, start, meta.get("count", 1),
+                        start // 2 + 1, (len(items) + 1) // 2, tag, focus=focus))
+
+
+BGM_DIR = pathlib.Path(__file__).resolve().parents[1] / "assets" / "bgm"
+# 既定のBGM（assets/bgm/<名前>.mp3。空ならBGMなし）。
+# 10/6夜 本人: めたん版の試作（「日常」入り）を「一旦これを完成としていい」。
+# ただし曲は「もっとライトで、YouTubeのBGMに使われても違和感ない感じ」が理想 → 候補を作り中。
+DEFAULT_BGM = None   # sound_mix.DEFAULT_BGM を使う（全部の枠で同じ曲）
+
+
+def add_sound(audio_path, segs, durations, spec, topic, out_dir):
+    """新デザインの回に、BGM と画面の動きに合わせた効果音を重ねる。
+
+    BGM は材料の bgm（無ければ環境変数 COLLESPO_BGM、それも無ければ DEFAULT_BGM。空ならBGMなし）。
+    ファイルが無い・重ねるのに失敗したときは、読み上げだけで続ける（動画は止めない）。
+    """
+    import review_render_v3 as r3
+    import sound_mix
+    cues, t0 = [], 0.0
+    previous_screen=None
+    for seg, dur in zip(segs, durations):
+        kind, meta = seg.get("kind"), seg.get("meta") or {}
+        items = list_items(meta.get("topic", topic)) if kind == "list" else ()
+        same=meta.get('duo') and meta.get('screen')==previous_screen
+        local=() if same else r3.cues(kind,spec,items,meta.get('start',0),meta.get('count',1))
+        for at, k, v, db in local:
+            cues.append((t0 + at, k, v, db))
+        previous_screen=meta.get('screen')
+        t0 += dur
+    import sound_mix as _sm
+    import fan_events
+    cues += fan_events.event_cues()
+    name = spec.get("bgm") or os.environ.get("COLLESPO_BGM") or DEFAULT_BGM or _sm.DEFAULT_BGM
+    bgm = BGM_DIR / f"{name}.mp3" if name else BGM_DIR / ".none"
+    try:
+        out = sound_mix.mix_file(audio_path, out_dir / "narration_mixed.wav",
+                                 bgm if bgm.exists() else None, cues)
+        print(f"[info] BGM {name if bgm.exists() else 'なし'}・効果音{len(cues)}個を重ねました")
+        return out
+    except Exception as e:                                  # noqa: BLE001
+        print(f"[warn] BGM・効果音を重ねられません（読み上げだけで続けます）: {e}")
+        return audio_path
+
+
+METAN = 2   # VOICEVOX 四国めたん（ノーマル）
+VOICE_CREDIT = "音声: VOICEVOX:ずんだもん"
+
+
 def render_outro(p):
     im, d = base(p)
     d.text((80, 640), "コレスポ", font=font(120), fill=ACCENT)
     d.text((80, 800), "collespo.com", font=font(58), fill=TEXT)
     if p > 0.12:
-        d.text((80, 910), "毎日19時 更新", font=font(46), fill=DIM)
+        d.text((80, 910), __import__("offseason_text").seasonal("毎日19時 更新"), font=font(46), fill=DIM)
     # VOICEVOXの利用規約で、動画内または説明欄へのクレジット表記が
     # 求められているため、アウトロに必ず表示する
-    d.text((80, 1150), "音声: VOICEVOX:ずんだもん", font=font(40), fill=DIM)
+    d.text((80, 1150), VOICE_CREDIT, font=font(40), fill=DIM)
     d.text((80, 1220), "データ: MLB Stats API", font=font(40), fill=DIM)
     return im
 
@@ -1654,11 +1825,63 @@ def main():
                         help="指定すると原稿だけ書き出して終了する")
     parser.add_argument("--audio-dir", default="build/asset_audio")
     parser.add_argument("--out", default="build/asset")
+    parser.add_argument('--narration',help='録音に使った保存原稿')
+    parser.add_argument('--publish-at',help='次情報を数える公開予約のJST時刻またはISO日時')
+    parser.add_argument('--next-schedule',help='保存した公式日程（試作用）')
     args = parser.parse_args()
+    if args.topic.startswith('offseason_') and not args.narration_out:
+        import review_render_v3 as r3
+        if r3.LOOK != 'v4':
+            raise ValueError('オフの話題は既存の標準立ち絵を使うv4で描画してください')
+    import ui_voice_queue
+    ui_voice_queue.configure(args)
+    __import__('slant_by_episode').set_episode('asset')
 
-    narration = build_narration(args.topic)
+    if args.narration:
+        narration=json.loads(pathlib.Path(args.narration).read_text(encoding='utf-8'))
+    else:
+        spec=LIST_TOPICS.get(args.topic) or {}
+        if args.narration_out and spec.get('game') and spec.get('style')=='v3':
+            import next_line
+            from datetime import datetime
+            now=datetime.now(next_line.JST)
+            at=next_line.publication_time(now.date().isoformat(),args.publish_at,now) if args.publish_at else now
+            spec['next_line']=next_line.acquire('asset',at,spec.get('next_team_id') or spec.get('team_id'),args.next_schedule)
+        narration = build_narration(args.topic)
+        import hook_ab
+        import host_split
+        narration = hook_ab.prepare(narration, host_split.asset_kind(args.topic),
+                                    hook_ab.publication_day(args.publish_at), LIST_TOPICS.get(args.topic))
+    global VOICE_CREDIT
+    if (LIST_TOPICS.get(args.topic) or {}).get("style") == "v3":
+        # 新デザインの回は四国めたんが話す（10/6 本人「めたんをメインで」）。立ち絵も四国めたん。
+        for s in narration["segments"]:
+            s.setdefault("speaker", METAN)
+            if s.get("kind") == "outro" and 'voice_resolution' not in narration:
+                import review_render_v3 as r3
+                s["text"] = (__import__('offseason_news').OUTRO_TEXT if LIST_TOPICS[args.topic].get('offseason') else r3.OUTRO_TEXT)
+        import duo
+        VOICE_CREDIT = duo.credit(narration['segments'])
+
+    import host_split
+    if not args.narration_out:
+        narration = host_split.use_audio(narration, args.audio_dir)
+    if host_split.enabled():
+        narration['ui_stock_topic'] = args.topic
+    narration = host_split.prepare(narration, host_split.asset_kind(args.topic))
+    import solo_host
+    if solo_host.for_segments(narration['segments']) == 'ui':
+        import ui_tone
+        narration = ui_tone.narration(narration)
+        narration['ui_stock_topic'] = args.topic
+        VOICE_CREDIT = solo_host.UI_CREDIT
 
     if args.narration_out:
+        import sanity_sources
+        import hook_ab
+        if 'sanity_materials' not in narration:
+            narration['sanity_date_jst'] = hook_ab.publication_day(args.publish_at)
+            narration['sanity_materials'] = sanity_sources.capture(narration)
         p = pathlib.Path(args.narration_out)
         p.parent.mkdir(parents=True, exist_ok=True)
         p.write_text(json.dumps(narration, ensure_ascii=False), encoding="utf-8")
@@ -1685,8 +1908,30 @@ def main():
     out_dir.mkdir(parents=True, exist_ok=True)
     video_path = out_dir / f"collespo_asset_{args.topic}.mp4"
 
-    durations = plan_durations(segs)
+    import duo
+    is_duo=any((s.get('meta') or {}).get('duo') for s in narration['segments'])
+    durations = duo.durations(segs) if is_duo else plan_durations(segs)
+    if (LIST_TOPICS.get(args.topic) or {}).get('game'):
+        import game_ui_short
+        segs = game_ui_short.annotate(segs, dict(LIST_TOPICS[args.topic], items=list_items(args.topic)))
+    if is_duo:
+        if len(segs)!=len(narration['segments']) or any(
+            (a.get('text'),a.get('speaker'),a.get('kind'))!=(b.get('text'),b.get('speaker'),b.get('kind'))
+            for a,b in zip(segs,narration['segments'])):
+            raise ValueError('掛け合い音声が保存原稿と一致しません。両話者の音声を作り直してください')
+        errors=duo.check(segs,durations)
+        if errors:raise ValueError('掛け合いの実音声: '+str(errors))
+    import short_content
+    import post_common
+    short_content.require(dict(narration, segments=[dict(s, **{k: a[k] for k in ('text', 'meta') if k in a})
+                           for s, a in zip(narration['segments'], segs)]), durations, out_dir,
+                          LIST_TOPICS.get(args.topic), maximum=post_common.MAX_SECONDS+post_common.BUDGET_GRACE, video_name=video_path.name)
     audio_path = build_narration_track(segs, durations, out_dir)
+    import fan_events
+    fan_events.prepare({'items':list_items(args.topic)}, segs, durations, out_dir)
+    spec_main = LIST_TOPICS.get(args.topic) or {}
+    if audio_path and spec_main.get("style") == "v3":
+        audio_path = add_sound(audio_path, segs, durations, spec_main, args.topic, out_dir)
 
     cmd = ["ffmpeg", "-y", "-nostats", "-loglevel", "error",
            "-f", "rawvideo", "-pix_fmt", "rgb24",
@@ -1703,15 +1948,34 @@ def main():
     # パイプのままだと、こちらが読まない限りバッファが埋まって止まる。
     err_path = out_dir / "ffmpeg_error.log"
     err_file = open(err_path, "wb")
+    import render_timeline
+    timeline = render_timeline.Recorder(FPS, segs)
     proc = subprocess.Popen(cmd, stdin=subprocess.PIPE,
                             stdout=subprocess.DEVNULL, stderr=err_file)
     total = 0
+    previous_frame=None
+    previous_screen=None
+    scene_elapsed=0.0
+    visual_key=None
+    wipe_frame=0
+    wipe_previous=None
+    import hook_ab
+    hook_scenes = hook_ab.SceneRecorder()
     try:
-        for seg, dur in zip(segs, durations):
+        for seg_index,(seg, dur) in enumerate(zip(segs, durations)):
+            timeline.select(seg, seg_index)
             n = int(dur * FPS)
             kind, meta = seg.get("kind"), seg.get("meta") or {}
             cached = None
             still = None
+            import review_render_v3 as _r3
+            _r3.set_program_clock(total / FPS)
+            _r3.set_caption(seg.get('text','') if meta.get('duo') or kind!='outro' else '',dur,sum(durations),
+                            speaker=seg.get('speaker',2),duo=meta.get('duo',False),hide_caption=kind=='outro',
+                            phrase_wrap=__import__('offseason_public').applies(LIST_TOPICS.get(args.topic) or {}))
+            screen=meta.get('screen',seg_index)
+            changed=screen!=previous_screen
+            if changed:scene_elapsed=0.0
             for k in range(n):
                 pp, settled = video_common.anim_step(k, n)
                 if kind == "map":
@@ -1721,11 +1985,34 @@ def main():
                 # 地図は最後まで動く。他の画面は途中で絵が止まるので
                 # 描き直さずに使い回すが、ここでそれをやると寄るのが
                 # 止まってしまう。
-                if kind != "map" and settled and still is not None:
-                    proc.stdin.write(still)
+                v2 = LIST_TOPICS.get(meta.get("topic", args.topic)) or {}
+                v3 = v2.get("style") == "v3" and kind in ("intro", "list", "people", "next_line", "outro")
+                if v3:
+                    # 新デザイン（電光掲示板）は背景が動き続けるので、使い回さない。帯は番組の時計で流す
+                    import review_render_v3 as _r3
+                    _r3.set_program_clock(total / FPS)
+                    image=render_v3(scene_elapsed+k/FPS,kind,meta,v2,args.topic,seg=seg,dur=dur)
+                    if narration.get('hook_ab'):
+                        hook_scenes.observe(image, total, FPS, screen)
+                    card=image.info.get('asset_v4') or {}
+                    key=(screen,card.get('kind'),card.get('head'),card.get('name'),card.get('page'),card.get('row'))
+                    if key!=visual_key:
+                        visual_key=key;wipe_frame=0;wipe_previous=previous_frame
+                    raw=video_common.short_transition(wipe_previous,image,wipe_frame,FPS,True) if _r3.LOOK=='v4' and not image.info.get('game_ui') else image.tobytes()
+                    wipe_frame+=1
+                    timeline.write(proc.stdin, raw, image)
+                    previous_frame=raw
                     total += 1
                     continue
-                if kind == "intro":
+                if kind != "map" and settled and still is not None:
+                    timeline.repeat(proc.stdin, still)
+                    total += 1
+                    continue
+                if v2.get("style") in ("v2", "v3") and kind in ("intro", "list", "people"):
+                    # シーズンまとめ・PSの話題は新デザインで（10/3 改善案G）。
+                    # 読み上げ・尺・項目は同じで、画面だけを差し替える。
+                    im = render_v2(pp, kind, meta, v2, args.topic)
+                elif kind == "intro":
                     im = render_intro(pp, label, hook_for(args.topic, label))
                 elif kind == "division":
                     code = DIVISION_ORDER[meta.get("division_index", 0)]
@@ -1763,13 +2050,17 @@ def main():
                 else:
                     im = render_outro(pp)
                 cached = im.tobytes()
-                proc.stdin.write(cached)
+                timeline.write(proc.stdin, cached, im)
                 # 動きが終わった最初の1枚。これを残りに使い回す。
                 if settled:
                     still = cached
                 total += 1
+            previous_screen=screen
+            scene_elapsed+=dur
             print(f"[info] {kind}: {dur:.1f}秒")
     finally:
+        import review_render_v3 as _r3
+        _r3.set_program_clock(None)
         if proc.stdin:
             proc.stdin.close()
         proc.wait()
@@ -1781,12 +2072,15 @@ def main():
               file=sys.stderr)
         sys.exit(1)
 
+    timeline.save(video_path, args.audio_dir)
     secs = total / FPS
     size_mb = video_path.stat().st_size / 1024 / 1024
+    host_split.bind_video(video_path, args.audio_dir)
+    import hook_ab
+    hook_ab.bind_video(video_path, narration, segs, durations, FPS, hook_scenes.starts)
     print(f"[info] 資産動画を生成しました: {video_path} "
           f"({size_mb:.1f}MB, {secs:.0f}秒)")
 
 
 if __name__ == "__main__":
     main()
-

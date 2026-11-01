@@ -49,12 +49,15 @@ import token_log  # noqa: E402
 # 翻訳が終わったあとに落ちるので、API呼び出しごと無駄になる。
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
 
+from team_names import team_names_jp  # noqa: E402
+
 try:
     import anthropic
 except ImportError:
     anthropic = None
 
-MODEL = "claude-haiku-4-5-20251001"
+import llm_models
+MODEL = llm_models.model("translate")
 UA = {"User-Agent": "collespo/1.0 (+https://collespo.com)"}
 SOURCE = ("r/baseball", "https://www.reddit.com/r/baseball/.rss")
 
@@ -209,9 +212,15 @@ def fetch_youtube_comments(buzz_path: str = "data/mlb_buzz.json",
             # 短すぎるものは訳しても中身が無い。長すぎるものは読み上げに載らない。
             if not (12 <= len(text) <= 220):
                 continue
+            reply_items = (item.get("replies") or {}).get("comments") or []
+            if os.environ.get('COLLESPO_REDDIT') == 'on':
+                # この回だけ、訳す前に取得済み返信の高評価順へ。追加取得はしない。
+                reply_items = sorted(reply_items, key=lambda rc:
+                    (rc.get('snippet') or {}).get('likeCount') if isinstance(
+                        (rc.get('snippet') or {}).get('likeCount'), int) else -1, reverse=True)
             replies = [
                 (rc.get("snippet") or {}).get("textOriginal", "").strip()
-                for rc in ((item.get("replies") or {}).get("comments") or [])
+                for rc in reply_items
             ]
             out.append({
                 # コメントの投稿時刻。動画の公開からどれだけ経って
@@ -222,10 +231,19 @@ def fetch_youtube_comments(buzz_path: str = "data/mlb_buzz.json",
                 "title": " ".join(text.split()),
                 "url": f"https://www.youtube.com/watch?v={vid}",
                 "likes": int(c.get("likeCount") or 0),
+                "like_count": c.get("likeCount"),
+                "reply_count": (item.get("snippet") or {}).get("totalReplyCount"),
                 "replies": int((item.get("snippet") or {})
                                .get("totalReplyCount") or 0),
                 "reply_texts": [" ".join(x.split())
                                 for x in replies if 4 <= len(x) <= 200][:3],
+                # 評価数のない旧保存材料を0と見なさず、取得した範囲の順位だけに使う。
+                "reply_details": [
+                    {"original": " ".join(s.get("textOriginal", "").split()),
+                     "like_count": s.get("likeCount"), "at": s.get("publishedAt")}
+                    for rc in reply_items
+                    for s in [rc.get("snippet") or {}]
+                ],
                 "author": c.get("authorDisplayName", ""),
                 "source": "MLB公式ハイライトのコメント",
                 "matchup": v.get("matchup") or v.get("title", "")[:40],
@@ -434,7 +452,7 @@ def fetch_titles() -> list:
     return out
 
 
-def translate(client, items: list) -> list:
+def translate(client, items: list, *, sport: str = "mlb") -> list:
     """
     見出しをまとめて日本語にする。1件ずつ呼ぶとAPI呼び出しが増えるので、
     1回のやり取りで全件を訳させる。
@@ -447,8 +465,12 @@ def translate(client, items: list) -> list:
         flat.append((n, -1, it["title"]))
         for j, rt in enumerate(it.get("reply_texts") or []):
             flat.append((n, j, rt))
-    numbered = "\n".join(f"{n + 1}. {txt}"
-                         for n, (_, _, txt) in enumerate(flat))
+    # 返信には、どの書き込みへの返信かを添える。10/9 に「ヤンキースの選手さん」と訳した
+    # 一言は、返信を読めば観客の妨害（ファン）の話だと分かった。番号だけ並べると文脈が切れる。
+    head = {n: i + 1 for i, (n, j, _) in enumerate(flat) if j < 0}
+    numbered = "\n".join(
+        f"{i + 1}. " + (f"（{head[n]}への返信）" if j >= 0 else "") + txt
+        for i, (n, j, txt) in enumerate(flat))
     # 訳と同時に、その一言が肯定寄りか否定寄りかも付けてもらう。
     # 別々に呼ぶと回数が倍になるうえ、訳文と判定が違う読み方で付く。
     prompt = (
@@ -472,19 +494,35 @@ def translate(client, items: list) -> list:
         "  **意味の取れない直訳を作らない。**実際に出た失敗:\n"
         "    Rocchio October → ×「ロッチオクトーバー」\n"
         "  何のことか分からない語は、訳さずに英語のまま置く\n"
+        "- **人を指す語は、選手・ファン（観客）・監督を取り違えない。**\n"
+        "  a Yankee / Yankees fan / that fan / the guy in the stands は、"
+        "選手と書かれていなければファン・観客のこと。（Nへの返信）の行は、"
+        "その書き込みと合わせて読み、誰の話かを決める。"
+        "決められなければ「ヤンキースの人」のようにぼかす\n"
+        "  実際に出た失敗: 観客の妨害でレイズが得をした話の Yankee"
+        " →×「ヤンキースの選手さん」\n"
         "- 感想や補足は加えない。書かれていないことを足さない\n"
+        "- big run、only、finally 等は皮肉・誇張の可能性がある。a big run は1点で、"
+        "「大量得点」にしない。only / finally の限定や呆れを逆の意味にしない。"
+        "点数・点差を増やさず、皮肉の解釈が確かでないときは訳文を空にする\n"
         "- 前置きや説明は不要"
     )
+    if sport == "soccer":
+        prompt = prompt.replace("アメリカの野球ファン", "欧州のサッカーファン")
+        prompt += ("\n- サッカーの公式ハイライトのコメント。選手・ファン・監督を取り違えず、"
+                   "返信は親のコメントを含めて解釈する。特定できない人の役割・名前は足さない。"
+                   "原文にない得点・アシスト・時刻・数字・出来事を足さない。")
     if not token_log.allowed("voices"):
         return []
-    resp = client.messages.create(
+    import backstage_guard
+    resp = backstage_guard.create(client, label='local_voices.py', category='voices', mode='lines',
         # 4件の本文と、それぞれの返信3件まで。最大16行を訳す。
         # 元が220字まで許してあるので、日本語にすると1行200字近くなる
         # ことがあり、2500では足りない日が出る。上限を上げても
         # 出力した分しか課金されないので、増やして困らない。
         # 4件の本文と、それぞれの返信3件まで。日本人選手の枠は
         # 別のやり取りにしてあるので、ここが混み合うことはない。
-        model=MODEL, max_tokens=6000,
+        **llm_models.params("translate", 6000),
         messages=[{"role": "user", "content": prompt}],
     )
     token_log.record("voices", MODEL, resp)
@@ -496,16 +534,18 @@ def translate(client, items: list) -> list:
         line = line.strip()
         m = re.match(r"(\d+)\s*[|｜]\s*(\S+?)\s*[|｜]\s*(.+)", line)
         if m:
-            translated[int(m.group(1))] = (m.group(2), m.group(3).strip())
+            if sport != "soccer" or m.group(2) in ("称賛", "批判", "中立"):
+                translated[int(m.group(1))] = (m.group(2), m.group(3).strip())
             continue
         # 調子を付け忘れた行も拾う。訳文だけでも動画には使える。
         m = re.match(r"(\d+)[.、]\s*(.+)", line)
-        if m:
+        if m and sport != "soccer":
             translated[int(m.group(1))] = ("中立", m.group(2).strip())
 
     def clean(pair):
         tone, ja = pair
-        return {"ja": ja,
+        ja = re.sub(r"^[（(]\d+への返信[）)]\s*", "", ja)   # 渡した目印を訳に残さない
+        return {"ja": team_names_jp(ja),
                 "tone": tone if tone in ("称賛", "批判", "中立") else "中立"}
 
     # 途中で切れた日は、最後に拾えた1行だけを落とす。
@@ -520,6 +560,17 @@ def translate(client, items: list) -> list:
         note(f"[warn] 訳が{len(flat)}行のうち{last - 1}行で切れました。"
              f"切れた行だけ落として続けます")
 
+    # 10/9の観客→選手の誤訳を、指示だけで終わらせず原文と返信で照合。
+    import comment_actors
+    for n, (i, j, original) in enumerate(flat, 1):
+        if n not in translated:
+            continue
+        context = items[i]['title']+' '+ ' '.join(items[i].get('reply_texts') or [])
+        issues = comment_actors.check(original, translated[n][1], context)
+        if issues:
+            translated.pop(n)
+            note(f"[warn] 訳の{n}行目を除外: {'、'.join(issues)}")
+
     out = [None] * len(items)
     for n, (i, j, _) in enumerate(flat, 1):
         got = translated.get(n)
@@ -531,6 +582,34 @@ def translate(client, items: list) -> list:
             out[i]["reply_ja"].append({**clean(got),
                                        "original": items[i]["reply_texts"][j]})
     return [x for x in out if x]
+
+
+def _words(text: str) -> list:
+    import re
+    return re.findall(r"[a-z0-9']+|[^\sa-z0-9']", (text or "").lower())
+
+
+def near_duplicate(a: str, b: str, ratio: float = 0.78) -> bool:
+    """言い換えただけの同じコメント（別の人が書き写したもの）か。
+    10/8 試作で「駐車場で会ったばかりの9人」が2人分（高評価808・607）並んでいた。"""
+    import difflib
+    wa, wb = _words(a), _words(b)
+    # 短い文は言い回しが似やすい（「大谷は最高」と「大谷は最高ではない」）。10語以上だけ比べる
+    if min(len(wa), len(wb)) < 10:
+        return a.strip().lower() == b.strip().lower()
+    return difflib.SequenceMatcher(None, wa, wb).ratio() >= ratio
+
+
+def drop_near_duplicates(items: list, key: str = "title") -> list:
+    """先にあるもの（取った順。動画ごとに高評価の多い順）を残し、言い換えの重複を落とす。"""
+    kept = []
+    for it in items:
+        text = it.get(key) or it.get("ja") or ""
+        if any(near_duplicate(text, k.get(key) or k.get("ja") or "") for k in kept):
+            print(f"[info] 言い換えの重複を落としました: {text[:50]}")
+            continue
+        kept.append(it)
+    return kept
 
 
 def build(limit: int = MAX_VOICES) -> dict:
@@ -550,6 +629,8 @@ def build(limit: int = MAX_VOICES) -> dict:
     # 日本人選手が出た試合のコメントは、別に名指しで取りに行く。
     # いちばん見られた1本にたまたま入っているのを待たない。
     jp_items = fetch_jp_comments()
+    items = drop_near_duplicates(items)
+    jp_items = drop_near_duplicates(jp_items or [])
 
     api_key = os.environ.get("ANTHROPIC_API_KEY")
     if not api_key or anthropic is None:
@@ -605,13 +686,13 @@ def build(limit: int = MAX_VOICES) -> dict:
         for v in praise:
             print(f"   {'、'.join(v['jp_players'])}: {v['ja'][:44]}")
 
-    return {
+    return __import__('fan_privacy').material({
         "updated_at": datetime.now(timezone.utc).isoformat(),
         "source": source_name,
         "source_url": source_url,
         "voices": voices,
         "jp_praise": praise,
-    }
+    })
 
 
 def load(path: str = "data/local_voices.json", max_age_hours: int = 30) -> dict:
@@ -639,7 +720,10 @@ def load(path: str = "data/local_voices.json", max_age_hours: int = 30) -> dict:
         print(f"[info] 現地の声は{updated.astimezone(jst).date()}のものです。"
               "今日の分が取れていないので使いません")
         return {}
-    return data
+    # 前に取った材料にも同じ決まりを当てる
+    if isinstance(data.get("voices"), list):
+        data["voices"] = drop_near_duplicates(data["voices"])
+    return __import__('fan_privacy').voices(data)
 
 
 def _timing_lines(raw: list) -> list:

@@ -16,7 +16,7 @@
     確実に崩れる。こちらは元の文字を持っているので、渡す方が正確。
 
 必要な権限:
-  youtube スコープ。captions.insert は400ユニット/本と重いので、
+  youtube.force-ssl スコープ。captions.insert は400ユニット/本と重いので、
   1日に付けるのは日次の1本に絞る(4本付けても1,600で枠内だが、
   他の処理と合わせて余裕を残す)。
 
@@ -31,15 +31,6 @@ import os
 import pathlib
 import sys
 import tempfile
-
-try:
-    from google.oauth2.credentials import Credentials
-    from googleapiclient.discovery import build
-    from googleapiclient.errors import HttpError
-    from googleapiclient.http import MediaFileUpload
-except ImportError:
-    print("[warn] Google APIライブラリが無いためスキップします")
-    sys.exit(0)
 
 TOKEN_URI = "https://oauth2.googleapis.com/token"
 
@@ -63,6 +54,8 @@ def split_text(text: str) -> list:
     読点と句点で区切る。読み上げの息継ぎと同じ場所で切れるので、
     音と字幕のかたまりが揃う。
     """
+    import caption_breaks
+    if caption_breaks.enabled():return caption_breaks.pages(text,LINE_CHARS*2)
     out, cur = [], ""
     for ch in text:
         cur += ch
@@ -79,6 +72,8 @@ def split_text(text: str) -> list:
 
 def wrap_line(text: str) -> str:
     """長い1文を2行に折る。1行に詰めると画面からはみ出す。"""
+    import caption_breaks
+    if caption_breaks.enabled():return '\n'.join(caption_breaks.wrap(text,len,LINE_CHARS))
     if len(text) <= LINE_CHARS:
         return text
     mid = len(text) // 2
@@ -89,7 +84,7 @@ def wrap_line(text: str) -> str:
     return text[:mid] + "\n" + text[mid:]
 
 
-def build_srt(narration: dict, manifest: list) -> str:
+def build_cues(narration: dict, manifest: list) -> list:
     """
     原稿と音声の実測長から字幕を組む。
 
@@ -112,19 +107,31 @@ def build_srt(narration: dict, manifest: list) -> str:
         for p in parts:
             share = d * (len(p) / total_chars) if total_chars else d
             end = at + max(MIN_CUE, share)
-            cues.append((at, min(end, t + d), wrap_line(p)))
+            cues.append((at, min(end, t + d), p))
             at = end
             if at >= t + d:
                 break
         t += d
 
+    return cues
+
+
+def render_srt(cues, *, english=False):
+    import textwrap
     lines = []
     for n, (start, end, text) in enumerate(cues, 1):
+        text = textwrap.fill(text, width=42) if english else wrap_line(text)
         lines += [str(n), f"{srt_time(start)} --> {srt_time(end)}", text, ""]
     return "\n".join(lines)
 
 
+def build_srt(narration: dict, manifest: list) -> str:
+    return render_srt(build_cues(narration, manifest))
+
+
 def client():
+    from google.oauth2.credentials import Credentials
+    from googleapiclient.discovery import build
     cid = os.environ.get("YOUTUBE_CLIENT_ID")
     secret = os.environ.get("YOUTUBE_CLIENT_SECRET")
     token = os.environ.get("YOUTUBE_REFRESH_TOKEN")
@@ -152,10 +159,24 @@ def main() -> int:
     ap.add_argument("--narration", default="public/narration.json")
     ap.add_argument("--audio-dir", default="build/audio")
     ap.add_argument("--kind", default="daily")
+    ap.add_argument("--language", choices=("ja", "en"), default="ja")
+    ap.add_argument("--asset-topic", default="")
+    ap.add_argument("--state", default="data/en_caption_state.json")
     ap.add_argument("--record", default="data/published_videos.json")
     ap.add_argument("--date", help="既定は今日のJST")
     ap.add_argument("--out", help="SRTの書き出し先(指定すると投稿しない)")
     args = ap.parse_args()
+
+    if args.language == "en":
+        import english_captions
+        return english_captions.main(args)
+
+    try:
+        from googleapiclient.errors import HttpError
+        from googleapiclient.http import MediaFileUpload
+    except ImportError:
+        print("[info] Google APIライブラリが無いため字幕は付けません")
+        return 0
 
     try:
         narration = json.loads(

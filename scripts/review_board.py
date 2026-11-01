@@ -54,7 +54,8 @@ try:
 except ImportError:
     anthropic = None
 
-MODEL = "claude-haiku-4-5-20251001"
+import llm_models
+MODEL = llm_models.model("board")
 JST = timezone(timedelta(hours=9))
 
 # 見る人たち。
@@ -109,17 +110,19 @@ def _load(path: str, default=None):
 
 def gather(day: str = None) -> str:
     """その日出したものと、いまの数字を並べる。これが講評の材料になる。"""
-    day = day or datetime.now(JST).strftime("%Y-%m-%d")
+    day = day or (datetime.now(JST) - timedelta(days=1)).strftime("%Y-%m-%d")
     lines = [f"## {day} に出したもの", ""]
 
     vids = _load("data/published_videos.json")
     at = {k: t for k, _, _, t in post_common.DAILY_LINEUP}
+    # 朝の健康診断と同じ対象日・区分・見送り条件を使う。
+    import healthcheck
+    video_lines, _, _, _ = healthcheck.check_videos(day)
+    lines += ['| 時刻 | 種類 | 状態 | 理由/動画ID |', '|---|---|---|---|', *video_lines]
     for kind, name, what, when in post_common.DAILY_LINEUP:
-        rec = (vids.get(kind) or {}).get(day)
+        rec = (vids.get(healthcheck._record_key(kind)) or {}).get(day)
         if rec:
             lines.append(f"- {when} {name}: {rec.get('title', '')}")
-        else:
-            lines.append(f"- {when} {name}: **出ていない**")
 
     # 枠ごとの実測。指摘を「なんとなく」ではなく数字に紐づけるため。
     an = _load("data/analytics.json").get("days") or {}
@@ -189,8 +192,9 @@ def ask(client, label: str, stance: str, material: str) -> str:
         + "- 他の立場が言いそうなことは書かない。自分の立場に絞る" + chr(10)
         + "- 箇条書き。前置きは不要"
     )
-    resp = client.messages.create(
-        model=MODEL, max_tokens=500,
+    import backstage_guard
+    resp = backstage_guard.create(client, label='review_board.py', category='review_board', mode='lines',
+        **llm_models.params("board", 500),
         messages=[{"role": "user", "content": prompt}],
     )
     token_log.record(f"review:{label}", MODEL, resp)
@@ -199,7 +203,7 @@ def ask(client, label: str, stance: str, material: str) -> str:
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--date", help="見る日 (既定は今日のJST)")
+    ap.add_argument("--date", help="見る日 (既定は昨日のJST)")
     ap.add_argument("--only", help="この立場だけ (戦略/伸ばす/経営/作り手/運営者)")
     args = ap.parse_args()
 

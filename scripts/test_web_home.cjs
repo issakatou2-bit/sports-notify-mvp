@@ -95,3 +95,21 @@ test('all inline scripts parse',()=>{
     else new vm.Script(match[2]);
   }
 });
+
+test('empty league resets stale dates and explains both empty sections',()=>{
+  for (const league of ['MLB','SOCCER']) {
+    const nodes=new Map();
+    const document={getElementById(id){
+      if(!nodes.has(id)) nodes.set(id,{textContent:'previous date',innerHTML:'previous game'});
+      return nodes.get(id);
+    }};
+    const context=vm.createContext({document});
+    vm.runInContext('const isSoccer=g=>g.league!=="MLB";let allGamesCache=[];let activeLeague='+JSON.stringify(league)+';',context);
+    vm.runInContext(segment('  function renderTab() {','  let gamesRequest = null;'),context);
+    vm.runInContext('renderTab()',context);
+    assert.equal(nodes.get('allGames').innerHTML,nodes.get('notableGames').innerHTML);
+    assert.match(nodes.get('allGames').innerHTML,/対象の.*試合がありません/);
+    assert.equal(nodes.get('pickLabel').textContent,'注目試合');
+    assert.equal(nodes.get('boardLabel').textContent,'試合一覧 (JST)');
+  }
+});

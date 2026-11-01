@@ -1,0 +1,50 @@
+{
+  "publication_id": "asset:topic:ws_title_history",
+  "domain": "asset",
+  "kind": "topic",
+  "key_parts": {
+    "topic": "ws_title_history"
+  },
+  "version": 1,
+  "history": [
+    {
+      "source": "published_videos/asset/ws_title_history",
+      "service": "youtube",
+      "video_id": "4bZAY2JNlEQ",
+      "state": "scheduled",
+      "scheduled_at": "2026-10-22T09:00:00Z",
+      "event_day": null,
+      "material_day": null,
+      "edition_day": "2026-10-22",
+      "run_at": "2026-10-21T04:24:59.377365+00:00",
+      "details": {
+        "privacy": "private",
+        "held": false
+      },
+      "run_id": "40508411617",
+      "attempt": "1",
+      "recorded_at": "2026-10-27T13:01:39.676998+00:00",
+      "fingerprint": "ab72b5b705c4db11ed1d74db8a4f98cc288800d386921c7c7d18f2cdaffa2907",
+      "event_id": "a9e4c96dc0bbdcf9d21dc19ebb87a38a5fc02da4512325a4a23c1fe0120ab026"
+    },
+    {
+      "source": "published_assets/assets/ws_title_history",
+      "service": "youtube",
+      "video_id": "4bZAY2JNlEQ",
+      "state": "held",
+      "scheduled_at": null,
+      "event_day": null,
+      "material_day": null,
+      "edition_day": null,
+      "run_at": "2026-10-21T04:24:59.368452+00:00",
+      "details": {
+        "privacy": "private"
+      },
+      "run_id": "40508411617",
+      "attempt": "1",
+      "recorded_at": "2026-10-27T13:01:39.798492+00:00",
+      "fingerprint": "6a24717fc39d5f0647708defb7add087fd6025ef6a674f2fca8b0f3741281ff2",
+      "event_id": "9318a22e8d38abefaa44b8a8ad51f337e3d0c35c21b4fc7ffad76ef77806c736"
+    }
+  ]
+}

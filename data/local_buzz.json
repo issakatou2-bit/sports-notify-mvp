@@ -1,84 +1,77 @@
 {
-  "updated_at": "2026-09-20T06:01:55.825576+00:00",
+  "updated_at": "2026-11-01T06:03:12.409752+00:00",
   "sources": [
     {
-      "name": "r/baseball",
-      "items": 26
-    },
-    {
       "name": "MLB公式",
-      "items": 25
+      "items": 24
     }
   ],
-  "titles_count": 51,
+  "titles_count": 24,
   "teams": [
     {
-      "team_id": "147",
-      "name": "ヤンキース",
-      "name_en": "New York Yankees",
-      "mentions": 4,
+      "team_id": "158",
+      "name": "ブリュワーズ",
+      "name_en": "Milwaukee Brewers",
+      "mentions": 5,
       "tone": "話題",
-      "gist": "Pavin Smithの満塁本塁打でダイヤモンドバックスがヤ"
+      "gist": "ブリュワーズ初のWS制覇、パレードや話題続々"
     },
     {
-      "team_id": "135",
-      "name": "パドレス",
-      "name_en": "San Diego Padres",
+      "team_id": "139",
+      "name": "レイズ",
+      "name_en": "Tampa Bay Rays",
       "mentions": 3,
       "tone": "好調",
-      "gist": "Ethan Salasのサヨナラヒットでパドレスがワイルドカ"
+      "gist": "ラスムッセンが27年残留、マルティネスらFAに"
     },
     {
-      "team_id": "117",
-      "name": "アストロズ",
-      "name_en": "Houston Astros",
-      "mentions": 3,
+      "team_id": "110",
+      "name": "オリオールズ",
+      "name_en": "Baltimore Orioles",
+      "mentions": 1,
       "tone": "不振",
-      "gist": "Ronald Acuña Jr.の満塁本塁打でアストロズが敗"
+      "gist": "オリオールズ、故障続きのロバートの27年契約を拒否"
+    },
+    {
+      "team_id": "111",
+      "name": "レッドソックス",
+      "name_en": "Boston Red Sox",
+      "mentions": 1,
+      "tone": "話題",
+      "gist": "レッドソックスがチェン内野手をタイガースへ放出"
     },
     {
       "team_id": "119",
       "name": "ドジャース",
       "name_en": "Los Angeles Dodgers",
-      "mentions": 3,
-      "tone": "好調",
-      "gist": "Mookieの4安打でドジャースがライバルジャイアンツとのシ"
+      "mentions": 1,
+      "tone": "話題",
+      "gist": "ドジャースの27年ロースター予想の記事"
     },
     {
-      "team_id": "121",
-      "name": "メッツ",
-      "name_en": "New York Mets",
-      "mentions": 3,
-      "tone": "好調",
-      "gist": "Carson Bengeがメッツ新人最多安打記録を達成し15"
+      "team_id": "116",
+      "name": "タイガース",
+      "name_en": "Detroit Tigers",
+      "mentions": 1,
+      "tone": "話題",
+      "gist": "タイガースがレッドソックスからチェン獲得"
     },
     {
-      "team_id": "120",
-      "name": "ナショナルズ",
-      "name_en": "Washington Nationals",
-      "mentions": 2,
+      "team_id": "135",
+      "name": "パドレス",
+      "name_en": "San Diego Padres",
+      "mentions": 1,
       "tone": "不振",
-      "gist": "ナショナルズのセーブ失敗が40回を超える深刻な課題"
+      "gist": "パドレス、ピベッタの27年球団オプション拒否でFA"
     },
     {
-      "team_id": "137",
-      "name": "ジャイアンツ",
-      "name_en": "San Francisco Giants",
-      "mentions": 2,
-      "tone": "不振",
-      "gist": "ジャイアンツがドジャースに敗北、歴史的な一進一退の戦いで競争"
-    },
-    {
-      "team_id": "144",
-      "name": "ブレーブス",
-      "name_en": "Atlanta Braves",
-      "mentions": 2
+      "team_id": "112",
+      "name": "カブス",
+      "name_en": "Chicago Cubs",
+      "mentions": 1,
+      "tone": "好調",
+      "gist": "カブスの歴史的な守備のハイライト5選"
     }
   ],
-  "players": [
-    {
-      "name": "大谷翔平",
-      "mentions": 1
-    }
-  ]
+  "players": []
 }

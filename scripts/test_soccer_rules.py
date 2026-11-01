@@ -20,17 +20,8 @@ import notability_engine as ne  # noqa: E402
 from notability_engine import Game, Standing  # noqa: E402
 
 import pathlib
+from checks_report import check, section, done  # noqa: E402
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
-
-fails = 0
-
-
-def check(label, got, want):
-    global fails
-    ok = got == want
-    if not ok:
-        fails += 1
-    print(f"{'ok ' if ok else 'NG '} {label}: {got}" + ("" if ok else f" (期待 {want})"))
 
 
 def make(league, home, away, i=0):
@@ -42,7 +33,7 @@ def make(league, home, away, i=0):
 
 
 # --- 競技の判定 -------------------------------------------------------------
-print("--- リーグの見分け(コードと日本語名の両方) ---")
+section("リーグの見分け(コードと日本語名の両方)")
 for lg in ("PD", "ラ・リーガ", "PL", "プレミアリーグ", "CL", "チャンピオンズリーグ"):
     check(f"{lg} はサッカー", ne.is_soccer(make(lg, "A", "B")), True)
 check("MLB はサッカーでない", ne.is_soccer(make("MLB", "A", "B")), False)
@@ -162,6 +153,4 @@ g = out["games"][0]
 check("日本人選手の所属が理由になる",
       any(r.get("tag") == "jp_team" for r in g.get("reasons") or []), True)
 check("表記は変えない", g["matchup"], "パドレス vs ドジャース")
-
-print("\nALL OK" if not fails else f"\n{fails} FAILURES")
-sys.exit(1 if fails else 0)
+sys.exit(done())

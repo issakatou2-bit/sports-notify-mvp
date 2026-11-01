@@ -1,0 +1,225 @@
+name: 欧州サッカー　日本人選手の週末
+
+# 月曜7:15 JSTに制作を開始し、同日9:00 JSTに公開予約。既定オフ。
+
+on:
+  schedule:
+    - cron: '15 22 * * 0'
+  workflow_dispatch:
+    inputs:
+      upload:
+        description: '月曜9:00の公開を予約する（公開変数onも必要）'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: soccer-week
+  cancel-in-progress: false
+
+env:
+  COLLESPO_HOST_SPLIT: ${{ vars.COLLESPO_HOST_SPLIT || '' }}
+  COLLESPO_UI_VOICE_STOCK: ${{ vars.COLLESPO_UI_VOICE_STOCK || '' }}
+  COLLESPO_UI_PARTS_KEY: ${{ secrets.COLLESPO_UI_PARTS_KEY }}
+  COLLESPO_UI_VOICE_WAIT_MINUTES: ${{ vars.COLLESPO_UI_VOICE_WAIT_MINUTES || '15' }}
+
+jobs:
+  build:
+    if: github.event_name == 'workflow_dispatch' || vars.COLLESPO_SOCCER_WEEK == 'on'
+    runs-on: ubuntu-latest
+    env:
+      COLLESPO_SOCCER_WEEK: ${{ vars.COLLESPO_SOCCER_WEEK || 'off' }}
+      COLLESPO_BUBBLE: ${{ vars.COLLESPO_BUBBLE || '' }}
+      COLLESPO_MOTION: ${{ vars.COLLESPO_MOTION || '' }}
+      COLLESPO_CAPTION_BREAKS: ${{ vars.COLLESPO_CAPTION_BREAKS || '' }}
+      COLLESPO_SLANT_VARIANT: ${{ vars.COLLESPO_SLANT_VARIANT || 'cream' }}
+      COLLESPO_GLASS_BACKGROUND: ${{ vars.COLLESPO_GLASS_BACKGROUND || 'stripes' }}
+      COLLESPO_OUTRO_NEXT: ${{ vars.COLLESPO_OUTRO_NEXT == 'on' && 'on' || 'off' }}
+      COLLESPO_SHORT_LOOK: v4
+      COLLESPO_SOCCER_LOOK: ${{ vars.COLLESPO_SOCCER_LOOK || 'v5' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install -r scripts/requirements.txt
+          pip install pillow google-api-python-client google-auth imageio_ffmpeg
+
+      - name: Build the week material
+        id: gate
+        env:
+          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
+        run: |
+          python scripts/soccer_jp_week.py --scheduled --out data/soccer_jp_week.json \
+            | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: Install video tools
+        if: steps.gate.outputs.due == '1'
+        timeout-minutes: 16
+        run: bash scripts/install_video_tools.sh
+
+      - name: Start VOICEVOX engine
+        if: steps.gate.outputs.due == '1'
+        continue-on-error: true
+        run: |
+          docker run -d --rm -p 50021:50021 --name voicevox \
+            voicevox/voicevox_engine:cpu-latest || \
+            echo "::warning::VOICEVOXの起動に失敗しました"
+          for i in $(seq 1 30); do
+            if curl -s http://127.0.0.1:50021/version > /dev/null; then
+              echo "VOICEVOX ready"; break
+            fi
+            sleep 2
+          done
+
+      - name: Write the script
+        if: steps.gate.outputs.due == '1'
+        run: |
+          python scripts/generate_morning_short.py \
+            --mode soccer_week --week data/soccer_jp_week.json \
+            --narration-out build/week_narration.json
+
+      - name: Sanity check
+        id: sanity
+        if: steps.gate.outputs.due == '1'
+        continue-on-error: true
+        env:
+          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          python scripts/sanity.py --general --strict --narration build/week_narration.json --out data/sanity_week.json --hold-record build/sanity_hold_week.json --kind soccer_week
+
+      - name: Synthesize narration
+        if: steps.gate.outputs.due == '1'
+        run: |
+          python scripts/synthesize_narration.py \
+            --narration build/week_narration.json \
+            --out-dir build/week_audio
+
+      - name: Build the video
+        if: steps.gate.outputs.due == '1'
+        run: |
+          python scripts/generate_morning_short.py \
+            --mode soccer_week --week data/soccer_jp_week.json \
+            --audio-dir build/week_audio --out build/week --require-audio
+
+      - name: Vertical thumbnail
+        if: steps.gate.outputs.due == '1'
+        continue-on-error: true
+        run: |
+          bash scripts/shorts_thumbnail.sh \
+            build/week/collespo_morning_soccer_week.mp4 build/week/short.png
+
+      - name: Upload to YouTube
+        id: upload
+        if: >-
+          steps.gate.outputs.due == '1' &&
+          steps.sanity.outcome == 'success' &&
+          vars.COLLESPO_SOCCER_WEEK == 'on' &&
+          (github.event_name != 'workflow_dispatch' ||
+           inputs.upload)
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+        run: |
+          WEEK_KEY="${{ steps.gate.outputs.key }}"
+          python scripts/soccer_week_publish.py \
+            --week data/soccer_jp_week.json --video-date "$WEEK_KEY" \
+            --video build/week/collespo_morning_soccer_week.mp4 \
+            --kind soccer_week --sport soccer \
+            --narration build/week_narration.json \
+            --thumbnail build/week/short.png \
+            --privacy public --publish-at '09:00'
+
+      - name: Keep the video
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: soccer-week
+          path: |
+            data/sanity*.json
+            build/sanity*hold*.json
+            data/postseason.json
+            data/best_of_day.json
+            data/roster_stats.json
+            notable_games.json
+            archive/*.json
+            data/soccer_jp_week.json
+            build/week/collespo_morning_soccer_week.mp4
+            build/week_narration.json
+            !build/**/portrait/**
+          if-no-files-found: warn
+
+      - name: Commit the material
+        if: always() && steps.gate.outputs.due == '1'
+        run: |
+          bash scripts/commit_data.sh \
+            "soccer week: ${{ github.run_id }}" \
+            data/soccer_jp_week.json data/soccer_week_state.json \
+            data/published_videos.json data/morning_recap.json data/player_profile.json data/token_usage.json
+
+      - name: Say what happened
+        if: always()
+        run: |
+          {
+            echo "## 日本人選手の週末"
+            echo
+            echo "- 判定: ${{ steps.gate.outputs.why || '材料を作れませんでした' }}"
+            if [ -f build/week/collespo_morning_soccer_week.mp4 ]; then
+              echo "- 動画: $(du -h build/week/collespo_morning_soccer_week.mp4 | cut -f1)"
+            fi
+            echo "- 公開: ${{ steps.upload.outcome || '対象外' }}"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Keep unsaved data records
+        if: always() && hashFiles('build/data-save-recovery/**/FAILED') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: unsaved-data-${{ github.job }}-${{ github.run_attempt }}
+          path: |
+            build/data-save-recovery/
+            !build/**/portrait/**
+          retention-days: 14
+          if-no-files-found: error
+
+      - name: Save sanity gate records
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sanity-gate-${{ github.job }}
+          path: |
+            data/sanity*.json
+            build/sanity*hold*.json
+            !build/**/portrait/**
+          retention-days: 14
+
+      - name: Save quota-exceeded thumbnails
+        if: always() && hashFiles('build/thumbnail_pending/**') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: thumbnail-pending
+          path: |
+            build/thumbnail_pending/
+            !build/**/portrait/**
+          retention-days: 3
+          if-no-files-found: ignore
+
+      - name: Save voice and render records
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: voice-render-records-${{ github.job }}-${{ github.run_attempt }}
+          path: |
+            build/**/voice_manifest.json
+            build/**/render_timeline.json
+            !build/**/portrait/**
+          retention-days: 14
+          if-no-files-found: ignore

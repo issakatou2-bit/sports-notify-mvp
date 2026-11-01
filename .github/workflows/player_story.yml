@@ -1,0 +1,145 @@
+name: 日本人選手のいまの流れ（既定オフ）
+on:
+  schedule:
+    - cron: '10 8 * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: mlb-player-publication
+  cancel-in-progress: false
+env:
+  COLLESPO_HOST_SPLIT: ${{ vars.COLLESPO_HOST_SPLIT || '' }}
+  COLLESPO_UI_VOICE_STOCK: ${{ vars.COLLESPO_UI_VOICE_STOCK || '' }}
+  COLLESPO_UI_PARTS_KEY: ${{ secrets.COLLESPO_UI_PARTS_KEY }}
+  COLLESPO_UI_VOICE_WAIT_MINUTES: ${{ vars.COLLESPO_UI_VOICE_WAIT_MINUTES || '15' }}
+
+jobs:
+  build:
+    if: vars.COLLESPO_PLAYER_STORY == 'on'
+    runs-on: ubuntu-latest
+    env:
+      COLLESPO_PLAYER_STORY: ${{ vars.COLLESPO_PLAYER_STORY || 'off' }}
+      COLLESPO_TOPIC_HUB: ${{ vars.COLLESPO_TOPIC_HUB || 'off' }}
+      COLLESPO_REDDIT: ${{ vars.COLLESPO_REDDIT || '' }}
+      PLAYER_STORY_PUBLISH: ${{ vars.PLAYER_STORY_PUBLISH || 'false' }}
+      COLLESPO_EXPR: ${{ vars.COLLESPO_EXPR || '' }}
+      COLLESPO_BUBBLE: ${{ vars.COLLESPO_BUBBLE || '' }}
+      COLLESPO_MOTION: ${{ vars.COLLESPO_MOTION || '' }}
+      COLLESPO_CAPTION_BREAKS: ${{ vars.COLLESPO_CAPTION_BREAKS || '' }}
+      COLLESPO_SLANT_VARIANT: ${{ vars.COLLESPO_SLANT_VARIANT || 'cream' }}
+      COLLESPO_GLASS_BACKGROUND: ${{ vars.COLLESPO_GLASS_BACKGROUND || 'stripes' }}
+      COLLESPO_OUTRO_NEXT: ${{ vars.COLLESPO_OUTRO_NEXT == 'on' && 'on' || 'off' }}
+      COLLESPO_SHORT_LOOK: v4
+    steps:
+      - uses: actions/checkout@v4
+      - name: Refresh both MLB player publication ledgers
+        run: python scripts/player_publications.py --sync
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          pip install -r scripts/requirements.txt
+          pip install imageio_ffmpeg
+      - name: Build shared topics when enabled
+        if: vars.COLLESPO_TOPIC_HUB == 'on'
+        run: python scripts/topic_hub.py --out data/topic_hub.json
+      - name: Select a story from saved reports and official numbers
+        run: python scripts/player_story.py --fetch-stats --out build/player_story/narration.json
+      - name: Stop without numeric flow or player reporting
+        id: gate
+        run: |
+          COUNT=$(python -c "import json; print(int(json.load(open('build/player_story/narration.json',encoding='utf8'))['can_make']))")
+          echo "count=$COUNT" >> "$GITHUB_OUTPUT"
+      - name: Install video tools
+        if: steps.gate.outputs.count == '1'
+        run: bash scripts/install_video_tools.sh
+      - name: Start VOICEVOX
+        if: steps.gate.outputs.count == '1'
+        run: |
+          docker run -d --rm -p 50021:50021 --name voicevox voicevox/voicevox_engine:cpu-latest
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:50021/version > /dev/null; then break; fi
+            sleep 2
+          done
+          curl -fsS http://127.0.0.1:50021/version
+      - name: Sanity gate (player_story)
+        id: sanity
+        if: steps.gate.outputs.count == '1'
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
+        run: python scripts/sanity.py --general --strict --narration build/player_story/narration.json --out data/sanity_player_story.json --hold-record build/sanity_hold_player_story.json --kind player_story
+
+      - name: Synthesize and render
+        if: steps.gate.outputs.count == '1'
+        run: |
+          python scripts/synthesize_narration.py --narration build/player_story/narration.json --out-dir build/player_story/audio
+          python scripts/player_story_render.py --narration build/player_story/narration.json --audio-dir build/player_story/audio --out build/player_story
+      - name: Publish only when explicitly enabled
+        if: steps.gate.outputs.count == '1' && vars.PLAYER_STORY_PUBLISH == 'true'
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+        run: |
+          DAY=$(python -c "import json; print(json.load(open('build/player_story/narration.json',encoding='utf8'))['label'])")
+          python scripts/upload_youtube.py --kind player_story --video build/player_story/collespo_player_story.mp4 --games build/player_story/narration.json --narration build/player_story/narration.json --video-date "$DAY" --privacy public
+          bash scripts/commit_data.sh "player story: ${{ github.run_id }}" \
+            data/published_videos.json data/local_reporters.json data/local_buzz.json data/local_voices.json data/topic_hub.json data/token_usage.json
+      - name: Save preview
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: player-story-preview
+          path: |
+            build/player_story/
+            !build/**/portrait/**
+          if-no-files-found: ignore
+
+      - name: Keep unsaved data records
+        if: always() && hashFiles('build/data-save-recovery/**/FAILED') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: unsaved-data-${{ github.job }}-${{ github.run_attempt }}
+          path: |
+            build/data-save-recovery/
+            !build/**/portrait/**
+          retention-days: 14
+          if-no-files-found: error
+
+      - name: Save sanity gate records
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sanity-gate-${{ github.job }}
+          path: |
+            data/sanity*.json
+            build/sanity*hold*.json
+            !build/**/portrait/**
+          retention-days: 14
+
+      - name: Save quota-exceeded thumbnails
+        if: always() && hashFiles('build/thumbnail_pending/**') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: thumbnail-pending
+          path: |
+            build/thumbnail_pending/
+            !build/**/portrait/**
+          retention-days: 3
+          if-no-files-found: ignore
+
+      - name: Save voice and render records
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: voice-render-records-${{ github.job }}-${{ github.run_attempt }}
+          path: |
+            build/**/voice_manifest.json
+            build/**/render_timeline.json
+            !build/**/portrait/**
+          retention-days: 14
+          if-no-files-found: ignore

@@ -634,6 +634,11 @@ def summary(data: dict) -> str:
     return "\n".join(lines)
 
 
+def v4_program(data):
+    import soccer_slots_v4
+    return soccer_slots_v4.race_program(data) if soccer_slots_v4.enabled() else None
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--preview", default="data/soccer_preview.json")
@@ -668,7 +673,8 @@ def main() -> int:
     else:
         prev_path = src.with_name(src.stem + "_prev.json")
         today = datetime.now(timezone(timedelta(hours=9))).date().isoformat()
-        stamp = str(preview.get("generated_at") or "")[:10]
+        from sports_dates import jst_day
+        stamp = jst_day(preview.get("generated_at"))
         if prev_path.exists():
             try:
                 before = json.loads(prev_path.read_text(encoding="utf-8"))

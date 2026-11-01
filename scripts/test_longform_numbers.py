@@ -15,7 +15,10 @@
 """
 
 import pathlib
+import json
 import sys
+from datetime import date
+from unittest.mock import patch
 
 HERE = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
@@ -23,35 +26,9 @@ sys.path.insert(0, str(HERE))
 import generate_dialogue as gd  # noqa: E402
 import numbers_material as nm  # noqa: E402
 import race_words as rw  # noqa: E402
+from checks_report import check, has, hasnt, section, done  # noqa: E402
 
-fails = 0
-
-
-def check(label, got, want):
-    global fails
-    ok = got == want
-    fails += not ok
-    print("%s %s: %r%s" % ("ok " if ok else "NG ", label, got,
-                           "" if ok else "   (期待 %r)" % (want,)))
-
-
-def has(label, got, part):
-    global fails
-    ok = part in (got or "")
-    fails += not ok
-    print("%s %s: %r%s" % ("ok " if ok else "NG ", label, got,
-                           "" if ok else "   (%r を含むはず)" % (part,)))
-
-
-def hasnt(label, got, part):
-    global fails
-    ok = part not in (got or "")
-    fails += not ok
-    print("%s %s: %r%s" % ("ok " if ok else "NG ", label, got,
-                           "" if ok else "   (%r を含んではいけない)" % (part,)))
-
-
-print("--- 投手と打者を取り違えない ---")
+section("投手と打者を取り違えない")
 check("pitcher は投手", nm.is_pitcher({"type": "pitcher"}), True)
 check("P も投手（古い書き方）", nm.is_pitcher({"type": "P"}), True)
 check("batter は投手ではない", nm.is_pitcher({"type": "batter"}), False)
@@ -65,8 +42,7 @@ hasnt("投手の行に「安打」単独を出さない", nm._line(pit).replace(
 check("打者は見出しをそのまま使う",
       nm._line({"type": "batter", "headline": "3打数2安打"}), "3打数2安打")
 
-print()
-print("--- 地区首位を「最後の枠」と言わない ---")
+section("地区首位を「最後の枠」と言わない")
 # **実データの形。**ドジャースは地区首位で、ワイルドカードの差は返らない。
 dodgers = {"team": "ドジャース", "route": "地区首位", "w": 90, "l": 59,
            "magic": 4, "wc_gb": None, "clinched": False}
@@ -79,8 +55,7 @@ padres = {"team": "パドレス", "route": "ワイルドカード", "wc_gb": Non
           "magic": None, "clinched": False}
 has("ワイルドカードで差が無いなら最後の枠", rw.phrase(padres), "最後の枠")
 
-print()
-print("--- 圏内と圏外は同じ数字で意味が逆 ---")
+section("圏内と圏外は同じ数字で意味が逆")
 inside = {"route": "ワイルドカード", "wc_gb": "+1.5"}
 outside = {"route": "ワイルドカード", "wc_gb": "1.5"}
 has("符号つきは圏内", rw.phrase(inside), "圏内")
@@ -90,27 +65,86 @@ has("圏外は「あと」で書く", rw.phrase(outside), "あと1.5")
 check("札も圏内・圏外を落とさない", rw.short(inside), "圏内 1.5")
 check("札の圏外", rw.short(outside), "圏外 1.5")
 
-print()
-print("--- 決まったこと・消えたこと ---")
+section("決まったこと・消えたこと")
 check("進出決定", rw.phrase({"clinched": True, "route": "地区首位"}), "進出決定")
 check("敗退", rw.phrase({"wc_gb": "E", "route": "ワイルドカード"}),
       "進出の可能性は消滅")
 check("敗退の札", rw.short({"wc_gb": "E"}), "敗退")
 
-print()
-print("--- 材料が無い日でも落ちない ---")
+section("材料が無い日でも落ちない")
 empty = nm.load(str(HERE / "no-such-dir"))
 check("空の材料が返る", empty["players"], [])
 check("話せる材料が無いと分かる", nm.has_enough(empty), False)
 check("事実の文は作れる", isinstance(nm.facts(empty), str), True)
 check("札は締めだけ残る", sorted(nm.panels(empty)), ["topic"])
 
-print()
-print("--- 実データ ---")
-real = nm.load(str(HERE.parent / "data"))
-check("選手が並ぶ", bool(real["players"]), True)
+section("欧州サッカーの材料（固定の形）")
+# **実データ頼みにしない。**
+#
+# サッカーは節の合間だと `ready` が立たず、材料が空のまま通ってしまう。
+# 9/21と9/22は材料が出た日で、そこで初めて `clubs` を一覧だと思って
+# 添字で切っていたことが露見した（`clubs` は 20 という数）。
+# 材料が出た日にだけ落ちる作りだったので、形を固定して押さえる。
+SOCCER = {
+    "code": "PL", "round": 5, "round_complete": True,
+    "name_jp": "プレミアリーグ", "played": 5, "clubs": 20, "ready": True,
+    "jp": [
+        {"name": "三笘薫", "club_jp": "ブライトン", "position": 3, "points": 10,
+         "out": True, "out_note": "Hamstring injury - Expected back 10 Oct",
+         "lines": [{"line": 4, "side": "inside", "label": "CL圏内",
+                    "text": "CL圏内。落ちるまで勝点1"}]},
+        {"name": "田中碧", "club_jp": "リーズ", "position": 5, "points": 9,
+         "out": False, "out_note": "",
+         "lines": [{"line": 4, "side": "outside", "label": "CL圏内",
+                    "text": "CL圏内と勝点で並んでいる"}]},
+    ],
+    "lines": [{"at": 4, "label": "CL圏内", "diff": 1, "moved": False,
+               "inside": [{"position": 3, "team": "ブライトン", "points": 10}],
+               "outside": [{"position": 5, "team": "リーズ", "points": 9}]}],
+}
+mix = nm.load(str(HERE / "no-such-dir"))
+mix["soccer"] = SOCCER
+sp = nm.panels(mix)
+check("クラブ数が数でも落ちない", "soccer" in sp, True)
+check("並ぶのは日本人選手", [r["name"] for r in sp["soccer"]["rows"]],
+      ["三笘薫（ブライトン）", "田中碧（リーズ）"])
+check("順位を添える", sp["soccer"]["rows"][0]["value"], "3位")
+has("札の見出しは短く", sp["soccer"]["head"], "第5節")
+
+sf = nm.facts(mix)
+has("選手の現在地を渡す", sf, "CL圏内。落ちるまで勝点1")
+has("離脱は離脱と書く", sf, "負傷などで離脱中")
+hasnt("英語のまま渡さない", sf, "Hamstring")
+hasnt("材料の辞書を生で出さない", sf, "'at':")
+has("終わった節はそう書く", sf, "第5節終了時点")
+
+# 次の節が始まっている日。**順位表は第5節までの姿のまま。**
+mid = dict(SOCCER)
+mid["round_complete"] = False
+mix["soccer"] = mid
+sf2 = nm.facts(mix)
+hasnt("進行中を「終わった」と書かない", sf2, "第5節終了時点")
+has("進行中と分かるように書く", sf2, "第6節は進行中")
+has("札は進行中でも短いまま", nm.panels(mix)["soccer"]["head"], "第5節")
+
+section("固定の成績材料")
+# **その日の中身は検査しない。**
+#
+# 「選手が並ぶ」「話せる材料がある」を求めていたら、9/20に落ちた。
+# 日本人選手が出ていない日・オールスター・シーズンオフには必ず落ちる。
+# **コードが何も変わっていないのに日が変わって赤くなる検査**は、
+# 9/15に別の場所でも直したばかりの型（test_soccer_rules）。
+#
+# 当日のdataを読むと出場者次第で追加のAPI取得も走る。
+# 保存した架空の成績と固定日付で、材料から事実・札まで通す。
+_fixed = json.loads((HERE / 'fixtures/fact-guards/longform_fixed.json').read_text(encoding='utf-8'))
+with patch.object(nm, '_read', side_effect=lambda p: _fixed.get(pathlib.Path(p).name, {})), \
+     patch('milestones.best_for', return_value={}), patch('insight.player', return_value=[]):
+    real = nm.load('fixture', today=date(2026, 10, 22))
+check("固定の材料で落ちない", isinstance(real, dict), True)
+check("作り物の投手を実際に読み込む", [r['name'] for r in real['players']], ['試験投手'])
 check("人数を絞る", len(real["players"]) <= nm.MAX_PLAYERS, True)
-check("話せる材料がある", nm.has_enough(real), True)
+check("材料の有無を答えられる", isinstance(nm.has_enough(real), bool), True)
 text = nm.facts(real)
 # 禁じたいのは「圏内まで+1.5」という**符号付きの曖昧な形**。
 # 9/15にこう書いて、圏内なのか圏内を目指しているのか読めなかった。
@@ -120,6 +154,9 @@ hasnt("圏内まで＋符号、という書き方をしない", text, "圏内ま
 hasnt("圏内で＋符号も書かない", text, "圏内で+")
 for row in real["rare"]:
     check("同率を拾わない（%s）" % row["stat"], "タイ" in row["rank"], False)
+# 固定材料には同率の指標を明示的に含めてある。
+check("ties>1 は出さない",
+      real["rare"], [])
 panels = nm.panels(real)
 check("札に締めがある", "topic" in panels, True)
 for key, panel in panels.items():
@@ -127,8 +164,7 @@ for key, panel in panels.items():
     check("%s の型が描画にある" % key,
           panel["type"] in ("star", "stat", "group", "topic"), True)
 
-print()
-print("--- 二人の口調が混ざらないか ---")
+section("二人の口調が混ざらないか")
 # 9/15の回で、ずんだもんが「じゃあここからは成績表の外の話ね。」と
 # **めたんの口調で仕切った。**二人で話す意味は、どちらが言っているかが
 # 語尾で分かることにあるので、そこが崩れると形が成り立たない。
@@ -152,5 +188,49 @@ check("めたんの行は見ない",
       gd.voice_slips([_seg("めたん", "そうね。")]), [])
 check("空の行で落ちない", gd.voice_slips([_seg("ずんだもん", "")]), [])
 
-print(chr(10) + ("ALL OK" if not fails else "%d FAILURES" % fails))
-sys.exit(1 if fails else 0)
+section("ポストシーズンに入ったら（固定の材料）")
+_ser = [{"key": "F:112-135", "round": "F", "round_jp": "ワイルドカードシリーズ",
+         "stage": 1, "league_jp": "ナ・リーグ", "best_of": 3, "need": 2,
+         "played": 1, "over": False, "winner": None,
+         "next": {"day": "10月1日", "game": 2},
+         "teams": [{"id": 112, "name": "カブス", "wins": 1,
+                    "players": ["今永昇太", "鈴木誠也"]},
+                   {"id": 135, "name": "パドレス", "wins": 0,
+                    "players": ["松井裕樹"]}]},
+        {"key": "D:119-wait", "round": "D", "round_jp": "地区シリーズ",
+         "stage": 2, "waiting": True, "league_jp": "ナ・リーグ", "best_of": 5,
+         "need": 3, "played": 0, "over": False, "winner": None,
+         "next": {"day": "10月4日", "game": 1},
+         "teams": [{"id": 119, "name": "ドジャース", "wins": 0,
+                    "players": ["大谷翔平", "山本由伸", "佐々木朗希"]}]}]
+psm = nm.load(str(HERE / "no-such-dir"))
+psm["race"] = {"headline": "", "changes": [], "japanese": [
+    {"team": "カブス", "w": 90, "l": 72, "route": "ワイルドカード",
+     "players": ["今永昇太"]}], "phase": "postseason", "series": _ser}
+pf = nm.facts(psm)
+has("見出しはポストシーズン", pf, "## ポストシーズン")
+hasnt("進出争いと呼ばない", pf.split("## ポストシーズン")[1], "## 進出争い")
+has("シーズンの話をしないと明記", pf, "「今日終わったら」の話はしない")
+has("日本人選手の球団の側から", pf, "今永、鈴木のカブスは")
+check("照合はシリーズの勝敗（シーズンの90勝ではない）",
+      nm.checkable(psm).get("カブス"), {"勝": 1, "敗": 0})
+check("相手待ちは照合に入れない", "ドジャース" in nm.checkable(psm), False)
+# 10/1: 昨日WCSを2勝0敗で突破し、次の地区シリーズが0勝0敗
+_two = [dict(_ser[0], key="F:145-117", over=True, winner=145, played=2,
+             teams=[{"id": 145, "name": "ホワイトソックス", "wins": 2, "players": ["村上宗隆"]},
+                    {"id": 117, "name": "アストロズ", "wins": 0, "players": ["今井達也"]}]),
+        dict(_ser[0], key="D:114-145", round="D", over=False, played=0,
+             teams=[{"id": 114, "name": "ガーディアンズ", "wins": 0, "players": []},
+                    {"id": 145, "name": "ホワイトソックス", "wins": 0, "players": ["村上宗隆"]}])]
+psm2 = dict(psm, race=dict(psm["race"], series=_two,
+                            changes=[{"key": "F:145-117", "text": "突破"}]))
+_c2 = nm.checkable(psm2)
+check("2つのシリーズにまたがる球団は照合しない", "ホワイトソックス" in _c2, False)
+check("片方だけの球団は照合する", _c2.get("アストロズ"), {"勝": 0, "敗": 2})
+_rows = nm.panels(psm)["race"]["rows"]
+check("札は日本人選手の多い球団から", _rows[0]["name"], "ドジャース")
+check("始まる前は日付", _rows[0]["value"], "10月4日 第1戦")
+check("始まったら勝敗", [r["value"] for r in _rows if r["name"] == "カブス"],
+      ["1勝0敗"])
+
+sys.exit(done())

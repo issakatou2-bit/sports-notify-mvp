@@ -32,6 +32,7 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
 
 import post_common  # noqa: E402
 import soccer_preview  # noqa: E402
+from site_theme import THEME_HEAD  # noqa: E402
 from notability_engine import (  # noqa: E402
     JP_PLAYERS_SOCCER,
     SOCCER_LEAGUE_NAME_JP,
@@ -391,6 +392,7 @@ def render(preview: dict, games: list = None) -> str:
 <link rel="apple-touch-icon" href="icons/icon-192.png" />
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>{STYLE}</style>
+{THEME_HEAD}
 </head>
 <body>
   <a class="back" href="index.html">&larr; コレスポ トップへ</a>
@@ -445,4 +447,3 @@ def main():
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

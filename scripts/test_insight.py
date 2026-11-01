@@ -24,16 +24,7 @@ sys.path.insert(0, str(HERE))
 
 import insight as ins  # noqa: E402
 import mlb_trends as mt  # noqa: E402
-
-fails = 0
-
-
-def check(label, got, want):
-    global fails
-    ok = got == want
-    fails += not ok
-    print("%s %s: %r%s" % ("ok " if ok else "NG ", label, got,
-                           "" if ok else "   (期待 %r)" % (want,)))
+from checks_report import check, section, done  # noqa: E402
 
 
 def split(ab_a, ops_a, avg_a, ab_b, ops_b, avg_b):
@@ -50,7 +41,7 @@ def split(ab_a, ops_a, avg_a, ab_b, ops_b, avg_b):
                    "hits": hits(ab_b, avg_b)}}]
 
 
-print("--- 見てよい切り口は登録制 ---")
+section("見てよい切り口は登録制")
 codes = {c for pair in mt.SPLITS for c in pair[:2]}
 check("昼夜を見る", {"d", "n"} <= codes, True)
 check("対左右を見る", {"vl", "vr"} <= codes, True)
@@ -60,8 +51,7 @@ check("曜日別は持たない", any("dow" in str(p) for p in mt.SPLITS), False
 check("どの切り口にも理由が書いてある",
       all(len(p) == 5 and p[4] for p in mt.SPLITS), True)
 
-print()
-print("--- 差が小さければ黙る ---")
+section("差が小さければ黙る")
 # 村上の実データ: ホーム .194（206打数）/ ビジター .215（205打数）。
 check("打率差.021は言わない",
       ins.from_splits(split(206, ".800", ".194", 205, ".820", ".215"), "X"),
@@ -71,8 +61,7 @@ check("打率差.091は言う",
       len(ins.from_splits(split(161, ".635", ".149", 250, ".921", ".240"),
                           "X")), 1)
 
-print()
-print("--- 短い直近は、傾向ではなく事実として置く ---")
+section("短い直近は、傾向ではなく事実として置く")
 season = {"ops": ".810", "avg": ".204", "atBats": 411}
 short = ins.from_recent({10: {"atBats": 35, "hits": 4, "avg": ".114",
                               "ops": ".530"}}, season, "X")
@@ -89,8 +78,7 @@ long = ins.from_recent({30: {"atBats": 108, "hits": 13, "avg": ".120",
 check("108打数なら傾向として言う", long[0]["sure"], "high")
 check("下を向いていると分かる", long[0]["tone"], "negative")
 
-print()
-print("--- 偶然でそうなる確率 ---")
+section("偶然でそうなる確率")
 # ユーザーの問い:「満塁で強いって情報、何がだめ？」への答えがここ。
 # 今季.204の打者が、その場面でそれ以上打つ確率を計算する。
 check("満塁5打数2安打(.400)は、偶然でも27%起きる",
@@ -109,8 +97,7 @@ check("5打数でも計算はする", ins.chance(5, 2, 0.204) < 1.0, True)
 check("2打数は計算しない", ins.chance(2, 2, 0.204), 1.0)
 check("下限は3打数", ins.MIN_AB_ANY, 3)
 
-print()
-print("--- 確率で切る ---")
+section("確率で切る")
 season = {"ops": ".810", "avg": ".204", "atBats": 411, "hits": 84}
 
 
@@ -137,8 +124,7 @@ got = ins.from_scenes(scene("risp", "得点圏", 300, 30, ".500", ".100"),
 check("300打数で.100なら傾向として語る", got[0]["sure"], "high")
 check("下を向いていると分かる", got[0]["tone"], "negative")
 
-print()
-print("--- 対比型も確率で見る ---")
+section("対比型も確率で見る")
 # 村上の昼夜: 昼161打数24安打(.149) / 夜250打数60安打(.240)
 check("昼夜の差は偶然では出にくい",
       round(ins.gap_chance(161, 24, 250, 60) * 100) <= 5, True)
@@ -149,8 +135,7 @@ check("対左右の差は偶然の範囲",
 check("片方が薄ければ差として出ない",
       ins.gap_chance(5, 2, 300, 60) > ins.FACT_P, True)
 
-print()
-print("--- 持たないと決めた切り口 ---")
+section("持たないと決めた切り口")
 codes = {c for c, _, _ in mt.SITUATIONS}
 check("得点圏は持つ", "risp" in codes, True)
 check("2アウトは持つ", "o2" in codes, True)
@@ -163,8 +148,7 @@ check("曜日別を場面にも入れていない",
 check("どの場面にも理由が書いてある",
       all(len(s) == 3 and s[2] for s in mt.SITUATIONS), True)
 
-print()
-print("--- 投手と打者で、呼び方も向きも逆 ---")
+section("投手と打者で、呼び方も向きも逆")
 # **投手の avg は被打率。**「山本由伸は初球で打率.338。今季全体の.180を
 # 上回っている」と書いた回があった。数字は正しく、呼び方と向きだけが
 # 逆なので、検算では捕まらない。
@@ -209,7 +193,7 @@ check("100は「リーグ最高」", _by["brl_percent"]["side"], "リーグ最�
 check("「上位0%」とは書かない",
       "0%" in _by["brl_percent"]["side"], False)
 check("97は上位3%", _by["exit_velocity"]["side"], "リーグ上位3%")
-check("1は下位1%", _by["k_percent"]["side"], "リーグ下位1%")
+check("三振率1は三振が多い側（値の向きで言う）", _by["k_percent"]["side"], "リーグで高い方から1%（Savant評価は下位）")
 check("どの項目にも説明がある",
       all(r["why"] for r in _got), True)
 check("知らない項目は返さない",
@@ -223,8 +207,7 @@ check("上位は positive", _said[0]["tone"], "positive")
 check("下位は negative",
       [s["tone"] for s in _said if "三振率" in s["text"]][0], "negative")
 
-print()
-print("--- 向きで絞れる ---")
+section("向きで絞れる")
 rows = [{"tone": "positive", "sure": "high", "weight": 90, "text": "上"},
         {"tone": "negative", "sure": "high", "weight": 80, "text": "下"},
         {"tone": "neutral", "sure": "low", "weight": 30, "text": "事実"}]
@@ -236,8 +219,7 @@ check("傾向だけ欲しいとき", [r["text"] for r in ins.pick(rows, sure="hi
       ["上", "下"])
 check("件数で切れる", len(ins.pick(rows, limit=2)), 2)
 
-print()
-print("--- 返すものに必ず付く ---")
+section("返すものに必ず付く")
 got = ins.from_splits(split(161, ".635", ".149", 250, ".921", ".240"), "X")[0]
 for key in ("type", "text", "tone", "sure", "weight", "detail", "why",
             "source"):
@@ -246,8 +228,7 @@ check("向きは3つのどれか", got["tone"] in
       (ins.POSITIVE, ins.NEUTRAL, ins.NEGATIVE), True)
 check("確からしさは2つのどれか", got["sure"] in ("high", "low"), True)
 
-print()
-print("--- 壊れた材料で落ちない ---")
+section("壊れた材料で落ちない")
 check("空の切り口", ins.from_splits([], "X"), [])
 check("OPSが無い",
       ins.from_splits(split(200, None, ".200", 200, None, ".200"), "X"), [])
@@ -256,5 +237,49 @@ check("打数が文字", ins.from_splits(
 check("月が空", ins.from_months([], season, "X"), [])
 check("直近が空", ins.from_recent({}, season, "X"), [])
 
-print(chr(10) + ("ALL OK" if not fails else "%d FAILURES" % fails))
-sys.exit(1 if fails else 0)
+section("Savantの投手指標は本人の打撃・最速投球ではない")
+from unittest.mock import patch
+_ev = {"max_ev": 5, "fb_velocity": 93, "bb_percent": 1, "bat_speed": 99}
+_pit_rows = {r["key"]: r for r in savant.notable(_ev, kind="pitcher")}
+check("被打球と平均球速は別に残す", set(_pit_rows), {"max_ev", "fb_velocity", "bb_percent"})
+check("最高被打球速度のラベル", _pit_rows["max_ev"]["label"], "被打球の最高速度")
+check("相手打者に打たれた速度と説明", "相手打者に打たれた" in _pit_rows["max_ev"]["why"], True)
+check("値5は変えない", _pit_rows["max_ev"]["percentile"], 5)
+check("平均球速の値93も変えない", _pit_rows["fb_velocity"]["percentile"], 93)
+check("投手の四球は与四球", _pit_rows["bb_percent"]["label"], "与四球率")
+_bat_rows = {r["key"]: r for r in savant.notable(_ev, kind="batter")}
+check("打者の打球は従来通り", _bat_rows["max_ev"]["label"], "最速の打球")
+check("打者に投手の球速を入れない", "fb_velocity" in _bat_rows, False)
+check("打者の四球は四球率", _bat_rows["bb_percent"]["label"], "四球率")
+try:
+    savant.notable(_ev, kind="unknown")
+    _unknown_rejected = False
+except ValueError:
+    _unknown_rejected = True
+check("不明な投打を打者扱いしない", _unknown_rejected, True)
+_role_rows = {r["key"]: r for r in savant.notable(
+    {"whiff_percent": 99, "chase_percent": 98, "k_percent": 97}, kind="pitcher")}
+check("空振りを取る側", _role_rows["whiff_percent"]["label"], "空振りを取る割合")
+check("ボール球を振らせる側", _role_rows["chase_percent"]["label"], "ボール球を振らせる割合")
+check("奪三振の側", _role_rows["k_percent"]["label"], "奪三振率")
+_empty_material = {"pairs": [], "scenes": [], "season_total": {}, "months": [], "recent": {}}
+for _group, _kind, _word in (("pitching", "pitcher", "被打球の最高速度"),
+                             ("hitting", "batter", "最速の打球")):
+    with patch.object(ins.mt, "collect", return_value=_empty_material), \
+         patch.object(ins.savant, "fetch", return_value={"808963": {"max_ev": 5}}) as _fetch:
+        _material = ins.player("808963", "選手X", group=_group)
+    check(_group + "の取得区分", _fetch.call_args.args, ("2026", _kind))
+    check(_group + "の原稿材料の主語", _word in _material[0]["text"], True)
+    check(_group + "の原稿材料に投打区分", _material[0]["statcast_kind"], _kind)
+    check(_group + "の原稿材料に指標キー", _material[0]["metric_key"], "max_ev")
+    check(_group + "の評価と生速度の区別", "Savantの評価" in _material[0]["text"], _kind == "pitcher")
+
+section("値が小さいほど良い項目は、値の向きで言う（9/30）")
+_k = savant.notable({"k_percent": 1}, kind="batter")[0]["side"]
+check("三振率1パーセンタイルは三振が多い側", _k, "リーグで高い方から1%（Savant評価は下位）")
+_x = savant.notable({"xera": 97}, kind="pitcher")[0]["side"]
+check("期待防御率97は低い側", _x, "リーグで低い方から3%（Savant評価は上位）")
+check("値が大きいほど良い項目はこれまでどおり",
+      savant.notable({"brl_percent": 96}, kind="batter")[0]["side"], "リーグ上位4%")
+
+sys.exit(done())

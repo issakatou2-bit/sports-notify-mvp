@@ -1,0 +1,36 @@
+name: Channel description
+
+# チャンネル紹介文の先頭1行を置き換える。手動で1回だけ動かす。定期実行はしない。
+on:
+  workflow_dispatch:
+    inputs:
+      write:
+        description: "true で反映、false は表示のみ"
+        required: true
+        default: "false"
+
+permissions:
+  contents: read
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install google-api-python-client google-auth
+      - name: Update description
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+          WRITE_DESCRIPTION: ${{ inputs.write }}
+        run: |
+          if [ "$WRITE_DESCRIPTION" = "true" ]; then
+            python scripts/channel_description.py --write
+          else
+            python scripts/channel_description.py
+          fi

@@ -1,0 +1,16 @@
+{
+  "kind": "asset",
+  "topic": "season_game_849826",
+  "old_video": "bLEENICgueo",
+  "material": {"commit": "b0ddf3f", "path": "data/ps_game_topics.json"},
+  "edits": [
+    {"where": ["items", 1, 1],
+     "from": "6回裏　ミゲル・アンドゥハーの失策",
+     "to": "6回裏　ブリュワーズの遊撃手クーパー・プラットの送球失策"},
+    {"where": ["title"],
+     "from": "【MLB】パドレスがブリュワーズに4対3で地区シリーズ1勝2敗に｜アンドゥハーの決勝打　松井裕樹 #Shorts",
+     "to": "【MLB】パドレスがブリュワーズに4対3で地区シリーズ1勝2敗に｜相手の送球失策が決勝点　松井裕樹 #Shorts"}
+  ],
+  "note": "※10月7日に出した版では、決勝点を「アンドゥハーの失策」としていました。正しくはブリュワーズの遊撃手クーパー・プラットの送球失策です（アンドゥハーは打者で、安打・打点はつきません）。直して上げ直しました。",
+  "reason": "公式 playByPlay（game 849826）: Miguel Andujar reaches on a throwing error by shortstop Cooper Pratt. Xander Bogaerts scores. 生成側は PR #86 で直した。"
+}

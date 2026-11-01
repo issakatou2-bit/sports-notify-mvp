@@ -18,16 +18,7 @@ HERE = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 sys.path.insert(0, str(HERE.parent))
 import morning_recap as mr  # noqa: E402
-
-fails = 0
-
-
-def check(label, got, want):
-    global fails
-    ok = got == want
-    fails += not ok
-    print("%s %s: %r%s" % ("ok " if ok else "NG ", label, got,
-                           "" if ok else "   (期待 %r)" % (want,)))
+from checks_report import check, section, done  # noqa: E402
 
 
 def P(**kw):
@@ -52,7 +43,7 @@ def labels(row):
     return [b["label"] for b in mr.badges(row)]
 
 
-print("--- 投手：包含するものは1つだけ ---")
+section("投手：包含するものは1つだけ")
 # 9回を自責0。完封・完投・HQS・QSの全部に当てはまる。
 check("完封の日は完封だけ",
       labels(P(ip="9.0", er=0, hits=2, so=8, bb=1, gs=1)), ["完封"])
@@ -78,16 +69,14 @@ check("無安打無得点はノーヒッター",
       labels(P(ip="9.0", er=0, hits=0, so=11, bb=2, gs=1)),
       ["ノーヒッター", "二桁奪三振"])
 
-print()
-print("--- 投手：救援にQSは付かない ---")
+section("投手：救援にQSは付かない")
 # **QS・HQSは先発の記録。**gs を見ないと、7回を投げた救援に付く。
 check("7回を投げた救援にHQSは付かない",
       labels(P(ip="7.0", er=1, hits=3, so=5, bb=0, gs=0)), [])
 check("救援の無四球も付かない（先発の記録）",
       labels(P(ip="6.0", er=0, hits=1, so=4, bb=0, gs=0)), [])
 
-print()
-print("--- 投手：セーブとホールドは記録の実数だけ ---")
+section("投手：セーブとホールドは記録の実数だけ")
 check("セーブが付いた日", labels(P(ip="1.0", so=2, saves=1)), ["セーブ"])
 check("ホールドが付いた日", labels(P(ip="1.0", so=1, holds=1)), ["ホールド"])
 # セーブ機会で投げて付かなかった日を「セーブ」と書くと嘘になる。
@@ -98,8 +87,7 @@ check("逆転を許した日も何も出ない",
 check("セーブとホールドは同時に出さない",
       labels(P(ip="1.0", saves=1, holds=1)), ["セーブ"])
 
-print()
-print("--- 投手：奪三振 ---")
+section("投手：奪三振")
 check("10奪三振は独立して並ぶ",
       labels(P(ip="7.0", er=1, hits=3, so=10, bb=1, gs=1)),
       ["HQS", "二桁奪三振"])
@@ -108,8 +96,7 @@ check("9奪三振では付かない",
 check("救援の10奪三振も数える",
       labels(P(ip="4.0", er=0, hits=1, so=10, bb=0, gs=0)), ["二桁奪三振"])
 
-print()
-print("--- 打者：包含するものは1つだけ ---")
+section("打者：包含するものは1つだけ")
 check("2本塁打はマルチ本塁打だけ（マルチ安打を並べない）",
       labels(B(ab=4, hits=2, hr=2, rbi=4, tb=8)), ["マルチ本塁打"])
 check("3安打2本塁打もマルチ本塁打",
@@ -132,8 +119,7 @@ check("3本塁打", labels(B(ab=5, hits=3, hr=3, rbi=7, tb=12)),
 check("マルチ盗塁", labels(B(ab=4, hits=1, sb=2, tb=1)), ["マルチ盗塁"])
 check("無安打の日は何も出ない", labels(B(ab=4, hits=0, so=3)), [])
 
-print()
-print("--- 打者の呼び名が投手に出ない（逆も） ---")
+section("打者の呼び名が投手に出ない（逆も）")
 # 投手の hits は**被安打**。打者の表を投手に当てると、
 # 打たれた日に「猛打賞」が付く。
 check("3被安打の投手に猛打賞は付かない",
@@ -142,8 +128,7 @@ check("3被安打の投手に猛打賞は付かない",
 check("3三振した打者にQSは付かない",
       labels(B(ab=4, hits=0, so=3)), [])
 
-print()
-print("--- 加点が点数に乗る ---")
+section("加点が点数に乗る")
 # 9/10の実データ。**この並びを直すために入れた。**
 yamamoto = P(ip="7.0", er=1, hits=3, so=10, bb=1, gs=1, wins=1)
 murakami = B(ab=3, hits=1, hr=1, rbi=1, so=2, hbp=1, tb=4)
@@ -154,8 +139,7 @@ check("好投した投手が本塁打1本の打者より上に来る",
 check("加点の合計", mr.badge_points(yamamoto), 24)
 check("何も付かない日は0", mr.badge_points(murakami), 0)
 
-print()
-print("--- 投手と打者の倍率がそろっているか ---")
+section("投手と打者の倍率がそろっているか")
 # 9/11に倍率を変えた（投手1.2→1.8、打者3.6→3.1）。それまでは
 # **投手が100点にほとんど届かなかった**（26日・151人日で2%、
 # 打者は16%）。完封162点の上に打者の2本塁打182点が来ていた。
@@ -171,8 +155,7 @@ check("3本塁打は完封より上",
 check("投手の倍率が定数になっている",
       isinstance(mr.PITCHER_SCALE, float), True)
 
-print()
-print("--- 投げて打った日は二重に足さない ---")
+section("投げて打った日は二重に足さない")
 two = {"type": "two_way",
        "pitching": P(ip="7.0", er=0, hits=3, so=10, bb=1, gs=1),
        "batting": B(ab=4, hits=3, hr=3, rbi=6, tb=12)}
@@ -183,8 +166,7 @@ check("投手ぶんと打者ぶんの和になる", mr.contribution(two), p_only
 check("呼び名は両方並ぶ", labels(two),
       ["HQS", "二桁奪三振", "3本塁打", "5打点"])
 
-print()
-print("--- 画面と読み上げ ---")
+section("画面と読み上げ")
 # 同じ点のときの並びは badges() の登録順で決まる。
 # 回数と失点の軸（HQS）が先、奪三振が後。
 check("画面は略記のまま", mr.badge_labels(yamamoto, limit=3),
@@ -198,8 +180,7 @@ check("切っても点数には残る",
       mr.badge_points(P(ip="9.0", er=0, hits=0, so=12, bb=0, gs=1)),
       60 + 12 + 5)
 
-print()
-print("--- 欠けても落ちない ---")
+section("欠けても落ちない")
 check("空の行", mr.badges({}), [])
 check("項目がNone", mr.badges({"type": "pitcher", "ip": None,
                                "er": None, "so": None}), [])
@@ -210,8 +191,7 @@ check("投げて打った日で片方が欠ける",
                        "batting": B()}) >= 0, True)
 
 
-print()
-print("--- 本塁打の飛距離（Statcast） ---")
+section("本塁打の飛距離（Statcast）")
 import statcast as sc  # noqa: E402
 
 _shots = [{"distance_m": 116, "speed_kmh": 177},
@@ -247,6 +227,4 @@ check("いない選手は空",
 check("計測が両方欠けた行は落とす",
       sc.build([{"player_name": "A, B", "hit_distance_sc": "",
                  "launch_speed": ""}]), {})
-
-print(chr(10) + ("ALL OK" if not fails else "%d FAILURES" % fails))
-sys.exit(1 if fails else 0)
+sys.exit(done())

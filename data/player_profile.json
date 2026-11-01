@@ -1,103 +1,123 @@
 {
-  "generated_at": "2026-09-20T06:01:09.333787+00:00",
-  "date_jst": "2026-09-20",
-  "name": "Angel Martínez",
-  "player_id": "682657",
-  "team": "ガーディアンズ",
-  "group": "hitting",
-  "why": "2026-09-20のMLBで最も活躍",
-  "headline": "5打数4安打　2本塁打　1二塁打　4打点",
-  "score": 191,
+  "generated_at": "2026-11-01T06:01:24.722288+00:00",
+  "date_jst": "2026-11-01",
+  "name": "Bryan Baker",
+  "player_id": "641329",
+  "team": "レイズ",
+  "group": "pitching",
+  "why": "2026-10-29のMLBで最も活躍",
+  "headline": "1.0回　1奪三振　自責0",
+  "score": 58,
   "bio": {
-    "name_en": "Angel Martínez",
-    "age": 24,
-    "birth_city": "Santo Domingo",
-    "birth_state": null,
-    "birth_country": "Dominican Republic",
-    "birth_date": "2002-01-27",
-    "debut": "2024-06-22",
-    "draft_year": null,
-    "bats": "Switch",
+    "name_en": "Bryan Baker",
+    "age": 31,
+    "birth_city": "Fort Walton Beach",
+    "birth_state": "FL",
+    "birth_country": "USA",
+    "birth_date": "1994-12-02",
+    "debut": "2021-09-05",
+    "draft_year": 2016,
+    "bats": "Right",
     "throws": "Right",
-    "number": "1",
-    "position": "Outfielder",
+    "number": "47",
+    "position": "Pitcher",
     "nickname": null,
-    "height": "5' 11\"",
-    "weight": 200
+    "height": "6' 6\"",
+    "weight": 235
   },
   "teams": [
     {
-      "team": "ガーディアンズ",
-      "from": 2024,
+      "team": "ブルージェイズ",
+      "from": 2021,
+      "to": 2021
+    },
+    {
+      "team": "オリオールズ",
+      "from": 2022,
+      "to": 2025
+    },
+    {
+      "team": "レイズ",
+      "from": 2025,
       "to": 2026
     }
   ],
   "career": {
-    "games": 289,
-    "avg": ".237",
-    "hr": 31,
-    "rbi": 113,
-    "ops": ".678",
-    "sb": 22,
-    "hits": 228
+    "games": 270,
+    "avg": ".272",
+    "hr": 103,
+    "rbi": 409,
+    "ops": ".796",
+    "sb": 24,
+    "hits": 755,
+    "wins": 17,
+    "losses": 13,
+    "era": "3.30",
+    "so": 297,
+    "ip": "270.0",
+    "whip": "1.13"
   },
   "this_season": {
-    "games": 107,
-    "avg": ".255",
-    "hr": 17,
-    "rbi": 57,
-    "ops": ".759",
-    "sb": 11,
-    "hits": 93
+    "games": 65,
+    "avg": ".270",
+    "hr": 18,
+    "rbi": 94,
+    "ops": ".758",
+    "sb": 1,
+    "hits": 153,
+    "wins": 4,
+    "losses": 2,
+    "era": "1.44",
+    "so": 63,
+    "ip": "62.1",
+    "whip": "0.91"
   },
   "last_season": {
-    "games": 139,
-    "avg": ".224",
-    "hr": 11,
-    "rbi": 45,
-    "ops": ".628",
-    "sb": 8,
-    "hits": 100
+    "games": 73,
+    "avg": ".260",
+    "hr": 17,
+    "rbi": 76,
+    "ops": ".754",
+    "sb": 6,
+    "hits": 147,
+    "wins": 4,
+    "losses": 4,
+    "era": "4.06",
+    "so": 83,
+    "ip": "68.2",
+    "whip": "1.11"
   },
   "recent": [
     {
+      "date": "2026-09-25",
+      "line": "1.0回 自責0 0奪三振",
+      "opponent": "Philadelphia Phillies"
+    },
+    {
+      "date": "2026-09-22",
+      "line": "1.0回 自責0 1奪三振",
+      "opponent": "New York Yankees"
+    },
+    {
       "date": "2026-09-19",
-      "line": "5打数4安打 2本塁打 4打点",
+      "line": "1.0回 自責0 0奪三振",
+      "opponent": "Boston Red Sox"
+    },
+    {
+      "date": "2026-09-15",
+      "line": "1.0回 自責0 0奪三振",
       "opponent": "Athletics"
     },
     {
-      "date": "2026-09-14",
-      "line": "3打数0安打",
-      "opponent": "Chicago White Sox"
-    },
-    {
-      "date": "2026-09-13",
-      "line": "5打数2安打 1打点",
-      "opponent": "Minnesota Twins"
-    },
-    {
       "date": "2026-09-12",
-      "line": "4打数1安打",
-      "opponent": "Minnesota Twins"
-    },
-    {
-      "date": "2026-09-11",
-      "line": "4打数2安打 1本塁打 2打点",
-      "opponent": "Minnesota Twins"
+      "line": "1.1回 自責0 1奪三振",
+      "opponent": "Houston Astros"
     }
   ],
   "awards": [
     {
       "season": "2026",
-      "name": "AL Player of the Week"
-    },
-    {
-      "season": "2023",
-      "name": "MiLB.com Organization All-Star"
-    },
-    {
-      "season": "2019",
-      "name": "DSL Mid-Season All-Star"
+      "name": "AL All-Star"
     }
   ],
   "quotes": []

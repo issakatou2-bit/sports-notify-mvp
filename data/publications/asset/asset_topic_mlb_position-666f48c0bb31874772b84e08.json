@@ -1,0 +1,30 @@
+{
+  "publication_id": "asset:topic:mlb_position",
+  "domain": "asset",
+  "kind": "topic",
+  "key_parts": {
+    "topic": "mlb_position"
+  },
+  "version": 1,
+  "history": [
+    {
+      "source": "published_assets/assets/mlb_position",
+      "service": "youtube",
+      "video_id": "HfNNp7ZeSF8",
+      "state": "uploaded",
+      "scheduled_at": null,
+      "event_day": null,
+      "material_day": null,
+      "edition_day": null,
+      "run_at": "2026-08-07T00:00:00+00:00",
+      "details": {
+        "privacy": "public"
+      },
+      "run_id": "40508411617",
+      "attempt": "1",
+      "recorded_at": "2026-10-27T13:01:39.698293+00:00",
+      "fingerprint": "8bcf973903cd0b3624b9609350f8dfd0747472d8e69221d6c75c56883680fb7c",
+      "event_id": "17648f8cdba2fc319edbf0d959986d0cd116100ece9e40d4a4c34fbd26706b00"
+    }
+  ]
+}

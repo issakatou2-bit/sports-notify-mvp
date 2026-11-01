@@ -31,22 +31,12 @@ sys.path.insert(0, str(HERE))
 sys.path.insert(0, str(HERE.parent))
 
 import sanity  # noqa: E402
-
-fails = 0
-
-
-def check(label, got, want):
-    global fails
-    if got != want:
-        fails += 1
-        print("NG  %s: %r (期待 %r)" % (label, got, want))
-    else:
-        print("ok  %s" % label)
+from checks_report import check, section, done  # noqa: E402
 
 
 # --- 読み取り -------------------------------------------------------------
 # 実際に止めてしまった文を、そのまま置く。
-print("--- 数字の読み取り ---")
+section("数字の読み取り")
 check("桁区切りの中を単位に結び付けない（9/2に長編を止めた）",
       sanity.parse_line("およそ26万回ね。正確には257,422回よ。"), {})
 check("高評価の件数を成績と読まない",
@@ -86,6 +76,10 @@ check("安打より本塁打が多い",
 check("1回で20奪三振",
       len(sanity.check_line("X", "1.0回　20奪三振")) > 0, True)
 
+check("一登板の負の防御率は停止", bool(sanity.check_line("X", "防御率-1.00")), True)
+check("無限に桁が膨らんだ率は停止", bool(sanity.check_line("X", "防御率"+"9"*400)), True)
+check("短い一登板の防御率27を通す", sanity.check_line("X", "防御率27.00"), [])
+
 # --- 通すべきもの ---------------------------------------------------------
 # ここが本題。**正しいのに止めた**ものを並べる。
 print("\n--- 通すべきもの（過去に誤って止めた） ---")
@@ -124,6 +118,10 @@ with tempfile.TemporaryDirectory() as tmp:
         ("再生回数に続く桁違いの投球回は停止",
          "再生回数は67000回で、10000回を投げた。", 1),
         ("異常な打率は引き続き停止", "打率1.5です。", 1),
+        ("公式849811の1アウト1自責は27.00", "佐々木朗希、0回3分の1、防御率27.00。", 0),
+        ("1アウト2自責は54.00", "防御率54.00です。", 0),
+        ("率に経験則の上限を置かない", "今季は防御率150.00です。", 0),
+        ("負の防御率は不可能", "防御率-1.00です。", 1),
         # 9/7、これで**成績の回が丸ごと出なかった**。
         #
         # 「ここ7日」の合計を読み上げる画面を9/6に足した。24打数は
@@ -143,6 +141,4 @@ with tempfile.TemporaryDirectory() as tmp:
             cwd=folder, capture_output=True, text=True, encoding="utf-8")
         check(label, proc.returncode, code)
         check(label + "（出力JSON）", bool(json.loads(result.read_text(encoding="utf-8"))["impossible"]), bool(code))
-
-print("\nALL OK" if not fails else "\n%d FAILURES" % fails)
-sys.exit(1 if fails else 0)
+sys.exit(done())

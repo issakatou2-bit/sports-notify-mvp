@@ -27,9 +27,31 @@
 import argparse
 import json
 import pathlib
+import sys
+
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
+from notability_engine import MLB_TEAM_ABBR  # noqa: E402
 
 MIN_PLAYERS = 1     # 1人でも出す。その1人の通算成績で1本ぶんになる
 MAX_PLAYERS = 4     # 画面に並ぶ上限（generate_asset_video の描画に合わせる）
+
+
+
+# The MLB award season for these four players is the December election year.
+# The Hall identifies them as Class of 2022. Do not shift unrelated years.
+# https://baseballhall.org/news/six-candidates-elected-to-hall-of-fame-as-part-of-class-of-2022
+DECEMBER_2021_CLASS_2022 = frozenset({
+    "Jim Kaat", "Tony Oliva", "Gil Hodges", "Minnie Minoso",
+})
+
+
+def hof_label(player: dict) -> str:
+    year = player.get("hof_year")
+    if not year:
+        return ""
+    if str(year) == "2021" and player.get("name") in DECEMBER_2021_CLASS_2022:
+        return "2021年に選出、2022年に殿堂入り式典"
+    return "%s年に殿堂入り" % year
 
 
 def build(legends: dict) -> list:
@@ -37,15 +59,20 @@ def build(legends: dict) -> list:
     out = []
     for team_id, row in (legends.get("teams") or {}).items():
         name = (row or {}).get("team") or ""
+        # 監督・経営者として選ばれた人を「でプレーした選手」と呼ばない。
+        # 材料を作る側でも落としているが、古い材料が残っていても
+        # ここで止める（9/21、監督のスパーキー・アンダーソンを選手扱い）。
         players = [p for p in ((row or {}).get("players") or [])
-                   if p.get("name")]
+                   if p.get("name")
+                   and (p.get("position") or "") not in ("Unknown", "")]
         if not name or len(players) < MIN_PLAYERS:
             continue
         items = []
         for p in players[:MAX_PLAYERS]:
             bits = []
-            if p.get("hof_year"):
-                bits.append("%s年に殿堂入り" % p["hof_year"])
+            year_label = hof_label(p)
+            if year_label:
+                bits.append(year_label)
             if p.get("line"):
                 bits.append(p["line"])
             items.append([p["name"], "。".join(bits)])
@@ -59,6 +86,11 @@ def build(legends: dict) -> list:
             "intro": "%s でプレーし、アメリカ野球殿堂に選ばれた選手を、"
                      "通算成績で見ます。" % name,
             "items": items,
+            # 新デザイン（電光掲示板、10/7〜）。球団色と略称で描く
+            "style": "v3",
+            "kind_label": "殿堂入り",
+            "team_id": int(team_id),
+            "abbr": MLB_TEAM_ABBR.get(str(team_id), ""),
         })
     out.sort(key=lambda t: t["key"])
     return out

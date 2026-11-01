@@ -27,27 +27,78 @@ permissions:
   contents: read
 
 jobs:
-  checks:
+  check_suite:
     runs-on: ubuntu-latest
+    strategy:
+      # 失敗した分割があっても、残りの全試験を最後まで実行する。
+      fail-fast: false
+      matrix:
+        include:
+          - section: static
+            shard: 0
+          - section: tests
+            shard: 0
+          - section: tests
+            shard: 1
+          - section: tests
+            shard: 2
+          - section: tests
+            shard: 3
     steps:
       - uses: actions/checkout@v4
+        with:
+          # 見本づくりの試験は「変更前のコード」を git show で取り出して画素を比べる。
+          # 最新の1コミットだけだと取り出せずに落ちる（10/13 #151〜#153）。履歴を全部取る。
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+          cache: pip
+          cache-dependency-path: |
+            scripts/requirements.txt
+            .github/workflows/checks.yml
 
       - name: Install dependencies
         run: |
           pip install -r scripts/requirements.txt
-          pip install pyflakes pyyaml pillow 'cryptography>=46,<50'
+          pip install pyflakes pyyaml pillow pytest imageio_ffmpeg 'cryptography>=46,<50'
 
-      - name: Install Japanese fonts for diagram checks
-        timeout-minutes: 6
+      - name: Cache Japanese fonts
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/collespo-noto-cjk
+          key: ${{ runner.os }}-${{ runner.arch }}-noto-cjk-v1
+
+      - name: Install Japanese fonts for checks
+        # 環境変数を消す試験と固定パスを使う描画処理にも字体を届ける。
+        # キャッシュがなければ apt を再試行し、実際に描けなければ失敗する。
         run: |
-          sudo timeout 120 apt-get update -qq -o Acquire::Retries=2
-          sudo timeout 180 apt-get install -y -qq fonts-noto-cjk
+          python scripts/check_diagram_font.py
+          python scripts/install_ci_fonts.py
+          fc-cache -f /usr/share/fonts/opentype/noto
 
       - name: Run checks
-        run: python scripts/run_checks.py
+        run: python scripts/run_checks.py --section ${{ matrix.section }} --test-shard ${{ matrix.shard }}/4 --import-workers 4 --timings-json build/checks-timings-${{ matrix.section }}-${{ matrix.shard }}.json
+
+      - name: Save check timings
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: checks-timings-${{ matrix.section }}-${{ matrix.shard }}
+          path: build/checks-timings-${{ matrix.section }}-${{ matrix.shard }}.json
+          if-no-files-found: warn
 
       - name: Check interactive pages and appearance preferences
+        if: ${{ !cancelled() && matrix.section == 'static' }}
         run: node --test scripts/test_web_*.cjs
+
+  # 従来の必須チェック名を維持し、全分割の成功だけを通過とする。
+  checks:
+    if: always()
+    needs: check_suite
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require every shard
+        env:
+          RESULT: ${{ needs.check_suite.result }}
+        run: test "$RESULT" = success

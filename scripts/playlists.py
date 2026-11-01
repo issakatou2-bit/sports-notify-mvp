@@ -24,7 +24,7 @@ import sys
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import post_common  # noqa: E402
-from playlist_classification import kind_for_video, recorded_kinds  # noqa: E402
+from playlist_classification import kind_for_video, recorded_kinds, sync_entries  # noqa: E402
 
 try:
     from google.oauth2.credentials import Credentials
@@ -112,6 +112,18 @@ PLAYLISTS = {
 }
 
 
+def playlist_text(kind):
+    title, desc = PLAYLISTS[kind]
+    if __import__("post_common").mlb_offseason():
+        if kind in {"morning", "daily", "morning_local"}:
+            title = title.replace("｜毎日更新", "｜シーズンの記録")
+            desc = desc.replace(_at(kind) + "追加しています。", "シーズン中の記録を掲載しています。")
+            desc = desc.replace("毎日追加しています。", "シーズン中の記録を掲載しています。")
+        elif kind == "longform":
+            desc += "現在はシーズン中の解説を掲載しています。"
+    return title, desc
+
+
 def client():
     cid = os.environ.get("YOUTUBE_CLIENT_ID")
     secret = os.environ.get("YOUTUBE_CLIENT_SECRET")
@@ -180,7 +192,7 @@ def ensure_playlist(yt, store: dict, kind: str) -> str:
     """その種類の再生リストIDを返す。無ければ作る。"""
     if store.get(kind, {}).get("id"):
         return store[kind]["id"]
-    title, desc = PLAYLISTS[kind]
+    title, desc = playlist_text(kind)
     res = yt.playlists().insert(
         part="snippet,status",
         body={"snippet": {"title": title, "description": desc,
@@ -317,14 +329,13 @@ def main() -> int:
             added = 0
             # 古い順に入れる。再生リストは追加順に並ぶので、
             # 上から順に見ていくと時系列になる形にしておく。
-            for kind in PLAYLISTS:
-                for day in sorted(videos.get(kind, {})):
-                    vid = videos[kind][day].get("video_id")
-                    if vid and args.dry_run:
-                        print(f"  追加予定: {kind} {day} -> {vid}")
-                    elif vid and add_video(yt, store, kind, vid):
-                        added += 1
-                        print(f"  {kind} {day} -> {vid}")
+            for entry in sync_entries(videos, PLAYLISTS):
+                kind, day, vid = entry['kind'], entry['day'], entry['video_id']
+                if args.dry_run:
+                    print(f"  追加予定: {kind} {day} -> {vid}")
+                elif add_video(yt, store, kind, vid):
+                    added += 1
+                    print(f"  {kind} {day} -> {vid}")
             print(f"[info] {added}本を追加しました")
         else:
             print("[info] --sync か --add を指定してください")

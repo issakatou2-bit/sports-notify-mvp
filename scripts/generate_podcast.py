@@ -27,6 +27,7 @@
 """
 
 import argparse
+import hashlib
 import html
 import json
 import pathlib
@@ -74,16 +75,20 @@ def concat_to_mp3(audio_dir: pathlib.Path, out_path: pathlib.Path) -> bool:
         "\n".join(f"file '{f.resolve()}'" for f in files), encoding="utf-8"
     )
     out_path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = out_path.with_suffix('.tmp.mp3')
     try:
         subprocess.run(
             ["ffmpeg", "-y", "-f", "concat", "-safe", "0", "-i", str(list_path),
-             "-c:a", "libmp3lame", "-b:a", "128k", str(out_path)],
+             "-c:a", "libmp3lame", "-b:a", "128k", str(temporary)],
             check=True, capture_output=True,
         )
+        temporary.replace(out_path)
         return True
     except Exception as e:
         print(f"[warn] mp3への変換に失敗しました: {e}", file=sys.stderr)
         return False
+    finally:
+        temporary.unlink(missing_ok=True)
 
 
 def audio_meta(path: pathlib.Path):
@@ -99,16 +104,23 @@ def audio_meta(path: pathlib.Path):
         return 0.0, path.stat().st_size if path.exists() else 0
 
 
-def episode_description(games_path: str) -> str:
+def episode_description(games_path: str, narration_path: str = None) -> str:
     """その日の注目試合を、エピソードの説明文にする"""
     try:
         data = json.loads(pathlib.Path(games_path).read_text(encoding="utf-8"))
-        games = [g for g in data.get("games", []) if g.get("is_notable")][:3]
+        games = [g for g in data.get("games", []) if g.get("is_notable")]
     except (json.JSONDecodeError, OSError):
         return DESCRIPTION
 
     if not games:
         return DESCRIPTION
+
+    # PS予告は全カードを扱う。通常期の上位3試合という制限を持ち込まない。
+    is_ps = all(g.get("game_type") in ("F", "D", "L", "W") for g in games)
+    if is_ps:
+        games = sorted(games, key=lambda g: g.get("start_time_jst", ""))
+    else:
+        games = games[:3]
 
     lines = []
     for g in games:
@@ -116,13 +128,52 @@ def episode_description(games_path: str) -> str:
             f"{g.get('start_time_jst')} "
             f"{g.get('away_team_name')} vs {g.get('home_team_name')}"
         )
-        for r in (g.get("reasons") or [])[:2]:
+        # PSの音声は検証済み予告の台本を使う。旧来の注目理由を説明へ混ぜない。
+        for r in ([] if is_ps else (g.get("reasons") or [])[:2]):
             if r.get("visible", True) and r.get("text"):
                 lines.append(f"　・{r['text']}")
     lines.append("")
     lines.append("詳しくは https://collespo.com/")
-    lines.append("音声: VOICEVOX:ずんだもん / データ: MLB Stats API")
+    voices = ["VOICEVOX:ずんだもん"]
+    if narration_path is not None:
+        narration = json.loads(pathlib.Path(narration_path).read_text(encoding="utf-8"))
+        speaker_ids = {s.get("speaker", 3) for s in narration["segments"]}
+        names = {3: "VOICEVOX:ずんだもん", 2: "VOICEVOX:四国めたん"}
+        if not speaker_ids or not speaker_ids <= names.keys():
+            raise ValueError("Podcastの音声クレジットに未対応の話者があります")
+        voices = [names[n] for n in (3, 2) if n in speaker_ids]
+    lines.append("音声: " + " / ".join(voices) + " / データ: MLB Stats API")
     return "\n".join(lines)
+
+
+def save_episode_metadata(audio: pathlib.Path, title: str, description: str):
+    """音声と同じ日に、その回固有の内容と声の説明を保存する。"""
+    metadata = {'version': 1, 'file': audio.name, 'title': title, 'description': description,
+                'audio_sha256': hashlib.sha256(audio.read_bytes()).hexdigest()}
+    path = audio.with_suffix('.json')
+    temporary = path.with_suffix('.json.tmp')
+    try:
+        temporary.write_text(json.dumps(metadata, ensure_ascii=False, indent=2)+'\n', encoding='utf-8')
+        temporary.replace(path)
+    finally:
+        temporary.unlink(missing_ok=True)
+
+
+def load_episode_metadata(audio: pathlib.Path) -> dict:
+    """同じ音声の説明だけ読む。古い回や欠測から内容/話者を推測しない。"""
+    path = audio.with_suffix('.json')
+    if not path.exists():
+        return {}
+    try:
+        data = json.loads(path.read_text(encoding='utf-8'))
+        if (not isinstance(data, dict) or data.get('version') != 1 or data.get('file') != audio.name
+                or not all(isinstance(data.get(k), str) and data[k].strip() for k in ('title','description'))
+                or data.get('audio_sha256') != hashlib.sha256(audio.read_bytes()).hexdigest()):
+            raise ValueError('音声と保存説明が一致しません')
+        return data
+    except (OSError, ValueError) as exc:
+        print(f'[warn] {path.name} の説明を使用できません: {exc}', file=sys.stderr)
+        return {}
 
 
 def prune_old(store: pathlib.Path) -> int:
@@ -136,6 +187,7 @@ def prune_old(store: pathlib.Path) -> int:
             continue
         if d < limit:
             f.unlink()
+            f.with_suffix('.json').unlink(missing_ok=True)
             removed += 1
     return removed
 
@@ -194,6 +246,7 @@ def main():
     parser.add_argument("--store", default="podcast")
     parser.add_argument("--public", default="public/podcast")
     parser.add_argument("--games", default="notable_games.json")
+    parser.add_argument("--narration", help="実際に合成した台本（話者クレジットを照合）")
     args = parser.parse_args()
 
     audio_dir = pathlib.Path(args.audio_dir)
@@ -202,9 +255,11 @@ def main():
 
     today = datetime.now(JST).date()
     mp3_path = store / f"{today.isoformat()}.mp3"
+    created = False
 
     if audio_dir.exists():
         if concat_to_mp3(audio_dir, mp3_path):
+            created = True
             dur, size = audio_meta(mp3_path)
             print(f"[info] エピソードを作成: {mp3_path.name} "
                   f"({dur:.0f}秒 / {size / 1024:.0f}KB)")
@@ -216,7 +271,14 @@ def main():
         print(f"[info] 保存期間({KEEP_DAYS}日)を過ぎたエピソードを{removed}件削除しました")
 
     # --- フィードを組み立てる(新しい順) ---
-    desc = episode_description(args.games)
+    # 当日の生成が失敗/見送りなら、既存音声に今日の台本の説明を付けない。
+    desc = episode_description(args.games, args.narration) if created else DESCRIPTION
+    if created:
+        target = today + timedelta(days=1)
+        try:
+            save_episode_metadata(mp3_path, f'{target.month}月{target.day}日の注目試合', desc)
+        except OSError as exc:
+            print(f'[warn] この回の説明を保存できません: {exc}', file=sys.stderr)
     episodes = []
     for f in sorted(store.glob("????-??-??.mp3"), reverse=True):
         try:
@@ -230,13 +292,13 @@ def main():
         # 「8月11日の注目試合」と出ていた。実際は8月12日の試合。
         # YouTube側は既に翌日の日付を使っており、そちらと食い違っていた。
         g = d + timedelta(days=1)
+        metadata = load_episode_metadata(f)
         episodes.append({
             "date": d,
             "file": f.name,
-            "title": f"{g.month}月{g.day}日の注目試合",
-            # 説明文は当日分のみ実データ、過去分は汎用文にしておく
-            # (過去のnotable_games.jsonを読み直すのはコストに見合わないため)
-            "description": desc if f.name == mp3_path.name else DESCRIPTION,
+            "title": metadata.get('title') or f"{g.month}月{g.day}日の注目試合",
+            "description": metadata.get('description') or (
+                desc if created and f.name == mp3_path.name else DESCRIPTION),
             "duration": dur,
             "size": size,
         })

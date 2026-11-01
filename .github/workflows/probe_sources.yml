@@ -43,6 +43,14 @@ jobs:
         run: python scripts/probe_soccer.py
       # 日本人選手が活躍した試合のハイライトに、コメントが付くか。
       # 称賛だけを別動画にする案が成り立つかは、ここで決まる。
+      # 9/21から19:00のサッカーの試合が毎日0件。日付の範囲の渡し方か、
+      # 回数制限かを分ける（読むだけ）。
+      - name: Probe soccer dates
+        if: always()
+        env:
+          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
+        run: python scripts/probe_soccer_dates.py
+
       - name: Probe jp highlight
         if: always()
         env:

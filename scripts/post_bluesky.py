@@ -24,14 +24,57 @@ Blueskyを選ぶ理由: X(旧Twitter) APIは2026年2月に無料枠が完全終�
 """
 
 import argparse
+from datetime import datetime
+import json
 import os
+from pathlib import Path
 import sys
 
 import post_common
-from public_short import public_short
+import content_hashtags
+from public_short import JST, edition_metadata, public_short
 
 # Blueskyの投稿上限は300グラフェム。安全マージンを見て280までに収める
 MAX_POST_GRAPHEMES = 280
+
+
+def post_context(games, short, edition):
+    body, hashtags, site_url = post_common.build_post(games, MAX_POST_GRAPHEMES)
+    source = short or edition
+    if source and source.get('program_version'):
+        body = source['social_summary']
+        hashtags = content_hashtags.select(body, 'bluesky', sport='mlb')
+    return body, hashtags, site_url
+
+
+def save_ps_delivery(uri, kind, edition, linked, path=Path('data/bluesky_delivery.json')):
+    if not edition or not edition.get('program_version'):
+        return
+    payload = json.loads(path.read_text(encoding='utf-8')) if path.exists() else {'editions': {}}
+    day = datetime.fromisoformat(edition['published_at'].replace('Z', '+00:00')).astimezone(JST).date().isoformat()
+    payload['editions'][kind + ':' + day] = dict(uri=uri, video_id=edition['video_id'],
+                                             state='linked' if linked else 'pending_video')
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = path.with_suffix('.tmp')
+    temporary.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+    temporary.replace(path)
+    from publication_writer import mirror_file
+    mirror_file(path, ledger_name='bluesky_delivery')
+
+
+def report_failure(error, stage):
+    # Transport errors can stringify to an empty string. Do not dump response
+    # bodies or request headers (which can contain credentials).
+    cause = error.__cause__
+    detail = type(error).__name__ + (f" / {type(cause).__name__}" if cause else "")
+    message = f"Bluesky投稿失敗: {stage} / {detail}"
+    print(f"::warning::{message}", file=sys.stderr)
+    if stage == "送信":
+        message += "。送達は未確定です。公開投稿を照合するまで再送しません"
+    summary = os.environ.get("GITHUB_STEP_SUMMARY")
+    if summary:
+        with open(summary, "a", encoding="utf-8") as f:
+            f.write("\n## Bluesky\n" + message + "\n")
 
 
 def emit_x_text(games: list) -> None:
@@ -65,13 +108,31 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--games", default="notable_games.json")
     ap.add_argument("--kind", choices=['daily', 'daily_soccer'], default='daily')
+    routing = ap.add_mutually_exclusive_group()
+    routing.add_argument('--defer-ps', action='store_true')
+    routing.add_argument('--ps-only', action='store_true')
     args = ap.parse_args()
 
     # 300グラフェムまで入るので、収まる範囲で複数試合を載せる。
     # (以前Xの文字数に合わせて1試合に固定していたが、Xは手動投稿なので
     #  自動投稿側をXの制限に合わせる必要はなかった)
     games = post_common.load_notable_games(args.games, limit=3)
-    if not games:
+    edition = edition_metadata(args.kind)
+    is_ps = bool(edition and edition.get('program_version'))
+    if (args.defer_ps and is_ps) or (args.ps_only and not is_ps):
+        print('[info] PSは動画・サイト公開後の配信処理へ分担します')
+        return
+    if args.ps_only:
+        ledger_path = Path('data/bluesky_delivery.json')
+        ledger = json.loads(ledger_path.read_text(encoding='utf-8'))
+        key = args.kind + ':' + datetime.now(JST).date().isoformat()
+        if ledger.get('editions', {}).get(key, {}).get('uri'):
+            print('[info] 当日PS投稿は既に存在するため、新しい投稿を作りません')
+            return
+    short = public_short(args.kind)
+    if args.ps_only and not short:
+        raise SystemExit('PS動画の公開確認ができないためBluesky配信を停止しました')
+    if not games and not (edition and edition.get('program_version')):
         print("[info] 今日は注目試合が無いため投稿をスキップします")
         return
 
@@ -85,14 +146,17 @@ def main():
         print("[info] BLUESKY_HANDLE/BLUESKY_APP_PASSWORD未設定のためスキップします")
         return
 
-    body, hashtags, site_url = post_common.build_post(games, MAX_POST_GRAPHEMES)
-    short = public_short(args.kind)
-
+    stage = "本文・動画確認"
     try:
+        # 動画の公開待ちと、検証済みPS本文が無いことを混同しない。
+        body, hashtags, site_url = post_context(games, short, edition)
+        stage = "ライブラリ読込"
         from atproto import Client, client_utils, models
 
         client = Client()
+        stage = "ログイン"
         client.login(handle, app_password)
+        stage = "投稿組立"
         builder = client_utils.TextBuilder().text(body + "\n")
         for t in hashtags:
             builder = builder.tag(f"#{t} ", t)
@@ -105,11 +169,13 @@ def main():
                 uri=short['url'], title=short['title'], description='コレスポの注目試合を動画で。'))
         else:
             builder = builder.link(post_common.YOUTUBE_URL, post_common.YOUTUBE_URL)
-        client.send_post(builder, embed=embed)
+        stage = "送信"
+        sent = client.send_post(builder, embed=embed)
+        save_ps_delivery(sent.uri, args.kind, edition, bool(short))
         print('[info] 対応する公開動画: ' + (short['url'] if short else '未確認のため一覧を案内'))
         print("[info] Blueskyに投稿しました")
     except Exception as e:
-        print(f"[warn] Bluesky投稿に失敗しました: {e}", file=sys.stderr)
+        report_failure(e, stage)
         sys.exit(1)
 
 

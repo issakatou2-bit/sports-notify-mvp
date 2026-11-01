@@ -25,6 +25,10 @@ import pathlib
 import re
 from datetime import datetime
 
+import site_videos
+from site_analytics import analytics_script
+from site_theme import THEME_HEAD
+
 SITE_URL = "https://collespo.com/"
 
 # archive/2026-07-28.json のような命名だけを対象にする(index.json等を除外するため)
@@ -163,20 +167,27 @@ DAY_VIDEO_KINDS = (
     ("morning_voices", "この日のコメント欄"),
     ("morning_local", "この日の現地での注目度"),
     ("morning_press", "この日の現地の報道"),
-    ("postseason", "この日の進出争い"),
-    ("longform", "この日の海外の反応（3分）"),
+    # 記録の名前は "morning_postseason"。"postseason" で引いていたため、
+    # 9/2から進出争いの動画が1本もこのページに載っていなかった。
+    # 見出しは時期で変わるので、動画の題から決める（_day_label）。
+    ("morning_postseason", "この日の進出争い"),
+    ("soccer_race", "この日の欧州サッカー順位争い"),
+    # 9/14から長編は「数字で」の回。海外の反応ではない。
+    ("longform", "この日の長編（3分）"),
 )
+
+
+def _day_label(kind: str, label: str, video: dict) -> str:
+    """時期で変わる見出し。**題に「進出争い」が無ければポストシーズン。**"""
+    if kind == "morning_postseason" and "進出争い" not in (
+            video.get("title") or "進出争い"):
+        return "この日のポストシーズン"
+    return label
 
 
 def load_published_videos(path: str = "data/published_videos.json") -> dict:
     """日付ものの動画の投稿記録。無ければ空(その場合は何も埋め込まない)。"""
-    p = pathlib.Path(path)
-    if not p.exists():
-        return {}
-    try:
-        return json.loads(p.read_text(encoding="utf-8"))
-    except (json.JSONDecodeError, OSError):
-        return {}
+    return site_videos.load_published_videos(path)
 
 
 def is_scheduled(entry: dict) -> bool:
@@ -185,19 +196,11 @@ def is_scheduled(entry: dict) -> bool:
 
     予約投稿は公開時刻まで非公開のままなので、それを知らずに並べると
     リンクを踏んだ人が見られない動画に当たる。埋め込まない方がよい。
-    読めない値は、伏せるより出す方に倒す(記録が壊れていても既存の
-    動画が消えないように)。
+    読めない値は予約時刻を判断できない。一覧への採用は別途
+    video_visibility.exclusion_reasonで不正な予約記録を除外する。
     """
-    at = entry.get("publish_at")
-    if not at:
-        return False
-    from datetime import datetime, timezone
-    try:
-        when = datetime.strptime(at, "%Y-%m-%dT%H:%M:%SZ").replace(
-            tzinfo=timezone.utc)
-    except ValueError:
-        return False
-    return when > datetime.now(timezone.utc)
+    import video_visibility
+    return video_visibility.is_scheduled(entry)
 
 
 HEAD_TMPL = """<!DOCTYPE html>
@@ -233,7 +236,7 @@ HEAD_TMPL = """<!DOCTYPE html>
 </head>
 <body>
 <a class="home-link" href="{root}">&larr; コレスポ トップへ</a>
-"""
+""".replace('</head>', THEME_HEAD + '\n</head>')
 
 
 def parse_date_files(archive_dir: pathlib.Path) -> list:
@@ -436,7 +439,7 @@ def render_game(g: dict) -> str:
     return "\n".join(parts)
 
 
-def render_day_page(archive_date: str, data: dict, prev_date, next_date) -> str:
+def render_day_page(archive_date: str, data: dict, prev_date, next_date, videos=None) -> str:
     games = [g for g in data.get("games", []) if g.get("is_notable")]
     jp_date = display_date(archive_date, games)
 
@@ -453,12 +456,9 @@ def render_day_page(archive_date: str, data: dict, prev_date, next_date) -> str:
     # その日の動画があれば埋め込む。サイトと動画が別々に存在していて
     # 相互に行き来できない状態だったので、ここで繋ぐ。
     # アーカイブページは検索から入ってくる本命なので、効き目が大きい。
-    videos = load_published_videos()
-    day_videos = []
-    for kind, label in DAY_VIDEO_KINDS:
-        v = (videos.get(kind) or {}).get(archive_date)
-        if v and v.get("video_id") and not is_scheduled(v):
-            day_videos.append((label, v))
+    videos = load_published_videos() if videos is None else videos
+    day_videos = [entry for date, _, entry in site_videos.published_entries(videos)
+                  if date == archive_date]
 
     head = HEAD_TMPL.format(
         title=html.escape(f"{jp_date}の注目試合" +
@@ -466,31 +466,16 @@ def render_day_page(archive_date: str, data: dict, prev_date, next_date) -> str:
         description=html.escape(description),
         canonical=f"{SITE_URL}archive/{archive_date}.html",
         root="../",
-        style=STYLE,
-        extra_head=build_jsonld(games, archive_date) + breadcrumb(archive_date, jp_date)[1],
+        style=STYLE + site_videos.VIDEO_STYLE,
+        extra_head=build_jsonld(games, archive_date) + breadcrumb(archive_date, jp_date)[1]
+                   + site_videos.video_jsonld(day_videos) + analytics_script(),
     )
 
     body = [head]
     body.append(breadcrumb(archive_date, jp_date)[0])
     body.append(f"<h1>{jp_date}の注目試合</h1>")
 
-    # この日の動画。1本目は埋め込み、2本目以降はリンクにする
-    # (縦型の埋め込みを2つ並べると縦に伸びすぎて本文が読まれなくなる)
-    if day_videos:
-        label, v = day_videos[0]
-        body.append('<div class="day-video">')
-        body.append(f"<h2>{label}(動画)</h2>")
-        body.append(
-            f'<iframe src="https://www.youtube-nocookie.com/embed/'
-            f'{html.escape(v["video_id"])}" title="{html.escape(v.get("title", ""))}" '
-            'loading="lazy" allowfullscreen></iframe>'
-        )
-        for label2, v2 in day_videos[1:]:
-            body.append(
-                f'<p><a href="{html.escape(v2["url"])}" target="_blank" '
-                f'rel="noopener">▶ {label2}(動画)</a></p>'
-            )
-        body.append("</div>")
+    body.append(site_videos.render_videos(day_videos))
 
     body.append(
         f'<p class="lead">コレスポが選んだこの日の注目カードです。'
@@ -559,7 +544,7 @@ def render_index_page(entries: list, summaries: dict, labels: dict = None, detai
         root="../",
         style=STYLE,
         extra_head=breadcrumb()[1] + '<link rel="stylesheet" href="../archive-discovery.css">'
-                   '<script src="../archive-discovery.js" defer></script>',
+                   '<script src="../archive-discovery.js" defer></script>' + analytics_script(),
     )
     body = [head]
     body.append(breadcrumb()[0])
@@ -644,6 +629,7 @@ def render_sitemap(entries: list, site_root: pathlib.Path = None) -> str:
         (f"{SITE_URL}soccer.html", None),
         (f"{SITE_URL}score.html", None),
         (f"{SITE_URL}about.html", None),
+        (f"{SITE_URL}contact.html", None),
         (f"{SITE_URL}services.html", None),
         (f"{SITE_URL}team-post-guide.html", None),
         (f"{SITE_URL}football-competitions.html", None),
@@ -720,6 +706,7 @@ def main():
     labels = {}
     details = {}
     generated = 0
+    videos = load_published_videos()
     for date_str, path in entries:
         data = records[date_str]
 
@@ -727,7 +714,7 @@ def main():
         prev_date = asc[i - 1][0] if i > 0 else None
         next_date = asc[i + 1][0] if i + 1 < len(asc) else None
 
-        page = render_day_page(date_str, data, prev_date, next_date)
+        page = render_day_page(date_str, data, prev_date, next_date, videos)
         (out_dir / f"{date_str}.html").write_text(page, encoding="utf-8")
         generated += 1
 

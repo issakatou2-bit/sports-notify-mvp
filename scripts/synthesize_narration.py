@@ -24,12 +24,14 @@ VOICEVOXについて:
 """
 
 import argparse
+import os
 import json
 import pathlib
 import subprocess
 import sys
 
 import requests
+import name_reading_guard
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
 try:
@@ -74,9 +76,11 @@ SPEED_SCALE = 1.5
 #
 # 後ろは完全に0にはしない。次の画面と音が地続きになって、
 # 区切りが聞き取れなくなるため。
-PRE_PHONEME = 0.0
-POST_PHONEME = 0.05
-PAUSE_SCALE = 0.85
+# 10/8 本人「セリフ間が近くて違和感」→ 聞き比べで「C2・D2（間を長く）よさそう」。
+# 文の前後と句読点の間を広げる（尺は少し延びる）。
+PRE_PHONEME = 0.1
+POST_PHONEME = 0.25
+PAUSE_SCALE = 1.25
 
 # 話者ごとの調整。
 #
@@ -87,8 +91,12 @@ PAUSE_SCALE = 0.85
 #   追いかけるのがきつい。0.9倍の1.35に落とす。
 #   pitchScale はVOICEVOXの音の高さで、-0.15〜0.15あたりが実用域。
 #   0.03は「言われれば分かる」程度の上げ幅。
+# 10/8 本人「めたんの抑揚、応用解説のを参考に。自然な声色と喋り方に」→ 聞き比べ C2（速さ1.3・抑揚1.3）と
+# D2（1.35・1.4）が良い → 間をとって 速さ1.32・抑揚1.35・高さ0。抑揚（intonationScale）は既定1.0だと棒読みに聞こえる。
+# ずんだもんも同じ考えで抑揚を上げ、速さは応用解説のショート（1.4）に寄せる。
 SPEAKER_TUNE = {
-    2: {"speedScale": round(SPEED_SCALE * 0.9, 3), "pitchScale": 0.03},
+    2: {"speedScale": 1.32, "pitchScale": 0.0, "intonationScale": 1.35},
+    3: {"speedScale": 1.4, "intonationScale": 1.35},
 }
 
 
@@ -108,6 +116,8 @@ def synth_one(text: str, speaker: int, out_path: pathlib.Path) -> bool:
     正しく読めないことがあり(「朗希」「滉大」など)、画面の表記は
     正しいのに音だけ違う、という状態になるため。
     """
+    original = text
+    name_reading_guard.assert_known(original)
     text = apply_readings(text)
     try:
         q = requests.post(
@@ -116,7 +126,10 @@ def synth_one(text: str, speaker: int, out_path: pathlib.Path) -> bool:
             timeout=30,
         )
         q.raise_for_status()
-        query = q.json()
+        query = name_reading_guard.prepare_query(original, q.json(), speaker, VOICEVOX_URL)
+        checked = name_reading_guard.validate_query(original, query)
+        out_path.with_suffix('.reading.json').write_text(
+            json.dumps(dict(original=original,spoken=text,check=checked,query=query),ensure_ascii=False,indent=2),encoding='utf-8')
         query["speedScale"] = SPEED_SCALE
 
         # 応答に無いキーを送るとエンジンが422を返すことがある。
@@ -141,7 +154,17 @@ def synth_one(text: str, speaker: int, out_path: pathlib.Path) -> bool:
         )
         s.raise_for_status()
         out_path.write_bytes(s.content)
+        import voice_manifest
+        voice_manifest.record_file(out_path, original, 'voicevox', speaker)
+        if os.environ.get('COLLESPO_LIPSYNC') == 'voice':
+            import hashlib
+            out_path.with_suffix('.lipsync.json').write_text(json.dumps(
+                dict(query=query, wav_sha256=hashlib.sha256(s.content).hexdigest()),
+                ensure_ascii=False, indent=2), encoding='utf-8')
         return True
+    except name_reading_guard.NameReadingError:
+        # 読み違い/辞書欠測を「無音で続行」へ落とさない。
+        raise
     except Exception as e:
         print(f"[warn] 音声合成に失敗しました: {e}", file=sys.stderr)
         return False
@@ -157,15 +180,22 @@ def audio_duration(path: pathlib.Path) -> float:
         )
         return float(r.stdout.strip())
     except Exception:
-        return 0.0
+        # 保存したVOICEVOXのWAVは標準ライブラリでも実測できる。
+        import wave
+        try:
+            with wave.open(str(path),'rb') as audio:
+                return audio.getnframes()/audio.getframerate()
+        except (OSError,wave.Error):
+            return 0.0
 
 
-def main():
+def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument("--narration", default="public/narration.json")
     parser.add_argument("--out-dir", default="build/audio")
     parser.add_argument("--speaker", type=int, default=DEFAULT_SPEAKER)
-    args = parser.parse_args()
+    parser.add_argument('--queue-only', action='store_true', help='検査済み原稿の雨衣注文だけ先に出す')
+    args = parser.parse_args(argv)
 
     npath = pathlib.Path(args.narration)
     if not npath.exists():
@@ -177,15 +207,74 @@ def main():
 
     with open(npath, "r", encoding="utf-8") as f:
         data = json.load(f)
+    import host_split
+    import solo_host
+    saved_resolution = data.get('voice_resolution') or {}
+    if saved_resolution.get('host') == 'metan':
+        os.environ['COLLESPO_SOLO_HOST'] = 'metan'
+    import ui_voice_policy
+    ui_voice_policy.assert_publishable(data)
+    if host_split.enabled():
+        os.environ['COLLESPO_SOLO_HOST'] = 'metan'
+        data = host_split.prepare(data, default=args.speaker)
+    import copy
+    if solo_host.for_segments(data.get('segments', []), args.speaker) == 'ui':
+        data.setdefault('host_original_segments', copy.deepcopy(data.get('segments', [])))
+    import ui_tone
+    adapted = ui_tone.narration(data, args.speaker)
+    if adapted != data:
+        data = adapted
+        npath.write_text(json.dumps(data, ensure_ascii=False), encoding='utf8')
     segments = data.get("segments", [])
     if not segments:
         print("[info] セグメントが空のためスキップします")
         return
+    name_reading_guard.validate_dialogue(data)
 
     out_dir = pathlib.Path(args.out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
-
-    if not engine_available():
+    host = solo_host.for_segments(segments, args.speaker)
+    if args.queue_only:
+        npath.write_text(json.dumps(data, ensure_ascii=False), encoding='utf8')
+        if host == 'ui' and (data.get('host_delivery') or {}).get('mode') != 'stock':
+            import ui_voice_queue
+            try:
+                reason = ui_voice_policy.window_reason(minutes=ui_voice_policy.wait_minutes())
+                if reason:
+                    raise ui_voice_policy.VoiceUnavailable(reason)
+                ui_voice_queue.enqueue(ui_voice_queue.GitQueue(), ui_voice_queue.make_order(
+                    data, npath.stem, ui_voice_policy.wait_minutes()))
+            except ui_voice_queue.QueueError:
+                rebuilt = ui_voice_policy.failure(data, npath, out_dir, 'ui_early_order_failed')
+                npath.write_text(json.dumps(rebuilt, ensure_ascii=False), encoding='utf8')
+        return
+    resolution = (dict(host='metan', reason=(data.get('voice_resolution') or {}).get('reason',
+                       (data.get('host_delivery') or {}).get('reason') or
+                       ('host_split' if host_split.enabled() else 'host_split_disabled')))
+                  if data.get('host_assignment') else None)
+    if host == 'metan' and saved_resolution.get('host') == 'metan':
+        resolution = dict(saved_resolution)
+    if host == 'ui':
+        import ui_voice_stock
+        import ui_voice_policy as policy
+        try:
+            resolution = ui_voice_stock.fulfill(data, npath, out_dir)
+            if not resolution:
+                raise policy.VoiceUnavailable('ui_delivery_missing')
+        except policy.VoiceUnavailable as exc:
+            data = policy.failure(data, npath, out_dir, exc.reason)
+            host = 'metan'
+            segments = data['segments']
+            os.environ['COLLESPO_SOLO_HOST'] = 'metan'
+            resolution = dict(host='metan', reason='ui_rebuilt_after_hold')
+            data['voice_resolution'] = resolution
+            host_split.resolve_credits(data, 'metan')
+            npath.write_text(json.dumps(data, ensure_ascii=False), encoding='utf8')
+        if resolution:
+            if resolution['host'] == 'ui':
+                print('[info] 雨衣の注文音声を受け取りました')
+                return
+    if host != 'ui' and not engine_available():
         print(f"[warn] VOICEVOX ENGINE({VOICEVOX_URL})に接続できませんでした。"
               "音声なしで進めます(動画は無音になります)。")
         manifest = [{"index": i, "file": None, "duration": 0.0,
@@ -205,7 +294,8 @@ def main():
             # 指定が無い段は、これまで通り --speaker のまま。
             speaker = seg.get("speaker")
             speaker = int(speaker) if isinstance(speaker, (int, str))                 and str(speaker).isdigit() else args.speaker
-            ok = synth_one(seg.get("text", ""), speaker, path)
+            ok = (solo_host.synthesize(seg.get("text", ""), path) if host == 'ui'
+                  else synth_one(seg.get("text", ""), speaker, path))
             dur = audio_duration(path) if ok else 0.0
             manifest.append({
                 "index": i,
@@ -220,13 +310,29 @@ def main():
                 # 1つでもずれたら、札が全部落ちる。
                 "panel": seg.get("panel"),
                 "meta": seg.get("meta", {}),
+                "min_duration": seg.get("min_duration"),
             })
+            if host == 'ui':
+                manifest[-1].update(voice_host='ui', voice_engine='voisona', voice_name='ui_ja_JP')
             who = (seg.get("meta") or {}).get("who") or ""
             print(f"[info] seg_{i:03d}: {dur:.1f}秒 / {seg.get('kind')}"
                   + (f" / {who}(話者{speaker})" if who else ""))
 
+    if data.get('host_assignment'):
+        resolution['audio_available'] = bool(manifest) and all(m.get('file') and m.get('duration', 0) > 0 for m in manifest)
+        data['voice_resolution'] = resolution
+        npath.write_text(json.dumps(data, ensure_ascii=False), encoding='utf8')
     with open(out_dir / "manifest.json", "w", encoding="utf-8") as f:
-        json.dump({"segments": manifest}, f, ensure_ascii=False)
+        payload = {"segments": manifest}
+        host_split.carry(data, payload)
+        if data.get('host_assignment'):
+            payload['narration_path'] = str(npath.resolve())
+        if resolution:
+            payload['voice_resolution'] = resolution
+        json.dump(payload, f, ensure_ascii=False)
+
+    import voice_manifest
+    voice_manifest.save(out_dir, manifest, data)
 
     total = sum(m["duration"] for m in manifest)
     print(f"[info] 音声合成が完了しました(合計{total:.1f}秒)")

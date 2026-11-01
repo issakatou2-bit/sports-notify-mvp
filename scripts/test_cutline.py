@@ -16,16 +16,7 @@ import sys
 HERE = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 import cutline  # noqa: E402
-
-fails = 0
-
-
-def check(label, got, want):
-    global fails
-    ok = got == want
-    fails += not ok
-    print("%s %s: %r%s" % ("ok " if ok else "NG ", label, got,
-                           "" if ok else "   (期待 %r)" % (want,)))
+from checks_report import check, section, done  # noqa: E402
 
 
 def table(*pts):
@@ -36,7 +27,7 @@ def table(*pts):
 
 T = table(30, 27, 25, 22, 21, 19, 18, 15)
 
-print("--- 線の前後 ---")
+section("線の前後")
 a = cutline.around(T, 4, span=2)
 check("圏内の下2つ", [r["team"] for r in a["inside"]], ["C", "D"])
 check("圏外の上2つ", [r["team"] for r in a["outside"]], ["E", "F"])
@@ -49,8 +40,7 @@ check("空の一覧でも落ちない", cutline.around([], 4),
       {"inside": [], "outside": [], "line": 4})
 check("線が0以下なら何も返さない", cutline.around(T, 0)["inside"], [])
 
-print()
-print("--- 線をまたぐ差 ---")
+section("線をまたぐ差")
 g = cutline.gap(T, 4)
 check("4位22点と5位21点の差", g["diff"], 1)
 check("圏内の最後", g["inside"]["team"], "D")
@@ -60,8 +50,7 @@ check("並んでいる日は0",
 check("線が一覧の外なら空", cutline.gap(T, 8), {})
 check("空の一覧でも落ちない", cutline.gap([], 4), {})
 
-print()
-print("--- 昨日から線をまたいだか ---")
+section("昨日から線をまたいだか")
 now = table(30, 27, 25, 22, 21)          # A B C D | E
 before = table(30, 27, 25, 21, 22)       # 同じ点だが並びが違う
 before[3]["team"], before[4]["team"] = "E", "D"   # A B C E | D
@@ -73,8 +62,7 @@ check("動きが無い日は空の一覧",
 # **「変化なし」と「分からない」を混ぜない。**
 check("昨日の記録が無い日は何も返さない", cutline.moved(now, [], 4), {})
 
-print()
-print("--- 同順位があっても、順位で切る ---")
+section("同順位があっても、順位で切る")
 # **これが最初に作ったときの穴。**「上から4件が圏内」と添字で
 # 切っていたので、同順位があると全部ずれた。9/11の実データでは
 # 6大会のうち5つで同順位が出ていて、プレミアは17位が2クラブ、
@@ -134,8 +122,7 @@ check("position が無ければ並び順",
       [r["team"] for r in cutline.split(NOPOS, 3)[0]], ["A", "B", "C"])
 check("position が無くても差は出る", cutline.gap(NOPOS, 3)["diff"], 1)
 
-print()
-print("--- 線までの差 ---")
+section("線までの差")
 check("圏外のクラブは「入るまでの差」",
       cutline.distance_to(T, 4, "F"), {"line": 4, "position": 6,
                                        "side": "outside", "diff": 3})
@@ -148,8 +135,7 @@ check("空の一覧でも落ちない", cutline.distance_to([], 4, "A"), {})
 # 線が一覧の外にあると、相手側が存在しない。
 check("線が一覧の外なら空", cutline.distance_to(T, 20, "A"), {})
 
-print()
-print("--- 大会ごとの境目 ---")
+section("大会ごとの境目")
 check("プレミアはCL4・EL5・残留17",
       cutline.lines_for("PL"), [(4, "CL圏内"), (5, "EL圏内"), (17, "残留")])
 check("ブンデスは18クラブなので残留15",
@@ -157,6 +143,4 @@ check("ブンデスは18クラブなので残留15",
 check("2部は昇格の線",
       [lab for _, lab in cutline.lines_for("ELC")][0], "自動昇格")
 check("知らない大会は空", cutline.lines_for("XX"), [])
-
-print(chr(10) + ("ALL OK" if not fails else "%d FAILURES" % fails))
-sys.exit(1 if fails else 0)
+sys.exit(done())

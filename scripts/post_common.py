@@ -15,6 +15,7 @@ SNSへ投稿する本文の組み立て。送信先に依存しない部分だ�
 
 import json
 import os
+from game_hook_guard import validated_hook
 from datetime import datetime, timedelta, timezone
 
 SITE_URL = os.environ.get("SITE_URL", "https://collespo.com/")
@@ -94,7 +95,7 @@ def build_rule_based_hook(game: dict) -> str:
 def game_line(game: dict) -> str:
     """1試合分の1行。'23:10 CWS vs HOU 村上の一発は出るか' の形。"""
     matchup = game.get("abbr_matchup") or game.get("matchup", "")
-    hook = game.get("notification_hook") or build_rule_based_hook(game)
+    hook = validated_hook(game) or build_rule_based_hook(game)
     # 解説文の要点強調に使う【】が混ざることがあるので取り除く。
     # ライバル関係の理由文は「見出し — 由来」の形なので見出しだけ使う。
     hook = hook.replace("【", "").replace("】", "").split(" — ")[0]
@@ -377,20 +378,86 @@ DAILY_LINEUP = [
     # 9/14に主題を公式コメント欄から「その日の数字」へ変えた。
     # 名前がここに残っていると、健康診断もその日ページも古い名前を出す。
     # 横型で3分。腰を据えて見るものなので、いちばん後ろに置く。
-    ("longform", "きょうのMLB、数字で（3分）",
+    ("longform", "今日のMLB、数字で（3分）",
      "ずんだもんと四国めたんが成績と進出争いを追う", "21:00"),
 ]
 
 
+def _postseason_now(path: str = None) -> dict:
+    """その日の進出争い・ポストシーズンの材料。無ければ空。"""
+    p = (path or os.path.join(os.path.dirname(os.path.dirname(
+        os.path.abspath(__file__))), "data", "postseason.json"))
+    try:
+        with open(p, encoding="utf-8") as f:
+            return json.load(f)
+    except (OSError, ValueError):
+        return {}
+
+
+def mlb_offseason(ps=None, today=None):
+    """既存の日次PS・数字枠と同じWS決着判定。欠測時は従来表示。"""
+    from datetime import datetime
+    import ps_offseason
+    try:
+        snapshot = _postseason_now() if ps is None else ps
+        return ps_offseason.completed_before(
+            snapshot, today or datetime.now(ps_offseason.JST))
+    except (OSError, ValueError, TypeError, AttributeError, KeyError):
+        return False
+
+
+def lineup(exclude: str = "", ps: dict = None) -> list:
+    """**表示用の**毎日の一覧。時期で変わる枠を、その日の姿にする。
+
+    DAILY_LINEUP は時刻と種類の台帳で、健康診断などもそれを見る。
+    表示（全動画の説明文・読み上げ・締めの画面）はこちらを使う。
+
+    なぜ要るのか:
+      20:00の枠は「ポストシーズン進出争い / マジックと今日終わったらの
+      組み合わせ」と書いてあり、全動画の説明文と締めの画面に出ていた。
+      組み合わせが確定した9/28以降もそう言い続けることになる。
+      ワールドシリーズが終わると枠そのものが無くなるのに、翌年の9月まで
+      「毎日お届け」と並べることにもなる。
+
+        レギュラーシーズン中    ポストシーズン進出争い
+        確定後・ポストシーズン中  ポストシーズン（シリーズの勝敗と勝ち上がり）
+        それ以外（オフなど）    一覧から外す
+    """
+    import race_words as rw
+    ps = _postseason_now() if ps is None else ps
+    offseason = mlb_offseason(ps)
+    out = []
+    for kind, name, what, at in DAILY_LINEUP:
+        if kind == exclude:
+            continue
+        # コメント・報道は独立した材料で継続。healthcheckの旧一覧は両者も
+        # 試合依存とするため使わず、実制作のWS終了ゲートに合わせる。
+        if offseason and kind in {"morning", "postseason", "daily", "longform"}:
+            continue
+        if kind == "postseason":
+            if rw.is_settled(ps):
+                live = (any(not x.get("over") for x in ps.get("series") or [])
+                        or bool(ps.get("changes"))
+                        or ps.get("phase") == "settled")
+                if not live:
+                    continue          # ワールドシリーズまで終わった
+                name, what = "ポストシーズン", "シリーズごとの勝敗と勝ち上がり"
+            elif rw.race_is_over(ps):
+                continue              # 材料が無い・争いが無い時期
+        if kind == "longform" and rw.is_settled(ps):
+            what = what.replace("進出争い", "ポストシーズン")
+        out.append((kind, name, what, at))
+    return sorted(out, key=lambda row: row[3]) if offseason else out
+
+
 def lineup_names(exclude: str = "") -> list:
     """読み上げ用。自分の回は外す(その動画を見ている人には要らない)。"""
-    return [name for kind, name, _, _ in DAILY_LINEUP if kind != exclude]
+    return [name for _, name, _, _ in lineup(exclude)]
 
 
 def lineup_lines(exclude: str = "") -> list:
     """説明文用。名前とひとことを箇条書きにする。"""
-    return [f"・{name} … {what}"
-            for kind, name, what, _ in DAILY_LINEUP if kind != exclude]
+    return [f"・{name} … {what}" for _, name, what, _ in lineup(exclude)]
 
 
 
@@ -420,7 +487,12 @@ MAX_SECONDS = 55.0
 BUDGET_GRACE = 6.0
 
 
-def fit_budget(segs, durations, drop_order, limit=MAX_SECONDS):
+def duration_budget(kind):
+    """17:00だけ40秒を目標、5秒の余裕。他の枠の予算は従来どおり。"""
+    return (40.0, 5.0) if kind == 'morning' else (MAX_SECONDS, BUDGET_GRACE)
+
+
+def fit_budget(segs, durations, drop_order, limit=MAX_SECONDS, grace=BUDGET_GRACE):
     """予算に収まるまで、優先度の低い画面を落とす。
 
     落とすのは画面ごと。1画面の中の読み上げを途中で切ると、
@@ -433,7 +505,7 @@ def fit_budget(segs, durations, drop_order, limit=MAX_SECONDS):
     total = sum(durations)
     dropped = []
     for kind in drop_order:
-        if total <= limit + BUDGET_GRACE:
+        if total <= limit + grace:
             break
         for i in list(keep):
             if (segs[i].get("kind") or "") == kind:
