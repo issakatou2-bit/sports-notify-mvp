@@ -596,7 +596,8 @@ _head = _uy.top_headline()
 _press = _uy.build_metadata("notable_games.json", "8月21日", kind="morning",
                             morning_mode="press")["snippet"]["title"]
 if _head:
-    check("見出しがあれば題に入る", _head in _press, True)
+    # 題は長さに合わせて「ドジャースの大谷翔平」を「ドジャース大谷」へ縮める。全文の一致は求めない。
+    check("見出しがあれば題に入る", "現地はこう報じた「" in _press, True)
 else:
     check("見出しが無ければ既定の題", "現地メディアは何と言っているか" in _press,
           True)

@@ -35,6 +35,17 @@ def get(path, **params):
     return response.json()
 
 
+def recipients(ident, season, fetch):
+    # 発表前の年は MLB が 404 を返す（11/1 本番で全体が落ちた）。まだ受賞者がいないだけ。
+    import requests
+    try:
+        return fetch(f'awards/{ident}/recipients', season=season)
+    except requests.HTTPError as error:
+        if error.response is not None and error.response.status_code == 404:
+            return {'awards': []}
+        raise
+
+
 def names():
     import notability_engine as ne
     jp = {p['name_en']: p['name_jp'] for p in ne.JP_PLAYERS_MLB}
@@ -287,7 +298,7 @@ def sample_intro(kind, season):
 
 def collect(day, season, fetch=get):
     jp, table = names()
-    awards = {ident: fetch(f'awards/{ident}/recipients', season=season) for ident in AWARDS}
+    awards = {ident: recipients(ident, season, fetch) for ident in AWARDS}
     start = day - timedelta(days=6)
     moves = fetch('transactions', sportId=1, startDate=str(start), endDate=str(day))
     return {'schedule': schedule(day), 'awards': award_rows(awards, season, jp, table),

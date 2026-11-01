@@ -56,6 +56,7 @@ jobs:
       COLLESPO_GLASS_BACKGROUND: ${{ vars.COLLESPO_GLASS_BACKGROUND || 'stripes' }}
       COLLESPO_OUTRO_NEXT: ${{ vars.COLLESPO_OUTRO_NEXT == 'on' && 'on' || 'off' }}
       COLLESPO_SHORT_LOOK: ${{ vars.COLLESPO_SOCCER_LOOK || 'v3' }}
+      COLLESPO_SOCCER_TITLE_V2: ${{ vars.COLLESPO_SOCCER_TITLE_V2 == 'on' && 'on' || 'off' }}
       COLLESPO_SOCCER_LOOK: ${{ vars.COLLESPO_SOCCER_LOOK || 'v3' }}
     # 起動の合図にするだけで、材料には依存しない。
     #

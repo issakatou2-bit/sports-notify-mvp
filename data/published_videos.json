@@ -8939,6 +8939,51 @@
       },
       "host_fallback_reason": null,
       "privacy": "public"
+    },
+    "2026-11-01": {
+      "video_id": "bC4GTy4VKxo",
+      "url": "https://youtu.be/bC4GTy4VKxo",
+      "title": "【欧州サッカー】今夜の注目試合｜リバプール vs アーセナル ほか #Shorts",
+      "published_at": "2026-11-01T10:09:08.518472+00:00",
+      "publish_at": "2026-11-01T10:30:00Z",
+      "preview_binding": {
+        "material_sha256": "677223a014edcf1ffb02078ee40efd58f523a5932b8f84582acc7e4aa95f161c",
+        "narration_sha256": "34ce262d3c4d9774dcf34e3f4e47d4c6aee3798f1c8db72cca333954dcc2f7e4"
+      },
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-01",
+        "enabled": false,
+        "assigned": "generic",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false
+      },
+      "duration_seconds": 42.53,
+      "short_information_count": 10,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-11-01",
+        "kind": "daily_soccer",
+        "phase": 1,
+        "planned_host": "ui",
+        "rule": "half-jst-week-v1",
+        "week": 42,
+        "weekday": 6
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-11-01T10:01:55.933576+00:00",
+        "comparison_eligible": false,
+        "label": "予定めたん（雨衣不可のため）",
+        "mode": "live",
+        "planned_host": "metan",
+        "reason": "ui_deadline_crosses_live",
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
     }
   },
   "weekly": {
@@ -18226,6 +18271,47 @@
       },
       "host_fallback_reason": null,
       "privacy": "public"
+    },
+    "2026-11-01": {
+      "video_id": "3gmRRDyfGkY",
+      "url": "https://youtu.be/3gmRRDyfGkY",
+      "title": "南野拓実のモナコ、CL圏内まで勝点1｜リーグ・アン 順位争い【欧州サッカー】#Shorts",
+      "published_at": "2026-11-01T10:16:37.984563+00:00",
+      "publish_at": "2026-11-01T11:30:00Z",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-01",
+        "enabled": false,
+        "assigned": "generic",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false
+      },
+      "duration_seconds": 29.33,
+      "short_information_count": 6,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-11-01",
+        "kind": "soccer_race",
+        "phase": 1,
+        "planned_host": "ui",
+        "rule": "half-jst-week-v1",
+        "week": 42,
+        "weekday": 6
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-11-01T10:11:01.028725+00:00",
+        "comparison_eligible": false,
+        "label": "予定めたん（雨衣不可のため）",
+        "mode": "live",
+        "planned_host": "metan",
+        "reason": "ui_deadline_crosses_live",
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
     }
   },
   "soccer_week": {
@@ -19062,6 +19148,94 @@
       },
       "host_fallback_reason": null,
       "privacy": "public"
+    },
+    "season_compare_2026_579328_608372": {
+      "video_id": "2WZP5sJpdSc",
+      "url": "https://youtu.be/2WZP5sJpdSc",
+      "title": "【MLB】菊池雄星14登板と菅野智之29登板｜2026年レギュラーシーズン #Shorts",
+      "published_at": "2026-11-01T10:33:59.036480+00:00",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-01",
+        "enabled": false,
+        "assigned": "generic",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false
+      },
+      "player_ids": [
+        "579328",
+        "608372"
+      ],
+      "duration_seconds": 32.54,
+      "short_information_count": 3,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-11-01",
+        "kind": "asset:season_compare",
+        "phase": 1,
+        "planned_host": "ui",
+        "rule": "half-jst-week-v1",
+        "week": 42,
+        "weekday": 6
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-11-01T10:30:51.691955+00:00",
+        "comparison_eligible": false,
+        "label": "予定めたん（雨衣不可のため）",
+        "mode": "live",
+        "planned_host": "metan",
+        "reason": "ui_live_reserved",
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
+    },
+    "season_game_823818": {
+      "video_id": "WBAQ5zfGnvQ",
+      "url": "https://youtu.be/WBAQ5zfGnvQ",
+      "title": "【MLB】千賀メッツ対マーリンズの15対14｜2026年レギュラーシーズン #Shorts",
+      "published_at": "2026-11-01T10:38:21.983564+00:00",
+      "publish_at": "2026-11-01T13:00:00Z",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-01",
+        "enabled": false,
+        "assigned": "generic",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false
+      },
+      "player_ids": [
+        "673540"
+      ],
+      "duration_seconds": 37.25,
+      "short_information_count": 3,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-11-01",
+        "kind": "asset:season_game",
+        "phase": 1,
+        "planned_host": "ui",
+        "rule": "half-jst-week-v1",
+        "week": 42,
+        "weekday": 6
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-11-01T10:33:59.380110+00:00",
+        "comparison_eligible": false,
+        "label": "予定めたん（雨衣不可のため）",
+        "mode": "live",
+        "planned_host": "metan",
+        "reason": "ui_live_reserved",
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
     }
   },
   "soccer_results": {
@@ -19269,6 +19443,38 @@
         "comparison_eligible": true,
         "planned_host": "metan",
         "reason": null,
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
+    },
+    "2026-10-31": {
+      "video_id": "sK4tMuX5Ai4",
+      "url": "https://youtu.be/sK4tMuX5Ai4",
+      "title": "【欧州サッカー】昨夜の注目試合 バイエルン 2-2 ドルトムント #Shorts",
+      "published_at": "2026-11-01T11:40:00.551681+00:00",
+      "publish_at": "2026-11-01T12:15:00Z",
+      "duration_seconds": 45.8,
+      "short_information_count": 3,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-11-01",
+        "kind": "soccer_results",
+        "phase": 1,
+        "planned_host": "ui",
+        "rule": "half-jst-week-v1",
+        "week": 42,
+        "weekday": 6
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-11-01T11:31:52.571835+00:00",
+        "comparison_eligible": false,
+        "label": "予定めたん（雨衣不可のため）",
+        "mode": "live",
+        "planned_host": "metan",
+        "reason": "ui_live_reserved",
         "version": 1
       },
       "host_fallback_reason": null,

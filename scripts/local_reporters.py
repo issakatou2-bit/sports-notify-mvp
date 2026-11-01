@@ -311,6 +311,11 @@ def guard_translation(source: str, translated: str) -> str:
     if placeholder_translation(source, translated):
         print('[warning] 番号だけの翻訳を採用しません（原文は保持）')
         return ''
+    # exit は敗退のことが多い。原文に移籍の語が無いのに退団と言わない（11/1 大谷の見出し）。
+    if ('退団' in translated and re.search(r'\bexits?\b', source, re.I)
+            and not re.search(r'\b(?:leav\w*|left|depart\w*|free agen\w*|sign\w*|trade\w*|released?)\b', source, re.I)):
+        print('[warning] exit を退団と訳した見出しを省略')
+        return ''
     if re.search(r'\b(?:benching|bench(?:ed|es)?|sitting)\b', source, re.I):
         translated = translated.replace('でのベンチ入り', 'で先発から外すこと')
         translated = translated.replace('ベンチ入り', '先発から外すこと')
@@ -416,6 +421,9 @@ def translate(posts: list, api_key: str, _retry_placeholder: bool = True) -> lis
                 invalid.append(p)
             else:
                 p.pop('_translation_failed', None)
+                # 検査で訳を省いた物は、英語の見出しのまま読まない。
+                if not p["jp"]:
+                    p['_translation_dropped'] = True
     if invalid and _retry_placeholder:
         print(f'[warning] 番号だけの訳{len(invalid)}件をまとめて1回再翻訳します')
         translate(invalid, api_key, _retry_placeholder=False)
@@ -685,7 +693,7 @@ def main():
     head_items = [{"text": h["title"]} for h in heads[:args.top]]
     head_items = translate(head_items, key)
     for h, t in zip(heads, head_items):
-        if t.get("_translation_failed"):
+        if t.get("_translation_failed") or t.get("_translation_dropped"):
             h["_translation_failed"] = True
         if t.get("jp"):
             h["jp"] = t["jp"]
