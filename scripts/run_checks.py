@@ -28,12 +28,20 @@
 """
 
 import ast
+import argparse
+from concurrent.futures import ThreadPoolExecutor
+import json
 import re
 import pathlib
+import py_compile
 import subprocess
 import sys
+import time
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
+TEST_SHARD = (0, 1)
+IMPORT_WORKERS = 1
+TIMINGS = []
 
 # 落ちたら止めるもの。警告どまりのものと分けて扱う。
 FATAL_PYFLAKES = ("undefined name", "syntax error",
@@ -41,8 +49,14 @@ FATAL_PYFLAKES = ("undefined name", "syntax error",
 
 
 def run(cmd, **kw):
-    return subprocess.run(cmd, capture_output=True, text=True,
+    started = time.perf_counter()
+    # 入力を求めない検査だけ。Windowsの非表示起動でも無効ハンドルを子へ渡さない。
+    kw.setdefault("stdin", subprocess.DEVNULL)
+    result = subprocess.run(cmd, capture_output=True, text=True,
                           encoding="utf-8", errors="replace", cwd=ROOT, **kw)
+    TIMINGS.append({"command": cmd[1:], "seconds": time.perf_counter() - started,
+                    "returncode": result.returncode})
+    return result
 
 
 def step(name):
@@ -54,10 +68,12 @@ def check_syntax() -> int:
     bad = 0
     files = sorted(ROOT.glob("scripts/*.py")) + [ROOT / "notability_engine.py"]
     for f in files:
-        r = run([sys.executable, "-m", "py_compile", str(f)])
-        if r.returncode:
+        try:
+            # 同じ py_compile を同じ既定値で実行。ファイルごとのPython起動だけ省く。
+            py_compile.compile(str(f), doraise=True)
+        except (py_compile.PyCompileError, OSError) as error:
             bad += 1
-            print(f"NG {f.name}\n{r.stderr.strip()[:300]}")
+            print(f"NG {f.name}\n{str(error).strip()[:300]}")
     print(f"{'ok ' if not bad else 'NG '} {len(files)}ファイル / 失敗 {bad}")
     return bad
 
@@ -158,18 +174,26 @@ def check_imports() -> int:
     """
     step("スクリプトが起動できるか(本番と同じ呼び方)")
     bad = 0
+    files = []
     for f in sorted(ROOT.glob("scripts/*.py")):
         if f.name.startswith(("test_", "run_checks")):
             continue
         src = f.read_text(encoding="utf-8", errors="replace")
         if "argparse" not in src:
             continue  # --help を受け付けないものは、起動＝実行になるので飛ばす
-        r = run([sys.executable, str(f), "--help"])  # run() が cwd=ROOT で起動する
-        err = (r.stderr or "")
-        if "ModuleNotFoundError" in err or "ImportError" in err:
-            bad += 1
-            line = [x for x in err.splitlines() if "Error" in x]
-            print(f"NG {f.name}: {line[-1] if line else err[:120]}")
+        files.append(f)
+
+    def start_help(path):
+        return run([sys.executable, str(path), "--help"])
+
+    # --help はAPI実行/書込みをしない既存対象のみ。結果の表示順は従来どおり。
+    with ThreadPoolExecutor(max_workers=IMPORT_WORKERS) as pool:
+        for f, r in zip(files, pool.map(start_help, files)):
+            err = (r.stderr or "")
+            if "ModuleNotFoundError" in err or "ImportError" in err:
+                bad += 1
+                line = [x for x in err.splitlines() if "Error" in x]
+                print(f"NG {f.name}: {line[-1] if line else err[:120]}")
     print(f"{'ok ' if not bad else 'NG '} 起動できないもの {bad}件")
     return bad
 
@@ -177,8 +201,15 @@ def check_imports() -> int:
 def check_tests(tmp: str) -> int:
     step("テスト")
     bad = 0
-    for f in sorted(ROOT.glob("scripts/test_*.py")):
-        r = run([sys.executable, str(f), tmp])
+    index, count = TEST_SHARD
+    files = sorted(ROOT.glob("scripts/test_*.py"))
+    selected = files[index::count]
+    print(f"分割 {index + 1}/{count}: {len(selected)}/{len(files)}ファイル")
+    for f in selected:
+        # argv の出力先を試験ごとに分離。既存の個別プロセス起動は維持する。
+        test_tmp = pathlib.Path(tmp) / f.stem
+        test_tmp.mkdir(parents=True, exist_ok=True)
+        r = run([sys.executable, str(f), str(test_tmp)])
         last = (r.stdout or "").strip().splitlines()
         mark = last[-1] if last else "(出力なし)"
         if r.returncode:
@@ -489,7 +520,7 @@ def check_secrets_passed() -> int:
 STDLIB = set(getattr(sys, "stdlib_module_names", ())) | {"__future__"}
 
 
-def _third_party(script: str, seen=None) -> set:
+def _third_party(script: str, seen=None, imports=None) -> set:
     """その台本が要る、標準で入っていない物の名前。
 
     自作の取り込み(scripts/ の中にある名前)は、そちらが要る物も
@@ -501,29 +532,32 @@ def _third_party(script: str, seen=None) -> set:
     if script in seen:
         return set()
     seen.add(script)
+    imports = imports if imports is not None else {}
     path = ROOT / "scripts" / script
     if not path.exists():
         return set()
-    try:
-        tree = ast.parse(path.read_text(encoding="utf-8"))
-    except SyntaxError:
-        return set()
-    out = set()
-    for node in ast.walk(tree):
+    if path not in imports:
+        try:
+            tree = ast.parse(path.read_text(encoding="utf-8"))
+        except SyntaxError:
+            return set()
         names = []
-        if isinstance(node, ast.Import):
-            names = [a.name.split(".")[0] for a in node.names]
-        elif isinstance(node, ast.ImportFrom) and node.level == 0 and node.module:
-            names = [node.module.split(".")[0]]
-        for n in names:
-            if n in STDLIB:
-                continue
-            if (ROOT / "scripts" / (n + ".py")).exists():
-                out |= _third_party(n + ".py", seen)
-            elif (ROOT / (n + ".py")).exists():
-                continue          # 直下の自作(notability_engine など)
-            else:
-                out.add(n)
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Import):
+                names.extend(a.name.split(".")[0] for a in node.names)
+            elif isinstance(node, ast.ImportFrom) and node.level == 0 and node.module:
+                names.append(node.module.split(".")[0])
+        imports[path] = tuple(names)
+    out = set()
+    for n in imports[path]:
+        if n in STDLIB:
+            continue
+        if (ROOT / "scripts" / (n + ".py")).exists():
+            out |= _third_party(n + ".py", seen, imports)
+        elif (ROOT / (n + ".py")).exists():
+            continue          # 直下の自作(notability_engine など)
+        else:
+            out.add(n)
     return out
 
 
@@ -925,6 +959,8 @@ def check_deps_installed() -> int:
              "beautifulsoup4": "bs4"}
 
     bad = 0
+    # この検査1回だけのキャッシュ。別の実行/修正後には持ち越さない。
+    imports = {}
     for wf in sorted((ROOT / ".github" / "workflows").glob("*.yml")):
         try:
             d = yaml.safe_load(wf.read_text(encoding="utf-8")) or {}
@@ -948,7 +984,7 @@ def check_deps_installed() -> int:
                     continue
                 for m in re.finditer(r"python\s+(?:-m\s+)?scripts/([\w_]+\.py)",
                                      run):
-                    for n in sorted(_third_party(m.group(1))):
+                    for n in sorted(_third_party(m.group(1), imports=imports)):
                         if n in have or n in {ALIAS.get(x, x) for x in have}:
                             continue
                         bad += 1
@@ -998,31 +1034,72 @@ def check_workflow_links() -> int:
 def main() -> int:
     import tempfile
 
+    global TEST_SHARD, IMPORT_WORKERS
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--section", choices=("all", "static", "tests"), default="all",
+                        help="全体/静的検査/全試験のどれを実行するか")
+    parser.add_argument("--test-shard", default="0/1", help="試験の分割番号/総数（0始まり）")
+    parser.add_argument("--import-workers", type=int, default=1, help="起動確認の同時実行数")
+    parser.add_argument("--timings-json", type=pathlib.Path, help="コマンド別の所要秒数の保存先")
+    args = parser.parse_args()
+    if args.import_workers < 1:
+        parser.error("--import-workers は1以上で指定してください")
+    try:
+        index, count = map(int, args.test_shard.split("/"))
+        if not 0 <= index < count:
+            raise ValueError
+    except ValueError:
+        parser.error("--test-shard は 0 <= 番号 < 総数 の 番号/総数 で指定してください")
+    TEST_SHARD = (index, count)
+    IMPORT_WORKERS = args.import_workers
+    TIMINGS.clear()
+    started = time.perf_counter()
     tmp = tempfile.mkdtemp(prefix="collespo-checks-")
     failed = 0
-    failed += check_syntax()
-    failed += check_pyflakes()
-    failed += check_yaml()
-    step('点検の呼び方・投稿前の共通入口')
-    import sanity_workflows
-    gate_errors = sanity_workflows.errors(ROOT)
-    for error in gate_errors:
-        print('NG', error)
-    failed += len(gate_errors)
-    failed += check_shell_in_yaml()
-    failed += check_imports()
-    failed += check_tests(tmp)
-    failed += check_inventory()
-    failed += check_commit_list()
-    failed += check_secrets_passed()
-    failed += check_splits_reader()
-    failed += check_render_coverage()
-    failed += check_shared_owned()
-    failed += check_redefined()
-    failed += check_arg_choices()
-    failed += check_root_imports()
-    failed += check_deps_installed()
-    failed += check_workflow_links()
+    phases = []
+
+    def measured(check, *check_args):
+        phase_started = time.perf_counter()
+        result = check(*check_args)
+        seconds = time.perf_counter() - phase_started
+        phases.append({"phase": check.__name__, "seconds": seconds, "failed": result})
+        print(f"所要時間 {check.__name__}: {seconds:.1f}秒", flush=True)
+        return result
+
+    if args.section != "tests":
+        failed += measured(check_syntax)
+        failed += measured(check_pyflakes)
+        failed += measured(check_yaml)
+        step('点検の呼び方・投稿前の共通入口')
+        import sanity_workflows
+        gate_errors = sanity_workflows.errors(ROOT)
+        for error in gate_errors:
+            print('NG', error)
+        failed += len(gate_errors)
+        failed += measured(check_shell_in_yaml)
+        failed += measured(check_imports)
+    if args.section != "static":
+        failed += measured(check_tests, tmp)
+    if args.section != "tests":
+        failed += measured(check_inventory)
+        failed += measured(check_commit_list)
+        failed += measured(check_secrets_passed)
+        failed += measured(check_splits_reader)
+        failed += measured(check_render_coverage)
+        failed += measured(check_shared_owned)
+        failed += measured(check_redefined)
+        failed += measured(check_arg_choices)
+        failed += measured(check_root_imports)
+        failed += measured(check_deps_installed)
+        failed += measured(check_workflow_links)
+
+    elapsed = time.perf_counter() - started
+    print(f"検査所要時間: {elapsed:.1f}秒")
+    if args.timings_json:
+        args.timings_json.parent.mkdir(parents=True, exist_ok=True)
+        args.timings_json.write_text(json.dumps({"elapsed_seconds": elapsed,
+            "test_shard": list(TEST_SHARD), "section": args.section, "failed": failed,
+            "phases": phases, "commands": TIMINGS}, ensure_ascii=False, indent=2), encoding="utf-8")
 
     print()
     if failed:

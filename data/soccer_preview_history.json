@@ -655,5 +655,123 @@
         }
       }
     ]
+  },
+  "2026-11-01": {
+    "day": "2026-11-01",
+    "video_id": "bC4GTy4VKxo",
+    "title": "【欧州サッカー】今夜の注目試合｜リバプール vs アーセナル ほか #Shorts",
+    "published_at": "2026-11-01T10:09:08.518472+00:00",
+    "binding": {
+      "material_sha256": "677223a014edcf1ffb02078ee40efd58f523a5932b8f84582acc7e4aa95f161c",
+      "narration_sha256": "34ce262d3c4d9774dcf34e3f4e47d4c6aee3798f1c8db72cca333954dcc2f7e4"
+    },
+    "games": [
+      {
+        "game_id": "560631",
+        "espn_event_id": "401879246",
+        "league": "プレミアリーグ",
+        "competition_code": "PL",
+        "home": "リバプール",
+        "away": "アーセナル",
+        "start_utc": "2026-11-02T01:30:00+09:00",
+        "reasons": [
+          {
+            "kind": "rank",
+            "text": "5位リバプール対2位アーセナル、順位差3の直接対決",
+            "ranks": [
+              5,
+              2
+            ],
+            "rank_difference": 3
+          },
+          {
+            "kind": "points",
+            "text": "勝点差6",
+            "gap": 6.0
+          }
+        ],
+        "expectation": null,
+        "spoken": "日本時間1時30分、リバプール対アーセナル。5位リバプール対2位アーセナル、順位差3の直接対決。勝点差6。リバプールは昨季プレミアリーグ5位。アーセナルは昨季プレミアリーグ1位。見どころは、この順位差が今回どう表れるかです。",
+        "standings": {
+          "home": {
+            "rank": 5,
+            "games_back": 2.0,
+            "streak": 0,
+            "wins": 0,
+            "losses": 0,
+            "last_ten": null,
+            "points_back": 6.0,
+            "as_of": "2026-11-01T09:53:44.321578+00:00",
+            "competition": "PL",
+            "season": null
+          },
+          "away": {
+            "rank": 2,
+            "games_back": 0.0,
+            "streak": 0,
+            "wins": 0,
+            "losses": 0,
+            "last_ten": null,
+            "points_back": 0.0,
+            "as_of": "2026-11-01T09:53:44.321578+00:00",
+            "competition": "PL",
+            "season": null
+          }
+        }
+      },
+      {
+        "game_id": "558547",
+        "espn_event_id": "401874949",
+        "league": "セリエA",
+        "competition_code": "SA",
+        "home": "ユベントス",
+        "away": "ナポリ",
+        "start_utc": "2026-11-02T04:45:00+09:00",
+        "reasons": [
+          {
+            "kind": "rank",
+            "text": "9位ユベントス対7位ナポリ、順位差2の直接対決",
+            "ranks": [
+              9,
+              7
+            ],
+            "rank_difference": 2
+          },
+          {
+            "kind": "points",
+            "text": "勝点差0",
+            "gap": 0.0
+          }
+        ],
+        "expectation": null,
+        "spoken": "日本時間4時45分、ユベントス対ナポリ。9位ユベントス対7位ナポリ、順位差2の直接対決。勝点差0。ユベントスは昨季セリエA6位。ナポリは昨季セリエA2位。見どころは、この順位差が今回どう表れるかです。",
+        "standings": {
+          "home": {
+            "rank": 9,
+            "games_back": 3.7,
+            "streak": 0,
+            "wins": 0,
+            "losses": 0,
+            "last_ten": null,
+            "points_back": 11.0,
+            "as_of": "2026-11-01T09:53:44.321578+00:00",
+            "competition": "SA",
+            "season": null
+          },
+          "away": {
+            "rank": 7,
+            "games_back": 3.7,
+            "streak": 0,
+            "wins": 0,
+            "losses": 0,
+            "last_ten": null,
+            "points_back": 11.0,
+            "as_of": "2026-11-01T09:53:44.321578+00:00",
+            "competition": "SA",
+            "season": null
+          }
+        }
+      }
+    ]
   }
 }

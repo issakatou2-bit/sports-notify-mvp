@@ -8939,6 +8939,51 @@
       },
       "host_fallback_reason": null,
       "privacy": "public"
+    },
+    "2026-11-01": {
+      "video_id": "bC4GTy4VKxo",
+      "url": "https://youtu.be/bC4GTy4VKxo",
+      "title": "【欧州サッカー】今夜の注目試合｜リバプール vs アーセナル ほか #Shorts",
+      "published_at": "2026-11-01T10:09:08.518472+00:00",
+      "publish_at": "2026-11-01T10:30:00Z",
+      "preview_binding": {
+        "material_sha256": "677223a014edcf1ffb02078ee40efd58f523a5932b8f84582acc7e4aa95f161c",
+        "narration_sha256": "34ce262d3c4d9774dcf34e3f4e47d4c6aee3798f1c8db72cca333954dcc2f7e4"
+      },
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-01",
+        "enabled": false,
+        "assigned": "generic",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false
+      },
+      "duration_seconds": 42.53,
+      "short_information_count": 10,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-11-01",
+        "kind": "daily_soccer",
+        "phase": 1,
+        "planned_host": "ui",
+        "rule": "half-jst-week-v1",
+        "week": 42,
+        "weekday": 6
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-11-01T10:01:55.933576+00:00",
+        "comparison_eligible": false,
+        "label": "予定めたん（雨衣不可のため）",
+        "mode": "live",
+        "planned_host": "metan",
+        "reason": "ui_deadline_crosses_live",
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
     }
   },
   "weekly": {
@@ -18222,6 +18267,47 @@
         "comparison_eligible": true,
         "planned_host": "metan",
         "reason": null,
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
+    },
+    "2026-11-01": {
+      "video_id": "3gmRRDyfGkY",
+      "url": "https://youtu.be/3gmRRDyfGkY",
+      "title": "南野拓実のモナコ、CL圏内まで勝点1｜リーグ・アン 順位争い【欧州サッカー】#Shorts",
+      "published_at": "2026-11-01T10:16:37.984563+00:00",
+      "publish_at": "2026-11-01T11:30:00Z",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-01",
+        "enabled": false,
+        "assigned": "generic",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false
+      },
+      "duration_seconds": 29.33,
+      "short_information_count": 6,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-11-01",
+        "kind": "soccer_race",
+        "phase": 1,
+        "planned_host": "ui",
+        "rule": "half-jst-week-v1",
+        "week": 42,
+        "weekday": 6
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-11-01T10:11:01.028725+00:00",
+        "comparison_eligible": false,
+        "label": "予定めたん（雨衣不可のため）",
+        "mode": "live",
+        "planned_host": "metan",
+        "reason": "ui_deadline_crosses_live",
         "version": 1
       },
       "host_fallback_reason": null,
