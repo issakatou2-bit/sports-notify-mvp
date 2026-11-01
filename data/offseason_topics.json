@@ -1,17 +1,18 @@
 {
   "day": "2026-11-01",
+  "state": "ready",
   "topics": [
     {
       "key": "offseason_schedule_2026_35b4bc2c79e5",
-      "label": "MLBオフの1週間の予定",
-      "heading": "MLBオフの1週間の予定",
+      "label": "MLBオフの主な予定",
+      "heading": "MLBオフの主な予定",
       "kind_label": "MLB",
       "data_credit": "MLB.com",
       "v3": {
         "source": "出典: MLB.com / 日付は米東部"
       },
-      "hook": "MLBオフの1週間の予定",
-      "intro": "この先1週間のMLBオフの予定です。日付はすべてアメリカ東部の日付でお伝えします。",
+      "hook": "MLBオフの主な予定",
+      "intro": "この先のMLBオフの主な予定です。日付はすべてアメリカ東部の日付でお伝えします。",
       "intro_as_is": true,
       "style": "v3",
       "source": "MLB公式｜日付は米東部",
@@ -27,7 +28,7 @@
         ],
         [
           "11月2日｜全球団との交渉解禁",
-          "11月2日、FA選手と全球団との交渉が解禁される予定です"
+          "11月2日、FA選手が全球団と交渉できるようになる予定です"
         ],
         [
           "11月2日｜QOの提示期限",
@@ -65,11 +66,11 @@
             "id": "free-agency",
             "date_et": "2026-11-02",
             "label": "全球団との交渉解禁",
-            "text": "FA選手と全球団との交渉が解禁される予定です",
+            "text": "FA選手が全球団と交渉できるようになる予定です",
             "source": "https://www.mlb.com/news/braves-key-offseason-dates-2026-2027",
             "event_id": "calendar:free-agency",
             "head": "11月2日｜全球団との交渉解禁",
-            "body": "11月2日、FA選手と全球団との交渉が解禁される予定です",
+            "body": "11月2日、FA選手が全球団と交渉できるようになる予定です",
             "japanese": false
           },
           {
@@ -506,6 +507,5 @@
       },
       "description_line": "連載「日本人選手の来季」では、MLB公式に確定した移籍・契約などの動きを追います。"
     }
-  ],
-  "state": "ready"
+  ]
 }
