@@ -1,0 +1,49 @@
+{
+  "publication_id": "asset:topic:season_compare_2026_579328_608372",
+  "domain": "asset",
+  "kind": "topic",
+  "key_parts": {
+    "topic": "season_compare_2026_579328_608372"
+  },
+  "version": 1,
+  "history": [
+    {
+      "source": "published_assets/assets/season_compare_2026_579328_608372",
+      "service": "youtube",
+      "video_id": "2WZP5sJpdSc",
+      "state": "uploaded",
+      "scheduled_at": null,
+      "event_day": null,
+      "material_day": null,
+      "edition_day": null,
+      "run_at": "2026-11-01T10:33:59.019346+00:00",
+      "details": {
+        "privacy": "public"
+      },
+      "run_id": "41297629535",
+      "attempt": "1",
+      "recorded_at": "2026-11-01T10:33:59.026580+00:00",
+      "fingerprint": "b582d6c6ad454f3a84a9bf497eeb8a8959d31dfab1db91f2f3993e8f2a843682",
+      "event_id": "8537ddfa66e577af71d791749f282814f9ff78ae167da5f85827f5b3b0a23f56"
+    },
+    {
+      "source": "published_videos/asset/season_compare_2026_579328_608372",
+      "service": "youtube",
+      "video_id": "2WZP5sJpdSc",
+      "state": "uploaded",
+      "scheduled_at": null,
+      "event_day": null,
+      "material_day": null,
+      "edition_day": null,
+      "run_at": "2026-11-01T10:33:59.036480+00:00",
+      "details": {
+        "privacy": "public"
+      },
+      "run_id": "41297629535",
+      "attempt": "1",
+      "recorded_at": "2026-11-01T10:33:59.053259+00:00",
+      "fingerprint": "b19eca7846d7e9c3c4ffb447c954365a7b33887aa6ea78c99e9c52d1d601fc79",
+      "event_id": "9d236b6279f20b5241d769e2f64ea4a99ce1915b85f33de62ddb0f6595ddb018"
+    }
+  ]
+}
