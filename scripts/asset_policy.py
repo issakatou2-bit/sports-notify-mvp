@@ -5,6 +5,17 @@ PAUSED_KINDS = frozenset({"venue", "season_team", "team"})
 PAUSE_NOTE = "球場・球団まとめは10/26の本人判断で新規制作を停止。本数の補充はしません。"
 
 
+def season_kind(key):
+    """PS・RSに共通の型。同じ日に同じ型を重ねない。"""
+    return '_'.join(key.split('_')[:2])
+
+
+def merge_records(older, newer):
+    """同じ鍵は一度だけ数え、片方にだけある予約日などを保持する。"""
+    return {key: {**(older.get(key) or {}), **(newer.get(key) or {})}
+            for key in older.keys() | newer.keys()}
+
+
 def paused(topic):
     topic = (topic or "").removeprefix("asset:")
     if topic.startswith('offseason_'):

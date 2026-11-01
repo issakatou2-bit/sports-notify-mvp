@@ -42,10 +42,18 @@ def recent(player_id, kind, as_of=None, ledgers=None):
     videos, assets = ledgers if ledgers is not None else load()
     as_of = as_of or datetime.now(timezone.utc)
     rows = list(videos.get('player_story', {}).values()) if kind == 'season_player' else []
+    rows += [dict(row, _topic=key) for key, row in videos.get('asset', {}).items()]
     if kind == 'player_story':
         rows += [dict(row, player_id=row.get('player_id') or key.removeprefix('season_player_'))
                  for key, row in assets.get('assets', {}).items() if key.startswith('season_player_')]
+    # 比較・所属回も全選手を両台帳の7日窓へ入れる。旧単独回の鍵も読む。
+    for key, row in assets.get('assets', {}).items():
+        candidate = dict(row, _topic=key)
+        if str(player_id) in row_ids(candidate):
+            rows.append(dict(row, player_id=str(player_id)))
     for row in rows:
+        if str(player_id) in row_ids(row):
+            row = dict(row, player_id=str(player_id))
         pid = row.get('player_id')
         if not pid and kind == 'season_player':
             # 旧記録にも対応。題の日本語名は既存登録表と一意に照合する。
@@ -66,6 +74,24 @@ def recent(player_id, kind, as_of=None, ledgers=None):
         if abs(as_of-at) <= timedelta(days=7):
             return True
     return False
+
+
+def row_ids(row):
+    result = {str(x) for x in row.get('player_ids', [])}
+    if row.get('player_id'):
+        result.add(str(row['player_id']))
+    topic = row.get('_topic', '')
+    match = re.fullmatch(r'season_compare_2026_(\d+)_(\d+)', topic)
+    if match:
+        result.update(match.groups())
+    pid = topic_id(topic)
+    if pid:
+        result.add(pid)
+    # 過去の所属回はtitleにも全員を記録してある。一人へ絞らない。
+    for t in read('data/season_topics.json').get('topics', []):
+        if t.get('jp') and t['jp'] in row.get('title', '') and t.get('player_id'):
+            result.add(str(t['player_id']))
+    return result
 
 
 def topic_id(topic):
