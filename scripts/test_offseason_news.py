@@ -175,6 +175,16 @@ class OffseasonTests(unittest.TestCase):
         rows = [self.award(season=2025), self.award(name='Unknown'), dict(player=dict(id=1, name='Shohei Ohtani'))]
         self.assertEqual(n.award_rows({'NLMVP': {'awards': rows}}, 2026, jp, table), [])
 
+    def test_award_before_announcement_is_empty_but_other_errors_stop(self):
+        import requests
+        def failing(status):
+            def fetch(path, **params):
+                raise requests.HTTPError(response=Mock(status_code=status))
+            return fetch
+        self.assertEqual(n.recipients('ALMVP', 2026, failing(404)), {'awards': []})
+        with self.assertRaises(requests.HTTPError):
+            n.recipients('ALMVP', 2026, failing(500))
+
     def test_rank_two_is_not_a_finalist(self):
         jp, table = n.names()
         self.assertEqual(n.award_rows({'NLMVP': {'awards': [self.award(rank=2)]}}, 2026, jp, table), [])
