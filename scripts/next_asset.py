@@ -72,7 +72,7 @@ def published(path: str) -> set:
 
 
 def posted_today(path: str, today=None, kinds=None, count=False,
-                 exclude=()):
+                 exclude=(), extra=None):
     """きょう、もう1本出したか。
 
     **起動する入口が2つある。**cron-job.org（JST 22:00）と、
@@ -86,7 +86,8 @@ def posted_today(path: str, today=None, kinds=None, count=False,
         rows = (json.loads(pathlib.Path(path).read_text(encoding="utf-8"))
                 .get("assets") or {})
     except (json.JSONDecodeError, OSError):
-        return False
+        rows = {}
+    rows = merge_records(extra or {}, rows)
     hits = 0
     for key, rec in rows.items():
         # 種類を絞るとき（シーズンまとめの枠は、自分の本数だけ数える。
@@ -95,7 +96,7 @@ def posted_today(path: str, today=None, kinds=None, count=False,
             continue
         if kind_of(key) in exclude:
             continue
-        stamp = (rec or {}).get("published_at")
+        stamp = (rec or {}).get("publish_at") or (rec or {}).get("published_at")
         if not stamp:
             continue
         try:
@@ -110,6 +111,11 @@ def posted_today(path: str, today=None, kinds=None, count=False,
 def kind_of(key: str) -> str:
     """トピックの種類。キーの頭で決まる（team_ana → team）。"""
     return (key or "").split("_")[0] or "?"
+
+
+def merge_records(older, newer):
+    """片方の旧記録で予約日などの補足を消さず、同じ鍵は一度だけ数える。"""
+    return asset_policy.merge_records(older, newer)
 
 
 def daily_limit_reached(path: str, requested_topic="next", again=False) -> bool:
@@ -217,28 +223,81 @@ def pick_season(args) -> int:
     その日に出したぶんを引く。資産動画の枠とは別に数える。
     """
     import generate_asset_video as gav
+    import player_publications as publications
+    ledgers = publications.load(assets_path=args.published)
     done = published(args.published)
     left = max(0, args.season - posted_today(args.published,
-                                             kinds={"season"}, count=True))
+                                             kinds={"season"}, count=True, extra=ledgers[0].get('asset', {})))
     todo = sorted((k for k, v in gav.LIST_TOPICS.items()
                    if kind_of(k) == "season" and k not in done and not started(v)
                    and asset_policy.selectable(k, v)),
                   key=lambda k: season_order(k, gav.LIST_TOPICS[k]))
-    import player_publications as publications
-    ledgers = publications.load(assets_path=args.published)
     todo = [k for k in todo if not publications.topic_id(k) or not publications.recent(publications.topic_id(k), 'season_player', ledgers=ledgers)]
+    import jp_assets
+    todo = [k for k in todo if jp_assets.available(k, gav.LIST_TOPICS[k], ledgers)]
+    todo = [k for k in todo if season_material_ready(gav, k)]
     import ui_voice_stock
     todo = ui_voice_stock.prioritize(todo)
     picked = []
+    used = season_kinds_today(args.published, extra=ledgers[0].get('asset', {}))
+    used_players = set()
     for k in todo:
         if len(picked) >= left:
             break
+        kind = season_kind(k)
+        players = jp_assets.ids(k, gav.LIST_TOPICS[k])
+        if kind in used or players & used_players:
+            continue
         if not superseded(gav.LIST_TOPICS[k]):
             picked.append(k)
+            used.add(kind)
+            used_players.update(players)
     print(" ".join(picked))
     print(f"[info] シーズンまとめ: 残り{len(todo)}本、きょう{len(picked)}本",
           file=sys.stderr)
     return 0
+
+
+def season_kind(key):
+    """PS・通年振り返りに共通の型。同じ日に同じ型を繰り返さない。"""
+    return asset_policy.season_kind(key)
+
+
+def season_material_ready(generator, key):
+    """制作器と同じ情報数で先に判定。薄い1本で日次の選択枠を使わない。"""
+    import short_content
+    try:
+        document = generator.build_narration(key)
+        units = short_content.information(document, generator.LIST_TOPICS[key])
+    except (KeyError, TypeError, ValueError) as error:
+        print(f'[warn] {key}: 材料の情報数を確認できないため選びません: {error}', file=sys.stderr)
+        return False
+    if len(units) < short_content.MIN_INFORMATION:
+        print(f'[info] {key}: 独立情報{len(units)}件で既存下限未満のため選びません', file=sys.stderr)
+        return False
+    return True
+
+
+def season_kinds_today(path, today=None, extra=None):
+    from datetime import timedelta
+    jst = timezone(timedelta(hours=9))
+    today = today or datetime.now(jst).date()
+    try:
+        rows = json.loads(pathlib.Path(path).read_text(encoding='utf-8')).get('assets') or {}
+    except (OSError, ValueError):
+        rows = {}
+    rows = merge_records(extra or {}, rows)
+    used = set()
+    for key, row in rows.items():
+        if not key.startswith('season_'):
+            continue
+        try:
+            at = datetime.fromisoformat(str(row.get('publish_at') or row['published_at']).replace('Z', '+00:00'))
+            if at.astimezone(jst).date() == today:
+                used.add(season_kind(key))
+        except (ValueError, KeyError):
+            continue
+    return used
 
 
 def main() -> int:

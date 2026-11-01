@@ -162,9 +162,10 @@ class PlayerTests(unittest.TestCase):
         from types import SimpleNamespace
         import sys
         args = SimpleNamespace(published='unused', season=1)
-        topics = {'season_player_660271':{}, 'season_player_808967':{}}
+        topics = {'season_player_660271':dict(title='大谷翔平の成績', source='MLB Stats API', game_type='R'),
+                  'season_player_808967':dict(title='山本由伸の成績', source='MLB Stats API', game_type='R')}
         row = dict(player_id='660271', published_at=datetime.now(timezone.utc).isoformat())
-        with patch.dict(sys.modules, {'generate_asset_video':SimpleNamespace(LIST_TOPICS=topics)}), \
+        with patch.dict(sys.modules, {'generate_asset_video':__import__('asset_selection_fixture').generator(topics)}), \
                 patch.object(next_asset, 'published', return_value=set()), \
                 patch.object(next_asset, 'posted_today', return_value=0), \
                 patch.object(players, 'load', return_value=({'player_story':{'day':row}}, {})), \

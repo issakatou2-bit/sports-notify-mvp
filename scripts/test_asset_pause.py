@@ -3,7 +3,6 @@ import contextlib
 import io
 from pathlib import Path
 import sys
-import types
 import unittest
 from unittest.mock import patch
 
@@ -20,7 +19,7 @@ TOPICS['season_player_1'].update(title='大谷翔平の成績', source='MLB Stat
 class PauseTests(unittest.TestCase):
     def select(self, topics, season=0, avg=None):
         output = io.StringIO()
-        generator = types.SimpleNamespace(LIST_TOPICS=topics)
+        generator = __import__('asset_selection_fixture').generator(topics)
         with patch.dict(sys.modules, {'generate_asset_video': generator}), \
                 patch.object(na, 'published', return_value=set()), \
                 patch.object(na, 'posted_today', return_value=0), \

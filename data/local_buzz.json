@@ -1,36 +1,36 @@
 {
-  "updated_at": "2026-10-31T06:01:47.483684+00:00",
+  "updated_at": "2026-11-01T06:03:12.409752+00:00",
   "sources": [
     {
       "name": "MLB公式",
-      "items": 25
+      "items": 24
     }
   ],
-  "titles_count": 25,
+  "titles_count": 24,
   "teams": [
     {
       "team_id": "158",
       "name": "ブリュワーズ",
       "name_en": "Milwaukee Brewers",
+      "mentions": 5,
+      "tone": "話題",
+      "gist": "ブリュワーズ初のWS制覇、パレードや話題続々"
+    },
+    {
+      "team_id": "139",
+      "name": "レイズ",
+      "name_en": "Tampa Bay Rays",
       "mentions": 3,
       "tone": "好調",
-      "gist": "ブリュワーズ、44年ぶり優勝パレード"
+      "gist": "ラスムッセンが27年残留、マルティネスらFAに"
     },
     {
-      "team_id": "143",
-      "name": "フィリーズ",
-      "name_en": "Philadelphia Phillies",
+      "team_id": "110",
+      "name": "オリオールズ",
+      "name_en": "Baltimore Orioles",
       "mentions": 1,
-      "tone": "話題",
-      "gist": "フィリーズ新打撃コーチ、粘る打線へ"
-    },
-    {
-      "team_id": "109",
-      "name": "ダイヤモンドバックス",
-      "name_en": "Arizona Diamondbacks",
-      "mentions": 1,
-      "tone": "話題",
-      "gist": "レンジャーズのウォルコット、秋季リーグで外野へ"
+      "tone": "不振",
+      "gist": "オリオールズ、故障続きのロバートの27年契約を拒否"
     },
     {
       "team_id": "111",
@@ -38,15 +38,15 @@
       "name_en": "Boston Red Sox",
       "mentions": 1,
       "tone": "話題",
-      "gist": "タイガースがレッドソックスからチェン獲得"
+      "gist": "レッドソックスがチェン内野手をタイガースへ放出"
     },
     {
-      "team_id": "140",
-      "name": "レンジャーズ",
-      "name_en": "Texas Rangers",
+      "team_id": "119",
+      "name": "ドジャース",
+      "name_en": "Los Angeles Dodgers",
       "mentions": 1,
       "tone": "話題",
-      "gist": "ウォルコット、秋季リーグで外野に挑戦"
+      "gist": "ドジャースの27年ロースター予想の記事"
     },
     {
       "team_id": "116",
@@ -54,23 +54,23 @@
       "name_en": "Detroit Tigers",
       "mentions": 1,
       "tone": "話題",
-      "gist": "タイガース、レッドソックスからチェン獲得"
+      "gist": "タイガースがレッドソックスからチェン獲得"
     },
     {
-      "team_id": "117",
-      "name": "アストロズ",
-      "name_en": "Houston Astros",
-      "mentions": 1,
-      "tone": "話題",
-      "gist": "アストロズ、フローレスを新GMに起用"
-    },
-    {
-      "team_id": "139",
-      "name": "レイズ",
-      "name_en": "Tampa Bay Rays",
+      "team_id": "135",
+      "name": "パドレス",
+      "name_en": "San Diego Padres",
       "mentions": 1,
       "tone": "不振",
-      "gist": "レイズ、マルティネスとマリンズ契約見送り"
+      "gist": "パドレス、ピベッタの27年球団オプション拒否でFA"
+    },
+    {
+      "team_id": "112",
+      "name": "カブス",
+      "name_en": "Chicago Cubs",
+      "mentions": 1,
+      "tone": "好調",
+      "gist": "カブスの歴史的な守備のハイライト5選"
     }
   ],
   "players": []
