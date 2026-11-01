@@ -25,8 +25,34 @@ def summarize(store):
     return result
 
 
+def by_outro(store, published):
+    """最新の動画別取得期間を比較。日別の全体集計とは混ぜない。"""
+    days = store.get('days', {})
+    if not days:
+        return {}
+    latest = days[max(days)]
+    variants = {rec['video_id']: rec['outro_next']
+                for group in published.values() if isinstance(group, dict)
+                for rec in group.values() if isinstance(rec, dict)
+                and rec.get('video_id') and rec.get('outro_next', {}).get('enabled')
+                and rec['outro_next'].get('eligible')}
+    groups = {}
+    for row in latest.get('videos', []):
+        plan = variants.get(row.get('video'))
+        if plan:
+            groups.setdefault(plan['variant'], []).append(row)
+    return dict(range=latest.get('range'), source='latest video report; top 200 only',
+        groups={key: dict(videos=len(rows), views=sum(r.get('views',0) for r in rows),
+            likes=sum(r.get('likes',0) for r in rows),
+            subscribersGained=sum(r.get('subscribersGained',0) for r in rows))
+            for key, rows in groups.items()})
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--analytics', default='data/analytics.json')
+    parser.add_argument('--published', default='data/published_videos.json')
     args = parser.parse_args()
-    print(json.dumps(summarize(json.loads(Path(args.analytics).read_text(encoding='utf-8'))), ensure_ascii=False, indent=2))
+    store = json.loads(Path(args.analytics).read_text(encoding='utf-8'))
+    published = json.loads(Path(args.published).read_text(encoding='utf-8'))
+    print(json.dumps(dict(weeks=summarize(store), outro=by_outro(store,published)), ensure_ascii=False, indent=2))

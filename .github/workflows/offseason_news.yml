@@ -13,6 +13,7 @@ concurrency:
   cancel-in-progress: false
 env:
   COLLESPO_OFFSEASON_NEWS: ${{ vars.COLLESPO_OFFSEASON_NEWS || '' }}
+  COLLESPO_OUTRO_NEXT: ${{ vars.COLLESPO_OUTRO_NEXT == 'on' && 'on' || 'off' }}
   COLLESPO_SHORT_LOOK: ${{ vars.COLLESPO_SHORT_LOOK || 'v4' }}
   COLLESPO_SOLO_HOST: ${{ vars.COLLESPO_SOLO_HOST || 'metan' }}
   COLLESPO_HOST_SPLIT: ${{ vars.COLLESPO_HOST_SPLIT || '' }}

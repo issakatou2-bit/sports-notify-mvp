@@ -1021,7 +1021,8 @@ OFFSEASON_OUTRO_TEXT = ("コレスポでは毎日、MLBの話題と欧州サッ�
 
 def outro_text(ps=None, today=None):
     import post_common
-    return OFFSEASON_OUTRO_TEXT if post_common.mlb_offseason(ps, today) else INSEASON_OUTRO_TEXT
+    original = OFFSEASON_OUTRO_TEXT if post_common.mlb_offseason(ps, today) else INSEASON_OUTRO_TEXT
+    return __import__("outro_next").speech(original, today)
 
 
 # 各制作器は1回の起動で原稿と描画を作る。既存の取り込み口を保つ。
@@ -1061,7 +1062,7 @@ def outro(t, spec=None, exclude="", credit="音声: VOICEVOX:四国めたん　�
     kb = ease_out((t - 1.8) / 0.4)
     if kb > 0:
         f = font(38)
-        text = "チャンネル登録で毎日届きます"
+        text = __import__("outro_next").card(_CAPTION.get("text", ""), "チャンネル登録で毎日届きます")
         bw = round(d.textlength(text, font=f)) + 56
         d.rectangle((LEFT, y + 20, LEFT + round(bw * kb), y + 100), fill=GOLD)
         lay = Image.new("RGBA", (bw, 80), (0, 0, 0, 0))

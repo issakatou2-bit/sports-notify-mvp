@@ -2297,6 +2297,10 @@ def main():
     publish_at = resolve_publish_at(args.publish_at)
     import hook_ab
     experiment = hook_ab.publication(args.video, publish_at)
+    import outro_next
+    outro_record = outro_next.publication(args.video, hook_ab.publication_day(publish_at))
+    if outro_record:
+        experiment = dict(experiment or {}, **outro_record)
     body["status"] = {
         "privacyStatus": "private" if publish_at else args.privacy,
         "selfDeclaredMadeForKids": False,
