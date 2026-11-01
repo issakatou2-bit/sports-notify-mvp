@@ -100,6 +100,11 @@ def ai_review(documents, issues, materials, api_key):
     if (input_bytes > MAX_INPUT_BYTES or model not in token_log.PRICES
             or bound > MAX_COST_USD):
         return [], dict(info, status='短い入力・費用上限を超えるため機械照合のみ')
+    import sanity_budget
+    try:
+        sanity_budget.reserve('sanity_recheck')
+    except sanity_budget.Exhausted:
+        return [], dict(info, status='実行全体の追加検査1回を消費済み・機械照合のみ')
     try:
         import anthropic
         info.update(calls=1, actual_usd=None)

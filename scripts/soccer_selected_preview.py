@@ -23,7 +23,19 @@ def preview_details(game):
             if row and any((display_names.lookup(game[s+'_team_name']) or {}).get('id')==row['id'] for s in ('home','away')):
                 fact=f"{row['display']}は昨季{scope}{int(rank)}位"
                 if fact not in details:details.append(fact)
-    return details[:2]
+    # 欠測の「—」は上の数値抽出で渡らない。片側だけの実績はクラブ名つきの
+    # 独立した事実として保ち、後段でも2クラブの順位差とは語らない。
+    # 0位や大会違いの2件を比較へ渡さない。正常な文と順序は保つ。
+    sides = {s: (display_names.lookup(game.get(s+'_team_name')) or {}).get('display')
+             for s in ('home', 'away')}
+    paired = [re.fullmatch(r'(.+)は昨季(.+?)(\d+)位', fact) for fact in details]
+    if (not 1 <= len(paired) <= 2 or not all(paired)
+            or any(m[1] not in sides.values() for m in paired)
+            or any(not 1 <= int(m[3]) <= 64 for m in paired)):
+        return []
+    if len(paired)==2 and ({m[1] for m in paired} != set(sides.values()) or paired[0][2] != paired[1][2]):
+        return []
+    return details
 
 
 def spoken_club(game,side):

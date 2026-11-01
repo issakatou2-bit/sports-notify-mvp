@@ -389,7 +389,13 @@ def render_video(plan,audio,out,audio_dir=None):
                 snap=min(3,duration*.6) if seg['kind']=='outro' else min(1.4,duration*.6)
                 r3.set_program_clock(clock+snap);im=frame(snap,seg,plan)
                 errors=check_frame(im,plan)
-                if errors:raise ValueError(f'画面{i}: {errors}')
+                if errors:
+                    import hashlib
+                    (out/'layout_hold.json').write_text(json.dumps(dict(status='held', scene=i,
+                        segments_sha256=hashlib.sha256(json.dumps(narr['segments'], ensure_ascii=False,
+                            sort_keys=True).encode()).hexdigest(),
+                        errors=errors), ensure_ascii=False, indent=2)+'\n', encoding='utf8')
+                    raise ValueError(f'画面{i}: {errors}')
                 im.save(out/f'{i+1:02d}.png');images.append(im)
                 for k in range(round(duration*30)):
                     r3.set_program_clock(clock+k/30);im=frame(k/30,seg,plan)

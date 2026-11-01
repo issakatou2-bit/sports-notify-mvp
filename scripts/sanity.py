@@ -439,7 +439,18 @@ def general(paths, api_key, materials=None):
     try:
         import anthropic
         import backstage_guard
-        resp = backstage_guard.create(anthropic.Anthropic(api_key=api_key), label='sanity', category='sanity',
+        import sanity_budget
+        bounded = sanity_budget.path() is not None
+        client = anthropic.Anthropic(api_key=api_key, max_retries=0) if bounded else anthropic.Anthropic(api_key=api_key)
+        if bounded:
+            from types import SimpleNamespace
+            actual_create = client.messages.create
+            def request(**kwargs):
+                # 楽屋語の訂正要求も同じ実行枠に数える。通常の受信検査は保つ。
+                sanity_budget.reserve('sanity')
+                return actual_create(**kwargs)
+            client = SimpleNamespace(messages=SimpleNamespace(create=request))
+        resp = backstage_guard.create(client, label='sanity', category='sanity',
             **llm_models.params("review", 900),
             messages=[{"role": "user",
                        "content": _prompt() + evidence + "\n".join(chunks)[:6000]}])
@@ -453,6 +464,9 @@ def general(paths, api_key, materials=None):
             raise ValueError('常識点検の応答に必須のkind（事実の誤り/説明不足・文脈）がありません')
         return issues
     except Exception as e:      # 見えなかっただけ。出すのは止めない
+        import sanity_budget
+        if isinstance(e, sanity_budget.Exhausted):
+            raise
         return [{"kind": sanity_material.CONTEXT, "severity": "low", "where": "(確認できず)", "why": str(e)[:200]}]
 
 
