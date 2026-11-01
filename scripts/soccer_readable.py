@@ -206,7 +206,12 @@ class Screen:
         lead=spec.get('game_id') or (spec.get('title_focus') or {}).get('game_id')
         hero=next((s for s in specs if s['game_id']==lead),specs[0])
         rest=[s for s in specs if s is not hero][:3]
-        self.title('今日の注目カード' if len(specs)==1 else f'注目{len(specs)}試合')
+        import soccer_title_v2
+        # 題の結論は表紙の見出しに出す。別の試合の場面へ持ち越さない。
+        head=(spec.get('title_focus') or {}).get('head','').split('｜')[0] if soccer_title_v2.enabled() else ''
+        title_bottom=self.lines(L,260,head,52,R-L) if head else 0
+        if not head:self.title('今日の注目カード' if len(specs)==1 else f'注目{len(specs)}試合')
+        body_top=max(BODY_TOP,title_bottom+16)
         chips=self.focus_lines(hero)
         people=[n for side in ('home','away') for n in (hero.get('jp') or {}).get(side,[])]
         note=('日本人選手　'+'・'.join(people[:3])) if people else ''
@@ -219,7 +224,7 @@ class Screen:
         rows=len(chips)+(1 if note else 0)+len(extra)
         card=536+(rows*70+24 if rows else 0)
         mini=len(rest)*104
-        top=BODY_TOP+max(0,(BODY_BOTTOM-BODY_TOP-card-mini-(18 if rest else 0))//4)
+        top=body_top+max(0,(BODY_BOTTOM-body_top-card-mini-(18 if rest else 0))//4)
         self.panel(top,top+card);self.stripe(top,hero['home'],hero['away'])
         self.text(100,top+36,hero['league']+'　'+hero['date'],30,R-L-56,c.MUTED,role='supplement')
         ranks=hero.get('ranks') or {}

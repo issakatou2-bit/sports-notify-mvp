@@ -126,7 +126,12 @@ def preview_head(data):
         if reason or form:
             head = conclusion+'｜'+subject+'対'+opponent
         elif gap is not None:
-            head = ('勝点で並ぶ' if gap == 0 else f'勝点差{gap:g}')+'｜'+subject+'対'+opponent
+            word = '勝点で並ぶ' if gap == 0 else f'勝点差{gap:g}'
+            ranks = [(game.get(s+'_standing') or {}).get('rank') for s in (side, other)]
+            if all(type(r) is int and r > 0 for r in ranks):
+                head = f'{ranks[0]}位{subject}対{ranks[1]}位{opponent}｜{word}'
+            else:
+                head = word+'｜'+subject+'対'+opponent
         else:
             head = f'{rank}位の'+subject+'が'+opponent+'と対戦'
     return dict(head=head, subject=subject, conclusion=conclusion, name=who,
@@ -145,7 +150,8 @@ def preview_plan(plan):
         if seg['kind']=='cover':
             import club_display_names
             spoken = (focus['name']+'の' if focus['name'] else '')+club_display_names.display(focus['club'])
-            seg['text'] = (focus.get('audio_head') or focus['head'].replace(focus['subject'], spoken, 1))+'。'
+            # 題の区切り｜は字幕と声に持ち込まない。
+            seg['text'] = (focus.get('audio_head') or focus['head'].replace(focus['subject'], spoken, 1)).replace('｜', '、')+'。'
             seg['meta']['title_focus'] = focus
         seg['meta']['ticker'] = focus['head']
     return plan
