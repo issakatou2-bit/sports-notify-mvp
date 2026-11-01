@@ -24,6 +24,27 @@ def match(sides, minutes=None):
 
 
 class StoryTests(unittest.TestCase):
+    def test_minimum_adds_saved_goal_minutes_only_when_focus_is_on(self):
+        import copy
+        import soccer_results_render as render
+        game = match(['home']*3, ['79','89','90+5'])
+        game['id'] = 'g'
+        data = dict(games=[game])
+        segments = [dict(kind='followup-detail',text='無失点で勝ちました。',speaker=2,caption_units=['無失点で勝ちました。'],meta=dict(event_id='g'))]
+        narr = dict(segments=segments)
+        voices = [dict(segments[0], duration=22, file='unused.wav')]
+        def voice(seg, previous, stage):
+            return dict(copy.deepcopy(seg),duration=29,file='unused.wav')
+        with patch.object(render, 'durations', side_effect=lambda segs, audio:[a['duration'] for a in audio]), patch('soccer_readable.minimum_seconds',return_value=0):
+            with patch.dict(os.environ, dict(COLLESPO_SOCCER_LOOK='v6',COLLESPO_SHORT_LOOK='v4',COLLESPO_SOCCER_FOCUS='on')):
+                revised, audio = story.fit_to_audio(narr,voices,data=data,resynthesize=voice)
+            self.assertIn('79分、89分、後半追加時間5分',revised['segments'][0]['text'])
+            self.assertEqual(audio[0]['duration'],29)
+            self.assertNotIn('focus_length_facts',narr['segments'][0]['meta'])
+            with patch.dict(os.environ, dict(COLLESPO_SOCCER_FOCUS='off')):
+                unchanged, _ = story.fit_to_audio(narr,voices,data=data,resynthesize=voice)
+            self.assertEqual(unchanged,narr)
+
     def test_four_goal_lead_and_late_reply(self):
         game = match(['home']*4+['away']*3,['5','33','50','60','76','85','90+2'])
         units = flow.flow_units(game)

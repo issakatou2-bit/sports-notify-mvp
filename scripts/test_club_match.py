@@ -46,6 +46,8 @@ CASES = [
     ("Ipswich Town FC", ["前田大然"]),
     ("Hull City AFC", ["守田英正"]),
     ("Real Sociedad de Fútbol", ["久保建英"]),
+    ("Lille OSC", ["上田綺世"]),
+    ("Lillestrøm SK", []),
     ("Valencia CF", ["佐藤龍之介"]),
     ("FC Bayern München", ["伊藤洋輝"]),
     ("TSG 1899 Hoffenheim", ["町田浩樹"]),

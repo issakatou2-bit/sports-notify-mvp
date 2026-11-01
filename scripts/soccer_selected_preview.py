@@ -41,6 +41,9 @@ def preview_details(game):
 def spoken_club(game,side):
     if side in (game.get('preview_name_fallbacks') or {}):
         return 'ホームのクラブ' if side=='home' else 'アウェーのクラブ'
+    import soccer_look
+    if soccer_look.focus():
+        return display_names.display(game[side+'_team_name'])
     # 和名の表に無いクラブは原語のまま返る（Beşiktaş JK を声で読んでいた）。画面と同じ表で読む。
     name=ne.club_name_jp(game[side+'_team_name'])
     return name if re.search(r'[ぁ-んァ-ヶ一-龯]',name) else display_names.display(name)

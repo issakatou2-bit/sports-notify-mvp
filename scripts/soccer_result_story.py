@@ -350,7 +350,37 @@ def fit_to_audio(narration,audio, *, data=None, audio_dir=None, resynthesize=Non
             if render.soccer_look.readable():
                 from soccer_readable import minimum_seconds
                 times=[max(t,minimum_seconds(s,data)) for s,t in zip(narr['segments'],times)]
-            if sum(math.ceil(t*render.FPS)/render.FPS for t in times)<=results.LIMIT:return narr,voices
+            measured = sum(math.ceil(t*render.FPS)/render.FPS for t in times)
+            if measured < 27 and data is not None and render.soccer_look.focus():
+                import soccer_story_lines as flow
+                # 下限不足は表示時間・話速では埋めず、保存した得点時刻を補う。
+                for i, seg in enumerate(narr['segments']):
+                    if seg['kind'] != 'followup-detail' or seg['meta'].get('focus_length_facts'):
+                        continue
+                    game = next(g for g in data['games'] if g['id'] == seg['meta']['event_id'])
+                    trace = flow.goal_trace(game)
+                    if not trace:
+                        continue
+                    def time_fact(goal):
+                        base,_,extra=str(goal['minute']).partition('+')
+                        if extra:
+                            return ('前半' if int(base)<=45 else '後半')+'追加時間'+str(int(extra))+'分'
+                        return facts.minute_text(goal['minute'])
+                    line = '得点が入ったのは、' + '、'.join(time_fact(row[0]) for row in trace) + 'です。'
+                    if line in seg['text']:
+                        continue
+                    seg['text'] += line
+                    seg.setdefault('caption_units', [seg['text'][:-len(line)]]).append(line)
+                    seg['meta']['focus_length_facts'] = dict(evidence='games.goals.minute', before_seconds=measured)
+                    previous = voices[i]
+                    voices[i] = (resynthesize(seg, previous, 'minimum') if resynthesize else
+                                 rebuild_voice(seg, previous, audio_dir or Path(previous['file']).parent, 'minimum'))
+                    narr.setdefault('results_length_adjustment', []).append(dict(kind='focus-minimum-facts', before_seconds=measured))
+                    break
+                else:
+                    raise ValueError('27秒未満で追加できる確認済みの得点時刻がありません')
+                continue
+            if measured<=results.LIMIT:return narr,voices
         except ValueError as error:
             if '60秒' not in str(error):raise
         index=next((i for i in reversed(range(len(narr['segments']))) if narr['segments'][i]['kind']=='followup-detail' and not narr['segments'][i]['meta'].get('required')),None)

@@ -1879,6 +1879,15 @@ def normalize_club(name: str) -> str:
     return "".join(c for c in ascii_only.lower() if c.isalnum())
 
 
+def club_token_in(token: str, norm: str) -> bool:
+    """名簿の照合語がクラブ名に含まれるか。
+
+    部分一致なので lille が Lillestrøm SK にも当たり、ノルウェーの試合を
+    リールと読んで上田綺世の試合と紹介していた（10/15 公開、11/2 発見）。
+    """
+    return token in norm and not (token == "lille" and "lillestrom" in norm)
+
+
 def jp_players_for_club(name: str, league: str | None = None) -> list:
     """APIが返したクラブ名に所属する日本人選手を返す。無ければ空。"""
     norm = normalize_club(name)
@@ -1886,7 +1895,7 @@ def jp_players_for_club(name: str, league: str | None = None) -> list:
         return []
     return [
         p for p in JP_PLAYERS_SOCCER
-        if p["match"] in norm and (league is None or p["league"] == league)
+        if club_token_in(p["match"], norm) and (league is None or p["league"] == league)
     ]
 
 
@@ -2096,10 +2105,10 @@ def club_name_jp(name: str) -> str:
     if not norm:
         return name
     for p in JP_PLAYERS_SOCCER:
-        if p["match"] in norm:
+        if club_token_in(p["match"], norm):
             return club_display_text(p["team_jp"]) if "astonvilla" in norm else p["team_jp"] if legacy else display_names.display(p["team_jp"])
     for key in _SOCCER_CLUB_KEYS:
-        if key in norm:
+        if club_token_in(key, norm):
             return SOCCER_CLUB_NAME_JP[key] if legacy else display_names.display(SOCCER_CLUB_NAME_JP[key])
     return name
 
