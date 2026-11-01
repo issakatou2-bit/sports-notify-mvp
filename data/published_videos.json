@@ -19236,6 +19236,88 @@
       },
       "host_fallback_reason": null,
       "privacy": "public"
+    },
+    "offseason_schedule_2026_35b4bc2c79e5": {
+      "video_id": "BZlv2qGD3R4",
+      "url": "https://youtu.be/BZlv2qGD3R4",
+      "title": "【MLB】MLBオフの主な予定 #Shorts",
+      "published_at": "2026-11-01T12:56:57.383539+00:00",
+      "publish_at": "2026-11-01T13:00:00Z",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-01",
+        "enabled": false,
+        "assigned": "generic",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false
+      },
+      "duration_seconds": 33.63,
+      "short_information_count": 4,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-11-01",
+        "kind": "asset:offseason",
+        "phase": 1,
+        "planned_host": "ui",
+        "rule": "half-jst-week-v1",
+        "week": 42,
+        "weekday": 6
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-11-01T12:52:45.049151+00:00",
+        "comparison_eligible": false,
+        "label": "予定めたん（雨衣不可のため）",
+        "mode": "live",
+        "planned_host": "metan",
+        "reason": "ui_night_apsc",
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
+    },
+    "offseason_transactions_2026_da4808b59196": {
+      "video_id": "31YqFLWMnGQ",
+      "url": "https://youtu.be/31YqFLWMnGQ",
+      "title": "【MLB】鈴木誠也・菅野智之・今永昇太のFA宣言｜日本人選手の来季 第1回 #Shorts",
+      "published_at": "2026-11-01T13:02:10.505240+00:00",
+      "publish_at": "2026-11-01T14:00:00Z",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-01",
+        "enabled": false,
+        "assigned": "generic",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false
+      },
+      "duration_seconds": 40.04,
+      "short_information_count": 3,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-11-01",
+        "kind": "asset:offseason",
+        "phase": 1,
+        "planned_host": "ui",
+        "rule": "half-jst-week-v1",
+        "week": 42,
+        "weekday": 6
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-11-01T12:56:58.074190+00:00",
+        "comparison_eligible": false,
+        "label": "予定めたん（雨衣不可のため）",
+        "mode": "live",
+        "planned_host": "metan",
+        "reason": "ui_night_apsc",
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
     }
   },
   "soccer_results": {

@@ -1138,6 +1138,42 @@
       "duration_seconds": 37.25,
       "short_information_count": 3,
       "short_content_policy": "short-content-20261027-v1"
+    },
+    "offseason_schedule_2026_35b4bc2c79e5": {
+      "video_id": "BZlv2qGD3R4",
+      "url": "https://youtu.be/BZlv2qGD3R4",
+      "privacy": "public",
+      "published_at": "2026-11-01T12:56:57.368331+00:00",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-01",
+        "enabled": false,
+        "assigned": "generic",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false
+      },
+      "duration_seconds": 33.63,
+      "short_information_count": 4,
+      "short_content_policy": "short-content-20261027-v1"
+    },
+    "offseason_transactions_2026_da4808b59196": {
+      "video_id": "31YqFLWMnGQ",
+      "url": "https://youtu.be/31YqFLWMnGQ",
+      "privacy": "public",
+      "published_at": "2026-11-01T13:02:10.489951+00:00",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-01",
+        "enabled": false,
+        "assigned": "generic",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false
+      },
+      "duration_seconds": 40.04,
+      "short_information_count": 3,
+      "short_content_policy": "short-content-20261027-v1"
     }
   }
 }
