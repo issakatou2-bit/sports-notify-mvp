@@ -1174,6 +1174,53 @@
       "duration_seconds": 40.04,
       "short_information_count": 3,
       "short_content_policy": "short-content-20261027-v1"
+    },
+    "season_compare_2026_808959_672960": {
+      "video_id": "fM5yO1wXTds",
+      "url": "https://youtu.be/fM5yO1wXTds",
+      "privacy": "public",
+      "published_at": "2026-11-02T06:40:52.293354+00:00",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-02",
+        "enabled": false,
+        "assigned": "next",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false
+      },
+      "player_ids": [
+        "672960",
+        "808959"
+      ],
+      "publish_at": "2026-11-02T07:30:00Z",
+      "duration_seconds": 32.29,
+      "short_information_count": 3,
+      "short_content_policy": "short-content-20261027-v1"
+    },
+    "season_momentum_rs2026_119_823907_823817": {
+      "video_id": "i6jeHRYpF0c",
+      "url": "https://youtu.be/i6jeHRYpF0c",
+      "privacy": "public",
+      "published_at": "2026-11-02T06:44:02.814665+00:00",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-02",
+        "enabled": false,
+        "assigned": "next",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false
+      },
+      "player_ids": [
+        "660271",
+        "808963",
+        "808967"
+      ],
+      "publish_at": "2026-11-02T13:00:00Z",
+      "duration_seconds": 39.5,
+      "short_information_count": 3,
+      "short_content_policy": "short-content-20261027-v1"
     }
   }
 }

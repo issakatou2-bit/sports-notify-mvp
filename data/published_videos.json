@@ -19479,6 +19479,93 @@
       },
       "host_fallback_reason": null,
       "privacy": "public"
+    },
+    "season_compare_2026_808959_672960": {
+      "video_id": "fM5yO1wXTds",
+      "url": "https://youtu.be/fM5yO1wXTds",
+      "title": "【MLB】村上宗隆77打点と岡本和真92打点｜2026年レギュラーシーズン #Shorts",
+      "published_at": "2026-11-02T06:40:52.306100+00:00",
+      "publish_at": "2026-11-02T07:30:00Z",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-02",
+        "enabled": false,
+        "assigned": "next",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false
+      },
+      "player_ids": [
+        "672960",
+        "808959"
+      ],
+      "duration_seconds": 32.29,
+      "short_information_count": 3,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-11-02",
+        "kind": "asset:season_compare",
+        "phase": 1,
+        "planned_host": "metan",
+        "rule": "half-jst-week-v1",
+        "week": 43,
+        "weekday": 0
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-11-02T15:38:44.497821+09:00",
+        "comparison_eligible": true,
+        "planned_host": "metan",
+        "reason": null,
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
+    },
+    "season_momentum_rs2026_119_823907_823817": {
+      "video_id": "i6jeHRYpF0c",
+      "url": "https://youtu.be/i6jeHRYpF0c",
+      "title": "【MLB】佐々木朗希・大谷翔平・山本由伸が所属するドジャースの8連勝｜2026年レギュラーシーズン #Shorts",
+      "published_at": "2026-11-02T06:44:02.825078+00:00",
+      "publish_at": "2026-11-02T13:00:00Z",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-02",
+        "enabled": false,
+        "assigned": "next",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false
+      },
+      "player_ids": [
+        "660271",
+        "808963",
+        "808967"
+      ],
+      "duration_seconds": 39.5,
+      "short_information_count": 3,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-11-02",
+        "kind": "asset:season_momentum",
+        "phase": 1,
+        "planned_host": "metan",
+        "rule": "half-jst-week-v1",
+        "week": 43,
+        "weekday": 0
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-11-02T15:40:52.580432+09:00",
+        "comparison_eligible": true,
+        "planned_host": "metan",
+        "reason": null,
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
     }
   },
   "soccer_results": {
