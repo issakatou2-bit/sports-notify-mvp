@@ -8586,6 +8586,128 @@
       },
       "host_fallback_reason": null,
       "privacy": "public"
+    },
+    "2026-11-02": {
+      "video_id": "W_CfHPsBKL8",
+      "url": "https://youtu.be/W_CfHPsBKL8",
+      "title": "【MLB】現地はこう報じた「大谷翔平の東京シリーズ着用ジャージー、史上最高額の205万ドルで落札」｜11月2日 番記者の投稿と現地の見出し #Shorts",
+      "published_at": "2026-11-02T06:31:17.641674+00:00",
+      "publish_at": "2026-11-02T09:00:00Z",
+      "ab_test": "hook-20261023",
+      "ab_variant": "A",
+      "ab_enabled": true,
+      "ab_kind": "morning_press",
+      "ab_day": "2026-11-02",
+      "ab_rule": "jst-day-abba-v1",
+      "ab_content_eligible": false,
+      "ab_content_reason": "同じ主役・論点の説明がないためAを維持",
+      "ab_assigned_variant": "B",
+      "ab_fallback_reason": "同じ主役・論点の説明がないためAを維持",
+      "scene_starts": [
+        0.0,
+        9.333333,
+        16.933333,
+        27.866667,
+        38.266667,
+        48.533333
+      ],
+      "dialogue_starts": [
+        {
+          "index": 0,
+          "start": 0.0,
+          "scene_start": 0.0,
+          "text": "大谷翔平の東京シリーズ着用ジャージー、史上最高額の205万ドルで落札。11月2日、現地の報道です。現地の見出しです。",
+          "speaker": 2,
+          "audio_available": true
+        },
+        {
+          "index": 1,
+          "start": 9.361333,
+          "scene_start": 9.333333,
+          "text": "ABC7 Bay Area。野球の「40/40クラブ」とは？ PCAの快挙について。",
+          "speaker": 2,
+          "audio_available": true
+        },
+        {
+          "index": 2,
+          "start": 16.984,
+          "scene_start": 16.933333,
+          "text": "The Hollywood Reporter。東京：ドキュメンタリー『Diamond Diplomacy』が日本の野球史と米国関係への影響をたどる。現地の番記者の投稿です。翻訳したものです。",
+          "speaker": 2,
+          "audio_available": true
+        },
+        {
+          "index": 3,
+          "start": 27.934667,
+          "scene_start": 27.866667,
+          "text": "Chicago Tribuneの記者。カブスのゴールドグラブ最終候補5人のうち、中堅手ピート・クロウ=アームストロングと三塁手アレックス・ブレグマンがナ・リーグ受賞。",
+          "speaker": 2,
+          "audio_available": true
+        },
+        {
+          "index": 4,
+          "start": 38.362667,
+          "scene_start": 38.266667,
+          "text": "MLB.comの記者。タナー・ビービーがア・リーグの投手部門でゴールドグラブ賞を受賞。クリーブランドの投手では2022年のシェーン・ビーバー以来2人目。",
+          "speaker": 2,
+          "audio_available": true
+        },
+        {
+          "index": 5,
+          "start": 48.641334,
+          "scene_start": 48.533333,
+          "text": "コレスポでは毎日、MLBの話題と欧州サッカーの見どころを届けています。チャンネル登録して、また見に来てくださいね。",
+          "speaker": 2,
+          "audio_available": true
+        }
+      ],
+      "duration_seconds": 56.1,
+      "timing_basis": "scenes:rendered-frames/dialogue:audio-segment-playback",
+      "video_sha256": "e8875a0853c9e66828027dc193508dbe72fe5e3665e9b36c10b3220a8be057bb",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-02",
+        "enabled": false,
+        "assigned": "next",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false
+      },
+      "short_information_count": 5,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-11-02",
+        "kind": "morning_press",
+        "phase": 0,
+        "planned_host": "ui",
+        "rule": "half-jst-week-v1",
+        "week": 43,
+        "weekday": 0
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-11-02T06:18:58.199171+00:00",
+        "comparison_eligible": false,
+        "planned_host": "metan",
+        "previous_attempt": {
+          "action": "rebuild_metan",
+          "checked_at": "2026-11-02T06:17:21.088456+00:00",
+          "comparison_eligible": true,
+          "failed_at": "2026-11-02T06:18:58.197410+00:00",
+          "failure_reason": "ui_order_discarded",
+          "label": "予定雨衣",
+          "mode": "live",
+          "planned_host": "ui",
+          "reason": null,
+          "status": "held",
+          "version": 1
+        },
+        "reason": "ui_rebuilt_after_hold",
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
     }
   },
   "daily_soccer": {
@@ -9909,6 +10031,45 @@
         "label": "予定雨衣",
         "mode": "live",
         "planned_host": "ui",
+        "reason": null,
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
+    },
+    "2026-11-02": {
+      "video_id": "k-rrWlsjSsY",
+      "url": "https://youtu.be/k-rrWlsjSsY",
+      "title": "【MLB】2026年ゴールドグラブ賞受賞者の好プレー集 現地のファンは何と言ったか｜返信1件ついたコメント 11月2日更新 #Shorts",
+      "published_at": "2026-11-02T06:17:19.430156+00:00",
+      "publish_at": "2026-11-02T08:30:00Z",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-02",
+        "enabled": false,
+        "assigned": "next",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false
+      },
+      "duration_seconds": 47.53,
+      "short_information_count": 5,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-11-02",
+        "kind": "morning_voices",
+        "phase": 1,
+        "planned_host": "metan",
+        "rule": "half-jst-week-v1",
+        "week": 43,
+        "weekday": 0
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-11-02T15:03:53.143552+09:00",
+        "comparison_eligible": true,
+        "planned_host": "metan",
         "reason": null,
         "version": 1
       },

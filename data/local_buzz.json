@@ -1,36 +1,28 @@
 {
-  "updated_at": "2026-11-01T06:03:12.409752+00:00",
+  "updated_at": "2026-11-02T06:02:05.273402+00:00",
   "sources": [
     {
       "name": "MLB公式",
-      "items": 24
+      "items": 25
     }
   ],
-  "titles_count": 24,
+  "titles_count": 25,
   "teams": [
     {
-      "team_id": "158",
-      "name": "ブリュワーズ",
-      "name_en": "Milwaukee Brewers",
-      "mentions": 5,
+      "team_id": "121",
+      "name": "メッツ",
+      "name_en": "New York Mets",
+      "mentions": 2,
       "tone": "話題",
-      "gist": "ブリュワーズ初のWS制覇、パレードや話題続々"
+      "gist": "クースマン氏83歳で死去、マクリーンGG受賞"
     },
     {
-      "team_id": "139",
-      "name": "レイズ",
-      "name_en": "Tampa Bay Rays",
-      "mentions": 3,
-      "tone": "好調",
-      "gist": "ラスムッセンが27年残留、マルティネスらFAに"
-    },
-    {
-      "team_id": "110",
-      "name": "オリオールズ",
-      "name_en": "Baltimore Orioles",
+      "team_id": "109",
+      "name": "ダイヤモンドバックス",
+      "name_en": "Arizona Diamondbacks",
       "mentions": 1,
-      "tone": "不振",
-      "gist": "オリオールズ、故障続きのロバートの27年契約を拒否"
+      "tone": "話題",
+      "gist": "アリゾナ秋季リーグ第4週の好成績者"
     },
     {
       "team_id": "111",
@@ -38,39 +30,31 @@
       "name_en": "Boston Red Sox",
       "mentions": 1,
       "tone": "話題",
-      "gist": "レッドソックスがチェン内野手をタイガースへ放出"
+      "gist": "ウィットロックの球団オプション行使"
     },
     {
-      "team_id": "119",
-      "name": "ドジャース",
-      "name_en": "Los Angeles Dodgers",
+      "team_id": "158",
+      "name": "ブリュワーズ",
+      "name_en": "Milwaukee Brewers",
       "mentions": 1,
       "tone": "話題",
-      "gist": "ドジャースの27年ロースター予想の記事"
-    },
-    {
-      "team_id": "116",
-      "name": "タイガース",
-      "name_en": "Detroit Tigers",
-      "mentions": 1,
-      "tone": "話題",
-      "gist": "タイガースがレッドソックスからチェン獲得"
+      "gist": "ブリュワーズがSNLに登場"
     },
     {
       "team_id": "135",
       "name": "パドレス",
       "name_en": "San Diego Padres",
       "mentions": 1,
-      "tone": "不振",
-      "gist": "パドレス、ピベッタの27年球団オプション拒否でFA"
+      "tone": "好調",
+      "gist": "パドレスのブルペンに左腕3人が復帰"
     },
     {
-      "team_id": "112",
-      "name": "カブス",
-      "name_en": "Chicago Cubs",
+      "team_id": "137",
+      "name": "ジャイアンツ",
+      "name_en": "San Francisco Giants",
       "mentions": 1,
-      "tone": "好調",
-      "gist": "カブスの歴史的な守備のハイライト5選"
+      "tone": "話題",
+      "gist": "ニューベックをファーマンと交換で獲得"
     }
   ],
   "players": []
