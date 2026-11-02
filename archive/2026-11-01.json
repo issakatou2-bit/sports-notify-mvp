@@ -56,7 +56,12 @@
           "text": "コモ（昨季セリエA4位）",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 1,
+        "away": 0,
+        "winner": "home"
+      }
     },
     {
       "game_id": "564733",
@@ -113,7 +118,12 @@
           "text": "ヘタフェ（昨季ラ・リーガ7位）とセビージャ（昨季ラ・リーガ15位）の対戦",
           "weight": 0
         }
-      ]
+      ],
+      "final_score": {
+        "home": 3,
+        "away": 1,
+        "winner": "home"
+      }
     },
     {
       "game_id": "558546",
@@ -175,7 +185,12 @@
           "text": "ラツィオ（昨季セリエA9位）とカリアリ（昨季セリエA14位）の対戦",
           "weight": 0
         }
-      ]
+      ],
+      "final_score": {
+        "home": 2,
+        "away": 1,
+        "winner": "home"
+      }
     },
     {
       "game_id": "558544",
@@ -226,7 +241,12 @@
       "score": 0,
       "game_type": "R",
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 2,
+        "away": 0,
+        "winner": "home"
+      }
     },
     {
       "game_id": "559647",
@@ -283,7 +303,12 @@
           "text": "ストラスブール（昨季リーグ・アン8位）とオセール（昨季リーグ・アン15位）の対戦",
           "weight": 0
         }
-      ]
+      ],
+      "final_score": {
+        "home": 5,
+        "away": 1,
+        "winner": "home"
+      }
     },
     {
       "game_id": "565841",
