@@ -822,7 +822,8 @@ def jp_date(day: str) -> str:
 
 def build_narration(data: dict, mode: str = "all") -> dict:
     import sanity_sources
-    return sanity_sources.attach(_build_narration(data, mode), data)
+    import voices_context
+    return sanity_sources.attach(voices_context.attach(_build_narration(data, mode), data), data)
 
 
 def _build_narration(data: dict, mode: str = "all") -> dict:
@@ -1166,10 +1167,11 @@ def _build_narration(data: dict, mode: str = "all") -> dict:
         # 返信の付いた一言が長すぎる日は、上の繰り返しが別の短い一言を
         # 拾っている。そちらで入る。どちらにしても冒頭は必ず誰かの言葉で、
         # 「返信が54件ついた一言があります」のような空の予告はもう出さない。
+        import voices_context
         teased = False
         segments = [{
             "kind": "intro",
-            "text": f"{lead}MLB公式ハイライトで再生がいちばん多かった試合のコメント欄です。",
+            "text": f"{lead}{voices_context.intro(vs)}",
             "meta": {"date": day_iso, "count": len(players), "local": True,
                      "mode": mode,
                      # 冒頭で読んだコメントは、本編でもう一度読まない
@@ -1182,7 +1184,7 @@ def _build_narration(data: dict, mode: str = "all") -> dict:
         buzz = data.get("buzz") or []
         head = ""
         if buzz:
-            head = f"公式ハイライトで再生がいちばん多かったのは{yomi_stats(buzz_label(buzz[0]))}。"
+            head = f"MLB公式の動画では{yomi_stats(buzz_label(buzz[0]))}を紹介します。"
         segments = [{
             "kind": "intro",
             "text": f"{head}{day}、現地での注目度をまとめました。",
@@ -1297,7 +1299,7 @@ def _build_narration(data: dict, mode: str = "all") -> dict:
     buzz = (data.get("buzz") or []) if want_local else []
     if buzz:
         top = buzz[0]
-        parts = ["公式ハイライトで再生がいちばん多かった試合です。",
+        parts = ["MLB公式の動画です。",
                  f"MLB公式のハイライトで、{yomi_stats(buzz_label(top))}が"
                  f"{_yomi_views(top['views'])}再生でした。"]
         # 誰が目立った試合なのかまで言う。数字だけだと、

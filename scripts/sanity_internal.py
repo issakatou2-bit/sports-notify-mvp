@@ -4,7 +4,8 @@ import re
 
 
 def check(documents):
-    errors = []
+    import voices_context
+    errors = voices_context.checks(documents)
     for doc in documents:
         for index, segment in enumerate(doc.get('segments') or [], 1):
             text = segment.get('text') or ''

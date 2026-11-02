@@ -41,6 +41,8 @@ from datetime import datetime, timedelta, timezone
 
 import requests
 
+import voices_context
+
 import token_log  # noqa: E402
 
 # notability_engine はリポジトリ直下にある。
@@ -246,6 +248,7 @@ def fetch_youtube_comments(buzz_path: str = "data/mlb_buzz.json",
                 ],
                 "author": c.get("authorDisplayName", ""),
                 "source": "MLB公式ハイライトのコメント",
+                "video_title": v.get("title") or "",
                 "matchup": v.get("matchup") or v.get("title", "")[:40],
             })
 
@@ -380,6 +383,7 @@ def fetch_jp_comments(buzz_path: str = "data/mlb_buzz.json",
                 "reply_texts": [],
                 "author": c.get("authorDisplayName", ""),
                 "source": "MLB公式ハイライトのコメント",
+                "video_title": v.get("title") or "",
                 "matchup": v.get("matchup") or "",
                 "slot": "jp",
             })
@@ -464,12 +468,14 @@ def translate(client, items: list, *, sport: str = "mlb") -> list:
     for n, it in enumerate(items):
         flat.append((n, -1, it["title"]))
         for j, rt in enumerate(it.get("reply_texts") or []):
+            if sport == "mlb" and voices_context.ambiguous_reply(rt):
+                continue
             flat.append((n, j, rt))
     # 返信には、どの書き込みへの返信かを添える。10/9 に「ヤンキースの選手さん」と訳した
     # 一言は、返信を読めば観客の妨害（ファン）の話だと分かった。番号だけ並べると文脈が切れる。
     head = {n: i + 1 for i, (n, j, _) in enumerate(flat) if j < 0}
     numbered = "\n".join(
-        f"{i + 1}. " + (f"（{head[n]}への返信）" if j >= 0 else "") + txt
+        f"{i + 1}. [元動画題: {items[n].get('video_title') or items[n].get('matchup') or '不明'}] " + (f"（{head[n]}への返信）" if j >= 0 else "") + txt
         for i, (n, j, txt) in enumerate(flat))
     # 訳と同時に、その一言が肯定寄りか否定寄りかも付けてもらう。
     # 別々に呼ぶと回数が倍になるうえ、訳文と判定が違う読み方で付く。
@@ -505,6 +511,9 @@ def translate(client, items: list, *, sport: str = "mlb") -> list:
         "- big run、only、finally 等は皮肉・誇張の可能性がある。a big run は1点で、"
         "「大量得点」にしない。only / finally の限定や呆れを逆の意味にしない。"
         "点数・点差を増やさず、皮肉の解釈が確かでないときは訳文を空にする\n"
+        "- 元動画題は文脈の確認用。原文にない打撃・守備・投球の場面や主語を足さない。\n"
+        "  missed the ball だけで空振りと決めない。守備の取り損ねとも決めない。\n"
+        "- 短く主語や場面が読み取れない返信は採用しない。番号|不採用|不採用 と出力する\n"
         "- 前置きや説明は不要"
     )
     if sport == "soccer":
@@ -572,9 +581,11 @@ def translate(client, items: list, *, sport: str = "mlb") -> list:
             note(f"[warn] 訳の{n}行目を除外: {'、'.join(issues)}")
 
     out = [None] * len(items)
-    for n, (i, j, _) in enumerate(flat, 1):
+    for n, (i, j, original) in enumerate(flat, 1):
         got = translated.get(n)
-        if not got:
+        if not got or got[0] == "不採用" or got[1] == "不採用":
+            continue
+        if sport == "mlb" and voices_context.unsupported(original, got[1]):
             continue
         if j < 0:
             out[i] = {**items[i], **clean(got), "reply_ja": []}

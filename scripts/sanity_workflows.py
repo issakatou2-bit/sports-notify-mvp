@@ -54,6 +54,8 @@ def errors(root):
                 for call in calls:
                     flags = re.findall(r'--[a-z-]+', call)
                     expected = ['--general', '--strict', '--narration', '--out', '--hold-record', '--kind']
+                    if path.stem == 'morning_recap':
+                        expected.insert(2, '--omit-ambiguous-replies')
                     if flags != expected:
                         bad.append(f'{path.name}: 共通引数・順序と不一致: {call}')
                     signature = re.search(r'--narration\s+(.+?)\s+--out\s+(.+?)\s+--hold-record\s+(.+?)\s+--kind\s+(.+)', call)

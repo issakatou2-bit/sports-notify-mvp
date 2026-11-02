@@ -434,7 +434,14 @@ def general(paths, api_key, materials=None):
     evidence = '\n--- 原稿が使ったPS・順位表・名簿・試合結果（出典・取得日時付き）---\n' + json.dumps(
         materials, ensure_ascii=False)
     evidence += '\n--- 読み上げ見出しの原文・訳・対象記事（試合中の経過とシリーズ勝敗は別）---\n' + json.dumps(
-        sanity_material.headline_grounding(documents), ensure_ascii=False) + '\n--- 原稿本文 ---\n'
+        sanity_material.headline_grounding(documents), ensure_ascii=False)
+    voice_quotes = [dict(source='segment.meta.source_voices',
+                         quotes=(s.get('meta') or {})['source_voices'])
+                    for d in documents for s in d.get('segments') or []
+                    if (s.get('meta') or {}).get('source_voices')]
+    evidence += '\n--- 読み上げコメントの原文・訳・元動画題 ---\n' + json.dumps(
+        voice_quotes, ensure_ascii=False) + '\n--- 原稿本文 ---\n'
+
 
     try:
         import anthropic
@@ -489,6 +496,8 @@ def main():
     ap.add_argument("--out", default="data/sanity.json")
     ap.add_argument('--hold-record', help='見送り印と区別する、この実行のアップロード保留記録')
     ap.add_argument('--kind', default='daily')
+    ap.add_argument('--omit-ambiguous-replies', action='store_true',
+                    help='音声生成前のみ。lowで指示対象不明の返信を独立した場面から除外する')
     args = ap.parse_args()
 
     # 出すのを止めるのは、これから喋る文に問題があるときだけ。
@@ -511,10 +520,11 @@ def main():
             print("  ?", b)
 
     import sanity_material
-    documents = []
+    documents, document_paths = [], []
     for path in args.narration:
         try:
             documents.append(json.loads(pathlib.Path(path).read_text(encoding='utf-8')))
+            document_paths.append(pathlib.Path(path))
         except (OSError, json.JSONDecodeError):
             if not (args.kind == 'daily' and pathlib.Path('build/narration_skipped.txt').is_file()
                     and not pathlib.Path(path).exists()):
@@ -545,10 +555,30 @@ def main():
         else:
             print("\n(ANTHROPIC_API_KEY がないので二段目は飛ばした)")
 
+    import voices_context
+    reply_omissions = []
+    if args.omit_ambiguous_replies and args.kind == 'morning_voices':
+        for index, (document, path) in enumerate(zip(documents, document_paths)):
+            repaired, omitted = voices_context.omit_low_replies(document, odd)
+            if omitted:
+                path.write_text(json.dumps(repaired, ensure_ascii=False, indent=2), encoding='utf-8')
+                documents[index] = repaired
+                reply_omissions.extend(omitted)
+        if reply_omissions:
+            # 新しい台詞は作らない。残った全原稿を機械で再照合してから音声へ渡す。
+            impossible = check_narration(args.narration) + sanity_internal.check(documents)
+            materials = sanity_material.grounding(documents)
+            remaining = [i for i in odd if not any(
+                voices_context.unclear(dict(ja=r['ja'], reply=True), i) for r in reply_omissions)]
+            odd, contradictions = sanity_material.assess(remaining, documents, materials)
+            print('返信の文脈が不明な独立場面を除外・機械再点検:', len(reply_omissions))
+
     import sanity_recheck
     odd, contradictions, materials, attempts = sanity_recheck.run(
         documents, odd, materials, impossible, contradictions,
         os.environ.get('ANTHROPIC_API_KEY', '') if args.general else '')
+    impossible += voices_context.checks(documents, odd)
+    impossible = list(dict.fromkeys(impossible))
     material_status = sanity_sources.availability(documents, materials)
     high = [o for o in odd if sanity_material.blocking(o)]
     unconfirmed = [o for o in odd if not o.get('confirmed') and not o.get('supported')]
@@ -562,6 +592,7 @@ def main():
     out = pathlib.Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps({"impossible": impossible, "odd": odd, "contradictions": contradictions,
+                               "reply_omissions": reply_omissions,
                                "date_jst": next((sanity_material.document_day(d) for d in documents
                                                  if sanity_material.document_day(d)), None),
                                "blocking_issues": high, "warnings": warnings,
