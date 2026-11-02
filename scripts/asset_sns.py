@@ -1,6 +1,6 @@
 """公開済みv3資産動画のSNS入口。既定は検証のみ、公開は切替後だけ。"""
 import argparse
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 import hashlib
 import json
 import os
@@ -15,11 +15,11 @@ import generated_topics as gt
 
 WORKFLOWS = {'season_review.yml': 'season-review', 'ps_game_now.yml': 'ps-game-now',
              'offseason_news.yml': 'offseason-news'}
-TOPIC = re.compile(r'(?:season_(?:momentum|game|odds)_[A-Za-z0-9_]+|offseason_(?:schedule|awards|transactions)_\d{4}_[a-f0-9]{12})\Z')
+TOPIC = re.compile(r'(?:season_(?:momentum|game|odds)_[A-Za-z0-9_]+|season_compare_\d{4}_\d+_\d+|offseason_(?:schedule|awards|transactions)_\d{4}_[a-f0-9]{12})\Z')
 
 
 def select(run, assets, topics, now):
-    """同じmain実行が実際に制作した当日版だけ。過去の在庫は出さない。"""
+    """同じmain実行が実際に制作した今日・昨日の版だけ。実行日のキーを保つ。"""
     wf = run.get('path', '').rsplit('/', 1)[-1]
     if (wf not in WORKFLOWS or run.get('head_branch') != 'main'
             or run.get('conclusion') != 'success'
@@ -27,9 +27,11 @@ def select(run, assets, topics, now):
             or run.get('event') not in ('schedule', 'workflow_run', 'workflow_dispatch')):
         raise ValueError('Require an owned successful main production run')
     start, end = bd.instant(run['created_at']), bd.instant(run['updated_at'])
-    day = start.astimezone(bd.JST).date().isoformat()
-    if day != now.astimezone(bd.JST).date().isoformat():
+    run_day = start.astimezone(bd.JST).date()
+    today = now.astimezone(bd.JST).date()
+    if run_day not in (today, today - timedelta(days=1)):
         return []
+    day = run_day.isoformat()
     rows = []
     for topic, record in sorted(assets.items()):
         offseason = topic.startswith('offseason_')
@@ -59,8 +61,12 @@ def register(topic, artifact, run):
     filename = 'collespo_asset_' + topic + '.mp4'
     bd.SOURCES[kind] = (topic, artifact, filename, run['path'].rsplit('/', 1)[-1])
     offseason = topic.startswith('offseason_')
-    bd.KIND_WORDS[kind] = dict(short='MLB' if offseason else 'PSの話題', long='MLB公式の話題' if offseason else 'PSの話題',
-                              lead='MLB公式に確認できたオフの話題です' if offseason else '試合とシリーズの状況を公式の数字で紹介します',
+    review = artifact == 'season-review'
+    word = 'シーズンまとめ' if review else 'PSの話題'
+    lead = ('シーズンの試合を公式の数字で振り返ります' if review
+            else '試合とシリーズの状況を公式の数字で紹介します')
+    bd.KIND_WORDS[kind] = dict(short='MLB' if offseason else word, long='MLB公式の話題' if offseason else word,
+                              lead='MLB公式に確認できたオフの話題です' if offseason else lead,
                               cut='\x00', sport='mlb')
     return kind, filename
 
@@ -181,7 +187,7 @@ def verify_receipt(archive, filename, topic, digest):
 
 def distribute(run, rows, publish=False):
     if not rows:
-        print('[info] この実行に当日公開のv3資産動画はありません')
+        print('[info] この実行に今日・昨日の公開対象のv3資産動画はありません')
         return
     if publish and os.environ.get('V3_SNS_ENABLED') != 'true':
         raise RuntimeError('V3_SNS_ENABLED must be enabled after review')
@@ -223,7 +229,8 @@ def distribute(run, rows, publish=False):
                                          '音声：VOICEVOX:四国めたん') for s, text in texts.items()}
             # Bluesky uses the compact published title and an external video card.
             btext = bd.caption('twitter', day, verified, kind)
-            description = 'MLB公式で確認できたオフの話題です。' if topic.startswith('offseason_') else 'コレスポのPSの話題です。'
+            description = ('MLB公式で確認できたオフの話題です。' if topic.startswith('offseason_')
+                           else 'コレスポの' + bd.KIND_WORDS[kind]['short'] + 'です。')
             bpost = bsky_record(btext, verified['title'], record['video_id'], datetime.now(timezone.utc), description)
             print(json.dumps(dict(topic=topic, video_id=record['video_id'], duration=duration,
                                   sha256=digest, captions=texts, bluesky=bpost), ensure_ascii=False))

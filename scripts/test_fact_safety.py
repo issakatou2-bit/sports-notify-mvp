@@ -207,13 +207,19 @@ class NonpublicVideo(unittest.TestCase):
     def video(self, privacy, channel='UCpZ_j8X8uOex5VvKwwTJj3Q', **status):
         return dict(status=dict(privacyStatus=privacy, **status), snippet=dict(channelId=channel, title='fixture'))
 
-    def test_nonpublic_is_skip_but_missing_wrong_channel_and_fetch_are_errors(self):
+    def test_empty_public_api_items_skip_with_compatible_message(self):
+        with self.assertRaises(buffer.VideoNotPublic) as caught:
+            self.verify([])
+        self.assertEqual(str(caught.exception), 'YouTube video is not public')
+        self.assertEqual(caught.exception.reason, '公開情報で見えません（非公開・予約中・削除）')
+
+    def test_nonpublic_is_skip_but_wrong_channel_and_fetch_are_errors(self):
         for privacy, extra, reason in [('private', {}, '非公開'), ('unlisted', {}, '非公開'),
                                        ('private', dict(publishAt='2026-10-23T09:00:00Z'), '予約中')]:
             with self.assertRaises(buffer.VideoNotPublic) as caught:
                 self.verify([self.video(privacy, **extra)])
             self.assertIn(reason, caught.exception.reason)
-        for items in [[], [self.video('public', channel='other')], [self.video('private', channel='other')], [self.video('unknown')]]:
+        for items in [[self.video('public', channel='other')], [self.video('private', channel='other')], [self.video('unknown')]]:
             with self.assertRaises(ValueError) as caught:
                 self.verify(items)
             self.assertNotIsInstance(caught.exception, buffer.VideoNotPublic)
@@ -224,7 +230,7 @@ class NonpublicVideo(unittest.TestCase):
     def test_main_skips_before_any_sns_or_media_operations(self):
         with tempfile.TemporaryDirectory() as td:
             summary = Path(td)/'summary.md'
-            for reason in ('非公開（private）', '予約中'):
+            for reason in ('非公開（private）', '予約中', '公開情報で見えません（非公開・予約中・削除）'):
                 with patch.object(sys, 'argv', ['buffer_daily.py', '--source-run', '7', '--kind', 'morning_press', '--publish']), \
                      patch.object(buffer.os, 'environ', dict(BUFFER_CHANNELS='twitter', GITHUB_STEP_SUMMARY=str(summary))), \
                      patch.object(buffer, 'github', return_value=dict(id=7)), \

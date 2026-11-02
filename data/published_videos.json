@@ -19561,6 +19561,36 @@
       },
       "host_fallback_reason": null,
       "privacy": "public"
+    },
+    "2026-11-01": {
+      "video_id": "88ueJTaedHY",
+      "url": "https://youtu.be/88ueJTaedHY",
+      "title": "【欧州サッカー】昨夜の注目試合 リバプール 0-1 アーセナル #Shorts",
+      "published_at": "2026-11-02T01:43:55.828551+00:00",
+      "publish_at": "2026-11-02T01:58:00Z",
+      "duration_seconds": 53.87,
+      "short_information_count": 8,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-11-02",
+        "kind": "soccer_results",
+        "phase": 1,
+        "planned_host": "metan",
+        "rule": "half-jst-week-v1",
+        "week": 43,
+        "weekday": 0
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-11-02T10:34:07.797406+09:00",
+        "comparison_eligible": true,
+        "planned_host": "metan",
+        "reason": null,
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
     }
   },
   "soccer_goal_short": {
