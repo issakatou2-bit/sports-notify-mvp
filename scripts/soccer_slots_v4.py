@@ -474,6 +474,10 @@ def run_compat(mode,path,narration_out=None,audio_dir=None,out=None,narration_pa
         narr = host_split.use_audio(narr, audio_dir)
         plan['narration'] = narr
         host_split.render_audio(audio_dir, out, narration_path)
+    saved_path = Path(narration_path) if narration_path else Path(audio_dir).parent/({'race':'race_narration.json','week':'week_narration.json','preview':'soccer_narration.json'}[mode])
+    if soccer_look.focus() and saved_path.is_file():
+        narr = __import__('soccer_minimum').restore(narr, json.loads(saved_path.read_text(encoding='utf8')), mode, data)
+        plan['narration'] = narr
     if narration_path:
         supplied=json.loads(Path(narration_path).read_text(encoding='utf-8'))
         if supplied!=narr:raise ValueError('原稿が現在の材料と違う')
