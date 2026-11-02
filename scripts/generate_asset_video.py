@@ -635,7 +635,7 @@ def build_narration(topic: str) -> dict:
     if topic in LIST_TOPICS:
         if LIST_TOPICS[topic].get('jp_stock'):
             import jp_stock
-            jp_stock.validate_spec(LIST_TOPICS[topic])
+            jp_stock.validate_spec(dict(LIST_TOPICS[topic], key=topic))
         narration=_narration_list(topic)
         if LIST_TOPICS[topic].get('jp_stock') and LIST_TOPICS[topic].get('comparison_group') == 'hitting':
             narration['baseball_average_voice'] = True
