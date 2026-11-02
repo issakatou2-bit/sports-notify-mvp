@@ -372,7 +372,7 @@ jobs:
             # ありえない数字が原稿に入っていたら、この1本だけ出さない。
             # 他の枠は別の材料で別の原稿を作っているので、巻き込まない。
             # 通し読みの重大な指摘(high)も予約前に止める。
-            if ! python scripts/sanity.py --general --strict \
+            if ! python scripts/sanity.py --general --strict --omit-ambiguous-replies \
                 --narration "build/mr_narration_${mode}.json" \
                 --out "data/sanity_${mode}.json" \
                 --hold-record "build/sanity_hold_${mode}.json" \
