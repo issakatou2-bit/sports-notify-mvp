@@ -146,6 +146,14 @@ class StockTests(unittest.TestCase):
         a, b = comparison['player_ids']
         self.assertTrue(jp.duplicate(comparison, {f'season_compare_2026_{b}_{a}': {}}, {}))
 
+    def test_generated_topic_without_key_reaches_validation(self):
+        # generated_topics は辞書の鍵へ移すので spec に key が無い。11/2 に全件が選ばれなかった。
+        import generate_asset_video as gav
+        spec = dict(jp.build()['topics'][0])
+        topic = spec.pop('key')
+        with patch.dict(gav.LIST_TOPICS, {topic: spec}):
+            self.assertTrue(gav.build_narration(topic))
+
     def test_material_copy_workflow_keeps_mechanical_gate(self):
         import sanity_workflows
         workflow = (jp.ROOT/'.github/workflows/season_review.yml').read_text(encoding='utf8')
