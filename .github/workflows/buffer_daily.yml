@@ -132,6 +132,7 @@ jobs:
           BLUESKY_APP_PASSWORD: ${{ secrets.BLUESKY_APP_PASSWORD }}
           V3_SNS_ENABLED: ${{ vars.V3_SNS_ENABLED }}
         run: |
+          python scripts/jp_assets.py --out build/jp_asset_topics.json || echo "::warning::比較の話題を読み直せませんでした（他の動画は続けます）"
           python scripts/asset_sns.py --publish
 
       - name: Keep publication ledger recovery
