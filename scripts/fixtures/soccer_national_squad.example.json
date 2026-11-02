@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "sample": true,
+  "announced_at": "2026-11-06T14:00:00+09:00",
+  "source_url": "https://www.jfa.jp/EXAMPLE-REPLACE-WITH-OFFICIAL-ANNOUNCEMENT/",
+  "window": "2026-11",
+  "season": "2026/27",
+  "players": [
+    {"name_en": "TEST PLAYER A", "club": "試験用クラブA", "position": "GK"},
+    {"name_en": "TEST PLAYER B", "club": "試験用クラブB", "position": "DF"},
+    {"name_en": "TEST PLAYER C", "club": "試験用クラブC", "position": "MF"}
+  ]
+}

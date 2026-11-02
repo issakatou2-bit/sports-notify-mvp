@@ -158,6 +158,8 @@ DEFAULT_KIND = 'daily'
 # （morning_recap.yml が build/social_shorts/${mode}.mp4 にコピーする）、
 # published_videos.json も同梱されている。**繋ぐだけで投げられる。**
 SOURCES = {
+    'soccer_national': ('soccer_national', 'collespo-national-social', 'collespo_national.mp4',
+                        'soccer_national.yml'),
     'daily': ('daily', 'collespo-video', 'collespo_short.mp4',
               'daily_notify.yml'),
     'morning': ('morning', 'collespo-social-shorts', 'players.mp4',
@@ -326,6 +328,8 @@ def due(services, late_edition=False) -> list:
     out = []
     runs = {}
     for kind, (key, _artifact, _name, wf) in sorted(SOURCES.items()):
+        if kind == 'soccer_national' and os.environ.get('COLLESPO_SOCCER_NATIONAL', 'off') != 'on':
+            continue
         for day in eligible_editions(now, kind, late_edition):
             rec = (records.get(key) or {}).get(day)
             if not rec or not rec.get('video_id'):
@@ -488,6 +492,9 @@ def host_video(run, day, path, digest, kind=DEFAULT_KIND):
 # 一言は**ふつうの文**で終える。「キックオフ前に、見どころを。」のような
 # 体言止めを並べると、読点のあとに句点が来る形が続いて読みにくい。
 KIND_WORDS = {
+    'soccer_national': {'short': '日本代表', 'long': '日本代表の親善試合',
+                        'lead': '対戦予定と結果を保存した資料で紹介します',
+                        'cut': '\x00', 'sport': 'soccer'},
     'daily': {'short': '明日のMLB', 'long': '明日の注目試合',
               'lead': '先発と見どころを、試合の前に確かめられます',
               'cut': '｜明日の注目試合', 'sport': 'mlb'},
@@ -860,6 +867,9 @@ def main():
     parser.add_argument('--late-edition', action='store_true',
                         help='遅延した夕方枠だけ03:00 JSTまで前日版を補完（daily対象外）')
     args = parser.parse_args()
+    if args.kind == 'soccer_national' and os.environ.get('COLLESPO_SOCCER_NATIONAL', 'off') != 'on':
+        print('日本代表のSNS公開も既定offです')
+        return
     if args.list_due:
         # 投げられる枠を1行ずつ。ワークフローがこれを読んで回す。
         rows = due(selected_services(os.environ.get('BUFFER_CHANNELS')), args.late_edition)

@@ -120,6 +120,8 @@ def check(document, materials=None):
     import verify_numbers
     import game_fact_guard
     errors = verify_numbers.check(document) + game_fact_guard.check(document)
+    import soccer_national
+    errors += soccer_national.check(document)
     import offseason_news
     errors += offseason_news.check(document)
     import ps_comment_facts

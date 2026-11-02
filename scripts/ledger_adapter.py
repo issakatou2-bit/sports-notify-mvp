@@ -17,6 +17,7 @@ DATE_RULES = {
                  'morning_postseason', 'soccer_race')
 }
 DATE_RULES.update({
+    'soccer_national': ('edition_day', 'soccer_national: as_ofのJST日。予告・結果・招集を1日1本で記録'),
     'daily_soccer': ('material_day', 'upload_youtube.material_date_key: generated_atのJST日。試合日ではない'),
     'soccer_results': ('material_day', 'upload_youtube.material_date_key: games.date_jst（夜〜翌朝の材料日）'),
     'soccer_week': ('unknown', 'soccer_jp_week: scheduledは月曜、手動はweek_key。保存行だけで経路を特定できない'),
