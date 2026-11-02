@@ -207,5 +207,27 @@ class StockTests(unittest.TestCase):
             self.assertTrue(asset_sns.verify_receipt(archive.getvalue(), filename, t['key'], digest))
 
 
+    def test_all_stock_intro_numbers_are_not_split_between_lines(self):
+        import re
+        import review_render_v3 as r
+        for spec in jp.build()['topics']:
+            image = r.intro(2, spec, 'シーズンまとめ')
+            big = [row['text'] for row in image.info['v3_layout']
+                   if row['role'] == 'text' and 400 <= row['box'][1] < 1000]
+            for number in re.findall(r'\d+(?:\.\d+)?|\.\d+', spec['hook']):
+                self.assertTrue(any(number in line for line in big), (spec['key'], number, big))
+
+    def test_leading_decimal_in_body_stays_with_its_dot_at_wrap_boundary(self):
+        import review_render_v3 as r
+        from PIL import Image, ImageDraw
+        draw = ImageDraw.Draw(Image.new('RGB', (8, 8)))
+        for number in ('.306', '.169', '.455', '0.60', '11.57'):
+            body = 'ヌートバーは'+number+'。'
+            width = draw.textlength('ヌートバーは.', font=r.font(42))+1
+            rows = r.rich_lines(r._runs(body), width, (80, 180, 160), size=42, badges=False)
+            lines = [''.join(part[1] for part in line) for line in rows]
+            self.assertTrue(any(number in line for line in lines), (number, lines))
+
+
 if __name__ == '__main__':
     unittest.main(argv=[__file__])

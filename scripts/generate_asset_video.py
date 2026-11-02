@@ -1823,6 +1823,16 @@ def plan_durations(segs: list) -> list:
             for s in segs]
 
 
+def set_asset_caption(segment, duration, total, spec):
+    """字幕を隠す締めでも、札を選ぶための録音済み文章は渡す。"""
+    import review_render_v3 as r3
+    meta = segment.get('meta') or {}
+    r3.set_caption(segment.get('text', ''), duration, total,
+                   speaker=segment.get('speaker', 2), duo=meta.get('duo', False),
+                   hide_caption=segment.get('kind') == 'outro',
+                   phrase_wrap=__import__('offseason_public').applies(spec or {}))
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--topic", default="mlb_abbr")
@@ -1975,9 +1985,7 @@ def main():
             still = None
             import review_render_v3 as _r3
             _r3.set_program_clock(total / FPS)
-            _r3.set_caption(seg.get('text','') if meta.get('duo') or kind!='outro' else '',dur,sum(durations),
-                            speaker=seg.get('speaker',2),duo=meta.get('duo',False),hide_caption=kind=='outro',
-                            phrase_wrap=__import__('offseason_public').applies(LIST_TOPICS.get(args.topic) or {}))
+            set_asset_caption(seg, dur, sum(durations), LIST_TOPICS.get(args.topic))
             screen=meta.get('screen',seg_index)
             changed=screen!=previous_screen
             if changed:scene_elapsed=0.0

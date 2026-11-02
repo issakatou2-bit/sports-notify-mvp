@@ -41,5 +41,35 @@ class OutroTest(unittest.TestCase):
         with patch.dict(os.environ, {'COLLESPO_OUTRO_NEXT':'off'}):
             self.assertEqual(r.outro_text({'ws_completed':False},__import__('datetime').date(2026,7,1)),r.INSEASON_OUTRO_TEXT)
 
+    def test_asset_hidden_caption_keeps_next_card_from_recorded_speech(self):
+        import generate_asset_video as gav
+        import review_render_v3 as r
+        text = 'コレスポでは毎日、MLBの話題を届けています。次は11月3日19時30分の欧州サッカーです。'
+        saved = dict(r._CAPTION)
+        try:
+            gav.set_asset_caption(dict(kind='outro', text=text, speaker=2), 9, 35, {})
+            self.assertTrue(r._CAPTION['hide_caption'])
+            image = r.outro(3.2)
+            texts = [row['text'] for row in image.info['v3_layout']]
+            self.assertIn('次は11/3 19:30の欧州サッカー', texts)
+            self.assertFalse(any(row['role'] == 'caption' for row in image.info['v3_layout']))
+        finally:
+            r._CAPTION.clear()
+            r._CAPTION.update(saved)
+
+    def test_asset_generic_hidden_caption_keeps_existing_pixels(self):
+        import generate_asset_video as gav
+        import review_render_v3 as r
+        saved = dict(r._CAPTION)
+        try:
+            with patch.dict(os.environ, {'COLLESPO_OUTRO_NEXT': 'off'}):
+                gav.set_asset_caption(dict(kind='outro', text='', speaker=2), 9, 35, {})
+                before = r.outro(3.2).tobytes()
+                gav.set_asset_caption(dict(kind='outro', text=r.OFFSEASON_OUTRO_TEXT, speaker=2), 9, 35, {})
+                self.assertEqual(before, r.outro(3.2).tobytes())
+        finally:
+            r._CAPTION.clear()
+            r._CAPTION.update(saved)
+
 if __name__ == '__main__':
     unittest.main(argv=[sys.argv[0]])
