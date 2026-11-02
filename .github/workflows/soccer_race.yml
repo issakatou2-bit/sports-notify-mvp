@@ -78,6 +78,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
+      COLLESPO_SOCCER_FOCUS: ${{ vars.COLLESPO_SOCCER_FOCUS == 'on' && 'on' || 'off' }}
       # サッカーの3枠は専用の変数で切り替える（本人が試作を見てから COLLESPO_SOCCER_LOOK=v4。10/10 エマ）
       COLLESPO_BUBBLE: ${{ vars.COLLESPO_BUBBLE || '' }}
       COLLESPO_MOTION: ${{ vars.COLLESPO_MOTION || '' }}
@@ -96,7 +97,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r scripts/requirements.txt
-          pip install pillow google-api-python-client google-auth
+          pip install pillow google-api-python-client google-auth imageio_ffmpeg
 
       # 今季の順位表。日次（19時）も取っているが、この枠を手で回す日は
       # そちらが走っていないことがある。古ければ取り直す。
@@ -186,16 +187,6 @@ jobs:
       # 順位・勝点はAPIの値をそのまま並べているので桁が飛ぶことは
       # 無いはずだが、**無いはず**で出すものではない。
       # ここで落ちたら公開だけ止める。
-      - name: Sanity check
-        id: sanity
-        if: steps.gate.outputs.count != '0'
-        continue-on-error: true
-        env:
-          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: |
-          python scripts/sanity.py --general --strict --narration build/race_narration.json --out data/sanity_race.json --hold-record build/sanity_hold_race.json --kind soccer_race
-
       - name: Synthesize narration
         if: steps.gate.outputs.count != '0'
         run: |
@@ -203,8 +194,23 @@ jobs:
             --narration build/race_narration.json \
             --out-dir build/race_audio
 
-      - name: Build the video
+      - name: Fill short narration from unused facts
+        id: length
         if: steps.gate.outputs.count != '0'
+        run: python scripts/soccer_minimum.py --mode race --data data/soccer_race.json --narration build/race_narration.json --audio-dir build/race_audio
+
+      - name: Sanity check
+        id: sanity
+        if: steps.length.outputs.skip != 'true' && (steps.gate.outputs.count != '0')
+        continue-on-error: true
+        env:
+          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          python scripts/sanity.py --general --strict --narration build/race_narration.json --out data/sanity_race.json --hold-record build/sanity_hold_race.json --kind soccer_race
+
+      - name: Build the video
+        if: steps.length.outputs.skip != 'true' && (steps.gate.outputs.count != '0')
         run: |
           python scripts/generate_morning_short.py \
             --mode soccer_race --race data/soccer_race.json \
@@ -218,7 +224,7 @@ jobs:
       # collespo_short.mp4 を探していて、**動画はできたのに
       # サムネイルが作れなかった。**
       - name: Vertical thumbnail
-        if: steps.gate.outputs.count != '0'
+        if: steps.length.outputs.skip != 'true' && (steps.gate.outputs.count != '0')
         continue-on-error: true
         run: |
           bash scripts/shorts_thumbnail.sh \
@@ -232,7 +238,7 @@ jobs:
       # 手で回したときだけ false にできる形にする。
       - name: 順位の表示と根拠を検査
         id: claims
-        if: steps.gate.outputs.count != '0' && steps.sanity.outcome == 'success'
+        if: steps.length.outputs.skip != 'true' && (steps.gate.outputs.count != '0' && steps.sanity.outcome == 'success')
         run: |
           python scripts/check_rendered_claims.py --kind soccer_race \
             --input data/soccer_race.json --out build/race_rendered_claims.json
@@ -240,6 +246,7 @@ jobs:
       - name: Upload to YouTube
         id: upload
         if: >-
+          steps.length.outputs.skip != 'true' &&
           steps.gate.outputs.count != '0' &&
           steps.sanity.outcome == 'success' &&
           steps.claims.outcome == 'success' &&
@@ -269,6 +276,7 @@ jobs:
       # 投稿した回だけ記録する（作っただけの回で消費しない）。
       - name: Remember the round
         if: >-
+          steps.length.outputs.skip != 'true' &&
           steps.upload.outcome == 'success' &&
           steps.gate.outputs.count != '0' &&
           steps.gate.outputs.round != '' &&
@@ -406,6 +414,7 @@ jobs:
           name: voice-render-records-${{ github.job }}-${{ github.run_attempt }}
           path: |
             build/**/voice_manifest.json
+            build/**/minimum_result.json
             build/**/render_timeline.json
             !build/**/portrait/**
           retention-days: 14

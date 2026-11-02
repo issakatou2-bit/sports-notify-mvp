@@ -378,7 +378,7 @@ def fit_to_audio(narration,audio, *, data=None, audio_dir=None, resynthesize=Non
                     narr.setdefault('results_length_adjustment', []).append(dict(kind='focus-minimum-facts', before_seconds=measured))
                     break
                 else:
-                    raise ValueError('27秒未満で追加できる確認済みの得点時刻がありません')
+                    return narr, voices  # 残る事実と正常見送りはsoccer_minimumで判定する。
                 continue
             if measured<=results.LIMIT:return narr,voices
         except ValueError as error:
