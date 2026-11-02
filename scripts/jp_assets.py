@@ -116,6 +116,9 @@ def available(topic, spec, ledgers, as_of=None):
             match = re.fullmatch(r'season_momentum_rs2026_(\d+)_(\d+)_(\d+)', key)
             if match and match[1] == str(spec['team_id']) and set(match.groups()[1:]) & set(spec['game_ids']):
                 return False
+    if spec.get('jp_stock'):
+        import jp_stock
+        return jp_stock.rotation_available(topic, spec, ledgers, as_of)
     return not any(pp.recent(pid, 'season_player', as_of, ledgers) for pid in ids(topic, spec))
 
 
@@ -124,6 +127,9 @@ def publication_available(topic, spec, ledgers, as_of):
     import asset_policy as policy
     import player_publications as pp
     if not available(topic, spec, ledgers, as_of):
+        return False
+    import jp_stock
+    if not jp_stock.rotation_available(topic, spec, ledgers, as_of):
         return False
     day = as_of.astimezone(pp.JST).date()
     rows = policy.merge_records(ledgers[0].get('asset', {}), ledgers[1].get('assets', {}))

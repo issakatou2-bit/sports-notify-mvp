@@ -157,6 +157,8 @@ def measured(published_path: str, analytics_path: str) -> dict:
 
 def season_order(key: str, spec: dict) -> tuple:
     """シーズンまとめの順番。PSで終わったばかり → 日本人選手 → その他。"""
+    if spec.get('jp_stock'):
+        return (-2, spec.get('stock_order', 999), key)
     # PSの話題（ps_story）がいちばん先。決着の翌日が見られる時。
     # 試合ごとの話題（ps_game_story）は日本人選手が出た試合から。鮮度が
     # 30時間しかないので、シリーズの総括より先に出す。
@@ -235,9 +237,12 @@ def pick_season(args) -> int:
     todo = [k for k in todo if not publications.topic_id(k) or not publications.recent(publications.topic_id(k), 'season_player', ledgers=ledgers)]
     import jp_assets
     todo = [k for k in todo if jp_assets.available(k, gav.LIST_TOPICS[k], ledgers)]
+    import jp_stock
+    todo = [k for k in todo if jp_stock.rotation_available(k, gav.LIST_TOPICS[k], ledgers)]
     todo = [k for k in todo if season_material_ready(gav, k)]
     import ui_voice_stock
     todo = ui_voice_stock.prioritize(todo)
+    todo.sort(key=lambda k: not gav.LIST_TOPICS[k].get('jp_stock'))
     picked = []
     used = season_kinds_today(args.published, extra=ledgers[0].get('asset', {}))
     used_players = set()

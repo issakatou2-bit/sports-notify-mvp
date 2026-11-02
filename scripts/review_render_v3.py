@@ -968,7 +968,7 @@ def list_page(t, spec, items, start, count, page, pages, kind_label, focus=None)
     import v3_slot_render as common
     view=dict(spec,team_id=design_team(spec),page=f'{page}/{pages}')
     selected=list(items)[start:start+count]
-    return common.frame(t,view,selected,kind_label,page_source(selected),focus=focus)
+    return common.frame(t,view,selected,kind_label,spec.get('criteria_note') or page_source(selected),focus=focus)
 
 
 # ------------------------------------------------------------------ 効果音の時刻

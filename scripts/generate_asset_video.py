@@ -633,7 +633,12 @@ def rivalry_items() -> list:
 
 def build_narration(topic: str) -> dict:
     if topic in LIST_TOPICS:
+        if LIST_TOPICS[topic].get('jp_stock'):
+            import jp_stock
+            jp_stock.validate_spec(LIST_TOPICS[topic])
         narration=_narration_list(topic)
+        if LIST_TOPICS[topic].get('jp_stock') and LIST_TOPICS[topic].get('comparison_group') == 'hitting':
+            narration['baseball_average_voice'] = True
         if LIST_TOPICS[topic].get('style')=='v3':
             import review_render_v3 as r3
             import v3_rules
