@@ -1,0 +1,159 @@
+name: 日本代表の親善試合
+
+on:
+  schedule:
+    - cron: '15 22 * * *'  # JST 7:15、22時台開始の試合は翌朝8:00
+    - cron: '15 1 * * *'   # JST 10:15、発表済み招集メンバーは12:00
+    - cron: '0 5 * * *'    # JST 14:00、翌日の予告を19:30（Actions の遅れに備える）
+    - cron: '0 9 * * *'    # JST 18:00、同じ予告の再確認
+    - cron: '15 12 * * *'  # JST 21:15、19時台開始の結果を22:00
+    - cron: '40 12 * * *'  # JST 21:40、終了反映が遅れた場合の再確認
+    - cron: '0 13 * * *'   # JST 22:00、未終了なら翌朝枠へ
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+concurrency:
+  group: soccer-national
+  cancel-in-progress: false
+
+jobs:
+  build:
+    if: github.ref == 'refs/heads/main' && vars.COLLESPO_SOCCER_NATIONAL == 'on'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      COLLESPO_SOCCER_NATIONAL: ${{ vars.COLLESPO_SOCCER_NATIONAL == 'on' && 'on' || 'off' }}
+      COLLESPO_SOCCER_LOOK: v6
+      COLLESPO_SOCCER_FOCUS: 'on'
+      COLLESPO_SHORT_LOOK: v4
+      COLLESPO_SOCCER_TITLE_V2: 'on'
+      COLLESPO_SOLO_HOST: metan
+      COLLESPO_HOST_SPLIT: 'off'
+      COLLESPO_DUO: 'off'
+      COLLESPO_MOTION: ${{ vars.COLLESPO_MOTION || '' }}
+      COLLESPO_BUBBLE: ${{ vars.COLLESPO_BUBBLE || '' }}
+      COLLESPO_CAPTION_BREAKS: ${{ vars.COLLESPO_CAPTION_BREAKS || '' }}
+      COLLESPO_SLANT_VARIANT: ${{ vars.COLLESPO_SLANT_VARIANT || 'cream' }}
+      COLLESPO_GLASS_BACKGROUND: ${{ vars.COLLESPO_GLASS_BACKGROUND || 'stripes' }}
+      ANTHROPIC_API_KEY: ''  # 翻訳・AI二段目はこの種類では実行しない。
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          pip install -r scripts/requirements.txt
+          pip install imageio_ffmpeg pyyaml
+      - name: Fetch and select confirmed material
+        run: python scripts/soccer_national.py
+      - name: Material gate
+        id: gate
+        run: |
+          python -c "import json,os; d=json.load(open('build/soccer_national/gate.json')); print('count='+str(int(d['can_make'])),file=open(os.environ['GITHUB_OUTPUT'],'a'))"
+      - name: Install video tools
+        if: steps.gate.outputs.count == '1'
+        run: bash scripts/install_video_tools.sh
+      - name: Start VOICEVOX
+        if: steps.gate.outputs.count == '1'
+        run: |
+          docker run -d --rm -p 50021:50021 --name voicevox voicevox/voicevox_engine:cpu-latest
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:50021/version > /dev/null; then break; fi
+            sleep 2
+          done
+          curl -fsS http://127.0.0.1:50021/version
+      - name: Synthesize narration
+        if: steps.gate.outputs.count == '1'
+        run: python scripts/synthesize_narration.py --narration build/soccer_national/narration.json --out-dir build/soccer_national/audio
+      - name: Render with layout, number and duration gates
+        if: steps.gate.outputs.count == '1'
+        run: |
+          python scripts/soccer_national_render.py --fit-audio
+          python scripts/soccer_national_render.py
+      - name: Sanity gate
+        if: steps.gate.outputs.count == '1'
+        env:
+          ANTHROPIC_API_KEY: ''  # この種類は機械照合だけ。有料の二段目は呼ばない。
+        run: python scripts/sanity.py --general --strict --narration build/soccer_national/narration.json --out build/soccer_national/sanity.json --hold-record build/soccer_national/sanity_hold.json --kind soccer_national
+      - name: Require a future reservation and an unstarted preview
+        if: steps.gate.outputs.count == '1'
+        run: |
+          python scripts/soccer_national_publish.py --check
+      - name: Vertical thumbnail
+        if: steps.gate.outputs.count == '1'
+        run: bash scripts/shorts_thumbnail.sh build/soccer_national/collespo_national.mp4 build/soccer_national/short.png
+      - name: Upload to YouTube
+        if: steps.gate.outputs.count == '1'
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+        run: |
+          PUBLISH_AT=$(python scripts/soccer_national_publish.py --time)
+          VIDEO_DAY=$(python -c "import json; print(json.load(open('build/soccer_national/narration.json'))['date_jst'])")
+          python scripts/upload_youtube.py --video build/soccer_national/collespo_national.mp4 --kind soccer_national --sport soccer --games build/soccer_national/material.json --narration build/soccer_national/narration.json --thumbnail build/soccer_national/short.png --video-date "$VIDEO_DAY" --privacy public --publish-at "$PUBLISH_AT"
+      - name: Commit publication record
+        if: always() && steps.gate.outputs.count == '1'
+        run: |
+          bash scripts/commit_data.sh "soccer national: ${{ github.run_id }}" data/published_videos.json
+      - name: Save video for existing SNS delivery
+        if: steps.gate.outputs.count == '1'
+        uses: actions/upload-artifact@v4
+        with:
+          name: collespo-national-social
+          path: |
+            build/soccer_national/collespo_national.mp4
+            data/published_videos.json
+            !build/**/portrait/**
+          if-no-files-found: error
+          retention-days: 7
+      - name: Confirm publication reservation
+        if: steps.gate.outputs.count == '1'
+        run: |
+          VIDEO_DAY=$(python -c "import json; print(json.load(open('build/soccer_national/narration.json'))['date_jst'])")
+          python scripts/verify_published.py --kind soccer_national --video-date "$VIDEO_DAY"
+      - name: Save sanity gate records
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: national-verification
+          path: |
+            build/soccer_national/
+            !build/**/portrait/**
+          retention-days: 14
+      - name: Stop own VOICEVOX
+        if: always()
+        run: docker stop voicevox || true
+      - name: Keep unsaved data records
+        if: always() && hashFiles('build/data-save-recovery/**/FAILED') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: unsaved-data-${{ github.job }}-${{ github.run_attempt }}
+          path: |
+            build/data-save-recovery/
+            !build/**/portrait/**
+          retention-days: 14
+          if-no-files-found: error
+      - name: Save quota-exceeded thumbnails
+        if: always() && hashFiles('build/thumbnail_pending/**') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: thumbnail-pending
+          path: |
+            build/thumbnail_pending/
+            !build/**/portrait/**
+          retention-days: 3
+          if-no-files-found: ignore
+      - name: Save voice and render records
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: voice-render-records-${{ github.job }}-${{ github.run_attempt }}
+          path: |
+            build/**/voice_manifest.json
+            build/**/render_timeline.json
+            !build/**/portrait/**
+          retention-days: 14
+          if-no-files-found: ignore

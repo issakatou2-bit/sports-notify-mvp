@@ -178,6 +178,26 @@ class Screen:
             elif kind in ('derby','h2h'):rows.append(text)
         return rows[:3]
 
+    def national_facts(self, title, rows, spec, sub='親善試合'):
+        """代表番組の補足。focusと同じ字級・余白・字幕・胸上を継承する。"""
+        self.title(title, sub)
+        size=72 if len(rows)==1 else 64
+        heights=[80+len(c.lines(value,size,R-L-56))*(size+12) for _,value in rows]
+        height=sum(heights)+24*(len(rows)-1)
+        if height>BODY_BOTTOM-BODY_TOP:raise ValueError('代表番組の補足は次画面が必要です')
+        top=BODY_TOP+(BODY_BOTTOM-BODY_TOP-height)//2
+        y=top
+        for (label, value),height in zip(rows,heights):
+            bottom=y+height
+            if bottom>BODY_BOTTOM:
+                raise ValueError('代表番組の補足は次画面が必要です')
+            self.panel(y,bottom)
+            self.text(100,y+18,label,30,800,c.MUTED,role='supplement')
+            self.lines(100,y+70,value,size,800,role='national_fact')
+            y=bottom+24
+        self.im.info['preview_body']=[L,top,R,y-24]
+        return self.finish(spec)
+
     def mini_row(self, y, s):
         # 次の試合は1行。名前が入らない日は両方を略称の札にそろえる。
         def tag(key):

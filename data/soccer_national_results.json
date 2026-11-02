@@ -1,0 +1,32 @@
+{
+  "note": "日本代表の2026年の全試合。ESPN は大会ごとに分かれ、キリンカップが無い。直近・前回の対戦・年間成績はこの一覧を正とする。日付は日本時間。score は日本から見た得点-失点。",
+  "checked_at": "2026-11-02",
+  "checked_by": "Claude",
+  "sources": [
+    "https://www.soccer-king.jp/news/japan/national/fixed/2138530.html",
+    "https://ja.wikipedia.org/wiki/2026年のサッカー日本代表",
+    "https://site.api.espn.com/apis/site/v2/sports/soccer/all/teams/627/schedule"
+  ],
+  "matches": [
+    {"date": "2026-03-29", "competition": "親善試合", "opponent": "スコットランド", "gf": 1, "ga": 0, "result": "win"},
+    {"date": "2026-04-01", "competition": "親善試合", "opponent": "イングランド", "gf": 1, "ga": 0, "result": "win"},
+    {"date": "2026-05-31", "competition": "親善試合", "opponent": "アイスランド", "gf": 1, "ga": 0, "result": "win"},
+    {"date": "2026-06-15", "competition": "ワールドカップ", "stage": "グループリーグ", "opponent": "オランダ", "gf": 2, "ga": 2, "result": "draw"},
+    {"date": "2026-06-21", "competition": "ワールドカップ", "stage": "グループリーグ", "opponent": "チュニジア", "gf": 4, "ga": 0, "result": "win"},
+    {"date": "2026-06-26", "competition": "ワールドカップ", "stage": "グループリーグ", "opponent": "スウェーデン", "gf": 1, "ga": 1, "result": "draw"},
+    {"date": "2026-06-30", "competition": "ワールドカップ", "stage": "ラウンド32", "opponent": "ブラジル", "gf": 1, "ga": 2, "result": "loss"},
+    {"date": "2026-09-24", "competition": "親善試合", "opponent": "ウルグアイ", "gf": 3, "ga": 1, "result": "win"},
+    {"date": "2026-09-28", "competition": "親善試合", "opponent": "ベネズエラ", "gf": 2, "ga": 1, "result": "win"},
+    {"date": "2026-10-01", "competition": "キリンカップ", "stage": "1回戦", "opponent": "エクアドル", "gf": 0, "ga": 0, "result": "draw", "note": "PK戦で勝利。PK のスコアは資料で食い違うので言わない"},
+    {"date": "2026-10-05", "competition": "キリンカップ", "stage": "決勝", "opponent": "ニュージーランド", "gf": 2, "ga": 1, "result": "win", "note": "優勝"}
+  ],
+  "previous_meetings": {
+    "ブラジル": [
+      {"date": "2026-06-30", "competition": "ワールドカップ", "stage": "ラウンド32", "gf": 1, "ga": 2, "result": "loss"},
+      {"date": "2025-10-14", "competition": "親善試合", "gf": 3, "ga": 2, "result": "win"}
+    ],
+    "パラグアイ": [
+      {"date": "2025-10-10", "competition": "親善試合", "gf": 2, "ga": 2, "result": "draw"}
+    ]
+  }
+}
