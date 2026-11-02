@@ -150,7 +150,7 @@ class StockTests(unittest.TestCase):
         import sanity_workflows
         workflow = (jp.ROOT/'.github/workflows/season_review.yml').read_text(encoding='utf8')
         call = next(line for line in workflow.splitlines() if 'python scripts/sanity.py ' in line)
-        self.assertNotIn('--general', call)
+        self.assertIn('--general', call)
         for flag in ('--strict', '--narration', '--out', '--hold-record', '--kind'):
             self.assertIn(flag, call)
         self.assertEqual(sanity_workflows.errors(jp.ROOT), [])
