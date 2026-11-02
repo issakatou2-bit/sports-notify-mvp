@@ -53,4 +53,5 @@ jobs:
         run: |
           args=()
           if [ "$MODE" = publish ]; then args+=(--publish); fi
+          python scripts/jp_assets.py --out build/jp_asset_topics.json || echo "::warning::比較の話題を読み直せませんでした（他の動画は続けます）"
           python scripts/asset_sns.py --source-run "$SOURCE_RUN" "${args[@]}"

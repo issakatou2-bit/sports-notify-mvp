@@ -351,7 +351,7 @@ def due(services, late_edition=False) -> list:
 
 
 class VideoNotPublic(ValueError):
-    """所有チャンネルの非公開・予約中動画。SNS配信は見送る。"""
+    """公開を確認できない動画。SNS配信は見送る。"""
 
     def __init__(self, reason):
         # asset_sns等の既存の呼び手にも従来の例外を渡す。
@@ -368,7 +368,7 @@ def verify_youtube(record):
     except Exception:
         raise RuntimeError('Unable to verify YouTube publication') from None
     if not items:
-        raise ValueError('YouTube video could not be found')
+        raise VideoNotPublic('公開情報で見えません（非公開・予約中・削除）')
     if items[0]['snippet']['channelId'] != 'UCpZ_j8X8uOex5VvKwwTJj3Q':
         raise ValueError('YouTube video belongs to a different channel')
     status = items[0]['status']
