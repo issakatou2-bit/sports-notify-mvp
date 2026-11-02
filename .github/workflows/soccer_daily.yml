@@ -80,7 +80,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r scripts/requirements.txt
-          pip install pillow google-api-python-client google-auth
+          pip install pillow google-api-python-client google-auth imageio_ffmpeg
 
       # 19時の日次が data/soccer_games.json を作ってコミットしている。
       # それをそのまま使うことで、サイトに載る試合と動画に出る試合が
@@ -171,8 +171,22 @@ jobs:
       # 打数より安打が多い、防御率が三桁――照合だけでは通ってしまう
       # 種類の壊れ方を、ここで止める。数字の幅は記録より広く取って
       # あるので、引っかかったらまず組み立てを疑う。
-      - name: Sanity check
+      - name: Synthesize narration
         if: steps.gate.outputs.count != '0'
+        continue-on-error: true
+        run: |
+          python scripts/synthesize_narration.py \
+            --narration build/soccer_narration.json \
+            --out-dir build/soccer_audio
+
+      - name: Fill short narration from unused facts
+        id: length
+        if: steps.gate.outputs.count != '0'
+        continue-on-error: true
+        run: python scripts/soccer_minimum.py --mode preview --data data/soccer_games.json --narration build/soccer_narration.json --audio-dir build/soccer_audio
+
+      - name: Sanity check
+        if: steps.length.outputs.skip != 'true' && (steps.gate.outputs.count != '0')
         id: sanity
         # ここで落ちても回は続ける。止めるのは公開だけ。
         # サイトもポッドキャストも記録も、この回の他の仕事は関係がない。
@@ -182,17 +196,9 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: python scripts/sanity.py --general --strict --narration build/soccer_narration.json --out data/sanity_soccer.json --hold-record build/sanity_soccer_hold.json --kind daily_soccer
 
-      - name: Synthesize narration
-        if: steps.gate.outputs.count != '0' && steps.sanity.outcome == 'success'
-        continue-on-error: true
-        run: |
-          python scripts/synthesize_narration.py \
-            --narration build/soccer_narration.json \
-            --out-dir build/soccer_audio
-
       - name: Generate video
         id: video
-        if: steps.gate.outputs.count != '0' && steps.sanity.outcome == 'success'
+        if: steps.length.outputs.skip != 'true' && (steps.gate.outputs.count != '0' && steps.sanity.outcome == 'success')
         continue-on-error: true
         run: |
           python scripts/generate_video.py \
@@ -203,6 +209,7 @@ jobs:
       - name: Retry the selected runner-up once
         id: retry
         if: >-
+          steps.length.outputs.skip != 'true' &&
           steps.gate.outputs.count != '0' &&
           (steps.sanity.outcome == 'failure' || steps.video.outcome == 'failure')
         env:
@@ -214,7 +221,7 @@ jobs:
           --video-outcome '${{ steps.video.outcome }}'
 
       - name: Generate thumbnail
-        if: steps.gate.outputs.count != '0'
+        if: steps.length.outputs.skip != 'true' && (steps.gate.outputs.count != '0')
         continue-on-error: true
         run: |
           python scripts/generate_thumbnail.py \
@@ -226,7 +233,7 @@ jobs:
       # ショート用に、動画の1枚目(1080x1920)を切り出す。
       # 16:9はショート棚で中央405pxに切り抜かれ、文字が外へ出る。
       - name: Vertical thumbnail
-        if: steps.gate.outputs.count != '0'
+        if: steps.length.outputs.skip != 'true' && (steps.gate.outputs.count != '0')
         run: |
           bash scripts/shorts_thumbnail.sh build/soccer/collespo_short.mp4 build/soccer/short.png
 
@@ -235,6 +242,7 @@ jobs:
       - name: Upload to YouTube
         id: upload
         if: >-
+          steps.length.outputs.skip != 'true' &&
           steps.gate.outputs.count != '0' &&
           ((steps.sanity.outcome == 'success' && steps.video.outcome == 'success') || steps.retry.outcome == 'success')
         continue-on-error: true
@@ -257,11 +265,11 @@ jobs:
       # こちらは20時に「今夜の注目試合」で、1つにまとめると
       # どちらかの言い方が必ず嘘になる。
       - name: Save the actually published preview
-        if: steps.gate.outputs.count != '0' && steps.upload.outputs.uploaded == 'true'
+        if: steps.length.outputs.skip != 'true' && (steps.gate.outputs.count != '0' && steps.upload.outputs.uploaded == 'true')
         run: python scripts/soccer_preview_history.py
 
       - name: Post to Bluesky
-        if: steps.gate.outputs.count != '0' && ((steps.sanity.outcome == 'success' && steps.video.outcome == 'success') || steps.retry.outcome == 'success')
+        if: steps.length.outputs.skip != 'true' && (steps.gate.outputs.count != '0' && ((steps.sanity.outcome == 'success' && steps.video.outcome == 'success') || steps.retry.outcome == 'success'))
         continue-on-error: true
         env:
           BLUESKY_HANDLE: ${{ secrets.BLUESKY_HANDLE }}
@@ -271,7 +279,7 @@ jobs:
         run: python scripts/post_bluesky.py --games data/soccer_games.json --kind daily_soccer
 
       - name: Post to Threads
-        if: steps.gate.outputs.count != '0' && ((steps.sanity.outcome == 'success' && steps.video.outcome == 'success') || steps.retry.outcome == 'success')
+        if: steps.length.outputs.skip != 'true' && (steps.gate.outputs.count != '0' && ((steps.sanity.outcome == 'success' && steps.video.outcome == 'success') || steps.retry.outcome == 'success'))
         continue-on-error: true
         env:
           THREADS_USER_ID: ${{ secrets.THREADS_USER_ID }}
@@ -280,7 +288,7 @@ jobs:
         run: python scripts/post_threads.py --games data/soccer_games.json
 
       - name: Post to TikTok
-        if: steps.gate.outputs.count != '0' && ((steps.sanity.outcome == 'success' && steps.video.outcome == 'success') || steps.retry.outcome == 'success')
+        if: steps.length.outputs.skip != 'true' && (steps.gate.outputs.count != '0' && ((steps.sanity.outcome == 'success' && steps.video.outcome == 'success') || steps.retry.outcome == 'success'))
         continue-on-error: true
         env:
           TIKTOK_CLIENT_KEY: ${{ secrets.TIKTOK_CLIENT_KEY }}
@@ -329,7 +337,7 @@ jobs:
       # 試合があった回だけ検品する。開催が無い日は作らないのが正しいので、
       # そこを赤くすると毎週何度も嘘の警報が鳴る。
       - name: Confirm the video went out
-        if: always() && steps.gate.outputs.count != '0'
+        if: always() && steps.length.outputs.skip != 'true' && steps.gate.outputs.count != '0'
         run: |
           python scripts/verify_published.py --kind daily_soccer \
             --games data/soccer_games.json --narration build/soccer_narration.json
@@ -374,6 +382,7 @@ jobs:
           name: voice-render-records-${{ github.job }}-${{ github.run_attempt }}
           path: |
             build/**/voice_manifest.json
+            build/**/minimum_result.json
             build/**/render_timeline.json
             !build/**/portrait/**
           retention-days: 14

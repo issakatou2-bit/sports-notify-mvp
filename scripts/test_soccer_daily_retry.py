@@ -168,9 +168,10 @@ class Retry(Offline):
         import sanity_workflows
         self.assertEqual(sanity_workflows.errors(root),[])
         upload_if=next(s['if'] for s in steps if s['name']=='Upload to YouTube')
-        def evaluate(expression,count,sanity_outcome,video_outcome,retry_outcome):
+        def evaluate(expression,count,sanity_outcome,video_outcome,retry_outcome,skip='false'):
             values={'steps.gate.outputs.count':str(count),'steps.sanity.outcome':sanity_outcome,
-                    'steps.video.outcome':video_outcome,'steps.retry.outcome':retry_outcome}
+                    'steps.video.outcome':video_outcome,'steps.retry.outcome':retry_outcome,
+                    'steps.length.outputs.skip':skip}
             for key,value in values.items(): expression=expression.replace(key,repr(value))
             return eval(expression.replace('&&',' and ').replace('||',' or '),{'__builtins__':{}})
         for count,san,video,recovered,expected in (
@@ -180,6 +181,8 @@ class Retry(Offline):
             self.assertEqual(evaluate(upload_if,count,san,video,recovered),expected)
         self.assertFalse(evaluate(recovery['if'],1,'success','success','skipped'))
         self.assertFalse(evaluate(recovery['if'],0,'failure','failure','skipped'))
+        self.assertFalse(evaluate(upload_if,1,'success','success','skipped',skip='true'))
+        self.assertFalse(evaluate(recovery['if'],1,'failure','failure','skipped',skip='true'))
 
     def test_process_start_failure_keeps_hold_and_consumes_the_only_rebuild(self):
         with tempfile.TemporaryDirectory() as tmp,patch.dict(os.environ,

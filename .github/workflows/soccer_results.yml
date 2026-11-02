@@ -111,11 +111,16 @@ jobs:
       - name: Fit the story to measured audio
         if: steps.gate.outputs.count != '0'
         run: python scripts/soccer_result_story.py --narration build/soccer_results/narration.json --audio-dir build/soccer_results/audio
-      - name: Render and measure 60 seconds
+      - name: Fill short narration from unused facts
+        id: length
         if: steps.gate.outputs.count != '0'
+        run: python scripts/soccer_minimum.py --mode results --data data/soccer_results.json --narration build/soccer_results/narration.json --audio-dir build/soccer_results/audio
+
+      - name: Render and measure 60 seconds
+        if: steps.length.outputs.skip != 'true' && (steps.gate.outputs.count != '0')
         run: python scripts/soccer_results_render.py --data data/soccer_results.json --audio-dir build/soccer_results/audio --out build/soccer_results
       - name: Capture visual contact sheets (non-blocking)
-        if: steps.gate.outputs.count != '0'
+        if: steps.length.outputs.skip != 'true' && (steps.gate.outputs.count != '0')
         continue-on-error: true
         timeout-minutes: 3
         run: python scripts/visual_capture.py video --video build/soccer_results/collespo_soccer_results.mp4 --out build/visual/$(TZ=Asia/Tokyo date +%Y%m%d)
@@ -132,17 +137,17 @@ jobs:
           if-no-files-found: ignore
       - name: Sanity gate (soccer_results)
         id: sanity
-        if: steps.gate.outputs.count != '0'
+        if: steps.length.outputs.skip != 'true' && (steps.gate.outputs.count != '0')
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
         run: python scripts/sanity.py --general --strict --narration build/soccer_results/narration.json --out data/sanity_soccer_results.json --hold-record build/sanity_hold_soccer_results.json --kind soccer_results
 
       - name: Vertical thumbnail
-        if: steps.gate.outputs.count != '0'
+        if: steps.length.outputs.skip != 'true' && (steps.gate.outputs.count != '0')
         run: bash scripts/shorts_thumbnail.sh build/soccer_results/collespo_soccer_results.mp4 build/soccer_results/short.png
       - name: Require a future reservation
-        if: (github.event_name == 'schedule' && vars.SOCCER_RESULTS_PUBLISH == 'true' || github.event_name == 'workflow_dispatch' && inputs.publish && inputs.privacy != 'private') && steps.gate.outputs.count != '0'
+        if: steps.length.outputs.skip != 'true' && ((github.event_name == 'schedule' && vars.SOCCER_RESULTS_PUBLISH == 'true' || github.event_name == 'workflow_dispatch' && inputs.publish && inputs.privacy != 'private') && steps.gate.outputs.count != '0')
         env:
           PUBLISH_AT: ${{ inputs.publish_at }}
           EVENT_NAME: ${{ github.event_name }}
@@ -150,7 +155,7 @@ jobs:
           if [ "$EVENT_NAME" = schedule ]; then PUBLISH_AT=$(python scripts/soccer_results_clock.py); export PUBLISH_AT; fi
           python -c "import os,sys; sys.path.insert(0,'scripts'); import upload_youtube as u; assert os.environ['PUBLISH_AT'] and u.resolve_publish_at(os.environ['PUBLISH_AT']), '未来の予約時刻を指定してください'"
       - name: Upload to YouTube
-        if: (github.event_name == 'schedule' && vars.SOCCER_RESULTS_PUBLISH == 'true' || github.event_name == 'workflow_dispatch' && inputs.publish) && steps.gate.outputs.count != '0'
+        if: steps.length.outputs.skip != 'true' && ((github.event_name == 'schedule' && vars.SOCCER_RESULTS_PUBLISH == 'true' || github.event_name == 'workflow_dispatch' && inputs.publish) && steps.gate.outputs.count != '0')
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
@@ -185,7 +190,7 @@ jobs:
             !build/**/portrait/**
           if-no-files-found: ignore
       - name: Confirm reservation
-        if: (github.event_name == 'schedule' && vars.SOCCER_RESULTS_PUBLISH == 'true' || github.event_name == 'workflow_dispatch' && inputs.publish && inputs.privacy != 'private') && steps.gate.outputs.count != '0'
+        if: steps.length.outputs.skip != 'true' && ((github.event_name == 'schedule' && vars.SOCCER_RESULTS_PUBLISH == 'true' || github.event_name == 'workflow_dispatch' && inputs.publish && inputs.privacy != 'private') && steps.gate.outputs.count != '0')
         run: python scripts/verify_published.py --kind soccer_results --games data/soccer_results.json
 
       - name: Keep unsaved data records
@@ -228,6 +233,7 @@ jobs:
           name: voice-render-records-${{ github.job }}-${{ github.run_attempt }}
           path: |
             build/**/voice_manifest.json
+            build/**/minimum_result.json
             build/**/render_timeline.json
             !build/**/portrait/**
           retention-days: 14

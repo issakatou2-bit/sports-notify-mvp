@@ -112,7 +112,8 @@ class PrivateResults(unittest.TestCase):
                 ('schedule', '', False, '', '1', (False, False, False)),
                 ('workflow_dispatch', '', True, 'private', '0', (False, False, False))]:
             values = {'github.event_name': event, 'vars.SOCCER_RESULTS_PUBLISH': switch,
-                      'inputs.publish': publish, 'inputs.privacy': privacy, 'steps.gate.outputs.count': count}
+                      'inputs.publish': publish, 'inputs.privacy': privacy, 'steps.gate.outputs.count': count,
+                      'steps.length.outputs.skip': 'false'}
             for name, want in zip(('Upload to YouTube', 'Require a future reservation', 'Confirm reservation'), expected):
                 expr = steps[name]['if']
                 for key in sorted(values, key=len, reverse=True):

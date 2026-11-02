@@ -30,6 +30,7 @@ jobs:
     if: github.event_name == 'workflow_dispatch' || vars.COLLESPO_SOCCER_WEEK == 'on'
     runs-on: ubuntu-latest
     env:
+      COLLESPO_SOCCER_FOCUS: ${{ vars.COLLESPO_SOCCER_FOCUS == 'on' && 'on' || 'off' }}
       COLLESPO_SOCCER_WEEK: ${{ vars.COLLESPO_SOCCER_WEEK || 'off' }}
       COLLESPO_BUBBLE: ${{ vars.COLLESPO_BUBBLE || '' }}
       COLLESPO_MOTION: ${{ vars.COLLESPO_MOTION || '' }}
@@ -85,16 +86,6 @@ jobs:
             --mode soccer_week --week data/soccer_jp_week.json \
             --narration-out build/week_narration.json
 
-      - name: Sanity check
-        id: sanity
-        if: steps.gate.outputs.due == '1'
-        continue-on-error: true
-        env:
-          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: |
-          python scripts/sanity.py --general --strict --narration build/week_narration.json --out data/sanity_week.json --hold-record build/sanity_hold_week.json --kind soccer_week
-
       - name: Synthesize narration
         if: steps.gate.outputs.due == '1'
         run: |
@@ -102,15 +93,30 @@ jobs:
             --narration build/week_narration.json \
             --out-dir build/week_audio
 
-      - name: Build the video
+      - name: Fill short narration from unused facts
+        id: length
         if: steps.gate.outputs.due == '1'
+        run: python scripts/soccer_minimum.py --mode week --data data/soccer_jp_week.json --narration build/week_narration.json --audio-dir build/week_audio
+
+      - name: Sanity check
+        id: sanity
+        if: steps.length.outputs.skip != 'true' && (steps.gate.outputs.due == '1')
+        continue-on-error: true
+        env:
+          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          python scripts/sanity.py --general --strict --narration build/week_narration.json --out data/sanity_week.json --hold-record build/sanity_hold_week.json --kind soccer_week
+
+      - name: Build the video
+        if: steps.length.outputs.skip != 'true' && (steps.gate.outputs.due == '1')
         run: |
           python scripts/generate_morning_short.py \
             --mode soccer_week --week data/soccer_jp_week.json \
             --audio-dir build/week_audio --out build/week --require-audio
 
       - name: Vertical thumbnail
-        if: steps.gate.outputs.due == '1'
+        if: steps.length.outputs.skip != 'true' && (steps.gate.outputs.due == '1')
         continue-on-error: true
         run: |
           bash scripts/shorts_thumbnail.sh \
@@ -119,6 +125,7 @@ jobs:
       - name: Upload to YouTube
         id: upload
         if: >-
+          steps.length.outputs.skip != 'true' &&
           steps.gate.outputs.due == '1' &&
           steps.sanity.outcome == 'success' &&
           vars.COLLESPO_SOCCER_WEEK == 'on' &&
@@ -219,6 +226,7 @@ jobs:
           name: voice-render-records-${{ github.job }}-${{ github.run_attempt }}
           path: |
             build/**/voice_manifest.json
+            build/**/minimum_result.json
             build/**/render_timeline.json
             !build/**/portrait/**
           retention-days: 14
