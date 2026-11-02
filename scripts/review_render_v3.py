@@ -78,7 +78,7 @@ def design_team(spec):
     return None if spec.get('multi_team') or spec.get('game') or len(teams)>1 else spec.get('team_id')
 
 
-def _lines(d, text, size, width, max_lines=4, floor=24):
+def _lines(d, text, size, width, max_lines=4, floor=24, atomic_numbers=False):
     """描画と同じ書体で札の幅を計測する。長い語も幅以内で折る。"""
     while True:
         f = font(size)
@@ -90,7 +90,8 @@ def _lines(d, text, size, width, max_lines=4, floor=24):
                     continue
                 if line:
                     lines.append(line.rstrip()); line = ''
-                for ch in token:
+                units = re.findall(r'\d+(?:\.\d+)?(?:/\d+)?|\.\d+|.', token) if atomic_numbers else token
+                for ch in units:
                     if line and d.textbbox((0,0),line+ch,font=f)[2] > width:
                         lines.append(line.rstrip()); line = ''
                     line += ch
@@ -634,7 +635,8 @@ def intro(t, spec, kind_label):
         y = 772
     else:
         hook = spec.get("hook") or spec.get("label", "")
-        lines, size = _lines(d, hook, 96, SAFE_RIGHT - LEFT, 2)
+        lines, size = _lines(d, hook, 96, SAFE_RIGHT - LEFT, 2,
+                             atomic_numbers=bool(spec.get('jp_stock')))
         e = ease_out(t / 0.6)
         for i, line in enumerate(lines):
             _text(d,(LEFT, 400 + i * (size + 20)), line, font=font(size),
@@ -731,7 +733,7 @@ def _atoms(runs):
             yield text, size, gold
             continue
         # カタカナの語（「ブレーブス」「エンリケ・エルナンデス」）も途中で折り返さない
-        for m in re.finditer(r"\d[\d,.]*(?:対\d+)?[^\d\s　（）・、]?|[ァ-ヴ][ァ-ヴー・]*[ァ-ヴー]|.", text):
+        for m in re.finditer(r"(?:\d[\d,.]*|\.\d+)(?:対\d+)?[^\d\s　（）・、]?|[ァ-ヴ][ァ-ヴー・]*[ァ-ヴー]|.", text):
             yield m.group(0), size, gold
 
 
