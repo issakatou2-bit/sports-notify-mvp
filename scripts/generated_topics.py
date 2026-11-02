@@ -80,6 +80,14 @@ def all_topics(sources=SOURCES, refresh: bool = False) -> dict:
             if key and key not in out:
                 out[key] = spec
                 seasons[key] = d.get('season')
+    import offseason_market
+    try:
+        market = offseason_market.load()
+    except (OSError, ValueError, TypeError, KeyError) as error:
+        print('[warn] 市場の手入力材料が不正のため、その種類を保留: ' + str(error), file=sys.stderr)
+        market = []
+    for spec in market:
+        out[spec['key']] = spec
     import short_context
     for key, spec in list(out.items()):
         if key.startswith('rare_'):

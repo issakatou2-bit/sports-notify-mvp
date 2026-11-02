@@ -218,6 +218,11 @@ def superseded(spec: dict) -> bool:
     return bool(later)
 
 
+def offseason_order(spec):
+    """市場を公式取引の連載・日本人資産より先に選ぶ共通順。"""
+    return __import__('offseason_market').order(spec)
+
+
 def pick_season(args) -> int:
     """シーズンまとめを、その日の残りの本数まで選ぶ。
 
@@ -228,10 +233,12 @@ def pick_season(args) -> int:
     import player_publications as publications
     ledgers = publications.load(assets_path=args.published)
     done = published(args.published)
+    import offseason_market
+    market_done = offseason_market.posted_today(merge_records(ledgers[0].get('asset', {}), ledgers[1].get('assets', {})))
     left = max(0, args.season - posted_today(args.published,
                                              kinds={"season"}, count=True, extra=ledgers[0].get('asset', {})))
     todo = sorted((k for k, v in gav.LIST_TOPICS.items()
-                   if kind_of(k) == "season" and k not in done and not started(v)
+                   if (kind_of(k) == "season" or (k.startswith(offseason_market.PREFIX) and not market_done)) and k not in done and not started(v)
                    and asset_policy.selectable(k, v)),
                   key=lambda k: season_order(k, gav.LIST_TOPICS[k]))
     todo = [k for k in todo if not publications.topic_id(k) or not publications.recent(publications.topic_id(k), 'season_player', ledgers=ledgers)]
@@ -243,6 +250,7 @@ def pick_season(args) -> int:
     import ui_voice_stock
     todo = ui_voice_stock.prioritize(todo)
     todo.sort(key=lambda k: not gav.LIST_TOPICS[k].get('jp_stock'))
+    todo.sort(key=lambda k: offseason_order(gav.LIST_TOPICS[k])[0])
     picked = []
     used = season_kinds_today(args.published, extra=ledgers[0].get('asset', {}))
     used_players = set()
@@ -250,6 +258,8 @@ def pick_season(args) -> int:
         if len(picked) >= left:
             break
         kind = season_kind(k)
+        if k.startswith(offseason_market.PREFIX) and any(x.startswith(offseason_market.PREFIX) for x in picked):
+            continue
         players = jp_assets.ids(k, gav.LIST_TOPICS[k])
         if kind in used or players & used_players:
             continue

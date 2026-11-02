@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "entries": [
+    {
+      "id": "sample-sato-deadline",
+      "title": "佐藤輝明 ポスティングの期限",
+      "name_en": "Teruaki Sato",
+      "checked_on": "2026-11-03",
+      "facts": [
+        {"id": "deadline", "label": "交渉期限", "text": "この架空の見本では、佐藤輝明の交渉期限を12月15日に設定しています。", "source_url": "https://example.com/official/deadline"},
+        {"id": "procedure", "label": "所属球団の発表", "text": "この架空の見本では、所属球団がポスティングの手続きを発表した設定です。", "source_url": "https://example.com/official/posting"}
+      ],
+      "reports": [
+        {"id": "interest", "label": "複数球団の関心", "outlet": "見本通信", "text": "この架空の見本では、複数球団が佐藤輝明の獲得に関心を示していると見本通信が報じています。", "source_url": "https://example.com/news/interest"}
+      ]
+    }
+  ]
+}

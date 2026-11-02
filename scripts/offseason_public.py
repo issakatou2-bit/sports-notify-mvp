@@ -1,7 +1,7 @@
 """予定・賞・移籍だけの投稿文。ほかの資産動画の型は変更しない。"""
 import re
 
-KINDS = {'schedule', 'awards', 'transactions'}
+KINDS = {'schedule', 'awards', 'transactions', 'market'}
 
 
 def caption_phrases(text):
@@ -16,18 +16,22 @@ def applies(spec):
 
 
 def social_kind(kind):
-    return bool(re.fullmatch(r'asset_offseason_(?:schedule|awards|transactions)_\d{4}_[a-f0-9]+', kind))
+    return bool(re.fullmatch(r'asset_offseason_(?:schedule|awards|transactions|market)_\d{4}_[a-f0-9]+', kind))
 
 
 def metadata(spec):
     label = spec.get('heading') or spec['label']
     lead = [label + 'を、MLB公式の記録から紹介します。', '']
+    if spec['offseason']['kind'] == 'market':
+        lead = [label, spec['label'] + '。確定情報と報道を分けて紹介します。', '']
     if spec.get('intro'):
         lead += [spec['intro'], '']
     lead += [f'・{head}　{body}' for head, body in spec.get('items', [])]
     lead += ['', '出典: ' + spec.get('source', 'MLB公式')]
     if spec.get('source_url'):
         lead.append(spec['source_url'])
+    if spec['offseason']['kind'] == 'market':
+        lead += [r['head'] + ': ' + r['source'] for r in spec['offseason']['events']]
     # 連載は見出しが「第N回」だけなので、題は選手名と動きが入った label を使う。
     series = spec['offseason'].get('series_number')
     return dict(title=f'【MLB】{spec["label"] if series else label} #Shorts', lead=lead,

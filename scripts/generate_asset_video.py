@@ -647,8 +647,8 @@ def build_narration(topic: str) -> dict:
                 raise ValueError('話し言葉の数字が画面の材料と一致しません: '+str(errors))
             for seg in narration['segments']:
                 if seg['kind']=='outro':
-                    seg['text']=(__import__('offseason_news').OUTRO_TEXT if LIST_TOPICS[topic].get('offseason') else r3.OUTRO_TEXT)
-            if r3.LOOK=='v4':
+                    seg['text']=(__import__('offseason_market').OUTRO_TEXT if LIST_TOPICS[topic].get('offseason', {}).get('kind') == 'market' else __import__('offseason_news').OUTRO_TEXT if LIST_TOPICS[topic].get('offseason') else r3.OUTRO_TEXT)
+            if r3.LOOK=='v4' and LIST_TOPICS[topic].get('offseason', {}).get('kind') != 'market':
                 from content_v4 import ClubMentions, affiliations
                 tracker=ClubMentions(affiliations(s['text'] for s in narration['segments']))
                 for seg in narration['segments']:seg['text']=tracker.text(seg['text'])
@@ -1874,7 +1874,7 @@ def main():
             s.setdefault("speaker", METAN)
             if s.get("kind") == "outro" and 'voice_resolution' not in narration:
                 import review_render_v3 as r3
-                s["text"] = (__import__('offseason_news').OUTRO_TEXT if LIST_TOPICS[args.topic].get('offseason') else r3.OUTRO_TEXT)
+                s["text"] = (__import__('offseason_market').OUTRO_TEXT if LIST_TOPICS[args.topic].get('offseason', {}).get('kind') == 'market' else __import__('offseason_news').OUTRO_TEXT if LIST_TOPICS[args.topic].get('offseason') else r3.OUTRO_TEXT)
         import duo
         VOICE_CREDIT = duo.credit(narration['segments'])
 
