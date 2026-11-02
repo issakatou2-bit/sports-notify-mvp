@@ -108,7 +108,15 @@ def engine_available() -> bool:
         return False
 
 
-def synth_one(text: str, speaker: int, out_path: pathlib.Path) -> bool:
+def baseball_average_reading(text):
+    """新型の打率だけに使用。字幕は.306、音声は3割6厘を保つ。"""
+    import re
+    def spoken(match):
+        return ''.join(n+unit for n,unit in zip(match[1], ('割','分','厘')) if n != '0') or '0割'
+    return re.sub(r'(?<![\d.])\.(\d{3})(?!\d)', spoken, text)
+
+
+def synth_one(text: str, speaker: int, out_path: pathlib.Path, *, baseball_avg=False) -> bool:
     """
     1セグメント分の音声を合成する。成功したらTrue。
 
@@ -119,6 +127,8 @@ def synth_one(text: str, speaker: int, out_path: pathlib.Path) -> bool:
     original = text
     name_reading_guard.assert_known(original)
     text = apply_readings(text)
+    if baseball_avg:
+        text = baseball_average_reading(text)
     try:
         q = requests.post(
             f"{VOICEVOX_URL}/audio_query",
@@ -295,7 +305,8 @@ def main(argv=None):
             speaker = seg.get("speaker")
             speaker = int(speaker) if isinstance(speaker, (int, str))                 and str(speaker).isdigit() else args.speaker
             ok = (solo_host.synthesize(seg.get("text", ""), path) if host == 'ui'
-                  else synth_one(seg.get("text", ""), speaker, path))
+                  else synth_one(seg.get("text", ""), speaker, path, baseball_avg=True)
+                  if data.get('baseball_average_voice') else synth_one(seg.get("text", ""), speaker, path))
             dur = audio_duration(path) if ok else 0.0
             manifest.append({
                 "index": i,

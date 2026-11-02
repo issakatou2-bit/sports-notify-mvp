@@ -2389,7 +2389,8 @@ def main():
     if args.kind == 'asset' and args.asset_topic:
         import jp_assets
         spec = __import__('generated_topics').get(args.asset_topic)
-        guarded = args.asset_topic.startswith(('season_compare_', 'season_momentum_rs2026_')) or args.asset_topic == 'season_game_823818'
+        guarded = args.asset_topic.startswith(('season_compare_', 'season_momentum_rs2026_',
+                   'season_best_', 'season_month_', 'season_vs_', 'season_streak_')) or args.asset_topic == 'season_game_823818'
         if guarded and not spec:
             print('[info] 日本人資産の材料が無いため公開を見送ります')
             return
@@ -2399,7 +2400,7 @@ def main():
                 return
             at = datetime.fromisoformat(publish_at.replace('Z', '+00:00')) if publish_at else datetime.now(timezone.utc)
             if not jp_assets.publication_available(args.asset_topic, spec, jp_assets.publication_ledgers(), at):
-                print('[info] 公開済み・選手の7日間重複・公開日の型または本数上限のため見送ります')
+                print('[info] 公開済み・選手の公開間隔・公開日の型または本数上限のため見送ります')
                 return
             experiment = dict(experiment or {}, player_ids=sorted(jp_assets.ids(args.asset_topic, spec)))
             if publish_at:
