@@ -723,7 +723,7 @@ def record_kind(kind: str, morning_mode: str = "players",
 # 資産動画(asset)だけは日付ではなく話題で引くので、別の分岐が受け持つ。
 # --kind の選択肢と食い違っていないかは test_consistency が見る。
 DATED_KINDS = ("daily", "morning", "longform", "weekly", "verdict",
-               "soccer_race", "soccer_week", "soccer_results", "soccer_voices", "player_story")
+               "soccer_race", "soccer_week", "soccer_results", "soccer_voices", "soccer_national", "player_story")
 
 
 def published_video(kind: str, date_key: str,
@@ -745,7 +745,9 @@ def material_date_key(kind: str, sport: str, games: dict, explicit: str | None =
     """サッカーの結果は材料日、予告は材料取得日の日本日付で照合する。"""
     from datetime import datetime, timedelta, timezone
     expected = None
-    if kind == 'soccer_results':
+    if kind == 'soccer_national':
+        expected = __import__('soccer_national').instant(games['as_of']).astimezone(timezone(timedelta(hours=9))).date().isoformat()
+    elif kind == 'soccer_results':
         expected = games['date_jst']
     elif record_kind(kind, sport=sport) == 'daily_soccer':
         at = datetime.fromisoformat(games['generated_at'].replace('Z', '+00:00'))
@@ -1425,6 +1427,8 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
                    longform_mode: str = "voices",
                    longform_subject: str = "") -> dict:
     """タイトル・説明文・タグを、その日のデータから組み立てる"""
+    if kind == 'soccer_national':
+        return __import__('soccer_national').metadata(_json_or_empty(narration_path))
     if kind == 'player_story':
         import player_story
         narr = _json_or_empty(narration_path)
@@ -2143,7 +2147,7 @@ def main():
     parser.add_argument("--kind", default="daily",
                         choices=["daily", "weekly", "asset", "verdict",
                                  "morning", "longform", "soccer_race",
-                                 "soccer_week", "soccer_results", "soccer_voices", "player_story"],
+                                 "soccer_week", "soccer_results", "soccer_voices", "soccer_national", "player_story"],
                         help="daily=ショート / weekly=週次まとめ / "
                              "asset=資産動画 / verdict=答え合わせ / "
                              "morning=夕方の5本 / longform=対話の通常動画 / "
@@ -2188,6 +2192,22 @@ def main():
     args = parser.parse_args()
     import ui_voice_queue
     ui_voice_queue.configure(args)
+    if args.kind == 'soccer_national':
+        import soccer_national
+        if not soccer_national.enabled():
+            print('[info] 日本代表の生成・公開は既定offです')
+            return
+        national_narration = _json_or_empty(args.narration)
+        if soccer_national.check(national_narration) or not national_narration.get('national_material'):
+            raise ValueError('日本代表の原稿・得点の照合に失敗しました')
+        national_material = national_narration['national_material']
+        if national_material != _json_or_empty(args.games) or national_material.get('sample'):
+            raise ValueError('日本代表の材料が一致しないか、試作用です')
+        from soccer_national_publish import validate as validate_national_reservation
+        validate_national_reservation(national_material, datetime.now(timezone.utc))
+        planned = soccer_national.instant(national_material['publish_at']).astimezone(soccer_national.JST).strftime('%H:%M')
+        if args.publish_at != planned:
+            raise ValueError('日本代表は選定した予約時刻を変更せず指定してください')
     if args.kind == 'player_story':
         if os.environ.get('COLLESPO_PLAYER_STORY') != 'on' or os.environ.get('PLAYER_STORY_PUBLISH') != 'true':
             print('[info] 選手の話題の回の生成・公開スイッチは既定オフです')
@@ -2418,6 +2438,11 @@ def main():
         experiment = dict(experiment or {}, **player_record)
 
     # 即時の非公開確認は公開対象外。予約はprivateで送る場合も公開前検査が必要。
+    if args.kind == 'soccer_national':
+        national_data = _json_or_empty(args.narration)['national_material']
+        experiment = dict(experiment or {}, national_mode=national_data['mode'],
+                          national_squad_page=national_data.get('page'),
+                          national_event_id=(national_data.get('game') or {}).get('id'))
     if args.kind not in ('longform', 'weekly') and (args.privacy != 'private' or publish_at):
         import short_content
         quality = short_content.validate_upload(video_path)

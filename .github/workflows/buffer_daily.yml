@@ -18,7 +18,7 @@ on:
       kind:
         description: '投げる枠（daily / morning / morning_voices / morning_press / morning_postseason）'
         type: choice
-        options: [daily, morning, morning_voices, morning_press, morning_postseason]
+        options: [daily, morning, morning_voices, morning_press, morning_postseason, soccer_national]
         default: daily
   workflow_run:
     workflows: [毎日 19:00頃　明日の注目試合]
@@ -64,6 +64,7 @@ jobs:
           BLUESKY_APP_PASSWORD: ${{ secrets.BLUESKY_APP_PASSWORD }}
           MODE: ${{ github.event_name == 'schedule' && 'publish_due' || github.event_name == 'workflow_run' && 'publish' || inputs.mode || 'validate' }}
           PYTHONUNBUFFERED: '1'
+          COLLESPO_SOCCER_NATIONAL: ${{ vars.COLLESPO_SOCCER_NATIONAL == 'on' && 'on' || 'off' }}
         run: |
           if [ "$MODE" = "reconcile" ]; then
             python scripts/buffer_daily.py --reconcile
