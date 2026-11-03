@@ -1044,6 +1044,9 @@ def outro(t, spec=None, exclude="", credit="音声: VOICEVOX:四国めたん　�
     offseason = bool((spec or {}).get('offseason'))
     if offseason:
         tagline = 'オフの動きを公式の記録で'
+        if spec['offseason'].get('kind') == 'market':
+            tagline = '確定情報と報道を分けて'
+            credit = credit.replace('MLB Stats API', '各行の出典資料')
     if LOOK == 'v4' and solo_host.selected() == 'ui':
         credit = credit.replace('VOICEVOX:四国めたん', solo_host.UI_CREDIT)
     im = background(t, None)

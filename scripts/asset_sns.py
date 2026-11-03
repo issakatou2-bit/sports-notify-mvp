@@ -15,7 +15,7 @@ import generated_topics as gt
 
 WORKFLOWS = {'season_review.yml': 'season-review', 'ps_game_now.yml': 'ps-game-now',
              'offseason_news.yml': 'offseason-news'}
-TOPIC = re.compile(r'(?:season_(?:momentum|game|odds)_[A-Za-z0-9_]+|season_(?:best|month|vs|streak)_2026_\d+_(?:hitting|pitching)|season_compare_2026_\d+_(?:hitting|pitching)_\d+|season_compare_\d{4}_\d+_\d+|offseason_(?:schedule|awards|transactions)_\d{4}_[a-f0-9]{12})\Z')
+TOPIC = re.compile(r'(?:season_(?:momentum|game|odds)_[A-Za-z0-9_]+|season_(?:best|month|vs|streak)_2026_\d+_(?:hitting|pitching)|season_compare_2026_\d+_(?:hitting|pitching)_\d+|season_compare_\d{4}_\d+_\d+|offseason_(?:schedule|awards|transactions|market)_\d{4}_[a-f0-9]{12})\Z')
 
 
 def select(run, assets, topics, now):
@@ -35,7 +35,7 @@ def select(run, assets, topics, now):
     rows = []
     for topic, record in sorted(assets.items()):
         offseason = topic.startswith('offseason_')
-        if offseason != (wf == 'offseason_news.yml'):
+        if offseason != (wf == 'offseason_news.yml') and not (topic.startswith('offseason_market_') and wf == 'season_review.yml'):
             continue
         if offseason:
             import offseason_switches
@@ -68,6 +68,8 @@ def register(topic, artifact, run):
     bd.KIND_WORDS[kind] = dict(short='MLB' if offseason else word, long='MLB公式の話題' if offseason else word,
                               lead='MLB公式に確認できたオフの話題です' if offseason else lead,
                               cut='\x00', sport='mlb')
+    if topic.startswith('offseason_market_'):
+        bd.KIND_WORDS[kind].update(long='MLB移籍市場', lead='確定情報と媒体の報道を分けて紹介します')
     return kind, filename
 
 
@@ -229,7 +231,7 @@ def distribute(run, rows, publish=False):
                                          '音声：VOICEVOX:四国めたん') for s, text in texts.items()}
             # Bluesky uses the compact published title and an external video card.
             btext = bd.caption('twitter', day, verified, kind)
-            description = ('MLB公式で確認できたオフの話題です。' if topic.startswith('offseason_')
+            description = ('確定情報と媒体の報道を分けて紹介するMLB移籍市場の話題です。' if topic.startswith('offseason_market_') else 'MLB公式で確認できたオフの話題です。' if topic.startswith('offseason_')
                            else 'コレスポの' + bd.KIND_WORDS[kind]['short'] + 'です。')
             bpost = bsky_record(btext, verified['title'], record['video_id'], datetime.now(timezone.utc), description)
             print(json.dumps(dict(topic=topic, video_id=record['video_id'], duration=duration,

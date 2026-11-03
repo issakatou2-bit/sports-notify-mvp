@@ -1,29 +1,8 @@
 ﻿"""保存済み対象名と公式取引だけの番号つき連載。公開成功時だけ番号を確定。"""
 import copy
-import json
-from pathlib import Path
+from jp_future_catalog import TITLE, targets, number
 
-TITLE = '日本人選手の来季'
 DESCRIPTION = '連載「日本人選手の来季」では、MLB公式に確定した移籍・契約などの動きを追います。'
-
-
-def targets(root=Path('data')):
-    kana = json.loads((root/'player_kana.json').read_text(encoding='utf-8'))['names']
-    season = json.loads((root/'season_topics.json').read_text(encoding='utf-8'))['topics']
-    candidates = json.loads((root/'offseason_players.json').read_text(encoding='utf-8'))['players']
-    # 日本人個人の保存済み成績札で対象を確定する。日本語名だけで国籍を推測しない。
-    roster = json.loads((root/'roster_snapshot.json').read_text(encoding='utf-8'))['players']
-    result = {roster[str(r['player_id'])]['name']: r['jp'] for r in season
-              if r.get('jp') and str(r.get('player_id')) in roster}
-    for row in candidates:
-        if not kana.get(row['name_en']):
-            raise ValueError('連載対象の名前がplayer_kanaにありません')
-        result[row['name_en']] = kana[row['name_en']]
-    return result, kana
-
-
-def number(state):
-    return 1 + max((r.get('series_number', 0) for r in state.get('topics', {}).values()), default=0)
 
 
 def topic(rows, day, season, state=None, episode=None):

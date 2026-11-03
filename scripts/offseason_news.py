@@ -324,6 +324,8 @@ def check(document):
     evidence = document.get('offseason')
     if not evidence:
         return []
+    if evidence.get('kind') == 'market':
+        return __import__('offseason_market').check(document)
     sources = [s['offseason'] for s in document.get('sanity_materials', []) if s.get('offseason')]
     if sources != [evidence]:
         return ['オフの公式材料と原稿添付が不一致']
@@ -387,11 +389,15 @@ def main():
     args = parser.parse_args()
     path = Path(args.out)
     if args.record:
-        catalog = json.loads(path.read_text(encoding='utf-8'))
+        catalog = json.loads(path.read_text(encoding='utf-8')) if path.exists() else {'topics': []}
         published = json.loads(Path('data/published_assets.json').read_text(encoding='utf-8'))['assets']
         if args.record not in published:
             raise ValueError('公開成功記録がないためイベントを確定できません')
-        spec = next(t for t in catalog['topics'] if t['key'] == args.record)
+        spec = next((t for t in catalog['topics'] if t['key'] == args.record), None)
+        if spec is None:
+            spec = __import__('generated_topics').get(args.record)
+        if not spec or not spec.get('offseason'):
+            raise ValueError('保存するオフ材料がありません')
         record = Path('data/offseason_published.json')
         state = json.loads(record.read_text(encoding='utf-8')) if record.exists() else {'events': []}
         state['events'] = sorted(set(state['events']) | {r['event_id'] for r in spec['offseason']['events']})
@@ -409,20 +415,35 @@ def main():
         state = Path('data/offseason_published.json')
         seen = set(json.loads(state.read_text(encoding='utf-8'))['events']) if state.exists() else set()
         catalog = json.loads(path.read_text(encoding='utf-8'))
-        for spec in catalog['topics']:
+        import offseason_market
+        assets = Path('data/published_assets.json')
+        records = json.loads(assets.read_text(encoding='utf-8')).get('assets', {}) if assets.exists() else {}
+        market_used = offseason_market.posted_today(records, date.fromisoformat(args.day))
+        for spec in sorted(catalog['topics'], key=offseason_market.order):
+            market = spec['offseason']['kind'] == 'market'
+            if (market and market_used) or (not market and market_used and spec['offseason'].get('series_number')):
+                continue
             if available(spec, date.fromisoformat(args.day)) and len(spec['items']) >= 3 and not any(
                     r['event_id'] in seen for r in spec['offseason']['events']):
                 print(spec['key'])
+                if market:
+                    market_used = True
         return
     day = date.fromisoformat(args.day)
     # 前回の成功を失敗した日の新材料として残さない。
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(dict(day=str(day), topics=[], state='collecting')), encoding='utf-8')
-    materials = collect(day, args.season)
     state = Path('data/offseason_published.json')
     history = json.loads(state.read_text(encoding='utf-8')) if state.exists() else {'events': []}
     seen = set(history['events'])
-    topics = []
+    topics = __import__('offseason_market').load(day, history)
+    try:
+        materials = collect(day, args.season)
+    except Exception:
+        if not topics:
+            raise
+        print('[warn] 公式APIの取得に失敗。確認済みの手入力市場材料だけを候補にします', file=sys.stderr)
+        materials = {}
     for kind, rows in materials.items():
         pending = [r for r in rows if r['event_id'] not in seen]
         topics.extend([spec for spec in award_topics(rows, day, args.season)

@@ -36,6 +36,7 @@ concurrency:
 
 # ショートの見た目（v4 は字幕・大きめの立ち絵・進み具合の線）。review_render_v3.LOOK
 env:
+  COLLESPO_OFFSEASON_NEWS: ${{ vars.COLLESPO_OFFSEASON_NEWS || '' }}
   COLLESPO_HOOK_AB: ${{ vars.COLLESPO_HOOK_AB || '' }}
   COLLESPO_SOLO_HOST: ${{ vars.COLLESPO_SOLO_HOST || 'metan' }}
   COLLESPO_HOST_SPLIT: ${{ vars.COLLESPO_HOST_SPLIT || '' }}
@@ -156,7 +157,10 @@ jobs:
           set -- 16:30 22:00 23:00 23:30
           set +e
           FAILED=""
+          BASE_SHORT_LOOK="$COLLESPO_SHORT_LOOK"
           for t in ${{ steps.pick.outputs.topics }}; do
+            export COLLESPO_SHORT_LOOK="$BASE_SHORT_LOOK"
+            if [[ "$t" == offseason_market_* ]]; then export COLLESPO_SHORT_LOOK=v4; fi
             AT="$1"; shift || true
             asset_publication_args "${PRIVACY:-public}" "$AT"
             echo "::group::$t ($AT)"
@@ -172,9 +176,15 @@ jobs:
             python scripts/upload_youtube.py \
               --video "build/asset_$t/collespo_asset_$t.mp4" \
               --kind asset --asset-topic "$t" \
+              --narration "build/narr_$t.json" \
               --thumbnail "build/asset_$t/short.png" \
               --privacy "${PRIVACY:-public}" "${ASSET_PUBLISH_ARGS[@]}"
-            if [ $? -ne 0 ]; then
+            RESULT=$?
+            if [ "$RESULT" -eq 0 ] && [[ "$t" == offseason_market_* ]]; then
+              python scripts/offseason_news.py --record "$t"
+              RESULT=$?
+            fi
+            if [ "$RESULT" -ne 0 ]; then
               echo "::warning::$t を出せませんでした"
               FAILED="$FAILED $t"
             fi
@@ -184,6 +194,7 @@ jobs:
           [ -z "$FAILED" ] || echo "::warning title=未投稿::$FAILED"
           mkdir -p build/asset
           cp build/asset_*/*.mp4 build/asset/ 2>/dev/null || true
+          cp build/asset_*/*.voice.json build/asset/ 2>/dev/null || true
           python scripts/asset_sns.py --receipt-dir build/asset
 
       - name: Commit published record
@@ -192,6 +203,8 @@ jobs:
           bash scripts/commit_data.sh \
             "season review: ${{ github.run_id }}" \
             data/published_assets.json data/published_videos.json data/season_topics.json \
+            data/offseason_published.json \
+            data/offseason_topics.json \
             data/ps_story_topics.json data/ps_quotes.json data/ps_game_topics.json \
             data/ps_odds_topics.json data/ps_momentum_topics.json data/ps_spotlight_topics.json data/player_kana.json
 
@@ -213,6 +226,8 @@ jobs:
             data/jp_player_logs_2026.json
             build/narr_*.json
             data/season_topics.json
+            data/offseason_market.json
+            data/offseason_published.json
             build/asset/*.mp4
             build/asset/*.sns.json
             !build/**/portrait/**

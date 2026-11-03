@@ -231,6 +231,8 @@ def information(document, material=None):
 
 
 def assess(document, durations, material=None, *, maximum=60):
+    if (document.get('offseason') or {}).get('kind') == 'market':
+        maximum = min(maximum, 60)
     reasons = []
     try:
         units = information(document, material)
