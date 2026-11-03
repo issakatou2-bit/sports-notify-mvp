@@ -149,7 +149,8 @@ NAME_CASES = [
     ("SV Werder Bremen", "ブレーメン"),
     ("1. FC Union Berlin", "ウニオン・ベルリン"),
     ("FC St. Pauli", "ザンクトパウリ"),
-    ("Hamburger SV", "ハンブルク"),
+    ("Hamburger SV", "ハンブルガーSV"),
+    ("Hamburg SV", "ハンブルガーSV"),
 
     # 実データ(data/soccer_preview.json)で実際に取り違えていた組。
     # 短いキーだと、長い正式名称の一部として飲み込まれる。
@@ -203,7 +204,7 @@ for api_name in api_names:
 # "LOSC Lille" と "Lille OSC" はどちらもリールで、正規化すれば
 # 同じところへ落ちる。**違うクラブが同じ日本語名になる**のが
 # ここで捕まえたいことなので、別表記は先に除く。
-ALIASES = [{"LOSC Lille", "Lille OSC"}]
+ALIASES = [{"LOSC Lille", "Lille OSC"}, {"Hamburg SV", "Hamburger SV"}]
 
 for jp, sources in seen.items():
     if len(sources) > 1 and not any(sources <= a for a in ALIASES):

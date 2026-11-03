@@ -7,6 +7,11 @@ def check(documents):
     import voices_context
     errors = voices_context.checks(documents)
     for doc in documents:
+        if 'soccer_weekly_material' in doc:
+            try:
+                __import__('soccer_weekly_long').validate_document(doc)
+            except (ValueError, KeyError, TypeError) as error:
+                errors.append('週まとめの材料照合: '+str(error))
         for index, segment in enumerate(doc.get('segments') or [], 1):
             text = segment.get('text') or ''
             # 同じ一人の連続した成績表記だけ。別人・別文の数を混ぜない。

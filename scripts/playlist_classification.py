@@ -4,6 +4,7 @@ KIND_ALIASES = {"morning_postseason": "postseason", "verdict": "weekly"}
 
 # 記録が残っていない動画だけに使う。競技・番組が明示された題に限定する。
 TITLE_RULES = [
+    ("soccer_weekly", ("日本人選手の1週間",)),
     ("postseason", ("ポストシーズン",)),
     ("morning_voices", ("現地のファンは何と言ったか",)),
     ("longform", ("【海外の反応】", "公式コメント欄を読み解く",

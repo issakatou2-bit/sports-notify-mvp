@@ -50,6 +50,7 @@ PATTERNS = [
     ("daily", r"PS全\d+試合"),
     ("morning_postseason", r"^【\d{1,2}/\d{1,2}更新】"),
     ("soccer_race", r"順位争い.*【欧州サッカー】"),
+    ("soccer_weekly", r"【欧州サッカー】.*日本人選手の1週間"),
     ("soccer_week", r"日本人選手の週末"),
     ("soccer_results", r"【欧州サッカー】.*(?:日本人選手の結果|昨夜の注目試合)"),
     ("daily_soccer", r"欧州サッカー|注目試合【サッカー】"),
@@ -148,7 +149,7 @@ def add_entries(rec: dict, entries: list) -> list:
             print(f"(区分が分かりません) {title[:60]}")
             continue
         # 結果の材料日は「夜〜翌朝」の開始日。題と公開日だけでは復元できない。
-        if kind == 'soccer_results':
+        if kind in ('soccer_results', 'soccer_weekly'):
             print(f"[warn] 結果の材料日を確認できないため補完しません: {vid}")
             continue
         day = when.strftime("%Y-%m-%d")
