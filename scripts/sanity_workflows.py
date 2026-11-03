@@ -21,6 +21,7 @@ NARRATIONS = {
     'soccer_national': ['build/soccer_national/narration.json'],
     'soccer_voices': ['build/soccer_voices/narration.json'],
     'soccer_week': ['build/week_narration.json'],
+    'soccer_weekly_long': ['build/soccer_weekly/dialogue.json'],
     'weekly_summary': ['build/weekly_narration.json', 'build/vs_narration.json'],
 }
 KINDS = {
@@ -30,6 +31,7 @@ KINDS = {
     'soccer_daily': 'daily_soccer', 'soccer_race': 'soccer_race', 'soccer_results': 'soccer_results',
     'soccer_voices': 'soccer_voices', 'soccer_week': 'soccer_week',
     'soccer_national': 'soccer_national',
+    'soccer_weekly_long': 'soccer_weekly',
 }
 PUBLISHER = re.compile(r'scripts/(?:upload_youtube|soccer_results_upload|soccer_week_publish)\.py'
                       r'|scripts/ps_daily_entry\.py\s+--stage\s+upload')

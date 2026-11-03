@@ -1,0 +1,147 @@
+name: 欧州サッカー 日本人選手の1週間（長尺）
+
+on:
+  schedule:
+    - cron: '15 0 * * 1' # 月曜9:15 JST
+  workflow_dispatch:
+    inputs:
+      render_only:
+        description: '書き出しだけで投稿しない'
+        type: boolean
+        default: true
+      monday:
+        description: '対象の月曜日 YYYY-MM-DD（空なら直近の締め）'
+        type: string
+        default: ''
+
+permissions:
+  contents: write
+
+concurrency:
+  group: soccer-weekly-long
+  cancel-in-progress: false
+
+env:
+  PYTHONUTF8: '1'
+  COLLESPO_SOCCER_WEEKLY_LONG: ${{ vars.COLLESPO_SOCCER_WEEKLY_LONG || 'off' }}
+  COLLESPO_LONGFORM_STYLE: v3
+  COLLESPO_MOTION: ${{ vars.COLLESPO_MOTION || '' }}
+  COLLESPO_BUBBLE: ${{ vars.COLLESPO_BUBBLE || '' }}
+  COLLESPO_CAPTION_BREAKS: ${{ vars.COLLESPO_CAPTION_BREAKS || '' }}
+  COLLESPO_GLASS_BACKGROUND: ${{ vars.COLLESPO_GLASS_BACKGROUND || 'stripes' }}
+  COLLESPO_SLANT_VARIANT: ${{ vars.COLLESPO_SLANT_VARIANT || 'cream' }}
+
+jobs:
+  weekly:
+    if: github.event_name == 'workflow_dispatch' || vars.COLLESPO_SOCCER_WEEKLY_LONG == 'on'
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          pip install -r scripts/requirements.txt
+          pip install pillow google-api-python-client google-auth
+      - name: Collect the week and write fixed dialogue
+        id: material
+        env:
+          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
+          TARGET_MONDAY: ${{ inputs.monday }}
+        run: |
+          ARGS=()
+          if [ -n "$TARGET_MONDAY" ]; then ARGS+=(--monday "$TARGET_MONDAY"); fi
+          python scripts/soccer_weekly_long.py "${ARGS[@]}" --out-dir build/soccer_weekly | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: Sanity gate
+        if: steps.material.outputs.can_make == 'true'
+        env:
+          ANTHROPIC_API_KEY: ''
+        run: python scripts/sanity.py --general --strict --narration build/soccer_weekly/dialogue.json --out data/sanity_soccer_weekly.json --hold-record build/sanity_hold_soccer_weekly.json --kind soccer_weekly
+        # 定型台本の全文再構成で照合する。生成API・有料の二段目は使用しない。
+      - name: Install video tools
+        if: steps.material.outputs.can_make == 'true'
+        timeout-minutes: 16
+        run: bash scripts/install_video_tools.sh
+      - name: Start VOICEVOX engine
+        if: steps.material.outputs.can_make == 'true'
+        run: |
+          docker run -d --rm -p 50021:50021 --name voicevox voicevox/voicevox_engine:cpu-latest
+          for i in $(seq 1 60); do
+            if curl -fsS http://127.0.0.1:50021/version; then exit 0; fi
+            sleep 2
+          done
+          exit 1
+      - name: Synthesize both voices
+        if: steps.material.outputs.can_make == 'true'
+        run: python scripts/synthesize_narration.py --narration build/soccer_weekly/dialogue.json --out-dir build/soccer_weekly/audio
+      - name: Render v3 and review frames
+        if: steps.material.outputs.can_make == 'true'
+        run: |
+          python scripts/render_soccer_weekly.py --dialogue build/soccer_weekly/dialogue.json --frames build/soccer_weekly/frames
+          python scripts/render_soccer_weekly.py --dialogue build/soccer_weekly/dialogue.json --audio-dir build/soccer_weekly/audio --out build/soccer_weekly --require-audio
+      - name: Upload to YouTube
+        if: steps.material.outputs.can_make == 'true' && vars.COLLESPO_SOCCER_WEEKLY_LONG == 'on' && (github.event_name != 'workflow_dispatch' || !inputs.render_only)
+        env:
+          # 題と説明の英訳（全ての投稿と同じ既存の経路）。台本・sanity では使わない。
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+          WEEK_KEY: ${{ steps.material.outputs.key }}
+        run: |
+          python scripts/upload_youtube.py --video build/soccer_weekly/collespo_longform.mp4 --games build/soccer_weekly/material.json --narration build/soccer_weekly/dialogue.json --kind soccer_weekly --sport soccer --video-date "$WEEK_KEY" --thumbnail build/soccer_weekly/frames/opening.png --privacy public --publish-at '20:30'
+          python scripts/verify_published.py --kind soccer_weekly --video-date "$WEEK_KEY" --hold-record build/sanity_hold_soccer_weekly.json
+      - name: Commit video record
+        if: always() && vars.COLLESPO_SOCCER_WEEKLY_LONG == 'on' && (github.event_name != 'workflow_dispatch' || !inputs.render_only)
+        run: bash scripts/commit_data.sh "soccer weekly long record" data/published_videos.json data/playlists.json data/localized.json
+      - name: Save quota-exceeded thumbnails
+        if: always() && hashFiles('build/thumbnail_pending/**') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: thumbnail-pending
+          path: |
+            build/thumbnail_pending/
+            !build/**/portrait/**
+          retention-days: 3
+          if-no-files-found: ignore
+      - name: Save videos and material
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: soccer-weekly-long-${{ github.run_id }}
+          path: |
+            build/soccer_weekly/
+            !build/**/portrait/**
+          retention-days: 14
+          if-no-files-found: error
+      - name: Save sanity gate records
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sanity-gate-soccer-weekly
+          path: |
+            data/sanity_soccer_weekly.json
+            build/sanity_hold_soccer_weekly.json
+          retention-days: 14
+          if-no-files-found: ignore
+      - name: Save voice and render records
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: voice-render-records-${{ github.job }}-${{ github.run_attempt }}
+          path: |
+            build/**/voice_manifest.json
+            build/**/render_timeline.json
+            !build/**/portrait/**
+          retention-days: 14
+          if-no-files-found: ignore
+      - name: Keep unsaved data records
+        if: always() && hashFiles('build/data-save-recovery/**/FAILED') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: unsaved-data-${{ github.job }}-${{ github.run_attempt }}
+          path: build/data-save-recovery/
+          retention-days: 14
+          if-no-files-found: error

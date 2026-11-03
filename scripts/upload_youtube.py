@@ -723,7 +723,7 @@ def record_kind(kind: str, morning_mode: str = "players",
 # 資産動画(asset)だけは日付ではなく話題で引くので、別の分岐が受け持つ。
 # --kind の選択肢と食い違っていないかは test_consistency が見る。
 DATED_KINDS = ("daily", "morning", "longform", "weekly", "verdict",
-               "soccer_race", "soccer_week", "soccer_results", "soccer_voices", "soccer_national", "player_story")
+               "soccer_race", "soccer_week", "soccer_results", "soccer_voices", "soccer_national", "player_story", "soccer_weekly")
 
 
 def published_video(kind: str, date_key: str,
@@ -745,7 +745,10 @@ def material_date_key(kind: str, sport: str, games: dict, explicit: str | None =
     """サッカーの結果は材料日、予告は材料取得日の日本日付で照合する。"""
     from datetime import datetime, timedelta, timezone
     expected = None
-    if kind == 'soccer_national':
+    if kind == 'soccer_weekly':
+        expected = games['key']
+        __import__('soccer_weekly_long').week_window(expected)
+    elif kind == 'soccer_national':
         expected = __import__('soccer_national').instant(games['as_of']).astimezone(timezone(timedelta(hours=9))).date().isoformat()
     elif kind == 'soccer_results':
         expected = games['date_jst']
@@ -1298,7 +1301,7 @@ OTHER_CHANNEL_LINES = _other_channels()
 # 「kind != weekly」で判定していたので、長編がショート扱いのまま
 # 公開された。説明欄に #Shorts が入り、タグにも Shorts が付いていた。
 # 種類が増えるたびに同じ間違いが起きるので、集合で持つ。
-LANDSCAPE_KINDS = {"weekly", "longform"}
+LANDSCAPE_KINDS = {"weekly", "longform", "soccer_weekly"}
 
 
 def _postseason_data(path: str = "data/postseason.json") -> dict:
@@ -1427,6 +1430,9 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
                    longform_mode: str = "voices",
                    longform_subject: str = "") -> dict:
     """タイトル・説明文・タグを、その日のデータから組み立てる"""
+    if kind == 'soccer_weekly':
+        return __import__('soccer_weekly_long').metadata(_json_or_empty(narration_path),
+                                                       pathlib.Path(narration_path).parent/'render_timeline.json')
     if kind == 'soccer_national':
         return __import__('soccer_national').metadata(_json_or_empty(narration_path))
     if kind == 'player_story':
@@ -2147,7 +2153,7 @@ def main():
     parser.add_argument("--kind", default="daily",
                         choices=["daily", "weekly", "asset", "verdict",
                                  "morning", "longform", "soccer_race",
-                                 "soccer_week", "soccer_results", "soccer_voices", "soccer_national", "player_story"],
+                                 "soccer_week", "soccer_results", "soccer_voices", "soccer_national", "player_story", "soccer_weekly"],
                         help="daily=ショート / weekly=週次まとめ / "
                              "asset=資産動画 / verdict=答え合わせ / "
                              "morning=夕方の5本 / longform=対話の通常動画 / "
@@ -2192,6 +2198,8 @@ def main():
     args = parser.parse_args()
     import ui_voice_queue
     ui_voice_queue.configure(args)
+    if args.kind == 'soccer_weekly':
+        __import__('soccer_weekly_long').validate_upload(args)
     if args.kind == 'soccer_national':
         import soccer_national
         if not soccer_national.enabled():
@@ -2453,7 +2461,7 @@ def main():
         experiment = dict(experiment or {}, national_mode=national_data['mode'],
                           national_squad_page=national_data.get('page'),
                           national_event_id=(national_data.get('game') or {}).get('id'))
-    if args.kind not in ('longform', 'weekly') and (args.privacy != 'private' or publish_at):
+    if args.kind not in LANDSCAPE_KINDS and (args.privacy != 'private' or publish_at):
         import short_content
         quality = short_content.validate_upload(video_path)
         experiment = dict(experiment or {}, **short_content.publication_fields(quality))

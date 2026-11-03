@@ -2000,7 +2000,8 @@ SOCCER_CLUB_NAME_JP = {
     "stpauli": "ザンクトパウリ",
     "koln": "ケルン",
     "heidenheim": "ハイデンハイム",
-    "hamburger": "ハンブルク",
+    "hamburger": "ハンブルガーSV",
+    "hamburg": "ハンブルガーSV",
     "schalke": "シャルケ",
 
     # --- リーグ・アン ---
