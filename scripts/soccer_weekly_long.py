@@ -77,9 +77,21 @@ def club_label(value):
     return label
 
 
+def known_japanese_names():
+    # 表示名の表にある日本語の名前（マンチェスターU、ボルシアMG、ハンブルガーSV等）は、
+    # 英字を含んでも正しい。略号を1つずつ許すと、表に足した名前のたびに止まる（11/3「U」で停止）。
+    import club_display_names as clubs
+    names = set(results.ne.SOCCER_CLUB_NAME_JP.values())
+    for row in clubs.rows():
+        names.update(row.get(key) or '' for key in ('display', 'short', 'legacy', 'current'))
+    return sorted((n for n in names if re.search(r'[ァ-ヶ]', n) and re.search(r'[A-Za-z]', n)), key=len, reverse=True)
+
+
 def check_public_names(text):
-    # 日本語の定着名に付く略号（セリエA、ボルシアMG、ハンブルガーSV等）は保つ。
-    allowed = {'A', 'B', 'C', 'FC', 'AC', 'AS', 'RB', 'SC', 'SV', 'MG', 'PSV', 'CL', 'EL'}
+    for name in known_japanese_names():
+        text = text.replace(name, '')
+    # リーグ名・大会の略号（セリエA、CL等）は保つ。
+    allowed = {'A', 'B', 'C', 'CL', 'EL'}
     unknown = sorted({m[0] for m in re.finditer(r'[A-Za-z]+', text) if m[0] not in allowed})
     if unknown:
         raise ValueError('英字のクラブ名が残っています: '+'、'.join(unknown))
@@ -271,7 +283,8 @@ def game_players(data, game):
     for person in data['players']:
         for match in person['matches']:
             if match['event_id'] == game['id']:
-                people.append(dict(name=person['name'], **match))
+                people.append(dict(name=person['name'], **match,
+                                   **{k: person[k] for k in ('standing', 'next') if person.get(k)}))
     return sorted(people, key=lambda p: (0 if p.get('goals') or p.get('assists') else
                   1 if p['status'] == 'starter' else 2 if p['status'] == 'substitute' else 3, p['name']))
 
@@ -352,7 +365,7 @@ def dialogue(data):
     panels, segments = {}, []
     groups = sections(data)
     chapters = [dict(id='opening', title='冒頭')]+[dict(id=key, title=head) for key, head, _ in groups]
-    chapters += [dict(id='context', title='順位と次戦'), dict(id='absent', title='出場なし・離脱中')]
+    chapters += [dict(id='absent', title='出場なし・離脱中')]
     def card(key, heading, rows, section, atomic=()):
         panels[key] = dict(type='soccer_weekly', heading=heading, rows=rows, atomic=list(dict.fromkeys(atomic)))
         return key, section
@@ -374,6 +387,25 @@ def dialogue(data):
                      '続いては{home}対{away}。{day}の{league}なのだ。',
                      '{league}から、{day}に終わった{home}対{away}なのだ。')
     game_index = 0
+    told = set()
+    def context(p):
+        # 順位と次戦は、そのクラブが最初に出てくる試合で1文だけ添える。
+        # 最後に一覧で読むと20クラブ・22行の羅列になり、同じ試合が両側から2回出た（11/3 実データ）。
+        # 「A 対 B」と書くとホーム・アウェーに読めるので、次戦は「Bと対戦」とだけ言う。
+        if p['club'] in told:
+            return None
+        told.add(p['club'])
+        parts = []
+        rank, n = p.get('standing'), p.get('next')
+        if rank:
+            parts.append(f"いま{results.LEAGUE_NAMES[rank['competition']]}{rank['rank']}位")
+        if n:
+            parts.append(f"次は{day_label(n['date'])}に{n['opponent']}と対戦します")
+        if not parts:
+            return None
+        if not n:
+            parts[-1] += 'です'
+        return p['club']+'は'+'、'.join(parts)+'。'
     for section, heading, games in groups:
         ref = card('league_'+section, heading, [f'{len(games)}試合の出場記録' if games else '得点・アシストの記録は冒頭の「今週の結果」で紹介'], section)
         say(3, ('今週の得点とアシストの記録からなのだ。' if section == 'results' else heading+'の結果なのだ。'), ref)
@@ -383,8 +415,11 @@ def dialogue(data):
             ended = results.utc(game['finished_utc']).astimezone(JST).date().isoformat()
             rows = [f"{day_label(ended)} {game['league_jp']} / {game['score']['home']}-{game['score']['away']}（ホーム-アウェー）"]
             rows += [p['name']+' / '+p['club']+' / '+appearance(p) for p in people]
+            notes = [c for c in (context(p) for p in people) if c]
+            rows += [c.rstrip('。') for c in notes]
             ref = card('game_'+str(game['id']), home+' 対 '+away, rows, section,
-                       atomic=[home, away]+[p['name'] for p in people]+[p['club'] for p in people])
+                       atomic=[home, away]+[p['name'] for p in people]+[p['club'] for p in people]
+                       +[p['next']['opponent'] for p in people if p.get('next')])
             text = introductions[game_index % len(introductions)].format(day=day_label(ended), league=game['league_jp'], home=home, away=away)
             game_index += 1
             say(3, text, ref, event_id=game['id'])
@@ -394,28 +429,8 @@ def dialogue(data):
             for i, p in enumerate(people):
                 who = 3 if i % 2 == 0 else 2
                 say(who, p['name']+'は'+appearance(p)+('なのだ。' if who == 3 else 'でした。'), ref, event_id=game['id'])
-    ranks = []
-    for p in data['players']:
-        rank = p.get('standing')
-        if rank:
-            row = f"{p['club']} / {results.LEAGUE_NAMES[rank['competition']]} {rank['rank']}位"
-            if row not in ranks:
-                ranks.append(row)
-    for i in range(0, len(ranks), 6):
-        ref = card(f'ranks_{i}', '現在のリーグ順位（取得時点）', ranks[i:i+6], 'context')
-        say(2, '取得時点のリーグ順位です。'+'。'.join(ranks[i:i+6])+'です。', ref)
-    upcoming = []
-    for p in data['players']:
-        if p.get('next'):
-            n = p['next']
-            row = f"{day_label(n['date'])} {p['club']} 対 {n['opponent']}"
-            if row not in upcoming:
-                upcoming.append(row)
-    for i in range(0, len(upcoming), 5):
-        ref = card(f'next_{i}', '次の試合（日本時間・取得時点）', upcoming[i:i+5], 'context')
-        say(3, '次の試合の日付と相手も見ていくのだ。', ref)
-        for row in upcoming[i:i+5]:
-            say(2, row+'の予定です。', ref)
+            for note in notes:
+                say(2, note, ref, event_id=game['id'])
     absent = absent_players(data)
     if absent:
         ref = card('absent', '出場なし・離脱中', [absent_line(p) for p in absent], 'absent',
