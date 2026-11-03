@@ -51,6 +51,8 @@ jobs:
           FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
           TARGET_MONDAY: ${{ inputs.monday }}
         run: |
+          # tee の後ろで失敗が消え、実行全体が成功に見えていた（11/3 手動の書き出しで材料づくりが落ちたのに成功）。
+          set -o pipefail
           ARGS=()
           if [ -n "$TARGET_MONDAY" ]; then ARGS+=(--monday "$TARGET_MONDAY"); fi
           python scripts/soccer_weekly_long.py "${ARGS[@]}" --out-dir build/soccer_weekly | tee -a "$GITHUB_STEP_SUMMARY"

@@ -96,7 +96,13 @@ class WeeklyTests(unittest.TestCase):
         data = w.aggregate(self.nights, '2026-11-02', context)
         self.assertEqual(data['players'][0]['standing']['rank'], 7)
         self.assertEqual(data['players'][0]['next']['date'], '2026-11-08')
-        w.validate_document(w.dialogue(data))
+        doc = w.dialogue(data)
+        w.validate_document(doc)
+        # 順位と次戦はその試合の中で1文。最後の羅列にしない。「A 対 B」でホーム・アウェーを示唆しない。
+        notes = [s['text'] for s in doc['segments'] if 'いまプレミアリーグ7位' in s['text']]
+        self.assertEqual(len(notes), 1)
+        self.assertIn('リバプールと対戦します', notes[0])
+        self.assertFalse(any('の予定です' in s['text'] for s in doc['segments']))
 
     def test_cup_table_does_not_replace_domestic_rank(self):
         import soccer_result_context
@@ -209,6 +215,10 @@ class WeeklyTests(unittest.TestCase):
         doc = w.dialogue(self.data)
         self.assertIn('ハンブルガーSV', str(doc['panels']))
         self.assertNotIn('Hamburg', str(doc['panels']))
+        # 表示名の表にある英字入りの日本語名は止めない（11/3 次戦の「マンチェスターU」で止まった）。
+        w.check_public_names('次はマンチェスターU、その次はボルシアMGとハンブルガーSVです。')
+        with self.assertRaisesRegex(ValueError, 'Manchester'):
+            w.check_public_names('次はManchester United')
         bad = copy.deepcopy(self.nights)
         bad[0]['games'][0]['away']['name_jp'] = 'Mystery FC'
         with self.assertRaisesRegex(ValueError, '英字'):
