@@ -9217,6 +9217,55 @@
       },
       "host_fallback_reason": null,
       "privacy": "public"
+    },
+    "2026-11-03": {
+      "video_id": "ctG_G_kJng4",
+      "url": "https://youtu.be/ctG_G_kJng4",
+      "title": "昨季CLリーグフェーズ2位対14位｜アトレティコ・マドリード対バイエルン｜チャンピオンズリーグ #Shorts",
+      "published_at": "2026-11-03T10:08:59.811398+00:00",
+      "publish_at": "2026-11-03T10:30:00Z",
+      "preview_binding": {
+        "material_sha256": "4cb204b324420a9f638cdf4baa774e7935b67842d5b76c07abd3c1569cb9d90a",
+        "narration_sha256": "038bc2fea3cdc2e48105c54ba41d61e63af6011b7bbc36f7b9c8275629df01d8"
+      },
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-03",
+        "enabled": true,
+        "assigned": "generic",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false,
+        "source": "post_common.lineup:daily_soccer",
+        "next_date": "2026-11-04",
+        "next_time": "19:30",
+        "next_name": "欧州サッカー"
+      },
+      "duration_seconds": 52.27,
+      "short_information_count": 9,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-11-03",
+        "kind": "daily_soccer",
+        "phase": 1,
+        "planned_host": "ui",
+        "rule": "half-jst-week-v1",
+        "week": 43,
+        "weekday": 1
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-11-03T10:03:20.858635+00:00",
+        "comparison_eligible": false,
+        "label": "予定めたん（雨衣不可のため）",
+        "mode": "live",
+        "planned_host": "metan",
+        "reason": "ui_deadline_crosses_live",
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
     }
   },
   "weekly": {
