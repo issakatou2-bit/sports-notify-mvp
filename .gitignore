@@ -52,3 +52,8 @@ collespo-demo/
 /data/publications/**/*.tmp
 /data/publication_recovery/*.tmp
 !/docs/PUBLIC_CLEANUP_2026-10-14.md
+
+# 配布元の画像は再配布しない。取得条件の台帳と説明書だけを共有する。
+/assets/illustrations/*
+!/assets/illustrations/SOURCES.json
+!/assets/illustrations/README.md

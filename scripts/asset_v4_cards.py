@@ -148,21 +148,22 @@ def mixed_lines(value,size=54,number_size=None,width=R-L-48):
     return result or [[]]
 
 
-def text_pages(head,body):
+def text_pages(head,body,illustrated=False):
     number_size=104 if head=='次の試合' else 54
-    wrapped=mixed_lines(body,54,number_size)
+    wrapped=mixed_lines(body,54,number_size,width=R-L-48-(260 if illustrated else 0))
     line_height=number_size+18
-    capacity=max(1,(r3.CONTENT_BOTTOM-348-56)//line_height)
+    capacity=max(1,(r3.CONTENT_BOTTOM-(638 if illustrated else 348)-56)//line_height)
     return [wrapped[i:i+capacity] for i in range(0,len(wrapped),capacity)],number_size,line_height
 
 
 def text_screen(t,spec,label,head,body,page=0):
+    art = __import__('market_art').for_item(spec, head, body)
     im=c.canvas(t,label);c.text(im,L,262,head,44,width=R-L)
-    pages,number_size,lh=text_pages(head,body);rows=pages[min(page,len(pages)-1)]
+    pages,number_size,lh=text_pages(head,body,bool(art));rows=pages[min(page,len(pages)-1)]
     height=56+len(rows)*lh
     # 安全域の中央に、内容に合う高さの札を置く。
-    top=round((348+r3.CONTENT_BOTTOM-height)/2)
-    c.panel(im,(L,top,R,top+height))
+    top=round(((638 if art else 348)+r3.CONTENT_BOTTOM-height)/2)
+    c.panel(im,(L,top,R-(260 if art else 0),top+height))
     for i,row in enumerate(rows):
         x=L+24;y=top+28+i*lh
         # 1字ずつ上端で揃えると「ー」が上へ浮く（10/8 試作「ポストシ¯ズン」）。行の下の線で揃える
@@ -178,7 +179,15 @@ def text_screen(t,spec,label,head,body,page=0):
             if tid:x+=c.inline_badge_width(tid,size)+12
     im.info['asset_v4']={'kind':'text','head':head,'body':body,'page':page,'pages':len(pages),
                         'font_size':54,'number_font':'Oswald','number_size':number_size}
-    return finish(im,t,spec)
+    if art:
+        import market_art_render
+        market_art_render.draw(im, art, spec.get('_market_art_elapsed', t))
+    im = finish(im,t,spec)
+    if art:
+        errors = market_art_render.check_layout(im) + __import__('v3_rules').check_layout(im)
+        if errors:
+            raise ValueError('挿絵が文字・安全域に重なっています: ' + str(errors))
+    return im
 
 
 def stat_screen(t,spec,label,head,body,page=0):
@@ -227,7 +236,7 @@ def stat_screen(t,spec,label,head,body,page=0):
 
 def item_pages(spec,head,body):
     if spec.get('offseason'):
-        return len(text_pages(head,body)[0])
+        return len(text_pages(head,body,bool(__import__('market_art').for_item(spec,head,body)))[0])
     if head=='試合の結果' and (spec.get('game_v4') or {}).get('score'):
         return (len(spec['game_v4']['score']['innings'])+8)//9
     if body.startswith('「') or '見出しから' in head or '投稿から' in head:
@@ -285,10 +294,11 @@ def list_page(t,spec,items,start,count,page,pages,label):
         weights=[len((spec.get('speech') or {}).get(h) or f'{h.replace("｜","、")}。{b}。') for h,b in selected]
     i,fraction=timing(t,weights);head,body=selected[i]
     total=item_pages(spec,head,body);p=min(total-1,int(fraction*total))
-    im=item(t,spec,label,head,body,p)
     duration=r3._CAPTION.get('duration') or 20
     elapsed=(fraction*total-p)*duration*weights[i]/sum(weights)/total
     if count==1:elapsed=t  # a duo question+answer shares one running scene clock
+    view = dict(spec, _market_art_elapsed=elapsed) if (spec.get('offseason') or {}).get('kind') == 'market' else spec
+    im=item(t,view,label,head,body,p)
     im.info['asset_v4'].update(item=start+i,fraction=fraction,animation_time=elapsed)
     return im
 

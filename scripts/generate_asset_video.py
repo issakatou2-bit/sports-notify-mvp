@@ -633,6 +633,7 @@ def rivalry_items() -> list:
 
 def build_narration(topic: str) -> dict:
     if topic in LIST_TOPICS:
+        __import__('market_art').validate_spec(LIST_TOPICS[topic])
         if LIST_TOPICS[topic].get('jp_stock'):
             import jp_stock
             jp_stock.validate_spec(dict(LIST_TOPICS[topic], key=topic))
@@ -1844,6 +1845,7 @@ def main():
     parser.add_argument('--publish-at',help='次情報を数える公開予約のJST時刻またはISO日時')
     parser.add_argument('--next-schedule',help='保存した公式日程（試作用）')
     args = parser.parse_args()
+    __import__('market_art').validate_spec(LIST_TOPICS.get(args.topic) or {})
     if args.topic.startswith('offseason_') and not args.narration_out:
         import review_render_v3 as r3
         if r3.LOOK != 'v4':

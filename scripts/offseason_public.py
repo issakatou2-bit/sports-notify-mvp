@@ -32,6 +32,7 @@ def metadata(spec):
         lead.append(spec['source_url'])
     if spec['offseason']['kind'] == 'market':
         lead += [r['head'] + ': ' + r['source'] for r in spec['offseason']['events']]
+        lead += __import__('market_art').credits(spec)
     # 連載は見出しが「第N回」だけなので、題は選手名と動きが入った label を使う。
     series = spec['offseason'].get('series_number')
     return dict(title=f'【MLB】{spec["label"] if series else label} #Shorts', lead=lead,
