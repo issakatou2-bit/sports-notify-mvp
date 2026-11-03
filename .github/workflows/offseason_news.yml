@@ -76,6 +76,8 @@ jobs:
           source scripts/asset_publish_args.sh
           set -- 22:00 23:00 23:30
           for t in ${{ steps.pick.outputs.topics }}; do
+            # 予約枠は1日3つ。残りは記録しないので翌日の候補に残る（11/3 6本選ばれ4本目で $1 が空になり止まった）。
+            if [ "$#" -eq 0 ]; then echo "予約枠を使い切ったので、残りは翌日に回します"; break; fi
             AT="$1"; shift
             asset_publication_args public "$AT"
             python scripts/generate_asset_video.py --topic "$t" --publish-at "$AT" --narration-out "build/narr_$t.json"
