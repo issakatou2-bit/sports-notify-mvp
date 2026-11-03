@@ -1295,6 +1295,72 @@
       "duration_seconds": 33.0,
       "short_information_count": 3,
       "short_content_policy": "short-content-20261027-v1"
+    },
+    "offseason_awards_2026_78f0be5793f3": {
+      "video_id": "AgKPSVCtI0c",
+      "url": "https://youtu.be/AgKPSVCtI0c",
+      "privacy": "public",
+      "published_at": "2026-11-03T07:31:38.883457+00:00",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-03",
+        "enabled": true,
+        "assigned": "generic",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false,
+        "source": "post_common.lineup:daily_soccer",
+        "next_date": "2026-11-04",
+        "next_time": "19:30",
+        "next_name": "欧州サッカー"
+      },
+      "duration_seconds": 32.75,
+      "short_information_count": 3,
+      "short_content_policy": "short-content-20261027-v1"
+    },
+    "offseason_awards_2026_a740059b4397": {
+      "video_id": "y6QKg5B_pfk",
+      "url": "https://youtu.be/y6QKg5B_pfk",
+      "privacy": "public",
+      "published_at": "2026-11-03T07:37:34.542438+00:00",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-03",
+        "enabled": true,
+        "assigned": "generic",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false,
+        "source": "post_common.lineup:daily_soccer",
+        "next_date": "2026-11-04",
+        "next_time": "19:30",
+        "next_name": "欧州サッカー"
+      },
+      "duration_seconds": 32.46,
+      "short_information_count": 4,
+      "short_content_policy": "short-content-20261027-v1"
+    },
+    "offseason_awards_2026_c6f89b663a98": {
+      "video_id": "rcxL1YLfd3k",
+      "url": "https://youtu.be/rcxL1YLfd3k",
+      "privacy": "public",
+      "published_at": "2026-11-03T07:43:29.200850+00:00",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-03",
+        "enabled": true,
+        "assigned": "generic",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false,
+        "source": "post_common.lineup:daily_soccer",
+        "next_date": "2026-11-04",
+        "next_time": "19:30",
+        "next_name": "欧州サッカー"
+      },
+      "duration_seconds": 32.54,
+      "short_information_count": 3,
+      "short_content_policy": "short-content-20261027-v1"
     }
   }
 }

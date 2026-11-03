@@ -19861,6 +19861,141 @@
       },
       "host_fallback_reason": null,
       "privacy": "public"
+    },
+    "offseason_awards_2026_78f0be5793f3": {
+      "video_id": "AgKPSVCtI0c",
+      "url": "https://youtu.be/AgKPSVCtI0c",
+      "title": "【MLB】2026年のナ・リーグのゴールドグラブ（3/3） #Shorts",
+      "published_at": "2026-11-03T07:31:38.972722+00:00",
+      "publish_at": "2026-11-03T13:00:00Z",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-03",
+        "enabled": true,
+        "assigned": "generic",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false,
+        "source": "post_common.lineup:daily_soccer",
+        "next_date": "2026-11-04",
+        "next_time": "19:30",
+        "next_name": "欧州サッカー"
+      },
+      "duration_seconds": 32.75,
+      "short_information_count": 3,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-11-03",
+        "kind": "asset:offseason",
+        "phase": 1,
+        "planned_host": "ui",
+        "rule": "half-jst-week-v1",
+        "week": 43,
+        "weekday": 1
+      },
+      "planned_host": "ui",
+      "actual_host": "ui",
+      "host_delivery": {
+        "checked_at": "2026-11-03T07:25:19.752154+00:00",
+        "comparison_eligible": true,
+        "label": "予定雨衣",
+        "mode": "live",
+        "planned_host": "ui",
+        "reason": null,
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
+    },
+    "offseason_awards_2026_a740059b4397": {
+      "video_id": "y6QKg5B_pfk",
+      "url": "https://youtu.be/y6QKg5B_pfk",
+      "title": "【MLB】2026年のナ・リーグのゴールドグラブ（1/3） #Shorts",
+      "published_at": "2026-11-03T07:37:34.629851+00:00",
+      "publish_at": "2026-11-03T14:00:00Z",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-03",
+        "enabled": true,
+        "assigned": "generic",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false,
+        "source": "post_common.lineup:daily_soccer",
+        "next_date": "2026-11-04",
+        "next_time": "19:30",
+        "next_name": "欧州サッカー"
+      },
+      "duration_seconds": 32.46,
+      "short_information_count": 4,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-11-03",
+        "kind": "asset:offseason",
+        "phase": 1,
+        "planned_host": "ui",
+        "rule": "half-jst-week-v1",
+        "week": 43,
+        "weekday": 1
+      },
+      "planned_host": "ui",
+      "actual_host": "ui",
+      "host_delivery": {
+        "checked_at": "2026-11-03T07:31:39.661200+00:00",
+        "comparison_eligible": true,
+        "label": "予定雨衣",
+        "mode": "live",
+        "planned_host": "ui",
+        "reason": null,
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
+    },
+    "offseason_awards_2026_c6f89b663a98": {
+      "video_id": "rcxL1YLfd3k",
+      "url": "https://youtu.be/rcxL1YLfd3k",
+      "title": "【MLB】2026年のア・リーグのゴールドグラブ（2/3） #Shorts",
+      "published_at": "2026-11-03T07:43:29.280492+00:00",
+      "publish_at": "2026-11-03T14:30:00Z",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-03",
+        "enabled": true,
+        "assigned": "generic",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false,
+        "source": "post_common.lineup:daily_soccer",
+        "next_date": "2026-11-04",
+        "next_time": "19:30",
+        "next_name": "欧州サッカー"
+      },
+      "duration_seconds": 32.54,
+      "short_information_count": 3,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-11-03",
+        "kind": "asset:offseason",
+        "phase": 1,
+        "planned_host": "ui",
+        "rule": "half-jst-week-v1",
+        "week": 43,
+        "weekday": 1
+      },
+      "planned_host": "ui",
+      "actual_host": "ui",
+      "host_delivery": {
+        "checked_at": "2026-11-03T07:37:35.291679+00:00",
+        "comparison_eligible": true,
+        "label": "予定雨衣",
+        "mode": "live",
+        "planned_host": "ui",
+        "reason": null,
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
     }
   },
   "soccer_results": {

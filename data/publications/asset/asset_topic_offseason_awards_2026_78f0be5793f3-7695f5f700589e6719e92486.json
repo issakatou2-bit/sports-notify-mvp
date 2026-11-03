@@ -1,0 +1,49 @@
+{
+  "publication_id": "asset:topic:offseason_awards_2026_78f0be5793f3",
+  "domain": "asset",
+  "kind": "topic",
+  "key_parts": {
+    "topic": "offseason_awards_2026_78f0be5793f3"
+  },
+  "version": 1,
+  "history": [
+    {
+      "source": "published_assets/assets/offseason_awards_2026_78f0be5793f3",
+      "service": "youtube",
+      "video_id": "AgKPSVCtI0c",
+      "state": "uploaded",
+      "scheduled_at": null,
+      "event_day": null,
+      "material_day": null,
+      "edition_day": null,
+      "run_at": "2026-11-03T07:31:38.883457+00:00",
+      "details": {
+        "privacy": "public"
+      },
+      "run_id": "41596062575",
+      "attempt": "1",
+      "recorded_at": "2026-11-03T07:31:38.886433+00:00",
+      "fingerprint": "8c619cd2893ca63ac904e6bc46059c7834f2342a5a836539fdb89c4875aab693",
+      "event_id": "a3cd4839d53f5b22702e51c5fd34b2688c55bdde88ad8931c785ebc2eb7e3b04"
+    },
+    {
+      "source": "published_videos/asset/offseason_awards_2026_78f0be5793f3",
+      "service": "youtube",
+      "video_id": "AgKPSVCtI0c",
+      "state": "scheduled",
+      "scheduled_at": "2026-11-03T13:00:00Z",
+      "event_day": null,
+      "material_day": null,
+      "edition_day": "2026-11-03",
+      "run_at": "2026-11-03T07:31:38.972722+00:00",
+      "details": {
+        "privacy": "public"
+      },
+      "run_id": "41596062575",
+      "attempt": "1",
+      "recorded_at": "2026-11-03T07:31:38.993538+00:00",
+      "fingerprint": "c73249c7f9903547c72383d3f29dcdf55c912e4806bf7160a45b54f4a6e49d1b",
+      "event_id": "4914bcac41a65490808a7d901025ca35256e5380765cb75ad212a0c3d31d6e82"
+    }
+  ]
+}
