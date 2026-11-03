@@ -8708,6 +8708,117 @@
       },
       "host_fallback_reason": null,
       "privacy": "public"
+    },
+    "2026-11-03": {
+      "video_id": "z_tu0tYLxZU",
+      "url": "https://youtu.be/z_tu0tYLxZU",
+      "title": "「ドジャースの大谷翔平がナ・リーグMVPのファイナリストに」｜現地の報道 #Shorts",
+      "published_at": "2026-11-03T06:32:17.553476+00:00",
+      "publish_at": "2026-11-03T09:00:00Z",
+      "ab_test": "hook-20261023",
+      "ab_variant": "A",
+      "ab_enabled": true,
+      "ab_kind": "morning_press",
+      "ab_day": "2026-11-03",
+      "ab_rule": "jst-day-abba-v1",
+      "ab_content_eligible": false,
+      "ab_content_reason": "同じ主役・論点の説明がないためAを維持",
+      "scene_starts": [
+        0.0,
+        8.8,
+        15.466667,
+        28.766667,
+        43.433333,
+        59.566667
+      ],
+      "dialogue_starts": [
+        {
+          "index": 0,
+          "start": 0.0,
+          "scene_start": 0.0,
+          "text": "ドジャースの大谷翔平がナ・リーグMVPのファイナリストに。11月3日、現地の報道です。現地の見出しです。",
+          "speaker": 2,
+          "audio_available": true
+        },
+        {
+          "index": 1,
+          "start": 8.806667,
+          "scene_start": 8.8,
+          "text": "Yahoo Sports。大谷翔平、故障に苦しんだシーズンでもMVP選出の連続記録を伸ばす。",
+          "speaker": 2,
+          "audio_available": true
+        },
+        {
+          "index": 2,
+          "start": 15.501334,
+          "scene_start": 15.466667,
+          "text": "New York Post。大谷翔平がナ・リーグMVPファイナリストに選出、ピート・クロウ＝アームストロング、ブライス・トゥラングとともに。現地の番記者の投稿です。翻訳したものです。",
+          "speaker": 2,
+          "audio_available": true
+        },
+        {
+          "index": 3,
+          "start": 28.809334,
+          "scene_start": 28.766667,
+          "text": "Chicago Tribuneの記者。カブスのGG最終候補5人のうち、CFピート・クロウ＝アームストロングと3Bアレックス・ブレグマンがNLの各ポジションで受賞。ブルワーズLFジャクソン・チョウリオがイアン・ハップの5年連続を阻止。",
+          "speaker": 2,
+          "audio_available": true
+        },
+        {
+          "index": 4,
+          "start": 43.493334,
+          "scene_start": 43.433333,
+          "text": "MLB.comの記者。驚きはなし：カブスのスター、ピート・クロウ＝アームストロングが大谷翔平、ブライス・トゥラングとともにNLMVP投票の上位3人に入った。BBWAAの年間表彰は11月12日に発表。",
+          "speaker": 2,
+          "audio_available": true
+        },
+        {
+          "index": 5,
+          "start": 59.638667,
+          "scene_start": 59.566667,
+          "text": "コレスポでは毎日、MLBの話題と欧州サッカーの見どころを届けています。チャンネル登録して、また見に来てくださいね。",
+          "speaker": 2,
+          "audio_available": true
+        }
+      ],
+      "duration_seconds": 67.13,
+      "timing_basis": "scenes:rendered-frames/dialogue:audio-segment-playback",
+      "video_sha256": "bbf9971db3319641398a2e67416b3094c85b896f804697d0497f60293cadc6e0",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-03",
+        "enabled": true,
+        "assigned": "generic",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false,
+        "source": "post_common.lineup:daily_soccer",
+        "next_date": "2026-11-04",
+        "next_time": "19:30",
+        "next_name": "欧州サッカー"
+      },
+      "short_information_count": 5,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-11-03",
+        "kind": "morning_press",
+        "phase": 0,
+        "planned_host": "metan",
+        "rule": "half-jst-week-v1",
+        "week": 43,
+        "weekday": 1
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-11-03T15:18:27.273288+09:00",
+        "comparison_eligible": true,
+        "planned_host": "metan",
+        "reason": null,
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
     }
   },
   "daily_soccer": {
@@ -10070,6 +10181,51 @@
         "checked_at": "2026-11-02T15:03:53.143552+09:00",
         "comparison_eligible": true,
         "planned_host": "metan",
+        "reason": null,
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
+    },
+    "2026-11-03": {
+      "video_id": "VjZe2SXD36o",
+      "url": "https://youtu.be/VjZe2SXD36o",
+      "title": "2026年ゴールドグラブ賞受賞者の好プレー集に現地ファンの声 #Shorts",
+      "published_at": "2026-11-03T06:18:25.601086+00:00",
+      "publish_at": "2026-11-03T08:30:00Z",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-03",
+        "enabled": true,
+        "assigned": "generic",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false,
+        "source": "post_common.lineup:daily_soccer",
+        "next_date": "2026-11-04",
+        "next_time": "19:30",
+        "next_name": "欧州サッカー"
+      },
+      "duration_seconds": 54.73,
+      "short_information_count": 4,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-11-03",
+        "kind": "morning_voices",
+        "phase": 1,
+        "planned_host": "ui",
+        "rule": "half-jst-week-v1",
+        "week": 43,
+        "weekday": 1
+      },
+      "planned_host": "ui",
+      "actual_host": "ui",
+      "host_delivery": {
+        "checked_at": "2026-11-03T06:03:54.310561+00:00",
+        "comparison_eligible": true,
+        "label": "予定雨衣",
+        "mode": "live",
+        "planned_host": "ui",
         "reason": null,
         "version": 1
       },

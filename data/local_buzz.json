@@ -1,61 +1,86 @@
 {
-  "updated_at": "2026-11-02T06:02:05.273402+00:00",
+  "updated_at": "2026-11-03T06:02:32.409553+00:00",
   "sources": [
     {
       "name": "MLB公式",
-      "items": 25
+      "items": 24
     }
   ],
-  "titles_count": 25,
+  "titles_count": 24,
   "teams": [
     {
-      "team_id": "121",
-      "name": "メッツ",
-      "name_en": "New York Mets",
-      "mentions": 2,
-      "tone": "話題",
-      "gist": "クースマン氏83歳で死去、マクリーンGG受賞"
-    },
-    {
-      "team_id": "109",
-      "name": "ダイヤモンドバックス",
-      "name_en": "Arizona Diamondbacks",
+      "team_id": "141",
+      "name": "ブルージェイズ",
+      "name_en": "Toronto Blue Jays",
       "mentions": 1,
       "tone": "話題",
-      "gist": "アリゾナ秋季リーグ第4週の好成績者"
+      "gist": "ブルージェイズ、ストローの800万ドル球団オプション拒否"
     },
     {
-      "team_id": "111",
-      "name": "レッドソックス",
-      "name_en": "Boston Red Sox",
+      "team_id": "147",
+      "name": "ヤンキース",
+      "name_en": "New York Yankees",
       "mentions": 1,
       "tone": "話題",
-      "gist": "ウィットロックの球団オプション行使"
+      "gist": "ヤンキース、ベドナーにQO提示もチザムには見送り"
     },
     {
       "team_id": "158",
       "name": "ブリュワーズ",
       "name_en": "Milwaukee Brewers",
       "mentions": 1,
+      "tone": "好調",
+      "gist": "ブリュワーズ、WS MVPコントレラスのオプション行使"
+    },
+    {
+      "team_id": "116",
+      "name": "タイガース",
+      "name_en": "Detroit Tigers",
+      "mentions": 1,
       "tone": "話題",
-      "gist": "ブリュワーズがSNLに登場"
+      "gist": "タイガース、ジャンセンのオプション拒否も主力2投手残留"
+    },
+    {
+      "team_id": "117",
+      "name": "アストロズ",
+      "name_en": "Houston Astros",
+      "mentions": 1,
+      "tone": "話題",
+      "gist": "アストロズ、パレデスのオプション行使、メイヤーズは outr"
     },
     {
       "team_id": "135",
       "name": "パドレス",
       "name_en": "San Diego Padres",
       "mentions": 1,
-      "tone": "好調",
-      "gist": "パドレスのブルペンに左腕3人が復帰"
+      "tone": "話題",
+      "gist": "パドレス、左腕モレホンへQO提示"
     },
     {
-      "team_id": "137",
-      "name": "ジャイアンツ",
-      "name_en": "San Francisco Giants",
+      "team_id": "112",
+      "name": "カブス",
+      "name_en": "Chicago Cubs",
       "mentions": 1,
       "tone": "話題",
-      "gist": "ニューベックをファーマンと交換で獲得"
+      "gist": "カブス、ウェブと1年契約で合意、球団オプション付き"
+    },
+    {
+      "team_id": "121",
+      "name": "メッツ",
+      "name_en": "New York Mets",
+      "mentions": 1,
+      "tone": "話題",
+      "gist": "メッツ編成トップ4年目のスターンズ、重要なオフ迎える"
     }
   ],
-  "players": []
+  "players": [
+    {
+      "name": "大谷翔平",
+      "mentions": 1
+    },
+    {
+      "name": "鈴木誠也",
+      "mentions": 1
+    }
+  ]
 }
