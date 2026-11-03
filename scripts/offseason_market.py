@@ -5,7 +5,7 @@ import hashlib
 import json
 from pathlib import Path
 import re
-from typing import TypedDict
+from typing import TypedDict, NotRequired
 from urllib.parse import urlsplit
 
 PATH = Path('data/offseason_market.json')
@@ -20,6 +20,7 @@ class Fact(TypedDict):
     label: str
     text: str
     source_url: str
+    illustration: NotRequired[str]
 
 
 class Report(Fact):
@@ -68,7 +69,7 @@ def validate(entry, *, sample=False):
             raise ValueError('確定と報道は別の配列にしてください')
         for row in entry[kind]:
             fields = {'id', 'label', 'text', 'source_url'} | ({'outlet'} if kind == 'reports' else set())
-            if not isinstance(row, dict) or set(row) != fields or not all(isinstance(v, str) and v.strip() == v and v for v in row.values()):
+            if not isinstance(row, dict) or not fields <= set(row) <= fields | {'illustration'} or not all(isinstance(v, str) and v.strip() == v and v for v in row.values()):
                 raise ValueError('市場の行の欄が不正です')
             if row['id'] in ids or row['text'] in texts or not re.fullmatch(r'[a-z0-9_-]+', row['id']):
                 raise ValueError('同じ情報の重複や不正な行IDです')
@@ -94,6 +95,7 @@ def validate(entry, *, sample=False):
         raise ValueError('市場の材料は重複しない情報3つ以上が必要です')
     if set(re.findall(r'\d+', title)) - set(re.findall(r'\d+', ''.join(r['text'] for r in entry['facts']))):
         raise ValueError('題の数字が確定の材料行にありません')
+    __import__('market_art').entry_rows(entry, sample=sample)
     return name
 
 
@@ -106,7 +108,8 @@ def topic(entry, day, state=None, *, episode=None, sample=False):
     n = episode or series.number(state or {})
     events = [dict(event_id=f'market:{entry["id"]}:{kind}:{row["id"]}',
                    head=('確定｜' if kind == 'facts' else '報道｜') + row['label'],
-                   body=row['text'], source=row['source_url'], market_type=kind)
+                   body=row['text'], source=row['source_url'], market_type=kind,
+                   **({'illustration': row['illustration']} if 'illustration' in row else {}))
               for kind in ('facts', 'reports') for row in entry[kind]]
     if any(r['event_id'] in set((state or {}).get('events', [])) for r in events):
         return None
