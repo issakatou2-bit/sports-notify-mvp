@@ -22,6 +22,8 @@ MOVES = {'DFA': 'FAを宣言しました', 'SFA': 'FA契約を結びました',
          'SGN': '契約が公式に記録されました',
          'TR': 'トレードが公式に記録されました'}
 OUTRO_TEXT = 'コレスポでは、オフの動きを公式の記録で追っています。チャンネル登録して、また見に来てくださいね。'
+# 雨衣の回は ui_tone が「ね」を外して敬体にする（11/3 表彰の回がこの差で止まった）。
+OUTRO_TEXTS = {OUTRO_TEXT, __import__('ui_tone').text(OUTRO_TEXT)}
 
 
 def item_speech(head, body):
@@ -365,7 +367,7 @@ def check(document):
     # 再点検には指摘された行だけが届く。全文の並びは1回目で照合済みなので、届いた行だけを見る
     # （11/1 冒頭が無いと誤って止まり、オフの話題が出なかった）。
     if any('_sanity_original_line' in s for s in document.get('segments', [])):
-        allowed = {expected_intro, OUTRO_TEXT, *expected}
+        allowed = {expected_intro, *OUTRO_TEXTS, *expected}
         if any(s.get('text') not in allowed for s in document.get('segments', [])):
             return ['オフの再点検の行が公式材料と不一致']
         return []
@@ -374,7 +376,8 @@ def check(document):
     actual = [s['text'] for s in document.get('segments', []) if s.get('kind') == 'list']
     if actual != expected:
         return ['オフの予定・表彰・移籍の本文が公式材料と不一致']
-    if [s.get('text') for s in document.get('segments', []) if s.get('kind') == 'outro'] != [OUTRO_TEXT]:
+    outros = [s.get('text') for s in document.get('segments', []) if s.get('kind') == 'outro']
+    if len(outros) != 1 or outros[0] not in OUTRO_TEXTS:
         return ['オフの締めが専用文と不一致']
     return []
 

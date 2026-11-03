@@ -187,6 +187,16 @@ class OffseasonTests(unittest.TestCase):
         self.assertEqual(n.check(dict(doc, segments=[dict(kind='list', text=line)])),
                          ['オフの冒頭または未対応の追加文が公式材料と不一致'])
 
+    def test_ui_polite_outro_is_accepted_but_other_outro_stops(self):
+        import ui_tone
+        spec, doc = self.document()
+        polite = ui_tone.text(n.OUTRO_TEXT)
+        self.assertNotEqual(polite, n.OUTRO_TEXT)
+        segments = [dict(s, text=polite) if s['kind'] == 'outro' else s for s in doc['segments']]
+        self.assertEqual(n.check(dict(doc, segments=segments)), [])
+        segments[-1] = dict(segments[-1], text='また見てね。')
+        self.assertEqual(n.check(dict(doc, segments=segments)), ['オフの締めが専用文と不一致'])
+
     def test_award_before_announcement_is_empty_but_other_errors_stop(self):
         import requests
         from unittest.mock import Mock
