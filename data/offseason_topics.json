@@ -1,8 +1,119 @@
 {
-  "day": "2026-11-02",
+  "day": "2026-11-03",
+  "state": "ready",
   "topics": [
     {
-      "key": "offseason_schedule_2026_52c8598f8ccb",
+      "key": "offseason_market_2026_8148559a2df3",
+      "label": "佐藤輝明 45日の交渉が開始",
+      "heading": "日本人選手の来季 第2回",
+      "hook": "佐藤輝明\n45日の交渉が開始",
+      "kind_label": "MLB",
+      "style": "v3",
+      "intro_as_is": true,
+      "intro": "佐藤輝明 45日の交渉が開始。",
+      "description_line": "連載「日本人選手の来季」では、確定した動きと媒体による報道を分けて追います。",
+      "data_credit": "各行の出典 / 確定・報道を区別",
+      "source": "確定情報・媒体報道 / 確認日 2026-11-03",
+      "source_url": "https://news.infoseek.co.jp/article/sponichin_20261102_0101/",
+      "v3": {
+        "who": "日本人選手の来季 第2回",
+        "source": "出典: 各行の資料 / 確定・報道を区別"
+      },
+      "items": [
+        [
+          "確定｜交渉の開始",
+          "佐藤輝明は日本時間の11月2日から、MLBの全30球団と交渉できるようになりました。"
+        ],
+        [
+          "確定｜2026年の成績",
+          "佐藤輝明は2026年に打率.306、39本塁打、106打点でセ・リーグの三冠王になりました。"
+        ],
+        [
+          "確定｜交渉の期間",
+          "交渉の期間は45日間で、合意できなければ2027年は阪神に残ります。"
+        ],
+        [
+          "報道｜期限の前倒し",
+          "新しい労使協定が結ばれなければ、交渉期限は12月1日に早まるとスポーツニッポンが報じています。"
+        ]
+      ],
+      "offseason": {
+        "kind": "market",
+        "day": "2026-11-03",
+        "season": 2026,
+        "events": [
+          {
+            "event_id": "market:sato-posting-open-20261103:facts:open",
+            "head": "確定｜交渉の開始",
+            "body": "佐藤輝明は日本時間の11月2日から、MLBの全30球団と交渉できるようになりました。",
+            "source": "https://news.infoseek.co.jp/article/sponichin_20261102_0101/",
+            "market_type": "facts",
+            "illustration": "handshake.png"
+          },
+          {
+            "event_id": "market:sato-posting-open-20261103:facts:stats",
+            "head": "確定｜2026年の成績",
+            "body": "佐藤輝明は2026年に打率.306、39本塁打、106打点でセ・リーグの三冠王になりました。",
+            "source": "https://www.mlb.com/news/teruaki-sato-mlb-posting-system",
+            "market_type": "facts"
+          },
+          {
+            "event_id": "market:sato-posting-open-20261103:facts:return",
+            "head": "確定｜交渉の期間",
+            "body": "交渉の期間は45日間で、合意できなければ2027年は阪神に残ります。",
+            "source": "https://www.mlb.com/news/teruaki-sato-mlb-posting-system",
+            "market_type": "facts"
+          },
+          {
+            "event_id": "market:sato-posting-open-20261103:reports:lockout",
+            "head": "報道｜期限の前倒し",
+            "body": "新しい労使協定が結ばれなければ、交渉期限は12月1日に早まるとスポーツニッポンが報じています。",
+            "source": "https://news.infoseek.co.jp/article/sponichin_20261102_0101/",
+            "market_type": "reports"
+          }
+        ],
+        "entry": {
+          "id": "sato-posting-open-20261103",
+          "title": "佐藤輝明 45日の交渉が開始",
+          "name_en": "Teruaki Sato",
+          "checked_on": "2026-11-03",
+          "facts": [
+            {
+              "id": "open",
+              "label": "交渉の開始",
+              "text": "佐藤輝明は日本時間の11月2日から、MLBの全30球団と交渉できるようになりました。",
+              "source_url": "https://news.infoseek.co.jp/article/sponichin_20261102_0101/",
+              "illustration": "handshake.png"
+            },
+            {
+              "id": "stats",
+              "label": "2026年の成績",
+              "text": "佐藤輝明は2026年に打率.306、39本塁打、106打点でセ・リーグの三冠王になりました。",
+              "source_url": "https://www.mlb.com/news/teruaki-sato-mlb-posting-system"
+            },
+            {
+              "id": "return",
+              "label": "交渉の期間",
+              "text": "交渉の期間は45日間で、合意できなければ2027年は阪神に残ります。",
+              "source_url": "https://www.mlb.com/news/teruaki-sato-mlb-posting-system"
+            }
+          ],
+          "reports": [
+            {
+              "id": "lockout",
+              "label": "期限の前倒し",
+              "outlet": "スポーツニッポン",
+              "text": "新しい労使協定が結ばれなければ、交渉期限は12月1日に早まるとスポーツニッポンが報じています。",
+              "source_url": "https://news.infoseek.co.jp/article/sponichin_20261102_0101/"
+            }
+          ]
+        },
+        "series_number": 2,
+        "series_title": "日本人選手の来季"
+      }
+    },
+    {
+      "key": "offseason_schedule_2026_51c81d10a791",
       "label": "MLBオフの主な予定",
       "heading": "MLBオフの主な予定",
       "kind_label": "MLB",
@@ -20,11 +131,15 @@
         [
           "11月6日｜プラチナグラブ",
           "11月6日、プラチナグラブ賞が発表される予定です"
+        ],
+        [
+          "11月9日｜新人王",
+          "11月9日、BBWAAの新人王が発表される予定です"
         ]
       ],
       "offseason": {
         "kind": "schedule",
-        "day": "2026-11-02",
+        "day": "2026-11-03",
         "season": 2026,
         "events": [
           {
@@ -37,10 +152,850 @@
             "head": "11月6日｜プラチナグラブ",
             "body": "11月6日、プラチナグラブ賞が発表される予定です",
             "japanese": false
+          },
+          {
+            "id": "roy",
+            "date_et": "2026-11-09",
+            "label": "新人王",
+            "text": "BBWAAの新人王が発表される予定です",
+            "source": "https://www.mlb.com/news/when-are-2026-mlb-awards-announced-mvp-cy-young-rookie-of-the-year",
+            "event_id": "calendar:roy",
+            "head": "11月9日｜新人王",
+            "body": "11月9日、BBWAAの新人王が発表される予定です",
+            "japanese": false
+          }
+        ]
+      }
+    },
+    {
+      "key": "offseason_awards_2026_f545f2ea1feb",
+      "label": "2026年のア・リーグのゴールドグラブ（1/3）",
+      "heading": "2026年のア・リーグのゴールドグラブ（1/3）",
+      "kind_label": "MLB",
+      "data_credit": "MLB Stats API",
+      "v3": {
+        "source": "出典: MLB公式 / 受賞・取引記録"
+      },
+      "hook": "2026年のア・リーグのゴールドグラブ（1/3）",
+      "intro": "2026年のMLBの表彰です。MLB公式の受賞記録からお伝えします。",
+      "intro_as_is": true,
+      "style": "v3",
+      "source": "MLB公式 / 受賞・取引記録",
+      "source_url": "https://statsapi.mlb.com/api/v1/awards/ALGG/recipients?season=2026",
+      "items": [
+        [
+          "タナー・バイビー｜ア・リーグのゴールドグラブ・投手",
+          "タナー・バイビーは2026年のア・リーグのゴールドグラブを受賞しました"
+        ],
+        [
+          "ディロン・ディングラー｜ア・リーグのゴールドグラブ・捕手",
+          "ディロン・ディングラーは2026年のア・リーグのゴールドグラブを受賞しました"
+        ],
+        [
+          "クリスチャン・ウォーカー｜ア・リーグのゴールドグラブ・一塁手",
+          "クリスチャン・ウォーカーは2026年のア・リーグのゴールドグラブを受賞しました"
+        ],
+        [
+          "コール・ヤング｜ア・リーグのゴールドグラブ・二塁手",
+          "コール・ヤングは2026年のア・リーグのゴールドグラブを受賞しました"
+        ]
+      ],
+      "offseason": {
+        "kind": "awards",
+        "day": "2026-11-03",
+        "season": 2026,
+        "events": [
+          {
+            "event_id": "award:2026:ALGG:676440:winner",
+            "head": "タナー・バイビー｜ア・リーグのゴールドグラブ・投手",
+            "body": "タナー・バイビーは2026年のア・リーグのゴールドグラブを受賞しました",
+            "name": "タナー・バイビー",
+            "japanese": false,
+            "source": "https://statsapi.mlb.com/api/v1/awards/ALGG/recipients?season=2026",
+            "raw": {
+              "id": "ALGG",
+              "name": "Rawlings AL Gold Glove",
+              "date": "2026-11-01",
+              "season": "2026",
+              "team": {
+                "id": 114,
+                "link": "/api/v1/teams/114"
+              },
+              "player": {
+                "id": 676440,
+                "link": "/api/v1/people/676440",
+                "primaryPosition": {
+                  "code": "1",
+                  "name": "Pitcher",
+                  "type": "Pitcher",
+                  "abbreviation": "P"
+                },
+                "nameFirstLast": "Tanner Bibee",
+                "nameSlug": "tanner-bibee-676440"
+              }
+            }
+          },
+          {
+            "event_id": "award:2026:ALGG:693307:winner",
+            "head": "ディロン・ディングラー｜ア・リーグのゴールドグラブ・捕手",
+            "body": "ディロン・ディングラーは2026年のア・リーグのゴールドグラブを受賞しました",
+            "name": "ディロン・ディングラー",
+            "japanese": false,
+            "source": "https://statsapi.mlb.com/api/v1/awards/ALGG/recipients?season=2026",
+            "raw": {
+              "id": "ALGG",
+              "name": "Rawlings AL Gold Glove",
+              "date": "2026-11-01",
+              "season": "2026",
+              "team": {
+                "id": 116,
+                "link": "/api/v1/teams/116"
+              },
+              "player": {
+                "id": 693307,
+                "link": "/api/v1/people/693307",
+                "primaryPosition": {
+                  "code": "2",
+                  "name": "Catcher",
+                  "type": "Catcher",
+                  "abbreviation": "C"
+                },
+                "nameFirstLast": "Dillon Dingler",
+                "nameSlug": "dillon-dingler-693307"
+              }
+            }
+          },
+          {
+            "event_id": "award:2026:ALGG:572233:winner",
+            "head": "クリスチャン・ウォーカー｜ア・リーグのゴールドグラブ・一塁手",
+            "body": "クリスチャン・ウォーカーは2026年のア・リーグのゴールドグラブを受賞しました",
+            "name": "クリスチャン・ウォーカー",
+            "japanese": false,
+            "source": "https://statsapi.mlb.com/api/v1/awards/ALGG/recipients?season=2026",
+            "raw": {
+              "id": "ALGG",
+              "name": "Rawlings AL Gold Glove",
+              "date": "2026-11-01",
+              "season": "2026",
+              "team": {
+                "id": 117,
+                "link": "/api/v1/teams/117"
+              },
+              "player": {
+                "id": 572233,
+                "link": "/api/v1/people/572233",
+                "primaryPosition": {
+                  "code": "3",
+                  "name": "First Base",
+                  "type": "Infielder",
+                  "abbreviation": "1B"
+                },
+                "nameFirstLast": "Christian Walker",
+                "nameSlug": "christian-walker-572233"
+              }
+            }
+          },
+          {
+            "event_id": "award:2026:ALGG:702284:winner",
+            "head": "コール・ヤング｜ア・リーグのゴールドグラブ・二塁手",
+            "body": "コール・ヤングは2026年のア・リーグのゴールドグラブを受賞しました",
+            "name": "コール・ヤング",
+            "japanese": false,
+            "source": "https://statsapi.mlb.com/api/v1/awards/ALGG/recipients?season=2026",
+            "raw": {
+              "id": "ALGG",
+              "name": "Rawlings AL Gold Glove",
+              "date": "2026-11-01",
+              "season": "2026",
+              "team": {
+                "id": 136,
+                "link": "/api/v1/teams/136"
+              },
+              "player": {
+                "id": 702284,
+                "link": "/api/v1/people/702284",
+                "primaryPosition": {
+                  "code": "4",
+                  "name": "Second Base",
+                  "type": "Infielder",
+                  "abbreviation": "2B"
+                },
+                "nameFirstLast": "Cole Young",
+                "nameSlug": "cole-young-702284"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "offseason_awards_2026_c6f89b663a98",
+      "label": "2026年のア・リーグのゴールドグラブ（2/3）",
+      "heading": "2026年のア・リーグのゴールドグラブ（2/3）",
+      "kind_label": "MLB",
+      "data_credit": "MLB Stats API",
+      "v3": {
+        "source": "出典: MLB公式 / 受賞・取引記録"
+      },
+      "hook": "2026年のア・リーグのゴールドグラブ（2/3）",
+      "intro": "2026年のMLBの表彰です。MLB公式の受賞記録からお伝えします。",
+      "intro_as_is": true,
+      "style": "v3",
+      "source": "MLB公式 / 受賞・取引記録",
+      "source_url": "https://statsapi.mlb.com/api/v1/awards/ALGG/recipients?season=2026",
+      "items": [
+        [
+          "ケイレブ・ダービン｜ア・リーグのゴールドグラブ・三塁手",
+          "ケイレブ・ダービンは2026年のア・リーグのゴールドグラブを受賞しました"
+        ],
+        [
+          "テイラー・ウォールス｜ア・リーグのゴールドグラブ・遊撃手",
+          "テイラー・ウォールスは2026年のア・リーグのゴールドグラブを受賞しました"
+        ],
+        [
+          "コディ・ベリンジャー｜ア・リーグのゴールドグラブ・左翼手",
+          "コディ・ベリンジャーは2026年のア・リーグのゴールドグラブを受賞しました"
+        ]
+      ],
+      "offseason": {
+        "kind": "awards",
+        "day": "2026-11-03",
+        "season": 2026,
+        "events": [
+          {
+            "event_id": "award:2026:ALGG:702332:winner",
+            "head": "ケイレブ・ダービン｜ア・リーグのゴールドグラブ・三塁手",
+            "body": "ケイレブ・ダービンは2026年のア・リーグのゴールドグラブを受賞しました",
+            "name": "ケイレブ・ダービン",
+            "japanese": false,
+            "source": "https://statsapi.mlb.com/api/v1/awards/ALGG/recipients?season=2026",
+            "raw": {
+              "id": "ALGG",
+              "name": "Rawlings AL Gold Glove",
+              "date": "2026-11-01",
+              "season": "2026",
+              "team": {
+                "id": 111,
+                "link": "/api/v1/teams/111"
+              },
+              "player": {
+                "id": 702332,
+                "link": "/api/v1/people/702332",
+                "primaryPosition": {
+                  "code": "5",
+                  "name": "Third Base",
+                  "type": "Infielder",
+                  "abbreviation": "3B"
+                },
+                "nameFirstLast": "Caleb Durbin",
+                "nameSlug": "caleb-durbin-702332"
+              }
+            }
+          },
+          {
+            "event_id": "award:2026:ALGG:670764:winner",
+            "head": "テイラー・ウォールス｜ア・リーグのゴールドグラブ・遊撃手",
+            "body": "テイラー・ウォールスは2026年のア・リーグのゴールドグラブを受賞しました",
+            "name": "テイラー・ウォールス",
+            "japanese": false,
+            "source": "https://statsapi.mlb.com/api/v1/awards/ALGG/recipients?season=2026",
+            "raw": {
+              "id": "ALGG",
+              "name": "Rawlings AL Gold Glove",
+              "date": "2026-11-01",
+              "season": "2026",
+              "team": {
+                "id": 139,
+                "link": "/api/v1/teams/139"
+              },
+              "player": {
+                "id": 670764,
+                "link": "/api/v1/people/670764",
+                "primaryPosition": {
+                  "code": "6",
+                  "name": "Shortstop",
+                  "type": "Infielder",
+                  "abbreviation": "SS"
+                },
+                "nameFirstLast": "Taylor Walls",
+                "nameSlug": "taylor-walls-670764"
+              }
+            }
+          },
+          {
+            "event_id": "award:2026:ALGG:641355:winner",
+            "head": "コディ・ベリンジャー｜ア・リーグのゴールドグラブ・左翼手",
+            "body": "コディ・ベリンジャーは2026年のア・リーグのゴールドグラブを受賞しました",
+            "name": "コディ・ベリンジャー",
+            "japanese": false,
+            "source": "https://statsapi.mlb.com/api/v1/awards/ALGG/recipients?season=2026",
+            "raw": {
+              "id": "ALGG",
+              "name": "Rawlings AL Gold Glove",
+              "date": "2026-11-01",
+              "season": "2026",
+              "team": {
+                "id": 147,
+                "link": "/api/v1/teams/147"
+              },
+              "player": {
+                "id": 641355,
+                "link": "/api/v1/people/641355",
+                "primaryPosition": {
+                  "code": "7",
+                  "name": "Outfielder",
+                  "type": "Outfielder",
+                  "abbreviation": "LF"
+                },
+                "nameFirstLast": "Cody Bellinger",
+                "nameSlug": "cody-bellinger-641355"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "offseason_awards_2026_d5ad7e00e1e5",
+      "label": "2026年のア・リーグのゴールドグラブ（3/3）",
+      "heading": "2026年のア・リーグのゴールドグラブ（3/3）",
+      "kind_label": "MLB",
+      "data_credit": "MLB Stats API",
+      "v3": {
+        "source": "出典: MLB公式 / 受賞・取引記録"
+      },
+      "hook": "2026年のア・リーグのゴールドグラブ（3/3）",
+      "intro": "2026年のMLBの表彰です。MLB公式の受賞記録からお伝えします。",
+      "intro_as_is": true,
+      "style": "v3",
+      "source": "MLB公式 / 受賞・取引記録",
+      "source_url": "https://statsapi.mlb.com/api/v1/awards/ALGG/recipients?season=2026",
+      "items": [
+        [
+          "セダン・ラファエラ｜ア・リーグのゴールドグラブ・中堅手",
+          "セダン・ラファエラは2026年のア・リーグのゴールドグラブを受賞しました"
+        ],
+        [
+          "ウィルヤー・アブレイユ｜ア・リーグのゴールドグラブ・右翼手",
+          "ウィルヤー・アブレイユは2026年のア・リーグのゴールドグラブを受賞しました"
+        ],
+        [
+          "エセキエル・デュラン｜ア・リーグのゴールドグラブ・ユーティリティ",
+          "エセキエル・デュランは2026年のア・リーグのゴールドグラブを受賞しました"
+        ]
+      ],
+      "offseason": {
+        "kind": "awards",
+        "day": "2026-11-03",
+        "season": 2026,
+        "events": [
+          {
+            "event_id": "award:2026:ALGG:678882:winner",
+            "head": "セダン・ラファエラ｜ア・リーグのゴールドグラブ・中堅手",
+            "body": "セダン・ラファエラは2026年のア・リーグのゴールドグラブを受賞しました",
+            "name": "セダン・ラファエラ",
+            "japanese": false,
+            "source": "https://statsapi.mlb.com/api/v1/awards/ALGG/recipients?season=2026",
+            "raw": {
+              "id": "ALGG",
+              "name": "Rawlings AL Gold Glove",
+              "date": "2026-11-01",
+              "season": "2026",
+              "team": {
+                "id": 111,
+                "link": "/api/v1/teams/111"
+              },
+              "player": {
+                "id": 678882,
+                "link": "/api/v1/people/678882",
+                "primaryPosition": {
+                  "code": "8",
+                  "name": "Outfielder",
+                  "type": "Outfielder",
+                  "abbreviation": "CF"
+                },
+                "nameFirstLast": "Ceddanne Rafaela",
+                "nameSlug": "ceddanne-rafaela-678882"
+              }
+            }
+          },
+          {
+            "event_id": "award:2026:ALGG:677800:winner",
+            "head": "ウィルヤー・アブレイユ｜ア・リーグのゴールドグラブ・右翼手",
+            "body": "ウィルヤー・アブレイユは2026年のア・リーグのゴールドグラブを受賞しました",
+            "name": "ウィルヤー・アブレイユ",
+            "japanese": false,
+            "source": "https://statsapi.mlb.com/api/v1/awards/ALGG/recipients?season=2026",
+            "raw": {
+              "id": "ALGG",
+              "name": "Rawlings AL Gold Glove",
+              "date": "2026-11-01",
+              "season": "2026",
+              "team": {
+                "id": 111,
+                "link": "/api/v1/teams/111"
+              },
+              "player": {
+                "id": 677800,
+                "link": "/api/v1/people/677800",
+                "primaryPosition": {
+                  "code": "9",
+                  "name": "Outfielder",
+                  "type": "Outfielder",
+                  "abbreviation": "RF"
+                },
+                "nameFirstLast": "Wilyer Abreu",
+                "nameSlug": "wilyer-abreu-677800"
+              }
+            }
+          },
+          {
+            "event_id": "award:2026:ALGG:677649:winner",
+            "head": "エセキエル・デュラン｜ア・リーグのゴールドグラブ・ユーティリティ",
+            "body": "エセキエル・デュランは2026年のア・リーグのゴールドグラブを受賞しました",
+            "name": "エセキエル・デュラン",
+            "japanese": false,
+            "source": "https://statsapi.mlb.com/api/v1/awards/ALGG/recipients?season=2026",
+            "raw": {
+              "id": "ALGG",
+              "name": "Rawlings AL Gold Glove",
+              "date": "2026-11-01",
+              "season": "2026",
+              "team": {
+                "id": 140,
+                "link": "/api/v1/teams/140"
+              },
+              "player": {
+                "id": 677649,
+                "link": "/api/v1/people/677649",
+                "primaryPosition": {
+                  "code": "U",
+                  "name": "Utility",
+                  "type": "Infielder",
+                  "abbreviation": "UT"
+                },
+                "nameFirstLast": "Ezequiel Duran",
+                "nameSlug": "ezequiel-duran-677649"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "offseason_awards_2026_a740059b4397",
+      "label": "2026年のナ・リーグのゴールドグラブ（1/3）",
+      "heading": "2026年のナ・リーグのゴールドグラブ（1/3）",
+      "kind_label": "MLB",
+      "data_credit": "MLB Stats API",
+      "v3": {
+        "source": "出典: MLB公式 / 受賞・取引記録"
+      },
+      "hook": "2026年のナ・リーグのゴールドグラブ（1/3）",
+      "intro": "2026年のMLBの表彰です。MLB公式の受賞記録からお伝えします。",
+      "intro_as_is": true,
+      "style": "v3",
+      "source": "MLB公式 / 受賞・取引記録",
+      "source_url": "https://statsapi.mlb.com/api/v1/awards/NLGG/recipients?season=2026",
+      "items": [
+        [
+          "ノーラン・マクリーン｜ナ・リーグのゴールドグラブ・投手",
+          "ノーラン・マクリーンは2026年のナ・リーグのゴールドグラブを受賞しました"
+        ],
+        [
+          "ガブリエル・モレノ｜ナ・リーグのゴールドグラブ・捕手",
+          "ガブリエル・モレノは2026年のナ・リーグのゴールドグラブを受賞しました"
+        ],
+        [
+          "マット・オルソン｜ナ・リーグのゴールドグラブ・一塁手",
+          "マット・オルソンは2026年のナ・リーグのゴールドグラブを受賞しました"
+        ],
+        [
+          "ブライス・トゥラング｜ナ・リーグのゴールドグラブ・二塁手",
+          "ブライス・トゥラングは2026年のナ・リーグのゴールドグラブを受賞しました"
+        ]
+      ],
+      "offseason": {
+        "kind": "awards",
+        "day": "2026-11-03",
+        "season": 2026,
+        "events": [
+          {
+            "event_id": "award:2026:NLGG:690997:winner",
+            "head": "ノーラン・マクリーン｜ナ・リーグのゴールドグラブ・投手",
+            "body": "ノーラン・マクリーンは2026年のナ・リーグのゴールドグラブを受賞しました",
+            "name": "ノーラン・マクリーン",
+            "japanese": false,
+            "source": "https://statsapi.mlb.com/api/v1/awards/NLGG/recipients?season=2026",
+            "raw": {
+              "id": "NLGG",
+              "name": "Rawlings NL Gold Glove",
+              "date": "2026-11-01",
+              "season": "2026",
+              "team": {
+                "id": 121,
+                "link": "/api/v1/teams/121"
+              },
+              "player": {
+                "id": 690997,
+                "link": "/api/v1/people/690997",
+                "primaryPosition": {
+                  "code": "1",
+                  "name": "Pitcher",
+                  "type": "Pitcher",
+                  "abbreviation": "P"
+                },
+                "nameFirstLast": "Nolan McLean",
+                "nameSlug": "nolan-mclean-690997"
+              }
+            }
+          },
+          {
+            "event_id": "award:2026:NLGG:672515:winner",
+            "head": "ガブリエル・モレノ｜ナ・リーグのゴールドグラブ・捕手",
+            "body": "ガブリエル・モレノは2026年のナ・リーグのゴールドグラブを受賞しました",
+            "name": "ガブリエル・モレノ",
+            "japanese": false,
+            "source": "https://statsapi.mlb.com/api/v1/awards/NLGG/recipients?season=2026",
+            "raw": {
+              "id": "NLGG",
+              "name": "Rawlings NL Gold Glove",
+              "date": "2026-11-01",
+              "season": "2026",
+              "team": {
+                "id": 109,
+                "link": "/api/v1/teams/109"
+              },
+              "player": {
+                "id": 672515,
+                "link": "/api/v1/people/672515",
+                "primaryPosition": {
+                  "code": "2",
+                  "name": "Catcher",
+                  "type": "Catcher",
+                  "abbreviation": "C"
+                },
+                "nameFirstLast": "Gabriel Moreno",
+                "nameSlug": "gabriel-moreno-672515"
+              }
+            }
+          },
+          {
+            "event_id": "award:2026:NLGG:621566:winner",
+            "head": "マット・オルソン｜ナ・リーグのゴールドグラブ・一塁手",
+            "body": "マット・オルソンは2026年のナ・リーグのゴールドグラブを受賞しました",
+            "name": "マット・オルソン",
+            "japanese": false,
+            "source": "https://statsapi.mlb.com/api/v1/awards/NLGG/recipients?season=2026",
+            "raw": {
+              "id": "NLGG",
+              "name": "Rawlings NL Gold Glove",
+              "date": "2026-11-01",
+              "season": "2026",
+              "team": {
+                "id": 144,
+                "link": "/api/v1/teams/144"
+              },
+              "player": {
+                "id": 621566,
+                "link": "/api/v1/people/621566",
+                "primaryPosition": {
+                  "code": "3",
+                  "name": "First Base",
+                  "type": "Infielder",
+                  "abbreviation": "1B"
+                },
+                "nameFirstLast": "Matt Olson",
+                "nameSlug": "matt-olson-621566"
+              }
+            }
+          },
+          {
+            "event_id": "award:2026:NLGG:668930:winner",
+            "head": "ブライス・トゥラング｜ナ・リーグのゴールドグラブ・二塁手",
+            "body": "ブライス・トゥラングは2026年のナ・リーグのゴールドグラブを受賞しました",
+            "name": "ブライス・トゥラング",
+            "japanese": false,
+            "source": "https://statsapi.mlb.com/api/v1/awards/NLGG/recipients?season=2026",
+            "raw": {
+              "id": "NLGG",
+              "name": "Rawlings NL Gold Glove",
+              "date": "2026-11-01",
+              "season": "2026",
+              "team": {
+                "id": 158,
+                "link": "/api/v1/teams/158"
+              },
+              "player": {
+                "id": 668930,
+                "link": "/api/v1/people/668930",
+                "primaryPosition": {
+                  "code": "4",
+                  "name": "Second Base",
+                  "type": "Infielder",
+                  "abbreviation": "2B"
+                },
+                "nameFirstLast": "Brice Turang",
+                "nameSlug": "brice-turang-668930"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "offseason_awards_2026_efb99c6ad236",
+      "label": "2026年のナ・リーグのゴールドグラブ（2/3）",
+      "heading": "2026年のナ・リーグのゴールドグラブ（2/3）",
+      "kind_label": "MLB",
+      "data_credit": "MLB Stats API",
+      "v3": {
+        "source": "出典: MLB公式 / 受賞・取引記録"
+      },
+      "hook": "2026年のナ・リーグのゴールドグラブ（2/3）",
+      "intro": "2026年のMLBの表彰です。MLB公式の受賞記録からお伝えします。",
+      "intro_as_is": true,
+      "style": "v3",
+      "source": "MLB公式 / 受賞・取引記録",
+      "source_url": "https://statsapi.mlb.com/api/v1/awards/NLGG/recipients?season=2026",
+      "items": [
+        [
+          "アレックス・ブレグマン｜ナ・リーグのゴールドグラブ・三塁手",
+          "アレックス・ブレグマンは2026年のナ・リーグのゴールドグラブを受賞しました"
+        ],
+        [
+          "ヘラルド・ペルドモ｜ナ・リーグのゴールドグラブ・遊撃手",
+          "ヘラルド・ペルドモは2026年のナ・リーグのゴールドグラブを受賞しました"
+        ],
+        [
+          "ジャクソン・チョーリオ｜ナ・リーグのゴールドグラブ・左翼手",
+          "ジャクソン・チョーリオは2026年のナ・リーグのゴールドグラブを受賞しました"
+        ]
+      ],
+      "offseason": {
+        "kind": "awards",
+        "day": "2026-11-03",
+        "season": 2026,
+        "events": [
+          {
+            "event_id": "award:2026:NLGG:608324:winner",
+            "head": "アレックス・ブレグマン｜ナ・リーグのゴールドグラブ・三塁手",
+            "body": "アレックス・ブレグマンは2026年のナ・リーグのゴールドグラブを受賞しました",
+            "name": "アレックス・ブレグマン",
+            "japanese": false,
+            "source": "https://statsapi.mlb.com/api/v1/awards/NLGG/recipients?season=2026",
+            "raw": {
+              "id": "NLGG",
+              "name": "Rawlings NL Gold Glove",
+              "date": "2026-11-01",
+              "season": "2026",
+              "team": {
+                "id": 112,
+                "link": "/api/v1/teams/112"
+              },
+              "player": {
+                "id": 608324,
+                "link": "/api/v1/people/608324",
+                "primaryPosition": {
+                  "code": "5",
+                  "name": "Third Base",
+                  "type": "Infielder",
+                  "abbreviation": "3B"
+                },
+                "nameFirstLast": "Alex Bregman",
+                "nameSlug": "alex-bregman-608324"
+              }
+            }
+          },
+          {
+            "event_id": "award:2026:NLGG:672695:winner",
+            "head": "ヘラルド・ペルドモ｜ナ・リーグのゴールドグラブ・遊撃手",
+            "body": "ヘラルド・ペルドモは2026年のナ・リーグのゴールドグラブを受賞しました",
+            "name": "ヘラルド・ペルドモ",
+            "japanese": false,
+            "source": "https://statsapi.mlb.com/api/v1/awards/NLGG/recipients?season=2026",
+            "raw": {
+              "id": "NLGG",
+              "name": "Rawlings NL Gold Glove",
+              "date": "2026-11-01",
+              "season": "2026",
+              "team": {
+                "id": 109,
+                "link": "/api/v1/teams/109"
+              },
+              "player": {
+                "id": 672695,
+                "link": "/api/v1/people/672695",
+                "primaryPosition": {
+                  "code": "6",
+                  "name": "Shortstop",
+                  "type": "Infielder",
+                  "abbreviation": "SS"
+                },
+                "nameFirstLast": "Geraldo Perdomo",
+                "nameSlug": "geraldo-perdomo-672695"
+              }
+            }
+          },
+          {
+            "event_id": "award:2026:NLGG:694192:winner",
+            "head": "ジャクソン・チョーリオ｜ナ・リーグのゴールドグラブ・左翼手",
+            "body": "ジャクソン・チョーリオは2026年のナ・リーグのゴールドグラブを受賞しました",
+            "name": "ジャクソン・チョーリオ",
+            "japanese": false,
+            "source": "https://statsapi.mlb.com/api/v1/awards/NLGG/recipients?season=2026",
+            "raw": {
+              "id": "NLGG",
+              "name": "Rawlings NL Gold Glove",
+              "date": "2026-11-01",
+              "season": "2026",
+              "team": {
+                "id": 158,
+                "link": "/api/v1/teams/158"
+              },
+              "player": {
+                "id": 694192,
+                "link": "/api/v1/people/694192",
+                "primaryPosition": {
+                  "code": "7",
+                  "name": "Outfielder",
+                  "type": "Outfielder",
+                  "abbreviation": "LF"
+                },
+                "nameFirstLast": "Jackson Chourio",
+                "nameSlug": "jackson-chourio-694192"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "offseason_awards_2026_78f0be5793f3",
+      "label": "2026年のナ・リーグのゴールドグラブ（3/3）",
+      "heading": "2026年のナ・リーグのゴールドグラブ（3/3）",
+      "kind_label": "MLB",
+      "data_credit": "MLB Stats API",
+      "v3": {
+        "source": "出典: MLB公式 / 受賞・取引記録"
+      },
+      "hook": "2026年のナ・リーグのゴールドグラブ（3/3）",
+      "intro": "2026年のMLBの表彰です。MLB公式の受賞記録からお伝えします。",
+      "intro_as_is": true,
+      "style": "v3",
+      "source": "MLB公式 / 受賞・取引記録",
+      "source_url": "https://statsapi.mlb.com/api/v1/awards/NLGG/recipients?season=2026",
+      "items": [
+        [
+          "ピート・クロウ＝アームストロング｜ナ・リーグのゴールドグラブ・中堅手",
+          "ピート・クロウ＝アームストロングは2026年のナ・リーグのゴールドグラブを受賞しました"
+        ],
+        [
+          "コービン・キャロル｜ナ・リーグのゴールドグラブ・右翼手",
+          "コービン・キャロルは2026年のナ・リーグのゴールドグラブを受賞しました"
+        ],
+        [
+          "マウリシオ・デュボーン｜ナ・リーグのゴールドグラブ・ユーティリティ",
+          "マウリシオ・デュボーンは2026年のナ・リーグのゴールドグラブを受賞しました"
+        ]
+      ],
+      "offseason": {
+        "kind": "awards",
+        "day": "2026-11-03",
+        "season": 2026,
+        "events": [
+          {
+            "event_id": "award:2026:NLGG:691718:winner",
+            "head": "ピート・クロウ＝アームストロング｜ナ・リーグのゴールドグラブ・中堅手",
+            "body": "ピート・クロウ＝アームストロングは2026年のナ・リーグのゴールドグラブを受賞しました",
+            "name": "ピート・クロウ＝アームストロング",
+            "japanese": false,
+            "source": "https://statsapi.mlb.com/api/v1/awards/NLGG/recipients?season=2026",
+            "raw": {
+              "id": "NLGG",
+              "name": "Rawlings NL Gold Glove",
+              "date": "2026-11-01",
+              "season": "2026",
+              "team": {
+                "id": 112,
+                "link": "/api/v1/teams/112"
+              },
+              "player": {
+                "id": 691718,
+                "link": "/api/v1/people/691718",
+                "primaryPosition": {
+                  "code": "8",
+                  "name": "Outfielder",
+                  "type": "Outfielder",
+                  "abbreviation": "CF"
+                },
+                "nameFirstLast": "Pete Crow-Armstrong",
+                "nameSlug": "pete-crow-armstrong-691718"
+              }
+            }
+          },
+          {
+            "event_id": "award:2026:NLGG:682998:winner",
+            "head": "コービン・キャロル｜ナ・リーグのゴールドグラブ・右翼手",
+            "body": "コービン・キャロルは2026年のナ・リーグのゴールドグラブを受賞しました",
+            "name": "コービン・キャロル",
+            "japanese": false,
+            "source": "https://statsapi.mlb.com/api/v1/awards/NLGG/recipients?season=2026",
+            "raw": {
+              "id": "NLGG",
+              "name": "Rawlings NL Gold Glove",
+              "date": "2026-11-01",
+              "season": "2026",
+              "team": {
+                "id": 109,
+                "link": "/api/v1/teams/109"
+              },
+              "player": {
+                "id": 682998,
+                "link": "/api/v1/people/682998",
+                "primaryPosition": {
+                  "code": "9",
+                  "name": "Outfielder",
+                  "type": "Outfielder",
+                  "abbreviation": "RF"
+                },
+                "nameFirstLast": "Corbin Carroll",
+                "nameSlug": "corbin-carroll-682998"
+              }
+            }
+          },
+          {
+            "event_id": "award:2026:NLGG:643289:winner",
+            "head": "マウリシオ・デュボーン｜ナ・リーグのゴールドグラブ・ユーティリティ",
+            "body": "マウリシオ・デュボーンは2026年のナ・リーグのゴールドグラブを受賞しました",
+            "name": "マウリシオ・デュボーン",
+            "japanese": false,
+            "source": "https://statsapi.mlb.com/api/v1/awards/NLGG/recipients?season=2026",
+            "raw": {
+              "id": "NLGG",
+              "name": "Rawlings NL Gold Glove",
+              "date": "2026-11-01",
+              "season": "2026",
+              "team": {
+                "id": 144,
+                "link": "/api/v1/teams/144"
+              },
+              "player": {
+                "id": 643289,
+                "link": "/api/v1/people/643289",
+                "primaryPosition": {
+                  "code": "U",
+                  "name": "Utility",
+                  "type": "Infielder",
+                  "abbreviation": "UT"
+                },
+                "nameFirstLast": "Mauricio Dubón",
+                "nameSlug": "mauricio-dubon-643289"
+              }
+            }
           }
         ]
       }
     }
-  ],
-  "state": "ready"
+  ]
 }
