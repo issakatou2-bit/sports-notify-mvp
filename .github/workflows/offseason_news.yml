@@ -74,7 +74,8 @@ jobs:
         run: |
           set -euo pipefail
           source scripts/asset_publish_args.sh
-          set -- 22:00 23:00 23:30
+          # 資産づくりが 16:30・22:00 を使うので、同時刻に並べない（11/3 22:00 に3本重なった）。
+          set -- 22:30 23:00 23:30
           for t in ${{ steps.pick.outputs.topics }}; do
             # 予約枠は1日3つ。残りは記録しないので翌日の候補に残る（11/3 6本選ばれ4本目で $1 が空になり止まった）。
             if [ "$#" -eq 0 ]; then echo "予約枠を使い切ったので、残りは翌日に回します"; break; fi
