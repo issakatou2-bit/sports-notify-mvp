@@ -330,7 +330,7 @@ def editorial(spec, players):
                 heading = f"{name} {ip(s['outs'])}{s['strikeOuts']}奪三振の2試合"
                 intro = f"{name}は{ip(s['outs'])}{s['strikeOuts']}奪三振を2試合で記録しました。{date(a['date'])}の{club(a)}戦がその一つです。"
             items = [(f"{date(a['date'])}の{club(a)}戦", detail(s, group)),
-                     ('走者を出した数', f"被安打{s['hits']}、与四球{s['baseOnBalls']}。自責点は{s['earnedRuns']}でした")]
+                     ('被安打と四球', f"被安打{s['hits']}、与四球{s['baseOnBalls']}でした")]
             note += '／奪三振数→投球回順'
         if spec.get('two_way'):
             bats = [r for r in player['hitting'] if str(r['game_pk']) in spec['batting_game_ids']]
@@ -352,8 +352,11 @@ def editorial(spec, players):
                 if s['rbi'] == max(r['stat']['rbi'] for r in rows):
                     items[0] = (items[0][0], items[0][1]+'。この打点数が今季の1試合最多でした')
             else:
-                same = [r for r in rows if r['stat']['strikeOuts'] == s['strikeOuts']]
-                items.append(('同じ奪三振数の登板', f"今季{s['strikeOuts']}奪三振を記録したのは{len(same)}登板。"+'、'.join(date(r['date']) for r in same)+'でした'))
+                # 「最多は1登板」を言い直さず、次に多い登板と比べる（11/3 今永の回が同じ話の繰り返しだった）。
+                lower = [r['stat']['strikeOuts'] for r in rows if r['stat']['strikeOuts'] < s['strikeOuts']]
+                if lower:
+                    second = [r for r in rows if r['stat']['strikeOuts'] == max(lower)]
+                    items.append(('次に多い登板', f"次に多いのは{max(lower)}奪三振で、"+'、'.join(date(r['date']) for r in second)+f"の{len(second)}登板でした"))
         note += f"／同値{len(selected)}試合"
     elif kind in ('month', 'vs'):
         buckets = defaultdict(list)
