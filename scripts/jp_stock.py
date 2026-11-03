@@ -12,7 +12,7 @@ import season_stock as stock
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE_PATH = 'data/jp_player_logs_2026.json'
-KINDS = ('best', 'month', 'vs', 'streak', 'compare')
+KINDS = ('best', 'month', 'vs', 'streak', 'home', 'win', 'daynight', 'compare')
 FIELDS = ('gamesPlayed', 'gamesStarted', 'plateAppearances', 'atBats', 'hits', 'homeRuns',
           'rbi', 'totalBases', 'baseOnBalls', 'hitByPitch', 'sacFlies', 'strikeOuts',
           'outs', 'inningsPitched', 'runs', 'earnedRuns')
@@ -24,7 +24,7 @@ JST = timezone(timedelta(hours=9))
 
 def write(path, value):
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(value, ensure_ascii=False, indent=2)+'\n', encoding='utf8')
+    path.write_text(json.dumps(value, ensure_ascii=False, indent=2)+'\n', encoding='utf8', newline='\n')
 
 
 def outs(value):
@@ -39,7 +39,23 @@ def ip(n):
     return f'{n//3}回'+(f'{n%3}/3' if n%3 else '')
 
 
-def slim(raw):
+def schedule_days(schedule):
+    result = {}
+    for day in (schedule or {}).get('dates', []):
+        for game in day.get('games', []):
+            # 延期時と振替後が同じgamePkで並ぶ場合は終了済みの試合を使う。
+            if game.get('status', {}).get('codedGameState', 'F') != 'F':
+                continue
+            pk = game.get('gamePk')
+            value = game.get('dayNight')
+            if value not in ('day', 'night') or game.get('gameType', 'R') != 'R' or str(game.get('season', '2026')) != '2026':
+                value = None
+            result[pk] = value if pk not in result or result[pk] == value else None
+    return result
+
+
+def slim(raw, schedule=None, *, schedule_sha256=None):
+    days = schedule_days(schedule)
     players = {}
     for pid, player in raw.items():
         result = {'jp': player['jp']}
@@ -53,14 +69,23 @@ def slim(raw):
                     if stat.get('outs') != outs(stat['inningsPitched']):
                         raise ValueError('アウト数と投球回が不一致')
                 rows.append(dict(date=row['date'], game_pk=row['game']['gamePk'], game_number=row['game']['gameNumber'],
-                                 opponent_id=row['opponent']['id'], stat=stat))
+                                 opponent_id=row['opponent']['id'], stat=stat,
+                                 **{k: row[k] for k in ('isHome', 'isWin') if k in row},
+                                 **({'team_id': row['team']['id']} if 'team' in row else {}),
+                                 # gameLogのdayNightは全行dayだったため、公式日程だけを昼夜の根拠にする。
+                                 **({'dayNight': days[row['game']['gamePk']]} if days.get(row['game']['gamePk']) else {})))
             if len({r['game_pk'] for r in rows}) != len(rows):
                 raise ValueError('同一選手・同一試合の重複')
             result[group] = sorted(rows, key=lambda r: (r['date'], r['game_number'], r['game_pk']))
         players[pid] = result
-    return dict(season='2026', game_type='R', source='MLB Stats API',
-                acquired='2026-11-02', raw_sha256=hashlib.sha256(
+    result = dict(season='2026', game_type='R', source='MLB Stats API',
+                acquired='2026-11-04', raw_sha256=hashlib.sha256(
                     json.dumps(raw, sort_keys=True, ensure_ascii=False).encode()).hexdigest(), players=players)
+    if schedule is not None:
+        result.update(schedule_sha256=schedule_sha256 or hashlib.sha256(
+            json.dumps(schedule, sort_keys=True, ensure_ascii=False).encode()).hexdigest(),
+            schedule_source='MLB Stats API / schedule / season=2026 / gameType=R')
+    return result
 
 
 def aggregate(rows):
@@ -229,6 +254,53 @@ def split_topic(kind, pid, player, group, rows, relief):
                 qualified=list(sorted(qualified)), best=winners, worst=losers if kind == 'month' else []), None
 
 
+def home(pid, player, group, rows, relief):
+    if any(type(r.get('isHome')) is not bool for r in rows):
+        return None, 'ホーム区分の欠測'
+    buckets = {v: [r for r in rows if r['isHome'] == v] for v in (True, False)}
+    totals = {v: aggregate(rr) for v, rr in buckets.items()}
+    if not all(eligible(s, group, relief) for s in totals.values()):
+        return None, 'ホーム・アウェーの母数が月別基準未満'
+    if abs(rate(totals[True], group)-rate(totals[False], group)) < (Fraction(1, 10) if group == 'hitting' else 3):
+        return None, 'ホーム・アウェーの差が打率.100・防御率3.00未満'
+    return make('home', pid, player, group, '', player['jp'], '', [], rows), None
+
+
+def daynight(pid, player, group, rows, relief):
+    if any(r.get('dayNight') not in ('day', 'night') for r in rows):
+        return None, '昼夜区分の欠測・不明値'
+    totals = {v: aggregate([r for r in rows if r['dayNight'] == v]) for v in ('day', 'night')}
+    if not all(eligible(st, group, relief) for st in totals.values()):
+        return None, 'デーゲーム・ナイターの母数が月別基準未満'
+    if abs(rate(totals['day'], group)-rate(totals['night'], group)) < (Fraction(1, 10) if group == 'hitting' else 3):
+        return None, 'デーゲーム・ナイターの差が打率.100・防御率3.00未満'
+    return make('daynight', pid, player, group, '', player['jp'], '', [], rows), None
+
+
+def concise_stats(st, group):
+    denominator = st.get('atBats', 0) if group == 'hitting' else st.get('outs', 0)
+    metric = '打率' if group == 'hitting' else '防御率'
+    value = display_rate(st, group) if denominator else '算出なし'
+    if group == 'hitting':
+        return f"{metric}{value}、{st.get('homeRuns', 0)}本塁打、{st.get('rbi', 0)}打点"
+    return f"{metric}{value}、{ip(st.get('outs', 0))}、{st.get('strikeOuts', 0)}奪三振"
+
+
+def win(pid, player, group, rows, relief):
+    if any(type(r.get('team_id')) is not int or type(r.get('isWin')) is not bool for r in rows):
+        return None, '所属・チーム勝敗の欠測'
+    affiliations = player.get('hitting', [])+player.get('pitching', []) or rows
+    if any(type(r.get('team_id')) is not int for r in affiliations):
+        return None, '所属の欠測'
+    if len({r['team_id'] for r in affiliations}) != 1:
+        return None, 'シーズン途中の所属変更のため見送り'
+    selected = [r for r in rows if (r['stat'].get('homeRuns', 0) > 0 if group == 'hitting' else r['stat'].get('gamesStarted') == 1)]
+    if len(selected) < 6:
+        return None, '本塁打試合・先発試合が6試合未満'
+    return make('win', pid, player, group, '', player['jp'], '', [], selected,
+                team_id=rows[0]['team_id']), None
+
+
 def runs(rows, group):
     found, current = [], []
     for r in rows:
@@ -391,6 +463,37 @@ def editorial(spec, players):
                      ('打席の数' if group == 'hitting' else '投球の内訳', f"{sa['plateAppearances']}打席、{sa['totalBases']}塁打、四球{sa['baseOnBalls']}" if group == 'hitting' else f"{ip(sa['outs'])}で被安打{sa['hits']}、与四球{sa['baseOnBalls']}")]
             c = sorted((k for k in spec['qualified'] if k != a), key=lambda k: (rate(totals[k], group) if group == 'pitching' else -rate(totals[k], group),k))[0]
             items.append((f"{club(buckets[c][0])}戦では", f'{metric}{display_rate(totals[c], group)}。'+detail(totals[c], group)))
+    elif kind in ('home', 'daynight'):
+        field, keys, labels = ('isHome', (True, False), ('ホーム', 'アウェー')) if kind == 'home' else ('dayNight', ('day', 'night'), ('デーゲーム', 'ナイター'))
+        totals = {v: aggregate([r for r in rows if r[field] == v]) for v in keys}
+        sa, sb = totals[keys[0]], totals[keys[1]]
+        la, lb = labels
+        metric = '打率' if group == 'hitting' else '防御率'
+        va, vb = display_rate(sa, group), display_rate(sb, group)
+        heading = f'{name} {la}{metric}{va}と{lb}{vb}'
+        intro = f'{name}の{metric}は{la}が{va}、{lb}が{vb}でした。'
+        items = [(label+'の記録', (concise_stats(st, group) if kind == 'daynight' else detail(st, group))) for label, st in [(la, sa), (lb, sb)]]
+        items.append(('打席数' if group == 'hitting' else '登板数',
+                      f"{la}{sa['plateAppearances']}打席、{lb}{sb['plateAppearances']}打席" if group == 'hitting' else
+                      f"{la}{sa['appearances']}登板、{lb}{sb['appearances']}登板"))
+        _, minimum = limits(group, relief)
+        note += '／両方'+(f'{minimum}打席以上' if group == 'hitting' else ip(minimum)+'以上')
+        if kind == 'daynight':
+            note += '／昼夜はMLB公式日程'
+    elif kind == 'win':
+        from notability_engine import MLB_TEAM_NAME_JP
+        team = MLB_TEAM_NAME_JP.get(str(spec['team_id']))
+        if not team:
+            return None, '所属球団名が未登録'
+        wins = sum(r['isWin'] for r in selected)
+        losses = len(selected)-wins
+        condition = '本塁打を打った' if group == 'hitting' else '先発した'
+        heading = f'{name} {condition}試合でチームは{wins}勝{losses}敗'
+        intro = f'{name}が{condition}{len(selected)}試合で、{team}は{wins}勝{losses}敗でした。'
+        items = [(f'{condition}{len(selected)}試合', concise_stats(aggregate(selected), group)),
+                 (f'チームが勝った{wins}試合', concise_stats(aggregate([r for r in selected if r['isWin']]), group)),
+                 (f'チームが敗れた{losses}試合', concise_stats(aggregate([r for r in selected if not r['isWin']]), group))]
+        note += '／'+team+'の試合勝敗・個人の勝敗ではない'
     elif kind == 'streak':
         n = spec['streak_length']
         minimum = (8 if pid in ('660271','808959') else 10) if group == 'hitting' else (8 if relief else 4)
@@ -497,7 +600,7 @@ def build(root=ROOT):
                 continue
             relief = sum(r['stat'].get('gamesStarted', 0) for r in rows)*2 < len(rows)
             for kind, func in [('best', best), ('month', lambda *a: split_topic('month', *a)),
-                               ('vs', lambda *a: split_topic('vs', *a)), ('streak', streak)]:
+                               ('vs', lambda *a: split_topic('vs', *a)), ('streak', streak), ('home', home), ('win', win), ('daynight', daynight)]:
                 spec, reason = func(pid, p, group, rows, relief)
                 accept(spec, reason, pid, group, kind)
     for aid, bid in PAIRS:
@@ -557,7 +660,7 @@ def rotation_available(topic, spec, ledgers, as_of=None):
 def validate_spec(spec, root=ROOT):
     """制作の直前にも原資料から再計算。材料JSONの台詞・数字の書換えは通さない。"""
     expected = next((t for t in build(root)['topics'] if t['key'] == spec['key']), None)
-    fields = ('title', 'intro', 'items', 'player_ids', 'comparison_group', 'game_ids', 'two_way', 'batting_game_ids', 'criteria_note', 'editorial_version')
+    fields = ('title', 'intro', 'items', 'player_ids', 'comparison_group', 'game_ids', 'two_way', 'batting_game_ids', 'criteria_note', 'editorial_version', 'stock_kind', 'team_id', 'jp_stock', 'source_paths')
     normalized = lambda value: json.dumps(value, sort_keys=True, ensure_ascii=False)
     if not expected or expression_errors(spec) or any(normalized(spec.get(k)) != normalized(expected.get(k)) for k in fields):
         raise ValueError('日本人資産の数字・台詞が保存した公式試合記録と一致しません')
@@ -567,10 +670,15 @@ def validate_spec(spec, root=ROOT):
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument('--import-raw', type=Path)
+    ap.add_argument('--import-schedule', type=Path)
     ap.add_argument('--out', type=Path, default=Path('build/jp_stock_topics.json'))
     args = ap.parse_args()
     if args.import_raw:
-        write(ROOT/SOURCE_PATH, slim(stock.read(args.import_raw)))
+        schedule = json.loads(args.import_schedule.read_text(encoding='utf8')) if args.import_schedule else None
+        digest = hashlib.sha256(args.import_schedule.read_bytes()).hexdigest() if args.import_schedule else None
+        write(ROOT/SOURCE_PATH, slim(stock.read(args.import_raw), schedule, schedule_sha256=digest))
+    elif args.import_schedule:
+        ap.error('--import-schedule は --import-raw と一緒に指定してください')
     doc = build()
     write(args.out, doc)
     print(f"日本人新型: {len(doc['topics'])}本、見送り{len(doc['skipped'])}件")

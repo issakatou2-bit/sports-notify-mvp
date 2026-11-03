@@ -68,7 +68,7 @@ class StockTests(unittest.TestCase):
     def test_expression_and_tampering(self):
         doc = jp.build()
         self.assertGreaterEqual(len(doc['topics']), 25)
-        self.assertLessEqual(len(doc['topics']), 35)
+        self.assertLessEqual(len(doc['topics']), 55)
         for t in doc['topics']:
             self.assertFalse(jp.expression_errors(t))
             self.assertGreaterEqual(len(t['items']), 3)
@@ -89,7 +89,7 @@ class StockTests(unittest.TestCase):
 
     def test_editorial_strength_and_spoken_information(self):
         document = jp.build()
-        self.assertEqual(len(document['topics']), 29)
+        self.assertEqual(sum(t['stock_kind'] not in ('home', 'win', 'daynight') for t in document['topics']), 29)
         for t in document['topics']:
             self.assertFalse(jp.expression_errors(t))
             self.assertNotIn('2026年', t['intro'].split('。')[0])

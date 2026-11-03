@@ -2427,7 +2427,7 @@ def main():
         import jp_assets
         spec = __import__('generated_topics').get(args.asset_topic)
         guarded = args.asset_topic.startswith(('season_compare_', 'season_momentum_rs2026_',
-                   'season_best_', 'season_month_', 'season_vs_', 'season_streak_')) or args.asset_topic == 'season_game_823818'
+                   'season_best_', 'season_month_', 'season_vs_', 'season_streak_', 'season_home_', 'season_win_', 'season_daynight_')) or args.asset_topic == 'season_game_823818'
         if guarded and not spec:
             print('[info] 日本人資産の材料が無いため公開を見送ります')
             return
