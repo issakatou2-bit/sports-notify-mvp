@@ -534,7 +534,7 @@ def _paste_card(im, card, x, y, k):
     area=(left-x-dx,top-y,right-x-dx,bottom-y)
     im.paste(card.crop(area),(left,top),alpha.crop(area))
     record_box(im,'card',(left,top,right,bottom))
-    im.info.setdefault('v3_card_contents',[]).append({'size':list(card.size),'text':card.info.get('v3_layout',[])})
+    im.info.setdefault('v3_card_contents',[]).append({'size':list(card.size),'text':card.info.get('v3_layout',[]), 'body_lines':card.info.get('body_lines')})
     for entry in card.info.get('v3_layout',[]):
         a,b,c,e=entry['box']
         box=(max(left,x+dx+a),max(top,y+b),min(right,x+dx+c),min(bottom,y+e))
@@ -770,25 +770,48 @@ def _piece_width(probe, text, size, badges):
     return w
 
 
+# 数字と野球の単位を一緒に折り返す。色・サイズのrunをまたぐ場合も保持する。
+# 日本人資産の札だけで使う（ほかの番組の札の見た目は変えない。11/4 サッカーの画素試験で確認）。
+STAT_WRAP = False
+STAT_TOKEN = re.compile(r'(?:(?:打率|防御率|自責点|失点|被安打|与四球|四球))?(?:\d[\d,]*(?:\.\d+)?|\.\d+)(?:回(?:[12]/3|と?3分の[12])?|本塁打|奪三振|自責点|打点|安打|打数|打席|登板|試合|得点|塁打|四球|失点|勝|敗|本|個|%|％)?')
+
+
+def _stat_units(atoms):
+    atoms = list(atoms)
+    if not STAT_WRAP:
+        return [[atom] for atom in atoms]
+    text = ''.join(a[0] for a in atoms)
+    forbidden = {i for m in STAT_TOKEN.finditer(text) for i in range(m.start()+1, m.end())}
+    units, offset = [], 0
+    for atom in atoms:
+        if units and offset in forbidden:
+            units[-1].append(atom)
+        else:
+            units.append([atom])
+        offset += len(atom[0])
+    return units
+
+
 def _kinsoku_units(atoms):
     """折り返してよい単位。開き括弧は次へ、閉じ括弧・句読点は前へくっつける。"""
     units = []
-    for atom in atoms:
+    for combined in _stat_units(atoms):
+        atom = combined[0]
         text = atom[0]
         if units and units[-1] and units[-1][-1][0] and units[-1][-1][0][-1] in OPEN_HEAD \
                 and text != "　":
-            units[-1].append(atom)
+            units[-1].extend(combined)
             continue
         if text == "　":
-            units.append([atom])
+            units.append(combined)
             continue
         if text and (text[0] in CLOSE_HEAD or text[0] in NO_HEAD or text[0] in SMALL_HEAD):
             if units and units[-1][0][0] != "　":
-                units[-1].append(atom)
+                units[-1].extend(combined)
             else:
-                units.append([atom])
+                units.append(combined)
             continue
-        units.append([atom])
+        units.append(combined)
     return units
 
 
@@ -877,15 +900,27 @@ def rich_lines(runs, width, second_rgb, size=None, badges=None):
     return lines
 
 
-def _item_card(head, body, w, base_rgb, second_rgb, quote_size=52, attribution_above=False, quote_height=None):
+def _item_card(head, body, w, base_rgb, second_rgb, quote_size=52, attribution_above=False, quote_height=None,
+               stat_wrap=False):
     return _cached_item_card(head, body, w, base_rgb, second_rgb, quote_size,
                              attribution_above, quote_height, LOOK,
-                             os.environ.get('COLLESPO_MLB_BADGE', ''))
+                             os.environ.get('COLLESPO_MLB_BADGE', ''), bool(stat_wrap))
 
 
 @functools.lru_cache(maxsize=64)
 def _cached_item_card(head, body, w, base_rgb, second_rgb, quote_size,
-                      attribution_above, quote_height, look, badge_style):
+                      attribution_above, quote_height, look, badge_style, stat_wrap=False):
+    global STAT_WRAP
+    saved, STAT_WRAP = STAT_WRAP, stat_wrap
+    try:
+        return _build_item_card(head, body, w, base_rgb, second_rgb, quote_size,
+                                attribution_above, quote_height, look, badge_style)
+    finally:
+        STAT_WRAP = saved
+
+
+def _build_item_card(head, body, w, base_rgb, second_rgb, quote_size,
+                     attribution_above, quote_height, look, badge_style):
     # 見た目・札の種類もキーに含め、切り替え前の札を使い回さない。
     quote = "番記者" in head or str(body).startswith("「")
     if not quote:
@@ -907,8 +942,10 @@ def _cached_item_card(head, body, w, base_rgb, second_rgb, quote_size,
         if lines is None:
             # 呼び出し元のpaginateが本文を次のカードへ分ける。
             raise ValueError('本文が札の安全域に収まりません')
+        body_lines = ["".join(part[1] for part in ln) for ln in lines]
         h = 84 + sum(heights) + 30
         card = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+        card.info["body_lines"] = body_lines
         d = ImageDraw.Draw(card)
         d.rounded_rectangle((0, 0, w - 1, h - 1), radius=24, fill=_mix(base_rgb, (255, 255, 255), 0.1) + (255,),
                             outline=_mix(base_rgb, (255, 255, 255), 0.25) + (255,), width=4)

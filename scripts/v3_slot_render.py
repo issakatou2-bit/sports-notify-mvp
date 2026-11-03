@@ -20,10 +20,10 @@ def screen_text(text):
                    and not 0x1f3fb <= ord(ch) <= 0x1f3ff and (ch.isspace() or _supported(ch)))
 
 
-def item(head, body, width, base, second, reply=False, height=900):
+def item(head, body, width, base, second, reply=False, height=900, stat_wrap=False):
     return r3._item_card(head, body, width, base, second, quote_size=38 if reply else 52,
                          attribution_above=str(body).startswith('「'),
-                         quote_height=height)
+                         quote_height=height, stat_wrap=stat_wrap)
 
 
 # カード本体の見た目を含むキャッシュへ一本化。
@@ -42,14 +42,20 @@ def heading(spec):
     return lines,size,250+len(lines)*(size+10)+44
 
 
+def focus_inset(spec):
+    # 日本人資産は強調時の拡大分も安全域の内側に確保する。
+    return (round((r3.SAFE_RIGHT-r3.LEFT)*(calm.TUNING['focus_scale']-1))+2
+            if spec.get('jp_stock') and calm.enabled() else 0)
+
+
 def paginate(spec,rows,replies=None):
     """札の実寸で分割。大きすぎる引用も全文を次のページへ分ける。"""
     base,second,_=r3.colors(spec.get('team_id'))
-    _,_,top=heading(spec);bottom=r3.CONTENT_BOTTOM;width=r3.SAFE_RIGHT-r3.LEFT
+    _,_,top=heading(spec);bottom=r3.CONTENT_BOTTOM;width=r3.SAFE_RIGHT-r3.LEFT-focus_inset(spec)
     pages=[[]];y=top
     def parts(head,body,reply):
         try:
-            card=item(head,body,width,base,second,reply,bottom-top)
+            card=item(head,body,width,base,second,reply,bottom-top,bool(spec.get('jp_stock')))
             if card.height<=bottom-top:
                 return [(body,card)]
         except ValueError:
@@ -70,7 +76,7 @@ def paginate(spec,rows,replies=None):
             if pages[-1] and y+card.height>bottom:
                 pages.append([]);y=top
             pages[-1].append({'card':card,'row':index,'fraction':(offset/total,(offset+len(body))/total),
-                             'box':(r3.LEFT,y,r3.SAFE_RIGHT,y+card.height),'body':body})
+                             'box':(r3.LEFT,y,r3.LEFT+width,y+card.height),'body':body})
             offset+=len(body);y+=card.height+28
     return pages
 
@@ -115,7 +121,9 @@ def frame(t, spec, rows, label, source_text="", times=None, replies=None, ends=N
         r3._text(d,(r3.LEFT, 250+i*(size+10)), line, font=r3.font(size), fill=r3.INK)
     # 札を大きくするぶんだけ、左に余白を取る（右は安全域の端から出さない）。focus が無ければ 0（今と同じ）。
     pad=(round((r3.SAFE_RIGHT-r3.LEFT)*(calm.TUNING['focus_scale']-1))+2) if focus else 0
-    layer=Image.new('RGBA',(r3.SAFE_RIGHT-r3.LEFT+pad,r3.CONTENT_BOTTOM-top),(0,0,0,0))
+    inset=focus_inset(spec)
+    origin=r3.LEFT-pad+inset if focus else r3.LEFT
+    layer=Image.new('RGBA',(r3.SAFE_RIGHT-origin,r3.CONTENT_BOTTOM-top),(0,0,0,0))
     lifted=[]
     for j,cell in enumerate(pages[selected]):
         i=cell['row'];a,b=cell['fraction'];card=cell['card']
@@ -151,12 +159,12 @@ def frame(t, spec, rows, label, source_text="", times=None, replies=None, ends=N
         added=layer.info.get('v3_layout',[])[before:]
         box=next((e['box'] for e in added if e['role']=='card'),None)
         focus_info.append({'row':i,'weight':round(own,3),
-                           'box':[box[0]+r3.LEFT-pad,box[1]+top,box[2]+r3.LEFT-pad,box[3]+top] if box else None,
+                           'box':[box[0]+origin,box[1]+top,box[2]+origin,box[3]+top] if box else None,
                            'text':[e['text'] for e in added if e['role']!='card']})
-    im.paste(layer,(r3.LEFT-pad,top),layer)
+    im.paste(layer,(origin,top),layer)
     for entry in layer.info.get('v3_layout',[]):
         a,b,c,e=entry['box']
-        r3.record_box(im,entry['role'],(a+r3.LEFT-pad,b+top,c+r3.LEFT-pad,e+top),entry['text'])
+        r3.record_box(im,entry['role'],(a+origin,b+top,c+origin,e+top),entry['text'])
         saved=im.info['v3_layout'][-1]
         for key in ('team_id','v4_font','v4_color'):
             if key in entry:
@@ -164,7 +172,7 @@ def frame(t, spec, rows, label, source_text="", times=None, replies=None, ends=N
     for badge in layer.info.get('v4_badges',[]):
         a,b,c,e=badge['box']
         moved=dict(badge)
-        moved['box']=[a+r3.LEFT-pad,b+top,c+r3.LEFT-pad,e+top]
+        moved['box']=[a+origin,b+top,c+origin,e+top]
         im.info.setdefault('v4_badges',[]).append(moved)
     if focus:
         im.info['v3_focus']=focus_info
