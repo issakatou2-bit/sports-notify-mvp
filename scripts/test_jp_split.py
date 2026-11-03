@@ -79,6 +79,9 @@ class SplitTests(unittest.TestCase):
 
     def test_stat_units_at_tight_width_and_across_style_runs(self):
         import review_render_v3 as r
+        # 日本人資産の札だけで有効（ほかの番組の札は今の折り返しのまま）。
+        self.addCleanup(setattr, r, 'STAT_WRAP', r.STAT_WRAP)
+        r.STAT_WRAP = True
         for text in ('48打点', '19本塁打', '52安打', '116打数', '182奪三振', '30回1/3', '30回2/3', '.448', '打率.448', '防御率2.53', '自責点31'):
             for runs in (r._runs('前文'+text+'。'), [('前文', 'M', False), (text[:2], 'M', True), (text[2:]+'。', 'M', False)]):
                 lines = r.rich_lines(runs, 220, (80, 180, 160), size=42, badges=False)
@@ -229,4 +232,4 @@ class SplitTests(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main(argv=[__file__])

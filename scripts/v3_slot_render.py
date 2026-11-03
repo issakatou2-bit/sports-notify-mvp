@@ -20,10 +20,10 @@ def screen_text(text):
                    and not 0x1f3fb <= ord(ch) <= 0x1f3ff and (ch.isspace() or _supported(ch)))
 
 
-def item(head, body, width, base, second, reply=False, height=900):
+def item(head, body, width, base, second, reply=False, height=900, stat_wrap=False):
     return r3._item_card(head, body, width, base, second, quote_size=38 if reply else 52,
                          attribution_above=str(body).startswith('「'),
-                         quote_height=height)
+                         quote_height=height, stat_wrap=stat_wrap)
 
 
 # カード本体の見た目を含むキャッシュへ一本化。
@@ -55,7 +55,7 @@ def paginate(spec,rows,replies=None):
     pages=[[]];y=top
     def parts(head,body,reply):
         try:
-            card=item(head,body,width,base,second,reply,bottom-top)
+            card=item(head,body,width,base,second,reply,bottom-top,bool(spec.get('jp_stock')))
             if card.height<=bottom-top:
                 return [(body,card)]
         except ValueError:

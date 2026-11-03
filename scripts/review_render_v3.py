@@ -771,11 +771,15 @@ def _piece_width(probe, text, size, badges):
 
 
 # 数字と野球の単位を一緒に折り返す。色・サイズのrunをまたぐ場合も保持する。
+# 日本人資産の札だけで使う（ほかの番組の札の見た目は変えない。11/4 サッカーの画素試験で確認）。
+STAT_WRAP = False
 STAT_TOKEN = re.compile(r'(?:(?:打率|防御率|自責点|失点|被安打|与四球|四球))?(?:\d[\d,]*(?:\.\d+)?|\.\d+)(?:回(?:[12]/3|と?3分の[12])?|本塁打|奪三振|自責点|打点|安打|打数|打席|登板|試合|得点|塁打|四球|失点|勝|敗|本|個|%|％)?')
 
 
 def _stat_units(atoms):
     atoms = list(atoms)
+    if not STAT_WRAP:
+        return [[atom] for atom in atoms]
     text = ''.join(a[0] for a in atoms)
     forbidden = {i for m in STAT_TOKEN.finditer(text) for i in range(m.start()+1, m.end())}
     units, offset = [], 0
@@ -896,15 +900,27 @@ def rich_lines(runs, width, second_rgb, size=None, badges=None):
     return lines
 
 
-def _item_card(head, body, w, base_rgb, second_rgb, quote_size=52, attribution_above=False, quote_height=None):
+def _item_card(head, body, w, base_rgb, second_rgb, quote_size=52, attribution_above=False, quote_height=None,
+               stat_wrap=False):
     return _cached_item_card(head, body, w, base_rgb, second_rgb, quote_size,
                              attribution_above, quote_height, LOOK,
-                             os.environ.get('COLLESPO_MLB_BADGE', ''))
+                             os.environ.get('COLLESPO_MLB_BADGE', ''), bool(stat_wrap))
 
 
 @functools.lru_cache(maxsize=64)
 def _cached_item_card(head, body, w, base_rgb, second_rgb, quote_size,
-                      attribution_above, quote_height, look, badge_style):
+                      attribution_above, quote_height, look, badge_style, stat_wrap=False):
+    global STAT_WRAP
+    saved, STAT_WRAP = STAT_WRAP, stat_wrap
+    try:
+        return _build_item_card(head, body, w, base_rgb, second_rgb, quote_size,
+                                attribution_above, quote_height, look, badge_style)
+    finally:
+        STAT_WRAP = saved
+
+
+def _build_item_card(head, body, w, base_rgb, second_rgb, quote_size,
+                     attribution_above, quote_height, look, badge_style):
     # 見た目・札の種類もキーに含め、切り替え前の札を使い回さない。
     quote = "番記者" in head or str(body).startswith("「")
     if not quote:
