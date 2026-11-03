@@ -84,6 +84,8 @@ jobs:
       - name: Upload to YouTube
         if: steps.material.outputs.can_make == 'true' && vars.COLLESPO_SOCCER_WEEKLY_LONG == 'on' && (github.event_name != 'workflow_dispatch' || !inputs.render_only)
         env:
+          # 題と説明の英訳（全ての投稿と同じ既存の経路）。台本・sanity では使わない。
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
@@ -94,6 +96,16 @@ jobs:
       - name: Commit video record
         if: always() && vars.COLLESPO_SOCCER_WEEKLY_LONG == 'on' && (github.event_name != 'workflow_dispatch' || !inputs.render_only)
         run: bash scripts/commit_data.sh "soccer weekly long record" data/published_videos.json data/playlists.json data/localized.json
+      - name: Save quota-exceeded thumbnails
+        if: always() && hashFiles('build/thumbnail_pending/**') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: thumbnail-pending
+          path: |
+            build/thumbnail_pending/
+            !build/**/portrait/**
+          retention-days: 3
+          if-no-files-found: ignore
       - name: Save videos and material
         if: always()
         uses: actions/upload-artifact@v4
