@@ -601,7 +601,15 @@ if _head:
 else:
     check("見出しが無ければ既定の題", "現地メディアは何と言っているか" in _press,
           True)
-check("現地編の書き出しはその日の話題から", bool(_uy.top_talked_team()), True)
+# 当日の data/local_buzz.json は1件ずつの日もある（11/3 全球団1件で落ちた）。決めた材料で繋がりだけを見る。
+import tempfile as _tf  # noqa: E402
+with _tf.TemporaryDirectory() as _d:
+    _buzz = pathlib.Path(_d) / "local_buzz.json"
+    _buzz.write_text(json.dumps({"teams": [{"name": "ドジャース", "mentions": 3},
+                                           {"name": "カブス", "mentions": 1}]}), encoding="utf-8")
+    check("現地編の書き出しはその日の話題から", _uy.top_talked_team(str(_buzz)), "ドジャース")
+    _buzz.write_text(json.dumps({"teams": [{"name": "カブス", "mentions": 1}]}), encoding="utf-8")
+    check("1件だけの日は書き出しに使わない", _uy.top_talked_team(str(_buzz)), "")
 
 # 日本人選手の読みが、名簿のローマ字と合っているか。
 #
