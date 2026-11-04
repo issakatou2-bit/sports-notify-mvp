@@ -148,6 +148,10 @@ def caption_names(text, games):
                 for alias in [row['legacy'], row['current'], *row.get('aliases', [])]:
                     if alias and alias != row['display']:
                         replacements[alias] = row['display']
-    for source in sorted(replacements, key=len, reverse=True):
-        text = text.replace(source, replacements[source])
-    return text
+                replacements[row['display']] = row['display']
+    if not replacements:
+        return text
+    # 1回の走査で長い名前から当てる。順に replace すると、表示名「AEKアテネ」の中の
+    # 別名「AEK」をもう一度置き換えて「AEKアテネアテネ」になった（11/4 夜の予告）。
+    pattern = re.compile('|'.join(re.escape(k) for k in sorted(replacements, key=len, reverse=True)))
+    return pattern.sub(lambda m: replacements[m.group(0)], text)

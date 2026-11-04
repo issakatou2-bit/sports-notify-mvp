@@ -120,7 +120,10 @@ def preview_head(data):
                 elif not who:
                     raise ValueError('日本人選手のいないカードの見どころを材料で確認できません')
                 else:
-                    raise ValueError('選手のカードの見どころを材料で確認できません')
+                    # 順位も成績も昨季の順位も無い大会（CL のリーグフェーズ序盤など）。11/4 夜の
+                    # PSV対クラブ・ブルッヘがこれで止まった。日本人の出る対戦そのものを題にする。
+                    conclusion = opponent+'と対戦'
+                    head = subject+'は'+conclusion
     if not who and thumbnail_head is None:
         # 日本人がいない日は、カード名より見どころの結論を先にする。
         if reason or form:

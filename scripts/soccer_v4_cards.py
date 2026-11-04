@@ -399,15 +399,21 @@ def club_mentions(im):
 
 def check_club_badges(im, clubs):
     """クラブ名の左（同じ行・間24px以内・同じ高さ）に同じクラブの札があるか。"""
+    import club_display_names
     errors = []
     for name, e in club_mentions(im):
         club = clubs[name]
         x, y, right, bottom = e['box']
-        ok = any(b.get('club_id') == club['team_en'] and b.get('inline') and
+        drawn = e.get('club_id')
+        # 同じクラブでも材料ごとに英語名が違う（ESPN の Barcelona と football-data の FC Barcelona。
+        # 11/4 朝の結果がこれで止まった）。札は描いた名前と同じ英語名、名前は同じ日本語名で照らす。
+        same = drawn == club['team_en'] or (
+            drawn is not None and club_display_names.display(drawn) == club_display_names.display(club['team_en']))
+        ok = any(b.get('club_id') == drawn and b.get('inline') and
                  0 <= x - b['box'][2] <= 24 and abs(b['box'][1] - y) <= 3 and
                  abs((b['box'][3] - b['box'][1]) - (bottom - y)) <= 3
                  for b in im.info.get('v4_badges', []))
-        if not ok or e.get('club_id') != club['team_en']:
+        if not ok or not same:
             errors.append({'club': name, 'text': e['text'], 'box': e['box']})
     return errors
 

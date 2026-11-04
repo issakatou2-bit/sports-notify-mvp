@@ -50,6 +50,26 @@ def inspect(data):
 
 
 class SoccerResults(unittest.TestCase):
+    def test_club_with_two_english_names_keeps_its_badge(self):
+        # 11/4 朝：試合は ESPN の Barcelona、次の試合は football-data の FC Barcelona。
+        # 札は正しく描けていたのに、検査が別のクラブと見て結果の回ごと止まった。
+        data=json.loads((FIXTURE/'run-41760380959.json').read_text(encoding='utf-8'))
+        env=dict(COLLESPO_SOCCER_TITLE_V2='on',COLLESPO_SOCCER_LOOK='v6',COLLESPO_SOCCER_FOCUS='on',
+                 COLLESPO_SHORT_LOOK='v4',COLLESPO_DUO='off',COLLESPO_OUTRO_NEXT='on',COLLESPO_MOTION='on',
+                 COLLESPO_SLANT_VARIANT='cream',COLLESPO_GLASS_BACKGROUND='stripes')
+        import soccer_result_story as story
+        with patch.dict(os.environ,env):
+            sr.validate_data(data)
+            narr=story.narration(data);clubs=story.clubs_for(data)
+            seg=next(s for s in narr['segments'] if 'バルセロナ' in s['text'] and s['kind']=='followup')
+            r3.set_program_clock(0);r3.set_caption(seg['text'],12,32);r3.set_program_clock(0)
+            try:
+                image=render.frame(0,seg,data,clubs)
+            finally:
+                r3.set_program_clock(None)
+            self.assertIn('バルセロナ',[e.get('text') for e in image.info['v3_layout']])
+            self.assertEqual(render.validate_frame(image,data,clubs),[])
+
     def test_native_personal_results(self):
         players={p['name']:p for day in ('2026-09-18','2026-09-19','2026-09-20') for p in fixed(day)['players']}
         for name,status in (('町野修斗','substitute'),('鈴木唯人','starter'),('上田綺世','starter')):
