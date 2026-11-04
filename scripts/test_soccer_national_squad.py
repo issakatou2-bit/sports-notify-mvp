@@ -88,8 +88,11 @@ class OfficialSquad(unittest.TestCase):
             self.assertIsNone(n.choose(self.games,{},None,n.instant(f'2026-11-{day}T10:15:00+09:00'),{},Mock(),self.roster,{}))
 
     def test_one_per_day_and_outside_slot(self):
-        for hour in (9,12):
+        for hour in (9,20):
             self.assertIsNone(n.choose(self.games,{},None,self.now.replace(hour=hour),{},Mock(),self.roster,{}))
+        # 10:15 の定時起動が 12:43 に遅れて動いても、その日の回は出す（21分後に予約）。
+        late=n.choose(self.games,{},None,self.now.replace(hour=12,minute=43),{},Mock(),self.roster,{})
+        self.assertEqual((late['page'],late['publish_at']),(0,'2026-11-05T13:04:00+09:00'))
         self.assertIsNone(n.choose(self.games,{},None,self.now,{'soccer_national':{'2026-11-05':{'national_squad_page':0}}},Mock(),self.roster,{}))
 
     def test_normal_tracking_and_result_names_still_42_and_reject_new_players(self):
