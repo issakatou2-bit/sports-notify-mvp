@@ -106,10 +106,10 @@ class National(unittest.TestCase):
 
     def test_squad_names_and_clubs(self):
         d=dict(announced_at='2026-11-06T05:00Z',source_url='https://www.jfa.jp/test/',window='2026-11',season='2026/27',
-            players=[dict(name_en='Ayase Ueda',club='試験クラブ',position='FW')])
+            players=[dict(name_en='Ayase Ueda',name_jp='上田綺世',reading='ウエダアヤセ',club='試験クラブ',position='FW')])
         out=n.squad(d,{},self.now.isoformat());self.assertEqual(out['players'][0]['name'],'上田綺世')
         self.assertIsNone(out['players'][0]['stats'])
-        d['players'][0]['name_en']='UNKNOWN'
+        d['players'][0].pop('reading')
         with self.assertRaises(ValueError):n.squad(d,{},self.now.isoformat())
 
     def test_off_does_not_fetch(self):
@@ -135,12 +135,12 @@ class National(unittest.TestCase):
         d=n.choose([self.future],{'627':self.schedule},dict(events=[]),now,{},lambda ident:s)
         self.assertEqual(d['mode'],'result');self.assertEqual(d['publish_at'],'2026-11-18T08:00:00+09:00')
 
-    def test_late_kickoff_day_can_show_remaining_squad(self):
+    def test_late_kickoff_day_does_not_show_remaining_squad(self):
         now=n.instant('2026-11-17T01:15Z')
         roster=dict(announced_at='2026-11-06T05:00Z',source_url='https://www.jfa.jp/test/',window='2026-11',season='2026/27',
-            players=[dict(name_en=name,club='試験用クラブ',position='FW') for name in ('Ayase Ueda','Daichi Kamada','Kaoru Mitoma')])
+            players=[dict(name_en='Ayase Ueda',name_jp='上田綺世',reading='ウエダアヤセ',club='試験用クラブ',position='FW')])
         d=n.choose([self.future],{'627':self.schedule},dict(events=[]),now,{},lambda ident:summary(),roster,{})
-        self.assertEqual(d['mode'],'squad');self.assertEqual(d['publish_at'],'2026-11-17T12:00:00+09:00')
+        self.assertIsNone(d)
 
     def test_metadata_and_record_kind(self):
         import upload_youtube as u

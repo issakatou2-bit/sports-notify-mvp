@@ -113,7 +113,7 @@ def frame(t,seg,data,clubs):
         return s.national_facts('今年の全大会成績',rows,spec,sub='全大会・PK戦は引き分け')
     if panel=='squad':
         if 'player' not in seg['meta']:
-            rows=[(p['position'],p['name']+' / '+p['club']) for p in data['players']]
+            rows=[(p['position'],p['name']) for p in data['players']]
             return s.national_facts('招集メンバー',rows,spec,sub='JFA公式発表')
         p=data['players'][seg['meta']['player']]
         rows=[(p['position'],p['name']),('所属クラブ',p['club'])]

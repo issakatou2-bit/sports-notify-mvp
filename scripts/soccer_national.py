@@ -203,13 +203,17 @@ def result(summary, upcoming, japan_schedule, as_of):
         next_game=next_game)
 
 
-def season_rows(material, club, english, as_of, season):
+def season_rows(material, club, english, as_of, season, *, name_jp=None):
     """既存予告のseason_players。氏名・所属・季・取得時刻が揃う時だけ。"""
-    name=player_name(english,True)
+    import club_display_names as clubs
+    name=name_jp if name_jp is not None else player_name(english,True)
+    target=clubs.lookup(club)
     found=[]
     for g in material.get('games') or []:
         for p in g.get('season_players') or []:
-            if p.get('name')!=name or p.get('club')!=club or p.get('scope')!='season':
+            other=clubs.lookup(p.get('club'))
+            same_club=p.get('club')==club or (target and other and target['id']==other['id'])
+            if p.get('name')!=name or not same_club or p.get('scope')!='season':
                 continue
             if not p.get('as_of') or not p.get('source'):
                 continue
@@ -230,26 +234,50 @@ def season_rows(material, club, english, as_of, season):
     return next(iter(unique.values())) if len(unique)==1 else None
 
 
+def squad_source(data):
+    if data.get('sample') or urlparse(data.get('source_url','')).hostname!='www.jfa.jp':
+        raise ValueError('本物のJFA公式発表だけを使います')
+
+
+def squad_player(p):
+    """発表の氏名と読みが正。既存確定名簿と衝突したら止める。"""
+    english=p.get('name_en');name=p.get('name_jp');reading=p.get('reading')
+    if (not isinstance(english,str) or not english.strip() or not isinstance(name,str)
+            or not re.fullmatch(r'[一-龯﨑々ァ-ヶー]+',name)
+            or not isinstance(reading,str) or not re.fullmatch(r'[ァ-ヶー]+',reading)):
+        raise ValueError('招集名簿の氏名・カタカナ読みがありません')
+    known=next((r for r in read(ROOT/'data/soccer_player_names.json')['players'] if r['name_en']==english),None)
+    if known and (known.get('name_jp')!=name or known.get('reading')!=reading):
+        raise ValueError('招集名簿の氏名・読みが既存辞書と一致しません: '+english)
+    if not p.get('club') or p.get('position') not in ('GK','DF','MF','FW','MF/FW'):
+        raise ValueError('招集名簿の所属・位置を確認してください')
+    if type(p.get('first_call',False)) is not bool:
+        raise ValueError('初招集の印が不正です')
+    return dict(name=name,name_en=english,reading=reading,club=p['club'],position=p['position'],first_call=p.get('first_call',False))
+
+
 def squad(data, material, as_of, page=0, upcoming=None):
     if not data or not data.get('announced_at'):
         return None
     if data.get('window')!=instant(as_of).astimezone(JST).strftime('%Y-%m'):
         return None
-    if data.get('sample') or urlparse(data.get('source_url','')).hostname!='www.jfa.jp':
-        raise ValueError('本物のJFA公式発表だけを使います')
+    squad_source(data)
     if instant(data['announced_at'])>instant(as_of) or not data.get('players'):
         return None
-    players=[];seen=set()
+    players=[];seen=set();english_seen=set()
     for p in data['players']:
-        name=player_name(p['name_en'],True)
-        if name in seen or not p.get('club') or not p.get('position'):
+        row=squad_player(p);name=row['name']
+        if name in seen or row['name_en'] in english_seen:
             raise ValueError('招集名簿の重複・所属・位置を確認してください')
         seen.add(name)
-        players.append(dict(name=name,club=p['club'],position=p['position'],
-            stats=season_rows(material,p['club'],p['name_en'],as_of,data['season'])))
+        english_seen.add(row['name_en'])
+        row['stats']=season_rows(material,p['club'],p['name_en'],as_of,data['season'],name_jp=name)
+        players.append(row)
     pages=[players[i:i+3] for i in range(0,len(players),3)]
+    # 1人だけ余ったら前のページへ足す（4人）。2人ずつに割ると1ページ増え、28人で
+    # 試合前の空き日（11/5〜12・15）に収まらず、初招集の選手が出せなかった。
     if len(pages)>1 and len(pages[-1])==1:
-        pages[-1].insert(0,pages[-2].pop())
+        pages[-2].extend(pages.pop())
     selected=pages[page] if 0<=page<len(pages) else []
     if not selected:
         return None
@@ -456,6 +484,7 @@ def segments_for(data):
                 'MF/FW':'ミッドフィルダー、フォワード'}.get(p['position'])
             if not position:raise ValueError('発表のポジションを確認できません')
             text=p['name']+'は'+p['club']+'所属です。発表されたポジションは'+position+'です。'
+            if p.get('first_call'):text+='初めての招集です。'
             stats=p.get('stats')
             if stats:
                 units={'goals':'得点','assists':'アシスト','minutes':'分出場','appearances':'試合出場'}
@@ -486,7 +515,8 @@ def segments_for(data):
 def title(data):
     import soccer_title_v2 as titles
     if data['mode']=='squad':
-        head='日本代表の招集メンバーと所属クラブ '+str(data['page']+1)
+        # 番号だけの題では誰の回か分からない。紹介する選手の名前を並べる。
+        head='日本代表の招集メンバー '+'・'.join(p['name'] for p in data['players'])
     else:
         g=data['game'];at=instant(g['kickoff_jst'])
         if data['mode']=='preview':
@@ -511,6 +541,13 @@ def check(document):
         return []
     data=document.get('national_material') or {}
     try:
+        if data.get('mode')=='squad':
+            squad_source(data)
+            seen=set();english_seen=set()
+            for p in data['players']:
+                squad_player(dict(p,name_jp=p['name']))
+                if p['name'] in seen or p['name_en'] in english_seen:raise ValueError('招集名簿の重複')
+                seen.add(p['name']);english_seen.add(p['name_en'])
         if data.get('mode') in ('preview','result'):
             import soccer_national_history as history
             if data.get('history_version')!=3:return ['日本の全大会の確認済み一覧による再照合が必要です']
@@ -543,6 +580,25 @@ def check(document):
     except (KeyError,ValueError,TypeError):
         return ['日本代表の材料を確認できません']
     return []
+
+
+def speech_readings(document):
+    """公式招集台本だけへ読みを渡し、実queryの氏名検査・句結合を保つ。"""
+    if check(document):raise ValueError('招集台本の照合が必要です')
+    data=document['national_material'];squad_source(data)
+    if data['mode']!='squad':raise ValueError('招集回だけの読みです')
+    import name_reading_guard as guard
+    clubs=read(ROOT/'data/soccer_national_club_readings.json')
+    out={}
+    for p in data['players']:
+        existing=guard.player_data().get('readings',{}).get(p['name'])
+        if existing and existing!=p['reading']:raise ValueError('名前の読みの守りと招集名簿が不一致です')
+        out[p['name']]=('player',p['reading'])
+        reading=clubs.get(p['club'])
+        if not reading or not re.fullmatch(r'[ァ-ヶー]+',reading):
+            raise ValueError('招集クラブの読みが未登録です: '+p['club'])
+        out[p['club']]=('club',reading)
+    return out
 
 
 def information(document):
@@ -580,6 +636,7 @@ def information(document):
     else:
         for p in d['players']:
             add(p['name'],'招集と所属クラブ',p['club'],d['source_url'])
+            if p.get('first_call'):add(p['name'],'日本代表初招集',True,d['source_url'])
         if d.get('next_game'):
             g=d['next_game'];add(g['id'],'次の対戦と開始予定',[g['opponent'],g['kickoff_jst']],g['source_url'])
     return units
@@ -644,14 +701,15 @@ def choose(games, schedules, previous, now, ledger, summary_loader, squad_data=N
             d=preview(g,schedules[JAPAN],schedules[g['opponent_id']],previous,now.isoformat())
             d['publish_at']=max(target,(local+timedelta(minutes=21)).replace(second=0,microsecond=0)).isoformat()
             return d
-    occupied={instant(g['kickoff_jst']).date() for g in games if instant(g['kickoff_jst']).hour<20}
+    occupied={instant(g['kickoff_jst']).date() for g in games}
     occupied|={instant(g['kickoff_jst']).date()-timedelta(days=1) for g in games}
     occupied|={instant(g['kickoff_jst']).date()+timedelta(days=1) for g in games if instant(g['kickoff_jst']).hour>=20}
     if squad_data and local.date() not in occupied and 10<=local.hour<12:
         finished={e.get('national_squad_page') for e in ledger.get('soccer_national',{}).values() if e.get('national_squad_page') is not None}
         page=next(i for i in range(100) if i not in finished)
         d=squad(squad_data,club_material or {},now.isoformat(),page,upcoming=games)
-        if d:
+        # 試合が全部終わった後の招集紹介は出さない（模擬で最後の1ページが 11/19 になった）。
+        if d and d.get('next_game'):
             d['publish_at']=local.replace(hour=12,minute=0,second=0,microsecond=0).isoformat()
             return d
     return None
