@@ -18768,6 +18768,51 @@
       },
       "host_fallback_reason": null,
       "privacy": "public"
+    },
+    "2026-11-04": {
+      "video_id": "_IuqSMeyiJA",
+      "url": "https://youtu.be/_IuqSMeyiJA",
+      "title": "鈴木唯人のフライブルク、CL圏内。落ちるまで勝点1｜ブンデスリーガ 順位争い【欧州サッカー】#Shorts",
+      "published_at": "2026-11-04T10:08:23.498942+00:00",
+      "publish_at": "2026-11-04T11:30:00Z",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-04",
+        "enabled": true,
+        "assigned": "next",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false,
+        "source": "post_common.lineup:daily_soccer",
+        "next_date": "2026-11-05",
+        "next_time": "19:30",
+        "next_name": "欧州サッカー",
+        "speech": "次は11月5日19時30分の欧州サッカーです。また見に来てくださいね。",
+        "card": "次は11/5 19:30の欧州サッカー"
+      },
+      "duration_seconds": 32.6,
+      "short_information_count": 6,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-11-04",
+        "kind": "soccer_race",
+        "phase": 1,
+        "planned_host": "metan",
+        "rule": "half-jst-week-v1",
+        "week": 43,
+        "weekday": 2
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-11-04T19:04:32.751524+09:00",
+        "comparison_eligible": true,
+        "planned_host": "metan",
+        "reason": null,
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
     }
   },
   "soccer_week": {
