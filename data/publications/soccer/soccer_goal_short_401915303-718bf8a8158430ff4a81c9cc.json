@@ -1,0 +1,30 @@
+{
+  "publication_id": "soccer:goal_short:401915303",
+  "domain": "soccer",
+  "kind": "goal_short",
+  "key_parts": {
+    "game_id": "401915303"
+  },
+  "version": 1,
+  "history": [
+    {
+      "source": "soccer_flash_receipts/401915303",
+      "service": "youtube",
+      "video_id": null,
+      "state": "upload_pending",
+      "scheduled_at": null,
+      "event_day": null,
+      "material_day": null,
+      "edition_day": null,
+      "run_at": "2026-11-04T22:20:12.441647+00:00",
+      "details": {
+        "status": "pending"
+      },
+      "run_id": "41923489556",
+      "attempt": "1",
+      "recorded_at": "2026-11-04T22:20:12.447859+00:00",
+      "fingerprint": "edeebd2e88a7199e1e69ad2ebba9a8595d488752120259e44884d2efe6bf4db6",
+      "event_id": "5eeda86958777a61610785b1fc4c71aff9c4c6c9bb4268a26953c95f54f3dadb"
+    }
+  ]
+}
