@@ -909,5 +909,119 @@
         }
       }
     ]
+  },
+  "2026-11-04": {
+    "day": "2026-11-04",
+    "video_id": "R-7SvzmnsKk",
+    "title": "佐野航大のPSVはクラブ・ブルッヘと対戦｜チャンピオンズリーグ #Shorts",
+    "published_at": "2026-11-04T14:13:20.395455+00:00",
+    "binding": {
+      "material_sha256": "00974da2eb3e9988ba6a907e11b03c8a4891d72e5ec49f75e0fccac5d3db4844",
+      "narration_sha256": "83e3a1b4244ffd193bc3ff177df5223158cdfebf61ea51a052fadd26f6644f96"
+    },
+    "games": [
+      {
+        "game_id": "espn-401915303",
+        "espn_event_id": "401915303",
+        "league": "チャンピオンズリーグ",
+        "competition_code": "CL",
+        "home": "PSV",
+        "away": "Club Brugge KV",
+        "start_utc": "2026-11-05T05:00:00+09:00",
+        "reasons": [],
+        "expectation": null,
+        "spoken": "日本時間5時、PSV対クラブ・ブルッヘ。PSVの登録メンバーには、佐野航大が入っています。",
+        "standings": {
+          "home": {
+            "as_of": "2026-11-04T09:53:48.074550+00:00",
+            "competition": "CL",
+            "season": null
+          },
+          "away": {
+            "as_of": "2026-11-04T09:53:48.074550+00:00",
+            "competition": "CL",
+            "season": null
+          }
+        }
+      },
+      {
+        "game_id": "575386",
+        "espn_event_id": "401915383",
+        "league": "チャンピオンズリーグ",
+        "competition_code": "CL",
+        "home": "PAE AEK",
+        "away": "レアル・マドリード",
+        "start_utc": "2026-11-05T02:45:00+09:00",
+        "reasons": [],
+        "expectation": null,
+        "spoken": "日本時間2時45分、AEKアテネ対レアル・マドリード。",
+        "standings": {
+          "home": {
+            "as_of": "2026-11-04T09:53:48.074550+00:00",
+            "competition": "CL",
+            "season": null
+          },
+          "away": {
+            "as_of": "2026-11-04T09:53:48.074550+00:00",
+            "competition": "CL",
+            "season": null
+          }
+        }
+      },
+      {
+        "game_id": "575387",
+        "espn_event_id": "401915382",
+        "league": "チャンピオンズリーグ",
+        "competition_code": "CL",
+        "home": "Fenerbahçe SK",
+        "away": "リバプール",
+        "start_utc": "2026-11-05T02:45:00+09:00",
+        "reasons": [
+          {
+            "kind": "previous_season",
+            "text": "リバプールは昨季CLリーグフェーズ3位",
+            "evidence": "reasons.quality"
+          }
+        ],
+        "expectation": null,
+        "spoken": "日本時間2時45分、フェネルバフチェ対リバプール。リバプールは昨季CLリーグフェーズ3位。",
+        "standings": {
+          "home": {
+            "as_of": "2026-11-04T09:53:48.074550+00:00",
+            "competition": "CL",
+            "season": null
+          },
+          "away": {
+            "as_of": "2026-11-04T09:53:48.074550+00:00",
+            "competition": "CL",
+            "season": null
+          }
+        }
+      },
+      {
+        "game_id": "575388",
+        "espn_event_id": "401915306",
+        "league": "チャンピオンズリーグ",
+        "competition_code": "CL",
+        "home": "ライプツィヒ",
+        "away": "マンチェスター・シティ",
+        "start_utc": "2026-11-05T05:00:00+09:00",
+        "reasons": [],
+        "expectation": null,
+        "spoken": "日本時間5時、ライプツィヒ対マンチェスターC。",
+        "standings": {
+          "home": {
+            "as_of": "2026-11-04T09:53:48.074550+00:00",
+            "competition": "CL",
+            "season": null
+          },
+          "away": {
+            "as_of": "2026-11-04T09:53:48.074550+00:00",
+            "competition": "CL",
+            "season": null
+          }
+        }
+      }
+    ]
   }
 }
