@@ -198,8 +198,8 @@ class BufferTests(unittest.TestCase):
             daily.select_record(self.run, self.records, datetime(2026,9,11,15,0,tzinfo=timezone.utc))
 
     def test_delayed_backfill_is_bounded_and_forecast_stays_excluded(self):
-        before = datetime(2026,9,11,17,59,tzinfo=timezone.utc)  # JST 02:59
-        cutoff = datetime(2026,9,11,18,0,tzinfo=timezone.utc)  # JST 03:00
+        before = datetime(2026,9,12,2,59,tzinfo=timezone.utc)  # JST 11:59
+        cutoff = datetime(2026,9,12,3,0,tzinfo=timezone.utc)  # JST 12:00
         run = {**self.run, 'path': '.github/workflows/morning_recap.yml'}
         records = {'morning': {'2026-09-11': self.record}}
         self.assertEqual(daily.select_record(run,records,before,'morning',True)[0], '2026-09-11')

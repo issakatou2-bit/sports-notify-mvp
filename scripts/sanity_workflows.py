@@ -34,6 +34,7 @@ KINDS = {
     'soccer_weekly_long': 'soccer_weekly',
 }
 PUBLISHER = re.compile(r'scripts/(?:upload_youtube|soccer_results_upload|soccer_week_publish)\.py'
+                      r'|scripts/soccer_national_publish\.py\s+--upload'
                       r'|scripts/ps_daily_entry\.py\s+--stage\s+upload')
 
 

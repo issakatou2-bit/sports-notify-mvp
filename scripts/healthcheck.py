@@ -28,6 +28,7 @@ import os
 import pathlib
 import sys
 from datetime import datetime, timedelta, timezone
+from publication_clock import DAY_ROLLOVER_HOUR, publication_due, target_day
 
 JST = timezone(timedelta(hours=9))
 
@@ -102,10 +103,10 @@ OPTIONAL_DAILY = [("daily_soccer", "今夜の注目試合(サッカー)",
 
 # 「当日」を見るとき、何時より前なら前の日として扱うか。
 #
-# 夕方の枠は17:00から20:00に出る。JST 6時より前に走っているなら、
+# 夕方の枠は17:00から20:00に出る。JST 正午より前に走っているなら、
 # その日の枠はまだ1本も始まっていない。21時の見張りが深夜にずれた
 # 日（9/13→9/14の00:36）に「動画の欠け7件」と報告したのを直したもの。
-DAY_ROLLOVER_HOUR = 6
+# 正午前までの遅延は publication_clock と復旧処理で同じ対象日を見る。
 
 # 材料。何時間以内に更新されていれば良しとするか。
 FRESH_HOURS = 30
@@ -303,7 +304,7 @@ def _no_japanese(us_date: str) -> bool:
             and not d.get("players") and not d.get("collection_errors"))
 
 
-def check_videos(day: str, only_past: bool = False) -> tuple:
+def check_videos(day: str, only_past: bool = False, now=None) -> tuple:
     """
     その日の動画が投稿されたか。(行, 欠けている数, 見ない数, 記録済みID) を返す。
 
@@ -314,8 +315,7 @@ def check_videos(day: str, only_past: bool = False) -> tuple:
     rec = load("data/published_videos.json") or {}
     # 公開時刻そのものではなく、そこから猶予を引いた時刻と比べる。
     # 動画を作って上げ終わるまでに時間がかかる。
-    judge_from = (datetime.now(JST)
-                  - timedelta(minutes=PUBLISH_GRACE_MIN)).strftime("%H:%M")
+    now = now or datetime.now(JST)
     # skipped は「出るはずが無かった枠」。サッカーの開催が無い日など。
     # これを本数に数えていたため、6本出た日を「7本中6本」と見なして
     # 材料の古さの補正が効かず、正常な日が毎回赤くなっていた。
@@ -323,7 +323,7 @@ def check_videos(day: str, only_past: bool = False) -> tuple:
     for kind, label, at, since in EXPECTED_DAILY + OPTIONAL_DAILY:
         if day < since:
             continue  # その枠がまだ無かった日
-        if only_past and at > judge_from:
+        if only_past and not publication_due(day, at, now, PUBLISH_GRACE_MIN):
             continue  # まだ出そろう時刻になっていない
         entry = (rec.get(_record_key(kind)) or {}).get(day)
         optional = any(kind == k for k, _, _, _ in OPTIONAL_DAILY)
@@ -586,11 +586,9 @@ def main() -> int:
         # まだ1本も出ていないのは当たり前なのに「動画の欠け7件」と
         # 報告した。**その日は9本すべて出ていた。**
         #
-        # 夕方の枠は17:00から20:00に出る。JST 6時より前に走る日は、
-        # どう見てもその日の枠が始まる前なので、前の日を見るのが正しい。
-        day = ((now - timedelta(days=1)) if now.hour < DAY_ROLLOVER_HOUR
-               else now).strftime("%Y-%m-%d")
-        if now.hour < DAY_ROLLOVER_HOUR:
+        # 正午前までの遅延を前日分として、復旧と同じ日付を使う。
+        day = args.date or target_day(now)
+        if now.hour < DAY_ROLLOVER_HOUR and day != now.date().isoformat():
             print(f"[info] {now.strftime('%H:%M')} に走っているので、"
                   f"前日({day})を見ます", file=sys.stderr)
     else:

@@ -91,9 +91,8 @@ jobs:
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
         run: |
-          PUBLISH_AT=$(python scripts/soccer_national_publish.py --time)
           VIDEO_DAY=$(python -c "import json; print(json.load(open('build/soccer_national/narration.json'))['date_jst'])")
-          python scripts/upload_youtube.py --video build/soccer_national/collespo_national.mp4 --kind soccer_national --sport soccer --games build/soccer_national/material.json --narration build/soccer_national/narration.json --thumbnail build/soccer_national/short.png --video-date "$VIDEO_DAY" --privacy public --publish-at "$PUBLISH_AT"
+          python scripts/soccer_national_publish.py --upload --video build/soccer_national/collespo_national.mp4 --kind soccer_national --sport soccer --games build/soccer_national/material.json --narration build/soccer_national/narration.json --thumbnail build/soccer_national/short.png --video-date "$VIDEO_DAY" --privacy public
       - name: Commit publication record
         if: always() && steps.gate.outputs.count == '1'
         run: |
