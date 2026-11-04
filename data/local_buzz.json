@@ -1,60 +1,60 @@
 {
-  "updated_at": "2026-11-03T06:02:32.409553+00:00",
+  "updated_at": "2026-11-04T06:01:56.006684+00:00",
   "sources": [
     {
       "name": "MLB公式",
-      "items": 24
+      "items": 25
     }
   ],
-  "titles_count": 24,
+  "titles_count": 25,
   "teams": [
     {
-      "team_id": "141",
-      "name": "ブルージェイズ",
-      "name_en": "Toronto Blue Jays",
-      "mentions": 1,
+      "team_id": "111",
+      "name": "レッドソックス",
+      "name_en": "Boston Red Sox",
+      "mentions": 2,
       "tone": "話題",
-      "gist": "ブルージェイズ、ストローの800万ドル球団オプション拒否"
+      "gist": "FA補強候補5人、Rivera放出のレッドソックス"
     },
     {
       "team_id": "147",
       "name": "ヤンキース",
       "name_en": "New York Yankees",
-      "mentions": 1,
+      "mentions": 2,
       "tone": "話題",
-      "gist": "ヤンキース、ベドナーにQO提示もチザムには見送り"
+      "gist": "Skubal・Sato噂、Bednarに資格オファー"
     },
     {
-      "team_id": "158",
-      "name": "ブリュワーズ",
-      "name_en": "Milwaukee Brewers",
-      "mentions": 1,
-      "tone": "好調",
-      "gist": "ブリュワーズ、WS MVPコントレラスのオプション行使"
+      "team_id": "139",
+      "name": "レイズ",
+      "name_en": "Tampa Bay Rays",
+      "mentions": 2,
+      "tone": "話題",
+      "gist": "Rasmussenを27年先発軸に、Martinez FAへ"
     },
     {
-      "team_id": "116",
-      "name": "タイガース",
-      "name_en": "Detroit Tigers",
+      "team_id": "138",
+      "name": "カージナルス",
+      "name_en": "St. Louis Cardinals",
       "mentions": 1,
       "tone": "話題",
-      "gist": "タイガース、ジャンセンのオプション拒否も主力2投手残留"
+      "gist": "レッドソックスからEduardo Riveraを獲得"
     },
     {
-      "team_id": "117",
-      "name": "アストロズ",
-      "name_en": "Houston Astros",
+      "team_id": "136",
+      "name": "マリナーズ",
+      "name_en": "Seattle Mariners",
       "mentions": 1,
       "tone": "話題",
-      "gist": "アストロズ、パレデスのオプション行使、メイヤーズは outr"
+      "gist": "Jason Kanzlerを新監督に起用"
     },
     {
-      "team_id": "135",
-      "name": "パドレス",
-      "name_en": "San Diego Padres",
+      "team_id": "109",
+      "name": "ダイヤモンドバックス",
+      "name_en": "Arizona Diamondbacks",
       "mentions": 1,
       "tone": "話題",
-      "gist": "パドレス、左腕モレホンへQO提示"
+      "gist": "Miller-Walcott、アリゾナ秋季リーグで注目"
     },
     {
       "team_id": "112",
@@ -62,15 +62,7 @@
       "name_en": "Chicago Cubs",
       "mentions": 1,
       "tone": "話題",
-      "gist": "カブス、ウェブと1年契約で合意、球団オプション付き"
-    },
-    {
-      "team_id": "121",
-      "name": "メッツ",
-      "name_en": "New York Mets",
-      "mentions": 1,
-      "tone": "話題",
-      "gist": "メッツ編成トップ4年目のスターンズ、重要なオフ迎える"
+      "gist": "Skubal・Sato巡る噂にヤンキースと名前"
     }
   ],
   "players": [

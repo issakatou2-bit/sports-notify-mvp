@@ -10280,6 +10280,51 @@
       },
       "host_fallback_reason": null,
       "privacy": "public"
+    },
+    "2026-11-04": {
+      "video_id": "aQoAGhJzpqs",
+      "url": "https://youtu.be/aQoAGhJzpqs",
+      "title": "村上宗隆・大谷翔平｜村上宗隆、ルーキーイヤーに35本塁打の活躍に現地ファンの声 #Shorts",
+      "published_at": "2026-11-04T06:12:30.640798+00:00",
+      "publish_at": "2026-11-04T08:30:00Z",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-04",
+        "enabled": true,
+        "assigned": "next",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false,
+        "source": "post_common.lineup:daily_soccer",
+        "next_date": "2026-11-05",
+        "next_time": "19:30",
+        "next_name": "欧州サッカー",
+        "speech": "次は11月5日19時30分の欧州サッカーです。また見に来てくださいね。",
+        "card": "次は11/5 19:30の欧州サッカー"
+      },
+      "duration_seconds": 43.73,
+      "short_information_count": 4,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-11-04",
+        "kind": "morning_voices",
+        "phase": 1,
+        "planned_host": "metan",
+        "rule": "half-jst-week-v1",
+        "week": 43,
+        "weekday": 2
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-11-04T15:03:19.361692+09:00",
+        "comparison_eligible": true,
+        "planned_host": "metan",
+        "reason": null,
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
     }
   },
   "verdict": {

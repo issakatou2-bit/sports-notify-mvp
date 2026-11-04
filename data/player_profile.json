@@ -1,136 +1,115 @@
 {
-  "generated_at": "2026-11-03T06:01:14.470573+00:00",
-  "date_jst": "2026-11-03",
-  "name": "山本由伸",
-  "player_id": "808967",
-  "team": "ドジャース",
-  "group": "pitching",
+  "generated_at": "2026-11-04T06:01:08.547126+00:00",
+  "date_jst": "2026-11-04",
+  "name": "鈴木誠也",
+  "player_id": "673548",
+  "team": "カブス",
+  "group": "hitting",
   "why": "現地で名前が挙がっている",
   "headline": "",
   "score": null,
   "bio": {
-    "name_en": "Yoshinobu Yamamoto",
-    "age": 28,
-    "birth_city": "Bizen",
+    "name_en": "Seiya Suzuki",
+    "age": 32,
+    "birth_city": "Arakawa",
     "birth_state": null,
     "birth_country": "Japan",
-    "birth_date": "1998-08-17",
-    "debut": "2024-03-21",
+    "birth_date": "1994-08-18",
+    "debut": "2022-04-07",
     "draft_year": null,
     "bats": "Right",
     "throws": "Right",
-    "number": "18",
-    "position": "Pitcher",
+    "number": "27",
+    "position": "Outfielder",
     "nickname": null,
-    "height": "5' 10\"",
-    "weight": 176
+    "height": "5' 11\"",
+    "weight": 182
   },
   "teams": [
     {
-      "team": "ドジャース",
-      "from": 2024,
+      "team": "カブス",
+      "from": 2022,
       "to": 2026
     }
   ],
   "career": {
-    "games": 76,
-    "avg": ".281",
-    "hr": 310,
-    "rbi": 750,
-    "ops": ".949",
-    "sb": 176,
-    "hits": 1194,
-    "wins": 33,
-    "losses": 19,
-    "era": "2.61",
-    "so": 488,
-    "ip": "448.2",
-    "whip": "0.97"
+    "games": 675,
+    "avg": ".269",
+    "hr": 113,
+    "rbi": 382,
+    "ops": ".823",
+    "sb": 39,
+    "hits": 683
   },
   "this_season": {
-    "games": 28,
-    "avg": ".275",
-    "hr": 30,
-    "rbi": 81,
-    "ops": ".889",
-    "sb": 11,
-    "hits": 144,
-    "wins": 14,
-    "losses": 9,
-    "era": "2.53",
-    "so": 182,
-    "ip": "185.0",
-    "whip": "0.87"
+    "games": 143,
+    "avg": ".270",
+    "hr": 26,
+    "rbi": 86,
+    "ops": ".841",
+    "sb": 3,
+    "hits": 147
   },
   "last_season": {
-    "games": 30,
-    "avg": ".282",
-    "hr": 55,
-    "rbi": 102,
-    "ops": "1.014",
-    "sb": 20,
-    "hits": 172,
-    "wins": 12,
-    "losses": 8,
-    "era": "2.49",
-    "so": 201,
-    "ip": "173.2",
-    "whip": "0.99"
+    "games": 151,
+    "avg": ".245",
+    "hr": 32,
+    "rbi": 103,
+    "ops": ".804",
+    "sb": 5,
+    "hits": 140
   },
   "recent": [
     {
+      "date": "2026-09-25",
+      "line": "3打数2安打",
+      "opponent": "Boston Red Sox"
+    },
+    {
+      "date": "2026-09-25",
+      "line": "4打数0安打",
+      "opponent": "Boston Red Sox"
+    },
+    {
+      "date": "2026-09-24",
+      "line": "3打数2安打 1本塁打 1打点",
+      "opponent": "Miami Marlins"
+    },
+    {
       "date": "2026-09-23",
-      "line": "6.0回 自責2 4奪三振",
-      "opponent": "San Diego Padres"
+      "line": "4打数1安打",
+      "opponent": "Miami Marlins"
     },
     {
-      "date": "2026-09-15",
-      "line": "7.0回 自責0 7奪三振",
-      "opponent": "Cincinnati Reds"
-    },
-    {
-      "date": "2026-09-09",
-      "line": "7.0回 自責1 10奪三振",
-      "opponent": "Cincinnati Reds"
-    },
-    {
-      "date": "2026-09-02",
-      "line": "7.0回 自責4 8奪三振",
-      "opponent": "St. Louis Cardinals"
-    },
-    {
-      "date": "2026-08-27",
-      "line": "6.1回 自責1 8奪三振",
-      "opponent": "Atlanta Braves"
+      "date": "2026-09-22",
+      "line": "6打数2安打",
+      "opponent": "Miami Marlins"
     }
   ],
   "awards": [
     {
-      "season": "2026",
-      "name": "NL All-Star"
+      "season": "2025",
+      "name": "NL Player of the Week"
     },
     {
-      "season": "2025",
-      "name": "World Series Championship"
+      "season": "2022",
+      "name": "NL Rookie of the Month"
     },
     {
-      "season": "2025",
-      "name": "Willie Mays World Series MVP"
-    },
-    {
-      "season": "2025",
-      "name": "NL Pitcher of the Month"
-    },
-    {
-      "season": "2025",
-      "name": "NL All-Star"
+      "season": "2022",
+      "name": "NL Player of the Week"
     }
   ],
   "quotes": [
     {
-      "who": "Dodger Blue",
-      "text": "ドジャース史の今日：ロハス、ページズ、ウィル・スミス、山本由伸が2025年ワールドシリーズ制覇に貢献",
-      "kind": "headline"
+      "who": "Chicago Tribuneの記者",
+      "text": "カブスのGG最終候補5人のうち、CFピート・クロウ＝アームストロングと3Bアレックス・ブレグマンがNLの各ポジションで受賞。ブルワーズLFジャクソン・チョウリオがイアン・ハップの5年連続を阻止。DバックスRFコービン・キャロルとSSヘラルド・ペルドモが鈴木誠也とダンズビー・スワンソンを抑えて受賞",
+      "kind": "reporter"
+    },
+    {
+      "who": "MLB.comの記者",
+      "text": "MLB.comのマーク・ファインサンドによると、鈴木誠也はカブスから1年2315万ドルのクオリファイングオファーを受け取った",
+      "kind": "reporter"
     }
   ]
 }
