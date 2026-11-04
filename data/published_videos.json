@@ -20270,6 +20270,104 @@
       },
       "host_fallback_reason": null,
       "privacy": "public"
+    },
+    "season_win_2026_579328_pitching": {
+      "video_id": "5zQc7EHnSJc",
+      "url": "https://youtu.be/5zQc7EHnSJc",
+      "title": "菊池雄星 先発した試合でチームは2勝12敗 #Shorts",
+      "published_at": "2026-11-04T06:34:16.522319+00:00",
+      "publish_at": "2026-11-04T07:30:00Z",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-04",
+        "enabled": true,
+        "assigned": "next",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false,
+        "source": "post_common.lineup:daily_soccer",
+        "next_date": "2026-11-05",
+        "next_time": "19:30",
+        "next_name": "欧州サッカー",
+        "speech": "次は11月5日19時30分の欧州サッカーです。また見に来てくださいね。",
+        "card": "次は11/5 19:30の欧州サッカー"
+      },
+      "player_ids": [
+        "579328"
+      ],
+      "duration_seconds": 36.63,
+      "short_information_count": 3,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-11-04",
+        "kind": "asset:season_win",
+        "phase": 1,
+        "planned_host": "metan",
+        "rule": "half-jst-week-v1",
+        "week": 43,
+        "weekday": 2
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-11-04T15:29:48.232801+09:00",
+        "comparison_eligible": true,
+        "planned_host": "metan",
+        "reason": null,
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
+    },
+    "season_best_2026_660271_hitting": {
+      "video_id": "YtfPzSacRNI",
+      "url": "https://youtu.be/YtfPzSacRNI",
+      "title": "大谷翔平 1試合2本塁打 #Shorts",
+      "published_at": "2026-11-04T06:41:02.232365+00:00",
+      "publish_at": "2026-11-04T13:00:00Z",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-04",
+        "enabled": true,
+        "assigned": "next",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false,
+        "source": "post_common.lineup:daily_soccer",
+        "next_date": "2026-11-05",
+        "next_time": "19:30",
+        "next_name": "欧州サッカー",
+        "speech": "次は11月5日19時30分の欧州サッカーです。また見に来てくださいね。",
+        "card": "次は11/5 19:30の欧州サッカー"
+      },
+      "player_ids": [
+        "660271"
+      ],
+      "duration_seconds": 36.63,
+      "short_information_count": 3,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-11-04",
+        "kind": "asset:season_best",
+        "phase": 0,
+        "planned_host": "ui",
+        "rule": "half-jst-week-v1",
+        "week": 43,
+        "weekday": 2
+      },
+      "planned_host": "ui",
+      "actual_host": "ui",
+      "host_delivery": {
+        "checked_at": "2026-11-04T06:34:17.015527+00:00",
+        "comparison_eligible": true,
+        "label": "予定雨衣",
+        "mode": "live",
+        "planned_host": "ui",
+        "reason": null,
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
     }
   },
   "soccer_results": {
