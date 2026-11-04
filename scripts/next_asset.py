@@ -247,6 +247,8 @@ def pick_season(args) -> int:
     import jp_stock
     todo = [k for k in todo if jp_stock.rotation_available(k, gav.LIST_TOPICS[k], ledgers)]
     todo = [k for k in todo if season_material_ready(gav, k)]
+    # 選手の間隔は雨衣の声の在庫より後の順位（在庫の優先を崩さない）。
+    todo.sort(key=lambda k: jp_stock.rotation_priority(k, gav.LIST_TOPICS[k], ledgers))
     import ui_voice_stock
     todo = ui_voice_stock.prioritize(todo)
     todo.sort(key=lambda k: not gav.LIST_TOPICS[k].get('jp_stock'))

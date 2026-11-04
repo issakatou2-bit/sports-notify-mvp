@@ -15,7 +15,7 @@ import generated_topics as gt
 
 WORKFLOWS = {'season_review.yml': 'season-review', 'ps_game_now.yml': 'ps-game-now',
              'offseason_news.yml': 'offseason-news'}
-TOPIC = re.compile(r'(?:season_(?:momentum|game|odds)_[A-Za-z0-9_]+|season_(?:best|month|vs|streak|home|win|daynight)_2026_\d+_(?:hitting|pitching)|season_compare_2026_\d+_(?:hitting|pitching)_\d+|season_compare_\d{4}_\d+_\d+|offseason_(?:schedule|awards|transactions|market)_\d{4}_[a-f0-9]{12})\Z')
+TOPIC = re.compile(r'(?:season_(?:momentum|game|odds)_[A-Za-z0-9_]+|season_(?:best|month|vs|streak|home|win|daynight|half)_2026_\d+_(?:hitting|pitching)|season_compare_2026_\d+_(?:hitting|pitching)_\d+|season_compare_\d{4}_\d+_\d+|offseason_(?:schedule|awards|transactions|market)_\d{4}_[a-f0-9]{12})\Z')
 
 
 def select(run, assets, topics, now):

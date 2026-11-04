@@ -47,7 +47,7 @@ def archived_games(root=ROOT):
             if key in rows and rows[key]['final_score'] != s:
                 conflicts.add(key)
             # JSTの開始時刻は現地日付と同一視しない。表示は保存日の範囲と明記。
-            row = dict(g, archive_day=path.stem, source_path=str(path.relative_to(root)))
+            row = dict(g, archive_day=path.stem, source_path=path.relative_to(root).as_posix())
             rows.setdefault(key, row)
     return [v for k, v in rows.items() if k not in conflicts], sorted(conflicts)
 

@@ -89,7 +89,7 @@ class StockTests(unittest.TestCase):
 
     def test_editorial_strength_and_spoken_information(self):
         document = jp.build()
-        self.assertEqual(sum(t['stock_kind'] not in ('home', 'win', 'daynight') for t in document['topics']), 29)
+        self.assertEqual(sum(t['stock_kind'] not in ('home', 'win', 'daynight', 'half') for t in document['topics']), 29)
         for t in document['topics']:
             self.assertFalse(jp.expression_errors(t))
             self.assertNotIn('2026年', t['intro'].split('。')[0])

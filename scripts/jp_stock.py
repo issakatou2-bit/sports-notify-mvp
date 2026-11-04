@@ -12,7 +12,7 @@ import season_stock as stock
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE_PATH = 'data/jp_player_logs_2026.json'
-KINDS = ('best', 'month', 'vs', 'streak', 'home', 'win', 'daynight', 'compare')
+KINDS = ('best', 'month', 'vs', 'streak', 'home', 'win', 'daynight', 'half', 'compare')
 FIELDS = ('gamesPlayed', 'gamesStarted', 'plateAppearances', 'atBats', 'hits', 'homeRuns',
           'rbi', 'totalBases', 'baseOnBalls', 'hitByPitch', 'sacFlies', 'strikeOuts',
           'outs', 'inningsPitched', 'runs', 'earnedRuns')
@@ -277,6 +277,23 @@ def daynight(pid, player, group, rows, relief):
     return make('daynight', pid, player, group, '', player['jp'], '', [], rows), None
 
 
+def half_period(row):
+    # Stats APIの公式試合日を使い、日程のUTC開始時刻で月境界を変えない。
+    month = datetime.fromisoformat(row['date']).month
+    return 'first' if 3 <= month <= 6 else 'second' if 7 <= month <= 9 else None
+
+
+def half(pid, player, group, rows, relief):
+    if any(half_period(r) is None for r in rows):
+        return None, '公式試合日が3〜9月の範囲外'
+    totals = {v: aggregate([r for r in rows if half_period(r) == v]) for v in ('first', 'second')}
+    if not all(eligible(st, group, relief) for st in totals.values()):
+        return None, '前半・後半の母数が月別基準未満'
+    if abs(rate(totals['first'], group)-rate(totals['second'], group)) < (Fraction(1, 10) if group == 'hitting' else 3):
+        return None, '前半・後半の差が打率.100・防御率3.00未満'
+    return make('half', pid, player, group, '', player['jp'], '', [], rows), None
+
+
 def concise_stats(st, group):
     denominator = st.get('atBats', 0) if group == 'hitting' else st.get('outs', 0)
     metric = '打率' if group == 'hitting' else '防御率'
@@ -463,16 +480,18 @@ def editorial(spec, players):
                      ('打席の数' if group == 'hitting' else '投球の内訳', f"{sa['plateAppearances']}打席、{sa['totalBases']}塁打、四球{sa['baseOnBalls']}" if group == 'hitting' else f"{ip(sa['outs'])}で被安打{sa['hits']}、与四球{sa['baseOnBalls']}")]
             c = sorted((k for k in spec['qualified'] if k != a), key=lambda k: (rate(totals[k], group) if group == 'pitching' else -rate(totals[k], group),k))[0]
             items.append((f"{club(buckets[c][0])}戦では", f'{metric}{display_rate(totals[c], group)}。'+detail(totals[c], group)))
-    elif kind in ('home', 'daynight'):
+    elif kind in ('home', 'daynight', 'half'):
         field, keys, labels = ('isHome', (True, False), ('ホーム', 'アウェー')) if kind == 'home' else ('dayNight', ('day', 'night'), ('デーゲーム', 'ナイター'))
-        totals = {v: aggregate([r for r in rows if r[field] == v]) for v in keys}
+        if kind == 'half':
+            keys, labels = ('first', 'second'), ('前半', '後半')
+        totals = {v: aggregate([r for r in rows if (half_period(r) if kind == 'half' else r[field]) == v]) for v in keys}
         sa, sb = totals[keys[0]], totals[keys[1]]
         la, lb = labels
         metric = '打率' if group == 'hitting' else '防御率'
         va, vb = display_rate(sa, group), display_rate(sb, group)
         heading = f'{name} {la}{metric}{va}と{lb}{vb}'
         intro = f'{name}の{metric}は{la}が{va}、{lb}が{vb}でした。'
-        items = [(label+'の記録', (concise_stats(st, group) if kind == 'daynight' else detail(st, group))) for label, st in [(la, sa), (lb, sb)]]
+        items = [(label+'の記録', (concise_stats(st, group) if kind in ('daynight', 'half') else detail(st, group))) for label, st in [(la, sa), (lb, sb)]]
         items.append(('打席数' if group == 'hitting' else '登板数',
                       f"{la}{sa['plateAppearances']}打席、{lb}{sb['plateAppearances']}打席" if group == 'hitting' else
                       f"{la}{sa['appearances']}登板、{lb}{sb['appearances']}登板"))
@@ -480,6 +499,8 @@ def editorial(spec, players):
         note += '／両方'+(f'{minimum}打席以上' if group == 'hitting' else ip(minimum)+'以上')
         if kind == 'daynight':
             note += '／昼夜はMLB公式日程'
+        if kind == 'half':
+            note += '／前半3〜6月・後半7〜9月／公式試合日'
     elif kind == 'win':
         from notability_engine import MLB_TEAM_NAME_JP
         team = MLB_TEAM_NAME_JP.get(str(spec['team_id']))
@@ -600,7 +621,7 @@ def build(root=ROOT):
                 continue
             relief = sum(r['stat'].get('gamesStarted', 0) for r in rows)*2 < len(rows)
             for kind, func in [('best', best), ('month', lambda *a: split_topic('month', *a)),
-                               ('vs', lambda *a: split_topic('vs', *a)), ('streak', streak), ('home', home), ('win', win), ('daynight', daynight)]:
+                               ('vs', lambda *a: split_topic('vs', *a)), ('streak', streak), ('home', home), ('win', win), ('daynight', daynight), ('half', half)]:
                 spec, reason = func(pid, p, group, rows, relief)
                 accept(spec, reason, pid, group, kind)
     for aid, bid in PAIRS:
@@ -655,6 +676,30 @@ def rotation_available(topic, spec, ledgers, as_of=None):
         if on in (day-timedelta(days=1), day) and players & jp_assets.ids(key, row):
             return False
     return True
+
+
+def rotation_priority(topic, spec, ledgers, as_of=None):
+    """既存の当日・前日禁止を保ち、最後の登場が古い選手を先にする。"""
+    if not spec.get('jp_stock'):
+        return (0, 0)
+    import jp_assets
+    import asset_policy
+    now = as_of or datetime.now(JST)
+    ids = jp_assets.ids(topic, spec)
+    last, count = 0, 0
+    rows = asset_policy.merge_records(ledgers[0].get('asset', {}), ledgers[1].get('assets', {}))
+    for key, row in rows.items():
+        if not ids & jp_assets.ids(key, row):
+            continue
+        try:
+            stamp = datetime.fromisoformat(str(row.get('publish_at') or row['published_at']).replace('Z', '+00:00'))
+            if stamp.tzinfo is None or stamp > now:
+                continue
+        except (ValueError, KeyError):
+            continue
+        last = max(last, stamp.astimezone(JST).date().toordinal())
+        count += 1
+    return (last, count)
 
 
 def validate_spec(spec, root=ROOT):

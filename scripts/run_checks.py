@@ -198,6 +198,22 @@ def check_imports() -> int:
     return bad
 
 
+def check_test_entry() -> int:
+    """
+    試験は出力先を argv で渡して起動するので、素の unittest.main() は
+    それを試験名と読んで AttributeError で落ちる。11/4 に #317・#318 で
+    2回続けて CI が赤になったので、試験を流す前の静的検査で止める。
+    """
+    step("試験の入口(unittest.main に argv を渡しているか)")
+    pat = re.compile(r"^\s*unittest\.main\(\s*\)", re.M)
+    bad = [f.name for f in sorted(ROOT.glob("scripts/test_*.py"))
+           if pat.search(f.read_text(encoding="utf-8", errors="replace"))]
+    for name in bad:
+        print(f"NG {name}: unittest.main(argv=[__file__]) にする")
+    print(f"{'ok ' if not bad else 'NG '} 素の unittest.main() {len(bad)}件")
+    return len(bad)
+
+
 def check_tests(tmp: str) -> int:
     step("テスト")
     bad = 0
@@ -1078,6 +1094,7 @@ def main() -> int:
         failed += len(gate_errors)
         failed += measured(check_shell_in_yaml)
         failed += measured(check_imports)
+        failed += measured(check_test_entry)
     if args.section != "static":
         failed += measured(check_tests, tmp)
     if args.section != "tests":
