@@ -28,11 +28,12 @@ class OfficialSquad(unittest.TestCase):
     def document(self,page=0):
         return n.narration(self.material(page))
 
-    def test_all_28_kept_in_order_with_two_last_pages_of_two(self):
-        pages=[self.material(i) for i in range(10)]
-        self.assertEqual([len(p['players']) for p in pages],[3]*8+[2,2])
+    def test_all_28_kept_in_order_with_last_page_of_four(self):
+        # 28人を試合前の空き日（9日）に収めるため、余った1人は前のページへ足す。
+        pages=[self.material(i) for i in range(9)]
+        self.assertEqual([len(p['players']) for p in pages],[3]*8+[4])
         self.assertEqual([p['name'] for page in pages for p in page['players']], [p['name_jp'] for p in self.roster['players']])
-        self.assertIsNone(self.material(10))
+        self.assertIsNone(self.material(9))
         for page in pages:self.assertEqual(n.check(n.narration(page)),[])
 
     def test_dictionary_names_and_readings_must_match(self):
@@ -61,13 +62,13 @@ class OfficialSquad(unittest.TestCase):
 
     def test_first_call_only_fukuda(self):
         marked=[]
-        for page in range(10):
+        for page in range(9):
             doc=self.document(page)
             marked.extend(s['text'] for s in doc['segments'] if '初めての招集です' in s['text'])
         self.assertEqual(len(marked),1);self.assertIn('福田師王',marked[0])
-        data=self.material(9);data['next_game']=None
+        data=self.material(8);data['next_game']=None
         facts=n.information(n.narration(data))
-        self.assertEqual(len(facts),3)
+        self.assertEqual(len(facts),5)
         self.assertTrue(any(r['subject']=='福田師王' and r['fact']=='日本代表初招集' for r in facts))
 
     def test_daily_selection_and_match_day_exclusion_without_completion(self):
@@ -99,7 +100,7 @@ class OfficialSquad(unittest.TestCase):
 
     def test_scope_covers_every_name_club_and_both_import_paths(self):
         from scripts import name_reading_guard as other_guard
-        for page in range(10):
+        for page in range(9):
             doc=self.document(page)
             guard.validate_dialogue(doc)
             with guard.dialogue_scope(doc):
