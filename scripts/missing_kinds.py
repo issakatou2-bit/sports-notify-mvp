@@ -24,6 +24,7 @@
   python3 scripts/missing_kinds.py
 """
 
+import argparse
 import json
 import pathlib
 import sys
@@ -34,6 +35,7 @@ sys.path.insert(0, str(HERE))
 sys.path.insert(0, str(HERE.parent))
 
 import post_common  # noqa: E402
+from publication_clock import publication_due, target_day  # noqa: E402
 
 JST = timezone(timedelta(hours=9))
 
@@ -55,18 +57,17 @@ OWNER = {
 GRACE_MIN = 45
 
 
-def missing(day: str = None, path: str = "data/published_videos.json") -> list:
+def missing(day: str = None, path: str = "data/published_videos.json", now=None) -> list:
     """まだ出ていない枠。公開時刻＋猶予を過ぎたものだけ。"""
-    now = datetime.now(JST)
-    day = day or now.strftime("%Y-%m-%d")
-    judge_from = (now - timedelta(minutes=GRACE_MIN)).strftime("%H:%M")
+    now = now or datetime.now(JST)
+    day = day or target_day(now)
     try:
         rec = json.loads(pathlib.Path(path).read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError):
         return []
     out = []
     for kind, name, _, at in post_common.DAILY_LINEUP:
-        if at > judge_from:
+        if not publication_due(day, at, now, GRACE_MIN):
             continue                      # まだ出そろう時刻ではない
         if (rec.get(kind) or {}).get(day):
             continue                      # 出ている
@@ -80,7 +81,11 @@ def missing(day: str = None, path: str = "data/published_videos.json") -> list:
 
 
 def main() -> int:
-    rows = missing()
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument('--date', type=lambda value: datetime.fromisoformat(value).date().isoformat(),
+                    help='見張りと同じ対象日（既定は正午前まで前日）')
+    args = ap.parse_args()
+    rows = missing(day=args.date)
     if not rows:
         print("[info] 欠けている枠はありません", file=sys.stderr)
         return 0

@@ -142,10 +142,10 @@ class Collector(unittest.TestCase):
         self.assertEqual(gh.call_count, 1)
         download.assert_not_called()
 
-    def test_manual_before_reset_does_not_consume_daily_marker(self):
-        entries, gh, download = self.collect([], now=NOW - timedelta(hours=1))
+    def test_manual_before_reset_uses_previous_reset_marker(self):
+        entries, gh, download = self.collect([[], []], now=NOW - timedelta(hours=1))
         self.assertEqual(entries, [])
-        gh.assert_not_called()
+        self.assertIn('thumbnail-retry-2026-10-27', gh.call_args_list[0].args[0])
         download.assert_not_called()
 
     def test_collect_original_png(self):
@@ -154,6 +154,21 @@ class Collector(unittest.TestCase):
         self.assertEqual(Path(entries[0]["image"]).read_bytes(), b"original image")
         self.assertIn("thumbnail-retry-2026-10-28", gh.call_args_list[0].args[0])
         self.assertEqual(download.call_args.args[0][-1], "repos/owner/repo/actions/artifacts/2/zip")
+
+    def test_delayed_november_3_collects_previous_day_and_reuses_reset_marker(self):
+        now = datetime.fromisoformat('2026-11-03T02:08:37+09:00')
+        failed = datetime.fromisoformat('2026-11-02T15:00:00+09:00')
+        entries, gh, _ = self.collect([[], [self.run_record(updated_at=now.isoformat())], [self.artifact()]],
+                                      self.archive(failed), now=now)
+        self.assertEqual([entry['video_id'] for entry in entries], [VID])
+        self.assertIn('thumbnail-retry-2026-11-02', gh.call_args_list[0].args[0])
+        self.assertEqual(retry.quota_reset(now).isoformat(), '2026-11-02T16:00:00+09:00')
+
+    def test_delayed_run_still_rejects_24_hour_old_images(self):
+        now = datetime.fromisoformat('2026-11-03T02:08:37+09:00')
+        entries, _, _ = self.collect([[], [self.run_record(updated_at=now.isoformat())], [self.artifact()]],
+                                    self.archive(now-timedelta(hours=24)), now=now)
+        self.assertEqual(entries, [])
 
     def test_old_fork_incomplete_and_future_runs_are_skipped(self):
         runs = [self.run_record(updated_at=(NOW - timedelta(days=2)).isoformat()),

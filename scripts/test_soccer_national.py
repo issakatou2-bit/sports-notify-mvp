@@ -178,7 +178,9 @@ class National(unittest.TestCase):
             with self.assertRaises(ValueError):p.validate(d,self.now)
         with patch.dict(os.environ,{'COLLESPO_SOCCER_NATIONAL':'on'}):
             self.assertTrue(p.validate(d,self.now))
-            with self.assertRaises(ValueError):p.validate(d,n.instant('2026-11-14T22:01:00+09:00'))
+            self.assertEqual(p.validate(d,n.instant('2026-11-14T22:01:00+09:00')),
+                             n.instant('2026-11-14T22:03:00+09:00'))
+            with self.assertRaises(ValueError):p.validate(d,n.instant('2026-11-15T00:01:00+09:00'))
             d['sample']=True
             with self.assertRaises(ValueError):p.validate(d,self.now)
 

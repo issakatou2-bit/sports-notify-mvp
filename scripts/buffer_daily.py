@@ -201,14 +201,14 @@ def verified_ps_skip(run, kind):
 
 
 def eligible_editions(now, kind, late_edition=False):
-    """Only delayed evening backfill may cross midnight, before 03:00 JST.
+    """Only delayed evening backfill may cross midnight, before 12:00 JST.
 
     Tomorrow's forecast is never carried over after its target day begins.
     Ordinary/manual publication retains the current-edition-only safeguard.
     """
     local = now.astimezone(JST)
     days = [local.date().isoformat()]
-    if late_edition and kind != 'daily' and local.hour < 3:
+    if late_edition and kind != 'daily' and local.hour < 12:
         days.append((local.date() - timedelta(days=1)).isoformat())
     return days
 

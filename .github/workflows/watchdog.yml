@@ -60,11 +60,15 @@ jobs:
       - name: Install publication reader
         run: pip install requests
 
+      - name: Resolve publication day once for check and recovery
+        id: edition
+        run: echo "day=$(python scripts/publication_clock.py)" >> "$GITHUB_OUTPUT"
+
       - name: Check what should already be out
         id: check
         env:
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
-        run: python scripts/healthcheck.py --today
+        run: python scripts/healthcheck.py --today --date "${{ steps.edition.outputs.day }}"
 
       # 欠けていたら、自分で回し直す。
       #
@@ -87,7 +91,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -u
-          python scripts/missing_kinds.py > to_run.txt 2> which.txt || true
+          python scripts/missing_kinds.py --date "${{ steps.edition.outputs.day }}" > to_run.txt 2> which.txt || true
           cat which.txt
           if [ ! -s to_run.txt ]; then
             echo "回し直すものはありません"

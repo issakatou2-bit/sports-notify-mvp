@@ -75,7 +75,9 @@ class OfficialSquad(unittest.TestCase):
         ledger={'soccer_national':{}}
         for day in range(5,20):
             now=n.instant(f'2026-11-{day:02d}T10:15:00+09:00')
-            chosen=n.choose(self.games,{},None,now,ledger,Mock(side_effect=AssertionError('結果取得禁止')),self.roster,{})
+            # 正午までの結果救済を照会しても、終了未確認なら招集の候補選びを続ける。
+            unfinished=Mock(return_value={'header': {'competitions': [{'status': {'type': {'completed': False}}}]}})
+            chosen=n.choose(self.games,{},None,now,ledger,unfinished,self.roster,{})
             # 11/19 は2試合とも終わった後なので、最後のページが残っていても出さない。
             wanted=day-5 if day<=12 else 8 if day==15 else None
             with self.subTest(day=day):
@@ -85,7 +87,8 @@ class OfficialSquad(unittest.TestCase):
                     ledger['soccer_national'][now.date().isoformat()]={'national_squad_page':chosen['page']}
         # ページが余っている場合でも指定の5日は停止する。
         for day in (13,14,16,17,18):
-            self.assertIsNone(n.choose(self.games,{},None,n.instant(f'2026-11-{day}T10:15:00+09:00'),{},Mock(),self.roster,{}))
+            self.assertIsNone(n.choose(self.games,{},None,n.instant(f'2026-11-{day}T10:15:00+09:00'),{},
+                Mock(return_value={'header': {'competitions': [{'status': {'type': {'completed': False}}}]}}),self.roster,{}))
 
     def test_one_per_day_and_outside_slot(self):
         for hour in (9,20):

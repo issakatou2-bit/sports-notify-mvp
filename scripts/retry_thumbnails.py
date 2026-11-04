@@ -42,16 +42,21 @@ def run_artifacts(base, run_id):
     return []
 
 
+def quota_reset(now):
+    now = now.astimezone(JST)
+    reset = now.replace(hour=16, minute=0, second=0, microsecond=0)
+    # 日付を越えた定時実行も、直近に戻った枠の保留画像を回収する。
+    if now < reset:
+        reset -= timedelta(days=1)
+    return reset
+
+
 def collect(repository, directory, now=None):
     now = (now or datetime.now(timezone.utc)).astimezone(JST)
-    reset = now.replace(hour=16, minute=0, second=0, microsecond=0)
-    # 手動実行も枠が戻るまで待つ。朝の誤実行でその日の印を消費しない。
-    if now < reset:
-        print("[info] 16時より前なので付け直しません")
-        return []
+    reset = quota_reset(now)
     start = reset - timedelta(days=1)
     base = f"repos/{repository}/actions"
-    marker = f"thumbnail-retry-{now.date().isoformat()}"
+    marker = f"thumbnail-retry-{reset.date().isoformat()}"
     if gh_json(f"{base}/artifacts?name={marker}&per_page=100", "artifacts"):
         print("[info] 本日の付け直しは着手済みです")
         return []
@@ -111,9 +116,10 @@ def main():
         return subprocess.run([sys.executable, str(ROOT / "scripts/reset_thumbnail.py"),
                                "--write", "--quota-warning", *pairs], check=False).returncode
     directory.mkdir(parents=True, exist_ok=True)
-    entries = collect(os.environ["GITHUB_REPOSITORY"], directory)
+    now = datetime.now(JST)
+    entries = collect(os.environ["GITHUB_REPOSITORY"], directory, now)
     manifest.write_text(json.dumps(entries, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    day = datetime.now(JST).date().isoformat()
+    day = quota_reset(now).date().isoformat()
     if entries:
         (directory / "attempt.json").write_text(
             json.dumps(dict(day=day, video_ids=[item["video_id"] for item in entries])),

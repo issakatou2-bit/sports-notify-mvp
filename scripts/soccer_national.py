@@ -687,8 +687,9 @@ def choose(games, schedules, previous, now, ledger, summary_loader, squad_data=N
         result_done=any(e.get('national_mode')=='result' and e.get('national_event_id')==g['id'] for e in entries)
         target=kick.replace(hour=22,minute=0) if kick.hour<20 else (kick+timedelta(days=1)).replace(hour=8,minute=0)
         target=target.replace(second=0,microsecond=0)
-        due=local.date()==target.date() and target-timedelta(minutes=45)<=local<target+timedelta(hours=2)
-        fallback=kick.hour<20 and local.date()==target.date()+timedelta(days=1) and 7<=local.hour<9
+        end=target.replace(hour=12) if target.hour==8 else target+timedelta(hours=2)
+        due=local.date()==target.date() and target-timedelta(minutes=45)<=local<end
+        fallback=kick.hour<20 and local.date()==target.date()+timedelta(days=1) and 7<=local.hour<12
         if not result_done and (due or fallback):
             summary=summary_loader(g['id'])
             if summary['header']['competitions'][0].get('status',{}).get('type',{}).get('completed'):
@@ -697,7 +698,7 @@ def choose(games, schedules, previous, now, ledger, summary_loader, squad_data=N
                 d['publish_at']=max(target,(local+timedelta(minutes=21)).replace(second=0,microsecond=0)).isoformat()
                 return d
         target=(kick-timedelta(days=1)).replace(hour=19,minute=30,second=0,microsecond=0)
-        if local.date()==target.date() and target-timedelta(hours=7)<=local<target+timedelta(minutes=30):
+        if local.date()==target.date() and target-timedelta(hours=7)<=local<target.replace(hour=22,minute=0):
             d=preview(g,schedules[JAPAN],schedules[g['opponent_id']],previous,now.isoformat())
             d['publish_at']=max(target,(local+timedelta(minutes=21)).replace(second=0,microsecond=0)).isoformat()
             return d
