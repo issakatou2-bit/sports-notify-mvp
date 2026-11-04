@@ -21,6 +21,9 @@ on:
       topic:
         description: 'asset の対象 topic 名（カンマ区切りで複数可。空なら全部）'
         required: false
+      title:
+        description: 'topic を1つ指定したとき、この題をそのまま付ける（材料が公開台帳へ移って組み直せない回用）'
+        required: false
       only_team_city:
         description: 'asset の現在の題に街名の補足だけを適用する'
         type: boolean
@@ -60,6 +63,7 @@ jobs:
           DATE: ${{ inputs.date }}
           KIND: ${{ inputs.kind }}
           TOPIC: ${{ inputs.topic }}
+          TITLE: ${{ inputs.title }}
           ONLY_TEAM_CITY: ${{ inputs.only_team_city }}
           WRITE: ${{ inputs.write }}
           FORCE: ${{ inputs.force }}
@@ -67,6 +71,10 @@ jobs:
           ARGS=(--date "${DATE:-$(TZ=Asia/Tokyo date +%F)}")
           if [ -n "$KIND" ]; then ARGS+=(--kind "$KIND"); fi
           if [ -n "$TOPIC" ]; then ARGS+=(--topic "$TOPIC"); fi
+          if [ -n "$TITLE" ]; then
+            case "$TOPIC" in *,*|"") echo "title は topic を1つ指定したときだけ使えます"; exit 1;; esac
+            ARGS+=(--title "$TITLE")
+          fi
           if [ "$ONLY_TEAM_CITY" = "true" ]; then ARGS+=(--only-team-city); fi
           if [ "$WRITE" = "true" ]; then ARGS+=(--write); fi
           if [ "$FORCE" = "true" ]; then ARGS+=(--force); fi

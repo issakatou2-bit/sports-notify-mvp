@@ -115,6 +115,12 @@ def date(value):
     return f'{day.month}月{day.day}日'
 
 
+def games_label(rows):
+    """題に入れる試合。「8/5のカブス戦と8/17のロッキーズ戦」の形。"""
+    days = [datetime.fromisoformat(r['date']) for r in rows]
+    return 'と'.join(f'{d.month}/{d.day}の{club(r)}戦' for d, r in zip(days, rows))
+
+
 def limits(group, relief, versus=False):
     if group == 'hitting':
         return (6, 20) if versus else (0, 50)
@@ -399,6 +405,7 @@ def editorial(spec, players):
     selected = [r for r in rows if str(r['game_pk']) in spec['game_ids']]
     relief = sum(r['stat'].get('gamesStarted', 0) for r in rows)*2 < len(rows)
     note = '2026年レギュラーシーズン／MLB公式'
+    title = None
     if kind == 'best':
         a = selected[0]; s = a['stat']
         if group == 'hitting':
@@ -447,6 +454,10 @@ def editorial(spec, players):
                     second = [r for r in rows if r['stat']['strikeOuts'] == max(lower)]
                     items.append(('次に多い登板', f"次に多いのは{max(lower)}奪三振で、"+'、'.join(date(r['date']) for r in second)+f"の{len(second)}登板でした"))
         note += f"／同値{len(selected)}試合"
+        # 題だけでどの試合か分かるようにする（11/4 本人「8/5のカブス戦とか書いたほうがいい」）。
+        record = (f"{s['homeRuns']}本塁打" + (f"{s['rbi']}打点" if s['rbi'] >= 5 else '') if group == 'hitting'
+                  else (f"今季最多{s['strikeOuts']}奪三振" if len(selected) == 1 else f"{ip(s['outs'])}{s['strikeOuts']}奪三振"))
+        title = f"{name} {games_label(selected)}で{record}"
     elif kind in ('month', 'vs'):
         buckets = defaultdict(list)
         for r in rows:
@@ -542,7 +553,7 @@ def editorial(spec, players):
         intro = f'{name}は{m}月に{metric}{va}、{b["jp"]}は{vb}を記録しました。'
         items = [(f'{month}月の{metric}', f"{name}は{display_rate(aa,group)}、{b['jp']}は{display_rate(bb,group)}。"+(f"打席数は{aa['plateAppearances']}と{bb['plateAppearances']}" if group == 'hitting' else f"投球回は{ip(aa['outs'])}と{ip(bb['outs'])}")) for month,aa,bb in pairs]
         note += '／同月同士・'+('各50打席以上' if group == 'hitting' else '各15回以上')
-    spec.update(title=heading+' #Shorts', label=heading, heading=heading, hook=heading,
+    spec.update(title=(title or heading)+' #Shorts', label=heading, heading=heading, hook=heading,
                 intro=intro, items=items, criteria_note=note, editorial_version=2)
     spec['v3'] = dict(spec.get('v3') or {}, source=note)
     return spec, None
