@@ -30,7 +30,13 @@ class SplitTests(unittest.TestCase):
 
     def test_existing_forty_specs_unchanged_after_schedule_import(self):
         expected = jp.stock.read(jp.ROOT/'scripts/fixtures/jp_split_40_20261104.json')
-        actual = {t['key']: digest(t) for t in jp.build()['topics'] if t['stock_kind'] != 'daynight'}
+        original = jp.stock.read
+        def read(path, *args):
+            return {} if Path(path).name in ('published_assets.json', 'published_videos.json') else original(path, *args)
+        # 公開の消費と数字の回帰は別。元の40キーを全候補から照合する。
+        with patch.object(jp.stock, 'read', side_effect=read):
+            catalog = {t['key']: t for t in jp.build()['topics']}
+        actual = {key: digest(catalog[key]) for key in expected}
         self.assertEqual(actual, expected)
 
     def test_daynight_uses_exact_thresholds_and_rejects_missing(self):
@@ -154,13 +160,13 @@ class SplitTests(unittest.TestCase):
             return {} if Path(path).name in ('published_assets.json', 'published_videos.json') else original_read(path, *args)
         def capture(spec, players):
             result = original_edit(spec, players)
-            if spec['stock_kind'] not in ('home', 'win', 'daynight'):
+            if spec['stock_kind'] not in ('home', 'win', 'daynight', 'half'):
                 captured[spec['key']] = digest(spec)
             return result
         with patch.object(jp.stock, 'read', side_effect=read), patch.object(jp, 'editorial', side_effect=capture):
             doc = jp.build()
         self.assertEqual(captured, fixture['candidates'])
-        self.assertEqual({t['key']: digest(t) for t in doc['topics'] if t['stock_kind'] not in ('home', 'win', 'daynight')}, fixture['topics'])
+        self.assertEqual({t['key']: digest(t) for t in doc['topics'] if t['stock_kind'] not in ('home', 'win', 'daynight', 'half')}, fixture['topics'])
 
     def test_home_requires_both_samples_and_exact_spread(self):
         def row(home, hits):
@@ -196,7 +202,7 @@ class SplitTests(unittest.TestCase):
         import next_asset
         from datetime import datetime
         for t in jp.build()['topics']:
-            if t['stock_kind'] not in ('home', 'win', 'daynight'):
+            if t['stock_kind'] not in ('home', 'win', 'daynight', 'half'):
                 continue
             self.assertTrue(jp.validate_spec(t))
             self.assertEqual(next_asset.season_kind(t['key']), 'season_'+t['stock_kind'])
@@ -218,7 +224,7 @@ class SplitTests(unittest.TestCase):
         import v3_rules
         with patch.dict(os.environ, {'COLLESPO_MOTION': 'on'}), patch.object(r3, 'LOOK', 'v4'):
             for spec in jp.build()['topics']:
-                if spec['stock_kind'] not in ('home', 'win', 'daynight'):
+                if spec['stock_kind'] not in ('home', 'win', 'daynight', 'half'):
                     continue
                 with patch.dict(g.LIST_TOPICS, {spec['key']: spec}):
                     narration = g.build_narration(spec['key'])

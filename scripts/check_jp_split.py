@@ -25,7 +25,7 @@ def write(path, doc):
     path.write_text(json.dumps(doc, ensure_ascii=False, indent=2)+'\n', encoding='utf8')
 
 
-def run():
+def run(kinds=None):
     # APIや共有の声へ接続するコードの混入も停止する。
     with patch.object(socket.socket, 'connect', side_effect=RuntimeError('通信禁止')):
         import jp_stock as jp
@@ -47,6 +47,8 @@ def run():
         g.LIST_TOPICS = topics
         initial = copy.deepcopy(pp.load())
         ledgers = copy.deepcopy(initial)
+        import asset_policy
+        initial_rows = asset_policy.merge_records(initial[0].get('asset', {}), initial[1].get('assets', {}))
         original_datetime = dt.datetime
         class Frozen(original_datetime):
             at = original_datetime.fromisoformat('2026-11-04T18:30:00+09:00')
@@ -65,7 +67,15 @@ def run():
             for offset in range(27):
                 day = dt.date(2026, 11, 4)+dt.timedelta(days=offset)
                 picked = []
-                players = set()
+                existing = {}
+                for key, row in initial_rows.items():
+                    try:
+                        stamp = original_datetime.fromisoformat(str(row.get('publish_at') or row['published_at']).replace('Z', '+00:00'))
+                    except (ValueError, KeyError):
+                        continue
+                    if picker.kind_of(key) == 'season' and stamp.astimezone(jp.JST).date() == day:
+                        existing[key] = row
+                players = set().union(*(jp_assets.ids(k, r) for k, r in existing.items())) if existing else set()
                 for hour in ('18:30', '22:00'):
                     Frozen.at = original_datetime.fromisoformat(f'{day}T{hour}:00+09:00')
                     write(ledger, ledgers[1])
@@ -86,9 +96,11 @@ def run():
                         row = dict(title=spec['title'], player_ids=sorted(ids), published_at=Frozen.at.isoformat())
                         ledgers[0].setdefault('asset', {})[key] = row
                         ledgers[1].setdefault('assets', {})[key] = row
-                assert len(picked) == len({picker.season_kind(k) for k in picked})
-                days.append(dict(day=str(day), keys=picked, titles=[topics[k]['title'] for k in picked],
-                                 count=len(picked), reason='' if len(picked) == 2 else '保存候補の残数・当日前日の選手回避・同日型制限で2本に不足'))
+                combined = list(existing)+picked
+                assert len(combined) == len({picker.season_kind(k) for k in combined})
+                days.append(dict(day=str(day), keys=combined, titles=[row.get('title', key) for key, row in existing.items()]+[topics[k]['title'] for k in picked],
+                                 existing_count=len(existing), new_count=len(picked), new_keys=picked,
+                                 count=len(combined), reason='' if len(combined) == 2 else '保存候補の残数・当日前日の選手回避・同日型制限で2本に不足'))
                 previous = players
         write(WORK/'simulation.json', dict(days=days, calls=calls, duplicate_errors=errors,
                                          initial_ledger_counts=[len(initial[0].get('asset', {})), len(initial[1].get('assets', {}))]))
@@ -102,28 +114,41 @@ def run():
             checks.append(dict(key=spec['key'], information=len(units), sanity=material_errors))
             assert len(units) >= 3 and not material_errors, checks[-1]
         write(WORK/'checks.json', checks)
-        # 完成MP4とは区別した、制作器の本文・表紙の全場面見本。
-        desired = ['season_win_2026_660271_hitting', 'season_win_2026_673548_hitting',
-                   'season_home_2026_673540_pitching', 'season_win_2026_808967_pitching']
-        desired += [t['key'] for t in doc['topics'] if t['stock_kind'] == 'daynight']
-        layouts = []
-        for key in desired:
-            spec = topics[key]
-            narration = g.build_narration(key)
-            write(WORK/key/'narration.json', narration)
-            write(WORK/key/'material.json', spec)
-            for index, seg in enumerate(narration['segments']):
-                seg['speaker'] = 2
-                r3.set_program_clock(index*8)
-                r3.set_caption(seg['text'] if seg['kind'] != 'outro' else '', 8, 40, speaker=2)
-                im = g.render_v3(3, seg['kind'], seg['meta'], spec, key, seg, 8)
-                errs = v3_rules.check_layout(im)
-                layouts.append(dict(key=key, segment=index, errors=errs))
-                im.thumbnail((432, 768))
-                im.convert('RGB').save(OUT/f'{key}_{index}.jpg', quality=82)
-        write(WORK/'layout.json', layouts)
-        assert not any(x['errors'] for x in layouts), layouts
-        print('在庫', len(doc['topics']), '選出', sum(x['count'] for x in days), '不足日', sum(x['count'] != 2 for x in days))
+        render_samples(doc, topics, kinds)
+        print('在庫', len(doc['topics']), '新規選出', sum(x['new_count'] for x in days), '公開済み込み', sum(x['count'] for x in days), '不足日', sum(x['count'] != 2 for x in days))
+
+def render_samples(doc, topics, kinds=None):
+    import generate_asset_video as g
+    import review_render_v3 as r3
+    import v3_rules
+    # 完成MP4とは区別した、制作器の本文・表紙の全場面見本。
+    desired = ['season_win_2026_660271_hitting', 'season_win_2026_673548_hitting',
+               'season_home_2026_673540_pitching', 'season_win_2026_808967_pitching']
+    desired += [t['key'] for t in doc['topics'] if t['stock_kind'] == 'daynight']
+    if kinds is not None:
+        desired = [t['key'] for t in doc['topics'] if t['stock_kind'] in kinds]
+    layouts = []
+    for key in desired:
+        spec = topics[key]
+        narration = g.build_narration(key)
+        for seg in narration['segments']:
+            seg['speaker'] = 2
+        g.VOICE_CREDIT = __import__('duo').credit(narration['segments'])
+        assert '四国めたん' in g.VOICE_CREDIT
+        write(WORK/key/'narration.json', narration)
+        write(WORK/key/'material.json', spec)
+        for index, seg in enumerate(narration['segments']):
+            seg['speaker'] = 2
+            r3.set_program_clock(index*8)
+            r3.set_caption(seg['text'] if seg['kind'] != 'outro' else '', 8, 40, speaker=2)
+            im = g.render_v3(3, seg['kind'], seg['meta'], spec, key, seg, 8)
+            errs = v3_rules.check_layout(im)
+            layouts.append(dict(key=key, segment=index, errors=errs))
+            im.thumbnail((432, 768))
+            im.convert('RGB').save(OUT/f'{key}_{index}.jpg', quality=82)
+    write(WORK/'layout.json', layouts)
+    assert not any(x['errors'] for x in layouts), layouts
+
 
 
 if __name__ == '__main__':
