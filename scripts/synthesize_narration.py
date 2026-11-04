@@ -304,9 +304,10 @@ def main(argv=None):
             # 指定が無い段は、これまで通り --speaker のまま。
             speaker = seg.get("speaker")
             speaker = int(speaker) if isinstance(speaker, (int, str))                 and str(speaker).isdigit() else args.speaker
-            ok = (solo_host.synthesize(seg.get("text", ""), path) if host == 'ui'
-                  else synth_one(seg.get("text", ""), speaker, path, baseball_avg=True)
-                  if data.get('baseball_average_voice') else synth_one(seg.get("text", ""), speaker, path))
+            with name_reading_guard.dialogue_scope(data):
+                ok = (solo_host.synthesize(seg.get("text", ""), path) if host == 'ui'
+                      else synth_one(seg.get("text", ""), speaker, path, baseball_avg=True)
+                      if data.get('baseball_average_voice') else synth_one(seg.get("text", ""), speaker, path))
             dur = audio_duration(path) if ok else 0.0
             manifest.append({
                 "index": i,

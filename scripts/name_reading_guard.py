@@ -6,12 +6,17 @@ import json
 from pathlib import Path
 import re
 import unicodedata
+import sys
+from contextlib import contextmanager
 
 try:
     from . import club_display_names as clubs
 except ImportError:
     import club_display_names as clubs
 ROOT=Path(__file__).resolve().parents[1]
+# scripts名義と直下importの両方で同じContextVarを使う。
+if str(ROOT/'scripts') not in sys.path:sys.path.insert(0,str(ROOT/'scripts'))
+from name_reading_scope import readings as scoped_readings
 
 
 class NameReadingError(ValueError):
@@ -37,7 +42,9 @@ def manager_reading(name):
 
 
 def player_readings():
-    return dict(player_data().get('readings',{}),**player_data().get('short_readings',{}))
+    result=dict(player_data().get('readings',{}),**player_data().get('short_readings',{}))
+    result.update({name:reading for name,(kind,reading) in scoped_readings.get().items() if kind=='player'})
+    return result
 
 
 def player_reading(name):
@@ -76,6 +83,7 @@ def entries():
                 for alias,name in player_data().get('reading_aliases',{}).items()})
     out.update({name:('club',reading) for name,reading in clubs.readings().items()})
     out.update({name:('manager',reading) for name,reading in managers().items()})
+    out.update(scoped_readings.get())
     # 共通CSVの一般語（例: 山路）は人物の姓にもなり得る。
     # 固有名の検査へ無条件に混ぜず、確認時の参照だけに使う。
     return out
@@ -98,7 +106,8 @@ def assert_known(text, entities=()):
         if not name:continue
         if not pattern(name).search(text or ''):continue  # 台詞に出ない背景材料だけで止めない。
         known=(player_reading(name) if kind=='player' else
-               (clubs.lookup(name) or {}).get('reading') if kind=='club' else manager_reading(name))
+               (scoped_readings.get().get(name,('',None))[1] or (clubs.lookup(name) or {}).get('reading'))
+               if kind=='club' else manager_reading(name))
         if not known:raise NameReadingError('材料の'+kind+'の読み辞書が未登録: '+name)
     # 台詞内で役割が明示された監督名。一般語を人名と決めつけない。
     generic={'新','前','現','元','新人','名','臨時','代理','次期','代表','日本代表','日本','日本人','世界','各','球団','チーム','相手','敵','両','同','選手兼','ヘッド','アシスタント','再度','代目'}
@@ -133,14 +142,28 @@ def dialogue_entities(dialogue):
 
 
 def validate_dialogue(dialogue):
-    return assert_known('\n'.join(s.get('text','') for s in dialogue.get('segments',[])),dialogue_entities(dialogue))
+    with dialogue_scope(dialogue):
+        return assert_known('\n'.join(s.get('text','') for s in dialogue.get('segments',[])),dialogue_entities(dialogue))
+
+
+@contextmanager
+def dialogue_scope(dialogue):
+    extra={}
+    if dialogue.get('program')=='soccer_national' and (dialogue.get('national_material') or {}).get('mode')=='squad':
+        import soccer_national
+        extra=soccer_national.speech_readings(dialogue)
+    token=scoped_readings.set(extra)
+    try:
+        yield
+    finally:
+        scoped_readings.reset(token)
 
 
 def apply(text):
     found=assert_known(text)
     for row in reversed(found):
         club=clubs.lookup(row['name']) if row['kind']=='club' else None
-        spoken=((club or {}).get('spoken') or
+        spoken=(scoped_readings.get().get(row['name'],('',None))[1] or (club or {}).get('spoken') or
                 manager_data().get('speech_overrides',{}).get(row['name']) or row['reading'])
         text=text[:row['start']]+spoken+text[row['end']:]
     return text
@@ -165,6 +188,7 @@ def japanese_readings():
     """フルネームだけ。短名・外国人・監督は氏名結合の対象にしない。"""
     import notability_engine as ne
     names=set(player_data()['japanese_players'])
+    names.update(name for name,(kind,_) in scoped_readings.get().items() if kind=='player')
     names.update(p['name_jp'] for key in ('JP_PLAYERS_MLB','JP_PLAYERS_SOCCER')
                  for p in getattr(ne,key,[]))
     return {normalized_kana(player_readings().get(name,'')) for name in names}

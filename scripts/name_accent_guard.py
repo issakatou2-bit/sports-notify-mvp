@@ -13,6 +13,7 @@ def entries():
     import name_reading_guard as guard
     import notability_engine as ne
     names=set(guard.player_data()['japanese_players'])
+    names.update(name for name,(kind,_) in guard.scoped_readings.get().items() if kind=='player')
     names.update(p['name_jp'] for key in ('JP_PLAYERS_MLB','JP_PLAYERS_SOCCER') for p in getattr(ne,key,[]))
     with (ROOT/'data/yomi_shared.csv').open(encoding='utf-8-sig',newline='') as stream:
         shared={r['語']:r for r in csv.DictReader(stream)}
