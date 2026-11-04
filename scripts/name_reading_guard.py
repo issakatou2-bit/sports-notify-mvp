@@ -203,9 +203,62 @@ def name_phrase_spans(original, query):
     return out
 
 
+PARTICLE_MORAS={'ヘ':('エ','h','e'),'ハ':('ワ','h','a')}
+
+
+def particle_repairs(original, query):
+    """名前の中の「ヘ」「ハ」を VOICEVOX が助詞の「エ」「ワ」と読んだ箇所だけ返す。
+
+    「クラブ・ブルッヘ」は書き方を変えても「ブルッエ」になった（11/4 夜の予告が止まった）。
+    名前の読みとの違いがその1音だけの時に限る。他の違いは今までどおり止める。
+    """
+    raw='';owners=[];boundaries={0}
+    for pi,phrase in enumerate(query.get('accent_phrases',[])):
+        for mi,mora in enumerate(phrase.get('moras',[])):
+            text=unicodedata.normalize('NFKC',mora['text'])
+            text=''.join(chr(ord(c)+0x60) if 'ぁ'<=c<='ゖ' else c for c in text)
+            text=re.sub(r'[^ァ-ヶー]','',text)
+            raw+=text;owners.extend([(pi,mi)]*len(text));boundaries.add(len(raw))
+    out=[]
+    for row in assert_known(original):
+        kana=normalized_kana(row['reading'])
+        if not kana or not any(c in PARTICLE_MORAS for c in kana):continue
+        spans=[i for i in range(len(raw)-len(kana)+1) if i in boundaries and i+len(kana) in boundaries]
+        if any(normalized_kana(raw[i:i+len(kana)])==kana for i in spans):continue
+        for i in spans:
+            seg=list(raw[i:i+len(kana)]);fix=[]
+            for j,c in enumerate(kana):
+                said=PARTICLE_MORAS.get(c,(None,))[0]
+                # その音が1つの拍として読まれている時だけ直す。
+                if said and seg[j]==said and i+j in boundaries and i+j+1 in boundaries:
+                    seg[j]=c;fix.append((owners[i+j],c))
+            if fix and normalized_kana(''.join(seg))==kana:
+                out.extend(fix);break
+    return out
+
+
+def repair_particle_moras(original, query, speaker, url):
+    fixes=particle_repairs(original,query)
+    if not fixes:return query
+    import requests
+    result=copy.deepcopy(query);phrases=result['accent_phrases'];changed=sorted({pi for (pi,_),_ in fixes})
+    for (pi,mi),c in fixes:
+        _,consonant,vowel=PARTICLE_MORAS[c]
+        phrases[pi]['moras'][mi].update(text=c,consonant=consonant,vowel=vowel,
+                                       consonant_length=phrases[pi]['moras'][mi].get('consonant_length') or 0.05)
+    response=requests.post(url.rstrip('/')+'/mora_data',params={'speaker':speaker},
+                           json=[phrases[i] for i in changed],timeout=30)
+    response.raise_for_status();recomputed=response.json()
+    if len(recomputed)!=len(changed):raise NameReadingError('名前の音の再計算に失敗')
+    for i,phrase in zip(changed,recomputed):phrases[i]=phrase
+    result['kana']=''
+    return result
+
+
 def prepare_query(original, query, speaker, url):
     """日本人氏名内の境界だけ結合。変更した句のみVOICEVOXで高低/長さを再計算。"""
     import requests
+    query=repair_particle_moras(original,query,speaker,url)
     # 修正で読み違いを隠さない。ここでは既存の読み検査だけ先に行う。
     validate_query(original,query,check_phrases=False)
     spans=name_phrase_spans(original,query)
