@@ -704,13 +704,16 @@ def choose(games, schedules, previous, now, ledger, summary_loader, squad_data=N
     occupied={instant(g['kickoff_jst']).date() for g in games}
     occupied|={instant(g['kickoff_jst']).date()-timedelta(days=1) for g in games}
     occupied|={instant(g['kickoff_jst']).date()+timedelta(days=1) for g in games if instant(g['kickoff_jst']).hour>=20}
-    if squad_data and local.date() not in occupied and 10<=local.hour<12:
+    # 10:15 の定時起動は実際には 12:34〜13:00 に動いていた（11/2〜4）。12時までに限ると
+    # 招集の回が1本も出ないので、夕方の予告の時間帯の前（20時）まで受け付ける。
+    if squad_data and local.date() not in occupied and 10<=local.hour<20:
         finished={e.get('national_squad_page') for e in ledger.get('soccer_national',{}).values() if e.get('national_squad_page') is not None}
         page=next(i for i in range(100) if i not in finished)
         d=squad(squad_data,club_material or {},now.isoformat(),page,upcoming=games)
         # 試合が全部終わった後の招集紹介は出さない（模擬で最後の1ページが 11/19 になった）。
         if d and d.get('next_game'):
-            d['publish_at']=local.replace(hour=12,minute=0,second=0,microsecond=0).isoformat()
+            d['publish_at']=max(local.replace(hour=12,minute=0,second=0,microsecond=0),
+                                (local+timedelta(minutes=21)).replace(second=0,microsecond=0)).isoformat()
             return d
     return None
 
