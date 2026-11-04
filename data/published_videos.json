@@ -20767,6 +20767,37 @@
       "short_information_count": 8,
       "short_content_policy": "short-content-20261027-v1",
       "privacy": "public"
+    },
+    "2026-11-05:401915303": {
+      "video_id": "OWNkWrdwV2Y",
+      "url": "https://youtu.be/OWNkWrdwV2Y",
+      "title": "【欧州サッカー】佐野航大がゴール｜PSV 1-2 クラブ・ブルッヘ 日本人選手の結果 #Shorts",
+      "published_at": "2026-11-04T22:20:27.149537+00:00",
+      "host_assignment": {
+        "day": "2026-11-05",
+        "kind": "soccer_results",
+        "phase": 1,
+        "planned_host": "ui",
+        "rule": "half-jst-week-v1",
+        "week": 43,
+        "weekday": 3
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-11-04T22:15:54.399645+00:00",
+        "comparison_eligible": false,
+        "label": "予定めたん（雨衣不可のため）",
+        "mode": "live",
+        "planned_host": "metan",
+        "reason": "ui_before_0840",
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "duration_seconds": 30.77,
+      "short_information_count": 7,
+      "short_content_policy": "short-content-20261027-v1",
+      "privacy": "public"
     }
   }
 }
