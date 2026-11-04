@@ -2,14 +2,20 @@
   "events": [
     "award:2026:ALGG:641355:winner",
     "award:2026:ALGG:670764:winner",
+    "award:2026:ALGG:677649:winner",
+    "award:2026:ALGG:677800:winner",
+    "award:2026:ALGG:678882:winner",
     "award:2026:ALGG:702332:winner",
+    "award:2026:NLGG:608324:winner",
     "award:2026:NLGG:621566:winner",
     "award:2026:NLGG:643289:winner",
     "award:2026:NLGG:668930:winner",
     "award:2026:NLGG:672515:winner",
+    "award:2026:NLGG:672695:winner",
     "award:2026:NLGG:682998:winner",
     "award:2026:NLGG:690997:winner",
     "award:2026:NLGG:691718:winner",
+    "award:2026:NLGG:694192:winner",
     "calendar:finalists",
     "calendar:free-agency",
     "calendar:gold-glove",
@@ -18,6 +24,11 @@
     "market:sato-posting-open-20261103:facts:return",
     "market:sato-posting-open-20261103:facts:stats",
     "market:sato-posting-open-20261103:reports:lockout",
+    "market:taira-posting-open-20261104:facts:approve",
+    "market:taira-posting-open-20261104:facts:open",
+    "market:taira-posting-open-20261104:facts:stats",
+    "market:taira-posting-open-20261104:facts:window",
+    "market:taira-posting-open-20261104:reports:lockout",
     "transaction:947332",
     "transaction:947338",
     "transaction:947387"
@@ -41,6 +52,16 @@
       "style": "v3"
     },
     "offseason_awards_2026_c6f89b663a98": {
+      "style": "v3"
+    },
+    "offseason_market_2026_11e9a10dcba5": {
+      "style": "v3",
+      "series_number": 3
+    },
+    "offseason_awards_2026_d5ad7e00e1e5": {
+      "style": "v3"
+    },
+    "offseason_awards_2026_efb99c6ad236": {
       "style": "v3"
     }
   }
