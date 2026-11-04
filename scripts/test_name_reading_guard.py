@@ -152,4 +152,22 @@ class Readings(unittest.TestCase):
                 available.assert_not_called()
 
 
+class ParticleMoras(unittest.TestCase):
+    # 11/4 夜：「クラブ・ブルッヘ」を VOICEVOX がどう書いても「ブルッエ」と読み、予告が止まった。
+    def test_brugge_he_read_as_particle_is_restored(self):
+        q=query('ピイエスブイタイクラブブルッエ')
+        fixes=guard.particle_repairs('PSV対クラブ・ブルッヘ。',q)
+        self.assertEqual([c for _,c in fixes],['ヘ'])
+        response=Mock();response.json.side_effect=lambda:[copy.deepcopy(sent) for sent in post.call_args.kwargs['json']]
+        with patch('requests.post',return_value=response) as post:
+            fixed=guard.repair_particle_moras('PSV対クラブ・ブルッヘ。',q,2,'http://x')
+        self.assertEqual(''.join(m['text'] for p in fixed['accent_phrases'] for m in p['moras']),'ピイエスブイタイクラブブルッヘ')
+        guard.validate_query('PSV対クラブ・ブルッヘ。',fixed,check_phrases=False)
+
+    def test_other_misreadings_still_stop(self):
+        q=query('ピイエスブイタイクラブブリッヘ')
+        self.assertEqual(guard.particle_repairs('PSV対クラブ・ブルッヘ。',q),[])
+        with self.assertRaises(guard.NameReadingError):
+            guard.validate_query('PSV対クラブ・ブルッヘ。',q,check_phrases=False)
+
 if __name__=='__main__':unittest.main(argv=[sys.argv[0]])
