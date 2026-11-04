@@ -3,6 +3,7 @@ import copy
 import json
 import os
 from pathlib import Path
+import re
 import subprocess
 import sys
 import types
@@ -211,14 +212,25 @@ class Tests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'3件未満'):
             v2.result_narration(data)
 
-    def test_japanese_card_without_insight_is_held(self):
+    def test_japanese_card_without_insight_names_the_matchup(self):
+        # 11/4 夜、CL の PSV対クラブ・ブルッヘ（佐野航大）で根拠が無く予告ごと止まった。
+        # 日本人の出る試合は見送らず、数字を作らずに対戦そのものを題にする。
         data=read('soccer-daily/20261022.json')
         for g in data['games']:
             g.update(season_players=[],reasons=[])
             for key in ('home_standing','away_standing','cl_line','relegation_line','phase','phase_source'):
                 g.pop(key,None)
-        with self.assertRaisesRegex(ValueError,'見どころ'):
-            v2.preview_head(data)
+        focus=v2.preview_head(data)
+        self.assertTrue(focus['head'].endswith('と対戦'))
+        self.assertTrue(focus['name'])
+        self.assertFalse(re.search(r'\d',focus['head']))
+
+    def test_caption_names_do_not_expand_an_alias_inside_the_display_name(self):
+        import soccer_story_lines as flow
+        game=dict(home_team_name='PAE AEK',away_team_name='レアル・マドリード')
+        self.assertEqual(flow.caption_names('日本時間2時45分、AEKアテネ対レアル・マドリード。',[game]),
+                         '日本時間2時45分、AEKアテネ対レアル・マドリード。')
+        self.assertEqual(flow.caption_names('AEKが先制しました。',[game]),'AEKアテネが先制しました。')
 
     def test_metadata_does_not_require_video_encoder(self):
         import run_checks
