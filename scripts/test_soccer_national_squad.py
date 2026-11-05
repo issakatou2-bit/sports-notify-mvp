@@ -180,6 +180,44 @@ class OfficialSquad(unittest.TestCase):
                 self.assertIn(p['club'],labels)
                 self.assertEqual(render.validate_frame(im,clubs,data),[])
 
+    def test_short_keeper_page_adds_venue_then_squad_size(self):
+        # 11/5 朝：成績のないGK3人の回が24.7秒で止まった。会場→人数の順に確定事実を足す。
+        import json
+        import soccer_national_render as render
+        import review_render_v3 as r3
+        import synthesize_narration as synth
+        with tempfile.TemporaryDirectory() as directory:
+            out=Path(directory);(out/'audio').mkdir()
+            data=self.material();self.assertEqual(data['squad_size'],28)
+            n.save(out/'material.json',data);n.save(out/'narration.json',n.narration(data))
+            def voices(argv):
+                doc=n.read(out/'narration.json')
+                rows=[dict(s,duration=4.4,index=i) for i,s in enumerate(doc['segments'])]
+                (out/'audio/manifest.json').write_text(json.dumps(dict(segments=rows),ensure_ascii=False),encoding='utf-8')
+            voices([])
+            seconds=lambda segments,audio:[a['duration'] for a in audio]
+            with patch.object(synth,'main',side_effect=voices),patch('soccer_results_render.durations',side_effect=seconds):
+                self.assertTrue(render.fit_to_audio(out))
+            fixed=n.read(out/'material.json');doc=n.read(out/'narration.json')
+            texts=[s['text'] for s in doc['segments']]
+            self.assertEqual(fixed['length_level'],2)
+            self.assertIn('次の試合の会場はシンガポール・ナショナル・スタジアムです。',texts)
+            self.assertIn('今回の招集メンバーは28人です。',texts)
+            self.assertEqual(n.check(doc),[])
+            with patch.dict('os.environ',{'COLLESPO_SOCCER_LOOK':'v6','COLLESPO_SOCCER_FOCUS':'on','COLLESPO_SHORT_LOOK':'v4'}):
+                clubs=render.clubs_for(fixed);r3.set_caption('',0,0)
+                for seg in doc['segments']:
+                    if seg['meta']['panel'] in ('venue','squad-count'):
+                        im=render.frame(2,seg,fixed,clubs)
+                        self.assertEqual(render.validate_frame(im,clubs,fixed),[])
+            # 3段目は無い。足しきっても届かなければ今まで通り止める。
+            def short(argv):
+                doc=n.read(out/'narration.json')
+                (out/'audio/manifest.json').write_text(json.dumps(dict(segments=[dict(s,duration=2.0,index=i) for i,s in enumerate(doc['segments'])]),ensure_ascii=False),encoding='utf-8')
+            n.save(out/'material.json',data);n.save(out/'narration.json',n.narration(data));short([])
+            with patch.object(synth,'main',side_effect=short),patch('soccer_results_render.durations',side_effect=seconds),                     self.assertRaisesRegex(ValueError,'尺不足'):
+                render.fit_to_audio(out)
+
     def test_stats_registered_alias_only_and_no_inferred_match(self):
         row=dict(name='鈴木彩艶',club='Aston Villa',scope='season',as_of='2026-11-04T12:00:00+09:00',source='saved',goals=0,season='2026/27')
         material={'games':[{'league':'PL','season_players':[row]}]}

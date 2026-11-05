@@ -65,6 +65,7 @@ def frame(t,seg,data,clubs):
         word='勝利' if score['japan']>score['opponent'] else '敗戦' if score['japan']<score['opponent'] else '引き分け'
         return s.score(game,spec,f"{score['japan']}-{score['opponent']}で{word}",score_only=True)
     if panel in ('venue','match-venue'):
+        g=g or data['next_game']
         venue=g['venue'].replace('・ナショナル','・\nナショナル').replace('エディオンピース','エディオン\nピース')
         heading='シンガポールで対戦' if panel=='venue' and g['venue_raw']=='Singapore National Stadium' else '開催会場'
         return s.national_facts(heading,[('会場',venue)],spec)
@@ -111,6 +112,8 @@ def frame(t,seg,data,clubs):
         rows=[(f"{r['year']}年 全大会 {r['games']}試合",f"{r['wins']}勝 {r['draws']}分 {r['losses']}敗")]
         if data.get('length_level',0)>=2:rows.append(('同じ試合の得失点',f"{r['gf']}得点 {r['ga']}失点"))
         return s.national_facts('今年の全大会成績',rows,spec,sub='全大会・PK戦は引き分け')
+    if panel=='squad-count':
+        return s.national_facts('招集メンバー',[('招集の人数',f"{data['squad_size']}人")],spec,sub='JFA公式発表')
     if panel=='squad':
         if 'player' not in seg['meta']:
             rows=[(p['position'],p['name']) for p in data['players']]
@@ -136,7 +139,7 @@ def validate_frame(im,clubs,data=None):
         import soccer_v4_cards
         derived=[data]
         if data.get('mode')=='result':derived.append(national.match_story(data))
-        if data.get('length_level',0)>=1:derived.append(national.history_record(data.get('japan_history') or [],national.instant(data['game']['kickoff_jst']).year))
+        if data.get('length_level',0)>=1 and data.get('mode')!='squad':derived.append(national.history_record(data.get('japan_history') or [],national.instant(data['game']['kickoff_jst']).year))
         allowed=set(re.findall(r'\d+(?:\.\d+)?',json.dumps(derived,ensure_ascii=False)))
         # ゼロ埋めの時計は日時の整数として比較。1点は各得点イベントの単位。
         allowed={float(v) for v in allowed}|({1.0} if data.get('goals') else set())
@@ -211,6 +214,19 @@ def fit_to_audio(out):
     repairs=[]
     while seconds<27:
         level=data.get('length_level',0)+1
+        if data['mode']=='squad':
+            # 招集回は 1 次の試合の会場 → 2 招集の人数 だけ。どちらも発表と日程の確定事実。
+            if level==1 and not (data.get('next_game') or {}).get('venue'):level=2
+            if level>2 or level==2 and not data.get('squad_size'):
+                raise ValueError('尺不足。追加できる未使用の事実がありません')
+            data['length_level']=level
+            repairs.append(dict(before_seconds=seconds,level=level,added=('次の試合の会場','招集の人数')[level-1]))
+            national.save(out/'duration_repair.json',dict(reason='27秒未満',steps=repairs,voice_settings='unchanged'))
+            national.save(out/'material.json',data);national.save(out/'narration.json',national.narration(data))
+            synth.main(['--narration',str(out/'narration.json'),'--out-dir',str(out/'audio')])
+            doc=national.read(out/'narration.json');voices=national.read(out/'audio/manifest.json')['segments']
+            times=common.durations(doc['segments'],voices);seconds=sum(times)
+            continue
         if data['mode']=='preview' and level==1:level=2
         if level==3 and data['mode']=='result' and not data['game'].get('venue'):level=4
         if level>4 or data['mode'] not in ('preview','result') or not national.record_sentence(data) or (data['mode']=='preview' and (level>3 or level==3 and not national.cup_route(data))) or (level==4 and not data.get('japan_recent')):
