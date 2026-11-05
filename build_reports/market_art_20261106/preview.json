@@ -1,0 +1,34 @@
+[
+  {
+    "variant": "irasutoya",
+    "material_id": "ito-posting-open-20261105",
+    "illustration": "handshake.png",
+    "layout": {
+      "filename": "handshake.png",
+      "box": [
+        219,
+        352,
+        533,
+        598
+      ],
+      "fade": 1.0
+    },
+    "font_size": 54
+  },
+  {
+    "variant": "ai",
+    "material_id": "ito-posting-open-20261105",
+    "illustration": "ai/posting.png",
+    "layout": {
+      "filename": "ai/posting.png",
+      "box": [
+        253,
+        352,
+        499,
+        598
+      ],
+      "fade": 1.0
+    },
+    "font_size": 54
+  }
+]

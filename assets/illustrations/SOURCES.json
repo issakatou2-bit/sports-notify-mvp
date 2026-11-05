@@ -42,6 +42,142 @@
       "sha256": "3e9d66c7ce44c288bc0083bcede2065371e49c900377c497300685842c378a9f",
       "download_url": "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgBOxQHeV5uO8Y_DukBLHCk0QWLoRjrFfiu7roGcww3MbfneciN6WNvRdfpnfNday1Dd1M0UopqaWpw9VK9nTSRKgraj6ctD4Aj3VULJdqzjs2BFu7McFJ4x3sI66u3hTjuCN5G49XJ1V_P/s800/kaiyaku_contract.png",
       "download_status": "Claude が 2026-11-03 に取得し sha256 一致を確認"
+    },
+    {
+      "filename": "ai/contract.png",
+      "title": "contract",
+      "license": "AI生成（OpenAI）",
+      "type": "illustration",
+      "tool": "Codex image_gen",
+      "generated_on": "2026-11-05",
+      "checked_on": "2026-11-05",
+      "prompt": "Use case: illustration-story. One square transparent PNG editorial illustration for a baseball transfer news video on a dark navy background. Subject: two generic hands shaking to symbolize an agreed contract, with simple plain sleeves, no people or faces. Flat calm cut-paper shapes, muted teal, warm ivory, soft ochre, charcoal outlines, minimal hard-edged shading. Centered compact silhouette, generous transparent margin on all sides. Opaque solid interior; only thin antialiasing at edges. No glow, blur, shadow outside silhouette, texture, haze, fringe, gradient or photography. No text, letters, digits, logos, watermark, real people, stadiums, team identifiers or uniform numbers. Exactly one scene. Save the output for local project use.",
+      "sha256": "96ad91d06fe6a7f74c3dae7c140bb3a6e00c8e17692accb45da93918d8b905fb",
+      "inspection": {
+        "text": "absent",
+        "edges": "passed",
+        "notes": "Codex自身が保存後640px版を明暗背景と輪郭4倍拡大で目視。文字・数字・ロゴ・実在人物・球場・球団識別なし。赤いにじみ・淡い光なし。日本は象徴形で正確な地図として使わない。"
+      },
+      "generation_seconds": 33.732
+    },
+    {
+      "filename": "ai/posting.png",
+      "title": "posting",
+      "license": "AI生成（OpenAI）",
+      "type": "illustration",
+      "tool": "Codex image_gen",
+      "generated_on": "2026-11-05",
+      "checked_on": "2026-11-05",
+      "prompt": "Square 1:1 transparent PNG, isolated flat editorial cutout. Japanese baseball posting: a baseball above a tiny symbolic Japanese island shape and two short ocean waves, a solid curved arrow travelling right. Compact centered composition with empty transparent margins. Muted teal, ivory, ochre and charcoal bold outlines; matches calm flat news illustration. Each shape solid opaque flat fill. Background strictly alpha zero immediately outside the outlines, including all spaces between objects. Absolutely NO glow, halo, haze, shadows, translucent atmosphere, gradients or lighting effects. No text, logos, digits, flags, people, stadiums or team references. Not photographic.",
+      "sha256": "65b6e8c8afe378cb12aab8df84597d9bb6f1020f851ca4e6b56b7c51f414e08a",
+      "inspection": {
+        "text": "absent",
+        "edges": "passed",
+        "notes": "Codex自身が保存後640px版を明暗背景と輪郭4倍拡大で目視。文字・数字・ロゴ・実在人物・球場・球団識別なし。赤いにじみ・淡い光なし。日本は象徴形で正確な地図として使わない。"
+      },
+      "generation_seconds": 35.271
+    },
+    {
+      "filename": "ai/qo.png",
+      "title": "qo",
+      "license": "AI生成（OpenAI）",
+      "type": "illustration",
+      "tool": "Codex image_gen",
+      "generated_on": "2026-11-05",
+      "checked_on": "2026-11-05",
+      "prompt": "Use case: illustration-story. One square transparent PNG editorial illustration for a baseball transfer news video on a dark navy background. Subject: a blank ivory document with a folded corner and a small round analog deadline clock beside it; clock face has hands only, absolutely no tick marks or numerals; no writing or lines on paper. Flat calm cut-paper shapes, muted teal, warm ivory, soft ochre, charcoal outlines, minimal hard-edged shading. Centered compact silhouette, generous transparent margin on all sides. Opaque solid interior; only thin antialiasing at edges. No glow, blur, shadow outside silhouette, texture, haze, fringe, gradient or photography. No text, letters, digits, logos, watermark, real people, stadiums, team identifiers or uniform numbers. Exactly one scene. Save the output for local project use.",
+      "sha256": "07e6bd293e30f711b765171e0b18f09d7af91e9f5f15bb4e5a023241322fa9bd",
+      "inspection": {
+        "text": "absent",
+        "edges": "passed",
+        "notes": "Codex自身が保存後640px版を明暗背景と輪郭4倍拡大で目視。文字・数字・ロゴ・実在人物・球場・球団識別なし。赤いにじみ・淡い光なし。日本は象徴形で正確な地図として使わない。"
+      },
+      "generation_seconds": 32.649
+    },
+    {
+      "filename": "ai/fa.png",
+      "title": "fa",
+      "license": "AI生成（OpenAI）",
+      "type": "illustration",
+      "tool": "Codex image_gen",
+      "generated_on": "2026-11-05",
+      "checked_on": "2026-11-05",
+      "prompt": "Use case: illustration-story. One square transparent PNG editorial illustration for a baseball transfer news video on a dark navy background. Subject: one open freestanding teal door in an ivory doorframe to symbolize free agency and open opportunities, no wall, no room, no light coming through, no floor, no person. Flat calm cut-paper shapes, muted teal, warm ivory, soft ochre, charcoal outlines, minimal hard-edged shading. Centered compact silhouette, generous transparent margin on all sides. Opaque solid interior; only thin antialiasing at edges. No glow, blur, shadow outside silhouette, texture, haze, fringe, gradient or photography. No text, letters, digits, logos, watermark, real people, stadiums, team identifiers or uniform numbers. Exactly one scene. Save the output for local project use.",
+      "sha256": "1d6c87d1051dd7a079fb3e166240268e41de2c8b13bafdb3e06db83f4e298cc1",
+      "inspection": {
+        "text": "absent",
+        "edges": "passed",
+        "notes": "Codex自身が保存後640px版を明暗背景と輪郭4倍拡大で目視。文字・数字・ロゴ・実在人物・球場・球団識別なし。赤いにじみ・淡い光なし。日本は象徴形で正確な地図として使わない。"
+      },
+      "generation_seconds": 32.294
+    },
+    {
+      "filename": "ai/trade.png",
+      "title": "trade",
+      "license": "AI生成（OpenAI）",
+      "type": "illustration",
+      "tool": "Codex image_gen",
+      "generated_on": "2026-11-05",
+      "checked_on": "2026-11-05",
+      "prompt": "Use case: illustration-story. One square transparent PNG editorial illustration for a baseball transfer news video on a dark navy background. Subject: two plain neutral gray baseball caps exchanging places, with two opposite curved arrows in muted teal and ochre; caps have NO badges, logos, letters, contrasting team color panels or recognizable team styling, no people. Flat calm cut-paper shapes, muted teal, warm ivory, soft ochre, charcoal outlines, minimal hard-edged shading. Centered compact silhouette, generous transparent margin on all sides. Opaque solid interior; only thin antialiasing at edges. No glow, blur, shadow outside silhouette, texture, haze, fringe, gradient or photography. No text, letters, digits, logos, watermark, real people, stadiums, team identifiers or uniform numbers. Exactly one scene. Save the output for local project use.",
+      "sha256": "349f4d5d13d765d3b8056eee5069856abc45dbf8663104c661616b7de0ec00dc",
+      "inspection": {
+        "text": "absent",
+        "edges": "passed",
+        "notes": "Codex自身が保存後640px版を明暗背景と輪郭4倍拡大で目視。文字・数字・ロゴ・実在人物・球場・球団識別なし。赤いにじみ・淡い光なし。日本は象徴形で正確な地図として使わない。"
+      },
+      "generation_seconds": 36.328
+    },
+    {
+      "filename": "ai/award.png",
+      "title": "award",
+      "license": "AI生成（OpenAI）",
+      "type": "illustration",
+      "tool": "Codex image_gen",
+      "generated_on": "2026-11-05",
+      "checked_on": "2026-11-05",
+      "prompt": "Use case: illustration-story. One square transparent PNG editorial illustration for a baseball transfer news video on a dark navy background. Subject: one simple ochre trophy cup with two handles on a short teal plinth, no plaque writing, no emblem, no engraved marks, no confetti, no sparkles. Flat calm cut-paper shapes, muted teal, warm ivory, soft ochre, charcoal outlines, minimal hard-edged shading. Centered compact silhouette, generous transparent margin on all sides. Opaque solid interior; only thin antialiasing at edges. No glow, blur, shadow outside silhouette, texture, haze, fringe, gradient or photography. No text, letters, digits, logos, watermark, real people, stadiums, team identifiers or uniform numbers. Exactly one scene. Save the output for local project use.",
+      "sha256": "4c0711a11db666d4901e83b61cf3b76cfcd7749726d8cbc0b1adf515bdf8c883",
+      "inspection": {
+        "text": "absent",
+        "edges": "passed",
+        "notes": "Codex自身が保存後640px版を明暗背景と輪郭4倍拡大で目視。文字・数字・ロゴ・実在人物・球場・球団識別なし。赤いにじみ・淡い光なし。日本は象徴形で正確な地図として使わない。"
+      },
+      "generation_seconds": 32.055
+    },
+    {
+      "filename": "ai/retirement.png",
+      "title": "retirement",
+      "license": "AI生成（OpenAI）",
+      "type": "illustration",
+      "tool": "Codex image_gen",
+      "generated_on": "2026-11-05",
+      "checked_on": "2026-11-05",
+      "prompt": "Use case: illustration-story. One square transparent PNG editorial illustration for a baseball transfer news video on a dark navy background. Subject: a single well-kept ochre baseball glove set down palm-up beside a plain ivory baseball, peaceful retirement symbol, no hand, no person, no floor or cast shadow, no brand stitching or emblem. Flat calm cut-paper shapes, muted teal, warm ivory, soft ochre, charcoal outlines, minimal hard-edged shading. Centered compact silhouette, generous transparent margin on all sides. Opaque solid interior; only thin antialiasing at edges. No glow, blur, shadow outside silhouette, texture, haze, fringe, gradient or photography. No text, letters, digits, logos, watermark, real people, stadiums, team identifiers or uniform numbers. Exactly one scene. Save the output for local project use.",
+      "sha256": "d007321c458f5674e4b3574f6c90d24e726890d36834ed03ae38252f8ad3263f",
+      "inspection": {
+        "text": "absent",
+        "edges": "passed",
+        "notes": "Codex自身が保存後640px版を明暗背景と輪郭4倍拡大で目視。文字・数字・ロゴ・実在人物・球場・球団識別なし。赤いにじみ・淡い光なし。日本は象徴形で正確な地図として使わない。"
+      },
+      "generation_seconds": 34.292
+    },
+    {
+      "filename": "ai/injured_list.png",
+      "title": "injured_list",
+      "license": "AI生成（OpenAI）",
+      "type": "illustration",
+      "tool": "Codex image_gen",
+      "generated_on": "2026-11-05",
+      "checked_on": "2026-11-05",
+      "prompt": "Use case: illustration-story. One square transparent PNG editorial illustration for a baseball transfer news video on a dark navy background. Subject: a plain teal first-aid kit with a blank ivory front panel, beside one ivory rolled bandage with a short unrolled end, no cross symbol, no writing, no person or injury. Flat calm cut-paper shapes, muted teal, warm ivory, soft ochre, charcoal outlines, minimal hard-edged shading. Centered compact silhouette, generous transparent margin on all sides. Opaque solid interior; only thin antialiasing at edges. No glow, blur, shadow outside silhouette, texture, haze, fringe, gradient or photography. No text, letters, digits, logos, watermark, real people, stadiums, team identifiers or uniform numbers. Exactly one scene. Save the output for local project use.",
+      "sha256": "9bc21704a75fb9d531f6d8dbe873f7af0ee292b51c9b84477846f433baba0ec8",
+      "inspection": {
+        "text": "absent",
+        "edges": "passed",
+        "notes": "Codex自身が保存後640px版を明暗背景と輪郭4倍拡大で目視。文字・数字・ロゴ・実在人物・球場・球団識別なし。赤いにじみ・淡い光なし。日本は象徴形で正確な地図として使わない。"
+      },
+      "generation_seconds": 34.552
     }
   ]
 }

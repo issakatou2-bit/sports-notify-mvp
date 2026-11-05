@@ -34,6 +34,8 @@ class Entry(TypedDict):
     checked_on: str
     facts: list[Fact]
     reports: list[Report]
+    illustration: NotRequired[str]
+    market_kind: NotRequired[str]
 
 
 def source(url, sample=False):
@@ -51,7 +53,7 @@ def source(url, sample=False):
 
 def validate(entry, *, sample=False):
     import jp_future_catalog as series
-    if not isinstance(entry, dict) or set(entry) != {'id', 'title', 'name_en', 'checked_on', 'facts', 'reports'}:
+    if not isinstance(entry, dict) or not {'id', 'title', 'name_en', 'checked_on', 'facts', 'reports'} <= set(entry) <= {'id', 'title', 'name_en', 'checked_on', 'facts', 'reports', 'illustration', 'market_kind'}:
         raise ValueError('市場項目の欄が書式と不一致です')
     if not re.fullmatch(r'[a-z0-9][a-z0-9_-]{0,79}', entry['id']):
         raise ValueError('市場項目IDが不正です')
@@ -109,7 +111,7 @@ def topic(entry, day, state=None, *, episode=None, sample=False):
     events = [dict(event_id=f'market:{entry["id"]}:{kind}:{row["id"]}',
                    head=('確定｜' if kind == 'facts' else '報道｜') + row['label'],
                    body=row['text'], source=row['source_url'], market_type=kind,
-                   **({'illustration': row['illustration']} if 'illustration' in row else {}))
+                   **({'illustration': selected} if (selected := __import__('market_art').selected_name(entry, row)) is not None else {}))
               for kind in ('facts', 'reports') for row in entry[kind]]
     if any(r['event_id'] in set((state or {}).get('events', [])) for r in events):
         return None

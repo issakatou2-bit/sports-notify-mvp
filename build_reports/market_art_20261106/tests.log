@@ -1,0 +1,33 @@
+test_ai_local_only_missing_or_bad_hash_never_downloads (test_market_art.AiArtTest.test_ai_local_only_missing_or_bad_hash_never_downloads) ... ok
+test_ai_required_fields_and_manual_review (test_market_art.AiArtTest.test_ai_required_fields_and_manual_review) ... ok
+test_ai_size_format_alpha_and_nested_paths (test_market_art.AiArtTest.test_ai_size_format_alpha_and_nested_paths) ... ok
+test_automatic_event_roundtrip_without_mutating_material (test_market_art.AiArtTest.test_automatic_event_roundtrip_without_mutating_material) ... [info] data/ps_game_topics.json: WS決着後の当日向け材料は見送り
+[info] data/ps_odds_topics.json: WS決着後の当日向け材料は見送り
+[info] data/ps_momentum_topics.json: WS決着後の当日向け材料は見送り
+[info] data/ps_spotlight_topics.json: WS決着後の当日向け材料は見送り
+[info] data/ws_topics.json: WS決着後の当日向け材料は見送り
+ok
+test_explicit_priority_and_first_fact_only (test_market_art.AiArtTest.test_explicit_priority_and_first_fact_only) ... ok
+test_scene_table_and_unknown (test_market_art.AiArtTest.test_scene_table_and_unknown) ... ok
+test_shipped_assets_and_published_entries (test_market_art.AiArtTest.test_shipped_assets_and_published_entries) ... ok
+test_bad_local_hash_is_never_used_or_overwritten (test_market_art.ArtTest.test_bad_local_hash_is_never_used_or_overwritten) ... 挿絵なしで続行: diagram.png (OSError)
+ok
+test_download_urls_must_be_official_for_irasutoya (test_market_art.ArtTest.test_download_urls_must_be_official_for_irasutoya) ... ok
+test_download_verified_before_write_and_reuse (test_market_art.ArtTest.test_download_verified_before_write_and_reuse) ... ok
+test_irastoya_description_and_full_material_roundtrip (test_market_art.ArtTest.test_irastoya_description_and_full_material_roundtrip) ... ok
+test_irastoya_twenty_unique_and_duplicate_once (test_market_art.ArtTest.test_irastoya_twenty_unique_and_duplicate_once) ... ok
+test_network_hash_and_missing_url_fallback_to_original_pixels (test_market_art.ArtTest.test_network_hash_and_missing_url_fallback_to_original_pixels) ... 挿絵なしで続行: unavailable.png (OSError)
+挿絵なしで続行: unavailable.png (ValueError)
+挿絵なしで続行（取得元URL未登録）: unavailable.png
+ok
+test_optional_art_and_original_pixels (test_market_art.ArtTest.test_optional_art_and_original_pixels) ... ok
+test_photo_license_origin_and_attribution (test_market_art.ArtTest.test_photo_license_origin_and_attribution) ... ok
+test_saved_narration_path_is_validated_before_drawing (test_market_art.ArtTest.test_saved_narration_path_is_validated_before_drawing) ... ok
+test_static_placement_fade_and_long_text_pages (test_market_art.ArtTest.test_static_placement_fade_and_long_text_pages) ... ok
+test_unknown_author_and_team_aliases_are_rejected (test_market_art.ArtTest.test_unknown_author_and_team_aliases_are_rejected) ... ok
+test_unregistered_missing_fields_unknown_license_and_paths_stop (test_market_art.ArtTest.test_unregistered_missing_fields_unknown_license_and_paths_stop) ... ok
+
+----------------------------------------------------------------------
+Ran 19 tests in 2.529s
+
+OK

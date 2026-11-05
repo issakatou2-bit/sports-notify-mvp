@@ -1,0 +1,67 @@
+test_ai_local_only_missing_or_bad_hash_never_downloads (test_market_art.AiArtTest.test_ai_local_only_missing_or_bad_hash_never_downloads) ... ok
+test_ai_required_fields_and_manual_review (test_market_art.AiArtTest.test_ai_required_fields_and_manual_review) ... ok
+test_ai_size_format_alpha_and_nested_paths (test_market_art.AiArtTest.test_ai_size_format_alpha_and_nested_paths) ... ok
+test_automatic_event_roundtrip_without_mutating_material (test_market_art.AiArtTest.test_automatic_event_roundtrip_without_mutating_material) ... ok
+test_explicit_priority_and_first_fact_only (test_market_art.AiArtTest.test_explicit_priority_and_first_fact_only) ... ok
+test_scene_table_and_unknown (test_market_art.AiArtTest.test_scene_table_and_unknown) ... ok
+test_shipped_assets_and_published_entries (test_market_art.AiArtTest.test_shipped_assets_and_published_entries) ... ok
+test_bad_local_hash_is_never_used_or_overwritten (test_market_art.ArtTest.test_bad_local_hash_is_never_used_or_overwritten) ... 挿絵なしで続行: diagram.png (OSError)
+ok
+test_download_urls_must_be_official_for_irasutoya (test_market_art.ArtTest.test_download_urls_must_be_official_for_irasutoya) ... ok
+test_download_verified_before_write_and_reuse (test_market_art.ArtTest.test_download_verified_before_write_and_reuse) ... ok
+test_irastoya_description_and_full_material_roundtrip (test_market_art.ArtTest.test_irastoya_description_and_full_material_roundtrip) ... ok
+test_irastoya_twenty_unique_and_duplicate_once (test_market_art.ArtTest.test_irastoya_twenty_unique_and_duplicate_once) ... ok
+test_network_hash_and_missing_url_fallback_to_original_pixels (test_market_art.ArtTest.test_network_hash_and_missing_url_fallback_to_original_pixels) ... 挿絵なしで続行: unavailable.png (OSError)
+挿絵なしで続行: unavailable.png (ValueError)
+挿絵なしで続行（取得元URL未登録）: unavailable.png
+ok
+test_optional_art_and_original_pixels (test_market_art.ArtTest.test_optional_art_and_original_pixels) ... ok
+test_photo_license_origin_and_attribution (test_market_art.ArtTest.test_photo_license_origin_and_attribution) ... ok
+test_saved_narration_path_is_validated_before_drawing (test_market_art.ArtTest.test_saved_narration_path_is_validated_before_drawing) ... ok
+test_static_placement_fade_and_long_text_pages (test_market_art.ArtTest.test_static_placement_fade_and_long_text_pages) ... ok
+test_unknown_author_and_team_aliases_are_rejected (test_market_art.ArtTest.test_unknown_author_and_team_aliases_are_rejected) ... ok
+test_unregistered_missing_fields_unknown_license_and_paths_stop (test_market_art.ArtTest.test_unregistered_missing_fields_unknown_license_and_paths_stop) ... ok
+test_api_failure_does_not_discard_handwritten_material (test_offseason_market.MarketTests.test_api_failure_does_not_discard_handwritten_material) ... [warn] 公式APIの取得に失敗。確認済みの手入力市場材料だけを候補にします
+ok
+test_examples_not_production_and_stale_not_selected (test_offseason_market.MarketTests.test_examples_not_production_and_stale_not_selected) ... ok
+test_fixture_roundtrip_and_three_information (test_offseason_market.MarketTests.test_fixture_roundtrip_and_three_information) ... ok
+test_forbidden_sources_and_comment_names (test_offseason_market.MarketTests.test_forbidden_sources_and_comment_names) ... ok
+test_intro_uses_existing_series_badge_and_breaks_at_name (test_offseason_market.MarketTests.test_intro_uses_existing_series_badge_and_breaks_at_name) ... ok
+test_invalid_market_does_not_stop_other_asset_catalog (test_offseason_market.MarketTests.test_invalid_market_does_not_stop_other_asset_catalog) ... [info] data/ps_game_topics.json: WS決着後の当日向け材料は見送り
+[info] data/ps_odds_topics.json: WS決着後の当日向け材料は見送り
+[info] data/ps_momentum_topics.json: WS決着後の当日向け材料は見送り
+[info] data/ps_spotlight_topics.json: WS決着後の当日向け材料は見送り
+[info] data/ws_topics.json: WS決着後の当日向け材料は見送り
+[warn] 市場の手入力材料が不正のため、その種類を保留: invalid fixture
+ok
+test_loader_uses_manual_rows_and_omits_stale_seen_entries (test_offseason_market.MarketTests.test_loader_uses_manual_rows_and_omits_stale_seen_entries) ... ok
+test_market_keeps_sixty_second_upper_bound (test_offseason_market.MarketTests.test_market_keeps_sixty_second_upper_bound) ... ok
+test_next_asset_prioritizes_market_and_only_one (test_offseason_market.MarketTests.test_next_asset_prioritizes_market_and_only_one) ... [info] シーズンまとめ: 残り3本、きょう2本
+ok
+test_numeric_additions_assertions_and_material_tampering_stop (test_offseason_market.MarketTests.test_numeric_additions_assertions_and_material_tampering_stop) ... ok
+test_offseason_picker_selects_one_market_before_shared_series (test_offseason_market.MarketTests.test_offseason_picker_selects_one_market_before_shared_series) ... ok
+test_one_per_day_uses_jst_reservation_and_unknown_date_holds (test_offseason_market.MarketTests.test_one_per_day_uses_jst_reservation_and_unknown_date_holds) ... ok
+test_publication_day_and_duplicate_gate (test_offseason_market.MarketTests.test_publication_day_and_duplicate_gate) ... ok
+test_reports_require_outlet_and_fact_forecasts_money_rejected (test_offseason_market.MarketTests.test_reports_require_outlet_and_fact_forecasts_money_rejected) ... ok
+test_seen_events_and_shared_series_number (test_offseason_market.MarketTests.test_seen_events_and_shared_series_number) ... ok
+test_sns_metadata_and_badge_do_not_call_reports_official (test_offseason_market.MarketTests.test_sns_metadata_and_badge_do_not_call_reports_official) ... ok
+test_title_cannot_add_numbers (test_offseason_market.MarketTests.test_title_cannot_add_numbers) ... ok
+test_ui_tone_keeps_material_and_outro_exact (test_offseason_market.MarketTests.test_ui_tone_keeps_material_and_outro_exact) ... ok
+test_actual_bubble_layout_cache_and_font_are_preserved (test_offseason_public.OffseasonPublic.test_actual_bubble_layout_cache_and_font_are_preserved) ... ok
+test_actual_metadata_and_sns_of_all_three (test_offseason_public.OffseasonPublic.test_actual_metadata_and_sns_of_all_three) ... ok
+test_all_caption_pages_and_rows_keep_words_and_fixed_size (test_offseason_public.OffseasonPublic.test_all_caption_pages_and_rows_keep_words_and_fixed_size) ... ok
+test_credits_use_saved_voice_over_selected_host (test_offseason_public.OffseasonPublic.test_credits_use_saved_voice_over_selected_host) ... ok
+test_other_generated_metadata_matches_origin_character_for_character (test_offseason_public.OffseasonPublic.test_other_generated_metadata_matches_origin_character_for_character) ... ok
+test_other_sns_and_caption_pixels_match_origin (test_offseason_public.OffseasonPublic.test_other_sns_and_caption_pixels_match_origin) ... ok
+test_series_title_keeps_player_and_action (test_offseason_public.OffseasonPublic.test_series_title_keeps_player_and_action) ... ok
+test_body_is_unchanged_and_27_second_gate_remains (test_offseason_outro.OffseasonOutro.test_body_is_unchanged_and_27_second_gate_remains) ... ok
+test_existing_renderer_supports_inseason_and_zero_one_rows (test_offseason_outro.OffseasonOutro.test_existing_renderer_supports_inseason_and_zero_one_rows) ... ok
+test_missing_invalid_and_next_year_keep_legacy_text (test_offseason_outro.OffseasonOutro.test_missing_invalid_and_next_year_keep_legacy_text) ... ok
+test_saved_empty_day_uses_existing_decision_and_live_slots (test_offseason_outro.OffseasonOutro.test_saved_empty_day_uses_existing_decision_and_live_slots) ... ok
+test_saved_game_day_and_active_season_keep_every_character (test_offseason_outro.OffseasonOutro.test_saved_game_day_and_active_season_keep_every_character) ... ok
+test_ui_both_seasons_and_quotes_are_idempotent (test_offseason_outro.OffseasonOutro.test_ui_both_seasons_and_quotes_are_idempotent) ... ok
+
+----------------------------------------------------------------------
+Ran 50 tests in 5.090s
+
+OK
