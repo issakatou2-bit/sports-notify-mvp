@@ -20799,5 +20799,30 @@
       "short_content_policy": "short-content-20261027-v1",
       "privacy": "public"
     }
+  },
+  "soccer_national": {
+    "2026-11-05": {
+      "video_id": "pTIu0bKcAw4",
+      "url": "https://youtu.be/pTIu0bKcAw4",
+      "title": "日本代表の招集メンバー 早川友基・小久保玲央ブライアン・鈴木彩艶 #Shorts",
+      "published_at": "2026-11-05T03:59:12.901197+00:00",
+      "publish_at": "2026-11-05T04:16:00+00:00",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-05",
+        "enabled": false,
+        "assigned": "generic",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false
+      },
+      "national_mode": "squad",
+      "national_squad_page": 0,
+      "national_event_id": null,
+      "duration_seconds": 28.57,
+      "short_information_count": 4,
+      "short_content_policy": "short-content-20261027-v1",
+      "privacy": "public"
+    }
   }
 }
