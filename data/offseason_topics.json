@@ -1,39 +1,40 @@
 {
-  "day": "2026-11-04",
+  "day": "2026-11-05",
+  "state": "ready",
   "topics": [
     {
-      "key": "offseason_market_2026_11e9a10dcba5",
-      "label": "平良海馬 防御率1.36の右腕が交渉開始",
-      "heading": "日本人選手の来季 第3回",
-      "hook": "平良海馬\n防御率1.36の右腕が交渉開始",
+      "key": "offseason_market_2026_445c0377f7b4",
+      "label": "伊藤大海 2025年の沢村賞右腕が交渉開始",
+      "heading": "日本人選手の来季 第4回",
+      "hook": "伊藤大海\n2025年の沢村賞右腕が交渉開始",
       "kind_label": "MLB",
       "style": "v3",
       "intro_as_is": true,
-      "intro": "平良海馬 防御率1.36の右腕が交渉開始。",
+      "intro": "伊藤大海 2025年の沢村賞右腕が交渉開始。",
       "description_line": "連載「日本人選手の来季」では、確定した動きと媒体による報道を分けて追います。",
       "data_credit": "各行の出典 / 確定・報道を区別",
-      "source": "確定情報・媒体報道 / 確認日 2026-11-04",
+      "source": "確定情報・媒体報道 / 確認日 2026-11-05",
       "source_url": "https://news.infoseek.co.jp/article/sponichin_20261102_0101/",
       "v3": {
-        "who": "日本人選手の来季 第3回",
+        "who": "日本人選手の来季 第4回",
         "source": "出典: 各行の資料 / 確定・報道を区別"
       },
       "items": [
         [
           "確定｜交渉の開始",
-          "平良海馬は日本時間の11月2日から、MLBの全30球団と交渉できるようになりました。"
+          "伊藤大海は日本時間の11月2日から、MLBの全30球団と交渉できるようになりました。"
+        ],
+        [
+          "確定｜2025年の沢村賞",
+          "伊藤大海は2025年に沢村賞を受賞しました。"
         ],
         [
           "確定｜2026年の成績",
-          "平良海馬は2026年に23試合に登板し、12勝5敗、146回で防御率1.36でした。"
+          "伊藤大海は2026年に26試合に登板し、10勝10敗、防御率3.18でした。"
         ],
         [
-          "確定｜西武の容認",
-          "西武は10月30日に、ポスティングでの大リーグ移籍を認めると発表しました。"
-        ],
-        [
-          "確定｜交渉の期間",
-          "交渉の期間は45日間で、佐藤輝明と伊藤大海も同じ日に公示されました。"
+          "確定｜日本ハムの容認",
+          "日本ハムは11月1日に、ポスティングでの大リーグ移籍を認めると発表しました。"
         ],
         [
           "報道｜期限の前倒し",
@@ -42,40 +43,40 @@
       ],
       "offseason": {
         "kind": "market",
-        "day": "2026-11-04",
+        "day": "2026-11-05",
         "season": 2026,
         "events": [
           {
-            "event_id": "market:taira-posting-open-20261104:facts:open",
+            "event_id": "market:ito-posting-open-20261105:facts:open",
             "head": "確定｜交渉の開始",
-            "body": "平良海馬は日本時間の11月2日から、MLBの全30球団と交渉できるようになりました。",
+            "body": "伊藤大海は日本時間の11月2日から、MLBの全30球団と交渉できるようになりました。",
             "source": "https://news.infoseek.co.jp/article/sponichin_20261102_0101/",
             "market_type": "facts",
             "illustration": "handshake.png"
           },
           {
-            "event_id": "market:taira-posting-open-20261104:facts:stats",
+            "event_id": "market:ito-posting-open-20261105:facts:award",
+            "head": "確定｜2025年の沢村賞",
+            "body": "伊藤大海は2025年に沢村賞を受賞しました。",
+            "source": "https://npb.jp/award/2025/shosawa.html",
+            "market_type": "facts"
+          },
+          {
+            "event_id": "market:ito-posting-open-20261105:facts:stats",
             "head": "確定｜2026年の成績",
-            "body": "平良海馬は2026年に23試合に登板し、12勝5敗、146回で防御率1.36でした。",
-            "source": "https://npb.jp/bis/2026/stats/idp1_l.html",
+            "body": "伊藤大海は2026年に26試合に登板し、10勝10敗、防御率3.18でした。",
+            "source": "https://npb.jp/bis/2026/stats/idp1_f.html",
             "market_type": "facts"
           },
           {
-            "event_id": "market:taira-posting-open-20261104:facts:approve",
-            "head": "確定｜西武の容認",
-            "body": "西武は10月30日に、ポスティングでの大リーグ移籍を認めると発表しました。",
-            "source": "https://news.web.nhk/newsweb/na/nd-20261030de68501",
+            "event_id": "market:ito-posting-open-20261105:facts:approve",
+            "head": "確定｜日本ハムの容認",
+            "body": "日本ハムは11月1日に、ポスティングでの大リーグ移籍を認めると発表しました。",
+            "source": "https://news.infoseek.co.jp/article/nikkansports_202611010000350/",
             "market_type": "facts"
           },
           {
-            "event_id": "market:taira-posting-open-20261104:facts:window",
-            "head": "確定｜交渉の期間",
-            "body": "交渉の期間は45日間で、佐藤輝明と伊藤大海も同じ日に公示されました。",
-            "source": "https://news.infoseek.co.jp/article/sponichin_20261102_0101/",
-            "market_type": "facts"
-          },
-          {
-            "event_id": "market:taira-posting-open-20261104:reports:lockout",
+            "event_id": "market:ito-posting-open-20261105:reports:lockout",
             "head": "報道｜期限の前倒し",
             "body": "新しい労使協定が結ばれなければ、交渉期限は12月1日に早まるとスポーツニッポンが報じています。",
             "source": "https://news.infoseek.co.jp/article/sponichin_20261102_0101/",
@@ -83,35 +84,35 @@
           }
         ],
         "entry": {
-          "id": "taira-posting-open-20261104",
-          "title": "平良海馬 防御率1.36の右腕が交渉開始",
-          "name_en": "Kaima Taira",
-          "checked_on": "2026-11-04",
+          "id": "ito-posting-open-20261105",
+          "title": "伊藤大海 2025年の沢村賞右腕が交渉開始",
+          "name_en": "Hiromi Ito",
+          "checked_on": "2026-11-05",
           "facts": [
             {
               "id": "open",
               "label": "交渉の開始",
-              "text": "平良海馬は日本時間の11月2日から、MLBの全30球団と交渉できるようになりました。",
+              "text": "伊藤大海は日本時間の11月2日から、MLBの全30球団と交渉できるようになりました。",
               "source_url": "https://news.infoseek.co.jp/article/sponichin_20261102_0101/",
               "illustration": "handshake.png"
             },
             {
+              "id": "award",
+              "label": "2025年の沢村賞",
+              "text": "伊藤大海は2025年に沢村賞を受賞しました。",
+              "source_url": "https://npb.jp/award/2025/shosawa.html"
+            },
+            {
               "id": "stats",
               "label": "2026年の成績",
-              "text": "平良海馬は2026年に23試合に登板し、12勝5敗、146回で防御率1.36でした。",
-              "source_url": "https://npb.jp/bis/2026/stats/idp1_l.html"
+              "text": "伊藤大海は2026年に26試合に登板し、10勝10敗、防御率3.18でした。",
+              "source_url": "https://npb.jp/bis/2026/stats/idp1_f.html"
             },
             {
               "id": "approve",
-              "label": "西武の容認",
-              "text": "西武は10月30日に、ポスティングでの大リーグ移籍を認めると発表しました。",
-              "source_url": "https://news.web.nhk/newsweb/na/nd-20261030de68501"
-            },
-            {
-              "id": "window",
-              "label": "交渉の期間",
-              "text": "交渉の期間は45日間で、佐藤輝明と伊藤大海も同じ日に公示されました。",
-              "source_url": "https://news.infoseek.co.jp/article/sponichin_20261102_0101/"
+              "label": "日本ハムの容認",
+              "text": "日本ハムは11月1日に、ポスティングでの大リーグ移籍を認めると発表しました。",
+              "source_url": "https://news.infoseek.co.jp/article/nikkansports_202611010000350/"
             }
           ],
           "reports": [
@@ -124,7 +125,7 @@
             }
           ]
         },
-        "series_number": 3,
+        "series_number": 4,
         "series_title": "日本人選手の来季"
       }
     },
@@ -163,7 +164,7 @@
       ],
       "offseason": {
         "kind": "schedule",
-        "day": "2026-11-04",
+        "day": "2026-11-05",
         "season": 2026,
         "events": [
           {
@@ -248,7 +249,7 @@
       ],
       "offseason": {
         "kind": "awards",
-        "day": "2026-11-04",
+        "day": "2026-11-05",
         "season": 2026,
         "events": [
           {
@@ -373,261 +374,6 @@
           }
         ]
       }
-    },
-    {
-      "key": "offseason_awards_2026_d5ad7e00e1e5",
-      "label": "2026年のア・リーグのゴールドグラブ（3/3）",
-      "heading": "2026年のア・リーグのゴールドグラブ（3/3）",
-      "kind_label": "MLB",
-      "data_credit": "MLB Stats API",
-      "v3": {
-        "source": "出典: MLB公式 / 受賞・取引記録"
-      },
-      "hook": "2026年のア・リーグのゴールドグラブ（3/3）",
-      "intro": "2026年のMLBの表彰です。MLB公式の受賞記録からお伝えします。",
-      "intro_as_is": true,
-      "style": "v3",
-      "source": "MLB公式 / 受賞・取引記録",
-      "source_url": "https://statsapi.mlb.com/api/v1/awards/ALGG/recipients?season=2026",
-      "items": [
-        [
-          "セダン・ラファエラ｜ア・リーグのゴールドグラブ・中堅手",
-          "セダン・ラファエラは2026年のア・リーグのゴールドグラブを受賞しました"
-        ],
-        [
-          "ウィルヤー・アブレイユ｜ア・リーグのゴールドグラブ・右翼手",
-          "ウィルヤー・アブレイユは2026年のア・リーグのゴールドグラブを受賞しました"
-        ],
-        [
-          "エセキエル・デュラン｜ア・リーグのゴールドグラブ・ユーティリティ",
-          "エセキエル・デュランは2026年のア・リーグのゴールドグラブを受賞しました"
-        ]
-      ],
-      "offseason": {
-        "kind": "awards",
-        "day": "2026-11-04",
-        "season": 2026,
-        "events": [
-          {
-            "event_id": "award:2026:ALGG:678882:winner",
-            "head": "セダン・ラファエラ｜ア・リーグのゴールドグラブ・中堅手",
-            "body": "セダン・ラファエラは2026年のア・リーグのゴールドグラブを受賞しました",
-            "name": "セダン・ラファエラ",
-            "japanese": false,
-            "source": "https://statsapi.mlb.com/api/v1/awards/ALGG/recipients?season=2026",
-            "raw": {
-              "id": "ALGG",
-              "name": "Rawlings AL Gold Glove",
-              "date": "2026-11-01",
-              "season": "2026",
-              "team": {
-                "id": 111,
-                "link": "/api/v1/teams/111"
-              },
-              "player": {
-                "id": 678882,
-                "link": "/api/v1/people/678882",
-                "primaryPosition": {
-                  "code": "8",
-                  "name": "Outfielder",
-                  "type": "Outfielder",
-                  "abbreviation": "CF"
-                },
-                "nameFirstLast": "Ceddanne Rafaela",
-                "nameSlug": "ceddanne-rafaela-678882"
-              }
-            }
-          },
-          {
-            "event_id": "award:2026:ALGG:677800:winner",
-            "head": "ウィルヤー・アブレイユ｜ア・リーグのゴールドグラブ・右翼手",
-            "body": "ウィルヤー・アブレイユは2026年のア・リーグのゴールドグラブを受賞しました",
-            "name": "ウィルヤー・アブレイユ",
-            "japanese": false,
-            "source": "https://statsapi.mlb.com/api/v1/awards/ALGG/recipients?season=2026",
-            "raw": {
-              "id": "ALGG",
-              "name": "Rawlings AL Gold Glove",
-              "date": "2026-11-01",
-              "season": "2026",
-              "team": {
-                "id": 111,
-                "link": "/api/v1/teams/111"
-              },
-              "player": {
-                "id": 677800,
-                "link": "/api/v1/people/677800",
-                "primaryPosition": {
-                  "code": "9",
-                  "name": "Outfielder",
-                  "type": "Outfielder",
-                  "abbreviation": "RF"
-                },
-                "nameFirstLast": "Wilyer Abreu",
-                "nameSlug": "wilyer-abreu-677800"
-              }
-            }
-          },
-          {
-            "event_id": "award:2026:ALGG:677649:winner",
-            "head": "エセキエル・デュラン｜ア・リーグのゴールドグラブ・ユーティリティ",
-            "body": "エセキエル・デュランは2026年のア・リーグのゴールドグラブを受賞しました",
-            "name": "エセキエル・デュラン",
-            "japanese": false,
-            "source": "https://statsapi.mlb.com/api/v1/awards/ALGG/recipients?season=2026",
-            "raw": {
-              "id": "ALGG",
-              "name": "Rawlings AL Gold Glove",
-              "date": "2026-11-01",
-              "season": "2026",
-              "team": {
-                "id": 140,
-                "link": "/api/v1/teams/140"
-              },
-              "player": {
-                "id": 677649,
-                "link": "/api/v1/people/677649",
-                "primaryPosition": {
-                  "code": "U",
-                  "name": "Utility",
-                  "type": "Infielder",
-                  "abbreviation": "UT"
-                },
-                "nameFirstLast": "Ezequiel Duran",
-                "nameSlug": "ezequiel-duran-677649"
-              }
-            }
-          }
-        ]
-      }
-    },
-    {
-      "key": "offseason_awards_2026_efb99c6ad236",
-      "label": "2026年のナ・リーグのゴールドグラブ（2/3）",
-      "heading": "2026年のナ・リーグのゴールドグラブ（2/3）",
-      "kind_label": "MLB",
-      "data_credit": "MLB Stats API",
-      "v3": {
-        "source": "出典: MLB公式 / 受賞・取引記録"
-      },
-      "hook": "2026年のナ・リーグのゴールドグラブ（2/3）",
-      "intro": "2026年のMLBの表彰です。MLB公式の受賞記録からお伝えします。",
-      "intro_as_is": true,
-      "style": "v3",
-      "source": "MLB公式 / 受賞・取引記録",
-      "source_url": "https://statsapi.mlb.com/api/v1/awards/NLGG/recipients?season=2026",
-      "items": [
-        [
-          "アレックス・ブレグマン｜ナ・リーグのゴールドグラブ・三塁手",
-          "アレックス・ブレグマンは2026年のナ・リーグのゴールドグラブを受賞しました"
-        ],
-        [
-          "ヘラルド・ペルドモ｜ナ・リーグのゴールドグラブ・遊撃手",
-          "ヘラルド・ペルドモは2026年のナ・リーグのゴールドグラブを受賞しました"
-        ],
-        [
-          "ジャクソン・チョーリオ｜ナ・リーグのゴールドグラブ・左翼手",
-          "ジャクソン・チョーリオは2026年のナ・リーグのゴールドグラブを受賞しました"
-        ]
-      ],
-      "offseason": {
-        "kind": "awards",
-        "day": "2026-11-04",
-        "season": 2026,
-        "events": [
-          {
-            "event_id": "award:2026:NLGG:608324:winner",
-            "head": "アレックス・ブレグマン｜ナ・リーグのゴールドグラブ・三塁手",
-            "body": "アレックス・ブレグマンは2026年のナ・リーグのゴールドグラブを受賞しました",
-            "name": "アレックス・ブレグマン",
-            "japanese": false,
-            "source": "https://statsapi.mlb.com/api/v1/awards/NLGG/recipients?season=2026",
-            "raw": {
-              "id": "NLGG",
-              "name": "Rawlings NL Gold Glove",
-              "date": "2026-11-01",
-              "season": "2026",
-              "team": {
-                "id": 112,
-                "link": "/api/v1/teams/112"
-              },
-              "player": {
-                "id": 608324,
-                "link": "/api/v1/people/608324",
-                "primaryPosition": {
-                  "code": "5",
-                  "name": "Third Base",
-                  "type": "Infielder",
-                  "abbreviation": "3B"
-                },
-                "nameFirstLast": "Alex Bregman",
-                "nameSlug": "alex-bregman-608324"
-              }
-            }
-          },
-          {
-            "event_id": "award:2026:NLGG:672695:winner",
-            "head": "ヘラルド・ペルドモ｜ナ・リーグのゴールドグラブ・遊撃手",
-            "body": "ヘラルド・ペルドモは2026年のナ・リーグのゴールドグラブを受賞しました",
-            "name": "ヘラルド・ペルドモ",
-            "japanese": false,
-            "source": "https://statsapi.mlb.com/api/v1/awards/NLGG/recipients?season=2026",
-            "raw": {
-              "id": "NLGG",
-              "name": "Rawlings NL Gold Glove",
-              "date": "2026-11-01",
-              "season": "2026",
-              "team": {
-                "id": 109,
-                "link": "/api/v1/teams/109"
-              },
-              "player": {
-                "id": 672695,
-                "link": "/api/v1/people/672695",
-                "primaryPosition": {
-                  "code": "6",
-                  "name": "Shortstop",
-                  "type": "Infielder",
-                  "abbreviation": "SS"
-                },
-                "nameFirstLast": "Geraldo Perdomo",
-                "nameSlug": "geraldo-perdomo-672695"
-              }
-            }
-          },
-          {
-            "event_id": "award:2026:NLGG:694192:winner",
-            "head": "ジャクソン・チョーリオ｜ナ・リーグのゴールドグラブ・左翼手",
-            "body": "ジャクソン・チョーリオは2026年のナ・リーグのゴールドグラブを受賞しました",
-            "name": "ジャクソン・チョーリオ",
-            "japanese": false,
-            "source": "https://statsapi.mlb.com/api/v1/awards/NLGG/recipients?season=2026",
-            "raw": {
-              "id": "NLGG",
-              "name": "Rawlings NL Gold Glove",
-              "date": "2026-11-01",
-              "season": "2026",
-              "team": {
-                "id": 158,
-                "link": "/api/v1/teams/158"
-              },
-              "player": {
-                "id": 694192,
-                "link": "/api/v1/people/694192",
-                "primaryPosition": {
-                  "code": "7",
-                  "name": "Outfielder",
-                  "type": "Outfielder",
-                  "abbreviation": "LF"
-                },
-                "nameFirstLast": "Jackson Chourio",
-                "nameSlug": "jackson-chourio-694192"
-              }
-            }
-          }
-        ]
-      }
     }
-  ],
-  "state": "ready"
+  ]
 }

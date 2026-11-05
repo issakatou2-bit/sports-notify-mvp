@@ -1,10 +1,14 @@
 {
   "events": [
+    "award:2026:ALGG:572233:winner",
     "award:2026:ALGG:641355:winner",
     "award:2026:ALGG:670764:winner",
+    "award:2026:ALGG:676440:winner",
     "award:2026:ALGG:677649:winner",
     "award:2026:ALGG:677800:winner",
     "award:2026:ALGG:678882:winner",
+    "award:2026:ALGG:693307:winner",
+    "award:2026:ALGG:702284:winner",
     "award:2026:ALGG:702332:winner",
     "award:2026:NLGG:608324:winner",
     "award:2026:NLGG:621566:winner",
@@ -18,8 +22,17 @@
     "award:2026:NLGG:694192:winner",
     "calendar:finalists",
     "calendar:free-agency",
+    "calendar:gm",
     "calendar:gold-glove",
+    "calendar:manager",
+    "calendar:platinum",
     "calendar:qo-offer",
+    "calendar:roy",
+    "market:ito-posting-open-20261105:facts:approve",
+    "market:ito-posting-open-20261105:facts:award",
+    "market:ito-posting-open-20261105:facts:open",
+    "market:ito-posting-open-20261105:facts:stats",
+    "market:ito-posting-open-20261105:reports:lockout",
     "market:sato-posting-open-20261103:facts:open",
     "market:sato-posting-open-20261103:facts:return",
     "market:sato-posting-open-20261103:facts:stats",
@@ -62,6 +75,16 @@
       "style": "v3"
     },
     "offseason_awards_2026_efb99c6ad236": {
+      "style": "v3"
+    },
+    "offseason_market_2026_445c0377f7b4": {
+      "style": "v3",
+      "series_number": 4
+    },
+    "offseason_awards_2026_f545f2ea1feb": {
+      "style": "v3"
+    },
+    "offseason_schedule_2026_ac9791bce907": {
       "style": "v3"
     }
   }
