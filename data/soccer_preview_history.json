@@ -1023,5 +1023,113 @@
         }
       }
     ]
+  },
+  "2026-11-05": {
+    "day": "2026-11-05",
+    "video_id": "AvHSzg-Vuuo",
+    "title": "鎌田が今季FPL集計3アシスト｜パレス対ホッフェンハイム｜ヨーロッパリーグ #Shorts",
+    "published_at": "2026-11-05T10:12:33.379786+00:00",
+    "binding": {
+      "material_sha256": "0582276d3b99a475c4e20420f197ff8a00c7d2b2a0cd4a8ef4bdf7349efeb34f",
+      "narration_sha256": "f21869091085c8f6a4348871bcfa5c61093fa3c91271e5e37bd0bb9a45f96887"
+    },
+    "games": [
+      {
+        "game_id": "espn-401915526",
+        "espn_event_id": "401915526",
+        "league": "ヨーロッパリーグ",
+        "competition_code": "EL",
+        "home": "Crystal Palace FC",
+        "away": "TSG 1899 Hoffenheim",
+        "start_utc": "2026-11-06T02:45:00+09:00",
+        "reasons": [],
+        "expectation": null,
+        "spoken": "日本時間2時45分、クリスタルパレス対ホッフェンハイム。クリスタルパレスの登録メンバーには、鎌田大地が入っています。ホッフェンハイムの登録メンバーには、町田浩樹が入っています。",
+        "standings": {
+          "home": {
+            "as_of": "2026-11-05T09:53:48.574581+00:00",
+            "competition": "EL",
+            "season": null
+          },
+          "away": {
+            "as_of": "2026-11-05T09:53:48.574581+00:00",
+            "competition": "EL",
+            "season": null
+          }
+        }
+      },
+      {
+        "game_id": "espn-401915537",
+        "espn_event_id": "401915537",
+        "league": "ヨーロッパリーグ",
+        "competition_code": "EL",
+        "home": "Real Sociedad de Fútbol",
+        "away": "Olympique Lyonnais",
+        "start_utc": "2026-11-06T02:45:00+09:00",
+        "reasons": [],
+        "expectation": null,
+        "spoken": "日本時間2時45分、レアル・ソシエダ対リヨン。レアル・ソシエダの登録メンバーには、久保建英が入っています。",
+        "standings": {
+          "home": {
+            "as_of": "2026-11-05T09:53:48.574581+00:00",
+            "competition": "EL",
+            "season": null
+          },
+          "away": {
+            "as_of": "2026-11-05T09:53:48.574581+00:00",
+            "competition": "EL",
+            "season": null
+          }
+        }
+      },
+      {
+        "game_id": "espn-401915825",
+        "espn_event_id": "401915825",
+        "league": "カンファレンスリーグ",
+        "competition_code": "UECL",
+        "home": "Trabzonspor",
+        "away": "SC Freiburg",
+        "start_utc": "2026-11-06T02:45:00+09:00",
+        "reasons": [],
+        "expectation": null,
+        "spoken": "日本時間2時45分、トラブゾンスポル対フライブルク。フライブルクの登録メンバーには、鈴木唯人、後藤啓介、山本理仁が入っています。",
+        "standings": {
+          "home": {
+            "as_of": "2026-11-05T09:53:48.574581+00:00",
+            "competition": "UECL",
+            "season": null
+          },
+          "away": {
+            "as_of": "2026-11-05T09:53:48.574581+00:00",
+            "competition": "UECL",
+            "season": null
+          }
+        }
+      },
+      {
+        "game_id": "espn-401915821",
+        "espn_event_id": "401915821",
+        "league": "カンファレンスリーグ",
+        "competition_code": "UECL",
+        "home": "Getafe CF",
+        "away": "Brighton & Hove Albion FC",
+        "start_utc": "2026-11-06T05:00:00+09:00",
+        "reasons": [],
+        "expectation": null,
+        "spoken": "日本時間5時、ヘタフェ対ブライトン。",
+        "standings": {
+          "home": {
+            "as_of": "2026-11-05T09:53:48.574581+00:00",
+            "competition": "UECL",
+            "season": null
+          },
+          "away": {
+            "as_of": "2026-11-05T09:53:48.574581+00:00",
+            "competition": "UECL",
+            "season": null
+          }
+        }
+      }
+    ]
   }
 }

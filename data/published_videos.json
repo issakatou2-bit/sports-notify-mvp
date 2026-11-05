@@ -9314,6 +9314,55 @@
       },
       "host_fallback_reason": null,
       "privacy": "public"
+    },
+    "2026-11-05": {
+      "video_id": "AvHSzg-Vuuo",
+      "url": "https://youtu.be/AvHSzg-Vuuo",
+      "title": "鎌田が今季FPL集計3アシスト｜パレス対ホッフェンハイム｜ヨーロッパリーグ #Shorts",
+      "published_at": "2026-11-05T10:12:33.379786+00:00",
+      "publish_at": "2026-11-05T10:30:00Z",
+      "preview_binding": {
+        "material_sha256": "0582276d3b99a475c4e20420f197ff8a00c7d2b2a0cd4a8ef4bdf7349efeb34f",
+        "narration_sha256": "f21869091085c8f6a4348871bcfa5c61093fa3c91271e5e37bd0bb9a45f96887"
+      },
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-05",
+        "enabled": true,
+        "assigned": "generic",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false,
+        "source": "post_common.lineup:daily_soccer",
+        "next_date": "2026-11-06",
+        "next_time": "19:30",
+        "next_name": "欧州サッカー"
+      },
+      "duration_seconds": 54.47,
+      "short_information_count": 4,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-11-05",
+        "kind": "daily_soccer",
+        "phase": 1,
+        "planned_host": "ui",
+        "rule": "half-jst-week-v1",
+        "week": 43,
+        "weekday": 3
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-11-05T10:02:51.618724+00:00",
+        "comparison_eligible": false,
+        "label": "予定めたん（雨衣不可のため）",
+        "mode": "live",
+        "planned_host": "metan",
+        "reason": "ui_deadline_crosses_live",
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
     }
   },
   "weekly": {
