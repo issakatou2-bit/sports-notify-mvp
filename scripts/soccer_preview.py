@@ -45,6 +45,39 @@ from notability_engine import (  # noqa: E402
 # 3節あるとカードの当たり外れがならされ、かつリクエスト数が増えすぎない。
 EARLY_MATCHDAYS = 3
 
+
+def fetch_preview_context(games, api_key):
+    """日次選定後の最大2C+N要求。拒否されたhead2headは再要求しない。"""
+    import time
+    if not api_key:
+        return {}
+    contexts = {}
+    cache = {}
+    def get(path, params=None):
+        # 他の取得処理直後にも余裕を置く。10回/分を超える連打をしない。
+        time.sleep(6.1)
+        url = FOOTBALL_DATA_BASE+path
+        try:
+            payload = _football_data_get(url, headers=_headers(api_key), params=params).json()
+            return dict(source=url, params=params or {}, retrieved_at=dt.datetime.now(dt.timezone.utc).isoformat(), payload=payload)
+        except Exception:
+            # 例外文字列には認証情報が含まれ得るので表示しない。
+            return {}
+    for game in games:
+        code = game.get('competition_code')
+        if code in SOCCER_COMPETITIONS:
+            if code not in cache:
+                cache[code] = dict(standings=get(f'/competitions/{code}/standings'),
+                                   finished=get(f'/competitions/{code}/matches', {'status': 'FINISHED'}))
+            context = dict(cache[code])
+        else:
+            context = {}
+        ident = str(game.get('game_id', ''))
+        if ident.isdigit():
+            context['h2h'] = get(f'/matches/{ident}/head2head', {'limit': 10})
+        contexts[ident] = context
+    return contexts
+
 # 「注目カード」を選ぶための重み。
 # 昨季順位が上位同士ほど高く、日本人選手が絡むと加点する。
 # 開幕前は今季の順位が存在しないので、昨季順位以外に序列の手掛かりが無い。
@@ -107,6 +140,10 @@ def fetch_competition(code: str, api_key: str) -> dict:
             f"{FOOTBALL_DATA_BASE}/competitions/{code}/matches", headers=h
         ).json()
         matches = data.get("matches", [])
+        out.setdefault('preview_angle_context', {})['finished'] = dict(
+            source=f'{FOOTBALL_DATA_BASE}/competitions/{code}/matches',
+            retrieved_at=dt.datetime.now(dt.timezone.utc).isoformat(),
+            payload=dict(matches=[m for m in matches if m.get('status') == 'FINISHED']))
     except Exception as e:  # noqa: BLE001
         print(f"[warn] {code}: 日程を取得できませんでした ({e})")
         matches = []
@@ -134,6 +171,9 @@ def fetch_competition(code: str, api_key: str) -> dict:
             f"{FOOTBALL_DATA_BASE}/competitions/{code}/standings",
             headers=h).json()
         out["table"] = _table_rows(st)
+        out.setdefault('preview_angle_context', {})['standings'] = dict(
+            source=f'{FOOTBALL_DATA_BASE}/competitions/{code}/standings',
+            retrieved_at=dt.datetime.now(dt.timezone.utc).isoformat(), payload=st)
         print(f"[info] {code}: 今季の順位表 {len(out['table'])}件")
     except Exception as e:  # noqa: BLE001
         print(f"[info] {code}: 今季順位は取得できませんでした ({e})")
