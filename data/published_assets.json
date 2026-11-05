@@ -1555,6 +1555,58 @@
       "duration_seconds": 33.42,
       "short_information_count": 4,
       "short_content_policy": "short-content-20261027-v1"
+    },
+    "season_win_2026_673548_hitting": {
+      "video_id": "KNNWxoUTZbQ",
+      "url": "https://youtu.be/KNNWxoUTZbQ",
+      "privacy": "public",
+      "published_at": "2026-11-05T06:37:45.142426+00:00",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-05",
+        "enabled": true,
+        "assigned": "generic",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false,
+        "source": "post_common.lineup:daily_soccer",
+        "next_date": "2026-11-06",
+        "next_time": "19:30",
+        "next_name": "欧州サッカー"
+      },
+      "player_ids": [
+        "673548"
+      ],
+      "publish_at": "2026-11-05T07:30:00Z",
+      "duration_seconds": 35.25,
+      "short_information_count": 3,
+      "short_content_policy": "short-content-20261027-v1"
+    },
+    "season_month_2026_673513_pitching": {
+      "video_id": "bhqTFTA0o_I",
+      "url": "https://youtu.be/bhqTFTA0o_I",
+      "privacy": "public",
+      "published_at": "2026-11-05T06:43:22.575394+00:00",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-05",
+        "enabled": true,
+        "assigned": "generic",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false,
+        "source": "post_common.lineup:daily_soccer",
+        "next_date": "2026-11-06",
+        "next_time": "19:30",
+        "next_name": "欧州サッカー"
+      },
+      "player_ids": [
+        "673513"
+      ],
+      "publish_at": "2026-11-05T13:00:00Z",
+      "duration_seconds": 35.71,
+      "short_information_count": 3,
+      "short_content_policy": "short-content-20261027-v1"
     }
   }
 }

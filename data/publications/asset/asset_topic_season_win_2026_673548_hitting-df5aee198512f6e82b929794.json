@@ -1,0 +1,49 @@
+{
+  "publication_id": "asset:topic:season_win_2026_673548_hitting",
+  "domain": "asset",
+  "kind": "topic",
+  "key_parts": {
+    "topic": "season_win_2026_673548_hitting"
+  },
+  "version": 1,
+  "history": [
+    {
+      "source": "published_assets/assets/season_win_2026_673548_hitting",
+      "service": "youtube",
+      "video_id": "KNNWxoUTZbQ",
+      "state": "scheduled",
+      "scheduled_at": "2026-11-05T07:30:00Z",
+      "event_day": null,
+      "material_day": null,
+      "edition_day": "2026-11-05",
+      "run_at": "2026-11-05T06:37:45.142426+00:00",
+      "details": {
+        "privacy": "public"
+      },
+      "run_id": "41980604478",
+      "attempt": "1",
+      "recorded_at": "2026-11-05T06:37:45.151043+00:00",
+      "fingerprint": "f8e66de83d7fe3520571842b33d82ac2fc9364a51190d07f521692ddbbaeb13a",
+      "event_id": "17e7d4cb8bbd16caa04a73b6debe481e48e4ed9035b7691bd06b57ba4eacab23"
+    },
+    {
+      "source": "published_videos/asset/season_win_2026_673548_hitting",
+      "service": "youtube",
+      "video_id": "KNNWxoUTZbQ",
+      "state": "scheduled",
+      "scheduled_at": "2026-11-05T07:30:00Z",
+      "event_day": null,
+      "material_day": null,
+      "edition_day": "2026-11-05",
+      "run_at": "2026-11-05T06:37:45.162668+00:00",
+      "details": {
+        "privacy": "public"
+      },
+      "run_id": "41980604478",
+      "attempt": "1",
+      "recorded_at": "2026-11-05T06:37:45.182117+00:00",
+      "fingerprint": "c80c3017fc19b53ce3c6cdea79a1013b6bcda6486bd8555eb27cac56148e2bdf",
+      "event_id": "e414e76a6bfd5988f789b61f91b6c90cab9598d55d7822d391d3085d9831d0b4"
+    }
+  ]
+}
