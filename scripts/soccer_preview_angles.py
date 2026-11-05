@@ -68,7 +68,7 @@ def ledger_rows(result, game, generated):
     return [row for key, row in sorted(found.items()) if key not in ambiguous]
 
 
-def attach(data, fetch=False, results=None):
+def attach(data, fetch=False, results=None, espn_tables=None):
     """選定後に一度保存する。描画/検査から通信しない。入力・台帳は不変。"""
     result = copy.deepcopy(data)
     generated = result['generated_at']
@@ -81,6 +81,10 @@ def attach(data, fetch=False, results=None):
         contexts = soccer_preview.fetch_preview_context(games, key) if key else {}
     else:
         contexts = {}
+    import soccer_preview_espn as espn
+    if espn_tables is None:
+        espn_tables = espn.fetch_tables(games) if fetch else {}
+    espn_contexts = espn.attach(games, espn_tables)
     results = read(ROOT/'data/soccer_results.json') if results is None else results
     saved = read(ROOT/'data/soccer_preview.json')
     cached = {c.get('code'): c.get('preview_angle_context') or {} for c in saved.get('competitions', [])}
@@ -90,8 +94,11 @@ def attach(data, fetch=False, results=None):
             if fresh(value.get('retrieved_at'), generated):
                 ctx.setdefault(name, value)
         ctx.update(contexts.get(str(g['game_id']), {}))
+        if str(g['game_id']) in espn_contexts and espn_contexts[str(g['game_id'])]['tables']:
+            ctx['espn'] = espn_contexts[str(g['game_id'])]
         times = [generated]+[v['retrieved_at'] for v in contexts.get(str(g['game_id']), {}).values() if v]
-        ctx.setdefault('evaluated_at', max(times, key=interest.timestamp))
+        times += [v['retrieved_at'] for v in (ctx.get('espn') or {}).get('tables', {}).values() if v.get('retrieved_at')]
+        ctx['evaluated_at'] = max(times, key=interest.timestamp)
         # 保存試合の順位は、その試合の大会として取得した値だけを用いる。
         ctx.setdefault('snapshot', dict(source=g.get('fixture_sources') or [result.get('source') or 'football-data.org'],
                                        retrieved_at=generated, competition=g.get('competition_code') or g.get('league')))
@@ -99,8 +106,8 @@ def attach(data, fetch=False, results=None):
                                      rows=ledger_rows(results, g, generated)))
         ctx.setdefault('membership', dict(source='soccer_games.json.jp_by_side / JP_PLAYERS_SOCCER', retrieved_at=generated))
         g['preview_angles'] = angles(g, generated)
-        point = next((a for a in g['preview_angles'] if a['kind']=='points'), None)
-        if point and ctx.get('standings'):
+        point = next((a for a in g['preview_angles'] if a['kind'] in ('points','european_points')), None)
+        if point:
             for side, value in point['values']['rows'].items():
                 g[side+'_standing'] = dict(value)
     result['preview_angles_version'] = 1
@@ -196,7 +203,8 @@ def angles(game, generated):
     # 既存の公式FPL保存分も補う。国内リーグの個人成績と大会の戦績を区別する。
     personal = interest.expectation(game)
     if personal and personal.get('japanese'):
-        add('season_player', 82, personal['name']+'は'+interest.stats_label(personal)+'で'+interest.player_numbers(personal)+'です。',
+        label = '今季のプレミアリーグで' if personal['source'] == 'https://fantasy.premierleague.com/api/bootstrap-static/' else '今季は'
+        add('season_player', 82, personal['name']+'は'+label+interest.player_numbers(personal).replace(' ', '')+'です。',
             dict(source=personal['source'], retrieved_at=personal['as_of']),
             name=personal['name'], goals=personal.get('goals'), assists=personal.get('assists'))
     ledger = ctx.get('ledger') or {}
@@ -230,6 +238,11 @@ def angles(game, generated):
     from soccer_selected_preview import preview_details
     for text in preview_details(game):
         add('previous_season', 40, text+'。', dict(source='soccer_games.json.reasons.quality', retrieved_at=snap.get('retrieved_at')))
+    import soccer_preview_espn
+    espn_facts = soccer_preview_espn.facts(game, generated)
+    if any(r['kind'] in ('points','european_points') for r in espn_facts):
+        output = [r for r in output if r['kind'] not in ('points','standing')]
+    output.extend(espn_facts)
     output.sort(key=lambda r: (-r['score'], r['kind'], r['text']))
     return output
 
@@ -238,7 +251,7 @@ def chosen(game, generated):
     result = []
     kinds = set()
     for row in angles(game, generated):
-        if row['kind'] in kinds or row['kind'] == 'standing' and 'points' in kinds:
+        if row['kind'] in kinds or row['kind'] == 'standing' and kinds.intersection({'points','european_points'}):
             continue
         kinds.add(row['kind']); result.append(row)
         if len(result) == 3:
@@ -256,8 +269,9 @@ def headline(game, generated):
     if not rows:
         return subject+'が'+opponent+'と対戦'
     row = rows[0]; v = row['values']
-    if row['kind'] == 'points':
-        return subject+f'が勝点{v["gap"]}差の{v["rows"][other]["rank"]}位'+opponent+'と対戦'
+    if row['kind'] in ('points', 'european_points'):
+        scope = v['league']+'で' if row['kind'] == 'european_points' else ''
+        return subject+'が'+scope+f'勝点{v["gap"]}差の{v["rows"][other]["rank"]}位'+opponent+'と対戦'
     if row['kind'] == 'japanese_pair':
         return subject+'が'+'・'.join(people[other])+'所属の'+opponent+'と対戦'
     if row['kind'] == 'form':
@@ -284,6 +298,14 @@ def body(game, generated, opening):
     # 角度が欠測でも、所属の事実は言える。出場予定には変換しない。
     people = selection.visible_members(game)
     return opening+''.join(clubs.display(game[s+'_team_name'])+'には'+'・'.join(people[s])+'が所属しています。' for s in people if people[s])
+
+
+def preview_title(data):
+    selected = (data.get('preview_selection') or {}).get('selected_ids') or []
+    matches = [g for g in data.get('games', []) if selected and str(g.get('game_id')) == str(selected[0])]
+    if len(matches) != 1:
+        raise ValueError('予告の題を選定試合へ照合できません')
+    return '【欧州サッカー】'+headline(matches[0], data['generated_at'])+' #Shorts'
 
 
 def check(document):

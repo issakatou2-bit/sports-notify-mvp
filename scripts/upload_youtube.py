@@ -1778,10 +1778,16 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
         _title_v2_data = _json_or_empty(games_path)
         if kind == 'soccer_results':
             title = soccer_title_v2.results_title(_title_v2_data)
-        else:
+        elif _title_v2_data.get('preview_angles_version') != 1:
             _focus = soccer_title_v2.preview_head(_title_v2_data)
             if _focus:
                 title = soccer_title_v2.title(_focus['head'], _focus['league'])
+
+    if kind == 'daily' and sport == 'soccer':
+        _angle_data = _title_v2_data or _json_or_empty(games_path)
+        if _angle_data.get('preview_angles_version') == 1:
+            import soccer_preview_angles
+            title = soccer_preview_angles.preview_title(_angle_data)
 
     mlb_title_v2 = (os.environ.get('COLLESPO_MLB_TITLE_V2') == 'on'
                     and kind == 'morning' and morning_mode in ('press', 'voices'))

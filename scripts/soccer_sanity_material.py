@@ -18,7 +18,8 @@ def compact(data):
     if data.get('preview_angles_version') == 1:
         for original, game in zip(data.get('games', []), games):
             for key in ('preview_angle_context','preview_angles','jp_by_side','preview_out_names',
-                        'preview_name_fallbacks','competition_code','season','phase','phase_source','reasons'):
+                        'preview_name_fallbacks','competition_code','season','phase','phase_source','reasons',
+                        'espn_event_id','home_team_id','away_team_id','espn_team_ids'):
                 if key in original: game[key] = original[key]
     competitions = [{k: c[k] for k in ('code', 'name_jp', 'season', 'stale', 'table',
                      'last_season', 'last_season_year', 'lines', 'jp') if k in c}

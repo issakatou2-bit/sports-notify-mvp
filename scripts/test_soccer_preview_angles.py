@@ -165,7 +165,7 @@ class Angles(unittest.TestCase):
         g['season_players']=[dict(name='三笘薫',club='ブライトン',scope='season',goals=3,assists=1,minutes=600,
                                   source='https://fantasy.premierleague.com/api/bootstrap-static/',as_of=NOW)]
         data=self.attached(g);row=data['games'][0]['preview_angles'][0]
-        self.assertEqual(row['kind'],'season_player');self.assertIn('今季FPL集計',row['text'])
+        self.assertEqual(row['kind'],'season_player');self.assertIn('今季のプレミアリーグで3得点1アシスト',row['text'])
         self.assertNotIn('ヨーロッパリーグ',row['text']);self.assertIn('FPL',data['source'])
         g['season_players'][0]['as_of']='2026-10-01T10:00:00Z'
         self.assertEqual(self.attached(g)['games'][0]['preview_angles'],[])

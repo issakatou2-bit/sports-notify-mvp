@@ -31,6 +31,7 @@ def parse(board,competition):
             team=sides[side]['team'];row=clubs.lookup(team.get('displayName')) or clubs.lookup(team.get('name'))
             game[side+'_team_name']=row['id'] if row else team['displayName']
             game[side+'_team_id']='espn-'+str(team['id'])
+        game['espn_team_ids']={s:game[s+'_team_id'] for s in ('home','away')}
         # 試合材料の明示したラウンドだけを読む。月/日付から段階を推測しない。
         # 杯戦のラウンドは type/notes ではなく season.slug（second-round 等）に入る（10/28 DFB・国王杯で確認）。
         texts=[str((comp.get('type') or {}).get('text',''))]+[str(n.get('headline','')) for n in comp.get('notes',[])]
@@ -73,7 +74,7 @@ def supplement(data,boards):
             old=seen.get(key(g))
             if old:
                 old['fixture_sources']=sorted(set(old.get('fixture_sources') or ['football-data.org'])|{'ESPN'})
-                for name in ('espn_event_id','phase','phase_source','competition_code'):
+                for name in ('espn_event_id','espn_team_ids','phase','phase_source','competition_code'):
                     if name in g:old[name]=g[name]
             else:data['games'].append(g);seen[key(g)]=g
     return data
