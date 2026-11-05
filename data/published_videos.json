@@ -20734,6 +20734,62 @@
       },
       "host_fallback_reason": null,
       "privacy": "public"
+    },
+    "2026-11-04": {
+      "video_id": "5AURkppyKiw",
+      "url": "https://youtu.be/5AURkppyKiw",
+      "title": "佐野航大がゴール｜PSV対クラブ・ブルッヘ 1-2 #Shorts",
+      "published_at": "2026-11-05T04:03:18.512160+00:00",
+      "publish_at": "2026-11-05T04:40:00Z",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-05",
+        "enabled": true,
+        "assigned": "generic",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false,
+        "source": "post_common.lineup:daily_soccer",
+        "next_date": "2026-11-06",
+        "next_time": "19:30",
+        "next_name": "欧州サッカー"
+      },
+      "duration_seconds": 30.4,
+      "short_information_count": 7,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-11-05",
+        "kind": "soccer_results",
+        "phase": 1,
+        "planned_host": "ui",
+        "rule": "half-jst-week-v1",
+        "week": 43,
+        "weekday": 3
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-11-05T03:57:45.292546+00:00",
+        "comparison_eligible": false,
+        "planned_host": "metan",
+        "previous_attempt": {
+          "action": "rebuild_metan",
+          "checked_at": "2026-11-05T03:56:41.345474+00:00",
+          "comparison_eligible": true,
+          "failed_at": "2026-11-05T03:57:45.288941+00:00",
+          "failure_reason": "ui_order_discarded",
+          "label": "予定雨衣",
+          "mode": "live",
+          "planned_host": "ui",
+          "reason": null,
+          "status": "held",
+          "version": 1
+        },
+        "reason": "ui_rebuilt_after_hold",
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
     }
   },
   "soccer_goal_short": {

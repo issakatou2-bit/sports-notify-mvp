@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "date_jst": "2026-11-04",
-  "generated_at": "2026-11-05T02:30:43.459199+00:00",
+  "generated_at": "2026-11-05T03:55:33.192131+00:00",
   "source": "ESPN・football-data.org",
   "games": [
     {
@@ -419,6 +419,10 @@
     {
       "event_id": "401915551",
       "reason": "日本人選手を当日の登録名簿で照合できず"
+    },
+    {
+      "event_id": "401933098",
+      "reason": "終了実時刻なし"
     }
   ],
   "preview_expectation_results": {},
