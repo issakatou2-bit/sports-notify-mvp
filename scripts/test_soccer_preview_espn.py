@@ -26,7 +26,8 @@ def entry(ident, rank, points, name='intentionally wrong name'):
 
 
 def table(code='EL'):
-    rows=[entry(10,4,7),entry(20,9,6)]+[entry(100+i,i+1,6) for i in range(36) if i+1 not in (4,9)]
+    # 他のクラブの勝点は重ねない（並んだ順位は言わない決まりの試験は別に持つ）。
+    rows=[entry(10,4,7),entry(20,9,6)]+[entry(100+i,i+1,100-i) for i in range(36) if i+1 not in (4,9)]
     return dict(source=espn.BASE+'/'+espn.LEAGUES[code][0]+'/standings',slug=espn.LEAGUES[code][0],retrieved_at=NOW,
                 payload=dict(season=dict(year=2026),children=[dict(standings=dict(type=0,entries=rows))]))
 
@@ -54,6 +55,35 @@ class Tests(unittest.TestCase):
             if bad_value=='題':bad['title']=bad['title'].replace('勝点1差','勝点99差')
             if bad_value=='表紙':bad['segments'][0]['text']+='99位'
             self.assertTrue(angles.check(bad),bad_value)
+
+    def test_tied_points_drop_rank_but_keep_points_and_shared_zone(self):
+        # 11/5 UECL：勝点の並ぶトラブゾンスポルが ESPN 4位・UEFA 3位で食い違った。
+        t=table();entries=t['payload']['children'][0]['standings']['entries']
+        entries.append(entry(999,10,6));entries[:]=[e for e in entries if e['team']['id']!='109']
+        g=game();g['preview_angle_context']=dict(espn=espn.attach([g],{'EL':t})['espn-99'])
+        rows=espn.facts(g,NOW);points=next(r for r in rows if r['kind']=='european_points')
+        self.assertIn('リヨンは勝点6で',points['text']);self.assertNotIn('9位',points['text'])
+        self.assertIn('レアル・ソシエダは4位で勝点7',points['text'])
+        g['preview_angle_context']['espn']['tables']['EL']=t
+        raw=dict(generated_at=NOW,games=[game()],preview_selection=dict(selected_ids=['espn-99']))
+        data=angles.attach(raw,results={},espn_tables={'EL':t})
+        title=angles.headline(data['games'][0],NOW)
+        self.assertIn('勝点1差のリヨン',title);self.assertNotIn('9位',title)
+        # 9位と10位が並ぶ：同じ範囲なので範囲だけ言える。8位と9位が並ぶ：範囲が分かれるので言わない。
+        lyon=[r for r in rows if r['kind']=='european_zone' and r['values']['side']=='away']
+        self.assertEqual(len(lyon),1);self.assertIn('リヨンは今、',lyon[0]['text']);self.assertIsNone(lyon[0]['values']['rank'])
+        entries[:]=[e for e in entries if e['team']['id']!='999'];entries.append(entry(999,8,6))
+        entries[:]=[e for e in entries if e['team']['id']!='107']
+        g['preview_angle_context']=dict(espn=espn.attach([g],{'EL':t})['espn-99'])
+        self.assertFalse([r for r in espn.facts(g,NOW) if r['kind']=='european_zone' and r['values']['side']=='away'])
+
+    def test_one_side_facts_use_the_japanese_club(self):
+        g=game();tables={c:table(c) for c in ('EL','PD','FL1')}
+        raw=dict(generated_at=NOW,games=[g],preview_selection=dict(selected_ids=['espn-99']))
+        target=angles.attach(raw,results={},espn_tables=tables)['games'][0]
+        picked=angles.chosen(target,NOW)
+        self.assertTrue(picked)
+        self.assertFalse([r for r in picked if r['values'].get('side')=='away'])
 
     def test_id_binding_not_team_name(self):
         g=game();tables={'EL':table()}
@@ -119,14 +149,16 @@ class Tests(unittest.TestCase):
         import upload_youtube
         g=game();raw=dict(generated_at=NOW,games=[g],preview_selection=dict(selected_ids=['espn-99']))
         data=angles.attach(raw,results={},espn_tables={'EL':table()})
-        doc=preview.program(data)['narration']
         with tempfile.TemporaryDirectory() as folder:
             path=Path(folder)/'material.json';path.write_text(json.dumps(data),encoding='utf8')
-            narr=Path(folder)/'narration.json';narr.write_text(json.dumps(doc),encoding='utf8')
             for value in ('on','off'):
                 with patch.dict(os.environ,COLLESPO_SOCCER_TITLE_V2=value):
+                    doc=angles.preview_title(data)
+                    narr=Path(folder)/'narration.json';narr.write_text(json.dumps(dict(title=doc)),encoding='utf8')
                     meta=upload_youtube.build_metadata(str(path),'11月5日','daily',sport='soccer',narration_path=str(narr))['snippet']
-                self.assertEqual(meta['title'],doc['title'])
+                self.assertEqual(meta['title'],doc)
+                # 切替が入なら題は今の題と同じ短い名前、切なら正式名。
+                self.assertIn('久保ソシエダが' if value=='on' else '久保建英のレアル・ソシエダが',doc)
 
 
 if __name__=='__main__':

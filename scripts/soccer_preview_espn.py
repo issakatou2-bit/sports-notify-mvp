@@ -142,25 +142,38 @@ def facts(game, generated):
                 continue
             parsed = [r for e in group if (r := row(e))]
             hits = {s: [r for r in parsed if r['team_id'] == ctx['binding']['team_ids'][s]] for s in names}
+            # 勝点が並ぶクラブの順位は、ESPN と UEFA 公式で並べ方が違うことがある
+            # （11/5 UECL のトラブゾンスポルは ESPN 4位・UEFA 3位）。並びの順位は言わない。
+            def tied(r):
+                return sum(1 for x in parsed if x['points'] == r['points']) > 1
+            def tie_ranks(r):
+                return [x['rank'] for x in parsed if x['points'] == r['points']]
             if code == game.get('competition_code'):
                 if not all(len(hits[s]) == 1 for s in names):
                     continue
-                pair = {s: hits[s][0] for s in names}
+                pair = {s: dict(hits[s][0], tied=tied(hits[s][0])) for s in names}
                 if pair['home']['rank'] == pair['away']['rank']:
                     continue
                 gap = abs(pair['home']['points']-pair['away']['points'])
-                text = '、'.join(f'{names[s]}は{pair[s]["rank"]}位で勝点{pair[s]["points"]}' for s in names)
+                text = '、'.join(f'{names[s]}は' + ('' if pair[s]['tied'] else f'{pair[s]["rank"]}位で') + f'勝点{pair[s]["points"]}' for s in names)
                 add('european_points' if code in EUROPE else 'points', 120 if code in EUROPE else 100,
-                    f'{league}では{text}。両チームの勝点差は{gap}です。', gap=gap, rows=pair, league=league)
+                    f'{league}では{text}で、両チームの勝点差は{gap}です。', gap=gap, rows=pair, league=league)
                 # 36クラブの単一表、league-phaseの季だけ。現在の位置を進出確定とは呼ばない。
                 if code in EUROPE and season_year == 2026 and game.get('phase') != 'knockout' and len(parsed) == 36 and len({r['team_id'] for r in parsed}) == 36:
+                    def zone_of(rank):
+                        return '16強へ直接進む1位から8位の範囲' if rank <= 8 else 'プレーオフに進む9位から24位の範囲' if rank <= 24 else 'プレーオフ圏の24位より下'
                     for side in names:
                         rank = pair[side]['rank']
-                        zone = '16強へ直接進む1位から8位の範囲' if rank <= 8 else 'プレーオフに進む9位から24位の範囲' if rank <= 24 else 'プレーオフ圏の24位より下'
-                        add('european_zone', 110, f'{names[side]}の現在の{rank}位は、{league}で{zone}です。', side=side, rank=rank, rule_source=RULE_SOURCE)
+                        if pair[side]['tied']:
+                            # 並んだ全員が同じ範囲にいる時だけ、順位を言わずに範囲を言う。
+                            if len({zone_of(x) for x in tie_ranks(pair[side])}) == 1:
+                                add('european_zone', 110, f'{names[side]}は今、{league}で{zone_of(rank)}にいます。', side=side, rank=None, rule_source=RULE_SOURCE)
+                            continue
+                        add('european_zone', 110, f'{names[side]}は今{rank}位で、{league}で{zone_of(rank)}にいます。', side=side, rank=rank, rule_source=RULE_SOURCE)
             elif code not in EUROPE:
                 for side in names:
                     if domestic_code(game, side) == code and len(hits[side]) == 1:
                         r = hits[side][0]
-                        add('domestic_'+side, 55, f'{names[side]}は{league}で現在{r["rank"]}位、勝点{r["points"]}です。', side=side, **r)
+                        rank_text = '' if tied(r) else f'現在{r["rank"]}位、'
+                        add('domestic_'+side, 55, f'{names[side]}は{league}で{rank_text}勝点{r["points"]}です。', side=side, **dict(r, tied=tied(r)))
     return result

@@ -250,8 +250,13 @@ def angles(game, generated):
 def chosen(game, generated):
     result = []
     kinds = set()
+    # 片側だけの事実は日本人のいるクラブの分を使う（相手だけの順位や調子を主役にしない）。
+    people = selection.visible_members(game)
+    jp_sides = {s for s in people if people[s]}
     for row in angles(game, generated):
         if row['kind'] in kinds or row['kind'] == 'standing' and kinds.intersection({'points','european_points'}):
+            continue
+        if jp_sides and row['values'].get('side') in ('home', 'away') and row['values']['side'] not in jp_sides:
             continue
         kinds.add(row['kind']); result.append(row)
         if len(result) == 3:
@@ -265,13 +270,21 @@ def headline(game, generated):
     other = 'away' if side == 'home' else 'home'
     subject = (people[side][0]+'の' if people[side] else '')+clubs.display(game[side+'_team_name'])
     opponent = clubs.display(game[other+'_team_name'])
+    import soccer_title_v2
+    if soccer_title_v2.enabled():
+        # 題は今の題と同じ新聞の書き方（「久保ソシエダ」）。本文は正式名のまま（10/10 本人）。
+        who = people[side][0] if people[side] else ''
+        short = soccer_title_v2.player_name(who) if who else ''
+        subject = (short+('の' if short == who else '') if who else '')+soccer_title_v2.club_name(game[side+'_team_name'])
+        opponent = soccer_title_v2.club_name(game[other+'_team_name'])
     rows = chosen(game, generated)
     if not rows:
         return subject+'が'+opponent+'と対戦'
     row = rows[0]; v = row['values']
     if row['kind'] in ('points', 'european_points'):
         scope = v['league']+'で' if row['kind'] == 'european_points' else ''
-        return subject+'が'+scope+f'勝点{v["gap"]}差の{v["rows"][other]["rank"]}位'+opponent+'と対戦'
+        rank = '' if v['rows'][other].get('tied') else f'{v["rows"][other]["rank"]}位'
+        return subject+'が'+scope+f'勝点{v["gap"]}差の{rank}'+opponent+'と対戦'
     if row['kind'] == 'japanese_pair':
         return subject+'が'+'・'.join(people[other])+'所属の'+opponent+'と対戦'
     if row['kind'] == 'form':
