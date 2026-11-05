@@ -2552,7 +2552,7 @@ def set_thumbnail(youtube, thumb, vid, kind, title):
         import thumbnail_pending
         try:
             if thumbnail_pending.remember(error, thumb, vid, kind, title):
-                print("[warn] 使用枠切れのサムネイルを付け直し用に保存しました", file=sys.stderr)
+                print("[warn] サムネイルを夜の付け直し用に保存しました", file=sys.stderr)
         except (OSError, ValueError, TypeError) as pending_error:
             print(f"[warn] サムネイルの付け直し記録を保存できません: "
                   f"{type(pending_error).__name__}", file=sys.stderr)

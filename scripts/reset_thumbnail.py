@@ -42,7 +42,7 @@ def main() -> int:
     if youtube is None:
         return 1
     from googleapiclient.http import MediaFileUpload
-    from thumbnail_pending import quota_exceeded
+    from thumbnail_pending import forbidden, quota_exceeded
 
     # videos.list は他人の公開動画も返すので、存在確認だけでは所有確認にならない。
     try:
@@ -84,6 +84,11 @@ def main() -> int:
             if args.quota_warning and quota_exceeded(error):
                 print("[warn] 使用枠切れのため本日の付け直しを終了します。翌日へ持ち越しません")
                 return 0
+            # 1本が「設定できない」のままでも、残りの動画は付け直す。失敗は赤で残す。
+            if args.quota_warning and forbidden(error):
+                print(f"[error] まだ設定できません: {vid}", file=sys.stderr)
+                failed += 1
+                continue
             raise
         print(f"[info] サムネイルを設定しました: {vid}")
     if not args.write:
