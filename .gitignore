@@ -57,3 +57,7 @@ collespo-demo/
 /assets/illustrations/*
 !/assets/illustrations/SOURCES.json
 !/assets/illustrations/README.md
+
+# 自前のAI挿絵は本体も共有する。配布元の画像は上の除外を維持。
+!/assets/illustrations/ai/
+!/assets/illustrations/ai/*.png

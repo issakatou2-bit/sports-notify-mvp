@@ -26,6 +26,7 @@ class ArtTest(unittest.TestCase):
         self.addCleanup(self.root_patch.stop)
         self.table = []
         self.entry = json.loads(Path('scripts/fixtures/offseason-market/example.json').read_text(encoding='utf-8'))['entries'][0]
+        self.entry['title'] = '佐藤輝明 市場の動き'
 
     def add(self, name='diagram.png', license_name='CC0', **extra):
         Image.new('RGBA', (80,60), (40+len(self.table),130,180,255)).save(self.root/name)
@@ -197,6 +198,109 @@ class ArtTest(unittest.TestCase):
             self.assertGreaterEqual(cards.item_pages(spec,head,body),2)
         self.assertEqual(len({tuple(b) for b in boxes}),1)
         self.assertLess(min(fades),max(fades))
+
+
+class AiArtTest(unittest.TestCase):
+    def setUp(self):
+        self.root = Path(tempfile.mkdtemp(prefix='market-ai-test-'))
+        (self.root/'ai').mkdir()
+        image = Image.new('RGBA', (64, 64), (0, 0, 0, 0))
+        image.paste((60, 130, 120, 255), (10, 10, 50, 50))
+        self.path = self.root/'ai/contract.png'
+        image.save(self.path)
+        self.row = dict(filename='ai/contract.png', license=art.AI_LICENSE,
+                        type='illustration', tool='Codex image_gen', generated_on='2026-11-05',
+                        checked_on=str(date.today()), prompt='無地の握手。文字・数字・ロゴなし。',
+                        inspection=dict(text='absent', edges='passed', notes='目視した試験材料'),
+                        sha256=hashlib.sha256(self.path.read_bytes()).hexdigest())
+
+    def resolve(self, row=None):
+        row = self.row if row is None else row
+        return art.resolve(row['filename'], self.root, catalog={row['filename']: row})
+
+    def test_ai_local_only_missing_or_bad_hash_never_downloads(self):
+        with patch.object(art, 'urlopen', side_effect=AssertionError('AI画像を取得した')):
+            self.assertTrue(self.resolve()['available'])
+            missing = dict(self.row, filename='ai/missing.png')
+            self.assertFalse(self.resolve(missing)['available'])
+            with self.assertRaisesRegex(ValueError, 'sha256'):
+                self.resolve(dict(self.row, sha256='0'*64))
+
+    def test_ai_required_fields_and_manual_review(self):
+        for key in ('tool', 'generated_on', 'checked_on', 'prompt', 'sha256', 'inspection', 'type'):
+            with self.subTest(key=key):
+                row = copy.deepcopy(self.row);row.pop(key)
+                with self.assertRaises(ValueError):self.resolve(row)
+        for inspection in ({'text':'present','edges':'passed','notes':'文字あり'},
+                           {'text':'absent','edges':'failed','notes':'光あり'}):
+            with self.assertRaises(ValueError):self.resolve(dict(self.row, inspection=inspection))
+        for key in ('source_url','download_url'):
+            for value in (None, 'https://example.com/image'):
+                with self.assertRaises(ValueError):self.resolve(dict(self.row, **{key:value}))
+        with self.assertRaises(ValueError):self.resolve(dict(self.row, tool='other'))
+        with self.assertRaises(ValueError):self.resolve(dict(self.row, generated_on='2099-01-01'))
+
+    def test_ai_size_format_alpha_and_nested_paths(self):
+        for name in ('ai/../bad.png','ai/ai/bad.png','ai/x.jpg','ai/../../x.png'):
+            with self.assertRaises(ValueError):art.filename(name)
+        for image in (Image.new('RGBA',(64,48)), Image.new('RGB',(64,64)),
+                      Image.new('RGBA',(64,64),(60,130,120,255))):
+            image.save(self.path)
+            self.row['sha256']=hashlib.sha256(self.path.read_bytes()).hexdigest()
+            with self.assertRaises(ValueError):self.resolve()
+        self.path.write_bytes(b'x'*(art.AI_MAX_BYTES+1))
+        self.row['sha256']=hashlib.sha256(self.path.read_bytes()).hexdigest()
+        with self.assertRaisesRegex(ValueError,'1MiB'):self.resolve()
+
+    def test_scene_table_and_unknown(self):
+        for kind, file in art.SCENE_FILES.items():
+            entry=dict(market_kind=kind, facts=[{}], reports=[])
+            self.assertEqual(art.selected_name(entry, entry['facts'][0]),file)
+        for text, expected in [('x-posting-open','posting'),('x-qo-decline','qo'),
+                ('x-fa-open','fa'),('x-contract-sign','contract'),('x-trade','trade'),
+                ('x-award','award'),('x-retire','retirement'),('x-injured-list','injured_list')]:
+            self.assertEqual(art.scene(dict(id=text,title='前年の受賞')) ,expected)
+        self.assertIsNone(art.scene(dict(id='unclassified',title='動き')))
+        self.assertEqual(art.scene(dict(title='FAの手続き')), 'fa')
+        with self.assertRaises(ValueError):art.scene(dict(market_kind='unregistered'))
+
+    def test_explicit_priority_and_first_fact_only(self):
+        entry=dict(market_kind='posting', illustration='contract_sign.png', facts=[{},{}], reports=[{}])
+        self.assertEqual(art.selected_name(entry,entry['facts'][0]),'contract_sign.png')
+        entry['facts'][0]['illustration']='handshake.png'
+        self.assertEqual(art.selected_name(entry,entry['facts'][0]),'handshake.png')
+        self.assertIsNone(art.selected_name(entry,entry['facts'][1]))
+        self.assertIsNone(art.selected_name(entry,entry['reports'][0]))
+        entry.pop('illustration');entry['facts'][0].pop('illustration')
+        self.assertEqual(art.selected_name(entry,entry['facts'][0]),'ai/posting.png')
+        entry['facts'][1]['illustration']='handshake.png'
+        self.assertIsNone(art.selected_name(entry,entry['facts'][0]))
+
+    def test_shipped_assets_and_published_entries(self):
+        with patch.object(art,'urlopen',side_effect=AssertionError('通信した')):
+            catalog=art.ledger()
+            for file in art.SCENE_FILES.values():
+                row=art.resolve(file,catalog=catalog)
+                self.assertTrue(row['available'])
+                self.assertLessEqual(row['path'].stat().st_size,1_000_000)
+        entries=json.loads(Path('data/offseason_market.json').read_text(encoding='utf-8'))['entries']
+        self.assertEqual(len(entries),3)
+        for entry in entries:
+            names=[art.selected_name(entry,r) for group in ('facts','reports') for r in entry[group]]
+            self.assertEqual([n for n in names if n],['handshake.png'])
+
+    def test_automatic_event_roundtrip_without_mutating_material(self):
+        entry=json.loads(Path('scripts/fixtures/offseason-market/example.json').read_text(encoding='utf-8'))['entries'][0]
+        original=copy.deepcopy(entry)
+        spec=market.topic(entry,date(2026,11,3),sample=True)
+        self.assertEqual(entry,original)
+        self.assertEqual(spec['offseason']['events'][0]['illustration'],'ai/posting.png')
+        head,body=spec['items'][0]
+        self.assertEqual(art.for_item(spec,head,body)['filename'],'ai/posting.png')
+        self.assertEqual(art.credits(spec),[])
+        import generate_asset_video as g
+        with patch.dict(g.LIST_TOPICS,{spec['key']:spec}):doc=g.build_narration(spec['key'])
+        self.assertEqual(market.check(doc),[])
 
 
 if __name__=='__main__':
