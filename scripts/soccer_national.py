@@ -283,7 +283,7 @@ def squad(data, material, as_of, page=0, upcoming=None):
         return None
     return dict(version=1,mode='squad',as_of=as_of,source_url=data['source_url'],
         announced_at=data['announced_at'],page=page,total_pages=len(pages),
-        players=selected,window=data['window'],
+        players=selected,window=data['window'],squad_size=len(players),
         next_game=next((g for g in sorted(upcoming or [],key=lambda g:g['start_utc']) if instant(g['start_utc'])>instant(as_of)),None))
 
 
@@ -491,7 +491,11 @@ def segments_for(data):
                 a=instant(stats['as_of']).astimezone(JST)
                 text+=f"今季の{stats['league']}では、"+'、'.join(str(v)+units[k] for k,v in stats['values'].items())+f"。{a.month}月{a.day}日時点です。"
             add('squad',text,player=i)
+        # 27秒に届かない回（成績のないGKの3人など）だけ、発表と次の試合の確定事実を足す。
+        level=data.get('length_level',0)
+        if level>=2 and data.get('squad_size'):add('squad-count',f"今回の招集メンバーは{data['squad_size']}人です。")
         if data.get('next_game'):add('next',kickoff_sentence(data['next_game'],'日本代表の次の試合'))
+        if level>=1 and (data.get('next_game') or {}).get('venue'):add('venue',f"次の試合の会場は{data['next_game']['venue']}です。")
     else:
         raise ValueError('未知の代表番組')
     level=data.get('length_level',0)
