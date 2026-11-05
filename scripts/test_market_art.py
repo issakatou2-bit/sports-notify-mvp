@@ -284,8 +284,10 @@ class AiArtTest(unittest.TestCase):
                 self.assertTrue(row['available'])
                 self.assertLessEqual(row['path'].stat().st_size,1_000_000)
         entries=json.loads(Path('data/offseason_market.json').read_text(encoding='utf-8'))['entries']
-        self.assertEqual(len(entries),3)
-        for entry in entries:
+        # 回は毎日増える。絵を明示して公開済みの回だけ、絵が変わらないことを見る（11/6 件数の決め打ちで落ちた）。
+        explicit=[e for e in entries if any(r.get('illustration') for g in ('facts','reports') for r in e[g])]
+        self.assertGreaterEqual(len(explicit),3)
+        for entry in explicit:
             names=[art.selected_name(entry,r) for group in ('facts','reports') for r in entry[group]]
             self.assertEqual([n for n in names if n],['handshake.png'])
 

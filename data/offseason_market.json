@@ -120,6 +120,41 @@
           "source_url": "https://news.infoseek.co.jp/article/sponichin_20261102_0101/"
         }
       ]
+    },
+    {
+      "id": "suzuki-qualifying-offer-20261106",
+      "title": "鈴木誠也 カブスがQOを提示 返事は11月18日まで",
+      "name_en": "Seiya Suzuki",
+      "checked_on": "2026-11-06",
+      "facts": [
+        {
+          "id": "offer",
+          "label": "QOの提示",
+          "text": "カブスは現地時間11月2日に、鈴木誠也へ1年2315万ドルのクオリファイング・オファーを提示しました。",
+          "source_url": "https://www.mlb.com/cubs/news/cubs-extend-qualifying-offer-to-free-agent-seiya-suzuki"
+        },
+        {
+          "id": "deadline",
+          "label": "返事の期限",
+          "text": "鈴木誠也は日本時間の11月18日午前6時までに、受けるか断るかを決めます。",
+          "source_url": "https://www.mlb.com/cubs/news/cubs-extend-qualifying-offer-to-free-agent-seiya-suzuki"
+        },
+        {
+          "id": "stats",
+          "label": "2026年の成績",
+          "text": "鈴木誠也は2026年に143試合に出場し、打率.270、26本塁打、86打点でした。",
+          "source_url": "https://statsapi.mlb.com/api/v1/people?personIds=673548&hydrate=stats(group=[hitting],type=[season],season=2026)"
+        }
+      ],
+      "reports": [
+        {
+          "id": "forecast",
+          "label": "契約の予想",
+          "outlet": "MLB Trade Rumors",
+          "text": "鈴木誠也はQOを断り、4年1億500万ドルで契約する見込みだとMLB Trade Rumorsが予想しています。",
+          "source_url": "https://www.mlbtraderumors.com/2026/11/2026-27-top-50-free-agents-with-predictions.html"
+        }
+      ]
     }
   ]
 }
