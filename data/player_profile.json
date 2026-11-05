@@ -1,133 +1,102 @@
 {
-  "generated_at": "2026-11-04T06:01:08.547126+00:00",
-  "date_jst": "2026-11-04",
-  "name": "鈴木誠也",
-  "player_id": "673548",
-  "team": "カブス",
-  "group": "hitting",
+  "generated_at": "2026-11-05T06:01:01.019567+00:00",
+  "date_jst": "2026-11-05",
+  "name": "佐々木朗希",
+  "player_id": "808963",
+  "team": "ドジャース",
+  "group": "pitching",
   "why": "現地で名前が挙がっている",
   "headline": "",
   "score": null,
   "bio": {
-    "name_en": "Seiya Suzuki",
-    "age": 32,
-    "birth_city": "Arakawa",
+    "name_en": "Roki Sasaki",
+    "age": 25,
+    "birth_city": "Rikuzentakata",
     "birth_state": null,
     "birth_country": "Japan",
-    "birth_date": "1994-08-18",
-    "debut": "2022-04-07",
+    "birth_date": "2001-11-03",
+    "debut": "2025-03-19",
     "draft_year": null,
     "bats": "Right",
     "throws": "Right",
-    "number": "27",
-    "position": "Outfielder",
+    "number": "11",
+    "position": "Pitcher",
     "nickname": null,
-    "height": "5' 11\"",
-    "weight": 182
+    "height": "6' 2\"",
+    "weight": 187
   },
   "teams": [
     {
-      "team": "カブス",
-      "from": 2022,
+      "team": "ドジャース",
+      "from": 2025,
       "to": 2026
     }
   ],
   "career": {
-    "games": 675,
-    "avg": ".269",
-    "hr": 113,
-    "rbi": 382,
-    "ops": ".823",
-    "sb": 39,
-    "hits": 683,
-    "wins": 33,
-    "losses": 19,
-    "era": "2.61",
-    "so": 488,
-    "ip": "448.2",
-    "whip": "0.97"
+    "games": 36,
+    "wins": 6,
+    "losses": 6,
+    "era": "4.48",
+    "so": 151,
+    "ip": "158.2",
+    "whip": "1.34"
   },
   "this_season": {
-    "games": 143,
-    "avg": ".270",
-    "hr": 26,
-    "rbi": 86,
-    "ops": ".841",
-    "sb": 3,
-    "hits": 147,
-    "wins": 14,
-    "losses": 9,
-    "era": "2.53",
-    "so": 182,
-    "ip": "185.0",
-    "whip": "0.87"
+    "games": 26,
+    "wins": 5,
+    "losses": 5,
+    "era": "4.49",
+    "so": 123,
+    "ip": "122.1",
+    "whip": "1.32"
   },
   "last_season": {
-    "games": 151,
-    "avg": ".245",
-    "hr": 32,
-    "rbi": 103,
-    "ops": ".804",
-    "sb": 5,
-    "hits": 140,
-    "wins": 12,
-    "losses": 8,
-    "era": "2.49",
-    "so": 201,
-    "ip": "173.2",
-    "whip": "0.99"
+    "games": 10,
+    "wins": 1,
+    "losses": 1,
+    "era": "4.46",
+    "so": 28,
+    "ip": "36.1",
+    "whip": "1.43"
   },
   "recent": [
     {
-      "date": "2026-09-25",
-      "line": "3打数2安打",
-      "opponent": "Boston Red Sox"
+      "date": "2026-09-27",
+      "line": "1.0回 自責0 2奪三振",
+      "opponent": "San Francisco Giants"
     },
     {
       "date": "2026-09-25",
-      "line": "4打数0安打",
-      "opponent": "Boston Red Sox"
-    },
-    {
-      "date": "2026-09-24",
-      "line": "3打数2安打 1本塁打 1打点",
-      "opponent": "Miami Marlins"
-    },
-    {
-      "date": "2026-09-23",
-      "line": "4打数1安打",
-      "opponent": "Miami Marlins"
+      "line": "1.0回 自責0 2奪三振",
+      "opponent": "San Francisco Giants"
     },
     {
       "date": "2026-09-22",
-      "line": "6打数2安打",
-      "opponent": "Miami Marlins"
+      "line": "1.0回 自責0 2奪三振",
+      "opponent": "San Diego Padres"
+    },
+    {
+      "date": "2026-08-26",
+      "line": "3.1回 自責4 3奪三振",
+      "opponent": "Atlanta Braves"
+    },
+    {
+      "date": "2026-08-19",
+      "line": "5.0回 自責2 6奪三振",
+      "opponent": "Colorado Rockies"
     }
   ],
   "awards": [
     {
       "season": "2025",
-      "name": "NL Player of the Week"
-    },
-    {
-      "season": "2022",
-      "name": "NL Rookie of the Month"
-    },
-    {
-      "season": "2022",
-      "name": "NL Player of the Week"
+      "name": "World Series Championship"
     }
   ],
   "quotes": [
     {
-      "who": "Chicago Tribuneの記者",
-      "text": "カブスのGG最終候補5人のうち、CFピート・クロウ＝アームストロングと3Bアレックス・ブレグマンがNLの各ポジションで受賞。ブルワーズLFジャクソン・チョウリオがイアン・ハップの5年連続を阻止。DバックスRFコービン・キャロルとSSヘラルド・ペルドモが鈴木誠也とダンズビー・スワンソンを抑えて受賞",
-      "kind": "reporter"
-    },
-    {
-      "who": "MLB.comの記者",
-      "text": "MLB.comのマーク・ファインサンドによると、鈴木誠也はカブスから1年2315万ドルのクオリファイングオファーを受け取った",
-      "kind": "reporter"
+      "who": "스타뉴스",
+      "text": "佐々木朗希、「衝撃のトレード要員」扱いに…米国への早すぎる挑戦→2年連続の防御率4点台と期待外れ：「予見された結果かも」",
+      "kind": "headline"
     }
   ]
 }
