@@ -302,10 +302,14 @@ def render_video(data,narr,audio,out):
     command=['ffmpeg','-y','-f','rawvideo','-vcodec','rawvideo','-pix_fmt','rgb24','-s','1080x1920','-r',str(FPS),'-i','-',
              '-i',str(track),'-c:v','libx264','-preset','veryfast','-crf','23','-pix_fmt','yuv420p','-c:a','aac','-b:a','160k',
              '-t',str(sum(times)),'-movflags','+faststart',str(video)]
+    # 共通締めの比較は完成動画の実記録で判定する（無いと投稿で止まる。11/5 朝）。
+    import render_timeline
+    timeline=render_timeline.Recorder(FPS,audio,narr)
     with (out/'ffmpeg-render.log').open('w',encoding='utf-8') as log:
         proc=subprocess.Popen(command,stdin=subprocess.PIPE,stderr=log)
         try:
             for i,(seg,duration) in enumerate(zip(narr['segments'],times)):
+                timeline.select(audio[i],i)
                 r3.set_program_clock(clock);r3.set_caption(seg['text'],duration,sum(times),speaker=seg['speaker'],duo=False,hide_caption=seg['kind']=='outro',caption_units=seg.get('caption_units'))
                 snap=min(3,duration*.6) if seg['kind']=='outro' else min(1.4,duration*.6)
                 r3.set_program_clock(clock+snap);im=frame(snap,seg,data,clubs)
@@ -314,11 +318,12 @@ def render_video(data,narr,audio,out):
                 im.save(out/f'{i+1:02d}.png');images.append(im);layouts.append(im.info)
                 for k in range(round(duration*FPS)):
                     r3.set_program_clock(clock+k/FPS);im=frame(k/FPS,seg,data,clubs)
-                    raw=soccer_look.transition(previous,im,k,FPS);proc.stdin.write(raw)
+                    raw=soccer_look.transition(previous,im,k,FPS);timeline.write(proc.stdin,raw,im)
                 previous=im.tobytes();clock+=duration
         finally:
             proc.stdin.close();code=proc.wait();r3.set_program_clock(None)
     if code:raise ValueError('ffmpegの動画生成が失敗。ffmpeg-render.logを確認')
+    timeline.save(video,next((Path(s['file']).parent for s in audio if s.get('file')),out))
     from preview_unified_v3 import sheet
     sheet(images,[s['kind'] for s in narr['segments']],out/'all-screens.png',columns=4)
     probe=subprocess.run(['ffmpeg','-hide_banner','-i',str(video)],capture_output=True,text=True,encoding='utf-8',errors='replace')
