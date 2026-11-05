@@ -62,8 +62,12 @@ class Pending(unittest.TestCase):
         self.assertEqual(json.loads((self.directory / "pending.json").read_text(encoding="utf-8")),
                          [dict(video_id=VID, kind="morning_press", title="題", failed_at=FAILED.isoformat())])
 
+    def test_forbidden_after_upload_is_saved(self):
+        self.assertTrue(self.remember(error("forbidden")))
+        self.assertTrue((self.directory / f"{VID}.png").exists())
+
     def test_other_errors_never_create_pending(self):
-        failures = [error("forbidden"), error("uploadRateLimitExceeded", 429),
+        failures = [error("forbidden", 400), error("invalidImage"), error("uploadRateLimitExceeded", 429),
                     error(status=400), RuntimeError("quotaExceeded"),
                     HttpError(Response({"status": "403"}), b"invalid JSON")]
         for failure in failures:
@@ -77,14 +81,14 @@ class Pending(unittest.TestCase):
         self.remember(error())
         self.assertEqual(len(json.loads((self.directory / "pending.json").read_text(encoding="utf-8"))), 2)
 
-    def test_upload_handler_records_only_quota_and_keeps_warning_behavior(self):
+    def test_upload_handler_records_only_retryable_and_keeps_warning_behavior(self):
         yt = mock.Mock()
         real_remember = pending.remember
         def save(*args):
             return real_remember(*args, directory=self.directory, now=FAILED)
         with mock.patch.object(pending, "remember", side_effect=save), \
                 mock.patch.object(upload, "MediaFileUpload"), mock.patch("sys.stderr", new=io.StringIO()):
-            yt.thumbnails.return_value.set.return_value.execute.side_effect = error("forbidden")
+            yt.thumbnails.return_value.set.return_value.execute.side_effect = error("invalidImage")
             upload.set_thumbnail(yt, self.image, VID, "morning_press", "題")
             self.assertFalse(self.directory.exists())
             yt.thumbnails.return_value.set.return_value.execute.side_effect = error()
@@ -252,6 +256,23 @@ class Reset(unittest.TestCase):
                 self.assertEqual(reset.main(), 0)
         self.assertEqual(yt.thumbnails.return_value.set.call_count, 1)
         self.assertEqual(yt.videos.return_value.list.call_count, 1)
+
+    def test_forbidden_skips_only_that_video_and_fails_red(self):
+        yt = mock.Mock()
+        yt.channels.return_value.list.return_value.execute.return_value = {"items": [{"id": "mine"}]}
+        yt.videos.return_value.list.return_value.execute.return_value = {
+            "items": [{"snippet": {"title": "題", "channelId": "mine"}}]}
+        yt.thumbnails.return_value.set.return_value.execute.side_effect = [error("forbidden"), {}]
+        with tempfile.TemporaryDirectory() as tmp:
+            img = Path(tmp) / "thumb.png"
+            img.write_bytes(b"image")
+            with mock.patch.object(reset, "client", return_value=yt), \
+                    mock.patch("googleapiclient.http.MediaFileUpload"), \
+                    mock.patch("sys.stderr", new=io.StringIO()), mock.patch("sys.stdout", new=io.StringIO()), \
+                    mock.patch.object(sys, "argv", ["reset", f"{VID}={img}",
+                                                   f"lmnopqrstuv={img}", "--write", "--quota-warning"]):
+                self.assertEqual(reset.main(), 1)
+        self.assertEqual(yt.thumbnails.return_value.set.call_count, 2)
 
     def test_non_owned_video_is_not_written(self):
         yt = mock.Mock()

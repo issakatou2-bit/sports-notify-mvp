@@ -1,4 +1,4 @@
-"""使用枠切れの画像だけを、投稿実行の保存物へ引き渡す。"""
+"""使用枠切れと投稿直後の「設定できない」の画像だけを、投稿実行の保存物へ引き渡す。"""
 import json
 from datetime import datetime, timezone
 from pathlib import Path
@@ -20,9 +20,21 @@ def quota_exceeded(error):
         return False
 
 
+def forbidden(error):
+    """投稿の直後は「設定できない」が出ることがある（11/5 朝の結果。翌朝の手の付け直しで通った）。"""
+    from googleapiclient.errors import HttpError
+    if not isinstance(error, HttpError) or error.resp.status != 403:
+        return False
+    try:
+        errors = json.loads(error.content).get("error", {}).get("errors", [])
+        return any(item.get("reason") == "forbidden" for item in errors)
+    except (ValueError, TypeError, AttributeError):
+        return False
+
+
 def remember(error, image, video_id, kind, title,
              directory="build/thumbnail_pending", now=None):
-    if not quota_exceeded(error):
+    if not (quota_exceeded(error) or forbidden(error)):
         return False
     if not VIDEO_ID.fullmatch(video_id):
         raise ValueError("動画IDの形式が不正です")
