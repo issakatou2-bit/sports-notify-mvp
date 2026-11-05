@@ -186,6 +186,8 @@ def main():
     if not now:ap.error('--atは時差のある日時が必要です')
     if not material or material.astimezone(JST).date()!=now.astimezone(JST).date():raise ValueError('当日の取得済み材料がありません')
     selected=select(data,now,availability);out=args.out or args.games
+    import soccer_preview_angles
+    selected=soccer_preview_angles.attach(selected, fetch=True)
     out.parent.mkdir(parents=True,exist_ok=True);out.write_text(json.dumps(selected,ensure_ascii=False,indent=2)+'\n',encoding='utf8')
     decision=selected['preview_selection'];print(json.dumps(decision,ensure_ascii=False))
     check = selected['club_registration_check']

@@ -49,6 +49,11 @@ def spoken_club(game,side):
     return name if re.search(r'[ぁ-んァ-ヶ一-龯]',name) else display_names.display(name)
 
 
+def opening(game, generated):
+    at=slots.kickoff(game, generated)
+    return f"日本時間{at.hour}時"+(f"{at.minute}分" if at.minute else '')+f"、{spoken_club(game,'home')}対{spoken_club(game,'away')}。"
+
+
 def program(data):
     picked=data['preview_selection']['selected_ids']
     games=[g for ident in picked for g in data['games'] if str(g['game_id'])==ident]
@@ -74,6 +79,22 @@ def program(data):
         ranks={s:(g.get(s+'_standing') or {}).get('rank') for s in ('home','away')};ranks={s:n for s,n in ranks.items() if type(n) is int and n>0}
         spec=dict(date=f'{at.month}月{at.day}日（{"月火水木金土日"[at.weekday()]}）',time=at.strftime('%H:%M'),league=g['league'],home=g['home_team_name'],away=g['away_team_name'],ranks=ranks,jp=jp,game_id=str(g['game_id']))
         segs.append(slots.segment('preview',text,spec))
+    if data.get('preview_angles_version') == 1:
+        import soccer_preview_angles as angles
+        import soccer_story_lines as story
+        head=angles.headline(lead,data['generated_at'])
+        segs[0]['text']=head+'。';segs[0]['meta']['context']=head
+        for seg,g in zip(segs[1:],games):
+            seg['text']=story.caption_names(angles.body(g,data['generated_at'],opening(g,data['generated_at'])),[g])
+            selected=angles.chosen(g,data['generated_at'])
+            seg['meta'].update(preview_angles=selected,interest=dict(reasons=selected,player=None),preview_duration_limit=55)
+        plan=slots.package('preview',data,segs,list(names),head,clubs)
+        plan['narration'].update(preview_angles_version=1,preview_angles_game_id=str(lead['game_id']),duration_budget=dict(limit=55,grace=0))
+        for seg in plan['narration']['segments']:
+            for g in games:
+                for side,name in (g.get('preview_name_fallbacks') or {}).items():
+                    seg['text']=seg['text'].replace(name,'ホームのクラブ' if side=='home' else 'アウェーのクラブ')
+        return plan
     plan=interest.enrich_plan(slots.package('preview',data,segs,list(names),head,clubs))
     for seg,g in zip(plan['narration']['segments'][1:-1],games):
         meta=seg['meta'];facts=preview_details(g)
