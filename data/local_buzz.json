@@ -1,28 +1,36 @@
 {
-  "updated_at": "2026-11-05T06:01:45.552750+00:00",
+  "updated_at": "2026-11-06T06:01:47.067560+00:00",
   "sources": [
     {
       "name": "MLB公式",
-      "items": 25
+      "items": 24
     }
   ],
-  "titles_count": 25,
+  "titles_count": 24,
   "teams": [
-    {
-      "team_id": "136",
-      "name": "マリナーズ",
-      "name_en": "Seattle Mariners",
-      "mentions": 3,
-      "tone": "話題",
-      "gist": "カンツラー新監督就任、次はコーチ陣へ"
-    },
     {
       "team_id": "121",
       "name": "メッツ",
       "name_en": "New York Mets",
+      "mentions": 3,
+      "tone": "話題",
+      "gist": "Gunnar・Rasmussen・Marte補強の噂と先発の"
+    },
+    {
+      "team_id": "136",
+      "name": "マリナーズ",
+      "name_en": "Seattle Mariners",
       "mentions": 2,
       "tone": "話題",
-      "gist": "ガナー、ラスムッセン、マルテの噂と先発陣の課題"
+      "gist": "Kanzler氏がマリナーズ新監督に就任"
+    },
+    {
+      "team_id": "120",
+      "name": "ナショナルズ",
+      "name_en": "Washington Nationals",
+      "mentions": 1,
+      "tone": "話題",
+      "gist": "メッツがJ・ワシントンを打撃コーチに追加"
     },
     {
       "team_id": "119",
@@ -30,15 +38,23 @@
       "name_en": "Los Angeles Dodgers",
       "mentions": 1,
       "tone": "話題",
-      "gist": "来季活躍しうるドジャース有望株3人"
+      "gist": "2027年のKyle Tuckerはどんな姿か"
     },
     {
-      "team_id": "158",
-      "name": "ブリュワーズ",
-      "name_en": "Milwaukee Brewers",
+      "team_id": "134",
+      "name": "パイレーツ",
+      "name_en": "Pittsburgh Pirates",
+      "mentions": 1,
+      "tone": "好調",
+      "gist": "Akil Baddooがパイレーツ入りに意欲"
+    },
+    {
+      "team_id": "141",
+      "name": "ブルージェイズ",
+      "name_en": "Toronto Blue Jays",
       "mentions": 1,
       "tone": "話題",
-      "gist": "アスレチックス、元ブリュワーズ幹部キャスト氏がGMに"
+      "gist": "誠也がトロントを新天地にすべき理由"
     },
     {
       "team_id": "117",
@@ -46,21 +62,16 @@
       "name_en": "Houston Astros",
       "mentions": 1,
       "tone": "話題",
-      "gist": "プホルスとエンスバーグが監督面接へ"
+      "gist": "プホルスらがアストロズ監督面接へ"
     },
     {
-      "team_id": "135",
-      "name": "パドレス",
-      "name_en": "San Diego Padres",
+      "team_id": "144",
+      "name": "ブレーブス",
+      "name_en": "Atlanta Braves",
       "mentions": 1,
-      "tone": "好調",
-      "gist": "ペーニャ、AFLでの好投でMLB昇格間近"
+      "tone": "話題",
+      "gist": "アクーニャJr.を残留させるべき3つの理由"
     }
   ],
-  "players": [
-    {
-      "name": "大谷翔平",
-      "mentions": 1
-    }
-  ]
+  "players": []
 }

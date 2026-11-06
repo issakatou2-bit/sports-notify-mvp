@@ -8819,6 +8819,134 @@
       },
       "host_fallback_reason": null,
       "privacy": "public"
+    },
+    "2026-11-06": {
+      "video_id": "2lR33IS125w",
+      "url": "https://youtu.be/2lR33IS125w",
+      "title": "「マックス・マンシーと大谷翔平がナ・リーグのシルバースラッガー賞ファイナリストに」｜現地の報道 #Shorts",
+      "published_at": "2026-11-06T06:29:21.653657+00:00",
+      "publish_at": "2026-11-06T09:00:00Z",
+      "ab_test": "hook-20261023",
+      "ab_variant": "A",
+      "ab_enabled": true,
+      "ab_kind": "morning_press",
+      "ab_day": "2026-11-06",
+      "ab_rule": "jst-day-abba-v1",
+      "ab_content_eligible": false,
+      "ab_content_reason": "同じ主役・論点の説明がないためAを維持",
+      "ab_assigned_variant": "B",
+      "ab_fallback_reason": "同じ主役・論点の説明がないためAを維持",
+      "scene_starts": [
+        0.0,
+        9.833333,
+        18.7,
+        30.6,
+        41.933333,
+        53.333333
+      ],
+      "dialogue_starts": [
+        {
+          "index": 0,
+          "start": 0.0,
+          "scene_start": 0.0,
+          "text": "マックス・マンシーと大谷翔平がナ・リーグのシルバースラッガー賞ファイナリストに。11月6日、現地の報道です。現地の見出しです。",
+          "speaker": 2,
+          "audio_available": true
+        },
+        {
+          "index": 1,
+          "start": 9.862667,
+          "scene_start": 9.833333,
+          "text": "Yahoo Sports。2026年シルバースラッガー賞、大谷翔平、マイク・トラウト、ジュニア・カミネロらがファイナリストに。",
+          "speaker": 2,
+          "audio_available": true
+        },
+        {
+          "index": 2,
+          "start": 18.744,
+          "scene_start": 18.7,
+          "text": "Bleacher Report。大谷翔平、PCA、マイク・トラウトが2026年MLBシルバースラッガー賞ファイナリストの顔ぶれに。現地の番記者の投稿です。翻訳したものです。",
+          "speaker": 2,
+          "audio_available": true
+        },
+        {
+          "index": 3,
+          "start": 30.665333,
+          "scene_start": 30.6,
+          "text": "MLB.comの記者。マッチメイクをしてみよう。鈴木誠也は#BlueJaysのオフシーズンの主役になる。書面上は、ジョージ・スプリンガー以来で最も分かりやすい組み合わせだ。",
+          "speaker": 2,
+          "audio_available": true
+        },
+        {
+          "index": 4,
+          "start": 42.0,
+          "scene_start": 41.933333,
+          "text": "MLB.comの記者。ブレグマン、クロウ＝アームストロング、鈴木誠也がシルバースラッガー賞の候補に。ナ・リーグの最優秀攻撃チーム部門ではカブスも有力 ⤵️。",
+          "speaker": 2,
+          "audio_available": true
+        },
+        {
+          "index": 5,
+          "start": 53.430667,
+          "scene_start": 53.333333,
+          "text": "コレスポでは毎日、MLBの話題と欧州サッカーの見どころを届けています。次は11月7日19時30分の欧州サッカーです。また見に来てくださいね。",
+          "speaker": 2,
+          "audio_available": true
+        }
+      ],
+      "duration_seconds": 63.07,
+      "timing_basis": "scenes:rendered-frames/dialogue:audio-segment-playback",
+      "video_sha256": "3c6f874b9c29c4e6dd663db18b9e943280e216b5252f29e1a6e30beb1bc8dafe",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-06",
+        "enabled": true,
+        "assigned": "next",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false,
+        "source": "post_common.lineup:daily_soccer",
+        "next_date": "2026-11-07",
+        "next_time": "19:30",
+        "next_name": "欧州サッカー",
+        "speech": "次は11月7日19時30分の欧州サッカーです。また見に来てくださいね。",
+        "card": "次は11/7 19:30の欧州サッカー"
+      },
+      "short_information_count": 5,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-11-06",
+        "kind": "morning_press",
+        "phase": 0,
+        "planned_host": "ui",
+        "rule": "half-jst-week-v1",
+        "week": 43,
+        "weekday": 4
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-11-06T06:15:49.707998+00:00",
+        "comparison_eligible": false,
+        "planned_host": "metan",
+        "previous_attempt": {
+          "action": "rebuild_metan",
+          "checked_at": "2026-11-06T06:15:00.760076+00:00",
+          "comparison_eligible": true,
+          "failed_at": "2026-11-06T06:15:49.706426+00:00",
+          "failure_reason": "ui_order_discarded",
+          "label": "予定雨衣",
+          "mode": "live",
+          "planned_host": "ui",
+          "reason": null,
+          "status": "held",
+          "version": 1
+        },
+        "reason": "ui_rebuilt_after_hold",
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
     }
   },
   "daily_soccer": {
@@ -10462,6 +10590,51 @@
         "label": "予定雨衣",
         "mode": "live",
         "planned_host": "ui",
+        "reason": null,
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
+    },
+    "2026-11-06": {
+      "video_id": "24pbH3YGgCg",
+      "url": "https://youtu.be/24pbH3YGgCg",
+      "title": "イ・ジョンフー、2年連続で長打40本超えに現地ファンの声 #Shorts",
+      "published_at": "2026-11-06T06:14:59.050866+00:00",
+      "publish_at": "2026-11-06T08:30:00Z",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-06",
+        "enabled": true,
+        "assigned": "next",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false,
+        "source": "post_common.lineup:daily_soccer",
+        "next_date": "2026-11-07",
+        "next_time": "19:30",
+        "next_name": "欧州サッカー",
+        "speech": "次は11月7日19時30分の欧州サッカーです。また見に来てくださいね。",
+        "card": "次は11/7 19:30の欧州サッカー"
+      },
+      "duration_seconds": 40.8,
+      "short_information_count": 4,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-11-06",
+        "kind": "morning_voices",
+        "phase": 1,
+        "planned_host": "metan",
+        "rule": "half-jst-week-v1",
+        "week": 43,
+        "weekday": 4
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-11-06T15:03:05.797883+09:00",
+        "comparison_eligible": true,
+        "planned_host": "metan",
         "reason": null,
         "version": 1
       },
