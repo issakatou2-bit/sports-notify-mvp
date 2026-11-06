@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-05T10:01:23.245204+00:00",
+  "updated_at": "2026-11-06T10:01:38.052862+00:00",
   "source": "https://fantasy.premierleague.com/api/bootstrap-static/",
   "players": {
     "遠藤航": {
@@ -74,10 +74,10 @@
       "minutes": 106,
       "goals": 0,
       "assists": 0,
-      "chance_next": 100,
-      "news": "",
-      "out": false,
-      "reason": ""
+      "chance_next": 0,
+      "news": "Groin injury - Unknown return date",
+      "out": true,
+      "reason": "Groin injury - Unknown return date"
     },
     "冨安健洋": {
       "name_en": "Takehiro Tomiyasu",
