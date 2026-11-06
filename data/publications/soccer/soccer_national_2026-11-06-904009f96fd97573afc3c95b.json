@@ -1,0 +1,30 @@
+{
+  "publication_id": "soccer:national:2026-11-06",
+  "domain": "soccer",
+  "kind": "national",
+  "key_parts": {
+    "edition_day": "2026-11-06"
+  },
+  "version": 1,
+  "history": [
+    {
+      "source": "published_videos/soccer_national/2026-11-06",
+      "service": "youtube",
+      "video_id": "EFopWA9yGrg",
+      "state": "scheduled",
+      "scheduled_at": "2026-11-06T03:00:00+00:00",
+      "event_day": null,
+      "material_day": null,
+      "edition_day": "2026-11-06",
+      "run_at": "2026-11-06T02:27:09.819178+00:00",
+      "details": {
+        "privacy": "public"
+      },
+      "run_id": "42149958220",
+      "attempt": "1",
+      "recorded_at": "2026-11-06T02:27:09.840136+00:00",
+      "fingerprint": "8898204f7114a295c3208631abd534bab0575b6cb9aa1185203dd252f7f23d01",
+      "event_id": "d470f1ddc12a4ae02dd6f09fc58f5ec4dd7c92ed2bfbcaf5373413385c4d3d00"
+    }
+  ]
+}
