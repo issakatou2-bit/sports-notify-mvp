@@ -19128,6 +19128,51 @@
       },
       "host_fallback_reason": null,
       "privacy": "public"
+    },
+    "2026-11-06": {
+      "video_id": "TIdM3bjHP5Q",
+      "url": "https://youtu.be/TIdM3bjHP5Q",
+      "title": "セリエA 順位争い｜CL圏内・EL圏内の境目【欧州サッカー】#Shorts",
+      "published_at": "2026-11-06T10:08:46.770132+00:00",
+      "publish_at": "2026-11-06T11:30:00Z",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-06",
+        "enabled": true,
+        "assigned": "next",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false,
+        "source": "post_common.lineup:daily_soccer",
+        "next_date": "2026-11-07",
+        "next_time": "19:30",
+        "next_name": "欧州サッカー",
+        "speech": "次は11月7日19時30分の欧州サッカーです。また見に来てくださいね。",
+        "card": "次は11/7 19:30の欧州サッカー"
+      },
+      "duration_seconds": 29.27,
+      "short_information_count": 5,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-11-06",
+        "kind": "soccer_race",
+        "phase": 1,
+        "planned_host": "metan",
+        "rule": "half-jst-week-v1",
+        "week": 43,
+        "weekday": 4
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-11-06T19:03:27.378393+09:00",
+        "comparison_eligible": true,
+        "planned_host": "metan",
+        "reason": null,
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
     }
   },
   "soccer_week": {
