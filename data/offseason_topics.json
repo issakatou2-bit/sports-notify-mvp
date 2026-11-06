@@ -1,5 +1,170 @@
 {
   "day": "2026-11-06",
-  "topics": [],
-  "state": "collecting"
+  "state": "ready",
+  "topics": [
+    {
+      "key": "offseason_market_2026_14c7b9febf01",
+      "label": "鈴木誠也 カブスがQOを提示 返事は11月18日まで",
+      "heading": "日本人選手の来季 第5回",
+      "hook": "鈴木誠也\nカブスがQOを提示 返事は11月18日まで",
+      "kind_label": "MLB",
+      "style": "v3",
+      "intro_as_is": true,
+      "intro": "鈴木誠也 カブスがQOを提示 返事は11月18日まで。",
+      "description_line": "連載「日本人選手の来季」では、確定した動きと媒体による報道を分けて追います。",
+      "data_credit": "各行の出典 / 確定・報道を区別",
+      "source": "確定情報・媒体報道 / 確認日 2026-11-06",
+      "source_url": "https://www.mlb.com/cubs/news/cubs-extend-qualifying-offer-to-free-agent-seiya-suzuki",
+      "v3": {
+        "who": "日本人選手の来季 第5回",
+        "source": "出典: 各行の資料 / 確定・報道を区別"
+      },
+      "items": [
+        [
+          "確定｜QOの提示",
+          "カブスは現地時間11月2日に、鈴木誠也へ1年のクオリファイング・オファーを提示しました。"
+        ],
+        [
+          "確定｜返事の期限",
+          "鈴木誠也は日本時間の11月18日午前6時までに、受けるか断るかを決めます。"
+        ],
+        [
+          "確定｜2026年の成績",
+          "鈴木誠也は2026年に143試合に出場し、打率.270、26本塁打、86打点でした。"
+        ],
+        [
+          "報道｜契約の予想",
+          "鈴木誠也はQOを断り、4年1億500万ドルで契約する見込みだとMLB Trade Rumorsが報じています。"
+        ]
+      ],
+      "offseason": {
+        "kind": "market",
+        "day": "2026-11-06",
+        "season": 2026,
+        "events": [
+          {
+            "event_id": "market:suzuki-qualifying-offer-20261106:facts:offer",
+            "head": "確定｜QOの提示",
+            "body": "カブスは現地時間11月2日に、鈴木誠也へ1年のクオリファイング・オファーを提示しました。",
+            "source": "https://www.mlb.com/cubs/news/cubs-extend-qualifying-offer-to-free-agent-seiya-suzuki",
+            "market_type": "facts",
+            "illustration": "ai/qo.png"
+          },
+          {
+            "event_id": "market:suzuki-qualifying-offer-20261106:facts:deadline",
+            "head": "確定｜返事の期限",
+            "body": "鈴木誠也は日本時間の11月18日午前6時までに、受けるか断るかを決めます。",
+            "source": "https://www.mlb.com/cubs/news/cubs-extend-qualifying-offer-to-free-agent-seiya-suzuki",
+            "market_type": "facts"
+          },
+          {
+            "event_id": "market:suzuki-qualifying-offer-20261106:facts:stats",
+            "head": "確定｜2026年の成績",
+            "body": "鈴木誠也は2026年に143試合に出場し、打率.270、26本塁打、86打点でした。",
+            "source": "https://statsapi.mlb.com/api/v1/people?personIds=673548&hydrate=stats(group=[hitting],type=[season],season=2026)",
+            "market_type": "facts"
+          },
+          {
+            "event_id": "market:suzuki-qualifying-offer-20261106:reports:forecast",
+            "head": "報道｜契約の予想",
+            "body": "鈴木誠也はQOを断り、4年1億500万ドルで契約する見込みだとMLB Trade Rumorsが報じています。",
+            "source": "https://www.mlbtraderumors.com/2026/11/2026-27-top-50-free-agents-with-predictions.html",
+            "market_type": "reports"
+          }
+        ],
+        "entry": {
+          "id": "suzuki-qualifying-offer-20261106",
+          "title": "鈴木誠也 カブスがQOを提示 返事は11月18日まで",
+          "name_en": "Seiya Suzuki",
+          "checked_on": "2026-11-06",
+          "facts": [
+            {
+              "id": "offer",
+              "label": "QOの提示",
+              "text": "カブスは現地時間11月2日に、鈴木誠也へ1年のクオリファイング・オファーを提示しました。",
+              "source_url": "https://www.mlb.com/cubs/news/cubs-extend-qualifying-offer-to-free-agent-seiya-suzuki"
+            },
+            {
+              "id": "deadline",
+              "label": "返事の期限",
+              "text": "鈴木誠也は日本時間の11月18日午前6時までに、受けるか断るかを決めます。",
+              "source_url": "https://www.mlb.com/cubs/news/cubs-extend-qualifying-offer-to-free-agent-seiya-suzuki"
+            },
+            {
+              "id": "stats",
+              "label": "2026年の成績",
+              "text": "鈴木誠也は2026年に143試合に出場し、打率.270、26本塁打、86打点でした。",
+              "source_url": "https://statsapi.mlb.com/api/v1/people?personIds=673548&hydrate=stats(group=[hitting],type=[season],season=2026)"
+            }
+          ],
+          "reports": [
+            {
+              "id": "forecast",
+              "label": "契約の予想",
+              "outlet": "MLB Trade Rumors",
+              "text": "鈴木誠也はQOを断り、4年1億500万ドルで契約する見込みだとMLB Trade Rumorsが報じています。",
+              "source_url": "https://www.mlbtraderumors.com/2026/11/2026-27-top-50-free-agents-with-predictions.html"
+            }
+          ]
+        },
+        "series_number": 5,
+        "series_title": "日本人選手の来季"
+      }
+    },
+    {
+      "key": "offseason_schedule_2026_b49cef96a397",
+      "label": "MLBオフの主な予定",
+      "heading": "MLBオフの主な予定",
+      "kind_label": "MLB",
+      "data_credit": "MLB.com",
+      "v3": {
+        "source": "出典: MLB.com / 日付は米東部"
+      },
+      "hook": "MLBオフの主な予定",
+      "intro": "この先のMLBオフの主な予定です。日付はすべてアメリカ東部の日付でお伝えします。",
+      "intro_as_is": true,
+      "style": "v3",
+      "source": "MLB公式｜日付は米東部",
+      "source_url": "https://www.mlb.com/news/when-are-2026-mlb-awards-announced-mvp-cy-young-rookie-of-the-year",
+      "items": [
+        [
+          "11月11日｜サイ・ヤング賞と救援賞",
+          "11月11日、BBWAAのサイ・ヤング賞と救援の賞が発表される予定です"
+        ],
+        [
+          "11月12日｜MVP",
+          "11月12日、BBWAAのMVPが発表される予定です"
+        ]
+      ],
+      "offseason": {
+        "kind": "schedule",
+        "day": "2026-11-06",
+        "season": 2026,
+        "events": [
+          {
+            "id": "cy-relief",
+            "date_et": "2026-11-11",
+            "label": "サイ・ヤング賞と救援賞",
+            "text": "BBWAAのサイ・ヤング賞と救援の賞が発表される予定です",
+            "source": "https://www.mlb.com/news/when-are-2026-mlb-awards-announced-mvp-cy-young-rookie-of-the-year",
+            "event_id": "calendar:cy-relief",
+            "head": "11月11日｜サイ・ヤング賞と救援賞",
+            "body": "11月11日、BBWAAのサイ・ヤング賞と救援の賞が発表される予定です",
+            "japanese": false
+          },
+          {
+            "id": "mvp",
+            "date_et": "2026-11-12",
+            "label": "MVP",
+            "text": "BBWAAのMVPが発表される予定です",
+            "source": "https://www.mlb.com/news/when-are-2026-mlb-awards-announced-mvp-cy-young-rookie-of-the-year",
+            "event_id": "calendar:mvp",
+            "head": "11月12日｜MVP",
+            "body": "11月12日、BBWAAのMVPが発表される予定です",
+            "japanese": false
+          }
+        ]
+      }
+    }
+  ]
 }
