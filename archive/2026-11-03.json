@@ -377,7 +377,12 @@
           "text": "リールには上田綺世が所属",
           "weight": 1
         }
-      ]
+      ],
+      "final_score": {
+        "home": 0,
+        "away": 0,
+        "winner": "draw"
+      }
     },
     {
       "game_id": "575385",
@@ -412,7 +417,12 @@
       "score": 0,
       "game_type": "R",
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 4,
+        "away": 0,
+        "winner": "home"
+      }
     }
   ],
   "schedule_date": "2026-11-03",
