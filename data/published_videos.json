@@ -20959,6 +20959,104 @@
       },
       "host_fallback_reason": null,
       "privacy": "public"
+    },
+    "season_streak_2026_837227_pitching": {
+      "video_id": "0cxnAxVf_vM",
+      "url": "https://youtu.be/0cxnAxVf_vM",
+      "title": "今井達也 4登板連続無失点 #Shorts",
+      "published_at": "2026-11-06T06:58:57.888974+00:00",
+      "publish_at": "2026-11-06T07:30:00Z",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-06",
+        "enabled": true,
+        "assigned": "next",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false,
+        "source": "post_common.lineup:daily_soccer",
+        "next_date": "2026-11-07",
+        "next_time": "19:30",
+        "next_name": "欧州サッカー",
+        "speech": "次は11月7日19時30分の欧州サッカーです。また見に来てくださいね。",
+        "card": "次は11/7 19:30の欧州サッカー"
+      },
+      "player_ids": [
+        "837227"
+      ],
+      "duration_seconds": 40.0,
+      "short_information_count": 3,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-11-06",
+        "kind": "asset:season_streak",
+        "phase": 0,
+        "planned_host": "ui",
+        "rule": "half-jst-week-v1",
+        "week": 43,
+        "weekday": 4
+      },
+      "planned_host": "ui",
+      "actual_host": "ui",
+      "host_delivery": {
+        "checked_at": "2026-11-06T06:52:10.285483+00:00",
+        "comparison_eligible": true,
+        "label": "予定雨衣",
+        "mode": "live",
+        "planned_host": "ui",
+        "reason": null,
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
+    },
+    "season_month_2026_663457_hitting": {
+      "video_id": "aFN2BrF-vhk",
+      "url": "https://youtu.be/aFN2BrF-vhk",
+      "title": "ヌートバー 打率.306の6月と.169の7月 #Shorts",
+      "published_at": "2026-11-06T07:02:35.863993+00:00",
+      "publish_at": "2026-11-06T13:00:00Z",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-06",
+        "enabled": true,
+        "assigned": "next",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false,
+        "source": "post_common.lineup:daily_soccer",
+        "next_date": "2026-11-07",
+        "next_time": "19:30",
+        "next_name": "欧州サッカー",
+        "speech": "次は11月7日19時30分の欧州サッカーです。また見に来てくださいね。",
+        "card": "次は11/7 19:30の欧州サッカー"
+      },
+      "player_ids": [
+        "663457"
+      ],
+      "duration_seconds": 35.67,
+      "short_information_count": 3,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-11-06",
+        "kind": "asset:season_month",
+        "phase": 1,
+        "planned_host": "metan",
+        "rule": "half-jst-week-v1",
+        "week": 43,
+        "weekday": 4
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-11-06T15:58:58.348622+09:00",
+        "comparison_eligible": true,
+        "planned_host": "metan",
+        "reason": null,
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
     }
   },
   "soccer_results": {
