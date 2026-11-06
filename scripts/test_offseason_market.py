@@ -34,6 +34,13 @@ class MarketTests(unittest.TestCase):
             doc = g.build_narration(spec['key'])
         return spec, doc
 
+    def test_shipped_entries_pass_validation(self):
+        # 11/6 本番の材料に金額を足して当日の制作が止まった。足した回は取込前に赤にする。
+        data = json.loads(Path(m.PATH).read_text(encoding='utf-8'))
+        for entry in data['entries']:
+            with self.subTest(entry=entry['id']):
+                m.validate(entry)
+
     def test_fixture_roundtrip_and_three_information(self):
         import offseason_news as n
         import sanity_material
