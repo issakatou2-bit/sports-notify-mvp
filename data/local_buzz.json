@@ -1,52 +1,36 @@
 {
-  "updated_at": "2026-11-06T06:01:47.067560+00:00",
+  "updated_at": "2026-11-06T18:54:56.938569+00:00",
   "sources": [
     {
       "name": "MLB公式",
-      "items": 24
+      "items": 25
     }
   ],
-  "titles_count": 24,
+  "titles_count": 25,
   "teams": [
-    {
-      "team_id": "121",
-      "name": "メッツ",
-      "name_en": "New York Mets",
-      "mentions": 3,
-      "tone": "話題",
-      "gist": "Gunnar・Rasmussen・Marte補強の噂と先発の"
-    },
-    {
-      "team_id": "136",
-      "name": "マリナーズ",
-      "name_en": "Seattle Mariners",
-      "mentions": 2,
-      "tone": "話題",
-      "gist": "Kanzler氏がマリナーズ新監督に就任"
-    },
-    {
-      "team_id": "120",
-      "name": "ナショナルズ",
-      "name_en": "Washington Nationals",
-      "mentions": 1,
-      "tone": "話題",
-      "gist": "メッツがJ・ワシントンを打撃コーチに追加"
-    },
     {
       "team_id": "119",
       "name": "ドジャース",
       "name_en": "Los Angeles Dodgers",
-      "mentions": 1,
+      "mentions": 2,
       "tone": "話題",
-      "gist": "2027年のKyle Tuckerはどんな姿か"
+      "gist": "ドジャース、打撃コーチ・ベイツと決別/タッカーの来季像に注目"
     },
     {
-      "team_id": "134",
-      "name": "パイレーツ",
-      "name_en": "Pittsburgh Pirates",
+      "team_id": "138",
+      "name": "カージナルス",
+      "name_en": "St. Louis Cardinals",
       "mentions": 1,
-      "tone": "好調",
-      "gist": "Akil Baddooがパイレーツ入りに意欲"
+      "tone": "話題",
+      "gist": "カージナルス、サーフォリオが新GMに就任"
+    },
+    {
+      "team_id": "143",
+      "name": "フィリーズ",
+      "name_en": "Philadelphia Phillies",
+      "mentions": 1,
+      "tone": "話題",
+      "gist": "フィリーズ先発陣、27年の可能性と不安要素"
     },
     {
       "team_id": "141",
@@ -54,15 +38,15 @@
       "name_en": "Toronto Blue Jays",
       "mentions": 1,
       "tone": "話題",
-      "gist": "誠也がトロントを新天地にすべき理由"
+      "gist": "ブルージェイズ、セイヤが新天地にふさわしい理由"
     },
     {
-      "team_id": "117",
-      "name": "アストロズ",
-      "name_en": "Houston Astros",
+      "team_id": "147",
+      "name": "ヤンキース",
+      "name_en": "New York Yankees",
       "mentions": 1,
       "tone": "話題",
-      "gist": "プホルスらがアストロズ監督面接へ"
+      "gist": "ヤンキース打線、どこを改善できるか"
     },
     {
       "team_id": "144",
@@ -70,7 +54,23 @@
       "name_en": "Atlanta Braves",
       "mentions": 1,
       "tone": "話題",
-      "gist": "アクーニャJr.を残留させるべき3つの理由"
+      "gist": "ブレーブス、アクーニャJr.を残すべき3つの理由"
+    },
+    {
+      "team_id": "112",
+      "name": "カブス",
+      "name_en": "Chicago Cubs",
+      "mentions": 1,
+      "tone": "話題",
+      "gist": "カブス、27年の外野コーナー候補は内部にいる"
+    },
+    {
+      "team_id": "139",
+      "name": "レイズ",
+      "name_en": "Tampa Bay Rays",
+      "mentions": 1,
+      "tone": "話題",
+      "gist": "レイズのオフに待つ5つの疑問"
     }
   ],
   "players": []

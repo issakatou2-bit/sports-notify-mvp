@@ -1,130 +1,96 @@
 {
-  "generated_at": "2026-11-06T06:01:02.017537+00:00",
-  "date_jst": "2026-11-06",
-  "name": "ダルビッシュ有",
-  "player_id": "506433",
-  "team": "パドレス",
+  "generated_at": "2026-11-06T18:54:06.776582+00:00",
+  "date_jst": "2026-11-07",
+  "name": "菅野智之",
+  "player_id": "608372",
+  "team": "ロッキーズ",
   "group": "pitching",
-  "why": "現地で名前が挙がっている",
+  "why": "順番",
   "headline": "",
   "score": null,
   "bio": {
-    "name_en": "Yu Darvish",
-    "age": 40,
-    "birth_city": "Osaka",
+    "name_en": "Tomoyuki Sugano",
+    "age": 37,
+    "birth_city": "Kanagawa",
     "birth_state": null,
     "birth_country": "Japan",
-    "birth_date": "1986-08-16",
-    "debut": "2012-04-09",
+    "birth_date": "1989-10-11",
+    "debut": "2025-03-30",
     "draft_year": null,
     "bats": "Right",
     "throws": "Right",
-    "number": "11",
+    "number": null,
     "position": "Pitcher",
-    "nickname": "Yu-San",
-    "height": "6' 5\"",
-    "weight": 220
+    "nickname": null,
+    "height": "6' 1\"",
+    "weight": 227
   },
   "teams": [
     {
-      "team": "レンジャーズ",
-      "from": 2012,
-      "to": 2017
-    },
-    {
-      "team": "ドジャース",
-      "from": 2017,
-      "to": 2017
-    },
-    {
-      "team": "カブス",
-      "from": 2018,
-      "to": 2020
-    },
-    {
-      "team": "パドレス",
-      "from": 2021,
+      "team": "オリオールズ",
+      "from": 2025,
       "to": 2025
+    },
+    {
+      "team": "ロッキーズ",
+      "from": 2026,
+      "to": 2026
     }
   ],
   "career": {
-    "games": 297,
-    "avg": ".269",
-    "hr": 113,
-    "rbi": 382,
-    "ops": ".823",
-    "sb": 39,
-    "hits": 683,
-    "wins": 115,
-    "losses": 93,
-    "era": "3.65",
-    "so": 2075,
-    "ip": "1778.0",
-    "whip": "1.14"
+    "games": 59,
+    "wins": 22,
+    "losses": 22,
+    "era": "5.00",
+    "so": 202,
+    "ip": "311.1",
+    "whip": "1.32"
   },
   "this_season": {
-    "games": 26,
-    "avg": ".270",
-    "hr": 26,
-    "rbi": 86,
-    "ops": ".841",
-    "sb": 3,
-    "hits": 147,
-    "wins": 5,
-    "losses": 5,
-    "era": "4.49",
-    "so": 123,
-    "ip": "122.1",
+    "games": 29,
+    "wins": 12,
+    "losses": 12,
+    "era": "5.37",
+    "so": 96,
+    "ip": "154.1",
     "whip": "1.32"
   },
   "last_season": {
-    "games": 15,
-    "avg": ".245",
-    "hr": 32,
-    "rbi": 103,
-    "ops": ".804",
-    "sb": 5,
-    "hits": 140,
-    "wins": 5,
-    "losses": 5,
-    "era": "5.38",
-    "so": 68,
-    "ip": "72.0",
-    "whip": "1.18"
+    "games": 30,
+    "wins": 10,
+    "losses": 10,
+    "era": "4.64",
+    "so": 106,
+    "ip": "157.0",
+    "whip": "1.33"
   },
-  "recent": [],
-  "awards": [
+  "recent": [
     {
-      "season": "2022",
-      "name": "NL Pitcher of the Month"
+      "date": "2026-09-25",
+      "line": "6.2回 自責4 5奪三振",
+      "opponent": "Chicago White Sox"
     },
     {
-      "season": "2022",
-      "name": "NL Player of the Week"
+      "date": "2026-09-20",
+      "line": "5.0回 自責1 5奪三振",
+      "opponent": "Seattle Mariners"
     },
     {
-      "season": "2021",
-      "name": "NL All-Star"
+      "date": "2026-09-14",
+      "line": "5.0回 自責6 2奪三振",
+      "opponent": "San Diego Padres"
     },
     {
-      "season": "2020",
-      "name": "NL Pitcher of the Month"
+      "date": "2026-09-09",
+      "line": "6.0回 自責5 5奪三振",
+      "opponent": "New York Yankees"
     },
     {
-      "season": "2017",
-      "name": "AL All-Star"
+      "date": "2026-09-02",
+      "line": "6.0回 自責3 4奪三振",
+      "opponent": "Baltimore Orioles"
     }
   ],
-  "quotes": [
-    {
-      "who": "조선일보",
-      "text": "ダルビッシュ有、Oda Shokiに「MLB前に日本で経験を積むべき」と助言",
-      "kind": "headline"
-    },
-    {
-      "who": "Chosunbiz",
-      "text": "ダルビッシュ有、日本の有望株Odaに「MLB挑戦前にNPBで成長を」と促す",
-      "kind": "headline"
-    }
-  ]
+  "awards": [],
+  "quotes": []
 }
