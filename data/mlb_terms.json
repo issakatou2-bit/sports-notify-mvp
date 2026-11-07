@@ -66,7 +66,25 @@
     "mlb_term_fa",
     "mlb_term_option"
    ],
-   "summary": "FAになる選手に、元の球団が出す1年契約の提示"
+   "summary": "FAになる選手に、元の球団が出す1年契約の提示",
+   "illustration": "ai/qo.png",
+   "news": [
+    {
+     "date": "2026.11.2",
+     "text": "カブスが鈴木誠也にQOを提示",
+     "source": "MLB.com"
+    },
+    {
+     "date": "2026.11",
+     "text": "8人がQOを受け取る",
+     "source": "MLB Trade Rumors"
+    },
+    {
+     "date": "2025.11.18",
+     "text": "今永昇太 QOを受けてカブスに残る",
+     "source": "MLB.com"
+    }
+   ]
   },
   {
    "key": "mlb_term_fa",
@@ -128,7 +146,20 @@
     "mlb_term_qo",
     "mlb_term_nontender"
    ],
-   "summary": "どの球団とも、自由に契約できる立場"
+   "summary": "どの球団とも、自由に契約できる立場",
+   "illustration": "ai/fa.png",
+   "news": [
+    {
+     "date": "2026.10.30",
+     "text": "選手会がFAの144人を公表",
+     "source": "デイリースポーツ"
+    },
+    {
+     "date": "2026.10.30",
+     "text": "菅野智之・今永昇太・鈴木誠也　FAに",
+     "source": "デイリースポーツ"
+    }
+   ]
   },
   {
    "key": "mlb_term_optout",
@@ -190,7 +221,8 @@
     "mlb_term_option",
     "mlb_term_fa"
    ],
-   "summary": "残りの契約をやめて、FAになれる選手の権利"
+   "summary": "残りの契約をやめて、FAになれる選手の権利",
+   "illustration": "ai/fa.png"
   },
   {
    "key": "mlb_term_option",
@@ -252,7 +284,25 @@
     "mlb_term_optout",
     "mlb_term_qo"
    ],
-   "summary": "契約の時に決めておく、延長の1年"
+   "summary": "契約の時に決めておく、延長の1年",
+   "illustration": "ai/contract.png",
+   "news": [
+    {
+     "date": "2026.10",
+     "text": "パドレス　ピベッタの球団オプション使わず",
+     "source": "MLB Trade Rumors"
+    },
+    {
+     "date": "2026.10",
+     "text": "パガン　選手オプションを断る",
+     "source": "MLB Trade Rumors"
+    },
+    {
+     "date": "2026.10",
+     "text": "ソニー・グレイ　相互オプション使わず",
+     "source": "MLB Trade Rumors"
+    }
+   ]
   },
   {
    "key": "mlb_term_posting",
@@ -313,7 +363,20 @@
     "mlb_term_fa",
     "mlb_term_qo"
    ],
-   "summary": "NPBの選手が、海外FAより前にMLBへ移る仕組み"
+   "summary": "NPBの選手が、海外FAより前にMLBへ移る仕組み",
+   "illustration": "ai/posting.png",
+   "news": [
+    {
+     "date": "2026.11.2",
+     "text": "佐藤輝明・平良海馬・伊藤大海　30球団と交渉開始",
+     "source": "MLB.com"
+    },
+    {
+     "date": "2026.11",
+     "text": "ハンファ　ノ・シファンをポスティング",
+     "source": "MLB Trade Rumors"
+    }
+   ]
   },
   {
    "key": "mlb_term_arbitration",
