@@ -36,7 +36,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - run: pip install requests
+      # 移籍市場の回はAI絵の検査で画像を開く（11/6 Pillowが無く夕方の回がSNSへ出なかった）。
+      - run: pip install requests pillow
       - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
       - name: Validate source and hand over once per topic and service
         env:
