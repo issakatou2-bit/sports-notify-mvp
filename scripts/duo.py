@@ -87,12 +87,18 @@ def term(spec):
     """固定原稿は1行1区切り。問いの制限・言い換え・削り込みを通さない。"""
     import review_render_v3 as r3
     result = []
+    shown = None   # 直前に出した札（番号と画面）
     for i, line in enumerate(spec['lines']):
         ask = line['who'] == 'zundamon'
         meta = dict(duo=True, duo_ask=ask, who='ずんだもん' if ask else '四国めたん',
                     screen='term:title' if i < 2 else f'term:{i}', term_line=i)
         if 'card' in line:
             meta.update(term_card=line['card'], start=line['card'], count=1)
+            shown = (line['card'], meta['screen'])
+        elif i >= 2 and shown is not None:
+            # 札の無い行（問い・言い直し）でも直前の札を残し、画面の真ん中を空けない。
+            # 同じ画面として扱い、切り替えの演出も入れない（11/7 外部講評「札が消えて空く」）。
+            meta.update(term_shown=shown[0], screen=shown[1])
         result.append(dict(kind='list', text=line['text'], speaker=ZUNDA if ask else METAN, meta=meta))
     result.append(dict(kind='outro', text=r3.OUTRO_TEXT, speaker=METAN,
                        meta=dict(duo=True, who='四国めたん', screen='term:outro')))
