@@ -1,0 +1,49 @@
+{
+  "publication_id": "asset:topic:mlb_term_qo",
+  "domain": "asset",
+  "kind": "topic",
+  "key_parts": {
+    "topic": "mlb_term_qo"
+  },
+  "version": 1,
+  "history": [
+    {
+      "source": "published_assets/assets/mlb_term_qo",
+      "service": "youtube",
+      "video_id": "_Nb3h_23NeA",
+      "state": "uploaded",
+      "scheduled_at": null,
+      "event_day": null,
+      "material_day": null,
+      "edition_day": null,
+      "run_at": "2026-11-07T07:31:58.045812+00:00",
+      "details": {
+        "privacy": "public"
+      },
+      "run_id": "42350989725",
+      "attempt": "1",
+      "recorded_at": "2026-11-07T07:31:58.054399+00:00",
+      "fingerprint": "3dc8e4df398969e7605966c1cb413d9ed33c1f78ee4e67ebd687c8309f7ea7a2",
+      "event_id": "ede723f5cfb81c3302db491e352ed4d95f30660c8cb7b3b946ca8f3f336f1b3e"
+    },
+    {
+      "source": "published_videos/asset/mlb_term_qo",
+      "service": "youtube",
+      "video_id": "_Nb3h_23NeA",
+      "state": "scheduled",
+      "scheduled_at": "2026-11-07T09:30:00Z",
+      "event_day": null,
+      "material_day": null,
+      "edition_day": "2026-11-07",
+      "run_at": "2026-11-07T07:31:58.065679+00:00",
+      "details": {
+        "privacy": "public"
+      },
+      "run_id": "42350989725",
+      "attempt": "1",
+      "recorded_at": "2026-11-07T07:31:58.086875+00:00",
+      "fingerprint": "92e0e475bb939de350f030517b37681738473433884a7d28e01fa4c620f4c745",
+      "event_id": "46140b9e023704a7cda5a931a32a97a14c892e3a11cd30a226459d0a14262e75"
+    }
+  ]
+}

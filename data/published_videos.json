@@ -21362,6 +21362,30 @@
       },
       "host_fallback_reason": null,
       "privacy": "public"
+    },
+    "mlb_term_qo": {
+      "video_id": "_Nb3h_23NeA",
+      "url": "https://youtu.be/_Nb3h_23NeA",
+      "title": "【MLB用語】QO 元の球団が出す1年契約の提示 #Shorts",
+      "published_at": "2026-11-07T07:31:58.065679+00:00",
+      "publish_at": "2026-11-07T09:30:00Z",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-07",
+        "enabled": true,
+        "assigned": "generic",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false,
+        "source": "post_common.lineup:daily_soccer",
+        "next_date": "2026-11-08",
+        "next_time": "19:30",
+        "next_name": "欧州サッカー"
+      },
+      "duration_seconds": 36.0,
+      "short_information_count": 3,
+      "short_content_policy": "short-content-20261027-v1",
+      "privacy": "public"
     }
   },
   "soccer_results": {

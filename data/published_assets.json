@@ -1713,6 +1713,28 @@
       "duration_seconds": 34.88,
       "short_information_count": 3,
       "short_content_policy": "short-content-20261027-v1"
+    },
+    "mlb_term_qo": {
+      "video_id": "_Nb3h_23NeA",
+      "url": "https://youtu.be/_Nb3h_23NeA",
+      "privacy": "public",
+      "published_at": "2026-11-07T07:31:58.045812+00:00",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-07",
+        "enabled": true,
+        "assigned": "generic",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false,
+        "source": "post_common.lineup:daily_soccer",
+        "next_date": "2026-11-08",
+        "next_time": "19:30",
+        "next_name": "欧州サッカー"
+      },
+      "duration_seconds": 36.0,
+      "short_information_count": 3,
+      "short_content_policy": "short-content-20261027-v1"
     }
   }
 }
