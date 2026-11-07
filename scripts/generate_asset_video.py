@@ -1996,12 +1996,11 @@ def main():
     import hook_ab
     hook_scenes = hook_ab.SceneRecorder()
     try:
-        for seg_index,(seg, dur) in enumerate(zip(segs, durations)):
+        for seg_index,(seg, dur, n) in enumerate(zip(segs, durations, video_common.segment_frame_counts(durations, FPS))):
             timeline.select(seg, seg_index)
             # 区間ごとに切り捨てると、区間の多い掛け合いで最大1コマずつ縮み、
             # 公開前の尺の照合（計画との差0.15秒以内）で止まる（11/7 用語のQOが9区間で0.21秒短かった）。
             # 通算の時刻からコマ数を出し、全体を計画の尺にそろえる。
-            n = round(sum(durations[:seg_index + 1]) * FPS) - round(sum(durations[:seg_index]) * FPS)
             kind, meta = seg.get("kind"), seg.get("meta") or {}
             cached = None
             still = None

@@ -87,8 +87,10 @@ def prepare(material, segments, durations, out_dir, fps=FPS):
     import motion
     if motion.enabled():motion.prepare_highlights(material,segments,durations)
     if not enabled():return
-    start = 0.
-    for seg,duration in zip(segments,durations):
+    import video_common
+    frame0 = 0
+    for seg,duration,n in zip(segments,durations,video_common.segment_frame_counts(durations,fps)):
+        start = frame0 / fps
         text = seg.get('text') or ''
         fact = decision(text, material)
         if not fact:
@@ -96,12 +98,12 @@ def prepare(material, segments, durations, out_dir, fps=FPS):
             fallback = characters.fan_mood(text)
             fact = dict(face=fallback[0],effect=fallback[1],reason=fallback[2],event=None,
                         highlights=[],evidence=None) if fallback else None
-        row = dict(start=start,end=start+int(duration*fps)/fps,text=text,
+        row = dict(start=start,end=(frame0+n)/fps,text=text,
                    speech=float(seg.get('duration') or duration),decision=fact)
         TRACK.append(row)
         LOG.info('fan_expr %s', json.dumps(row,ensure_ascii=False))
         print('[fan_expr]', fact['reason'] if fact else 'この画面に表情の根拠なし')
-        start=row['end']
+        frame0 += n
     Path(out_dir,'fan-confirmation.json').write_text(json.dumps(
         dict(segments=TRACK,cues=event_cues(),timing='字幕と同じ文字数比。音素単位の時刻ではない',
              sound_source='scripts/sfx.py 数式による既存自作音',event_extra_db=-24),

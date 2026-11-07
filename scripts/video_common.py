@@ -22,6 +22,23 @@ from PIL import ImageChops, ImageDraw, ImageFilter, ImageFont, Image
 import wave
 import subprocess
 import pathlib
+
+
+def segment_frame_counts(durations, fps):
+    """音声と同じ通算秒を丸め、各区間のコマ数を返す。
+
+    合計は round(sum(durations) * fps)。途中の境界も音声の開始から
+    最大半コマだけの差に収まり、区間数に応じた誤差が積み重ならない。
+    """
+    durations = list(durations)
+    previous = 0
+    counts = []
+    for end_index in range(1, len(durations) + 1):
+        end = round(sum(durations[:end_index]) * fps)
+        counts.append(end - previous)
+        previous = end
+    return counts
+
 # ---------------------------------------------------------------------------
 # 画面の切り替え
 # ---------------------------------------------------------------------------
@@ -421,6 +438,7 @@ def build_narration_track(segs, durations, out_dir):
     pad_dir = out_dir / "silence"
     pad_dir.mkdir(parents=True, exist_ok=True)
     parts = []
+    sample_counts = segment_frame_counts(durations, params.framerate)
     for i, (seg, dur) in enumerate(zip(segs, durations)):
         spoken = 0.0
         path = seg.get("file")
@@ -428,15 +446,16 @@ def build_narration_track(segs, durations, out_dir):
             with wave.open(path, "rb") as w:
                 spoken = w.getnframes() / float(w.getframerate())
             parts.append(pathlib.Path(path).resolve())
-        gap = dur - spoken
-        if gap <= 0.02:
+        n = sample_counts[i] - round(spoken * params.framerate)
+        if n < 0:
+            raise ValueError("音声が計画の区間尺を超えています")
+        if n == 0:
             continue
         sil = pad_dir / f"pad_{i:03d}.wav"
         with wave.open(str(sil), "wb") as w:
             w.setnchannels(params.nchannels)
             w.setsampwidth(params.sampwidth)
             w.setframerate(params.framerate)
-            n = int(gap * params.framerate)
             w.writeframes(b"\x00" * (n * params.nchannels * params.sampwidth))
         parts.append(sil.resolve())
 

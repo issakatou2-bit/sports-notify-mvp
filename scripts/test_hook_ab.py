@@ -193,7 +193,7 @@ class HookABTest(HookFixtureTestCase):
             {'kind':'outro','text':'締め','speaker':2,'meta':{}}]}
         h.bind_video(video,n,n['segments'],[3.01,5.02,4],24,[2])
         record=h.publication(video,'2026-10-23T18:00:00+09:00')
-        self.assertEqual(record['scene_starts'],[0,2,8])
+        self.assertEqual(record['scene_starts'],[0,2,round(round(8.03*24)/24,6)])
         self.assertEqual([x['start'] for x in record['dialogue_starts']],[0,3.01,8.03])
         for function, args, filename in [(uploader.record_published,('season_player_1','id','private'),'assets.json'),
                                           (uploader.record_video,('asset','season_player_1','id','題'),'videos.json')]:

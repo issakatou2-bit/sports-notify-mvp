@@ -1194,12 +1194,13 @@ def timeline(pages, cards, fps=FPS):
 
     pages: [(seg, 秒)]（generate_longform.main の pages と同じ）。cards: 台本の panels。
     戻り値: [{seg, dur, frames, start, panel, panel_since, chapter_start, chapter_since}]。
-    start は動画の頭からの秒（1画面のコマ数 int(秒×fps) を積んだもの。書き出しと同じ数え方）。
+    start は動画の頭からの秒（通算秒を丸めたコマ境界。書き出しと同じ数え方）。
     panel_since・chapter_since は、いまの札・章がこの画面より何秒前に出ていたか。
     """
     out, start, current, panel_at, key_now, chapter_now = [], 0.0, None, 0.0, None, None
     chapter_at = 0.0
-    for seg, dur in pages:
+    frame0 = 0
+    for (seg, dur), n in zip(pages, video_common.segment_frame_counts([d for _, d in pages], fps)):
         if seg.get("panel") and seg["panel"] in cards:
             if seg["panel"] != key_now:
                 panel_at = start
@@ -1207,7 +1208,6 @@ def timeline(pages, cards, fps=FPS):
         elif seg.get("panel"):
             pass                                  # 知らない鍵は捨てる（前の札のまま）
         ch = seg.get("chapter")
-        n = int(dur * fps)
         new_chapter = ch is not None and ch != chapter_now
         if new_chapter:
             chapter_at = start
@@ -1215,7 +1215,8 @@ def timeline(pages, cards, fps=FPS):
                     "panel_since": start - panel_at,
                     "chapter_start": new_chapter, "chapter_since": start - chapter_at})
         chapter_now = ch if ch is not None else chapter_now
-        start += n / fps
+        frame0 += n
+        start = frame0 / fps
     return out
 
 

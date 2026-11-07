@@ -166,6 +166,8 @@ def bind_video(video, narration, segments, durations, fps, scene_starts=None):
     if len(segments) != len(narration['segments']) or len(segments) != len(durations):
         raise ValueError('A/Bの原稿・音声・場面の数が一致しません')
     frames, audio_elapsed = 0, 0.0
+    import video_common
+    frame_counts = video_common.segment_frame_counts(durations, fps)
     scenes, lines = [], []
     previous = object()
     for i, (spoken, text, dur) in enumerate(zip(segments, narration['segments'], durations)):
@@ -179,9 +181,8 @@ def bind_video(video, narration, segments, durations, fps, scene_starts=None):
         previous = screen
         lines.append(dict(index=i, start=round(audio_elapsed, 6), scene_start=round(start, 6), text=text['text'], speaker=spoken.get('speaker', text.get('speaker')),
                           audio_available=bool(spoken.get('file'))))
-        frames += int(dur*fps)
-        spoken_seconds = float(spoken.get('duration') or 0)
-        audio_elapsed += (spoken_seconds if spoken.get('file') and dur-spoken_seconds <= .02 else dur)
+        frames += frame_counts[i]
+        audio_elapsed += dur
     scenes = sorted(set(scenes + (scene_starts or [])))
     data = dict(plan, scene_starts=scenes, dialogue_starts=lines, duration_seconds=frames/fps,
                 timing_basis='scenes:rendered-frames/dialogue:audio-segment-playback',

@@ -4141,13 +4141,12 @@ def build_player_video(args):
     # 直前の画面の最後のフレーム。切り替わりの頭だけ、これと混ぜる。
     last_frame = None
     try:
-        for seg_i, (seg, dur) in enumerate(zip(segs, durations)):
+        for seg_i, (seg, dur, n) in enumerate(zip(segs, durations, video_common.segment_frame_counts(durations, FPS))):
             timeline.select(seg, seg_i)
             set_step(seg_i, len(segs))
             # その画面で読み上げている文を、画面下に出す
             set_spoken((narration["segments"][seg_i].get("text") or "")
                        if seg_i < len(narration["segments"]) else "")
-            n = int(dur * FPS)
             kind = seg.get("kind")
             draw = ps.RENDERERS.get(kind)
             cached = None
@@ -4576,13 +4575,12 @@ def main():
     import hook_ab
     hook_scenes = hook_ab.SceneRecorder()
     try:
-        for seg_i, (seg, dur) in enumerate(zip(segs, durations)):
+        for seg_i, (seg, dur, n) in enumerate(zip(segs, durations, video_common.segment_frame_counts(durations, FPS))):
             timeline.select(seg, seg_i)
             set_step(seg_i, len(segs))
             # その画面で読み上げている文を、画面下に出す
             set_spoken((narration["segments"][seg_i].get("text") or "")
                        if seg_i < len(narration["segments"]) else "")
-            n = int(dur * FPS)
             kind, meta = seg.get("kind"), seg.get("meta") or {}
             cached = None
             still = None

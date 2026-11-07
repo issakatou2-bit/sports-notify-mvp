@@ -164,4 +164,8 @@ def test_single_tuning_table_and_fixed_camera():
 
 
 if __name__=='__main__':
-    raise SystemExit(pytest.main([__file__,'-q']))
+    import tempfile
+    (ROOT/'build').mkdir(parents=True,exist_ok=True)
+    base = pathlib.Path(sys.argv[1]) if len(sys.argv)>1 else pathlib.Path(
+        tempfile.mkdtemp(prefix='slant-test-',dir=ROOT/'build'))
+    raise SystemExit(pytest.main([__file__,'-q','--basetemp',str(base/'pytest')]))

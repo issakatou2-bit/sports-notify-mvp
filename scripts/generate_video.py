@@ -1009,9 +1009,10 @@ def main():
     total_games = len(games[:3])
 
     # --- 音声を先に連結しておく ---
+    durations = [max(2.0, float(s.get('duration') or 0) or 4.0) for s in segments]
     import short_content
     short_content.require({'segments': segments},
-                          [max(2.0, float(s.get('duration') or 0) or 4.0) for s in segments],
+                          durations,
                           out_dir, games_data, maximum=post_common.MAX_SECONDS+post_common.BUDGET_GRACE, video_name=video_path.name)
     audio_files = [s["file"] for s in segments if s.get("file")]
     audio_path = None
@@ -1025,17 +1026,7 @@ def main():
         return 1
 
     if audio_files:
-        concat_list = out_dir / "audio_list.txt"
-        concat_list.write_text(
-            "\n".join(f"file '{pathlib.Path(a).resolve()}'" for a in audio_files),
-            encoding="utf-8",
-        )
-        audio_path = out_dir / "narration.wav"
-        subprocess.run(
-            ["ffmpeg", "-y", "-f", "concat", "-safe", "0",
-             "-i", str(concat_list), "-c", "copy", str(audio_path)],
-            check=True, capture_output=True,
-        )
+        audio_path = video_common.build_narration_track(segments, durations, out_dir)
 
     # --- フレームをffmpegへ直接流し込む ---
     # PNGとしてディスクに書き出すと、2000枚超で圧縮とI/Oに3分近くかかる。
@@ -1068,9 +1059,7 @@ def main():
     # 直前の画面の最後のフレーム。切り替わりの頭だけ、これと混ぜる。
     last_frame = None
     try:
-        for seg_i, seg in enumerate(segments):
-            dur = max(2.0, float(seg.get("duration") or 0) or 4.0)
-            n = int(dur * FPS)
+        for seg_i, (seg, dur, n) in enumerate(zip(segments, durations, video_common.segment_frame_counts(durations, FPS))):
             kind = seg.get("kind")
             # 何枚目かを画面上の目盛りに反映する
             set_step(seg_i, len(segments))
@@ -1095,8 +1084,8 @@ def main():
                     # order は読み上げの順番で、画面の「PICK N/3」はこちら。
                     # 冒頭で名乗った試合を先頭へ動かすので、2つは一致しない。
                     gi = meta.get("game_index", 0)
-                    if gi >= len(games):
-                        continue
+                    if not 0 <= gi < len(games):
+                        raise ValueError("Invalid game_index in video segment")
                     im = render_game(p_, games[gi],
                                      meta.get("order", gi), total_games)
                 elif kind == "score":

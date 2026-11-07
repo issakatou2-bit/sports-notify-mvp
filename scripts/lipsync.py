@@ -87,14 +87,15 @@ def prepare(segs, durations, out_dir, fps=FPS):
     TRACK.clear()
     if not enabled():
         return
-    start = 0.
-    for seg, duration in zip(segs, durations):
-        n = int(duration*fps)
+    import video_common
+    frame0 = 0
+    for seg, duration, n in zip(segs, durations, video_common.segment_frame_counts(durations, fps)):
+        start = frame0 / fps
         path = seg.get('file')
         levels, source = audio_frames(path, fps) if path else ([], 'silence')
-        TRACK.append(dict(start=start, end=start+n/fps, speaker=seg.get('speaker', 2),
+        TRACK.append(dict(start=start, end=(frame0+n)/fps, speaker=seg.get('speaker', 2),
                           frames=(levels+[0]*n)[:n], source=source, file=path))
-        start += n/fps
+        frame0 += n
     Path(out_dir, 'lipsync-confirmation.json').write_text(
         json.dumps(dict(fps=fps,segments=TRACK), ensure_ascii=False, indent=2), encoding='utf-8')
 
