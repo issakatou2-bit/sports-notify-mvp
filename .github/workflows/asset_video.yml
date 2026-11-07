@@ -116,7 +116,13 @@ jobs:
         id: limit
         env:
           REQUESTED_TOPIC: ${{ inputs.topic }}
-        run: python scripts/next_asset.py --check-daily-limit --requested-topic "$REQUESTED_TOPIC"
+          FORCE_INPUT: ${{ inputs.force }}
+        run: |
+          # 上げ直し（force）で回を名指しした時は、その回自身を上限に数えない
+          # （11/7 QO の台詞を直して出し直す時、自分の予約で止まった）。next では使わない。
+          AGAIN=""
+          if [ "$FORCE_INPUT" = "true" ] && [ -n "$REQUESTED_TOPIC" ] && [ "$REQUESTED_TOPIC" != "next" ]; then AGAIN="--again"; fi
+          python scripts/next_asset.py --check-daily-limit --requested-topic "$REQUESTED_TOPIC" $AGAIN
 
   asset:
     needs: daily_limit
