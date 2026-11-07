@@ -960,6 +960,15 @@ def check_root_imports() -> int:
     return bad
 
 
+# __import__('…') の先で要る物は ast では追えない。全部を追うと使わない枝まで
+# 数えて誤検出が200件を超えたので、実際に落ちた台本だけ名指しで足す。
+HIDDEN_NEEDS = {
+    # 移籍市場の回の AI 絵の検査（offseason_public → market_art）で画像を開く。
+    # 11/6 asset_social、11/7 buffer_daily の2回、PIL が無く SNS へ出なかった。
+    "asset_sns.py": {"PIL"},
+}
+
+
 def check_deps_installed() -> int:
     """
     ワークフローが起動する台本の必要な物を、そのワークフローが入れているか。
@@ -1026,7 +1035,8 @@ def check_deps_installed() -> int:
                     continue
                 for m in re.finditer(r"python\s+(?:-m\s+)?scripts/([\w_]+\.py)",
                                      run):
-                    for n in sorted(_third_party(m.group(1), imports=imports)):
+                    for n in sorted(_third_party(m.group(1), imports=imports)
+                                    | HIDDEN_NEEDS.get(m.group(1), set())):
                         if n in have or n in {ALIAS.get(x, x) for x in have}:
                             continue
                         bad += 1

@@ -122,6 +122,20 @@ class SoccerSanity(unittest.TestCase):
         self.assertEqual(self.run_sanity(text, '順位と勝点差が違う')[0], 0)
         self.assertNotEqual(self.run_sanity(text.replace('4位', '6位'), '順位が違う')[0], 0)
 
+    def test_gap_to_third_club_is_not_read_as_the_fixture_gap(self):
+        # 11/7 19:30：対戦相手と別のクラブとの勝点差を、対戦の2クラブの差と取り違えて止めた。
+        game = dict(home_team_name='Arsenal FC', away_team_name='Hull City AFC',
+                    home_standing=dict(rank=1, points=24), away_standing=dict(rank=11, points=11))
+        material = [dict(sport='soccer', games=[game])]
+        third = '日本時間0時、アーセナル対ハル・シティ。ハル・シティとすぐ上のアストンヴィラの勝点差は1です。'
+        self.assertIsNot(soccer.review(third, material), False)
+        same = '日本時間0時、アーセナル対ハル・シティ。アーセナルとハル・シティの勝点差は13です。'
+        self.assertIs(soccer.review(same, material), True)
+        self.assertIs(soccer.review(same.replace('13', '12'), material), False)
+        self.assertIsNot(soccer.review('アーセナル対ハル・シティ。アストンヴィラとの勝点差は1。', material), False)
+        both = 'アーセナル対ハル・シティ。両チームの勝点差は12です。'
+        self.assertIs(soccer.review(both, material), False)
+
     def test_new_reasons_name_each_rank_for_both_home_away_orders(self):
         for ranks in ((12, 1), (1, 12), (1, 2), (4, 5), (17, 18), (3, 5)):
             game = copy.deepcopy(FIXTURE['data']['games'][0])
