@@ -1,132 +1,108 @@
 {
-  "generated_at": "2026-11-07T06:00:56.640083+00:00",
-  "date_jst": "2026-11-07",
-  "name": "菊池雄星",
-  "player_id": "579328",
-  "team": "エンゼルス",
-  "group": "pitching",
-  "why": "順番",
-  "headline": "",
-  "score": null,
+  "generated_at": "2026-11-07T17:26:12.938842+00:00",
+  "date_jst": "2026-11-08",
+  "name": "Liam Hicks",
+  "player_id": "689414",
+  "team": "レイズ",
+  "group": "hitting",
+  "why": "2026-10-29のMLBで最も活躍",
+  "headline": "3打数1安打　1二塁打　1死球",
+  "score": 61,
   "bio": {
-    "name_en": "Yusei Kikuchi",
-    "age": 35,
-    "birth_city": "Morioka",
-    "birth_state": null,
-    "birth_country": "Japan",
-    "birth_date": "1991-06-17",
-    "debut": "2019-03-21",
-    "draft_year": null,
+    "name_en": "Liam Hicks",
+    "age": 27,
+    "birth_city": "Toronto",
+    "birth_state": "ON",
+    "birth_country": "Canada",
+    "birth_date": "1999-06-02",
+    "debut": "2025-03-28",
+    "draft_year": 2021,
     "bats": "Left",
-    "throws": "Left",
-    "number": "16",
-    "position": "Pitcher",
-    "nickname": "U Say",
-    "height": "6' 0\"",
-    "weight": 210
+    "throws": "Right",
+    "number": "34",
+    "position": "Catcher",
+    "nickname": null,
+    "height": "5' 9\"",
+    "weight": 185
   },
   "teams": [
     {
-      "team": "マリナーズ",
-      "from": 2019,
-      "to": 2021
-    },
-    {
-      "team": "ブルージェイズ",
-      "from": 2022,
-      "to": 2024
-    },
-    {
-      "team": "アストロズ",
-      "from": 2024,
-      "to": 2024
-    },
-    {
-      "team": "エンゼルス",
+      "team": "マーリンズ",
       "from": 2025,
+      "to": 2026
+    },
+    {
+      "team": "レイズ",
+      "from": 2026,
       "to": 2026
     }
   ],
   "career": {
-    "games": 213,
+    "games": 261,
     "avg": ".269",
-    "hr": 113,
-    "rbi": 382,
-    "ops": ".823",
-    "sb": 39,
-    "hits": 683,
-    "wins": 49,
-    "losses": 65,
-    "era": "4.49",
-    "so": 1078,
-    "ip": "1055.2",
-    "whip": "1.37"
+    "hr": 24,
+    "rbi": 127,
+    "ops": ".757",
+    "sb": 5,
+    "hits": 218
   },
   "this_season": {
-    "games": 14,
-    "avg": ".270",
-    "hr": 26,
-    "rbi": 86,
-    "ops": ".841",
+    "games": 142,
+    "avg": ".284",
+    "hr": 18,
+    "rbi": 82,
+    "ops": ".801",
     "sb": 3,
-    "hits": 147,
-    "wins": 1,
-    "losses": 7,
-    "era": "4.92",
-    "so": 67,
-    "ip": "67.2",
-    "whip": "1.54"
+    "hits": 136
   },
   "last_season": {
-    "games": 33,
-    "avg": ".245",
-    "hr": 32,
-    "rbi": 103,
-    "ops": ".804",
-    "sb": 5,
-    "hits": 140,
-    "wins": 7,
-    "losses": 11,
-    "era": "3.99",
-    "so": 174,
-    "ip": "178.1",
-    "whip": "1.42"
+    "games": 119,
+    "avg": ".247",
+    "hr": 6,
+    "rbi": 45,
+    "ops": ".692",
+    "sb": 2,
+    "hits": 82
   },
   "recent": [
     {
       "date": "2026-09-27",
-      "line": "5.0回 自責3 7奪三振",
-      "opponent": "Seattle Mariners"
+      "line": "4打数2安打",
+      "opponent": "Philadelphia Phillies"
+    },
+    {
+      "date": "2026-09-26",
+      "line": "6打数2安打",
+      "opponent": "Philadelphia Phillies"
+    },
+    {
+      "date": "2026-09-24",
+      "line": "5打数0安打 1打点",
+      "opponent": "New York Yankees"
+    },
+    {
+      "date": "2026-09-23",
+      "line": "2打数0安打",
+      "opponent": "New York Yankees"
     },
     {
       "date": "2026-09-22",
-      "line": "5.1回 自責2 2奪三振",
-      "opponent": "Athletics"
-    },
-    {
-      "date": "2026-09-16",
-      "line": "4.1回 自責4 4奪三振",
-      "opponent": "Seattle Mariners"
-    },
-    {
-      "date": "2026-09-11",
-      "line": "4.0回 自責1 5奪三振",
-      "opponent": "Washington Nationals"
-    },
-    {
-      "date": "2026-09-05",
-      "line": "6.0回 自責0 6奪三振",
-      "opponent": "Pittsburgh Pirates"
+      "line": "3打数0安打",
+      "opponent": "New York Yankees"
     }
   ],
   "awards": [
     {
-      "season": "2025",
-      "name": "AL All-Star"
+      "season": "2023",
+      "name": "MiLB.com Organization All-Star"
     },
     {
-      "season": "2021",
-      "name": "AL All-Star"
+      "season": "2023",
+      "name": "AFL Player of the Week"
+    },
+    {
+      "season": "2022",
+      "name": "MiLB.com Organization All-Star"
     }
   ],
   "quotes": []
