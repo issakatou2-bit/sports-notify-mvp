@@ -38,6 +38,73 @@ def _wrap(cards, value, size, width):
     return rows or ['']
 
 
+NEWS_BG, NEWS_RED, PAPER, INK_DARK = (20, 32, 56), (196, 44, 52), (247, 242, 223), (34, 36, 42)
+
+
+def _art(spec):
+    """用語の絵（assets/illustrations の台帳にある物だけ）。無い・壊れている時は絵なし。"""
+    name = spec.get('illustration')
+    if not name:
+        return None
+    try:
+        import market_art
+        from PIL import Image
+        row = market_art.resolve(name, None, catalog=market_art.ledger())
+        if not row.get('available'):
+            return None
+        return Image.open(row['path']).convert('RGBA')
+    except (OSError, ValueError, KeyError) as error:
+        print('[warn] 用語の絵を使わずに続けます: ' + str(error))
+        return None
+
+
+def _paste(im, art, x, y, size):
+    piece = art.resize((size, size))
+    im.paste(piece, (round(x), round(y)), piece)
+
+
+def _news(im, cards, r3, spec, t, y, width):
+    """ニュースの見出しを2〜3本。実在の局名・ロゴは出さず、日付と出典を添える。
+    1本ずつ0.3秒で現れる（順出し）。揺れ・動きはつけない。"""
+    from PIL import Image
+    rows = spec['news'][:3]
+    inner = width - 40
+    plans = []
+    for row in rows:
+        lines = _wrap(cards, row['text'], 46, inner - 24)
+        plans.append((row, lines, 22 + 30 + 10 + _block(lines, 46, 10) + 30 + 20))
+    head = 30 + 56 + 22
+    # 安全域（立ち絵の頭より上）に入らない時は、後ろの見出しから落とす。
+    while len(plans) > 1 and head + sum(h + 14 for _, _, h in plans) + 16 > BOTTOM - y:
+        plans.pop()
+    height = head + sum(h + 14 for _, _, h in plans) + 16
+    top = round((y + BOTTOM - height) / 2)
+    cards.panel(im, (cards.L, top, cards.R, top + height), fill=NEWS_BG)
+    draw = __import__('PIL.ImageDraw', fromlist=['Draw']).Draw(im)
+    draw.rounded_rectangle((cards.L + 28, top + 24, cards.L + 28 + 178, top + 24 + 56), 10, fill=NEWS_RED)
+    cards.text(im, cards.L + 50, top + 34, 'ニュース', 36, (255, 255, 255), width=150)
+    cards.text(im, cards.L + 230, top + 38, '最近の見出し', 30, SOFT, width=width - 230)
+    yy = top + head
+    for i, (row, lines, h) in enumerate(plans):
+        box = (cards.L + 20, yy, cards.R - 20, yy + h)
+        # 四角の描画は右・下の端の1pxも塗るので、重ねる範囲を1px広げる（出る前の線を残さない）。
+        area = (box[0], box[1], box[2] + 1, box[3] + 1)
+        before = im.crop(area)
+        draw.rounded_rectangle(box, 12, fill=PAPER)
+        draw.rectangle((box[0], yy, box[0] + 12, yy + h), fill=NEWS_RED)
+        cards.text(im, box[0] + 32, yy + 22, row['date'], 28, NEWS_RED, width=inner)
+        ly = yy + 22 + 30 + 10
+        for line in lines:
+            cards.text(im, box[0] + 32, ly, line, 46, INK_DARK, width=inner - 24)
+            ly += 46 + 10
+        cards.text(im, box[0] + 32, ly + 2, row['source'], 26, (110, 112, 120), width=inner - 24)
+        alpha = max(0.0, min(1.0, (t - 0.15 - 0.35 * i) / 0.3))
+        if alpha < 1:
+            after = im.crop(area)
+            im.paste(Image.blend(before, after, alpha), area[:2])
+        yy += h + 14
+
+
 def _split(term):
     """「QO（クオリファイング・オファー）」→ 大きく出す「QO」と、添える読み。"""
     if '（' in term and term.endswith('）'):
@@ -60,34 +127,47 @@ def frame(t, meta, spec):
     y = r3.CONTENT_TOP + TOP_GAP
 
     main, reading = _split(spec['term'])
-    if opening:
+    art = _art(spec)
+    if opening and meta.get('term_line', 0) == 0 and spec.get('news') and index is None:
+        # 勘違いの行：ニュースの見出しを順に出し、「よく見る言葉」から入る。
+        _news(im, cards, r3, spec, t, y, width)
+    elif opening:
         # 用語を大きく。読みは小さく添える。札も出す行では少し小さくして、両方が収まるようにする。
         size = 104 if index is not None else 128
+        art_size = 0 if art is None else (220 if index is not None else 280)
+        inner = width - (art_size + 24 if art_size else 0)
         rows = [main]                # 1行。入らなければ共通の text が字を縮める
-        sub = _wrap(cards, summary, 46, width) if summary else []
+        sub = _wrap(cards, summary, 46, inner) if summary else []
         height = (56 + _block(rows, size, 18) + (52 + 14 if reading else 0)
                   + (_block(sub, 46, 14) + 18 if sub else 0))
+        height = max(height, art_size + 48)
         if index is None:
             y = round((y + BOTTOM - height) / 2)
         cards.panel(im, (cards.L, y, cards.R, y + height))
         yy = y + 32
         for row in rows:
-            cards.text(im, cards.L + 32, yy, row, size, width=width)
+            cards.text(im, cards.L + 32, yy, row, size, width=inner)
             yy += size + 18
         if reading:
-            cards.text(im, cards.L + 32, yy, reading, 44, SOFT, width=width)
+            cards.text(im, cards.L + 32, yy, reading, 44, SOFT, width=inner)
             yy += 52 + 14
         yy += 18
         for row in sub:
-            cards.text(im, cards.L + 32, yy, row, 46, r3.GOLD, width=width)
+            cards.text(im, cards.L + 32, yy, row, 46, r3.GOLD, width=inner)
             yy += 46 + 14
+        if art_size:
+            _paste(im, art, cards.R - 24 - art_size, y + (height - art_size) // 2, art_size)
         y += height + 36
     else:
         # 帯：途中から見た人にも、何の言葉の話かが分かるように。1行ずつ、入らなければ字を縮める。
-        cards.text(im, cards.L, y, main + ('　' + reading if reading else ''), 52, r3.GOLD, width=width + 64)
+        # 右に小さく用語の絵を置き、上の空きをさみしくしない。
+        band = width + 64 - (140 if art is not None else 0)
+        if art is not None:
+            _paste(im, art, cards.R - 120, y - 4, 120)
+        cards.text(im, cards.L, y, main + ('　' + reading if reading else ''), 52, r3.GOLD, width=band)
         y += 52 + 14
         if summary:
-            cards.text(im, cards.L, y, summary, 40, width=width + 64)
+            cards.text(im, cards.L, y, summary, 40, width=band)
             y += 40 + 10
         y += 40
 
