@@ -183,6 +183,17 @@ def _keywords() -> list:
     return sorted(set(out), key=len, reverse=True)
 
 
+# 添付つきの投稿で、文がこの語数より短いものは、添付なしでは意味が通らないとみなす。
+EMBED_MIN_WORDS = 12
+
+
+def embed_dependent(text: str, embed) -> bool:
+    """写真・リンク・引用などの添付があり、文が短すぎて単独では話題が分からない投稿。"""
+    if not embed:
+        return False
+    return len(re.findall(r"[A-Za-z0-9'’\-]+", text or "")) < EMBED_MIN_WORDS
+
+
 def collect(hours: int = HOURS, sleep: float = 0.3) -> list:
     """名簿を回って、直近の投稿を集める。"""
     kws = _keywords()
@@ -205,6 +216,11 @@ def collect(hours: int = HOURS, sleep: float = 0.3) -> list:
                 continue
             # リポストは本人の言葉ではないので外す
             if item.get("reason"):
+                continue
+            # 写真・リンク・引用が主役で、文だけでは誰の何の話か分からない投稿は外す
+            # （11/7 「英国の大手タブロイド紙の1つが見解を示している」が紙面の写真つきで、
+            #   動画では対象も見解も分からないまま読み上げられた）。
+            if embed_dependent(text, rec.get("embed")):
                 continue
 
             hit = [k for k in kws if re.search(rf"\b{re.escape(k)}\b", text)]

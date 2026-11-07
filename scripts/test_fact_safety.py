@@ -261,6 +261,30 @@ class PlayerIdentity(unittest.TestCase):
         self.assertIsNone(week.resolve([], ''))
 
 
+class EmbedDependentPosts(unittest.TestCase):
+    """11/7 写真が主役の短い投稿（文だけでは対象も見解も分からない）が読み上げられた。"""
+    def feed(self, text, embed=None):
+        record = dict(text=text, createdAt=datetime.now(timezone.utc).isoformat())
+        if embed:
+            record['embed'] = embed
+        return [dict(post=dict(record=record, author=dict(displayName='記者'), uri='at://x'))]
+
+    def collect(self, text, embed=None):
+        with patch.object(reporters, 'REPORTERS', [('a.bsky.social', 'オリオールズ', 'Banner')]),                 patch.object(reporters, 'fetch_author', return_value=self.feed(text, embed)):
+            return reporters.collect(sleep=0)
+
+    def test_short_text_with_image_is_dropped(self):
+        image = {'$type': 'app.bsky.embed.images', 'images': [{}]}
+        self.assertEqual(self.collect('One of Britain’s large tabloids has its say', image), [])
+
+    def test_full_sentence_with_link_or_plain_short_text_is_kept(self):
+        link = {'$type': 'app.bsky.embed.external', 'external': {'uri': 'https://example.invalid'}}
+        text = ('Pete Crow-Armstrong has won Rawlings’ NL Platinum Glove award, '
+                'the 2nd Cub to win it since the honor was introduced in 2011')
+        self.assertEqual(len(self.collect(text, link)), 1)
+        self.assertEqual(len(self.collect('Skenes wins the NL Cy Young')), 1)
+
+
 if __name__ == '__main__':
     with patch('socket.socket.connect', side_effect=AssertionError('試験中の通信は禁止')):
         unittest.main(argv=[sys.argv[0]])
