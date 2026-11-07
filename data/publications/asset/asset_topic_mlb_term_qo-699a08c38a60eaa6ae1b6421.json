@@ -44,6 +44,44 @@
       "recorded_at": "2026-11-07T07:31:58.086875+00:00",
       "fingerprint": "92e0e475bb939de350f030517b37681738473433884a7d28e01fa4c620f4c745",
       "event_id": "46140b9e023704a7cda5a931a32a97a14c892e3a11cd30a226459d0a14262e75"
+    },
+    {
+      "source": "published_assets/assets/mlb_term_qo",
+      "service": "youtube",
+      "video_id": "LMct9r4qfxg",
+      "state": "uploaded",
+      "scheduled_at": null,
+      "event_day": null,
+      "material_day": null,
+      "edition_day": null,
+      "run_at": "2026-11-07T08:04:18.535312+00:00",
+      "details": {
+        "privacy": "public"
+      },
+      "run_id": "42353302861",
+      "attempt": "1",
+      "recorded_at": "2026-11-07T08:04:18.542796+00:00",
+      "fingerprint": "a2c3ca928e0711d189d9774789ff57f330b471a04ccbb150d032470a0ed814af",
+      "event_id": "841b3f52ea31b347ae83529e51e2b8365c8377d925ef340c63fecc0b8d4c5fd1"
+    },
+    {
+      "source": "published_videos/asset/mlb_term_qo",
+      "service": "youtube",
+      "video_id": "LMct9r4qfxg",
+      "state": "scheduled",
+      "scheduled_at": "2026-11-07T09:30:00Z",
+      "event_day": null,
+      "material_day": null,
+      "edition_day": "2026-11-07",
+      "run_at": "2026-11-07T08:04:18.552535+00:00",
+      "details": {
+        "privacy": "public"
+      },
+      "run_id": "42353302861",
+      "attempt": "1",
+      "recorded_at": "2026-11-07T08:04:18.569395+00:00",
+      "fingerprint": "81848b6dc9f17e8c07e4d67dbc2bf6eb23f5edf32db6b9d17e5b7db7825fa603",
+      "event_id": "2587f0472de6e4343529f45420ff41af7d934859a7a1b1b52747fa882206a118"
     }
   ]
 }
