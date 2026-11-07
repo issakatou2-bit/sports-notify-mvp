@@ -129,7 +129,8 @@ class Tests(unittest.TestCase):
 
     def test_fpl_provider_absent_from_title_body(self):
         import soccer_daily_retry
-        data=soccer_daily_retry.read(Path(__file__).resolve().parents[1]/'data/soccer_games.json')
+        # 本番の材料は毎日変わるので、試験を足した11/5の写しで見る（11/7 当日の材料で赤）。
+        data=soccer_daily_retry.read(Path(__file__).resolve().parent/'fixtures/soccer-preview/soccer_games_20261105.json')
         data=angles.attach(data)
         doc=preview.program(data)['narration']
         spoken=doc['title']+''.join(s['text'] for s in doc['segments'])

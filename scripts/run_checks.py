@@ -214,6 +214,32 @@ def check_test_entry() -> int:
     return len(bad)
 
 
+DAILY_DATA = re.compile(r"data/(soccer_games|soccer_results|soccer_preview|soccer_race"
+                        r"|team_topics|offseason_market|soccer_national[a-z_]*)\.json")
+# 本番の材料そのものを見るのが目的の試験だけ（全件の検査など）。11/7 時点の既存分。
+DAILY_DATA_OK = {
+    "test_club_match.py", "test_evening_fix.py", "test_market_art.py", "test_ps_series.py",
+    "test_sanity_all_materials.py", "test_soccer_national_squad.py", "test_soccer_selection.py",
+    "test_soccer_spread.py", "test_soccer_story_lines.py", "test_soccer_v5.py",
+}
+
+
+def check_daily_data_in_tests() -> int:
+    """
+    毎日書き換わる材料を試験が直に読むと、中身が変わった日に関係ないPRが赤になる
+    （11/6 test_jp_half、11/7 test_soccer_preview_espn）。新しい試験は
+    scripts/fixtures/ の写しを読む。材料そのものを見る試験だけ DAILY_DATA_OK に足す。
+    """
+    step("試験が毎日変わる材料を直に読んでいないか")
+    bad = [f.name for f in sorted(ROOT.glob("scripts/test_*.py"))
+           if f.name not in DAILY_DATA_OK
+           and DAILY_DATA.search(f.read_text(encoding="utf-8", errors="replace"))]
+    for name in bad:
+        print(f"NG {name}: scripts/fixtures/ に写しを置いて読む")
+    print(f"{'ok ' if not bad else 'NG '} 材料を直に読む試験 {len(bad)}件")
+    return len(bad)
+
+
 def check_tests(tmp: str) -> int:
     step("テスト")
     bad = 0
@@ -1095,6 +1121,7 @@ def main() -> int:
         failed += measured(check_shell_in_yaml)
         failed += measured(check_imports)
         failed += measured(check_test_entry)
+        failed += measured(check_daily_data_in_tests)
     if args.section != "static":
         failed += measured(check_tests, tmp)
     if args.section != "tests":
