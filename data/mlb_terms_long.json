@@ -1,0 +1,461 @@
+{
+ "version": 1,
+ "key": "mlb_terms_long_offseason",
+ "title": "【MLB用語】オフの移籍市場の言葉 FA・QO・オプション・調停・ポスティング",
+ "note": "長編。冒頭の挨拶なし、章ごとに札と掛け合い、最後に口頭試問。中身はショートと同じ出典と、例の行に書いた記事（11/7 Claude）。",
+ "intro": {
+  "who": "metan",
+  "text": "今日は、オフのニュースに出てくる言葉を、契約の流れの順に見ていくわ。最初はFAよ。"
+ },
+ "chapters": [
+  {
+   "title": "FA　どの球団とも契約できる立場",
+   "term": "mlb_term_fa",
+   "lines": [
+    {
+     "who": "zundamon",
+     "text": "FAは知ってるのだ。選手が「出ていきます」って言えばなれるのだ？"
+    },
+    {
+     "who": "metan",
+     "text": "そこがよくある勘違いね。宣言だけではなれないの。"
+    },
+    {
+     "who": "metan",
+     "text": "メジャーの登録が6年分に達すると、そのシーズンの終わりにFAになれるわ。",
+     "card": {
+      "term": "mlb_term_fa",
+      "index": 0
+     }
+    },
+    {
+     "who": "zundamon",
+     "text": "6年って、ベンチにいた日も入るのだ？"
+    },
+    {
+     "who": "metan",
+     "text": "26人枠か負傷者リストにいた日を数えるの。1シーズンで172日に達すると、1年分になるわ。",
+     "card": {
+      "term": "mlb_term_fa",
+      "index": 1
+     }
+    },
+    {
+     "who": "zundamon",
+     "text": "けがで休んでいても数えるのだ。"
+    },
+    {
+     "who": "metan",
+     "text": "ええ。それと、登録6年以上の選手は、契約が切れるたびにまたFAになるわ。"
+    },
+    {
+     "who": "metan",
+     "text": "解雇された選手は、年数に関係なく、すぐFAになるの。",
+     "card": {
+      "term": "mlb_term_fa",
+      "index": 2
+     }
+    },
+    {
+     "who": "zundamon",
+     "text": "じゃあ、6年に届いていない選手が移るには、どうするのだ？"
+    },
+    {
+     "who": "metan",
+     "text": "6年に届くまでは、契約の権利を球団が持っているの。日本から来る選手には、あとで話すポスティングという道もあるわ。"
+    }
+   ]
+  },
+  {
+   "title": "QO　元の球団が出す1年の提示",
+   "term": "mlb_term_qo",
+   "lines": [
+    {
+     "who": "metan",
+     "text": "次はQO。FAになる選手に、元の球団が出す1年契約の提示よ。"
+    },
+    {
+     "who": "zundamon",
+     "text": "1年だけなのだ？長い契約で引き留めるんじゃないのだ？"
+    },
+    {
+     "who": "metan",
+     "text": "1年だけよ。金額は、MLBの年俸上位125人の平均と同じ額に決まっているの。",
+     "card": {
+      "term": "mlb_term_qo",
+      "index": 0
+     }
+    },
+    {
+     "who": "zundamon",
+     "text": "じゃあ、なんで球団はそんな提示をするのだ？"
+    },
+    {
+     "who": "metan",
+     "text": "選手が断ってほかの球団と契約すると、元の球団は翌年のドラフトで補償の指名権をもらえるの。",
+     "card": {
+      "term": "mlb_term_qo",
+      "index": 1
+     }
+    },
+    {
+     "who": "zundamon",
+     "text": "断られても、何かが残るのだ。"
+    },
+    {
+     "who": "metan",
+     "text": "そういうこと。ただ、出せる選手は決まっているわ。シーズンを通して在籍して、まだ一度もQOを受けたことがない選手だけよ。",
+     "card": {
+      "term": "mlb_term_qo",
+      "index": 2
+     }
+    },
+    {
+     "who": "zundamon",
+     "text": "一度受けたら、もう出されないのだ？"
+    },
+    {
+     "who": "metan",
+     "text": "そうよ。今オフの例を見てみましょう。"
+    },
+    {
+     "who": "metan",
+     "text": "カブスは現地時間11月2日に、鈴木誠也にQOを提示したわ。返事の期限は、日本時間の11月18日午前6時よ。",
+     "panel": {
+      "head": "鈴木誠也",
+      "body": "カブスがQOを提示（現地11月2日）　返事は日本時間11月18日午前6時まで",
+      "note": "2026年11月 MLB.com"
+     }
+    },
+    {
+     "who": "zundamon",
+     "text": "もう一人、今永昇太もカブスなのだ。"
+    },
+    {
+     "who": "metan",
+     "text": "今永昇太は去年のオフにQOを受けて、2026年もカブスで投げたの。だから今オフは、QOを経ずにFAになったわ。",
+     "panel": {
+      "head": "今永昇太",
+      "body": "2025年オフにQOを受けてカブスに残る　今オフはQOなしでFA",
+      "note": "2025年11月18日 MLB.com"
+     }
+    },
+    {
+     "who": "zundamon",
+     "text": "一度受けると、次は出されない。さっきの決まりどおりなのだ！"
+    }
+   ]
+  },
+  {
+   "title": "オプションとオプトアウト　契約の出口",
+   "term": "mlb_term_option",
+   "lines": [
+    {
+     "who": "metan",
+     "text": "ここからは、契約の中に書いておく出口の話よ。まずオプション。"
+    },
+    {
+     "who": "zundamon",
+     "text": "オプションって、おまけの特典なのだ？"
+    },
+    {
+     "who": "metan",
+     "text": "特典ではないわ。契約の時に決めておく、延長の1年のことよ。だれが決めるかで名前が変わるの。"
+    },
+    {
+     "who": "metan",
+     "text": "球団オプションは球団が決めるの。使わない時は、決めておいた解約金を払うことが多いわ。",
+     "card": {
+      "term": "mlb_term_option",
+      "index": 0
+     }
+    },
+    {
+     "who": "metan",
+     "text": "選手オプションは選手が、相互オプションは球団と選手の両方が同意した時だけ使われるわ。",
+     "card": {
+      "term": "mlb_term_option",
+      "index": 2
+     }
+    },
+    {
+     "who": "zundamon",
+     "text": "今永昇太の時も、オプションがあったのだ？"
+    },
+    {
+     "who": "metan",
+     "text": "あったわ。カブスが3年の球団オプションを使わず、そのあと今永昇太が選手オプションを断って、FAになったの。そこでQOが出されたのよ。",
+     "panel": {
+      "head": "今永昇太（2025年オフ）",
+      "body": "カブスが球団オプションを使わない→今永昇太が選手オプションを断る→FA→QOを受ける",
+      "note": "2025年11月18日 MLB.com"
+     }
+    },
+    {
+     "who": "zundamon",
+     "text": "オプション、FA、QOが、順番につながっているのだ。"
+    },
+    {
+     "who": "metan",
+     "text": "もう一つの出口がオプトアウト。残りの契約をやめて、FAになれる選手の権利よ。",
+     "card": {
+      "term": "mlb_term_optout",
+      "index": 0
+     }
+    },
+    {
+     "who": "zundamon",
+     "text": "せっかくの長い契約を、なんでやめるのだ？"
+    },
+    {
+     "who": "metan",
+     "text": "最初の数年で活躍したら、もっと良い条件を狙えるからよ。",
+     "card": {
+      "term": "mlb_term_optout",
+      "index": 1
+     }
+    },
+    {
+     "who": "metan",
+     "text": "ボガーツはレッドソックスとの6年契約の3年目のあとに使って、パドレスと11年契約を結んだわ。",
+     "card": {
+      "term": "mlb_term_optout",
+      "index": 2
+     }
+    },
+    {
+     "who": "zundamon",
+     "text": "活躍した選手ほど、出口が役に立つのだ。"
+    }
+   ]
+  },
+  {
+   "title": "年俸調停とノンテンダー　6年に届く前の選手",
+   "term": "mlb_term_arbitration",
+   "lines": [
+    {
+     "who": "metan",
+     "text": "今度は、まだFAになれない選手の年俸の決め方よ。"
+    },
+    {
+     "who": "zundamon",
+     "text": "6年に届いていない選手なのだ。"
+    },
+    {
+     "who": "metan",
+     "text": "登録3年以上6年未満で、来季の契約がない選手は、年俸調停を使えるの。2年以上でも条件を満たせば使えるわ。",
+     "card": {
+      "term": "mlb_term_arbitration",
+      "index": 1
+     }
+    },
+    {
+     "who": "zundamon",
+     "text": "調停って、間をとって決めるのだ？"
+    },
+    {
+     "who": "metan",
+     "text": "間はとらないわ。1月中旬までに合意できなければ、両方が金額を出して、2月の審問でどちらか一方を選ぶの。",
+     "card": {
+      "term": "mlb_term_arbitration",
+      "index": 0
+     }
+    },
+    {
+     "who": "zundamon",
+     "text": "じゃあ、無茶な金額を出したら負けるのだ。"
+    },
+    {
+     "who": "metan",
+     "text": "そういうこと。"
+    },
+    {
+     "who": "metan",
+     "text": "そして、調停で上がりそうな年俸が見合わない時に、球団が使うのがノンテンダーよ。"
+    },
+    {
+     "who": "metan",
+     "text": "40人枠の選手に、来季の契約を出さないことなの。出されなかった選手はFAになるわ。",
+     "card": {
+      "term": "mlb_term_nontender",
+      "index": 0
+     }
+    },
+    {
+     "who": "zundamon",
+     "text": "40人枠を空けたい時にも使うのだ？"
+    },
+    {
+     "who": "metan",
+     "text": "ええ、それも理由の一つよ。",
+     "card": {
+      "term": "mlb_term_nontender",
+      "index": 2
+     }
+    },
+    {
+     "who": "zundamon",
+     "text": "ノンテンダーの日のあとは、FAの選手が増えるのだ。"
+    }
+   ]
+  },
+  {
+   "title": "ポスティング　日本から挑戦する道",
+   "term": "mlb_term_posting",
+   "lines": [
+    {
+     "who": "metan",
+     "text": "次は日本の選手に関わる、ポスティングよ。"
+    },
+    {
+     "who": "zundamon",
+     "text": "日本の選手なら、だれでも使うのだ？"
+    },
+    {
+     "who": "metan",
+     "text": "使うのは、海外FAに必要な9年に届いていないNPBの選手よ。",
+     "card": {
+      "term": "mlb_term_posting",
+      "index": 0
+     }
+    },
+    {
+     "who": "metan",
+     "text": "公示されると、MLBの30球団と45日間交渉できるわ。",
+     "card": {
+      "term": "mlb_term_posting",
+      "index": 1
+     }
+    },
+    {
+     "who": "zundamon",
+     "text": "45日で決まらなかったら、どうなるのだ？"
+    },
+    {
+     "who": "metan",
+     "text": "元の球団に戻って、次のオフまでは出られないの。",
+     "card": {
+      "term": "mlb_term_posting",
+      "index": 2
+     }
+    },
+    {
+     "who": "metan",
+     "text": "契約が決まると、元の球団には、契約の保証額に応じた譲渡金が入るわ。"
+    },
+    {
+     "who": "metan",
+     "text": "今オフは、佐藤輝明、平良海馬、伊藤大海の3人が、日本時間の11月2日から交渉を始めているわ。",
+     "panel": {
+      "head": "今オフのポスティング",
+      "body": "佐藤輝明（阪神）　平良海馬（西武）　伊藤大海（日本ハム）　日本時間11月2日から45日間",
+      "note": "2026年11月 MLB.com・各紙"
+     }
+    },
+    {
+     "who": "zundamon",
+     "text": "45日の間に、どの球団と決まるか見ていくのだ。"
+    }
+   ]
+  },
+  {
+   "title": "ルール5ドラフト　40人枠の外の選手",
+   "term": "mlb_term_rule5",
+   "lines": [
+    {
+     "who": "metan",
+     "text": "最後はルール5ドラフト。"
+    },
+    {
+     "who": "zundamon",
+     "text": "新人を選ぶドラフトなのだ？"
+    },
+    {
+     "who": "metan",
+     "text": "新人ではないわ。ほかの球団の、40人枠に入っていない選手を指名できるの。",
+     "card": {
+      "term": "mlb_term_rule5",
+      "index": 0
+     }
+    },
+    {
+     "who": "metan",
+     "text": "指名できるのは、40人枠に空きがある球団だけよ。",
+     "card": {
+      "term": "mlb_term_rule5",
+      "index": 1
+     }
+    },
+    {
+     "who": "zundamon",
+     "text": "じゃあ、指名されないように守る方法もあるのだ？"
+    },
+    {
+     "who": "metan",
+     "text": "40人枠に入れればいいの。18歳以下で契約した選手は5シーズン、19歳以上なら4シーズンのうちに入れないと、指名される側になるわ。",
+     "card": {
+      "term": "mlb_term_rule5",
+      "index": 2
+     }
+    },
+    {
+     "who": "zundamon",
+     "text": "ノンテンダーで枠を空けるのと、つながっているのだ。"
+    },
+    {
+     "who": "metan",
+     "text": "そうね。オフの動きは、どれも40人枠とお金の話でつながっているの。"
+    }
+   ]
+  }
+ ],
+ "quiz_intro": {
+  "who": "metan",
+  "text": "最後に、口頭試問よ。声に出して答えてみて。"
+ },
+ "quiz": [
+  {
+   "q": "問題。QOの金額は、どうやって決まる？",
+   "a": "MLBの年俸上位125人の平均なのだ！",
+   "term": "mlb_term_qo",
+   "card": 0
+  },
+  {
+   "q": "問題。FAになれるのは、メジャーの登録が何年分に達した時？",
+   "a": "6年分なのだ！",
+   "term": "mlb_term_fa",
+   "card": 0
+  },
+  {
+   "q": "問題。年俸調停では、両方の金額の間をとる？",
+   "a": "とらないのだ。どちらか一方を選ぶのだ！",
+   "term": "mlb_term_arbitration",
+   "card": 0
+  },
+  {
+   "q": "問題。ポスティングの交渉は、何日間？",
+   "a": "30球団と45日間なのだ！",
+   "term": "mlb_term_posting",
+   "card": 1
+  }
+ ],
+ "outro": [
+  {
+   "who": "zundamon",
+   "text": "言葉が分かると、オフのニュースが読みやすくなるのだ！"
+  },
+  {
+   "who": "metan",
+   "text": "ショートでも1語ずつ出しているから、あわせて見てね。"
+  }
+ ],
+ "sources": [
+  "https://www.mlb.com/glossary/transactions/free-agency",
+  "https://www.mlb.com/glossary/transactions/qualifying-offer",
+  "https://www.mlb.com/glossary/transactions/japanese-posting-system",
+  "https://www.mlb.com/news/mlb-offseason-dates-rules-and-terms",
+  "https://www.mlb.com/cubs/news/cubs-extend-qualifying-offer-to-free-agent-seiya-suzuki",
+  "https://www.mlb.com/news/shota-imanaga-accepts-qualifying-offer-from-cubs",
+  "https://www.mlb.com/news/teruaki-sato-mlb-posting-system"
+ ]
+}
