@@ -42,6 +42,8 @@ def topic_catalog():
 
 def selectable(topic, spec, names=None):
     """自動選定は題に日本人名がある、公式RS成績の材料に限定する。"""
+    if topic.removeprefix('asset:').startswith('mlb_term_') or (spec or {}).get('manual_only'):
+        return False
     if paused(topic):
         return False
     if topic.startswith('offseason_'):

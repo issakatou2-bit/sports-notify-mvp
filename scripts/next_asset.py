@@ -119,11 +119,14 @@ def merge_records(older, newer):
 
 
 def daily_limit_reached(path: str, requested_topic="next", again=False) -> bool:
-    """自動選択の日次上限だけ先に見る。指定トピックの制作は止めない。
+    """自動選択・手動用語回の日次上限を先に見る。ほかの指定制作は止めない。
 
     在庫判定は材料更新後に行う。ここで古い在庫を読んで見送らない。
     force は投稿済みトピックの再制作用で、next の日次上限とは別。
     """
+    if (requested_topic or "").startswith("mlb_term_"):
+        # 用語の回は自分の本数だけ数える（毎晩の資産動画とは別の枠、1日1本）。
+        return posted_today(path, kinds={"mlb"})
     return ((requested_topic or "next") == "next" and not again
             and posted_today(path, exclude={"season"}))
 

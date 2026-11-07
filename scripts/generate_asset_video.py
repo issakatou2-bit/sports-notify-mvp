@@ -632,6 +632,12 @@ def rivalry_items() -> list:
 
 
 def build_narration(topic: str) -> dict:
+    if (LIST_TOPICS.get(topic) or {}).get('mlb_term'):
+        import duo
+        spec = LIST_TOPICS[topic]
+        return dict(label=spec['term'], title=spec['title'], program='mlb_terms',
+                    source_url=spec['source_url'], segments=duo.term(spec),
+                    duration_budget=dict(limit=40, grace=0))
     if topic in LIST_TOPICS:
         __import__('market_art').validate_spec(LIST_TOPICS[topic])
         if LIST_TOPICS[topic].get('jp_stock'):
@@ -1717,6 +1723,8 @@ def _v3_focus(t, kind, meta, spec, topic, seg, dur):
 def render_v3(t, kind, meta, spec, topic, seg=None, dur=None):
     """新デザイン「電光掲示板」（review_render_v3）。材料の style="v3" のときだけ。"""
     import review_render_v3 as r3
+    if spec.get('mlb_term') and kind != 'outro':
+        return __import__('mlb_terms_render').frame(t, meta, spec)
     if r3.LOOK == 'v4' and spec.get('game') and kind != 'outro':
         import game_ui_short
         material = dict(spec, items=list_items(meta.get('topic', topic)))
@@ -1735,7 +1743,7 @@ def render_v3(t, kind, meta, spec, topic, seg=None, dur=None):
             im=video_common.short_effects(im,state.get('animation_time',t),quote=state.get('kind')=='quote',
                                           score=kind=='intro' and bool(spec.get('game')))
         return im
-    if r3.LOOK=='v4':
+    if r3.LOOK=='v4' and not spec.get('mlb_term'):
         from content_v4 import asset_display
         material_items=list_items(meta.get('topic',topic))
         spec=asset_display(dict(spec,items=material_items),_intro_text(topic,material_items))
@@ -1846,6 +1854,10 @@ def main():
     parser.add_argument('--next-schedule',help='保存した公式日程（試作用）')
     args = parser.parse_args()
     __import__('market_art').validate_spec(LIST_TOPICS.get(args.topic) or {})
+    if (LIST_TOPICS.get(args.topic) or {}).get('mlb_term') and not args.narration_out:
+        import review_render_v3 as r3
+        if r3.LOOK != 'v4':
+            raise ValueError('MLB用語の掛け合いはv4で描画してください')
     if args.topic.startswith('offseason_') and not args.narration_out:
         import review_render_v3 as r3
         if r3.LOOK != 'v4':
@@ -1936,7 +1948,12 @@ def main():
             (a.get('text'),a.get('speaker'),a.get('kind'))!=(b.get('text'),b.get('speaker'),b.get('kind'))
             for a,b in zip(segs,narration['segments'])):
             raise ValueError('掛け合い音声が保存原稿と一致しません。両話者の音声を作り直してください')
-        errors=duo.check(segs,durations)
+        term_spec = LIST_TOPICS.get(args.topic) or {}
+        if term_spec.get('mlb_term') and any(not s.get('file') or not pathlib.Path(s['file']).is_file()
+                                            or float(s.get('duration') or 0) <= 0 for s in segs):
+            raise ValueError('MLB用語のVOICEVOX実音声がありません。無音では描画しません')
+        errors=(duo.check_term(segs, term_spec, durations) if term_spec.get('mlb_term')
+                else duo.check(segs,durations))
         if errors:raise ValueError('掛け合いの実音声: '+str(errors))
     import short_content
     import post_common

@@ -88,6 +88,8 @@ def all_topics(sources=SOURCES, refresh: bool = False) -> dict:
         market = []
     for spec in market:
         out[spec['key']] = spec
+    import mlb_terms
+    out.update(mlb_terms.load())
     import short_context
     for key, spec in list(out.items()):
         if key.startswith('rare_'):
