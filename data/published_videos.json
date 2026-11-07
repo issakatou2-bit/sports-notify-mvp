@@ -8947,6 +8947,117 @@
       },
       "host_fallback_reason": null,
       "privacy": "public"
+    },
+    "2026-11-07": {
+      "video_id": "HOL4ZF9tVeQ",
+      "url": "https://youtu.be/HOL4ZF9tVeQ",
+      "title": "「ポール・スキーンズ、大谷翔平と山本由伸への思い入れを明かす」｜現地の報道 #Shorts",
+      "published_at": "2026-11-07T06:27:21.126275+00:00",
+      "publish_at": "2026-11-07T09:00:00Z",
+      "ab_test": "hook-20261023",
+      "ab_variant": "A",
+      "ab_enabled": true,
+      "ab_kind": "morning_press",
+      "ab_day": "2026-11-07",
+      "ab_rule": "jst-day-abba-v1",
+      "ab_content_eligible": false,
+      "ab_content_reason": "同じ主役・論点の説明がないためAを維持",
+      "scene_starts": [
+        0.0,
+        8.266667,
+        16.866667,
+        25.966667,
+        39.133333,
+        44.1
+      ],
+      "dialogue_starts": [
+        {
+          "index": 0,
+          "start": 0.0,
+          "scene_start": 0.0,
+          "text": "ポール・スキーンズ、大谷翔平と山本由伸への思い入れを明かす。11月7日、現地の報道です。現地の見出しです。",
+          "speaker": 2,
+          "audio_available": true
+        },
+        {
+          "index": 1,
+          "start": 8.284,
+          "scene_start": 8.266667,
+          "text": "New York Post。MLBの投球不正事件の証人が証言、大谷翔平の通訳をめぐる騒動の後はヒントをもらえなくなったと。",
+          "speaker": 2,
+          "audio_available": true
+        },
+        {
+          "index": 2,
+          "start": 16.909333,
+          "scene_start": 16.866667,
+          "text": "CubsHQ。カブス、ダルビッシュ有と比較される日本人右腕の獲得に動く可能性。現地の番記者の投稿です。翻訳したものです。",
+          "speaker": 2,
+          "audio_available": true
+        },
+        {
+          "index": 3,
+          "start": 26.014666,
+          "scene_start": 25.966667,
+          "text": "Chicago Tribuneの記者。ピート・クロウ＝アームストロングがローリングスのナ・リーグ・プラチナグラブ賞を受賞。2011年の創設以来、カブスの選手では2人目（アンソニー・リゾ、2016年）。",
+          "speaker": 2,
+          "audio_available": true
+        },
+        {
+          "index": 4,
+          "start": 39.205333,
+          "scene_start": 39.133333,
+          "text": "Baltimore Bannerの記者。英国の大手タブロイド紙の1つが見解を示している。",
+          "speaker": 2,
+          "audio_available": true
+        },
+        {
+          "index": 5,
+          "start": 44.193333,
+          "scene_start": 44.1,
+          "text": "コレスポでは毎日、MLBの話題と欧州サッカーの見どころを届けています。チャンネル登録して、また見に来てくださいね。",
+          "speaker": 2,
+          "audio_available": true
+        }
+      ],
+      "duration_seconds": 51.67,
+      "timing_basis": "scenes:rendered-frames/dialogue:audio-segment-playback",
+      "video_sha256": "8a6411b07ab3f56b24cf343768626cab0740561b240a805df1075c30ef110dc5",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-07",
+        "enabled": true,
+        "assigned": "generic",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false,
+        "source": "post_common.lineup:daily_soccer",
+        "next_date": "2026-11-08",
+        "next_time": "19:30",
+        "next_name": "欧州サッカー"
+      },
+      "short_information_count": 5,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-11-07",
+        "kind": "morning_press",
+        "phase": 0,
+        "planned_host": "metan",
+        "rule": "half-jst-week-v1",
+        "week": 43,
+        "weekday": 5
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-11-07T15:17:56.436764+09:00",
+        "comparison_eligible": true,
+        "planned_host": "metan",
+        "reason": null,
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
     }
   },
   "daily_soccer": {
@@ -10636,6 +10747,62 @@
         "comparison_eligible": true,
         "planned_host": "metan",
         "reason": null,
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
+    },
+    "2026-11-07": {
+      "video_id": "xicYRS_qHV0",
+      "url": "https://youtu.be/xicYRS_qHV0",
+      "title": "イ・ジョンフー、2年連続で長打40本超えに現地ファンの声 #Shorts",
+      "published_at": "2026-11-07T06:17:55.205447+00:00",
+      "publish_at": "2026-11-07T08:30:00Z",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-07",
+        "enabled": true,
+        "assigned": "generic",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false,
+        "source": "post_common.lineup:daily_soccer",
+        "next_date": "2026-11-08",
+        "next_time": "19:30",
+        "next_name": "欧州サッカー"
+      },
+      "duration_seconds": 68.53,
+      "short_information_count": 5,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-11-07",
+        "kind": "morning_voices",
+        "phase": 1,
+        "planned_host": "ui",
+        "rule": "half-jst-week-v1",
+        "week": 43,
+        "weekday": 5
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-11-07T06:03:53.938093+00:00",
+        "comparison_eligible": false,
+        "planned_host": "metan",
+        "previous_attempt": {
+          "action": "rebuild_metan",
+          "checked_at": "2026-11-07T06:03:05.770484+00:00",
+          "comparison_eligible": true,
+          "failed_at": "2026-11-07T06:03:53.935393+00:00",
+          "failure_reason": "ui_order_discarded",
+          "label": "予定雨衣",
+          "mode": "live",
+          "planned_host": "ui",
+          "reason": null,
+          "status": "held",
+          "version": 1
+        },
+        "reason": "ui_rebuilt_after_hold",
         "version": 1
       },
       "host_fallback_reason": null,
