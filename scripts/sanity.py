@@ -412,6 +412,24 @@ def _prompt() -> str:
                   .replace("{season}", season))
 
 
+def prompt_materials(materials):
+    """AI へ渡す材料から、見どころ計算用の API の生データを外す。
+
+    欧州サッカーの予告は各試合に終了試合・順位表・ESPN の生の応答を持つ。
+    147試合分で約73万字になり、1回の点検が約1.6ドルになった（11/7、普段は数セント）。
+    計算した見どころ（preview_angles：本文・出典・取得日時・値）は残す。
+    機械の照合は元の材料をそのまま使う。
+    """
+    result = []
+    for source in materials or []:
+        games = source.get('games') if isinstance(source, dict) else None
+        if games and any(isinstance(g, dict) and 'preview_angle_context' in g for g in games):
+            source = dict(source, games=[{k: v for k, v in g.items() if k != 'preview_angle_context'}
+                                         if isinstance(g, dict) else g for g in games])
+        result.append(source)
+    return result
+
+
 def general(paths, api_key, materials=None):
     """競技を知っている人が読んで引っかかるところを挙げてもらう。"""
     chunks, documents = [], []
@@ -432,7 +450,7 @@ def general(paths, api_key, materials=None):
     if materials is None:
         materials = sanity_material.grounding(documents)
     evidence = '\n--- 原稿が使ったPS・順位表・名簿・試合結果（出典・取得日時付き）---\n' + json.dumps(
-        materials, ensure_ascii=False)
+        prompt_materials(materials), ensure_ascii=False)
     evidence += '\n--- 読み上げ見出しの原文・訳・対象記事（試合中の経過とシリーズ勝敗は別）---\n' + json.dumps(
         sanity_material.headline_grounding(documents), ensure_ascii=False)
     voice_quotes = [dict(source='segment.meta.source_voices',
