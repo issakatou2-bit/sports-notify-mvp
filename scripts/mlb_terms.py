@@ -8,7 +8,11 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def load(path=None):
-    rows = json.loads(Path(path or ROOT / 'data/mlb_terms.json').read_text(encoding='utf-8'))['terms']
+    # ほかの材料と同じく作業場所の data/ を読む（試験の一時フォルダでは用語の回を混ぜない）。
+    path = Path(path or 'data/mlb_terms.json')
+    if not path.exists():
+        return {}
+    rows = json.loads(path.read_text(encoding='utf-8'))['terms']
     out = {}
     for row in rows:
         spec = deepcopy(row)
