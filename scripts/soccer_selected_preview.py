@@ -71,7 +71,7 @@ def program(data):
         side='home' if who in people['home'] else 'away';other='away' if side=='home' else 'home'
         head=f"{who}の{clubs[lead[side+'_team_name']]['name_jp']}が{clubs[lead[other+'_team_name']]['name_jp']}と対戦"
     at=slots.kickoff(lead,data['generated_at']);cover_club=lead['home_team_name'] if not who or who in people['home'] else lead['away_team_name']
-    segs=[slots.segment('cover','欧州サッカーの注目試合です。',dict(kicker='欧州サッカー　予告',name=who,club=cover_club,big=at.strftime('%H:%M'),unit='日本時間'+slots.preview_date(at,data['generated_at']),context=head,chips=[]))]
+    segs=[slots.segment('cover','欧州サッカーの注目試合です。',dict(kicker='欧州サッカー　予告',name=who,club=cover_club,big=at.strftime('%H:%M'),unit='日本時間',context=head,chips=[]))]
     for g in games:
         at=slots.kickoff(g,data['generated_at']);jp=selection.visible_members(g)
         text=opening(g,data['generated_at'])

@@ -63,8 +63,8 @@ class PreviewDates(unittest.TestCase):
                 self.assertEqual(data, before)
                 self.assertTrue(doc['segments'][1]['text'].startswith(clock+'、'))
                 self.assertEqual(angles.check(doc), [])
+                self.assertEqual(doc['segments'][0]['meta']['unit'], '日本時間')
                 if '11月8日' in clock:
-                    self.assertEqual(doc['segments'][0]['meta']['unit'], '日本時間11月8日')
                     bad = copy.deepcopy(doc)
                     bad['segments'][1]['text'] = bad['segments'][1]['text'].replace('11月8日', '')
                     self.assertTrue(angles.check(bad))
@@ -118,4 +118,4 @@ class SavedQuotes(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main(argv=[__file__])
