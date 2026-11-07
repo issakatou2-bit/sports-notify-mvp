@@ -65,3 +65,45 @@ GitHub への fetch は接続拒否で失敗したため、共有コピーの or
 - 追加確認（2026-11-07）：長編の旧表示・新表示の paginate を実際に呼び、20区間×1.03秒を各60ページへ分割。いずれも24fpsで494コマとなり、計画と一致。描画は実行していない。
 
 完成動画の描画・再生確認、GitHub CI、公開結果は確認対象外。新規試験以外の既存試験はrun_checksの通常構成で実行する。
+
+## 追記：11/07 23:50の本番停止対策（この節が現行）
+
+### 修正した箇所
+
+- `scripts/video_common.py:422`, `scripts/video_common.py:461`, `scripts/video_common.py:484`
+- `scripts/generate_video.py:939`, `scripts/generate_video.py:1038`, `scripts/generate_video.py:1083`
+- `scripts/test_frame_total.py:166`, `scripts/test_frame_total.py:173`, `scripts/test_frame_total.py:185`, `scripts/test_frame_total.py:192`, `scripts/test_frame_total.py:205`
+
+- 音声が区間計画を超えても0.02秒以内なら余白0で続ける。実際に書いた累積サンプル数と計画の累積を比較し、次の余白で吸収する。吸収しきれなければ末尾のWAVの写しを短くし、全体を round(sum(durations) * sample_rate) にそろえる。元の音声ファイルは変更しない。調整時は警告を1行出す。0.02秒を超える区間超過だけ停止する。
+- 無い試合の区間は、前のフレーム（先頭なら背景）を予定コマ数ぶん書く。区間ごとに警告を1行出し、frame_noにも全コマを加える。後続の区間を進める。
+- `scripts/fixtures/mlb-badge/protected-source.json:5`, `scripts/fixtures/soccer-slots/v5-protected-source.json:6`, `scripts/fixtures/soccer-slots/v5-protected-source.json:7` : 意図した生成器の変更に対応する保護指紋3項目だけを既存の更新器で更新した。画素の基点は更新していない。
+
+### 「止まる形」の洗い直し
+
+| 箇所 | 確認と対応 |
+|---|---|
+| 前回追加した音声の n < 0 での停止 | 0.02秒以内は上記の警告・補正へ。超過が0.02秒を超える場合だけ、依頼どおり停止を残す。 |
+| 前回追加した範囲外 game_index での停止 | 警告・フレーム保持へ変更。負数、上限以上、None、文字列も停止しない。 |
+| 日次動画で共通音声結合を呼ぶようにしたことによる、話者確認の新しい停止経路 | 日次だけ strict_audio=False とし、話者情報が不一致でも警告で続ける。音声や話者の設定は変更しない。 |
+| 同じ導入で増えた、口パク情報の不備による停止経路 | 日次だけ警告で続け、途中までの口パク情報を捨てる。壊れた付属JSON・指紋不一致などの ValueError/KeyError/OSError を対象にする。 |
+| その他の生成器で従来からあった話者・口パクの確認、公開前の尺の照合、ffmpeg失敗 | 従来の停止条件を維持。 |
+| それ以外の前回追加の停止条件 | e4e30624の追加行と呼出経路を照合し、上記以外に明示的に停止へ変更した処理はなし。試験のassertは本番の停止条件とは別。 |
+
+### 本題と関係がないため外した試験変更
+
+- scripts/test_dialogue_batch.py：SDK内部のHTTP実装を使う変更を撤回。
+- scripts/test_sanity_all_materials.py：手元の文字コードに対応するUTF-8指定を撤回。
+- scripts/test_sanity_grounding.py：同上（4か所）。
+- scripts/test_slant_by_episode.py：手元の権限に対応する一時保存先指定を撤回。
+
+4本とも3084737eの内容へ戻し、バイト単位で一致を確認した。別PRは作らず、この枝の基点との差分から除いた。GitHub接続先で、基点に含まれる[#343](https://github.com/issakatou2-bit/sports-notify-mvp/pull/343)のhead c4ad158f2492a497a6c23d0556bb96411469f1c4の[検査1193](https://github.com/issakatou2-bit/sports-notify-mvp/actions/runs/42375495290)がcompleted/successであることを自分で確認した。今回の枝はpushしておらず、今回の変更のCI結果ではない。
+
+### 自分で確認した試験
+
+- scripts/test_frame_total.py：11試験成功。既存6件に加え、端数のある音声長そのままの20区間、半サンプル程度の超過の持越し・末尾調整、0.02秒の境界と超過、日次の警告と既存呼出しの停止の区別、無い試合のコマ保持・警告1行を検査した。描画もffmpegも起動していない。
+- 44,100Hz・45,427サンプルの音声を20区間並べ、合計908,540サンプルで計画と一致。次の余白で吸収できる場合と、末尾の写しを切る場合を検査し、元音声が不変であることも確認した。
+- 追加の既存5試験成功：A/B時刻と公開記録、口パクの保持と無音、口パクの付属情報と末尾、長編時刻表、MLB札の保護指紋。
+- run_checks：1回実行（2026-11-07 23:52開始、翌00:19まで）、1584.0秒、終了コード1。全259本のうち255本成功、失敗は撤回した4本だけ。test_dialogue_batchは手元SDKとhttpx2の型不一致、test_sanity_all_materials・test_sanity_groundingは既定cp932でUTF-8のJSONを読むため、test_slant_by_episodeは手元の既定pytest一時フォルダーの権限によるもの。前回と同じ手元環境の理由なので、この枝へ再び修正を入れていない。追加11試験は全体検査内でも成功。静的検査は全項目成功（重大な未定義名0、起動確認の欠落0）。全体を再実行していない。今回のログと所要時間JSONは build_reports/frame_total_20261108/run_checks_followup.log と run_checks_followup_timings.json に保存。
+- 日本語の文字化け・差分の空白検査：find_mojibake.pyによる追加差分の文字化け検査、git diff --cached --check、報告書のUTF-8読取りを最終確認。
+
+作業場所・枝は同じ。HANDOFF・公開設定・声の切替・鍵は変更していない。push・公開・新規CIの起動はしていない。

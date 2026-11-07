@@ -73,7 +73,7 @@ class GroundingTests(unittest.TestCase):
                 self.assertIn('statsapi.mlb.com', source['source_url'])
                 self.assertEqual(source['retrieved_at'], EVENING['postseason']['updated_at'])
                 self.assertEqual(report['date_jst'], '2026-10-24')
-                self.assertEqual(json.loads(Path('build/sanity_hold.json').read_text(encoding='utf-8'))['status'], 'passed')
+                self.assertEqual(json.loads(Path('build/sanity_hold.json').read_text())['status'], 'passed')
                 self.assertIn('説明不足・文脈', Path('summary.md').read_text(encoding='utf-8'))
 
     def test_admitted_valid_claim_is_not_a_factual_error(self):
@@ -107,7 +107,7 @@ class GroundingTests(unittest.TestCase):
             self.assertEqual(code, 1)
             self.assertTrue(report['upload_held'])
             self.assertEqual(report['blocking_issues'][0]['kind'], sanity_material.FACT)
-            self.assertEqual(json.loads(Path('build/sanity_hold.json').read_text(encoding='utf-8'))['status'], 'held')
+            self.assertEqual(json.loads(Path('build/sanity_hold.json').read_text())['status'], 'held')
 
     def test_context_cannot_release_another_factual_high_or_material_ng(self):
         self.document['game_material'] = dict(players=[dict(name='架空太郎', team_name='ブリュワーズ')])
@@ -171,7 +171,7 @@ class GroundingTests(unittest.TestCase):
         self.assertEqual(report['odd'][0]['verification'], '材料で裏付け済み（誤検出）')
         self.assertIn('材料で裏付け済み（誤検出）', Path('summary.md').read_text(encoding='utf-8'))
         self.assertEqual(report['materials'][0]['retrieved_at'], FIXTURE['postseason']['updated_at'])
-        self.assertEqual(json.loads(Path('build/sanity_hold.json').read_text(encoding='utf-8'))['status'], 'passed')
+        self.assertEqual(json.loads(Path('build/sanity_hold.json').read_text())['status'], 'passed')
 
     def test_real_prompt_contains_official_material_and_timestamp(self):
         Path('narration.json').write_text(json.dumps(self.document), encoding='utf-8')
@@ -321,7 +321,7 @@ class GroundingTests(unittest.TestCase):
             _, output = self.verify(**changes)
             self.assertNotIn('常識点検による保留', output)
         self.run_sanity()
-        self.assertEqual(json.loads(Path('build/sanity_hold.json').read_text(encoding='utf-8'))['status'], 'passed')
+        self.assertEqual(json.loads(Path('build/sanity_hold.json').read_text())['status'], 'passed')
 
     def test_workflow_keeps_hold_separate_and_checks_before_no_games_skip(self):
         import yaml
