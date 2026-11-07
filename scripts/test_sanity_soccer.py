@@ -122,6 +122,16 @@ class SoccerSanity(unittest.TestCase):
         self.assertEqual(self.run_sanity(text, '順位と勝点差が違う')[0], 0)
         self.assertNotEqual(self.run_sanity(text.replace('4位', '6位'), '順位が違う')[0], 0)
 
+    def test_prompt_drops_raw_preview_context_but_keeps_angles(self):
+        # 11/7：147試合分の API の生データで1回の点検が約1.6ドルになった。
+        game = dict(game_id='1', preview_angle_context=dict(finished=dict(payload='x' * 1000)),
+                    preview_angles=[dict(text='両チームの勝点差は1です。')])
+        materials = [dict(sport='soccer', games=[game])]
+        slim = sanity.prompt_materials(materials)
+        self.assertNotIn('preview_angle_context', slim[0]['games'][0])
+        self.assertEqual(slim[0]['games'][0]['preview_angles'], game['preview_angles'])
+        self.assertIn('preview_angle_context', materials[0]['games'][0])  # 機械の照合用は残る
+
     def test_gap_to_third_club_is_not_read_as_the_fixture_gap(self):
         # 11/7 19:30：対戦相手と別のクラブとの勝点差を、対戦の2クラブの差と取り違えて止めた。
         game = dict(home_team_name='Arsenal FC', away_team_name='Hull City AFC',
