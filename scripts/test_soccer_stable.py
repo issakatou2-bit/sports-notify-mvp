@@ -61,7 +61,7 @@ class Offline(unittest.TestCase):
 
 
 class SavedCases(Offline):
-    def test_six_saved_narrations_are_byte_identical_to_main(self):
+    def test_six_saved_narrations_match_reviewed_date_wording(self):
         baseline = retry.read(ROOT/'scripts/fixtures/soccer-stable/success-narrations.json')
         for day in DAYS:
             with self.subTest(day=day):
