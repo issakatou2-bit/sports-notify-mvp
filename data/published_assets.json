@@ -1687,6 +1687,32 @@
       "duration_seconds": 36.67,
       "short_information_count": 4,
       "short_content_policy": "short-content-20261027-v1"
+    },
+    "season_win_2026_673540_pitching": {
+      "video_id": "Z7ApM_EAyHI",
+      "url": "https://youtu.be/Z7ApM_EAyHI",
+      "privacy": "public",
+      "published_at": "2026-11-07T06:39:24.496243+00:00",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-07",
+        "enabled": true,
+        "assigned": "generic",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false,
+        "source": "post_common.lineup:daily_soccer",
+        "next_date": "2026-11-08",
+        "next_time": "19:30",
+        "next_name": "欧州サッカー"
+      },
+      "player_ids": [
+        "673540"
+      ],
+      "publish_at": "2026-11-07T13:00:00Z",
+      "duration_seconds": 34.88,
+      "short_information_count": 3,
+      "short_content_policy": "short-content-20261027-v1"
     }
   }
 }
