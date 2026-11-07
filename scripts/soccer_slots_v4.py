@@ -59,6 +59,17 @@ def kickoff(game,generated):
     return value
 
 
+def preview_date(at, generated):
+    """公開する日本日付と異なる開始日だけ、月日を明示する。"""
+    published = datetime.fromisoformat(generated.replace('Z', '+00:00')).astimezone(JST)
+    return f'{at.month}月{at.day}日' if at.date() != published.date() else ''
+
+
+def preview_time(game, generated):
+    at = kickoff(game, generated)
+    return f'日本時間{preview_date(at, generated)}{at.hour}時' + (f'{at.minute}分' if at.minute else '')
+
+
 def preview_program(data):
     games=[g for g in data.get('games',[]) if g.get('is_notable') and (g.get('home_has_jp') or g.get('away_has_jp'))][:3]
     if not games:return package('preview',data,[],[], '')
@@ -73,7 +84,7 @@ def preview_program(data):
     for g in games:
         at=kickoff(g,data['generated_at']);jp=people[str(g['game_id'])]
         # 古いAI解説に開催地の逆転があっても、材料のhome/awayから文を作り直す。
-        text=f"日本時間{at.hour}時"+(f"{at.minute}分" if at.minute else '')+f"、ホームの{ne.club_name_jp(g['home_team_name'])}と、アウェーの{ne.club_name_jp(g['away_team_name'])}。"
+        text=preview_time(g,data['generated_at'])+f"、ホームの{ne.club_name_jp(g['home_team_name'])}と、アウェーの{ne.club_name_jp(g['away_team_name'])}。"
         ranks={s:(g.get(s+'_standing') or {}).get('rank') for s in ('home','away')}
         ranks={s:n for s,n in ranks.items() if type(n) is int and n>0}
         spec=dict(date=f'{at.month}月{at.day}日（{"月火水木金土日"[at.weekday()]}）',time=at.strftime('%H:%M'),league=g['league'],home=g['home_team_name'],away=g['away_team_name'],ranks=ranks,jp=jp)

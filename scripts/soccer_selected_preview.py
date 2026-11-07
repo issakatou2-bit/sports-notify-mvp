@@ -50,8 +50,7 @@ def spoken_club(game,side):
 
 
 def opening(game, generated):
-    at=slots.kickoff(game, generated)
-    return f"日本時間{at.hour}時"+(f"{at.minute}分" if at.minute else '')+f"、{spoken_club(game,'home')}対{spoken_club(game,'away')}。"
+    return slots.preview_time(game,generated)+f"、{spoken_club(game,'home')}対{spoken_club(game,'away')}。"
 
 
 def program(data):
@@ -72,10 +71,10 @@ def program(data):
         side='home' if who in people['home'] else 'away';other='away' if side=='home' else 'home'
         head=f"{who}の{clubs[lead[side+'_team_name']]['name_jp']}が{clubs[lead[other+'_team_name']]['name_jp']}と対戦"
     at=slots.kickoff(lead,data['generated_at']);cover_club=lead['home_team_name'] if not who or who in people['home'] else lead['away_team_name']
-    segs=[slots.segment('cover','欧州サッカーの注目試合です。',dict(kicker='欧州サッカー　予告',name=who,club=cover_club,big=at.strftime('%H:%M'),unit='日本時間',context=head,chips=[]))]
+    segs=[slots.segment('cover','欧州サッカーの注目試合です。',dict(kicker='欧州サッカー　予告',name=who,club=cover_club,big=at.strftime('%H:%M'),unit='日本時間'+slots.preview_date(at,data['generated_at']),context=head,chips=[]))]
     for g in games:
         at=slots.kickoff(g,data['generated_at']);jp=selection.visible_members(g)
-        text=f"日本時間{at.hour}時"+(f"{at.minute}分" if at.minute else '')+f"、{spoken_club(g,'home')}対{spoken_club(g,'away')}。"
+        text=opening(g,data['generated_at'])
         ranks={s:(g.get(s+'_standing') or {}).get('rank') for s in ('home','away')};ranks={s:n for s,n in ranks.items() if type(n) is int and n>0}
         spec=dict(date=f'{at.month}月{at.day}日（{"月火水木金土日"[at.weekday()]}）',time=at.strftime('%H:%M'),league=g['league'],home=g['home_team_name'],away=g['away_team_name'],ranks=ranks,jp=jp,game_id=str(g['game_id']))
         segs.append(slots.segment('preview',text,spec))

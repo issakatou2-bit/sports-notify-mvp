@@ -323,7 +323,8 @@ def main() -> int:
             return default
     ps = load(args.postseason, default={}) or {}
     voices = load(args.voices, default={}) or {}
-    quotes = load(args.quotes, "posts", []) or []
+    from ps_quotes import load as load_quotes
+    quotes = load_quotes(args.quotes)
     previous = {t["key"]: t for t in (load(args.out, "topics", []) or [])}
     import notability_engine as ne
     jp = {p["name_en"]: p["name_jp"] for p in ne.JP_PLAYERS_MLB}
