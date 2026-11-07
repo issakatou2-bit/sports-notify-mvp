@@ -83,6 +83,37 @@ def game(segments, spec, items):
     return _build(plan)
 
 
+def term(spec):
+    """固定原稿は1行1区切り。問いの制限・言い換え・削り込みを通さない。"""
+    import review_render_v3 as r3
+    result = []
+    for i, line in enumerate(spec['lines']):
+        ask = line['who'] == 'zundamon'
+        meta = dict(duo=True, duo_ask=ask, who='ずんだもん' if ask else '四国めたん',
+                    screen='term:title' if i < 2 else f'term:{i}', term_line=i)
+        if 'card' in line:
+            meta.update(term_card=line['card'], start=line['card'], count=1)
+        result.append(dict(kind='list', text=line['text'], speaker=ZUNDA if ask else METAN, meta=meta))
+    result.append(dict(kind='outro', text=r3.OUTRO_TEXT, speaker=METAN,
+                       meta=dict(duo=True, who='四国めたん', screen='term:outro')))
+    return result
+
+
+def check_term(segments, spec, durations=None):
+    errors = []
+    expected = term(spec)
+    if len(segments) != len(expected):
+        errors.append('固定原稿の区切り数が違う')
+    for actual, source in zip(segments, expected):
+        if any(actual.get(k) != source.get(k) for k in ('text', 'speaker', 'kind', 'meta')):
+            errors.append('固定原稿の台詞・話者・札が違う')
+    if durations is not None and (len(durations) != len(segments) or any(d <= 0 for d in durations)):
+        errors.append('実音声の長さが不足')
+    if (sum(durations) if durations is not None else estimate(segments)) > 40:
+        errors.append('40秒を超える（固定原稿・声設定は変更しない）')
+    return errors
+
+
 def voices(segments):
     plan = []
     for si, seg in enumerate(segments):

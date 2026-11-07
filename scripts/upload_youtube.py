@@ -401,6 +401,8 @@ def asset_meta_from_spec(spec: dict) -> dict:
     毎日は続かないので、材料からそのまま組む。
     書いてあるのは全部 venue_topics.json にある数字と語だけ。
     """
+    if spec.get('mlb_term'):
+        return __import__('mlb_terms').metadata(spec)
     label = spec.get("label", "")
     hook = spec.get("hook", "")
     where = spec.get("where", "")

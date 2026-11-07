@@ -106,7 +106,8 @@ class OffseasonPublic(unittest.TestCase):
         # 追加修正に触れない、既存の非オフ生成話題を全件比較する。
         count = 0
         for spec in av.LIST_TOPICS.values():
-            if not op.applies(spec):
+            # MLB用語の回（11/7）は新しい種類なので、元の版との比べから外す。
+            if not op.applies(spec) and not spec.get('mlb_term'):
                 self.assertEqual(yt.asset_meta_from_spec(spec), old.asset_meta_from_spec(spec))
                 count += 1
         self.assertGreater(count, 20)
