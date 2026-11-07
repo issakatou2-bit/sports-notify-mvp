@@ -1,4 +1,5 @@
 """保存したサッカー材料で順位・勝点の指摘を照合する。通信しない。"""
+import functools
 import json
 import re
 from datetime import datetime
@@ -65,6 +66,17 @@ def aliases(name):
     row = clubs.lookup(name) or {}
     return sorted({n for n in (name, row.get('display'), row.get('current'), row.get('legacy'),
                               row.get('short'), row.get('id'), *row.get('aliases', [])) if n}, key=len, reverse=True)
+
+
+@functools.lru_cache(maxsize=1)
+def japanese_club_names():
+    """文中に出る日本語のクラブ名（3字以上）。勝点差の相手が別のクラブかを見る。"""
+    names = set()
+    for row in clubs.rows():
+        for name in (row.get('display'), row.get('current'), row.get('legacy'), *row.get('aliases', [])):
+            if name and len(name) >= 3 and re.search(r'[ァ-ヶ一-龯]', name):
+                names.add(name)
+    return frozenset(names)
 
 
 def for_document(document, materials):
@@ -145,10 +157,24 @@ def review(text, materials, why=None, context=None):
                 remainder = remainder.replace(anonymous[0], '')
             if re.search(r'首位(?!争い)|\d+位', remainder):
                 values['rank'].append(None)
-            for match in re.finditer(r'勝(?:ち)?点差(?:は)?(\d+)', text):
-                import soccer_match_interest
-                gap = soccer_match_interest.point_gap(*standings)
-                values['points'].append(gap == int(match[1]) if gap is not None else None)
+            import soccer_match_interest
+            gap = soccer_match_interest.point_gap(*standings)
+            for sentence in re.split(r'[。！？\n]', text):
+                matches = list(re.finditer(r'勝(?:ち)?点差(?:は)?(\d+)', sentence))
+                if not matches:
+                    continue
+                # 勝点差は同じ文の2クラブの差だけを照らす。対戦相手と別のクラブ
+                # （「すぐ上のアストンヴィラ」など）との差を対戦の差と取り違えない
+                # （11/7 19:30 アーセナル対ハル・シティの回を止めた）。
+                named = [any(n in sentence for n in aliases(name)) for name in names]
+                own = {n for name in names for n in aliases(name)}
+                other = any(n in sentence and n not in own for n in japanese_club_names())
+                pair = all(named) or not (any(named) or other)
+                if not pair or re.search(r'(?:すぐ|ひとつ|一つ|1つ)(?:上|下)', sentence):
+                    values['points'].extend(None for _ in matches)
+                    continue
+                for match in matches:
+                    values['points'].append(gap == int(match[1]) if gap is not None else None)
     selected = [v for key in (targets or values.keys()) for v in values[key]]
     if False in selected:
         return False
