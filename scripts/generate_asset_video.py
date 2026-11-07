@@ -487,6 +487,40 @@ LIST_TOPICS = {
                         "守備陣とGKの評価によく使われます"),
         ],
     },
+    # 移籍市場の回に出てくる用語。中身は MLB.com の用語集（Glossary）で確かめた仕組みだけ。
+    # QO の金額は年ごとに変わるので数字を書かず、決め方だけ書く（11/7）。
+    "mlb_term_qo": {
+        "label": "QO（クオリファイング・オファー）の仕組み",
+        "title": "【MLB用語】QO（クオリファイング・オファー）の仕組み #Shorts",
+        "heading": "QOの仕組み", "hook": "QOって何？", "kind_label": "MLB", "style": "v3",
+        "intro": "QOは、FAになる選手に元の球団が出す1年契約の提示です。仕組みを5つに分けて見ていきます。",
+        "intro_as_is": True,
+        "source": "MLB.com 用語集（Qualifying Offer）", "source_url": "https://www.mlb.com/glossary/transactions/qualifying-offer",
+        "data_credit": "MLB.com", "v3": {"source": "出典: MLB.com 用語集"},
+        "items": [
+            ("金額の決め方", "MLBの年俸上位125人の平均と同じ額の、1年契約です"),
+            ("対象の選手", "その球団でシーズンを通して過ごし、これまでに一度もQOを受けていない選手だけです"),
+            ("受けた時", "翌年はその額で、元の球団と1年契約を結びます"),
+            ("断った時", "そのままFAとして、ほかの球団と交渉を続けます"),
+            ("元の球団の得", "断った選手がほかの球団と契約すると、元の球団は翌年のドラフトで補償の指名権をもらえます"),
+        ],
+    },
+    "mlb_term_fa": {
+        "label": "FA（フリーエージェント）の仕組み",
+        "title": "【MLB用語】FA（フリーエージェント）の仕組み #Shorts",
+        "heading": "FAの仕組み", "hook": "FAって何？", "kind_label": "MLB", "style": "v3",
+        "intro": "FAは、どの球団とも自由に契約できる立場のことです。仕組みを5つに分けて見ていきます。",
+        "intro_as_is": True,
+        "source": "MLB.com 用語集（Free Agency）", "source_url": "https://www.mlb.com/glossary/transactions/free-agency",
+        "data_credit": "MLB.com", "v3": {"source": "出典: MLB.com 用語集"},
+        "items": [
+            ("なる条件", "メジャーの登録が6年分に達すると、そのシーズンが終わった時にFAになれます"),
+            ("登録の数え方", "26人枠か負傷者リストにいた日を数え、1シーズンで172日に達すると1年分です"),
+            ("契約の自由", "FAの選手は、どの球団とも、両者が合意した条件で契約できます"),
+            ("再びFAに", "登録6年以上の選手は、契約が終わると再びFAになります"),
+            ("解雇された時", "登録の年数に関係なく、すぐにFAになります"),
+        ],
+    },
     # 以下2つは data/soccer_preview.json を読む。
     # 中身が無い環境では原稿の段階で止まり、動画は作られない。
     # 開幕日程も昨季順位も、こちらで書き起こす部分は無い。
