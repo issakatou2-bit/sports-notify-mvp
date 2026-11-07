@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-07T09:53:49.824352+00:00",
+  "generated_at": "2026-11-07T17:27:26.908359+00:00",
   "games": [
     {
       "game_id": "560632",
@@ -22,7 +22,7 @@
       "jp_starters": [],
       "jp_players": [],
       "home_standing": {
-        "rank": 12,
+        "rank": 8,
         "games_back": 4.3,
         "streak": 0,
         "wins": 0,
@@ -31,13 +31,13 @@
         "points_back": 13.0
       },
       "away_standing": {
-        "rank": 9,
-        "games_back": 4.0,
+        "rank": 10,
+        "games_back": 5.0,
         "streak": 0,
         "wins": 0,
         "losses": 0,
         "last_ten": null,
-        "points_back": 12.0
+        "points_back": 15.0
       },
       "home_probable": null,
       "away_probable": null,
@@ -71,7 +71,12 @@
           "text": "リーズ（昨季プレミアリーグ14位）とトッテナム（昨季プレミアリーグ17位）の対戦",
           "weight": 0
         }
-      ]
+      ],
+      "final_score": {
+        "home": 1,
+        "away": 0,
+        "winner": "home"
+      }
     },
     {
       "game_id": "564744",
@@ -103,13 +108,13 @@
         "points_back": 25.0
       },
       "away_standing": {
-        "rank": 16,
-        "games_back": 6.3,
+        "rank": 9,
+        "games_back": 5.3,
         "streak": 0,
         "wins": 0,
         "losses": 0,
         "last_ten": null,
-        "points_back": 19.0
+        "points_back": 16.0
       },
       "home_probable": null,
       "away_probable": null,
@@ -122,7 +127,12 @@
       "score": 0,
       "game_type": "R",
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 1,
+        "away": 2,
+        "winner": "away"
+      }
     },
     {
       "game_id": "558534",
@@ -145,13 +155,13 @@
       "jp_starters": [],
       "jp_players": [],
       "home_standing": {
-        "rank": 12,
-        "games_back": 5.0,
+        "rank": 8,
+        "games_back": 4.0,
         "streak": 0,
         "wins": 0,
         "losses": 0,
         "last_ten": null,
-        "points_back": 15.0
+        "points_back": 12.0
       },
       "away_standing": {
         "rank": 6,
@@ -170,7 +180,7 @@
       "venue_runs_note": null,
       "home_has_jp": false,
       "away_has_jp": false,
-      "score": 1,
+      "score": 2,
       "game_type": "R",
       "is_notable": false,
       "reasons": [
@@ -178,8 +188,18 @@
           "tag": "jp_team",
           "text": "カリアリには菅原由勢が所属",
           "weight": 1
+        },
+        {
+          "tag": "quality",
+          "text": "カリアリ8位 と フロジノーネ6位",
+          "weight": 1
         }
-      ]
+      ],
+      "final_score": {
+        "home": 1,
+        "away": 0,
+        "winner": "home"
+      }
     },
     {
       "game_id": "558532",
@@ -202,22 +222,22 @@
       "jp_starters": [],
       "jp_players": [],
       "home_standing": {
-        "rank": 10,
-        "games_back": 5.0,
+        "rank": 11,
+        "games_back": 4.7,
         "streak": 0,
         "wins": 0,
         "losses": 0,
         "last_ten": null,
-        "points_back": 15.0
+        "points_back": 14.0
       },
       "away_standing": {
         "rank": 14,
-        "games_back": 6.3,
+        "games_back": 6.0,
         "streak": 0,
         "wins": 0,
         "losses": 0,
         "last_ten": null,
-        "points_back": 19.0
+        "points_back": 18.0
       },
       "home_probable": null,
       "away_probable": null,
@@ -236,7 +256,12 @@
           "text": "トリノ（昨季セリエA13位）とレッチェ（昨季セリエA17位）の対戦",
           "weight": 0
         }
-      ]
+      ],
+      "final_score": {
+        "home": 1,
+        "away": 1,
+        "winner": "draw"
+      }
     },
     {
       "game_id": "565851",
@@ -260,12 +285,12 @@
       "jp_players": [],
       "home_standing": {
         "rank": 10,
-        "games_back": 2.7,
+        "games_back": 3.7,
         "streak": 0,
         "wins": 0,
         "losses": 0,
         "last_ten": null,
-        "points_back": 8.0
+        "points_back": 11.0
       },
       "away_standing": {
         "rank": 1,
@@ -310,8 +335,13 @@
         }
       ],
       "log_notes": [],
-      "ai_summary": "現在のブンデスリーガで首位を走るバイエルンが、敵地マインツを訪れる注目の一戦だ。昨季ブンデスリーガ1位のバイエルンに対し、【昨季10位のマインツが現在リーグ10位】で迎え撃つ。8試合を消化した時点でバイエルンとマインツの勝ち点差は8となっており、ホーム側マインツの巻き返しに注目が集まる。また、マインツの佐野海舟・川﨑颯太、バイエルンの伊藤洋輝ら日本人選手がどのような活躍を見せるかも見どころである。",
-      "notification_hook": "日本人対決、バイエルン首位の堅さ。伊藤洋輝vs佐野海舟・川﨑颯太"
+      "ai_summary": "リーグ首位のバイエルンが敵地マインツを訪れる一戦。マインツは昨季ブンデスリーガ10位から現在10位に位置し、首位バイエルンとは【勝ち点差11】という大きな差がついている。昨季1位のバイエルンが今季も首位を守る姿勢を示す中、マインツ側には日本代表の佐野海舟、川﨑颯太が所属しており、一方バイエルンには同じく日本代表の伊藤洋輝が在籍している。両チームに日本人選手の活躍の場があるだけに、マインツの守備がバイエルンの攻撃にどう立ち向かうかに注目したい。",
+      "notification_hook": "首位バイエルンvs10位マインツ、佐野海舟と川﨑颯太の日本人コンビは伊藤洋輝に立ち向かえるか",
+      "final_score": {
+        "home": 1,
+        "away": 2,
+        "winner": "away"
+      }
     },
     {
       "game_id": "565850",
@@ -344,12 +374,12 @@
       },
       "away_standing": {
         "rank": 7,
-        "games_back": 1.7,
+        "games_back": 2.7,
         "streak": 0,
         "wins": 0,
         "losses": 0,
         "last_ten": null,
-        "points_back": 5.0
+        "points_back": 8.0
       },
       "home_probable": null,
       "away_probable": null,
@@ -380,8 +410,11 @@
         }
       ],
       "log_notes": [],
-      "ai_summary": "ドルトムントが本拠地で迎える今節の相手は、7位のエルバースベルク。現在ドルトムントは【首位と勝ち点差ゼロで並ぶ2位】の立場にあり、ブンデスリーガの優勝争いが激化する中での一戦となる。昨季ブンデスリーガ2位の実績を持つドルトムントが、首位奪取に向けてどれだけの得点力を見せられるか、そして下位に位置するエルバースベルクの守備がこれにどう対抗するかが試合の焦点になる。",
-      "notification_hook": "首位と同勝ち点のドルトムント、優勝争いの重要局面で首位奪取を狙う。"
+      "final_score": {
+        "home": 2,
+        "away": 1,
+        "winner": "home"
+      }
     },
     {
       "game_id": "565853",
@@ -404,22 +437,22 @@
       "jp_starters": [],
       "jp_players": [],
       "home_standing": {
-        "rank": 15,
+        "rank": 11,
+        "games_back": 3.7,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 11.0
+      },
+      "away_standing": {
+        "rank": 8,
         "games_back": 3.0,
         "streak": 0,
         "wins": 0,
         "losses": 0,
         "last_ten": null,
         "points_back": 9.0
-      },
-      "away_standing": {
-        "rank": 9,
-        "games_back": 2.3,
-        "streak": 0,
-        "wins": 0,
-        "losses": 0,
-        "last_ten": null,
-        "points_back": 7.0
       },
       "home_probable": null,
       "away_probable": null,
@@ -438,7 +471,12 @@
           "text": "フランクフルトには堂安律・小杉啓太が所属",
           "weight": 2
         }
-      ]
+      ],
+      "final_score": {
+        "home": 2,
+        "away": 2,
+        "winner": "draw"
+      }
     },
     {
       "game_id": "565848",
@@ -461,7 +499,7 @@
       "jp_starters": [],
       "jp_players": [],
       "home_standing": {
-        "rank": 4,
+        "rank": 3,
         "games_back": 1.0,
         "streak": 0,
         "wins": 0,
@@ -470,13 +508,13 @@
         "points_back": 3.0
       },
       "away_standing": {
-        "rank": 11,
-        "games_back": 3.0,
+        "rank": 12,
+        "games_back": 4.0,
         "streak": 0,
         "wins": 0,
         "losses": 0,
         "last_ten": null,
-        "points_back": 9.0
+        "points_back": 12.0
       },
       "home_probable": null,
       "away_probable": null,
@@ -495,7 +533,12 @@
           "text": "ライプツィヒ（昨季ブンデスリーガ3位）とアウクスブルク（昨季ブンデスリーガ9位）の対戦",
           "weight": 1
         }
-      ]
+      ],
+      "final_score": {
+        "home": 5,
+        "away": 2,
+        "winner": "home"
+      }
     },
     {
       "game_id": "560640",
@@ -527,13 +570,13 @@
         "points_back": 0.0
       },
       "away_standing": {
-        "rank": 11,
-        "games_back": 4.3,
+        "rank": 13,
+        "games_back": 5.3,
         "streak": 0,
         "wins": 0,
         "losses": 0,
         "last_ten": null,
-        "points_back": 13.0
+        "points_back": 16.0
       },
       "home_probable": null,
       "away_probable": null,
@@ -563,7 +606,14 @@
           "weight": 2
         }
       ],
-      "log_notes": []
+      "log_notes": [],
+      "ai_summary": "昨季プレミアリーグで1位となったアーセナルが、今季も【首位を走る立場で、勝ち点差16のハル・シティを迎える】一戦である。リーグの頂点にいるチームがどのような戦いぶりを見せるのか、その実力を測る機会になる。また、ハル・シティに所属する守田英正がどのようなプレーを展開するかに注目したい。",
+      "notification_hook": "昨季王者アーセナルの首位での戦いぶりと、守田英正の敵地での活躍に注目。",
+      "final_score": {
+        "home": 1,
+        "away": 0,
+        "winner": "home"
+      }
     },
     {
       "game_id": "560633",
@@ -587,21 +637,21 @@
       "jp_players": [],
       "home_standing": {
         "rank": 15,
+        "games_back": 5.7,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 17.0
+      },
+      "away_standing": {
+        "rank": 11,
         "games_back": 5.0,
         "streak": 0,
         "wins": 0,
         "losses": 0,
         "last_ten": null,
         "points_back": 15.0
-      },
-      "away_standing": {
-        "rank": 13,
-        "games_back": 4.3,
-        "streak": 0,
-        "wins": 0,
-        "losses": 0,
-        "last_ten": null,
-        "points_back": 13.0
       },
       "home_probable": null,
       "away_probable": null,
@@ -620,7 +670,12 @@
           "text": "フラム（昨季プレミアリーグ11位）とニューカッスル（昨季プレミアリーグ12位）の対戦",
           "weight": 0
         }
-      ]
+      ],
+      "final_score": {
+        "home": 1,
+        "away": 1,
+        "winner": "draw"
+      }
     },
     {
       "game_id": "564745",
@@ -643,22 +698,22 @@
       "jp_starters": [],
       "jp_players": [],
       "home_standing": {
-        "rank": 14,
-        "games_back": 6.3,
+        "rank": 13,
+        "games_back": 6.0,
         "streak": 0,
         "wins": 0,
         "losses": 0,
         "last_ten": null,
-        "points_back": 19.0
+        "points_back": 18.0
       },
       "away_standing": {
         "rank": 8,
-        "games_back": 5.3,
+        "games_back": 5.0,
         "streak": 0,
         "wins": 0,
         "losses": 0,
         "last_ten": null,
-        "points_back": 16.0
+        "points_back": 15.0
       },
       "home_probable": null,
       "away_probable": null,
@@ -695,21 +750,21 @@
       "jp_players": [],
       "home_standing": {
         "rank": 15,
-        "games_back": 6.7,
+        "games_back": 6.3,
         "streak": 0,
         "wins": 0,
         "losses": 0,
         "last_ten": null,
-        "points_back": 20.0
+        "points_back": 19.0
       },
       "away_standing": {
         "rank": 9,
-        "games_back": 4.7,
+        "games_back": 4.3,
         "streak": 0,
         "wins": 0,
         "losses": 0,
         "last_ten": null,
-        "points_back": 14.0
+        "points_back": 13.0
       },
       "home_probable": null,
       "away_probable": null,
@@ -757,21 +812,21 @@
       "jp_players": [],
       "home_standing": {
         "rank": 19,
-        "games_back": 6.0,
+        "games_back": 7.0,
         "streak": 0,
         "wins": 0,
         "losses": 0,
         "last_ten": null,
-        "points_back": 18.0
+        "points_back": 21.0
       },
       "away_standing": {
         "rank": 2,
-        "games_back": 1.0,
+        "games_back": 2.0,
         "streak": 0,
         "wins": 0,
         "losses": 0,
         "last_ten": null,
-        "points_back": 3.0
+        "points_back": 6.0
       },
       "home_probable": null,
       "away_probable": null,
@@ -818,7 +873,7 @@
       "jp_starters": [],
       "jp_players": [],
       "home_standing": {
-        "rank": 15,
+        "rank": 16,
         "games_back": 6.3,
         "streak": 0,
         "wins": 0,
@@ -875,22 +930,22 @@
       "jp_starters": [],
       "jp_players": [],
       "home_standing": {
-        "rank": 12,
-        "games_back": 3.0,
+        "rank": 13,
+        "games_back": 4.0,
         "streak": 0,
         "wins": 0,
         "losses": 0,
         "last_ten": null,
-        "points_back": 9.0
+        "points_back": 12.0
       },
       "away_standing": {
         "rank": 5,
-        "games_back": 1.0,
+        "games_back": 2.0,
         "streak": 0,
         "wins": 0,
         "losses": 0,
         "last_ten": null,
-        "points_back": 3.0
+        "points_back": 6.0
       },
       "home_probable": null,
       "away_probable": null,
@@ -1016,7 +1071,7 @@
       "away_has_jp": false,
       "score": 0,
       "game_type": "R",
-      "is_notable": false,
+      "is_notable": true,
       "reasons": [
         {
           "tag": "quality",
@@ -1159,6 +1214,6 @@
   "ai_status": {
     "targets": 3,
     "succeeded": 2,
-    "cost_usd": 0.01517
+    "cost_usd": 0.01915
   }
 }
