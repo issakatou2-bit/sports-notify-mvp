@@ -155,6 +155,41 @@
           "source_url": "https://www.mlbtraderumors.com/2026/11/2026-27-top-50-free-agents-with-predictions.html"
         }
       ]
+    },
+    {
+      "id": "imanaga-free-agent-20261107",
+      "title": "今永昇太 QOを経ずにFA 2026年は11勝",
+      "name_en": "Shota Imanaga",
+      "checked_on": "2026-11-07",
+      "facts": [
+        {
+          "id": "accepted",
+          "label": "去年のQO",
+          "text": "今永昇太は2025年のオフにカブスのクオリファイング・オファーを受け、2026年もカブスでプレーしました。",
+          "source_url": "https://www.mlb.com/news/shota-imanaga-accepts-qualifying-offer-from-cubs"
+        },
+        {
+          "id": "free",
+          "label": "今オフの扱い",
+          "text": "今永昇太は今オフ、クオリファイング・オファーを経ずにFAになりました。",
+          "source_url": "https://www.mlb.com/news/shota-imanaga-accepts-qualifying-offer-from-cubs"
+        },
+        {
+          "id": "stats",
+          "label": "2026年の成績",
+          "text": "今永昇太は2026年に32試合に先発し、11勝10敗、防御率3.77、174奪三振でした。",
+          "source_url": "https://statsapi.mlb.com/api/v1/people?personIds=684007&hydrate=stats(group=[pitching],type=[season],season=2026)"
+        }
+      ],
+      "reports": [
+        {
+          "id": "forecast",
+          "label": "契約の予想",
+          "outlet": "MLB Trade Rumors",
+          "text": "今永昇太は2年4000万ドルで契約し、移籍先はジャイアンツになる見込みだとMLB Trade Rumorsが報じています。",
+          "source_url": "https://www.mlbtraderumors.com/2026/11/2026-27-top-50-free-agents-with-predictions.html"
+        }
+      ]
     }
   ]
 }
