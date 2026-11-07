@@ -1,14 +1,14 @@
 {
-  "updated_at": "2026-11-06T10:02:38.996709+00:00",
-  "date_jst": "2026-11-06",
-  "source_at": "2026-11-06T06:36:36.423946+00:00",
+  "updated_at": "2026-11-07T10:05:02.228342+00:00",
+  "date_jst": "2026-11-07",
+  "source_at": "2026-11-07T07:59:22.789384+00:00",
   "competitions": [
     {
       "code": "PL",
       "round": 9,
-      "round_complete": true,
+      "round_complete": false,
       "name_jp": "プレミアリーグ",
-      "played": 9,
+      "played": 10,
       "clubs": 20,
       "ready": true,
       "jp": [
@@ -24,31 +24,31 @@
               "line": 4,
               "position": 3,
               "side": "inside",
-              "diff": 4,
+              "diff": 3,
               "label": "CL圏内",
-              "text": "CL圏内。落ちるまで勝点4"
+              "text": "CL圏内。落ちるまで勝点3"
             },
             {
               "line": 5,
               "position": 3,
               "side": "inside",
-              "diff": 5,
+              "diff": 4,
               "label": "EL圏内",
-              "text": "EL圏内。落ちるまで勝点5"
+              "text": "EL圏内。落ちるまで勝点4"
             }
           ]
         },
         {
           "name": "遠藤航",
           "club_jp": "リバプール",
-          "position": 5,
+          "position": 6,
           "points": 15,
           "out": false,
           "out_note": "",
           "lines": [
             {
               "line": 4,
-              "position": 5,
+              "position": 6,
               "side": "outside",
               "diff": 1,
               "label": "CL圏内",
@@ -56,11 +56,11 @@
             },
             {
               "line": 5,
-              "position": 5,
-              "side": "inside",
+              "position": 6,
+              "side": "outside",
               "diff": 1,
               "label": "EL圏内",
-              "text": "EL圏内。落ちるまで勝点1"
+              "text": "EL圏内まで勝点1"
             }
           ]
         },
@@ -73,20 +73,20 @@
           "out_note": "",
           "lines": [
             {
-              "line": 5,
-              "position": 9,
-              "side": "outside",
-              "diff": 3,
-              "label": "EL圏内",
-              "text": "EL圏内まで勝点3"
-            },
-            {
               "line": 4,
               "position": 9,
               "side": "outside",
               "diff": 4,
               "label": "CL圏内",
               "text": "CL圏内まで勝点4"
+            },
+            {
+              "line": 5,
+              "position": 9,
+              "side": "outside",
+              "diff": 4,
+              "label": "EL圏内",
+              "text": "EL圏内まで勝点4"
             }
           ]
         },
@@ -99,20 +99,20 @@
           "out_note": "Groin injury - Unknown return date",
           "lines": [
             {
-              "line": 5,
-              "position": 11,
-              "side": "outside",
-              "diff": 4,
-              "label": "EL圏内",
-              "text": "EL圏内まで勝点4"
-            },
-            {
               "line": 4,
               "position": 11,
               "side": "outside",
               "diff": 5,
               "label": "CL圏内",
               "text": "CL圏内まで勝点5"
+            },
+            {
+              "line": 5,
+              "position": 11,
+              "side": "outside",
+              "diff": 5,
+              "label": "EL圏内",
+              "text": "EL圏内まで勝点5"
             }
           ]
         },
@@ -125,20 +125,20 @@
           "out_note": "",
           "lines": [
             {
-              "line": 5,
-              "position": 12,
-              "side": "outside",
-              "diff": 4,
-              "label": "EL圏内",
-              "text": "EL圏内まで勝点4"
-            },
-            {
               "line": 4,
               "position": 12,
               "side": "outside",
               "diff": 5,
               "label": "CL圏内",
               "text": "CL圏内まで勝点5"
+            },
+            {
+              "line": 5,
+              "position": 12,
+              "side": "outside",
+              "diff": 5,
+              "label": "EL圏内",
+              "text": "EL圏内まで勝点5"
             }
           ]
         },
@@ -151,20 +151,20 @@
           "out_note": "",
           "lines": [
             {
-              "line": 5,
-              "position": 14,
-              "side": "outside",
-              "diff": 4,
-              "label": "EL圏内",
-              "text": "EL圏内まで勝点4"
-            },
-            {
               "line": 4,
               "position": 14,
               "side": "outside",
               "diff": 5,
               "label": "CL圏内",
               "text": "CL圏内まで勝点5"
+            },
+            {
+              "line": 5,
+              "position": 14,
+              "side": "outside",
+              "diff": 5,
+              "label": "EL圏内",
+              "text": "EL圏内まで勝点5"
             }
           ]
         },
@@ -175,16 +175,7 @@
           "points": 9,
           "out": false,
           "out_note": "",
-          "lines": [
-            {
-              "line": 5,
-              "position": 16,
-              "side": "outside",
-              "diff": 6,
-              "label": "EL圏内",
-              "text": "EL圏内まで勝点6"
-            }
-          ]
+          "lines": []
         },
         {
           "name": "鎌田大地",
@@ -201,7 +192,7 @@
           "position": 18,
           "points": 7,
           "out": true,
-          "out_note": "Calf injury - Expected back 8 Nov",
+          "out_note": "Calf injury - Expected back 21 Nov",
           "lines": []
         }
       ],
@@ -236,6 +227,16 @@
           "outside": [
             {
               "position": 5,
+              "team": "エバートン",
+              "team_en": "Everton FC",
+              "played": 10,
+              "points": 16,
+              "gf": 12,
+              "ga": 10,
+              "jp": []
+            },
+            {
+              "position": 6,
               "team": "リバプール",
               "team_en": "Liverpool FC",
               "played": 9,
@@ -245,19 +246,9 @@
               "jp": [
                 "遠藤航"
               ]
-            },
-            {
-              "position": 6,
-              "team": "ブレントフォード",
-              "team_en": "Brentford FC",
-              "played": 9,
-              "points": 14,
-              "gf": 16,
-              "ga": 9,
-              "jp": []
             }
           ],
-          "diff": 1,
+          "diff": 0,
           "moved": {
             "line": 4,
             "in": [],
@@ -284,6 +275,18 @@
             },
             {
               "position": 5,
+              "team": "エバートン",
+              "team_en": "Everton FC",
+              "played": 10,
+              "points": 16,
+              "gf": 12,
+              "ga": 10,
+              "jp": []
+            }
+          ],
+          "outside": [
+            {
+              "position": 6,
               "team": "リバプール",
               "team_en": "Liverpool FC",
               "played": 9,
@@ -293,26 +296,14 @@
               "jp": [
                 "遠藤航"
               ]
-            }
-          ],
-          "outside": [
+            },
             {
-              "position": 6,
+              "position": 7,
               "team": "ブレントフォード",
               "team_en": "Brentford FC",
               "played": 9,
               "points": 14,
               "gf": 16,
-              "ga": 9,
-              "jp": []
-            },
-            {
-              "position": 7,
-              "team": "エバートン",
-              "team_en": "Everton FC",
-              "played": 9,
-              "points": 13,
-              "gf": 9,
               "ga": 9,
               "jp": []
             }
@@ -334,7 +325,7 @@
       "round": 10,
       "round_complete": false,
       "name_jp": "ラ・リーガ",
-      "played": 11,
+      "played": 12,
       "clubs": 20,
       "ready": true,
       "jp": [
@@ -350,9 +341,9 @@
               "line": 5,
               "position": 5,
               "side": "inside",
-              "diff": 2,
+              "diff": 1,
               "label": "EL圏内",
-              "text": "EL圏内。落ちるまで勝点2"
+              "text": "EL圏内。落ちるまで勝点1"
             },
             {
               "line": 4,
@@ -417,8 +408,8 @@
               "position": 6,
               "team": "セビージャ",
               "team_en": "Sevilla FC",
-              "played": 11,
-              "points": 17,
+              "played": 12,
+              "points": 18,
               "gf": 17,
               "ga": 19,
               "jp": []
@@ -466,8 +457,8 @@
               "position": 6,
               "team": "セビージャ",
               "team_en": "Sevilla FC",
-              "played": 11,
-              "points": 17,
+              "played": 12,
+              "points": 18,
               "gf": 17,
               "ga": 19,
               "jp": []
@@ -483,7 +474,7 @@
               "jp": []
             }
           ],
-          "diff": 2,
+          "diff": 1,
           "moved": {
             "line": 5,
             "in": [],
@@ -498,9 +489,9 @@
     {
       "code": "SA",
       "round": 10,
-      "round_complete": true,
+      "round_complete": false,
       "name_jp": "セリエA",
-      "played": 10,
+      "played": 11,
       "clubs": 20,
       "ready": true,
       "jp": [
@@ -639,9 +630,9 @@
     {
       "code": "BL1",
       "round": 8,
-      "round_complete": true,
+      "round_complete": false,
       "name_jp": "ブンデスリーガ",
-      "played": 8,
+      "played": 9,
       "clubs": 18,
       "ready": true,
       "jp": [
@@ -752,14 +743,14 @@
         {
           "name": "堂安律",
           "club_jp": "フランクフルト",
-          "position": 8,
+          "position": 9,
           "points": 11,
           "out": false,
           "out_note": "",
           "lines": [
             {
               "line": 6,
-              "position": 8,
+              "position": 9,
               "side": "outside",
               "diff": 2,
               "label": "EL圏内",
@@ -767,7 +758,7 @@
             },
             {
               "line": 4,
-              "position": 8,
+              "position": 9,
               "side": "outside",
               "diff": 4,
               "label": "CL圏内",
@@ -778,14 +769,14 @@
         {
           "name": "小杉啓太",
           "club_jp": "フランクフルト",
-          "position": 8,
+          "position": 9,
           "points": 11,
           "out": false,
           "out_note": "",
           "lines": [
             {
               "line": 6,
-              "position": 8,
+              "position": 9,
               "side": "outside",
               "diff": 2,
               "label": "EL圏内",
@@ -793,7 +784,7 @@
             },
             {
               "line": 4,
-              "position": 8,
+              "position": 9,
               "side": "outside",
               "diff": 4,
               "label": "CL圏内",
@@ -804,14 +795,14 @@
         {
           "name": "佐野海舟",
           "club_jp": "マインツ",
-          "position": 9,
+          "position": 10,
           "points": 10,
           "out": false,
           "out_note": "",
           "lines": [
             {
               "line": 6,
-              "position": 9,
+              "position": 10,
               "side": "outside",
               "diff": 3,
               "label": "EL圏内",
@@ -819,7 +810,7 @@
             },
             {
               "line": 4,
-              "position": 9,
+              "position": 10,
               "side": "outside",
               "diff": 5,
               "label": "CL圏内",
@@ -830,14 +821,14 @@
         {
           "name": "川﨑颯太",
           "club_jp": "マインツ",
-          "position": 9,
+          "position": 10,
           "points": 10,
           "out": false,
           "out_note": "",
           "lines": [
             {
               "line": 6,
-              "position": 9,
+              "position": 10,
               "side": "outside",
               "diff": 3,
               "label": "EL圏内",
@@ -845,7 +836,7 @@
             },
             {
               "line": 4,
-              "position": 9,
+              "position": 10,
               "side": "outside",
               "diff": 5,
               "label": "CL圏内",
@@ -856,14 +847,14 @@
         {
           "name": "町田浩樹",
           "club_jp": "ホッフェンハイム",
-          "position": 12,
+          "position": 13,
           "points": 9,
           "out": false,
           "out_note": "",
           "lines": [
             {
               "line": 6,
-              "position": 12,
+              "position": 13,
               "side": "outside",
               "diff": 4,
               "label": "EL圏内",
@@ -871,7 +862,7 @@
             },
             {
               "line": 4,
-              "position": 12,
+              "position": 13,
               "side": "outside",
               "diff": 6,
               "label": "CL圏内",
@@ -982,16 +973,13 @@
             },
             {
               "position": 8,
-              "team": "フランクフルト",
-              "team_en": "Eintracht Frankfurt",
-              "played": 8,
-              "points": 11,
-              "gf": 13,
-              "ga": 18,
-              "jp": [
-                "堂安律",
-                "小杉啓太"
-              ]
+              "team": "ハンブルガーSV",
+              "team_en": "Hamburger SV",
+              "played": 9,
+              "points": 12,
+              "gf": 10,
+              "ga": 20,
+              "jp": []
             }
           ],
           "diff": 0,
@@ -1000,19 +988,16 @@
             "in": [],
             "out": []
           },
-          "jp": [
-            "堂安律",
-            "小杉啓太"
-          ]
+          "jp": []
         }
       ]
     },
     {
       "code": "FL1",
       "round": 9,
-      "round_complete": true,
+      "round_complete": false,
       "name_jp": "リーグ・アン",
-      "played": 9,
+      "played": 10,
       "clubs": 18,
       "ready": true,
       "jp": [
@@ -1341,7 +1326,7 @@
     }
   ],
   "picked": [
-    "SA"
+    "PL"
   ],
   "moved_count": 0,
   "have_before": true
