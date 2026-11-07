@@ -123,6 +123,8 @@ def frame(t, meta, spec):
     width = cards.R - cards.L - 64
     index = meta.get('term_card')
     opening = meta.get('term_line', 0) < 2
+    if index is None and not opening:
+        index = meta.get('term_shown')   # 問い・言い直しの行は直前の札を残す
     summary = spec.get('summary', '')
     y = r3.CONTENT_TOP + TOP_GAP
 

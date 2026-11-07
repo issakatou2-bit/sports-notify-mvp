@@ -72,7 +72,7 @@ def published(path: str) -> set:
 
 
 def posted_today(path: str, today=None, kinds=None, count=False,
-                 exclude=(), extra=None):
+                 exclude=(), extra=None, skip_keys=()):
     """きょう、もう1本出したか。
 
     **起動する入口が2つある。**cron-job.org（JST 22:00）と、
@@ -94,7 +94,7 @@ def posted_today(path: str, today=None, kinds=None, count=False,
         # 資産動画の枠はシーズンまとめを数えない）。
         if kinds is not None and kind_of(key) not in kinds:
             continue
-        if kind_of(key) in exclude:
+        if kind_of(key) in exclude or key in skip_keys:
             continue
         stamp = (rec or {}).get("publish_at") or (rec or {}).get("published_at")
         if not stamp:
@@ -126,6 +126,10 @@ def daily_limit_reached(path: str, requested_topic="next", again=False) -> bool:
     """
     if (requested_topic or "").startswith("mlb_term_"):
         # 用語の回は自分の本数だけ数える（毎晩の資産動画とは別の枠、1日1本）。
+        if again:
+            # 上げ直し（force）は、同じ用語の回を直して出し直す時。その回自身は数えない
+            # （11/7 QO の台詞を公開前に直した時、自分の予約で止まった）。
+            return posted_today(path, kinds={"mlb"}, skip_keys={requested_topic})
         return posted_today(path, kinds={"mlb"})
     return ((requested_topic or "next") == "next" and not again
             and posted_today(path, exclude={"season"}))

@@ -124,6 +124,15 @@ class TermsTest(unittest.TestCase):
         with patch.object(next_asset, 'posted_today', return_value=True):
             self.assertTrue(next_asset.daily_limit_reached('unused', 'mlb_term_qo'))
             self.assertTrue(next_asset.daily_limit_reached('unused', 'mlb_term_qo', again=True))
+        # 上げ直しでは同じ回を数えない。別の用語の回がきょう出ていれば止まる。
+        with tempfile.TemporaryDirectory() as tmp:
+            from datetime import datetime, timezone
+            path = Path(tmp) / 'published.json'
+            now = datetime.now(timezone.utc).isoformat()
+            path.write_text(json.dumps({'assets': {'mlb_term_qo': {'published_at': now}}}), encoding='utf8')
+            self.assertTrue(next_asset.daily_limit_reached(str(path), 'mlb_term_qo'))
+            self.assertFalse(next_asset.daily_limit_reached(str(path), 'mlb_term_qo', again=True))
+            self.assertTrue(next_asset.daily_limit_reached(str(path), 'mlb_term_fa', again=True))
         with patch.object(next_asset, 'posted_today', return_value=False) as today:
             self.assertFalse(next_asset.daily_limit_reached('unused', 'mlb_term_qo'))
         # 毎晩の資産動画とは別の枠。用語の回だけを数える。
