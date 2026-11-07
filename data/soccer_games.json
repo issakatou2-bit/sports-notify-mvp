@@ -1155,10 +1155,830 @@
       ]
     }
   ],
-  "schedule_date": "2026-11-07",
   "ai_status": {
     "targets": 3,
     "succeeded": 2,
     "cost_usd": 0.01517
-  }
+  },
+  "source_errors": [],
+  "fixture_coverage": [
+    {
+      "competition": "PL",
+      "status": "success",
+      "events": 10,
+      "label": "取得成功"
+    },
+    {
+      "competition": "PD",
+      "status": "success",
+      "events": 10,
+      "label": "取得成功"
+    },
+    {
+      "competition": "BL1",
+      "status": "success",
+      "events": 9,
+      "label": "取得成功"
+    },
+    {
+      "competition": "SA",
+      "status": "success",
+      "events": 10,
+      "label": "取得成功"
+    },
+    {
+      "competition": "FL1",
+      "status": "success",
+      "events": 9,
+      "label": "取得成功"
+    },
+    {
+      "competition": "CL",
+      "status": "no_games",
+      "events": 0,
+      "label": "試合なし"
+    },
+    {
+      "competition": "EL",
+      "status": "no_games",
+      "events": 0,
+      "label": "試合なし"
+    },
+    {
+      "competition": "UECL",
+      "status": "no_games",
+      "events": 0,
+      "label": "試合なし"
+    },
+    {
+      "competition": "FAC",
+      "status": "success",
+      "events": 40,
+      "label": "取得成功"
+    },
+    {
+      "competition": "EFL",
+      "status": "no_games",
+      "events": 0,
+      "label": "試合なし"
+    },
+    {
+      "competition": "CDR",
+      "status": "success",
+      "events": 10,
+      "label": "取得成功"
+    },
+    {
+      "competition": "DFB",
+      "status": "no_games",
+      "events": 0,
+      "label": "試合なし"
+    },
+    {
+      "competition": "CI",
+      "status": "no_games",
+      "events": 0,
+      "label": "試合なし"
+    },
+    {
+      "competition": "CDF",
+      "status": "success",
+      "events": 5,
+      "label": "取得成功"
+    }
+  ],
+  "club_registration_check": {
+    "days": 7,
+    "checked_at": "2026-11-06T19:01:47.910481+09:00",
+    "missing": [
+      {
+        "club": "AFC Fylde",
+        "game_ids": [
+          "espn-401931096"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "AFC Hornchurch",
+        "game_ids": [
+          "espn-401931116"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "AFC Rushden & Diamonds",
+        "game_ids": [
+          "espn-401931082"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "AFC Wimbledon",
+        "game_ids": [
+          "espn-401931120"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "AS Etoile Matoury",
+        "game_ids": [
+          "espn-401933097"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Accrington Stanley",
+        "game_ids": [
+          "espn-401931119"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Albacete",
+        "game_ids": [
+          "espn-401928506"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Aldershot Town",
+        "game_ids": [
+          "espn-401931089"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Altrincham",
+        "game_ids": [
+          "espn-401931097"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Alvechurch",
+        "game_ids": [
+          "espn-401931275"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Amorebieta",
+        "game_ids": [
+          "espn-401928519"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Anaitasuna",
+        "game_ids": [
+          "espn-401928514"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Barnet",
+        "game_ids": [
+          "espn-401931103"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Barnsley",
+        "game_ids": [
+          "espn-401931089"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Barrow",
+        "game_ids": [
+          "espn-401931101"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Berkhamsted",
+        "game_ids": [
+          "espn-401931098"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Blackpool",
+        "game_ids": [
+          "espn-401931116"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Boreham Wood",
+        "game_ids": [
+          "espn-401931083"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Bradford City",
+        "game_ids": [
+          "espn-401931118"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Bristol Rovers",
+        "game_ids": [
+          "espn-401931085"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Bromley",
+        "game_ids": [
+          "espn-401931091"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Burton Albion",
+        "game_ids": [
+          "espn-401931082"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "CD Artistico Navalcarnero",
+        "game_ids": [
+          "espn-401928551"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "CD Pamplona",
+        "game_ids": [
+          "espn-401928516"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "CD Tarancon",
+        "game_ids": [
+          "espn-401928527"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Calvo Sotelo",
+        "game_ids": [
+          "espn-401928506"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Cambridge United",
+        "game_ids": [
+          "espn-401931085"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Carlisle United",
+        "game_ids": [
+          "espn-401931090"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Chambéry Savoie",
+        "game_ids": [
+          "espn-401932846"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Cheltenham Town",
+        "game_ids": [
+          "espn-401931088"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Chesterfield",
+        "game_ids": [
+          "espn-401931081"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Colchester United",
+        "game_ids": [
+          "espn-401931102"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Crawley Town",
+        "game_ids": [
+          "espn-401931093"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Cray Wanderers",
+        "game_ids": [
+          "espn-401931080"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Crewe Alexandra",
+        "game_ids": [
+          "espn-401931120"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Doncaster Rovers",
+        "game_ids": [
+          "espn-401931106"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Dover Athletic",
+        "game_ids": [
+          "espn-401931107"
+        ],
+        "candidates": [
+          {
+            "id": "Athletic Club",
+            "display": "アスレティック・ビルバオ"
+          }
+        ]
+      },
+      {
+        "club": "Eastleigh",
+        "game_ids": [
+          "espn-401931099"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Eibar",
+        "game_ids": [
+          "espn-401928516"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Exeter City",
+        "game_ids": [
+          "espn-401931094"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "FC Halifax Town",
+        "game_ids": [
+          "espn-401931088"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Fleetwood Town",
+        "game_ids": [
+          "espn-401931105"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Forest Green Rovers",
+        "game_ids": [
+          "espn-401931100"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Gillingham",
+        "game_ids": [
+          "espn-401931101"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Grenoble",
+        "game_ids": [
+          "espn-401932846"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Grimsby Town",
+        "game_ids": [
+          "espn-401931079"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Guiseley",
+        "game_ids": [
+          "espn-401931092"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Harborough Town",
+        "game_ids": [
+          "espn-401931110"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Harrogate Town",
+        "game_ids": [
+          "espn-401931096"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Huddersfield Town",
+        "game_ids": [
+          "espn-401931094"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Kidderminster Harriers",
+        "game_ids": [
+          "espn-401931106"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Leganés",
+        "game_ids": [
+          "espn-401928550"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Leicester City",
+        "game_ids": [
+          "espn-401931109"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Leyton Orient",
+        "game_ids": [
+          "espn-401931110"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Luton Town",
+        "game_ids": [
+          "espn-401931100"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Macclesfield FC",
+        "game_ids": [
+          "espn-401931095"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Mansfield Town",
+        "game_ids": [
+          "espn-401931095"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Marine",
+        "game_ids": [
+          "espn-401931118"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Mijas Las Lagunas",
+        "game_ids": [
+          "espn-401928528"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Milton Keynes Dons",
+        "game_ids": [
+          "espn-401931122"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Newport County",
+        "game_ids": [
+          "espn-401931117"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Northampton Town",
+        "game_ids": [
+          "espn-401931084"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Notts County",
+        "game_ids": [
+          "espn-401931097"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Oldham Athletic",
+        "game_ids": [
+          "espn-401931108"
+        ],
+        "candidates": [
+          {
+            "id": "Athletic Club",
+            "display": "アスレティック・ビルバオ"
+          }
+        ]
+      },
+      {
+        "club": "Olympique De Cayenne",
+        "game_ids": [
+          "espn-401933097"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Oxford City",
+        "game_ids": [
+          "espn-401931109"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Oxford United",
+        "game_ids": [
+          "espn-401931121"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Peterborough United",
+        "game_ids": [
+          "espn-401931104"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Plymouth Argyle",
+        "game_ids": [
+          "espn-401931275"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Plymouth Parkway",
+        "game_ids": [
+          "espn-401931098"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Port Vale",
+        "game_ids": [
+          "espn-401931086"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Reading",
+        "game_ids": [
+          "espn-401931104"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Real Jaen CF",
+        "game_ids": [
+          "espn-401928528"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Rochdale",
+        "game_ids": [
+          "espn-401931105"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Rotherham United",
+        "game_ids": [
+          "espn-401931091"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Salford City",
+        "game_ids": [
+          "espn-401931090"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Salisbury FC",
+        "game_ids": [
+          "espn-401931087"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Scunthorpe United",
+        "game_ids": [
+          "espn-401931086"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Sheffield Wednesday",
+        "game_ids": [
+          "espn-401931108"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Sholing",
+        "game_ids": [
+          "espn-401931087"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Shrewsbury Town",
+        "game_ids": [
+          "espn-401931099"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Stafford Rangers",
+        "game_ids": [
+          "espn-401931079"
+        ],
+        "candidates": [
+          {
+            "id": "Angers SCO",
+            "display": "アンジェ"
+          }
+        ]
+      },
+      {
+        "club": "Stevenage",
+        "game_ids": [
+          "espn-401931121"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Stockport County",
+        "game_ids": [
+          "espn-401931080"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Sutton United",
+        "game_ids": [
+          "espn-401931092"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Swindon Town",
+        "game_ids": [
+          "espn-401931122"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Tranmere Rovers",
+        "game_ids": [
+          "espn-401931103"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Trival Valderas",
+        "game_ids": [
+          "espn-401928550"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "UD Logroñés",
+        "game_ids": [
+          "espn-401928519"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Walsall",
+        "game_ids": [
+          "espn-401931117"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Wealdstone",
+        "game_ids": [
+          "espn-401931107"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Wigan Athletic",
+        "game_ids": [
+          "espn-401931083"
+        ],
+        "candidates": [
+          {
+            "id": "Athletic Club",
+            "display": "アスレティック・ビルバオ"
+          }
+        ]
+      },
+      {
+        "club": "Wimborne Town",
+        "game_ids": [
+          "espn-401931093"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Worcester City",
+        "game_ids": [
+          "espn-401931102"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Wycombe Wanderers",
+        "game_ids": [
+          "espn-401931119"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Yeovil Town",
+        "game_ids": [
+          "espn-401931081"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "York City",
+        "game_ids": [
+          "espn-401931084"
+        ],
+        "candidates": []
+      }
+    ],
+    "source_errors": []
+  },
+  "source": "ESPN",
+  "preview_selection": {
+    "day": "2026-11-06",
+    "threshold": 30,
+    "max_games": 4,
+    "policy_sha256": "585b6eb07dd181762e53d0d10718ce0f8109e330863ca80770cf4a8e305d9faf",
+    "selected_ids": [],
+    "count": 0,
+    "reason": "取得不足/名前や日時を確認できない材料があります",
+    "rejected": [
+      {
+        "id": "espn-401931085",
+        "reason": "クラブの表示名/読みが未登録"
+      },
+      {
+        "id": "espn-401931109",
+        "reason": "クラブの表示名/読みが未登録"
+      },
+      {
+        "id": "espn-401933097",
+        "reason": "クラブの表示名/読みが未登録"
+      }
+    ],
+    "source_errors": [],
+    "rescued": []
+  },
+  "schedule_date": "2026-11-07",
+  "preview_angles_version": 1
 }
