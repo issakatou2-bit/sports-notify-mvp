@@ -22356,6 +22356,37 @@
       "short_information_count": 6,
       "short_content_policy": "short-content-20261027-v1",
       "privacy": "public"
+    },
+    "2026-11-09:401884741": {
+      "video_id": "3HxzjBXGvmY",
+      "url": "https://youtu.be/3HxzjBXGvmY",
+      "title": "【欧州サッカー】鈴木唯人がゴール｜フライブルク 2-0 ウニオン・ベルリン 日本人選手の結果 #Shorts",
+      "published_at": "2026-11-08T18:36:18.740168+00:00",
+      "host_assignment": {
+        "day": "2026-11-09",
+        "kind": "soccer_results",
+        "phase": 1,
+        "planned_host": "ui",
+        "rule": "half-jst-week-v1",
+        "week": 44,
+        "weekday": 0
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-11-08T18:31:53.837722+00:00",
+        "comparison_eligible": false,
+        "label": "予定めたん（雨衣不可のため）",
+        "mode": "live",
+        "planned_host": "metan",
+        "reason": "ui_before_0840",
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "duration_seconds": 25.9,
+      "short_information_count": 7,
+      "short_content_policy": "short-content-20261027-v1",
+      "privacy": "public"
     }
   },
   "soccer_national": {
