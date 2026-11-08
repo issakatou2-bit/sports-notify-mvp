@@ -728,5 +728,133 @@
       "event_id": "401933097",
       "reason": "終了実時刻なし"
     }
-  ]
+  ],
+  "preview_expectation_results": {},
+  "preview_next_fixtures": [],
+  "preview_followup": {
+    "day": "2026-11-05",
+    "video_id": "AvHSzg-Vuuo",
+    "games": [
+      {
+        "event_id": "401915526",
+        "forecast": {
+          "game_id": "espn-401915526",
+          "espn_event_id": "401915526",
+          "league": "ヨーロッパリーグ",
+          "competition_code": "EL",
+          "home": "Crystal Palace FC",
+          "away": "TSG 1899 Hoffenheim",
+          "start_utc": "2026-11-06T02:45:00+09:00",
+          "reasons": [],
+          "expectation": null,
+          "spoken": "日本時間2時45分、クリスタルパレス対ホッフェンハイム。クリスタルパレスの登録メンバーには、鎌田大地が入っています。ホッフェンハイムの登録メンバーには、町田浩樹が入っています。",
+          "standings": {
+            "home": {
+              "as_of": "2026-11-05T09:53:48.574581+00:00",
+              "competition": "EL",
+              "season": null
+            },
+            "away": {
+              "as_of": "2026-11-05T09:53:48.574581+00:00",
+              "competition": "EL",
+              "season": null
+            }
+          }
+        },
+        "answer": null,
+        "rank_changes": [],
+        "next_game": null
+      },
+      {
+        "event_id": "401915537",
+        "forecast": {
+          "game_id": "espn-401915537",
+          "espn_event_id": "401915537",
+          "league": "ヨーロッパリーグ",
+          "competition_code": "EL",
+          "home": "Real Sociedad de Fútbol",
+          "away": "Olympique Lyonnais",
+          "start_utc": "2026-11-06T02:45:00+09:00",
+          "reasons": [],
+          "expectation": null,
+          "spoken": "日本時間2時45分、レアル・ソシエダ対リヨン。レアル・ソシエダの登録メンバーには、久保建英が入っています。",
+          "standings": {
+            "home": {
+              "as_of": "2026-11-05T09:53:48.574581+00:00",
+              "competition": "EL",
+              "season": null
+            },
+            "away": {
+              "as_of": "2026-11-05T09:53:48.574581+00:00",
+              "competition": "EL",
+              "season": null
+            }
+          }
+        },
+        "answer": null,
+        "rank_changes": [],
+        "next_game": null
+      },
+      {
+        "event_id": "401915825",
+        "forecast": {
+          "game_id": "espn-401915825",
+          "espn_event_id": "401915825",
+          "league": "カンファレンスリーグ",
+          "competition_code": "UECL",
+          "home": "Trabzonspor",
+          "away": "SC Freiburg",
+          "start_utc": "2026-11-06T02:45:00+09:00",
+          "reasons": [],
+          "expectation": null,
+          "spoken": "日本時間2時45分、トラブゾンスポル対フライブルク。フライブルクの登録メンバーには、鈴木唯人、後藤啓介、山本理仁が入っています。",
+          "standings": {
+            "home": {
+              "as_of": "2026-11-05T09:53:48.574581+00:00",
+              "competition": "UECL",
+              "season": null
+            },
+            "away": {
+              "as_of": "2026-11-05T09:53:48.574581+00:00",
+              "competition": "UECL",
+              "season": null
+            }
+          }
+        },
+        "answer": null,
+        "rank_changes": [],
+        "next_game": null
+      },
+      {
+        "event_id": "401915821",
+        "forecast": {
+          "game_id": "espn-401915821",
+          "espn_event_id": "401915821",
+          "league": "カンファレンスリーグ",
+          "competition_code": "UECL",
+          "home": "Getafe CF",
+          "away": "Brighton & Hove Albion FC",
+          "start_utc": "2026-11-06T05:00:00+09:00",
+          "reasons": [],
+          "expectation": null,
+          "spoken": "日本時間5時、ヘタフェ対ブライトン。",
+          "standings": {
+            "home": {
+              "as_of": "2026-11-05T09:53:48.574581+00:00",
+              "competition": "UECL",
+              "season": null
+            },
+            "away": {
+              "as_of": "2026-11-05T09:53:48.574581+00:00",
+              "competition": "UECL",
+              "season": null
+            }
+          }
+        },
+        "answer": null,
+        "rank_changes": [],
+        "next_game": null
+      }
+    ]
+  }
 }
