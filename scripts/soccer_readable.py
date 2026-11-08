@@ -257,6 +257,10 @@ class Screen:
         if player and player.get('name') and interest.player_numbers(player):
             chips.append(player['name']+' '+interest.stats_label(player)+' '+interest.player_numbers(player))
             chips=chips[:3]
+        # クラブ名は札と一緒にしか描かない決まり。クラブ名入りの見どころの行は描画を止めるので外す
+        # （11/8 19:00 予告が「プレミアリーグではクリスタルパレスは勝点7、…」で止まった）。
+        club_names=tuple(self.im.info.get('soccer_club_names',()))
+        chips=[x for x in chips if not any(n and n in x for n in club_names)]
         facts=[f for f in ((hero.get('interest') or {}).get('reasons') or []) if f.get('kind')=='previous_season']
         extra=[row for f in facts for row in c.lines(f['text'],40,R-L-56)] if not chips else []
         ranks=hero.get('ranks') or {}
