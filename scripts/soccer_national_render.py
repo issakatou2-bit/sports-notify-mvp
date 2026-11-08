@@ -37,6 +37,9 @@ def frame(t,seg,data,clubs):
     if seg['kind'] == 'outro':
         import review_render_v3 as r3
         return r3.outro(t, credit='音声: VOICEVOX:四国めたん　出典: JFA・ESPN')
+    if data.get('squad_style')=='pitch-v1' and (seg.get('meta') or {}).get('panel')=='squad':
+        import soccer_national_pitch
+        return soccer_national_pitch.frame(t,seg,data,clubs)
     import soccer_readable as readable
     class NationalScreen(readable.Screen):
         def __init__(self,clubs,t):
@@ -168,7 +171,11 @@ def render(data,narr,audio,out):
     if not soccer_look.readable() or not soccer_look.focus():
         raise ValueError('代表番組はv6 focusだけを使います')
     out=Path(out);out.mkdir(parents=True,exist_ok=True);common.ensure_ffmpeg(out)
-    times=[math.ceil(t*FPS)/FPS for t in common.durations(narr['segments'],audio)]
+    times=common.durations(narr['segments'],audio)
+    if data.get('squad_style')=='pitch-v1':
+        import soccer_national_pitch
+        times=soccer_national_pitch.durations(narr,audio,times)
+    times=[math.ceil(t*FPS)/FPS for t in times]
     short_content.require(narr,times,out,data,maximum=60,video_name=VIDEO)
     track=vc.build_narration_track(audio,times,out)
     if not track:raise ValueError('実音声なし')
@@ -195,7 +202,8 @@ def render(data,narr,audio,out):
                         national.save(out/'layout_checks.json',layouts)
                         if errors:raise ValueError(f'画面{i}: {errors}')
                     if k==min(42,round(duration*FPS)-1):im.save(out/f'{i+1:02d}.png')
-                    timeline.write(proc.stdin,soccer_look.transition(previous,im,k,FPS),im)
+                    raw=im.tobytes() if data.get('squad_style')=='pitch-v1' else soccer_look.transition(previous,im,k,FPS)
+                    timeline.write(proc.stdin,raw,im)
                 previous=im.tobytes();clock+=duration
         finally:
             proc.stdin.close();code=proc.wait();r3.set_program_clock(None)
@@ -215,7 +223,16 @@ def fit_to_audio(out):
     out=Path(out)
     data=national.read(out/'material.json');narr=national.read(out/'narration.json')
     audio=national.read(out/'audio/manifest.json')['segments']
-    seconds=sum(common.durations(narr['segments'],audio))
+    measured=common.durations(narr['segments'],audio)
+    if data.get('squad_style')=='pitch-v1':
+        import soccer_national_pitch
+        times=soccer_national_pitch.durations(narr,audio,measured)
+        import short_content
+        gate=short_content.assess(narr,times,data,maximum=60)
+        national.save(out/'repaired_duration_gate.json',gate)
+        if gate['status']!='passed':raise ValueError(gate['reasons'])
+        return False
+    seconds=sum(measured)
     if seconds>=27:return False
     repairs=[]
     while seconds<27:

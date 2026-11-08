@@ -64,7 +64,7 @@ class OfficialSquad(unittest.TestCase):
         marked=[]
         for page in range(9):
             doc=self.document(page)
-            marked.extend(s['text'] for s in doc['segments'] if '初めての招集です' in s['text'])
+            marked.extend(s['text'] for s in doc['segments'] if '初招集です' in s['text'])
         self.assertEqual(len(marked),1);self.assertIn('福田師王',marked[0])
         data=self.material(8);data['next_game']=None
         facts=n.information(n.narration(data))
@@ -172,8 +172,8 @@ class OfficialSquad(unittest.TestCase):
             data=self.material();doc=n.narration(data);clubs=render.clubs_for(data)
             r3.set_caption('',0,0)
             intro=render.frame(2,doc['segments'][0],data,clubs)
-            labels=[e['text'] for e in intro.info['v3_layout'] if e['role']=='national_fact']
-            for p in data['players']:self.assertIn(p['name'],labels)
+            self.assertEqual(set(intro.info['national_pitch']['selected']),{p['name'] for p in data['players']})
+            self.assertEqual(len(intro.info['national_pitch']['points']),28)
             for i,p in enumerate(data['players']):
                 im=render.frame(2,doc['segments'][i+1],data,clubs)
                 labels=[e['text'] for e in im.info['v3_layout'] if e['role']=='national_fact']
@@ -188,7 +188,7 @@ class OfficialSquad(unittest.TestCase):
         import synthesize_narration as synth
         with tempfile.TemporaryDirectory() as directory:
             out=Path(directory);(out/'audio').mkdir()
-            data=self.material();self.assertEqual(data['squad_size'],28)
+            data=self.material();data.pop('squad_style');self.assertEqual(data['squad_size'],28)
             n.save(out/'material.json',data);n.save(out/'narration.json',n.narration(data))
             def voices(argv):
                 doc=n.read(out/'narration.json')
