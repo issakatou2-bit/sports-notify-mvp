@@ -102,7 +102,7 @@
                 3,
                 1
               ],
-              "gap": 2.0
+              "gap": 2
             }
           },
           {
@@ -111,7 +111,7 @@
             "evidence": {
               "kind": "points",
               "text": "勝点差2",
-              "gap": 2.0
+              "gap": 2
             }
           },
           {
@@ -134,12 +134,12 @@
                 3,
                 1
               ],
-              "gap": 2.0
+              "gap": 2
             },
             {
               "kind": "points",
               "text": "勝点差2",
-              "gap": 2.0
+              "gap": 2
             }
           ],
           "player": null
@@ -152,7 +152,7 @@
           "params": {
             "status": "FINISHED"
           },
-          "retrieved_at": "2026-11-08T10:01:23.820641+00:00",
+          "retrieved_at": "2026-11-08T10:30:52.336231+00:00",
           "payload": {
             "filters": {
               "season": "2026",
@@ -7585,7 +7585,7 @@
         "standings": {
           "source": "https://api.football-data.org/v4/competitions/PD/standings",
           "params": {},
-          "retrieved_at": "2026-11-08T10:01:16.746581+00:00",
+          "retrieved_at": "2026-11-08T10:30:45.722757+00:00",
           "payload": {
             "filters": {
               "season": "2026"
@@ -8006,7 +8006,7 @@
           "params": {
             "limit": 10
           },
-          "retrieved_at": "2026-11-08T10:01:30.874886+00:00",
+          "retrieved_at": "2026-11-08T10:30:58.843359+00:00",
           "payload": {
             "filters": {
               "limit": "10",
@@ -8448,7 +8448,7 @@
             "PD": {
               "source": "https://site.api.espn.com/apis/v2/sports/soccer/esp.1/standings",
               "slug": "esp.1",
-              "retrieved_at": "2026-11-08T10:02:11.781332+00:00",
+              "retrieved_at": "2026-11-08T10:31:38.152164+00:00",
               "payload": {
                 "uid": "s:600~l:740",
                 "id": "15",
@@ -12658,7 +12658,7 @@
             }
           }
         },
-        "evaluated_at": "2026-11-08T10:02:11.781332+00:00",
+        "evaluated_at": "2026-11-08T10:31:38.152164+00:00",
         "snapshot": {
           "source": [
             "ESPN",
@@ -12683,7 +12683,7 @@
           "score": 100,
           "text": "ラ・リーガではアトレティコ・マドリードは3位で勝点28、バルセロナは勝点30で、両チームの勝点差は2です。",
           "source": "https://site.api.espn.com/apis/v2/sports/soccer/esp.1/standings",
-          "retrieved_at": "2026-11-08T10:02:11.781332+00:00",
+          "retrieved_at": "2026-11-08T10:31:38.152164+00:00",
           "values": {
             "competition": "PD",
             "gap": 2,
@@ -12711,7 +12711,7 @@
           "score": 85,
           "text": "アトレティコ・マドリードはラ・リーガの直近5試合で5勝0分0敗です。",
           "source": "https://api.football-data.org/v4/competitions/PD/matches",
-          "retrieved_at": "2026-11-08T10:01:23.820641+00:00",
+          "retrieved_at": "2026-11-08T10:30:52.336231+00:00",
           "values": {
             "side": "home",
             "form": [
@@ -12735,7 +12735,7 @@
           "score": 85,
           "text": "バルセロナはラ・リーガの直近5試合で4勝0分1敗です。",
           "source": "https://api.football-data.org/v4/competitions/PD/matches",
-          "retrieved_at": "2026-11-08T10:01:23.820641+00:00",
+          "retrieved_at": "2026-11-08T10:30:52.336231+00:00",
           "values": {
             "side": "away",
             "form": [
@@ -12759,7 +12759,7 @@
           "score": 80,
           "text": "前回の対戦は2026年4月14日のアトレティコ・マドリード対バルセロナで1対2でした。",
           "source": "https://api.football-data.org/v4/matches/564746/head2head",
-          "retrieved_at": "2026-11-08T10:01:30.874886+00:00",
+          "retrieved_at": "2026-11-08T10:30:58.843359+00:00",
           "values": {
             "match_id": 556724,
             "score": {
@@ -12773,7 +12773,7 @@
           "score": 75,
           "text": "アトレティコ・マドリードとすぐ上のレアル・マドリードの勝点差は2です。",
           "source": "https://api.football-data.org/v4/competitions/PD/standings",
-          "retrieved_at": "2026-11-08T10:01:16.746581+00:00",
+          "retrieved_at": "2026-11-08T10:30:45.722757+00:00",
           "values": {
             "side": "home",
             "gap": 2
@@ -12907,7 +12907,7 @@
             "evidence": {
               "kind": "points",
               "text": "勝点差2",
-              "gap": 2.0
+              "gap": 2
             }
           },
           {
@@ -12930,7 +12930,7 @@
             {
               "kind": "points",
               "text": "勝点差2",
-              "gap": 2.0
+              "gap": 2
             }
           ],
           "player": null
@@ -12943,7 +12943,7 @@
           "params": {
             "status": "FINISHED"
           },
-          "retrieved_at": "2026-11-08T10:01:44.799633+00:00",
+          "retrieved_at": "2026-11-08T10:31:11.855539+00:00",
           "payload": {
             "filters": {
               "season": "2026",
@@ -19901,7 +19901,7 @@
         "standings": {
           "source": "https://api.football-data.org/v4/competitions/SA/standings",
           "params": {},
-          "retrieved_at": "2026-11-08T10:01:37.783379+00:00",
+          "retrieved_at": "2026-11-08T10:31:05.275147+00:00",
           "payload": {
             "filters": {
               "season": "2026"
@@ -20322,7 +20322,7 @@
           "params": {
             "limit": 10
           },
-          "retrieved_at": "2026-11-08T10:01:51.363014+00:00",
+          "retrieved_at": "2026-11-08T10:31:18.318393+00:00",
           "payload": {
             "filters": {
               "limit": "10",
@@ -20632,7 +20632,7 @@
             "SA": {
               "source": "https://site.api.espn.com/apis/v2/sports/soccer/ita.1/standings",
               "slug": "ita.1",
-              "retrieved_at": "2026-11-08T10:02:11.953800+00:00",
+              "retrieved_at": "2026-11-08T10:31:38.270862+00:00",
               "payload": {
                 "uid": "s:600~l:730",
                 "id": "12",
@@ -24845,7 +24845,7 @@
             }
           }
         },
-        "evaluated_at": "2026-11-08T10:02:11.953800+00:00",
+        "evaluated_at": "2026-11-08T10:31:38.270862+00:00",
         "snapshot": {
           "source": [
             "ESPN",
@@ -24870,7 +24870,7 @@
           "score": 100,
           "text": "セリエAではインテルは3位で勝点25、コモは4位で勝点23で、両チームの勝点差は2です。",
           "source": "https://site.api.espn.com/apis/v2/sports/soccer/ita.1/standings",
-          "retrieved_at": "2026-11-08T10:02:11.953800+00:00",
+          "retrieved_at": "2026-11-08T10:31:38.270862+00:00",
           "values": {
             "competition": "SA",
             "gap": 2,
@@ -24898,7 +24898,7 @@
           "score": 85,
           "text": "インテルはセリエAの直近5試合で4勝0分1敗です。",
           "source": "https://api.football-data.org/v4/competitions/SA/matches",
-          "retrieved_at": "2026-11-08T10:01:44.799633+00:00",
+          "retrieved_at": "2026-11-08T10:31:11.855539+00:00",
           "values": {
             "side": "home",
             "form": [
@@ -24922,7 +24922,7 @@
           "score": 85,
           "text": "コモはセリエAの直近5試合で4勝1分0敗です。",
           "source": "https://api.football-data.org/v4/competitions/SA/matches",
-          "retrieved_at": "2026-11-08T10:01:44.799633+00:00",
+          "retrieved_at": "2026-11-08T10:31:11.855539+00:00",
           "values": {
             "side": "away",
             "form": [
@@ -24946,7 +24946,7 @@
           "score": 80,
           "text": "前回の対戦は2026年4月12日のコモ対インテルで3対4でした。",
           "source": "https://api.football-data.org/v4/matches/558530/head2head",
-          "retrieved_at": "2026-11-08T10:01:51.363014+00:00",
+          "retrieved_at": "2026-11-08T10:31:18.318393+00:00",
           "values": {
             "match_id": 537131,
             "score": {
@@ -24960,7 +24960,7 @@
           "score": 75,
           "text": "インテルとすぐ上のローマの勝点差は2です。",
           "source": "https://api.football-data.org/v4/competitions/SA/standings",
-          "retrieved_at": "2026-11-08T10:01:37.783379+00:00",
+          "retrieved_at": "2026-11-08T10:31:05.275147+00:00",
           "values": {
             "side": "home",
             "gap": 2
@@ -24971,7 +24971,7 @@
           "score": 75,
           "text": "コモとすぐ上のインテルの勝点差は2です。",
           "source": "https://api.football-data.org/v4/competitions/SA/standings",
-          "retrieved_at": "2026-11-08T10:01:37.783379+00:00",
+          "retrieved_at": "2026-11-08T10:31:05.275147+00:00",
           "values": {
             "side": "away",
             "gap": 2
@@ -25141,7 +25141,7 @@
             {
               "kind": "points",
               "text": "勝点差8",
-              "gap": 8.0
+              "gap": 8
             }
           ],
           "player": {
@@ -25162,7 +25162,7 @@
           "params": {
             "status": "FINISHED"
           },
-          "retrieved_at": "2026-11-08T10:02:04.993082+00:00",
+          "retrieved_at": "2026-11-08T10:31:31.615065+00:00",
           "payload": {
             "filters": {
               "season": "2026",
@@ -31460,7 +31460,7 @@
         "standings": {
           "source": "https://api.football-data.org/v4/competitions/PL/standings",
           "params": {},
-          "retrieved_at": "2026-11-08T10:01:58.073981+00:00",
+          "retrieved_at": "2026-11-08T10:31:24.753417+00:00",
           "payload": {
             "filters": {
               "season": "2026"
@@ -31881,7 +31881,7 @@
           "params": {
             "limit": 10
           },
-          "retrieved_at": "2026-11-08T10:02:11.661476+00:00",
+          "retrieved_at": "2026-11-08T10:31:38.086874+00:00",
           "payload": {
             "filters": {
               "limit": "10",
@@ -32479,7 +32479,7 @@
             "PL": {
               "source": "https://site.api.espn.com/apis/v2/sports/soccer/eng.1/standings",
               "slug": "eng.1",
-              "retrieved_at": "2026-11-08T10:02:11.854800+00:00",
+              "retrieved_at": "2026-11-08T10:31:38.209032+00:00",
               "payload": {
                 "uid": "s:600~l:700",
                 "id": "23",
@@ -36674,7 +36674,7 @@
             }
           }
         },
-        "evaluated_at": "2026-11-08T10:02:11.854800+00:00",
+        "evaluated_at": "2026-11-08T10:31:38.209032+00:00",
         "snapshot": {
           "source": [
             "ESPN",
@@ -36699,7 +36699,7 @@
           "score": 100,
           "text": "プレミアリーグではクリスタルパレスは勝点7、リバプールは6位で勝点15で、両チームの勝点差は8です。",
           "source": "https://site.api.espn.com/apis/v2/sports/soccer/eng.1/standings",
-          "retrieved_at": "2026-11-08T10:02:11.854800+00:00",
+          "retrieved_at": "2026-11-08T10:31:38.209032+00:00",
           "values": {
             "competition": "PL",
             "gap": 8,
@@ -36727,7 +36727,7 @@
           "score": 85,
           "text": "クリスタルパレスはプレミアリーグの直近5試合で1勝1分3敗です。",
           "source": "https://api.football-data.org/v4/competitions/PL/matches",
-          "retrieved_at": "2026-11-08T10:02:04.993082+00:00",
+          "retrieved_at": "2026-11-08T10:31:31.615065+00:00",
           "values": {
             "side": "home",
             "form": [
@@ -36751,7 +36751,7 @@
           "score": 85,
           "text": "リバプールはプレミアリーグの直近5試合で3勝0分2敗です。",
           "source": "https://api.football-data.org/v4/competitions/PL/matches",
-          "retrieved_at": "2026-11-08T10:02:04.993082+00:00",
+          "retrieved_at": "2026-11-08T10:31:31.615065+00:00",
           "values": {
             "side": "away",
             "form": [
@@ -36787,7 +36787,7 @@
           "score": 80,
           "text": "前回の対戦は2026年4月25日のリバプール対クリスタルパレスで3対1でした。",
           "source": "https://api.football-data.org/v4/matches/560635/head2head",
-          "retrieved_at": "2026-11-08T10:02:11.661476+00:00",
+          "retrieved_at": "2026-11-08T10:31:38.086874+00:00",
           "values": {
             "match_id": 538121,
             "score": {
@@ -36801,7 +36801,7 @@
           "score": 75,
           "text": "クリスタルパレスとすぐ上のマンチェスターUの勝点差は0です。",
           "source": "https://api.football-data.org/v4/competitions/PL/standings",
-          "retrieved_at": "2026-11-08T10:01:58.073981+00:00",
+          "retrieved_at": "2026-11-08T10:31:24.753417+00:00",
           "values": {
             "side": "home",
             "gap": 0
@@ -36812,7 +36812,7 @@
           "score": 75,
           "text": "リバプールとすぐ上のエバートンの勝点差は1です。",
           "source": "https://api.football-data.org/v4/competitions/PL/standings",
-          "retrieved_at": "2026-11-08T10:01:58.073981+00:00",
+          "retrieved_at": "2026-11-08T10:31:24.753417+00:00",
           "values": {
             "side": "away",
             "gap": 1
@@ -42245,7 +42245,7 @@
   ],
   "club_registration_check": {
     "days": 7,
-    "checked_at": "2026-11-08T19:01:09.095534+09:00",
+    "checked_at": "2026-11-08T19:30:37.601520+09:00",
     "missing": [
       {
         "club": "AF Virois",
@@ -43257,8 +43257,8 @@
         "reason": "クラブの表示名/読みが未登録"
       }
     ],
-    "source_errors": [],
-    "rescued": []
+    "rescued": [],
+    "source_errors": []
   },
   "schedule_date": "2026-11-08",
   "preview_angles_version": 1

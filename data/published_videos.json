@@ -9780,6 +9780,54 @@
       },
       "host_fallback_reason": null,
       "privacy": "public"
+    },
+    "2026-11-08": {
+      "video_id": "en-bgDd1-A8",
+      "url": "https://youtu.be/en-bgDd1-A8",
+      "title": "【欧州サッカー】アトレティコ・マドリードが勝点2差のバルセロナと対戦 #Shorts",
+      "published_at": "2026-11-08T10:42:05.023051+00:00",
+      "preview_binding": {
+        "material_sha256": "c09d60f34ae442b7467311ba25d7380491494e066ac6a5fd24c61337b8e54e39",
+        "narration_sha256": "0e9d581e092f5ce04f90e94165cf3852e247c6533dc56585deb65ac571142171"
+      },
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-08",
+        "enabled": true,
+        "assigned": "next",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false,
+        "source": "post_common.lineup:daily_soccer",
+        "next_date": "2026-11-09",
+        "next_time": "19:30",
+        "next_name": "欧州サッカー",
+        "speech": "次は11月9日19時30分の欧州サッカーです。また見に来てくださいね。",
+        "card": "次は11/9 19:30の欧州サッカー"
+      },
+      "duration_seconds": 54.73,
+      "short_information_count": 10,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-11-08",
+        "kind": "daily_soccer",
+        "phase": 1,
+        "planned_host": "metan",
+        "rule": "half-jst-week-v1",
+        "week": 43,
+        "weekday": 6
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-11-08T19:32:22.750077+09:00",
+        "comparison_eligible": true,
+        "planned_host": "metan",
+        "reason": null,
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
     }
   },
   "weekly": {
