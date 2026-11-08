@@ -156,7 +156,9 @@ def frame(t, seg, data, clubs):
     d = ImageDraw.Draw(im)
     d.rectangle((0,236,1080,1560),fill=c.PITCH)
     for y in range(236,1560,144):d.rectangle((0,y,1080,min(y+71,1560)),fill=c.GRASS)
-    screen.text(72,258,f"日本代表 {match_label(data)}招集{data['squad_size']}人",70,868,c.CHALK,role='header')
+    # 上の帯に「日本代表」があるので、相手が分かる日は「ブラジル戦 招集28人」に縮める（幅に入らず止まった）。
+    head = f"{match_label(data)[:-1]} 招集{data['squad_size']}人" if match_label(data) else f"日本代表 招集{data['squad_size']}人"
+    screen.text(72,258,head,70,868,c.CHALK,role='header')
     screen.text(72,354,scope_label(data),48,868,c.LIME,role='text')
     screen.text(72,434,'発表されたポジション',32,868,c.MUTED,role='supplement')
     screen.text(72,482,'名簿順の並び・先発配置ではありません',30,868,c.MUTED,role='supplement')
