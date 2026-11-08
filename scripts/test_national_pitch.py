@@ -70,11 +70,18 @@ class Pitch(unittest.TestCase):
         times=pitch.durations(doc,audio,[2.0]*len(audio))
         self.assertEqual(times[0],2)
         self.assertEqual(times[1],3.2)
-        audio[1]['duration']=3.21
+        # 長い声は札を伸ばして収める（切らない・速めない）。出入りの0.3秒ずつを足す。
+        audio[1]['duration']=4.1
+        self.assertAlmostEqual(pitch.durations(doc,audio,[2.0]*len(audio))[1],4.7)
+        audio[1]['duration']=5.5
         with self.assertRaisesRegex(ValueError,'原稿'):pitch.durations(doc,audio,[2.0]*len(audio))
-        audio[1]['duration']=3.2
-        measured=[2.0]*len(audio);measured[1]=3.21
+        audio[1]['duration']=1.8
+        measured=[2.0]*len(audio);measured[1]=5.5
         with self.assertRaisesRegex(ValueError,'原稿'):pitch.durations(doc,audio,measured)
+        audio[0]['duration']=2.6
+        self.assertAlmostEqual(pitch.durations(doc,audio,[2.0]*len(audio))[0],2.6)
+        audio[0]['duration']=3.1
+        with self.assertRaisesRegex(ValueError,'原稿'):pitch.durations(doc,audio,[2.0]*len(audio))
 
     def test_first_frame_and_captions_have_the_same_active_player(self):
         import review_render_v3 as r3

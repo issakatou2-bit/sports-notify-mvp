@@ -6,6 +6,10 @@ ROOT = Path(__file__).resolve().parents[1]
 STYLE = 'pitch-v1'
 INTRO_SECONDS = 2.0
 PLAYER_SECONDS = 3.2
+# 長いクラブ名で声が伸びた時は札を声に合わせて伸ばす（11/8 実音声の見本で3.2秒を超えて止まった）。
+# 声を切ったり速めたりはしない。これを超える原稿だけ止める。
+PLAYER_MAX_SECONDS = 6.0
+INTRO_MAX_SECONDS = 3.0
 MOVE_SECONDS = .3
 CARD = (72, 1160, 940, 1460)
 LEAGUES = {'PL':'イングランド1部', 'ELC':'イングランド2部', 'PD':'スペイン1部',
@@ -119,13 +123,13 @@ def durations(narration, audio, measured):
         meta = seg.get('meta') or {}
         actual = max(float(voice['duration']),float(measured[i]))
         if meta.get('intro'):
-            if actual > INTRO_SECONDS:
-                raise ValueError('冒頭の声が2秒を超えます。声の速さを変えず原稿を短くしてください')
-            out[i] = INTRO_SECONDS
+            if actual > INTRO_MAX_SECONDS:
+                raise ValueError('冒頭の声が3秒を超えます。声の速さを変えず原稿を短くしてください')
+            out[i] = max(INTRO_SECONDS,actual)
         elif meta.get('panel') == 'squad' and 'player' in meta:
-            if actual > 3.2:
-                raise ValueError('選手の声が3.2秒を超えます。3.5秒の札に収まる原稿へ短くしてください')
-            out[i] = max(PLAYER_SECONDS,actual+MOVE_SECONDS)
+            if actual+2*MOVE_SECONDS > PLAYER_MAX_SECONDS:
+                raise ValueError('選手の声が長すぎます。札に収まる原稿へ短くしてください')
+            out[i] = max(PLAYER_SECONDS,actual+2*MOVE_SECONDS)
         elif meta.get("panel")=="next":
             # 日付・相手・日本時間の開始時刻を読み取る時間も確保する。
             out[i] = max(6.4,out[i])
