@@ -1709,6 +1709,10 @@ JP_PLAYERS_SOCCER = [
     # "Borussia Monchengladbach" のような英字を正しく読めないため。
 
     # --- プレミアリーグ(イングランド) ---
+    # 鈴木彩艶はパルマからアストン・ビラへ（JFA 2026-11-04 の招集発表「アストン・ビラ／イングランド」で確認）。
+    # 11/6 のセリエAの順位の回が「パルマ 鈴木彩艶」と出して非公開にした。
+    {"name_en": "Zion Suzuki", "name_jp": "鈴木彩艶", "kana": "スズキ・ザイオン", "team_en": "Aston Villa",
+     "team_jp": "アストンヴィラ", "league": "PL", "match": "astonvilla"},
     {"name_en": "Wataru Endo", "name_jp": "遠藤航", "kana": "エンドウ・ワタル", "team_en": "Liverpool",
      "team_jp": "リバプール", "league": "PL", "match": "liverpool"},
     {"name_en": "Kaoru Mitoma", "name_jp": "三笘薫", "kana": "ミトマ・カオル", "team_en": "Brighton",
@@ -1771,8 +1775,7 @@ JP_PLAYERS_SOCCER = [
 
     # --- セリエA(イタリア) ---
     # 表示名はJFA公式漢字。読みと表示を混ぜない（全42人の根拠はsoccer_player_names.json）。
-    {"name_en": "Zion Suzuki", "name_jp": "鈴木彩艶", "kana": "スズキ・ザイオン", "team_en": "Parma",
-     "team_jp": "パルマ", "league": "SA", "match": "parma"},
+
 
     # --- リーグ・アン(フランス) ---
     {"name_en": "Takumi Minamino", "name_jp": "南野拓実", "kana": "ミナミノ・タクミ", "team_en": "Monaco",

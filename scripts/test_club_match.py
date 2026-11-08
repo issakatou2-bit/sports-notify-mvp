@@ -59,7 +59,8 @@ CASES = [
     ("Borussia Mönchengladbach",
      ["町野修斗", "宇野禅斗", "橋岡大樹", "板倉滉"]),
     ("FC Schalke 04", ["田中聡"]),
-    ("Parma Calcio 1913", ["鈴木彩艶"]),
+    # 鈴木彩艶はアストン・ビラ（JFA 2026-11-04 発表で確認）。パルマは今は日本人なし。
+    ("Aston Villa FC", ["鈴木彩艶"]),
     ("AS Monaco FC", ["南野拓実"]),
     ("Le Havre AC", ["瀬古歩夢", "中村草太", "水多海斗"]),
 ]
@@ -72,7 +73,7 @@ CASES = [
 # 名簿を増やしたら、ここも一緒に見直す。
 NEGATIVE = [
     "Arsenal FC", "Manchester City FC", "Manchester United FC", "Chelsea FC",
-    "Newcastle United FC", "Aston Villa FC", "Everton FC", "Fulham FC",
+    "Newcastle United FC", "Parma Calcio 1913", "Everton FC", "Fulham FC",
     "West Ham United FC", "Nottingham Forest FC", "AFC Bournemouth",
     "Wolverhampton Wanderers FC", "Brentford FC",
     "Real Madrid CF", "FC Barcelona", "Club Atlético de Madrid",
