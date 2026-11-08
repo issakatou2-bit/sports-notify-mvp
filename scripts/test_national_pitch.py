@@ -15,7 +15,7 @@ import soccer_national_render as render
 
 class Pitch(unittest.TestCase):
     def setUp(self):
-        self.data=n.squad(n.read(ROOT/'data/soccer_national_squad.json'),{},'2026-11-09T10:15:00+09:00',4)
+        self.data=n.squad(n.read(ROOT/'scripts/fixtures/national-pitch/soccer_national_squad.json'),{},'2026-11-09T10:15:00+09:00',4)
 
     def test_official_positions_are_complete_and_not_formation(self):
         points=pitch.points(self.data)
@@ -54,7 +54,7 @@ class Pitch(unittest.TestCase):
         self.assertAlmostEqual((start['box'][0]+start['box'][2])/2,point['x'],delta=1)
 
     def test_all_pages_keep_facts_and_short_varied_lines(self):
-        roster=n.read(ROOT/'data/soccer_national_squad.json')
+        roster=n.read(ROOT/'scripts/fixtures/national-pitch/soccer_national_squad.json')
         for page in range(9):
             data=n.squad(roster,{},'2026-11-09T10:15:00+09:00',page)
             doc=n.narration(data)
