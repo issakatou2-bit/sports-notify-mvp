@@ -71,6 +71,9 @@ def missing(day: str = None, path: str = "data/published_videos.json", now=None)
             continue                      # まだ出そろう時刻ではない
         if (rec.get(kind) or {}).get(day):
             continue                      # 出ている
+        import morning_topics
+        if morning_topics.skip_reason(kind, day):
+            continue                      # 新しい題材が無いことを制作側で確認済み
         if kind=='daily_soccer':
             import soccer_preview_assessment
             try:material=json.loads(pathlib.Path('data/soccer_games.json').read_text(encoding='utf8'))

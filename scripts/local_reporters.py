@@ -666,6 +666,7 @@ def _dedupe_key(title: str) -> str:
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default="data/local_reporters.json")
+    ap.add_argument('--date', help='公開する回の日本日付')
     ap.add_argument("--hours", type=int, default=HOURS)
     ap.add_argument("--top", type=int, default=TOP_N)
     ap.add_argument("--discover", action="store_true",
@@ -697,10 +698,11 @@ def main():
     jp_hits = [p for p in posts if p["jp_players"]]
     print(f"[info] 日本人選手に触れているもの: {len(jp_hits)}件")
 
-    top = rank(posts, args.top)
+    import morning_topics
+    top = rank(morning_topics.filter_rows(posts, args.date), args.top)
 
     # 選手名で直接引く見出し。名簿の外で起きたことを拾う。
-    heads = collect_headlines()
+    heads = morning_topics.filter_rows(collect_headlines(target_date=args.date), args.date)
     print(f"[info] 現地の見出し(直近1日): {len(heads)}件")
 
     key = os.environ.get("ANTHROPIC_API_KEY", "")
