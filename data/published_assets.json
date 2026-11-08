@@ -1735,6 +1735,30 @@
       "duration_seconds": 36.48,
       "short_information_count": 3,
       "short_content_policy": "short-content-20261027-v1"
+    },
+    "offseason_market_2026_81f9209e6e42": {
+      "video_id": "fCgV3YgNCc8",
+      "url": "https://youtu.be/fCgV3YgNCc8",
+      "privacy": "public",
+      "published_at": "2026-11-08T06:46:09.263316+00:00",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-08",
+        "enabled": true,
+        "assigned": "next",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false,
+        "source": "post_common.lineup:daily_soccer",
+        "next_date": "2026-11-09",
+        "next_time": "19:30",
+        "next_name": "欧州サッカー",
+        "speech": "次は11月9日19時30分の欧州サッカーです。また見に来てくださいね。",
+        "card": "次は11/9 19:30の欧州サッカー"
+      },
+      "duration_seconds": 43.04,
+      "short_information_count": 5,
+      "short_content_policy": "short-content-20261027-v1"
     }
   }
 }
