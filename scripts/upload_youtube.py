@@ -743,11 +743,16 @@ def published_video(kind: str, date_key: str,
     return entry if backfill_records.matches_kind(kind, entry) else {}
 
 
-def material_date_key(kind: str, sport: str, games: dict, explicit: str | None = None) -> str:
-    """サッカーの結果は材料日、予告は材料取得日の日本日付で照合する。"""
+def material_date_key(kind: str, sport: str, games: dict, explicit: str | None = None,
+                      recap: dict | None = None) -> str:
+    """夕方枠は日本の公開日、サッカーは各材料の日付で照合する。"""
     from datetime import datetime, timedelta, timezone
     expected = None
-    if kind == 'soccer_weekly':
+    if kind == 'morning':
+        from publication_clock import edition_day
+        source = (recap or {}).get('date_jst') or _jst_label((recap or {}).get('date', ''))
+        expected = edition_day(explicit or source)
+    elif kind == 'soccer_weekly':
         expected = games['key']
         __import__('soccer_weekly_long').week_window(expected)
     elif kind == 'soccer_national':
@@ -785,8 +790,14 @@ def resolve_publish_at(spec: str | None) -> str | None:
     jst = timezone(timedelta(hours=9))
     now = datetime.now(jst)
     try:
-        hh, mm = (int(x) for x in spec.split(":"))
-        when = now.replace(hour=hh, minute=mm, second=0, microsecond=0)
+        if 'T' in spec:
+            when = datetime.fromisoformat(spec.replace('Z', '+00:00'))
+            if when.tzinfo is None:
+                raise ValueError('公開日時にはタイムゾーンが必要です')
+            when = when.astimezone(jst)
+        else:
+            hh, mm = (int(x) for x in spec.split(":"))
+            when = now.replace(hour=hh, minute=mm, second=0, microsecond=0)
     except ValueError:
         print(f"[warn] 公開時刻を読めません: {spec!r} (HH:MM で指定してください)",
               file=sys.stderr)
@@ -854,7 +865,7 @@ def record_video(kind: str, date_key: str, video_id: str,
                  title: str, path: str = VIDEOS_PATH,
                  publish_at: str | None = None, preview_binding: dict | None = None,
                  host_tracking: dict | None = None, privacy: str | None = None,
-                 experiment: dict | None = None) -> None:
+                 experiment: dict | None = None, source_topics: list | None = None) -> None:
     """
     その日の動画のIDを残す。
 
@@ -883,6 +894,8 @@ def record_video(kind: str, date_key: str, video_id: str,
         entry["publish_at"] = publish_at
     if preview_binding is not None:
         entry['preview_binding']=preview_binding
+    if source_topics is not None:
+        entry['source_topics'] = source_topics
     if experiment:
         entry.update(experiment)
     if host_tracking:
@@ -1227,9 +1240,9 @@ def jst_stamp(utc_text: str) -> str:
     return f"{t.month}月{t.day}日{t.hour}時"
 
 
-def buzz_top(path: str) -> dict:
+def buzz_top(path: str, video_id=None) -> dict:
     """
-    その日いちばん見られたMLB公式ハイライト。無ければ空。
+    指定した元動画（指定無しなら候補の先頭）。無ければ空。
 
     コメント欄の回は、タイトルと説明文で「どの試合の話か」を示す必要がある。
     「現地の声」だけでは何の動画か分からず、検索にも当たらない。
@@ -1240,6 +1253,8 @@ def buzz_top(path: str) -> dict:
     except (json.JSONDecodeError, OSError):
         return {}
     vids = data.get("videos") or []
+    if video_id is not None:
+        vids = [v for v in vids if v.get('video_id') == video_id]
     if not vids:
         return {}
     v = vids[0]
@@ -1498,7 +1513,7 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
         # コメント欄の回。何の試合かがタイトルで分かるようにする。
         # 「現地の声」だけでは、どの試合の話なのか見当が付かない。
         # 検索されるのは球団名なので、対戦を先頭へ置く。
-        m = (buzz_top(buzz_path) or {})
+        m = (buzz_top(buzz_path, _json_or_empty(narration_path).get('topic_video_id')) or {})
         # 対戦カードがあればそれ、無ければ何のハイライトかを日本語で。
         card = m.get("matchup_jp") or m.get("topic_jp") or ""
         # **訳せなかった日は英語の動画名がそのまま来る。**9/29の題が
@@ -1545,7 +1560,8 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
         # コレスポが試合を報じているように読める。事実は合っていても、
         # 開いた人が期待するのはハイライトで、中身は報道のまとめになる。
         # 引用であることが、題を読んだ時点で分かる形にする。
-        head = top_headline()
+        chosen = _json_or_empty(narration_path)
+        head = chosen['topic_headline'] if 'topic_headline' in chosen else top_headline()
         title = (f"【MLB】現地はこう報じた「{head}」"
                  f"｜{date_label} 番記者の投稿と現地の見出し #Shorts"
                  if head else
@@ -1878,13 +1894,14 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
                       "同率の球団がいる日は、直接対決の結果で順番が"
                       "入れ替わることがあります。", ""]
     elif kind == "morning" and morning_mode == "voices":
-        top = buzz_top(buzz_path) or {}
+        top = buzz_top(buzz_path, _json_or_empty(narration_path).get('topic_video_id')) or {}
         # **更新した日・試合の日・元動画は別。**以前は
         # 「{date_label}のメジャーリーグで」と書き、更新日を試合日に見せて
         # いた（9/22の回は米国9/20の試合）。「現地で最も見られた」も、
         # 集めた範囲の中での1位を言い過ぎていた（Codexの内容点検）。
-        lines = [f"{date_label}更新。MLB公式ハイライトのうち、取得した時点で"
-                 "いちばん再生されていた動画のコメント欄を紹介します。", ""]
+        lines = [f"{date_label}更新。" + (
+            "直近7日に扱った題材を除き、採用したMLB公式動画のコメント欄を紹介します。"
+            if top.get('video_id') else "今回採用した現地の投稿とコメントを紹介します。"), ""]
         if top.get("matchup_jp"):
             lines.append(f"・試合: {top['matchup_jp']}")
         game_day = us_and_jp_day(top.get("game_date"))
@@ -2195,13 +2212,13 @@ def main():
     parser.add_argument("--force", action="store_true",
                         help="資産動画を投稿済みでも上げ直す")
     parser.add_argument("--video-date", default=None,
-                        help="記録に使う日付(既定はUTCの実行日)")
+                        help="記録する回の日付。夕方枠の既定は材料の日本日付")
     parser.add_argument("--privacy", default="public",
                         choices=["private", "unlisted", "public"])
     parser.add_argument("--sport", default="mlb", choices=["mlb", "soccer"],
                         help="日次の競技。見出しとタグが変わる")
     parser.add_argument("--publish-at", default=None,
-                        help="JSTの公開時刻 HH:MM。指定すると予約投稿になる。"
+                        help="JSTの公開時刻 HH:MM またはタイムゾーン付きISO日時。指定すると予約投稿になる。"
                              "過ぎている場合はそのまま公開する")
     args = parser.parse_args()
     import ui_voice_queue
@@ -2283,8 +2300,12 @@ def main():
     #
     # 日付で引ける枠は全部ここで止める。資産動画は日付ではなく
     # 話題で引くので、上の分岐がそのまま受け持つ。
-    date_key = material_date_key(args.kind, args.sport, _json_or_empty(args.games), args.video_date)
+    date_key = material_date_key(args.kind, args.sport, _json_or_empty(args.games), args.video_date,
+                                 _json_or_empty(args.recap) if args.kind == 'morning' else None)
     rec_kind = record_kind(args.kind, args.morning_mode, args.sport)
+    if args.kind == 'morning' and args.publish_at and 'T' not in args.publish_at:
+        from publication_clock import edition_publish_at
+        args.publish_at = edition_publish_at(date_key, args.publish_at)
     if args.kind in DATED_KINDS and not args.force:
         already = published_video(rec_kind, date_key)
         if already:
@@ -2362,11 +2383,8 @@ def main():
             try:
                 rec = json.loads(pathlib.Path(args.recap).read_text(encoding="utf-8"))
                 morning_players = rec.get("players") or []
-                # タイトルと画面で同じ日付を使う。
-                # date は米国日付なので、日本の視聴者が体感する日付
-                # (date_jst)を優先する。古い記録には無いので、その場合だけ
-                # date から換算する。
-                d = rec.get("date_jst") or _jst_label(rec.get("date", ""))
+                # 投稿済みの照合と同じ公開日を題へ渡す。米国試合日と混ぜない。
+                d = date_key
                 if d:
                     from datetime import datetime as _dt
                     _p = _dt.strptime(d, "%Y-%m-%d")
@@ -2409,6 +2427,18 @@ def main():
     body["snippet"]["description"] = __import__('fan_privacy').description(club_display_description(body["snippet"]["description"]))
     # publishAt は privacyStatus が private のときだけ有効。
     # public のまま渡すと予約は無視され、その場で公開される。
+    source_topics = None
+    if rec_kind in ('morning_voices', 'morning_press'):
+        import morning_topics
+        document = _json_or_empty(args.narration)
+        if document.get('edition_date') and document['edition_date'] != date_key:
+            raise SystemExit('保存原稿と投稿する回の日付が一致しません')
+        source_topics = document.get('source_topics') or [
+            morning_topics.evidence({'title': body['snippet']['title']})]
+        # 同じ回の訂正版は許し、別の日・別枠の再使用を止める。
+        if morning_topics.repeated_for_upload(source_topics, rec_kind, date_key):
+            morning_topics.record_skip(rec_kind, date_key, '投稿直前の再照合で直近7日の題材と重複')
+            raise SystemExit('直近7日に公開した題材と重なるため投稿を見送りました')
     publish_at = resolve_publish_at(args.publish_at)
     import hook_ab
     experiment = hook_ab.publication(args.video, publish_at)
@@ -2521,7 +2551,7 @@ def main():
             record_video(rec_kind, key, vid, body["snippet"]["title"],
                          publish_at=publish_at,preview_binding=preview_binding,
                          host_tracking=__import__('host_split').publication(args.video, args.narration), privacy=args.privacy,
-                         experiment=experiment)
+                         experiment=experiment, source_topics=source_topics)
             workflow_upload_result(True)
             # 長編を上げたら、同じ日のコメント欄ショートから繋ぐ。
             # ショートにはフィードがあるが、長編には無い。

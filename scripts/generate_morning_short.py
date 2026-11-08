@@ -823,7 +823,8 @@ def jp_date(day: str) -> str:
 def build_narration(data: dict, mode: str = "all") -> dict:
     import sanity_sources
     import voices_context
-    return sanity_sources.attach(voices_context.attach(_build_narration(data, mode), data), data)
+    import morning_topics
+    return morning_topics.attach(sanity_sources.attach(voices_context.attach(_build_narration(data, mode), data), data), data, mode)
 
 
 def _build_narration(data: dict, mode: str = "all") -> dict:
@@ -1457,7 +1458,7 @@ def _build_narration(data: dict, mode: str = "all") -> dict:
         for r, body in usable:
             parts.append(f"{r.get('outlet', '')}の記者。{body}")
         segments.append({"kind": "reporters", "text": "".join(parts),
-                         "meta": {}})
+                         "meta": {"source_posts": [r for r, _ in usable]}})
 
     segments.append({
         "kind": "outro",
@@ -4225,6 +4226,7 @@ def bignumber_sound(audio, plan, out_dir):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--recap", default="data/morning_recap.json")
+    parser.add_argument('--edition-date', help='公開する回の日本日付。空なら夕方枠は正午前まで前日分')
     parser.add_argument("--buzz", default="data/mlb_buzz.json")
     parser.add_argument("--reporters", default="data/local_reporters.json")
     # 進出争い。9月と10月だけ材料がある。
@@ -4279,13 +4281,16 @@ def main():
     else:
         data = json.loads(path.read_text(encoding="utf-8"))
     import recap_freshness
+    from publication_clock import edition_day
+    edition = (args.edition_date or recap_freshness.current_day().isoformat()
+               if args.mode.startswith('soccer_') else edition_day(args.edition_date))
     if args.mode == "players":
-        data = recap_freshness.read_for_edition(data)
+        data = recap_freshness.read_for_edition(data, edition)
     else:
         # コメント・報道・サッカーは当日の成績の有無に巻き込まない。
         # 古い成績を混ぜず、各枠の独立した材料とその日付を使う。
-        data = recap_freshness.read_for_edition(data) or {"players": []}
-        data["date_jst"] = recap_freshness.current_day().isoformat()
+        data = recap_freshness.read_for_edition(data, edition) or {"players": []}
+        data["date_jst"] = edition
     # 並べ替えはここで一度だけ行う。
     # build_narration の中だけで並べ替えていたとき、原稿は貢献度順なのに
     # 画面は元の順のままで、「1位 34点、3位 44点」と食い違った。
@@ -4341,6 +4346,13 @@ def main():
     from article_freshness import fresh_material
     reporters_data = fresh_material(reporters_data, data.get('date_jst'))
     data['reporters'] = reporters_data
+
+    # 新規取得にも、保存材料からの再実行にも同じ7日間の守りを通す。
+    import morning_topics
+    morning_topics.filter_material(data, args.mode, edition)
+    buzz = data['buzz']
+    voices_data = data['voices']
+    reporters_data = data['reporters']
 
     # ポストシーズン進出争い。9月と10月だけ材料がある。
     # 取れていなければ、その枠を作らないだけ。
@@ -4435,6 +4447,8 @@ def main():
         hds = reporters_data.get("headlines") or []
         items = len(rep) + len(hds)
         if items < MIN_PRESS_ITEMS:
+            morning_topics.record_skip('morning_press', edition,
+                f'直近7日の題材を除外後の報道が{items}件（最低{MIN_PRESS_ITEMS}件）')
             print(f"[info] 現地の報道が{items}件しかないため、"
                   f"報道編は作りません(最低{MIN_PRESS_ITEMS}件)")
             return
@@ -4455,6 +4469,8 @@ def main():
     if args.mode == "voices":
         vcs = (voices_data or {}).get("voices") or []
         if len(vcs) < MIN_VOICE_ITEMS:
+            morning_topics.record_skip('morning_voices', edition,
+                f'直近7日の題材を除外後のコメントが{len(vcs)}件（最低{MIN_VOICE_ITEMS}件）')
             print(f"[info] コメントが{len(vcs)}件しかないため、"
                   f"コメント欄編は作りません(最低{MIN_VOICE_ITEMS}件)")
             return

@@ -331,6 +331,10 @@ def check_videos(day: str, only_past: bool = False, now=None) -> tuple:
             lines.append(f"| {at} | {label} | 出た | {entry.get('video_id')} |")
             if entry.get("video_id"):
                 seen.add(entry["video_id"])
+        elif __import__('morning_topics').skip_reason(_record_key(kind), day):
+            reason = __import__('morning_topics').skip_reason(_record_key(kind), day)
+            lines.append(f"| {at} | {label} | 見送り | {reason} |")
+            skipped += 1
         elif kind in MLB_GAME_KINDS and _mlb_games(
                 (datetime.fromisoformat(day)
                  + timedelta(days=MLB_GAME_KINDS[kind])).strftime("%Y-%m-%d")

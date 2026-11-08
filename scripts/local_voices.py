@@ -154,7 +154,7 @@ JP_READ = 6
 
 
 def fetch_youtube_comments(buzz_path: str = "data/mlb_buzz.json",
-                           per_video: int = PER_VIDEO) -> list:
+                           per_video: int = PER_VIDEO, edition=None) -> list:
     """
     MLB公式ハイライトに付いたコメントを取る。
 
@@ -181,6 +181,8 @@ def fetch_youtube_comments(buzz_path: str = "data/mlb_buzz.json",
         print(f"[warn] {buzz_path} を読めませんでした: {e}", file=sys.stderr)
         return []
 
+    import morning_topics
+    videos = morning_topics.filter_rows(videos, edition)
     out = []
     # まず1本目だけ。足りなければ順に足す。
     for n, v in enumerate(videos[:4]):
@@ -249,6 +251,8 @@ def fetch_youtube_comments(buzz_path: str = "data/mlb_buzz.json",
                 "author": c.get("authorDisplayName", ""),
                 "source": "MLB公式ハイライトのコメント",
                 "video_title": v.get("title") or "",
+                "video_topic": v.get("topic_jp") or "",
+                "game_date": v.get("game_date") or "",
                 "matchup": v.get("matchup") or v.get("title", "")[:40],
             })
 
@@ -623,11 +627,11 @@ def drop_near_duplicates(items: list, key: str = "title") -> list:
     return kept
 
 
-def build(limit: int = MAX_VOICES) -> dict:
+def build(limit: int = MAX_VOICES, edition=None) -> dict:
     # 公式ハイライトのコメントを先に見る。試合を見た人が書いた言葉が
     # 集まる場所で、r/baseball の見出しより「反応」に近い。
     # 取れなかった日はRSSに落ちる(どちらも無い日は何も作らない)。
-    items = fetch_youtube_comments()
+    items = fetch_youtube_comments(edition=edition)
     source_name, source_url = "MLB公式ハイライトのコメント", "https://www.youtube.com/@MLB"
     if not items:
         items = fetch_titles()
@@ -821,6 +825,7 @@ def report(raw: list, voices: list) -> str:
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--out", default="data/local_voices.json")
+    parser.add_argument('--edition-date', help='公開する回の日本日付')
     parser.add_argument("--limit", type=int, default=MAX_VOICES)
     parser.add_argument("--report", action="store_true",
                         help="集めたコメントの分布を実行ページへ書き出す")
@@ -844,7 +849,7 @@ def main():
                 f.write(text + "\n")
         return
 
-    data = build(limit=args.limit)
+    data = build(limit=args.limit, edition=args.edition_date)
     if not data:
         note("現地の声は更新しません(前日のファイルが残ります)。"
              "18:00の「ファンのコメント欄」は、鮮度が足りなければ出ません")
