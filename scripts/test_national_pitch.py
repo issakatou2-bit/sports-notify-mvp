@@ -114,4 +114,12 @@ class Pitch(unittest.TestCase):
             r3.set_program_clock(None);r3.set_caption('',0,0)
 
 
+
+class MatchLabel(unittest.TestCase):
+    def test_intro_names_the_next_opponent_only_from_material(self):
+        self.assertEqual(pitch.match_label(dict(next_game=dict(opponent='ブラジル'))),'ブラジル戦の')
+        self.assertEqual(pitch.match_label(dict(next_game=None)),'')
+        self.assertEqual(pitch.match_label({}),'')
+
+
 if __name__=='__main__':unittest.main(argv=[sys.argv[0]])

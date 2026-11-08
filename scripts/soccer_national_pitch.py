@@ -43,12 +43,19 @@ def scope_label(data):
     return '今日は' + '・'.join(f"{pos} {sum(p['position']==pos for p in data['players'])}人" for pos in positions)
 
 
+def match_label(data):
+    """何の試合に向けた招集かを冒頭で言う（Argon 11/8「いつの何の試合か分からない」）。材料の次の試合だけ。"""
+    game = data.get('next_game') or {}
+    opponent = str(game.get('opponent') or '').strip()
+    return f'{opponent}戦の' if opponent else ''
+
+
 def segments(data):
     """長い所属は札で伝える。声を速めたり、発話途中で切ったりしない。"""
     import soccer_national as n
     from voice_accent_common import mora_count
     readings = n.read(ROOT/'data/soccer_national_club_readings.json')
-    rows = [dict(kind='national', text=f"招集{data['squad_size']}人。", speaker=2,
+    rows = [dict(kind='national', text=f"{match_label(data)}招集{data['squad_size']}人。", speaker=2,
                  meta=dict(panel='squad', intro=True))]
     for i, p in enumerate(data['players']):
         name, club = p['name'], p['club']
@@ -149,7 +156,7 @@ def frame(t, seg, data, clubs):
     d = ImageDraw.Draw(im)
     d.rectangle((0,236,1080,1560),fill=c.PITCH)
     for y in range(236,1560,144):d.rectangle((0,y,1080,min(y+71,1560)),fill=c.GRASS)
-    screen.text(72,258,f"日本代表 招集{data['squad_size']}人",70,868,c.CHALK,role='header')
+    screen.text(72,258,f"日本代表 {match_label(data)}招集{data['squad_size']}人",70,868,c.CHALK,role='header')
     screen.text(72,354,scope_label(data),48,868,c.LIME,role='text')
     screen.text(72,434,'発表されたポジション',32,868,c.MUTED,role='supplement')
     screen.text(72,482,'名簿順の並び・先発配置ではありません',30,868,c.MUTED,role='supplement')
