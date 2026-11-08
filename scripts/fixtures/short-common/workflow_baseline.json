@@ -5,6 +5,11 @@
   "morning_recap": {
     "workflow_dispatch": {
       "inputs": {
+        "date": {
+          "description": "公開する回の日本日付 YYYY-MM-DD（空なら正午前は前日分）",
+          "required": "false",
+          "default": ""
+        },
         "modes": {
           "description": "作る本数を絞る (players postseason voices press のうち必要なものだけ)",
           "required": "false",

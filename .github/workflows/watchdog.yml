@@ -116,7 +116,11 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
           while read -r wf; do
             [ -n "$wf" ] || continue
-            if gh workflow run "$wf" --ref main; then
+            INPUTS=()
+            if [ "$wf" = "morning_recap.yml" ]; then
+              INPUTS=(-f "date=${{ steps.edition.outputs.day }}")
+            fi
+            if gh workflow run "$wf" --ref main "${INPUTS[@]}"; then
               echo "- 起動しました: $wf" >> "$GITHUB_STEP_SUMMARY"
             else
               echo "- 起動できませんでした: $wf" >> "$GITHUB_STEP_SUMMARY"

@@ -1,36 +1,36 @@
 {
-  "updated_at": "2026-11-07T17:27:03.318971+00:00",
+  "updated_at": "2026-11-08T06:01:51.970737+00:00",
   "sources": [
     {
       "name": "MLB公式",
-      "items": 25
+      "items": 24
     }
   ],
-  "titles_count": 25,
+  "titles_count": 24,
   "teams": [
-    {
-      "team_id": "112",
-      "name": "カブス",
-      "name_en": "Chicago Cubs",
-      "mentions": 2,
-      "tone": "好調",
-      "gist": "PCAとベリンジャーがプラチナ・グラブ賞受賞"
-    },
-    {
-      "team_id": "138",
-      "name": "カージナルス",
-      "name_en": "St. Louis Cardinals",
-      "mentions": 1,
-      "tone": "話題",
-      "gist": "サーフォリオがカージナルスの新GMに就任"
-    },
     {
       "team_id": "141",
       "name": "ブルージェイズ",
       "name_en": "Toronto Blue Jays",
+      "mentions": 2,
+      "tone": "話題",
+      "gist": "パーカーがAFLHR競争優勝、2027先発補強は?"
+    },
+    {
+      "team_id": "147",
+      "name": "ヤンキース",
+      "name_en": "New York Yankees",
+      "mentions": 2,
+      "tone": "話題",
+      "gist": "ヤンキース傘下3A新名称発表、打線の改善点は?"
+    },
+    {
+      "team_id": "120",
+      "name": "ナショナルズ",
+      "name_en": "Washington Nationals",
       "mentions": 1,
       "tone": "話題",
-      "gist": "ブルージェイズ、27年の先発陣補強の積極度を問う"
+      "gist": "2027年の鍵を握る投手3人"
     },
     {
       "team_id": "145",
@@ -38,23 +38,7 @@
       "name_en": "Chicago White Sox",
       "mentions": 1,
       "tone": "好調",
-      "gist": "ホワイトソックス、26年の高い勢いを土台に"
-    },
-    {
-      "team_id": "136",
-      "name": "マリナーズ",
-      "name_en": "Seattle Mariners",
-      "mentions": 1,
-      "tone": "話題",
-      "gist": "マリナーズ、新ベンチコーチ獲得が間近"
-    },
-    {
-      "team_id": "143",
-      "name": "フィリーズ",
-      "name_en": "Philadelphia Phillies",
-      "mentions": 1,
-      "tone": "話題",
-      "gist": "フィリーズ先発陣、27年の伸びしろと懸念点"
+      "gist": "2026年の高いエネルギーを土台に前進"
     },
     {
       "team_id": "109",
@@ -62,15 +46,31 @@
       "name_en": "Arizona Diamondbacks",
       "mentions": 1,
       "tone": "話題",
-      "gist": "D-backs、26年ドラフト選手のAFL起用と活躍"
+      "gist": "パーカーがAFLホームラン競争で優勝"
     },
     {
       "team_id": "119",
       "name": "ドジャース",
       "name_en": "Los Angeles Dodgers",
       "mentions": 1,
-      "tone": "不振",
-      "gist": "ドジャース、ベイツ打撃コーチと袂を分かつ"
+      "tone": "話題",
+      "gist": "スクーバル再契約にいくら必要か"
+    },
+    {
+      "team_id": "158",
+      "name": "ブリュワーズ",
+      "name_en": "Milwaukee Brewers",
+      "mentions": 1,
+      "tone": "好調",
+      "gist": "WS王者ブリュワーズのオフ5つの疑問"
+    },
+    {
+      "team_id": "108",
+      "name": "エンゼルス",
+      "name_en": "Los Angeles Angels",
+      "mentions": 1,
+      "tone": "話題",
+      "gist": "オフ入り時点のエンゼルス戦力の現状"
     }
   ],
   "players": []
