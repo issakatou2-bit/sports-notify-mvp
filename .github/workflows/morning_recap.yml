@@ -33,6 +33,8 @@ env:
   COLLESPO_PLAYERS_DESIGN: ${{ vars.COLLESPO_PLAYERS_DESIGN || 'legacy' }}
   COLLESPO_COMMENTS_DESIGN: ${{ vars.COLLESPO_COMMENTS_DESIGN || 'legacy' }}
   COLLESPO_PRESS_DESIGN: ${{ vars.COLLESPO_PRESS_DESIGN || 'legacy' }}
+  # 定期の起動で作る回を絞る（空なら4本とも）。例: "players postseason"
+  COLLESPO_MORNING_MODES: ${{ vars.COLLESPO_MORNING_MODES || '' }}
 
 # 「その日の日本人選手の成績」を配信する。
 # 19時の予告(これから起きること)に対して、こちらは結果(終わったこと)。
@@ -333,6 +335,17 @@ jobs:
           # 同じ試合をコメント欄の回が扱っていたので、そちらへ寄せた。
           # 1本だけ落ちた日に、成功した分まで上げ直すと重複するため。
           MODES="${{ inputs.modes }}"
+          # 入力が既定のまま（定期の起動）なら、変数で絞った回だけ作る。
+          # 11/8 Studio の数字でファンの声・現地の報道が40〜80再生に留まり、止めるため。
+          if [ -n "$COLLESPO_MORNING_MODES" ] && { [ -z "$MODES" ] || [ "$MODES" = "players postseason voices press" ]; }; then
+            MODES="$COLLESPO_MORNING_MODES"
+            echo "作る回を変数で絞りました: $MODES" | tee -a "$GITHUB_STEP_SUMMARY"
+            # 止めた枠は見張りが「出ていない」と回し直さないよう、見送りとして記録する。
+            for stopped in voices press; do
+              case " $MODES " in *" $stopped "*) continue ;; esac
+              python -c "import sys; sys.path.insert(0, 'scripts'); import morning_topics; morning_topics.record_skip(sys.argv[1], sys.argv[2], '本数を絞るため止めている（COLLESPO_MORNING_MODES）')" "morning_$stopped" "${{ steps.edition.outputs.day }}"
+            done
+          fi
           CLAIM_FAILED=0
           if [ "${{ steps.recap_results.outcome }}" != "success" ]; then
             echo "::error::成績取得に失敗。成績の回を止め、独立した枠は続行します"
