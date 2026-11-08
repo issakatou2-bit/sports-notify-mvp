@@ -36,7 +36,10 @@ class AllBubbles(unittest.TestCase):
                     with self.subTest(slot=name,style=style),patch.dict(os.environ,{'COLLESPO_BUBBLE':style}):
                         r3.set_program_clock(0);r3.set_caption(seg.get('text') or preview.TEXT,20,20,speaker=seg.get('speaker',2));r3.set_program_clock(2)
                         im=render(2);result=preview.inspect(im)
-                        self.assertEqual(im.info['bubble_style']['style'],style)
+                        if result.get('suppressed'):
+                            self.assertTrue(im.info.get('short_caption_suppressed') or im.info.get('v3_outro'))
+                        else:
+                            self.assertEqual(im.info['bubble_style']['style'],style)
                         self.assertEqual(result['bounds'],'PASS')
             r3.set_program_clock(None);r3.set_caption('',0)
 

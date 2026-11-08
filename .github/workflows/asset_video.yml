@@ -42,6 +42,11 @@ on:
     types: [completed]
   workflow_dispatch:
     inputs:
+      sample_only:
+        description: 見本のmp4だけを保存する（公開・SNS・台帳・コミット・通知なし）
+        type: boolean
+        required: false
+        default: false
       topic:
         description: 'トピック名。next で未投稿から1本'
         type: string
@@ -67,10 +72,12 @@ concurrency:
   cancel-in-progress: false
 
 permissions:
+  actions: read
   contents: write
 
 # ショートの見た目（v4 は字幕・大きめの立ち絵・進み具合の線）。review_render_v3.LOOK
 env:
+  COLLESPO_SAMPLE_ONLY: ${{ inputs.sample_only && 'true' || 'false' }}
   COLLESPO_HOOK_AB: ${{ vars.COLLESPO_HOOK_AB || '' }}
   COLLESPO_SOLO_HOST: ${{ vars.COLLESPO_SOLO_HOST || 'metan' }}
   COLLESPO_HOST_SPLIT: ${{ vars.COLLESPO_HOST_SPLIT || '' }}
@@ -102,17 +109,27 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Ignore a sample-only source run
+        id: sample_source
+        if: github.event_name == 'workflow_run'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_RUN: ${{ github.event.workflow_run.id }}
+        run: python scripts/sample_source.py --source-run "$SOURCE_RUN" --github-output "$GITHUB_OUTPUT"
       - name: Refresh both MLB player publication ledgers
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && ((github.event_name != 'workflow_dispatch' || inputs.sample_only != true))
         run: python scripts/player_publications.py --sync
       - name: Set up Python
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true')
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
       - name: Install optional UI stock dependencies
         # 既定のめたんでは、早期確認の前に依存インストールを増やさない。
-        if: vars.COLLESPO_SOLO_HOST == 'ui'
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (vars.COLLESPO_SOLO_HOST == 'ui')
         run: pip install -r scripts/requirements.txt
       - name: Check daily limit before fetching materials
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true')
         id: limit
         env:
           REQUESTED_TOPIC: ${{ inputs.topic }}
@@ -123,23 +140,43 @@ jobs:
           AGAIN=""
           if [ "$FORCE_INPUT" = "true" ] && [ -n "$REQUESTED_TOPIC" ] && [ "$REQUESTED_TOPIC" != "next" ]; then AGAIN="--again"; fi
           python scripts/next_asset.py --check-daily-limit --requested-topic "$REQUESTED_TOPIC" $AGAIN
+      - name: Preserve inherited sample-only marker
+        if: always() && steps.sample_source.outputs.allowed == 'false'
+        uses: actions/upload-artifact@v4
+        with:
+          name: sample-inherited-${{ github.job }}
+          path: |
+            build/sample_only.json
+            !build/**/portrait/**
+          if-no-files-found: error
+          retention-days: 3
 
   asset:
     needs: daily_limit
-    if: needs.daily_limit.outputs.build == 'true'
+    if: inputs.sample_only || (needs.daily_limit.outputs.build == 'true')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Ignore a sample-only source run
+        id: sample_source
+        if: github.event_name == 'workflow_run'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_RUN: ${{ github.event.workflow_run.id }}
+        run: python scripts/sample_source.py --source-run "$SOURCE_RUN" --github-output "$GITHUB_OUTPUT"
       - name: Refresh both MLB player publication ledgers
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && ((github.event_name != 'workflow_dispatch' || inputs.sample_only != true))
         run: python scripts/player_publications.py --sync
 
       - name: Set up Python
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true')
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
       - name: Install dependencies
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true')
         run: |
           pip install -r scripts/requirements.txt
           pip install pillow google-api-python-client google-auth
@@ -147,6 +184,7 @@ jobs:
       # aptが応答しなくなる事象が実行#2と#5で起きたため、
       # リトライとミラー切り替えを持つスクリプトへ切り出した。
       - name: Install video tools
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true')
         timeout-minutes: 16
         run: bash scripts/install_video_tools.sh
 
@@ -156,22 +194,26 @@ jobs:
       # 球場ごとのトピックを公式APIから作る。手書きの在庫が尽きても、
       # ここが玉を供給し続ける。取れなければ手書きのぶんだけで動く。
       - name: Build venue topics
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true')
         continue-on-error: true
         run: python scripts/venue_topics.py --out data/venue_topics.json
 
       # 球団のぶんも同じ形で作る。球団は移転するので、手書きの表より
       # APIを見ている方が正しい(2026年のアスレチックスはサクラメント)。
       - name: Build team topics
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true')
         continue-on-error: true
         run: python scripts/team_topics.py --out data/team_topics.json
 
       - name: Fetch venue stats
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true')
         continue-on-error: true
         run: python scripts/venue_stats.py --out data/venue_stats.json
 
       # ワールドシリーズの球団史・日程。日程が無い季節は空の topics を書いて
       # 正常終了するので、年じゅうこの段を置いておける。
       - name: Build World Series topics
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true')
         continue-on-error: true
         run: python scripts/ws_topics.py --out data/ws_topics.json
 
@@ -179,6 +221,7 @@ jobs:
       # これを読む。取れなければその2トピックだけが作られず、他は通る。
       # 開幕日程も昨季順位もAPIから取るので、こちらで書き起こす部分は無い。
       - name: Fetch soccer preview
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true')
         continue-on-error: true
         env:
           FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
@@ -190,6 +233,7 @@ jobs:
       # 3件になった。毎日1本出しているので3日で尽きる。
       # rarity.py が毎日出している順位を、常緑ものに組み直す。
       - name: Build topics from the season's standings
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true')
         continue-on-error: true
         run: |
           python scripts/rarity.py --out data/rarity.json || true
@@ -199,6 +243,7 @@ jobs:
           python scripts/legend_topics.py | tee -a "$GITHUB_STEP_SUMMARY"
 
       - name: Start VOICEVOX engine
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true')
         continue-on-error: true
         run: |
           docker run -d --rm -p 50021:50021 --name voicevox \
@@ -220,6 +265,7 @@ jobs:
       # つまり1日あたり約6本が上限で、7本目は必ず割り当て超過で失敗する。
       # 途中で失敗しても残りを試し、最後に結果をまとめて出す。
       - name: Build and upload topics
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true')
         env:
           FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -229,6 +275,7 @@ jobs:
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
           PRIVACY: ${{ inputs.privacy }}
         run: |
+          # sample_only: 描画後、公開処理より前で分岐する。
           TOPICS="${{ inputs.topic }}"
           # 定期実行では inputs が空になる。未投稿から1本を既定にする。
           if [ -z "$TOPICS" ]; then TOPICS="next"; fi
@@ -306,6 +353,11 @@ jobs:
               echo "::endgroup::"; continue
             fi
 
+            if [ "$COLLESPO_SAMPLE_ONLY" = true ]; then
+              echo "::notice::$t の見本を保存しました"
+              echo "::endgroup::"; continue
+            fi
+
             python scripts/generate_thumbnail.py \
               --kind asset --asset-topic "$t" \
               --out "build/asset_$t/thumb.png"
@@ -342,7 +394,7 @@ jobs:
           cp build/asset_*/*.mp4 build/asset/ 2>/dev/null || true
 
       - name: Commit published record
-        if: always()
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && ((github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (always()))
         run: |
           bash scripts/commit_data.sh \
             "published assets: ${{ github.run_id }}" \
@@ -351,7 +403,7 @@ jobs:
 
       # アップロードが失敗しても手元で確認できるよう、必ず成果物を残す
       - name: Save videos as artifact
-        if: always()
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && ((github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (always()))
         uses: actions/upload-artifact@v4
         with:
           name: collespo-asset-${{ inputs.topic }}
@@ -363,7 +415,7 @@ jobs:
           if-no-files-found: warn
 
       - name: Keep unsaved data records
-        if: always() && hashFiles('build/data-save-recovery/**/FAILED') != ''
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && ((github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (always() && hashFiles('build/data-save-recovery/**/FAILED') != ''))
         uses: actions/upload-artifact@v4
         with:
           name: unsaved-data-${{ github.job }}-${{ github.run_attempt }}
@@ -374,7 +426,7 @@ jobs:
           if-no-files-found: error
 
       - name: Save sanity gate records
-        if: always()
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (always())
         uses: actions/upload-artifact@v4
         with:
           name: sanity-gate-${{ github.job }}
@@ -385,7 +437,7 @@ jobs:
           retention-days: 14
 
       - name: Save quota-exceeded thumbnails
-        if: always() && hashFiles('build/thumbnail_pending/**') != ''
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && ((github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (always() && hashFiles('build/thumbnail_pending/**') != ''))
         uses: actions/upload-artifact@v4
         with:
           name: thumbnail-pending
@@ -396,7 +448,7 @@ jobs:
           if-no-files-found: ignore
 
       - name: Save voice and render records
-        if: always()
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (always())
         uses: actions/upload-artifact@v4
         with:
           name: voice-render-records-${{ github.job }}-${{ github.run_attempt }}
@@ -406,3 +458,29 @@ jobs:
             !build/**/portrait/**
           retention-days: 14
           if-no-files-found: ignore
+
+      - name: Mark sample-only execution
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (always() && inputs.sample_only)
+        run: python scripts/sample_only.py --mark build/sample_only.json --require-video
+      - name: Save sample video
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (always() && inputs.sample_only)
+        uses: actions/upload-artifact@v4
+        with:
+          name: sample-asset
+          path: |
+            build/sample_only.json
+            build/asset_*/*.mp4
+            build/asset_*/audio_mix.json
+            !build/**/portrait/**
+          if-no-files-found: error
+          retention-days: 7
+      - name: Preserve inherited sample-only marker
+        if: always() && steps.sample_source.outputs.allowed == 'false'
+        uses: actions/upload-artifact@v4
+        with:
+          name: sample-inherited-${{ github.job }}
+          path: |
+            build/sample_only.json
+            !build/**/portrait/**
+          if-no-files-found: error
+          retention-days: 3

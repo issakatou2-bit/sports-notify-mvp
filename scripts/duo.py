@@ -1,4 +1,6 @@
 """Opusの項目別掛け合いを、問いだけ・保存原稿/実音声の45秒上限で使う。"""
+
+import short_common
 from copy import deepcopy
 from datetime import date, datetime, timezone, timedelta
 import os
@@ -47,7 +49,10 @@ def zunda_ok(text):
 
 def estimate(segments):
     # Conservative drafting target; the final gate measures every WAV, never changes voice settings.
-    return sum(len(s['text']) / 7.5 + .4 for s in segments)
+    import review_render_v3 as r3
+    # 締め短縮だけで本文の採用数が変わらないよう、原稿選別の予約尺は従来どおり。
+    return sum(len(r3.outro_text() if s.get('kind') == 'outro' else s['text']) / 7.5 + .4
+               for s in segments)
 
 
 def _answer(seg, text, screen, **meta):
@@ -108,6 +113,8 @@ def term(spec):
 def check_term(segments, spec, durations=None):
     errors = []
     expected = term(spec)
+    if any((s.get('meta') or {}).get('short_outro') for s in segments):
+        expected = short_common.prepare({'segments': expected})['segments']
     if len(segments) != len(expected):
         errors.append('固定原稿の区切り数が違う')
     for actual, source in zip(segments, expected):
@@ -198,7 +205,7 @@ def check(segments, durations=None):
 
 
 def durations(segments):
-    return [max(.1, float(s.get('duration') or len(s.get('text',''))/7.5)) for s in segments]
+    return [short_common.duration(s, max(.1, float(s.get('duration') or len(s.get('text',''))/7.5))) for s in segments]
 
 
 def credit(segments):

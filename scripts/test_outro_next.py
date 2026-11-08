@@ -51,7 +51,7 @@ class OutroTest(unittest.TestCase):
             self.assertTrue(r._CAPTION['hide_caption'])
             image = r.outro(3.2)
             texts = [row['text'] for row in image.info['v3_layout']]
-            self.assertIn('次は11/3 19:30の欧州サッカー', texts)
+            self.assertNotIn('次は11/3 19:30の欧州サッカー', texts)
             self.assertFalse(any(row['role'] == 'caption' for row in image.info['v3_layout']))
         finally:
             r._CAPTION.clear()

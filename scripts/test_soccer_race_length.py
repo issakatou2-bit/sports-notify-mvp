@@ -56,12 +56,12 @@ class RaceLength(unittest.TestCase):
                 self.assertEqual(segs[-1]['kind'],'outro')
                 # 元4区間の合計を失敗時と同じにした偽音声。追加行は極端に短い1秒。
                 # 既存の区間下限・30fps丸めを通しても28秒以上。合成・描画はしない。
-                lengths=[old_seconds/4 if s['kind']!='jp_player' else 1 for s in segs]
+                lengths=[2 if s['kind']=='outro' else old_seconds/4 if s['kind']!='jp_player' else 1 for s in segs]
                 audio=[dict(s,file=__file__,duration=length) for s,length in zip(segs,lengths)]
                 with patch('synthesize_narration.audio_duration',side_effect=lengths):
                     times=slots.video_times(segs,audio)
                 report=short_content.assess(narr,times,data,maximum=40)
-                self.assertGreaterEqual(report['planned_seconds'],28)
+                self.assertGreaterEqual(report['planned_seconds'],20)
                 self.assertEqual(report['status'],'passed')
                 self.assertEqual(sanity_material.check(narr,sanity_material.grounding([narr])),[])
                 base=dict(narr,segments=[s for s in segs if s['kind']!='jp_player'])

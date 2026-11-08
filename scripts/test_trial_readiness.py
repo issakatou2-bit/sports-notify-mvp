@@ -118,7 +118,7 @@ class SoccerTests(unittest.TestCase):
             self.assertNotIn('得点は2点', str(narr))
             for s in narr['segments']:
                 im = now.frame(data, 3, s)
-                self.assertTrue(im.info.get('soccer_readable'))
+                self.assertTrue(im.info.get('v3_outro') if s['kind']=='outro' else im.info.get('soccer_readable'))
             self.assertTrue(soccer_stats.attack_label(data['players'][0]).startswith('攻撃関与 '))
 
 

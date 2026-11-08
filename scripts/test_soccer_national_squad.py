@@ -192,7 +192,7 @@ class OfficialSquad(unittest.TestCase):
             n.save(out/'material.json',data);n.save(out/'narration.json',n.narration(data))
             def voices(argv):
                 doc=n.read(out/'narration.json')
-                rows=[dict(s,duration=4.4,index=i) for i,s in enumerate(doc['segments'])]
+                rows=[dict(s,duration=2 if s['kind']=='outro' else 4.4-2/(len(doc['segments'])-1),index=i) for i,s in enumerate(doc['segments'])]
                 (out/'audio/manifest.json').write_text(json.dumps(dict(segments=rows),ensure_ascii=False),encoding='utf-8')
             voices([])
             seconds=lambda segments,audio:[a['duration'] for a in audio]
@@ -207,7 +207,7 @@ class OfficialSquad(unittest.TestCase):
             with patch.dict('os.environ',{'COLLESPO_SOCCER_LOOK':'v6','COLLESPO_SOCCER_FOCUS':'on','COLLESPO_SHORT_LOOK':'v4'}):
                 clubs=render.clubs_for(fixed);r3.set_caption('',0,0)
                 for seg in doc['segments']:
-                    if seg['meta']['panel'] in ('venue','squad-count'):
+                    if seg['meta'].get('panel') in ('venue','squad-count'):
                         im=render.frame(2,seg,fixed,clubs)
                         self.assertEqual(render.validate_frame(im,clubs,fixed),[])
             # 3段目は無い。足しきっても届かなければ今まで通り止める。

@@ -617,6 +617,7 @@ def quotes(t,voices,label,live,ticker,source,animate=True):
         # 同じ位置の既読の札を少し暗くする。読み上げの文はそのまま。
         region=im.crop((L,top,R,top+h));region=ImageEnhance.Brightness(region).enhance(.72)
         im.paste(region,(L,top))
+    im.info['short_visible_texts'] = [''.join(body)] + ([row.get('said', '')] if len(pages) == 1 else [])
     im.info['v4_quote']={'said':row.get('said',''),'page':page,'pages':len(pages),'active':active is not None}
     im.info['v4_quote_group']={'parent':parent.get('said') if parent else row.get('said') if row else '',
                              'said':[v.get('said') for v in voices],'overview_cards':0}

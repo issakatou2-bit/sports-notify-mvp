@@ -32,7 +32,11 @@ class DesignTests(unittest.TestCase):
             self.assertNotEqual(original['edition_key'],modern['edition_key'])
             self.assertEqual(p.content_key(modern),modern['edition_key'])
             self.assertEqual(original['game_ids'],modern['game_ids'])
-            for old,new in zip(original['segments'],modern['segments']):
+            old_body=[s for s in original['segments'] if s['kind'] not in ('outro','next_line')]
+            new_body=[s for s in modern['segments'] if s['kind'] not in ('outro','next_line')]
+            self.assertEqual(len(old_body),len(new_body))
+            self.assertEqual(original['segments'][-1]['text'],modern['segments'][-1]['text'])
+            for old,new in zip(old_body,new_body):
                 if new['meta']['card']['layout']!='schedule':
                     self.assertEqual(old['text'].removesuffix('コレスポ。'),new['text'])
                 self.assertEqual(new['speaker'],2)

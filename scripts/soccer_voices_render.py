@@ -235,6 +235,7 @@ def render_video(data,narr,audio,out):
     short_content.require(narr, times, out, data, maximum=sv.LIMIT, video_name='collespo_soccer_voices.mp4')
     if not shutil.which('ffmpeg'):raise ValueError('FFmpegをinstall_video_tools.shで入れてください')
     track=vc.build_narration_track(audio,times,out)
+    track=__import__('short_common').add_audio(track,audio,times,out)
     if not track:raise ValueError('実音声なしでは動画を作りません')
     video=out/'collespo_soccer_voices.mp4';images=[];layouts=[];previous=None;clock=0;clubs=clubs_for(data)
     cmd=['ffmpeg','-y','-f','rawvideo','-vcodec','rawvideo','-pix_fmt','rgb24','-s','1080x1920','-r',str(FPS),'-i','-',
@@ -257,6 +258,7 @@ def render_video(data,narr,audio,out):
         finally:
             proc.stdin.close();code=proc.wait();r3.set_program_clock(None)
     if code:raise ValueError('動画生成失敗。ffmpeg.logを確認')
+    __import__('sound_mix').verify_short_video(video)
     from preview_unified_v3 import sheet
     sheet(images,[s['kind'] for s in narr['segments']],out/'all-screens.png',columns=3)
     probe=subprocess.run(['ffmpeg','-hide_banner','-i',str(video)],capture_output=True,text=True,encoding='utf-8',errors='replace')

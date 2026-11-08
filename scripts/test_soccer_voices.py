@@ -216,8 +216,8 @@ class Script(unittest.TestCase):
             self.assertLessEqual(sum(render.slots.durations(narr['segments'],audio)),40)
             audio[0]['text']='wrong'
             with self.assertRaises(ValueError):render.slots.durations(narr['segments'],audio)
-            audio=[dict(s,file=str(file),duration=41) for s in narr['segments']]
-            with patch('synthesize_narration.audio_duration',return_value=41):
+            audio=[dict(s,file=str(file),duration=2 if s['kind']=='outro' else 41) for s in narr['segments']]
+            with patch('synthesize_narration.audio_duration',side_effect=[s['duration'] for s in audio]):
                 with self.assertRaisesRegex(ValueError,'40秒'):render.slots.durations(narr['segments'],audio)
 
     def test_workflow_only_manual_off_font_order_and_guard(self):

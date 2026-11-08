@@ -50,7 +50,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Ignore a sample-only source run
+        id: sample_source
+        if: github.event_name == 'workflow_run'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_RUN: ${{ github.event.workflow_run.id }}
+        run: python scripts/sample_source.py --source-run "$SOURCE_RUN" --github-output "$GITHUB_OUTPUT"
       - name: Set up Python
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true')
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
@@ -58,13 +66,16 @@ jobs:
       # 公開時刻が過ぎた枠だけを見る。これから出るものを欠けと言われても
       # 毎回赤くなるだけで、何も伝えていないことになる。
       - name: Install publication reader
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true')
         run: pip install requests
 
       - name: Resolve publication day once for check and recovery
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true')
         id: edition
         run: echo "day=$(python scripts/publication_clock.py)" >> "$GITHUB_OUTPUT"
 
       - name: Check what should already be out
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true')
         id: check
         env:
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
@@ -86,7 +97,7 @@ jobs:
       # ただし、今日のような決まった失敗(検査が止めた等)には効かない。
       # 同じ所で同じように止まる。効くのは一時的な失敗のほう。
       - name: Run the missing ones again
-        if: failure()
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (failure())
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -115,7 +126,7 @@ jobs:
       # 欠けていた回だけ、次に何をすればよいかを添える。
       # 実行ページを開いた人が、そこから調べ直さなくて済むように。
       - name: What to do about it
-        if: failure()
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (failure())
         run: |
           {
             echo "## 次に見るところ"
@@ -134,3 +145,13 @@ jobs:
             echo "   上のページで Run workflow を押せば、まだ出せる。"
             echo "   公開時刻を過ぎた枠は即時公開に倒れる。0本よりはよい。"
           } >> "$GITHUB_STEP_SUMMARY"
+      - name: Preserve inherited sample-only marker
+        if: always() && steps.sample_source.outputs.allowed == 'false'
+        uses: actions/upload-artifact@v4
+        with:
+          name: sample-inherited-${{ github.job }}
+          path: |
+            build/sample_only.json
+            !build/**/portrait/**
+          if-no-files-found: error
+          retention-days: 3

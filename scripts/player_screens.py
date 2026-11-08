@@ -127,6 +127,7 @@ def milestone(prof: dict) -> str:
     return ""
 
 
+@__import__('short_common').narration
 def build_narration(prof: dict) -> dict:
     """今日の1人ぶんの原稿。画面と1対1で対応させる。"""
     name = prof.get("name", "")

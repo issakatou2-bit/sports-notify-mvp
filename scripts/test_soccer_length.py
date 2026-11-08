@@ -32,13 +32,20 @@ def material(day, folder):
     # 点検用の入力材料は追加されるが、台詞・札・話者・表示時間の契約は同一。
     evidence = {'soccer_material', 'sanity_materials', 'sanity_date_jst'}
     actual = {k: v for k, v in plan['narration'].items() if k not in evidence}
-    expected = {k: v for k, v in fixture['narration'].items() if k not in evidence}
+    expected = {k: v for k, v in __import__('short_common').prepare(fixture['narration']).items() if k not in evidence}
     if actual != expected:
         raise AssertionError('保存原稿の組み立てが変わりました')
     audio = []
     for i, (seg, seconds) in enumerate(zip(plan['narration']['segments'], fixture['audio_seconds'])):
+        if seg['kind']=='outro':seconds=2.0
         path = folder / f'seg_{i:03d}.wav'; wav(path, seconds)
         audio.append(dict(copy.deepcopy(seg), file=str(path), duration=seconds, index=i))
+    # Synthetic boundary test: move the removed promo time into the last body WAV.
+    target=51.0 if day=='2026-10-14' else 58.587
+    actual=sum(slots.durations(plan['narration']['segments'],audio,False))
+    row=next(a for a in reversed(audio) if a['kind']=='preview')
+    row['duration']+=target-actual
+    wav(Path(row['file']),row['duration'])
     return plan, audio
 
 
@@ -118,9 +125,10 @@ class SoccerLength(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             plan, audio = material('2026-10-15', Path(directory))
             for row in audio:
+                if row['kind']=='outro':continue
                 row['duration'] = 60; wav(Path(row['file']), 60)
             def synth(text, speaker, path):
-                wav(path, 60 if text != '注目の一戦です。' else 3)
+                wav(path, 2 if text==__import__('short_common').OUTRO_TEXT else 60 if text != '注目の一戦です。' else 3)
                 return True
             with patch.object(slots.motion, 'enabled', return_value=True), \
                  patch.object(sn, 'synth_one', side_effect=synth), \

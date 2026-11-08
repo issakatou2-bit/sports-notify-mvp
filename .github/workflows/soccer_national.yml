@@ -9,7 +9,13 @@ on:
     - cron: '15 12 * * *'  # JST 21:15、19時台開始の結果を22:00
     - cron: '40 12 * * *'  # JST 21:40、終了反映が遅れた場合の再確認
     - cron: '0 13 * * *'   # JST 22:00、未終了なら翌朝枠へ
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      sample_only:
+        description: 見本のmp4だけを保存する（公開・SNS・台帳・コミット・通知なし）
+        type: boolean
+        required: false
+        default: false
 
 permissions:
   contents: write
@@ -17,9 +23,12 @@ concurrency:
   group: soccer-national
   cancel-in-progress: false
 
+env:
+  COLLESPO_SAMPLE_ONLY: ${{ inputs.sample_only && 'true' || 'false' }}
+
 jobs:
   build:
-    if: github.ref == 'refs/heads/main' && vars.COLLESPO_SOCCER_NATIONAL == 'on'
+    if: inputs.sample_only || (github.ref == 'refs/heads/main' && vars.COLLESPO_SOCCER_NATIONAL == 'on')
     runs-on: ubuntu-latest
     timeout-minutes: 45
     env:
@@ -78,14 +87,14 @@ jobs:
           ANTHROPIC_API_KEY: ''  # この種類は機械照合だけ。有料の二段目は呼ばない。
         run: python scripts/sanity.py --general --strict --narration build/soccer_national/narration.json --out build/soccer_national/sanity.json --hold-record build/soccer_national/sanity_hold.json --kind soccer_national
       - name: Require a future reservation and an unstarted preview
-        if: steps.gate.outputs.count == '1'
+        if: (github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (steps.gate.outputs.count == '1')
         run: |
           python scripts/soccer_national_publish.py --check
       - name: Vertical thumbnail
         if: steps.gate.outputs.count == '1'
         run: bash scripts/shorts_thumbnail.sh build/soccer_national/collespo_national.mp4 build/soccer_national/short.png
       - name: Upload to YouTube
-        if: steps.gate.outputs.count == '1'
+        if: (github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (steps.gate.outputs.count == '1')
         env:
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
@@ -94,11 +103,11 @@ jobs:
           VIDEO_DAY=$(python -c "import json; print(json.load(open('build/soccer_national/narration.json'))['date_jst'])")
           python scripts/soccer_national_publish.py --upload --video build/soccer_national/collespo_national.mp4 --kind soccer_national --sport soccer --games build/soccer_national/material.json --narration build/soccer_national/narration.json --thumbnail build/soccer_national/short.png --video-date "$VIDEO_DAY" --privacy public
       - name: Commit publication record
-        if: always() && steps.gate.outputs.count == '1'
+        if: (github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (always() && steps.gate.outputs.count == '1')
         run: |
           bash scripts/commit_data.sh "soccer national: ${{ github.run_id }}" data/published_videos.json
       - name: Save video for existing SNS delivery
-        if: steps.gate.outputs.count == '1'
+        if: (github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (steps.gate.outputs.count == '1')
         uses: actions/upload-artifact@v4
         with:
           name: collespo-national-social
@@ -109,12 +118,12 @@ jobs:
           if-no-files-found: error
           retention-days: 7
       - name: Confirm publication reservation
-        if: steps.gate.outputs.count == '1'
+        if: (github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (steps.gate.outputs.count == '1')
         run: |
           VIDEO_DAY=$(python -c "import json; print(json.load(open('build/soccer_national/narration.json'))['date_jst'])")
           python scripts/verify_published.py --kind soccer_national --video-date "$VIDEO_DAY"
       - name: Save sanity gate records
-        if: always()
+        if: (github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (always())
         uses: actions/upload-artifact@v4
         with:
           name: national-verification
@@ -126,7 +135,7 @@ jobs:
         if: always()
         run: docker stop voicevox || true
       - name: Keep unsaved data records
-        if: always() && hashFiles('build/data-save-recovery/**/FAILED') != ''
+        if: (github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (always() && hashFiles('build/data-save-recovery/**/FAILED') != '')
         uses: actions/upload-artifact@v4
         with:
           name: unsaved-data-${{ github.job }}-${{ github.run_attempt }}
@@ -136,7 +145,7 @@ jobs:
           retention-days: 14
           if-no-files-found: error
       - name: Save quota-exceeded thumbnails
-        if: always() && hashFiles('build/thumbnail_pending/**') != ''
+        if: (github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (always() && hashFiles('build/thumbnail_pending/**') != '')
         uses: actions/upload-artifact@v4
         with:
           name: thumbnail-pending
@@ -156,3 +165,19 @@ jobs:
             !build/**/portrait/**
           retention-days: 14
           if-no-files-found: ignore
+
+      - name: Mark sample-only execution
+        if: always() && inputs.sample_only
+        run: python scripts/sample_only.py --mark build/sample_only.json --require-video
+      - name: Save sample video
+        if: always() && inputs.sample_only
+        uses: actions/upload-artifact@v4
+        with:
+          name: sample-soccer_national
+          path: |
+            build/sample_only.json
+            build/**/*.mp4
+            build/**/audio_mix.json
+            !build/**/portrait/**
+          if-no-files-found: error
+          retention-days: 7

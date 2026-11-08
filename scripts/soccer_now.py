@@ -114,6 +114,7 @@ def attach_voices(data, video, items, *, sample=False):
     return data
 
 
+@__import__('short_common').narration
 def narration(data):
     import soccer_result_story
     base = soccer_result_story.narration(data)
@@ -249,6 +250,7 @@ def checkpoint_receipt(path, key, entry, extra=()):
 
 
 def publish(data, out, ledger, *, goal_short=False):
+    __import__('sample_only').assert_publish_allowed()
     enabled = (os.environ.get('COLLESPO_SOCCER_GOAL_SHORT') == 'on' if goal_short else
                os.environ.get('COLLESPO_SOCCER_NOW') == 'on' and os.environ.get('SOCCER_NOW_PUBLISH','false') == 'true')
     if not enabled: raise ValueError('公開変数が無効')

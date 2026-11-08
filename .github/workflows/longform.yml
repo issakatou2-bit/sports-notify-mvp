@@ -60,6 +60,7 @@ on:
 # published_videos.json に1件も残っていなかった。
 # 記録が無いと、健康診断も導線もこの枠を見つけられない。
 permissions:
+  actions: read
   contents: write
 
 # 長編の見た目（v3 = 新デザイン「電光掲示板」、本人の確認後に変数で切り替える）
@@ -87,22 +88,33 @@ jobs:
           && github.event.workflow_run.head_repository.full_name == github.repository)
     steps:
       - uses: actions/checkout@v4
+      - name: Ignore a sample-only source run
+        id: sample_source
+        if: github.event_name == 'workflow_run'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_RUN: ${{ github.event.workflow_run.id }}
+        run: python scripts/sample_source.py --source-run "$SOURCE_RUN" --github-output "$GITHUB_OUTPUT"
       - uses: actions/setup-python@v5
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true')
         with:
           python-version: '3.11'
 
       - name: Install
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true')
         run: |
           pip install -r scripts/requirements.txt
           pip install pillow google-api-python-client google-auth
 
       - name: Install video tools
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true')
         timeout-minutes: 16
         run: bash scripts/install_video_tools.sh
 
       # 短編と同じ起動の仕方。ここは continue-on-error にしない。
       # 対話は音が全てなので、無音で出しても意味が無い。
       - name: Start VOICEVOX engine
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true')
         run: |
           docker run -d --rm -p 50021:50021 --name voicevox             voicevox/voicevox_engine:cpu-latest
           for i in $(seq 1 30); do
@@ -121,6 +133,7 @@ jobs:
       #
       # ついでにYouTubeの枠とAnthropicの呼び出しが1回ずつ減る。
       - name: Check the material is today's
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true')
         run: |
           python - <<'PY'
           import json, pathlib
@@ -148,6 +161,7 @@ jobs:
       # MLBが登録の動きを公式の記録として公開しているので、それを読む。
       # キーは要らない。落ちても止めない（取れない日は何も言わない）。
       - name: Who came back
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true')
         continue-on-error: true
         run: |
           python scripts/mlb_transactions.py --days 21             --out data/transactions.json | tee -a "$GITHUB_STEP_SUMMARY"
@@ -156,6 +170,7 @@ jobs:
       # 「話せる数字が無いため、作りません」と正しく判断したのに、後の
       # 検査が無い台本を探して赤くなった。
       - name: Write the dialogue
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true')
         id: dialogue
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -188,7 +203,7 @@ jobs:
       #
       # 新しくAPIは叩かない。台本の facts に渡した数字が入っている。
       - name: Verify the numbers against the material
-        if: steps.dialogue.outputs.made == '1'
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (steps.dialogue.outputs.made == '1')
         run: |
           python scripts/verify_numbers.py \
             --dialogue build/lf/dialogue.json --omit-unsupported
@@ -204,7 +219,7 @@ jobs:
       # 見てからっていうのは手間すぎます」）。機械で決められるところは
       # 機械で止める。ここは辞書と突き合わせるだけで、判断は入れない。
       - name: Verify the wording
-        if: steps.dialogue.outputs.made == '1'
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (steps.dialogue.outputs.made == '1')
         run: |
           python scripts/verify_terms.py \
             --dialogue build/lf/dialogue.json --strict
@@ -212,7 +227,7 @@ jobs:
       # 台本にありえない数字が混ざっていないか。短編と同じ検査を通す。
       # 長編だからといって緩めない。
       - name: Sanity check the script
-        if: steps.dialogue.outputs.made == '1'
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (steps.dialogue.outputs.made == '1')
         env:
           FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -220,14 +235,14 @@ jobs:
           python scripts/sanity.py --general --strict --narration build/lf/dialogue.json --out data/sanity_longform.json --hold-record build/sanity_hold_longform.json --kind longform
 
       - name: Synthesize both voices
-        if: steps.dialogue.outputs.made == '1'
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (steps.dialogue.outputs.made == '1')
         run: |
           python scripts/synthesize_narration.py \
             --narration build/lf/dialogue.json \
             --out-dir build/lf/audio
 
       - name: Build the video
-        if: steps.dialogue.outputs.made == '1'
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (steps.dialogue.outputs.made == '1')
         run: |
           python scripts/generate_longform.py \
             --dialogue build/lf/dialogue.json \
@@ -235,7 +250,7 @@ jobs:
             --out build/lf --require-audio
 
       - name: Thumbnail
-        if: steps.dialogue.outputs.made == '1'
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (steps.dialogue.outputs.made == '1')
         continue-on-error: true
         run: |
           TOPIC=$(python -c "import json;print(json.load(open('build/lf/dialogue.json',encoding='utf-8')).get('top',''))" || echo "")
@@ -246,7 +261,7 @@ jobs:
 
       # 動画は必ず artifact に残す。上げなくても手元で見られるように。
       - uses: actions/upload-artifact@v4
-        if: always()
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (always())
         with:
           name: longform
           path: |
@@ -265,7 +280,7 @@ jobs:
           if-no-files-found: warn
 
       - name: Upload to YouTube
-        if: ${{ inputs.upload != 'false' && steps.dialogue.outputs.made == '1' }}
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (inputs.upload != 'false' && steps.dialogue.outputs.made == '1')
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
@@ -289,14 +304,14 @@ jobs:
       - name: Commit the record
         # 検査で停止しても、既に発生したAPI使用量を失わない。
         # 投稿しない制作でも費用は生じる。既存の投稿記録は変更された場合のみ保存。
-        if: always()
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (always())
         run: |
           bash scripts/commit_data.sh \
             "longform: ${{ github.run_id }}" \
             data/published_videos.json data/token_usage.json data/transactions.json data/dialogue_batch.json data/longform_rare_seen.json
 
       - name: Say what happened
-        if: always()
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (always())
         run: |
           {
             echo "## 長編（試作）"
@@ -338,7 +353,7 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Keep unsaved data records
-        if: always() && hashFiles('build/data-save-recovery/**/FAILED') != ''
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (always() && hashFiles('build/data-save-recovery/**/FAILED') != '')
         uses: actions/upload-artifact@v4
         with:
           name: unsaved-data-${{ github.job }}-${{ github.run_attempt }}
@@ -349,7 +364,7 @@ jobs:
           if-no-files-found: error
 
       - name: Save sanity gate records
-        if: always()
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (always())
         uses: actions/upload-artifact@v4
         with:
           name: sanity-gate-${{ github.job }}
@@ -360,7 +375,7 @@ jobs:
           retention-days: 14
 
       - name: Save quota-exceeded thumbnails
-        if: always() && hashFiles('build/thumbnail_pending/**') != ''
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (always() && hashFiles('build/thumbnail_pending/**') != '')
         uses: actions/upload-artifact@v4
         with:
           name: thumbnail-pending
@@ -371,7 +386,7 @@ jobs:
           if-no-files-found: ignore
 
       - name: Save voice and render records
-        if: always()
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (always())
         uses: actions/upload-artifact@v4
         with:
           name: voice-render-records-${{ github.job }}-${{ github.run_attempt }}
@@ -381,3 +396,13 @@ jobs:
             !build/**/portrait/**
           retention-days: 14
           if-no-files-found: ignore
+      - name: Preserve inherited sample-only marker
+        if: always() && steps.sample_source.outputs.allowed == 'false'
+        uses: actions/upload-artifact@v4
+        with:
+          name: sample-inherited-${{ github.job }}
+          path: |
+            build/sample_only.json
+            !build/**/portrait/**
+          if-no-files-found: error
+          retention-days: 3

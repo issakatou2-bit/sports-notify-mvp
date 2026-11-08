@@ -44,6 +44,11 @@ on:
     types: [completed]
   workflow_dispatch:
     inputs:
+      sample_only:
+        description: 見本のmp4だけを保存する（公開・SNS・台帳・コミット・通知なし）
+        type: boolean
+        required: false
+        default: false
       only:
         description: '大会を指定して作る (PL / PD / SA / BL1 / FL1 / CL)'
         required: false
@@ -62,6 +67,7 @@ on:
         default: ''
 
 permissions:
+  actions: read
   contents: write
 
 concurrency:
@@ -69,6 +75,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
+  COLLESPO_SAMPLE_ONLY: ${{ inputs.sample_only && 'true' || 'false' }}
   COLLESPO_HOST_SPLIT: ${{ vars.COLLESPO_HOST_SPLIT || '' }}
   COLLESPO_UI_VOICE_STOCK: ${{ vars.COLLESPO_UI_VOICE_STOCK || '' }}
   COLLESPO_UI_PARTS_KEY: ${{ secrets.COLLESPO_UI_PARTS_KEY }}
@@ -90,11 +97,20 @@ jobs:
       COLLESPO_SOCCER_LOOK: ${{ vars.COLLESPO_SOCCER_LOOK || 'v3' }}
     steps:
       - uses: actions/checkout@v4
+      - name: Ignore a sample-only source run
+        id: sample_source
+        if: github.event_name == 'workflow_run'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_RUN: ${{ github.event.workflow_run.id }}
+        run: python scripts/sample_source.py --source-run "$SOURCE_RUN" --github-output "$GITHUB_OUTPUT"
       - uses: actions/setup-python@v5
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true')
         with:
           python-version: '3.11'
 
       - name: Install dependencies
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true')
         run: |
           pip install -r scripts/requirements.txt
           pip install pillow google-api-python-client google-auth imageio_ffmpeg
@@ -102,6 +118,7 @@ jobs:
       # 今季の順位表。日次（19時）も取っているが、この枠を手で回す日は
       # そちらが走っていないことがある。古ければ取り直す。
       - name: Refresh standings
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true')
         continue-on-error: true
         env:
           FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
@@ -114,6 +131,7 @@ jobs:
       # --due が、節が終わっていて・最低節数を満たしていて・まだ
       # 出していない大会を1行ずつ返す。日本人選手がいる大会が先。
       - name: Which competition is due
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true')
         id: gate
         run: |
           DUE=$(python scripts/soccer_race.py \
@@ -149,7 +167,7 @@ jobs:
       # その大会だけで材料を作る。**1本1大会。**
       # 前日ぶんの順位表もここで退避される。
       - name: Build the race material
-        if: steps.gate.outputs.count != '0'
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (steps.gate.outputs.count != '0')
         run: |
           python scripts/soccer_race.py \
             --preview data/soccer_preview.json \
@@ -157,12 +175,12 @@ jobs:
             --out data/soccer_race.json | tee -a "$GITHUB_STEP_SUMMARY"
 
       - name: Install video tools
-        if: steps.gate.outputs.count != '0'
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (steps.gate.outputs.count != '0')
         timeout-minutes: 16
         run: bash scripts/install_video_tools.sh
 
       - name: Start VOICEVOX engine
-        if: steps.gate.outputs.count != '0'
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (steps.gate.outputs.count != '0')
         continue-on-error: true
         run: |
           docker run -d --rm -p 50021:50021 --name voicevox \
@@ -176,7 +194,7 @@ jobs:
           done
 
       - name: Write the script
-        if: steps.gate.outputs.count != '0'
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (steps.gate.outputs.count != '0')
         run: |
           python scripts/generate_morning_short.py \
             --mode soccer_race --race data/soccer_race.json \
@@ -188,7 +206,7 @@ jobs:
       # 無いはずだが、**無いはず**で出すものではない。
       # ここで落ちたら公開だけ止める。
       - name: Synthesize narration
-        if: steps.gate.outputs.count != '0'
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (steps.gate.outputs.count != '0')
         run: |
           python scripts/synthesize_narration.py \
             --narration build/race_narration.json \
@@ -196,12 +214,12 @@ jobs:
 
       - name: Fill short narration from unused facts
         id: length
-        if: steps.gate.outputs.count != '0'
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (steps.gate.outputs.count != '0')
         run: python scripts/soccer_minimum.py --mode race --data data/soccer_race.json --narration build/race_narration.json --audio-dir build/race_audio
 
       - name: Sanity check
         id: sanity
-        if: steps.length.outputs.skip != 'true' && (steps.gate.outputs.count != '0')
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (steps.length.outputs.skip != 'true' && (steps.gate.outputs.count != '0'))
         continue-on-error: true
         env:
           FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
@@ -210,7 +228,7 @@ jobs:
           python scripts/sanity.py --general --strict --narration build/race_narration.json --out data/sanity_race.json --hold-record build/sanity_hold_race.json --kind soccer_race
 
       - name: Build the video
-        if: steps.length.outputs.skip != 'true' && (steps.gate.outputs.count != '0')
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (steps.length.outputs.skip != 'true' && (steps.gate.outputs.count != '0'))
         run: |
           python scripts/generate_morning_short.py \
             --mode soccer_race --race data/soccer_race.json \
@@ -224,7 +242,7 @@ jobs:
       # collespo_short.mp4 を探していて、**動画はできたのに
       # サムネイルが作れなかった。**
       - name: Vertical thumbnail
-        if: steps.length.outputs.skip != 'true' && (steps.gate.outputs.count != '0')
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (steps.length.outputs.skip != 'true' && (steps.gate.outputs.count != '0'))
         continue-on-error: true
         run: |
           bash scripts/shorts_thumbnail.sh \
@@ -238,7 +256,7 @@ jobs:
       # 手で回したときだけ false にできる形にする。
       - name: 順位の表示と根拠を検査
         id: claims
-        if: steps.length.outputs.skip != 'true' && (steps.gate.outputs.count != '0' && steps.sanity.outcome == 'success')
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (steps.length.outputs.skip != 'true' && (steps.gate.outputs.count != '0' && steps.sanity.outcome == 'success'))
         run: |
           python scripts/check_rendered_claims.py --kind soccer_race \
             --input data/soccer_race.json --out build/race_rendered_claims.json
@@ -246,12 +264,18 @@ jobs:
       - name: Upload to YouTube
         id: upload
         if: >-
+          (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') &&
+          (
+          (github.event_name != 'workflow_dispatch' || inputs.sample_only != true) &&
+          (
           steps.length.outputs.skip != 'true' &&
           steps.gate.outputs.count != '0' &&
           steps.sanity.outcome == 'success' &&
           steps.claims.outcome == 'success' &&
           (github.event_name != 'workflow_dispatch' ||
            inputs.upload == 'true')
+          )
+          )
         continue-on-error: true
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -276,12 +300,18 @@ jobs:
       # 投稿した回だけ記録する（作っただけの回で消費しない）。
       - name: Remember the round
         if: >-
+          (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') &&
+          (
+          (github.event_name != 'workflow_dispatch' || inputs.sample_only != true) &&
+          (
           steps.length.outputs.skip != 'true' &&
           steps.upload.outcome == 'success' &&
           steps.gate.outputs.count != '0' &&
           steps.gate.outputs.round != '' &&
           (github.event_name != 'workflow_dispatch' ||
            inputs.upload == 'true')
+          )
+          )
         run: |
           python - <<'PY'
           import json, pathlib, os
@@ -302,7 +332,7 @@ jobs:
           RACE_KEY: ${{ steps.gate.outputs.key }}
 
       - name: Keep the video
-        if: always()
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && ((github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (always()))
         uses: actions/upload-artifact@v4
         with:
           name: soccer-race
@@ -331,7 +361,7 @@ jobs:
       # 書き込む可能性ありと見るため。この枠では書き換えないので
       # 差分は出ないが、**渡し忘れと区別が付かない**ので並べておく。
       - name: Commit the material
-        if: always()
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && ((github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (always()))
         run: |
           bash scripts/commit_data.sh \
             "soccer race: ${{ github.run_id }}" \
@@ -341,7 +371,7 @@ jobs:
             data/morning_recap.json data/player_profile.json
 
       - name: Say what happened
-        if: always()
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && ((github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (always()))
         run: |
           {
             echo "## 順位争い"
@@ -375,7 +405,7 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Keep unsaved data records
-        if: always() && hashFiles('build/data-save-recovery/**/FAILED') != ''
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && ((github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (always() && hashFiles('build/data-save-recovery/**/FAILED') != ''))
         uses: actions/upload-artifact@v4
         with:
           name: unsaved-data-${{ github.job }}-${{ github.run_attempt }}
@@ -386,7 +416,7 @@ jobs:
           if-no-files-found: error
 
       - name: Save sanity gate records
-        if: always()
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (always())
         uses: actions/upload-artifact@v4
         with:
           name: sanity-gate-${{ github.job }}
@@ -397,7 +427,7 @@ jobs:
           retention-days: 14
 
       - name: Save quota-exceeded thumbnails
-        if: always() && hashFiles('build/thumbnail_pending/**') != ''
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && ((github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (always() && hashFiles('build/thumbnail_pending/**') != ''))
         uses: actions/upload-artifact@v4
         with:
           name: thumbnail-pending
@@ -408,7 +438,7 @@ jobs:
           if-no-files-found: ignore
 
       - name: Save voice and render records
-        if: always()
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (always())
         uses: actions/upload-artifact@v4
         with:
           name: voice-render-records-${{ github.job }}-${{ github.run_attempt }}
@@ -419,3 +449,29 @@ jobs:
             !build/**/portrait/**
           retention-days: 14
           if-no-files-found: ignore
+
+      - name: Mark sample-only execution
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (always() && inputs.sample_only)
+        run: python scripts/sample_only.py --mark build/sample_only.json --require-video
+      - name: Save sample video
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (always() && inputs.sample_only)
+        uses: actions/upload-artifact@v4
+        with:
+          name: sample-soccer_race
+          path: |
+            build/sample_only.json
+            build/**/*.mp4
+            build/**/audio_mix.json
+            !build/**/portrait/**
+          if-no-files-found: error
+          retention-days: 7
+      - name: Preserve inherited sample-only marker
+        if: always() && steps.sample_source.outputs.allowed == 'false'
+        uses: actions/upload-artifact@v4
+        with:
+          name: sample-inherited-${{ github.job }}
+          path: |
+            build/sample_only.json
+            !build/**/portrait/**
+          if-no-files-found: error
+          retention-days: 3

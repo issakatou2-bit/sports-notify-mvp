@@ -118,7 +118,7 @@ class PrivateResults(unittest.TestCase):
                 expr = steps[name]['if']
                 for key in sorted(values, key=len, reverse=True):
                     expr = expr.replace(key, repr(values[key]))
-                self.assertEqual(eval(expr.replace('&&', ' and ').replace('||', ' or '), {'__builtins__': {}}), want, (event, privacy, name))
+                self.assertEqual(eval(expr.replace('&&', ' and ').replace('||', ' or '), {'__builtins__': {},'inputs':__import__('types').SimpleNamespace(sample_only=False),'true':True}), want, (event, privacy, name))
         script = steps['Upload to YouTube']['run']
         self.assertIn('if [ "$PRIVACY" != private ]; then args+=(--publish-at "$PUBLISH_AT"); fi', script)
         self.assertIn('scripts/soccer_results_upload.py', script)

@@ -1,4 +1,6 @@
 """代表戦を既存v6 focus・字幕・音声・ショート検査で制作する。"""
+
+import short_common
 import argparse
 import json
 import math
@@ -32,6 +34,9 @@ def result_board(r):
 
 
 def frame(t,seg,data,clubs):
+    if seg['kind'] == 'outro':
+        import review_render_v3 as r3
+        return r3.outro(t, credit='音声: VOICEVOX:四国めたん　出典: JFA・ESPN')
     import soccer_readable as readable
     class NationalScreen(readable.Screen):
         def __init__(self,clubs,t):
@@ -167,6 +172,7 @@ def render(data,narr,audio,out):
     short_content.require(narr,times,out,data,maximum=60,video_name=VIDEO)
     track=vc.build_narration_track(audio,times,out)
     if not track:raise ValueError('実音声なし')
+    track=short_common.add_audio(track,audio,times,out)
     clubs=clubs_for(data);video=out/VIDEO;previous=None;clock=0;layouts=[]
     timeline=render_timeline.Recorder(FPS,audio,narr)
     command=['ffmpeg','-y','-f','rawvideo','-vcodec','rawvideo','-pix_fmt','rgb24','-s','1080x1920','-r',str(FPS),'-i','-',
@@ -178,7 +184,7 @@ def render(data,narr,audio,out):
             for i,(seg,duration) in enumerate(zip(narr['segments'],times)):
                 timeline.select(audio[i],i)
                 r3.set_program_clock(clock)
-                r3.set_caption(seg['text'],duration,sum(times),speaker=2,duo=False)
+                r3.set_caption(seg['text'],duration,sum(times),speaker=2,duo=False,hide_caption=seg['kind']=='outro')
                 seen=set()
                 for k in range(round(duration*FPS)):
                     t=k/FPS;r3.set_program_clock(clock+t);im=frame(t,seg,data,clubs)

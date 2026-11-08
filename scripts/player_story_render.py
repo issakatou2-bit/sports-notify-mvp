@@ -39,6 +39,8 @@ HEADINGS = {'numbers': '本人の数字', 'intro': '現地報道', 'report': '�
 
 @motion.slot('reddit')
 def frame(t, seg, narr):
+    if seg['kind'] == 'outro':
+        return __import__('review_render_v3').outro(t)
     if narr.get('program')!='reddit_reaction':return _frame(t,seg,narr)
     previous=os.environ.get('COLLESPO_BUBBLE')
     style=previous or 'glass'
@@ -111,10 +113,10 @@ def render(narr, audio, out):
         actual = audio_duration(path)
         if actual <= 0 or abs(actual-float(row.get('duration') or 0)) > .05:
             raise ValueError('音声の実測尺が不一致です')
-        times.append(math.ceil(max(2.5, actual)*24)/24)
+        times.append(math.ceil(__import__('short_common').duration(row, max(2.5, actual))*24)/24)
     if motion.enabled():
         motion.measured(audio)
-        times = [math.ceil(max(t, float(row['duration']) + vc.SEGMENT_TAIL)*24)/24 for t, row in zip(times, audio)]
+        times = [math.ceil(__import__('short_common').duration(dict(seg,duration=row['duration']),max(t, float(row['duration']) + vc.SEGMENT_TAIL))*24)/24 for t, row, seg in zip(times, audio, narr['segments'])]
     if sum(times) > story.RULES['max_story_seconds']:
         raise ValueError('60秒を超えています。原稿を短くしてください')
     out = Path(out); out.mkdir(parents=True, exist_ok=True)
@@ -123,6 +125,7 @@ def render(narr, audio, out):
     track = vc.build_narration_track(audio, times, out)
     if not track:
         raise ValueError('声を結合できませんでした')
+    track = __import__('short_common').add_audio(track, audio, times, out)
     ffmpeg = shutil.which('ffmpeg')
     if not ffmpeg:
         import imageio_ffmpeg
@@ -144,7 +147,7 @@ def render(narr, audio, out):
         proc = subprocess.Popen(cmd, stdin=subprocess.PIPE, stderr=log)
         try:
             for i, (seg, seconds) in enumerate(zip(narr['segments'], times)):
-                r3.set_caption(seg['text'], seconds, sum(times), speaker=2, duo=False)
+                r3.set_caption(seg['text'], seconds, sum(times), speaker=2, duo=False, hide_caption=seg['kind']=='outro')
                 r3.set_program_clock(clock+1.4)
                 im = frame(1.4, seg, narr)
                 verify_frame(im)
@@ -160,6 +163,7 @@ def render(narr, audio, out):
             fan_events.TRACK.clear()
     if code:
         raise ValueError('動画生成に失敗しました。ffmpeg.logを確認してください')
+    __import__('sound_mix').verify_short_video(video)
     from preview_unified_v3 import sheet
     sheet(images, [s['kind'] for s in narr['segments']], out/'all-screens.png', columns=3)
     verification = dict(seconds=sum(times), screens=len(images), direction=narr['direction'],

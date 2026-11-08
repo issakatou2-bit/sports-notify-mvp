@@ -26,6 +26,8 @@ AIを使う箇所:
   python3 scripts/generate_narration.py --out public/narration.json
 """
 
+import short_common
+
 import argparse
 from japanese_team_names import team_names
 import datetime
@@ -1165,6 +1167,7 @@ def main():
     import mlb_forecast
     value=mlb_forecast.decorate({'date_label':date_label,'segments':segments},
         forecast_games, data.get('generated_at') or __import__('datetime').datetime.now(mlb_forecast.JST).isoformat())
+    value = short_common.prepare(value)
     import sanity_sources
     value = sanity_sources.attach(value, data)
     out = pathlib.Path(args.out)

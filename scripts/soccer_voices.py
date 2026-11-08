@@ -1,4 +1,6 @@
 """公式ハイライトの名前つきコメント。3件未満・訳の照合未了なら作らない。"""
+
+import short_common
 import argparse
 from datetime import datetime, timedelta, timezone
 import hashlib
@@ -257,6 +259,7 @@ def title_for(player, video):
     return press_title(f"{player}に現地ファンは何と言ったか｜{video['matchup_jp']}")
 
 
+@short_common.narration
 def narration(data):
     if not data.get('can_make'): return dict(label=LABEL,segments=[],duration_budget={'limit':LIMIT,'grace':0})
     from review_render_v3 import OUTRO_TEXT

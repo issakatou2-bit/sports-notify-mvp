@@ -11,6 +11,8 @@
 
 時刻はすべて「その画面が出てからの秒」t。p（0〜1）は使わない。
 """
+
+import short_common
 import functools
 import re
 import math
@@ -393,6 +395,13 @@ def current_sentence(elapsed, text, duration, *, caption_layout=None):
 
 
 def caption(im, t):
+    if im.info.get('v3_outro') or _CAPTION.get('hide_caption'):
+        return
+    clock = _PROGRAM_CLOCK[0]
+    elapsed = clock - _CAPTION['start'] if clock is not None else t
+    line = current_sentence(elapsed, _CAPTION['text'], _CAPTION['duration'])
+    if short_common.duplicate_caption(im, line):
+        return
     import bubble_styles
     if bubble_styles.selected():
         if not _CAPTION['text'] or _CAPTION.get('hide_caption'):return
@@ -1065,7 +1074,7 @@ def outro_text(ps=None, today=None):
 
 
 # 各制作器は1回の起動で原稿と描画を作る。既存の取り込み口を保つ。
-OUTRO_TEXT = outro_text()
+OUTRO_TEXT = short_common.OUTRO_TEXT
 T_OUTRO_ROW0, T_OUTRO_GAP = 0.6, 0.18
 
 
@@ -1077,6 +1086,7 @@ def outro_rows(exclude=""):
 
 def outro(t, spec=None, exclude="", credit="音声: VOICEVOX:四国めたん　データ: MLB Stats API",
           tagline="毎日のMLBを数字と現地の声で"):
+    t = min(max(0.0, float(t)), .7)
     import solo_host
     offseason = bool((spec or {}).get('offseason'))
     if offseason:
@@ -1087,32 +1097,11 @@ def outro(t, spec=None, exclude="", credit="音声: VOICEVOX:四国めたん　�
     if LOOK == 'v4' and solo_host.selected() == 'ui':
         credit = credit.replace('VOICEVOX:四国めたん', solo_host.UI_CREDIT)
     im = background(t, None)
-    im.info['v3_outro']=True
+    im.info['v3_outro'] = True
+    im.info['short_visible_texts'] = [short_common.OUTRO_LINE]
     d = ImageDraw.Draw(im)
-    k = ease_out(t / 0.5)
-    _text(d,(LEFT, 250), "コレスポ", font=font(150), fill=GOLD)
-    _text(d,(LEFT, 440), tagline, font=font(42), fill=INK)
-    y = 520
-    if not offseason:
-        _text(d,(LEFT, y), "毎日のお届け", font=font(30), fill=(196, 206, 212))
-    y += 44
-    w = SAFE_RIGHT - LEFT - 250                                 # 右下の立ち絵にかからない幅
-    for i, (at, name) in enumerate([] if offseason else outro_rows(exclude)):
-        row = _outro_row(at, name, w)
-        _paste_card(im, row, LEFT, y, back_out((t - T_OUTRO_ROW0 - i * T_OUTRO_GAP) / SLIDE))
-        y += row.height + 8
-    kb = ease_out((t - 1.8) / 0.4)
-    if kb > 0:
-        f = font(38)
-        text = __import__("outro_next").card(_CAPTION.get("text", ""), "チャンネル登録で毎日届きます")
-        bw = round(d.textlength(text, font=f)) + 56
-        d.rectangle((LEFT, y + 20, LEFT + round(bw * kb), y + 100), fill=GOLD)
-        lay = Image.new("RGBA", (bw, 80), (0, 0, 0, 0))
-        ImageDraw.Draw(lay).text((28, 40), text, font=f, fill=DARK_INK, anchor="lm")
-        cut = lay.crop((0, 0, round(bw * kb), 80))
-        im.paste(cut, (LEFT, y + 20), cut)
-        record_box(im,'card',(LEFT,y+20,LEFT+bw,y+100))
-        record_box(im,'text',d.textbbox((LEFT+28,y+60),text,font=f,anchor='lm'),text)
+    _text(d, (LEFT, 440), "コレスポ", font=font(150), fill=GOLD)
+    _text(d, (LEFT, 640), short_common.OUTRO_LINE, font=font(48), fill=INK)
     source(d, credit, (196, 206, 212))
     presenter(im, t)
     return im
@@ -1134,6 +1123,4 @@ def _outro_row(at, name, w):
 
 
 def outro_cues(exclude=""):
-    out = [(0.0, "transition", "b", -10)]
-    out.append((1.8, "marker", "a", -4))
-    return out
+    return [(0.0, "transition", "b", -12)]

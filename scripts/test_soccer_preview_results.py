@@ -64,7 +64,7 @@ class Tests(unittest.TestCase):
             with patch.object(sys,'argv',['render','--data',str(source),'--narration-out',str(output)]):
                 render.main()
             narr=json.loads(output.read_text(encoding='utf8'))
-        self.assertEqual(narr,story.narration(data))
+        self.assertEqual(narr,__import__('short_common').prepare(story.narration(data)))
         from test_soccer_results import inspect
         inspect(data)
 
@@ -73,7 +73,7 @@ class Tests(unittest.TestCase):
         narr=dict(segments=[dict(kind=k,text='fixture',speaker=2,meta={}) for k in kinds])
         with tempfile.TemporaryDirectory() as folder:
             audio=[]
-            for i,(seg,seconds) in enumerate(zip(narr['segments'],[30,3,15,15,3])):
+            for i,(seg,seconds) in enumerate(zip(narr['segments'],[30,3,15,15,2])):
                 path=Path(folder)/f'{i}.wav'
                 with wave.open(str(path),'wb') as stream:
                     stream.setparams((1,2,8000,0,'NONE','not compressed'));stream.writeframes(b'\0\0'*(8000*seconds))

@@ -260,7 +260,7 @@ class MarketTests(unittest.TestCase):
             return original(*a, **kw)
         with patch.object(r3, '_text', side_effect=record):
             r3.outro(3, spec)
-        self.assertIn('確定情報と報道を分けて', calls)
+        self.assertIn(__import__('short_common').OUTRO_LINE, calls)
         self.assertNotIn('オフの動きを公式の記録で', calls)
 
     def test_next_asset_prioritizes_market_and_only_one(self):

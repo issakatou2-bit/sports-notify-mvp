@@ -173,7 +173,7 @@ class Retry(Offline):
                     'steps.video.outcome':video_outcome,'steps.retry.outcome':retry_outcome,
                     'steps.length.outputs.skip':skip}
             for key,value in values.items(): expression=expression.replace(key,repr(value))
-            return eval(expression.replace('&&',' and ').replace('||',' or '),{'__builtins__':{}})
+            return eval(expression.replace('&&',' and ').replace('||',' or '),{'__builtins__':{},'github':__import__('types').SimpleNamespace(event_name='workflow_dispatch'),'inputs':__import__('types').SimpleNamespace(sample_only=False),'true':True})
         for count,san,video,recovered,expected in (
                 (1,'success','success','skipped',True),(0,'success','success','skipped',False),
                 (1,'failure','skipped','failure',False),(1,'success','failure','skipped',False),

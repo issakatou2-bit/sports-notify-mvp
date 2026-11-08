@@ -344,7 +344,7 @@ class GroundingTests(unittest.TestCase):
                 self.assertTrue(any(fnmatchcase(record, p.strip())
                                     for p in patterns if not p.strip().startswith('!')),
                                 f'{record} is missing from artifact paths')
-        self.assertEqual(artifact['if'], 'always()')
+        self.assertIn('always()',artifact['if'])
 
 
 if __name__ == '__main__':

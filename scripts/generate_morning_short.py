@@ -15,6 +15,8 @@ MLBは日本の朝に終わるので、起きた直後に結果を1本で確認�
   python3 scripts/generate_morning_short.py --audio-dir build/mr_audio --out build/morning
 """
 
+import short_common
+
 import argparse
 from japanese_team_names import team_names
 import functools
@@ -820,6 +822,7 @@ def jp_date(day: str) -> str:
         return day
 
 
+@short_common.narration
 def build_narration(data: dict, mode: str = "all") -> dict:
     import sanity_sources
     import voices_context
@@ -3968,53 +3971,10 @@ DAILY_LINEUP = [(name, what)
 
 
 def render_outro(p, mode: str = ""):
-    """
-    最後の画面。毎日出しているものを並べる。
+    import review_render_v3 as r3
+    return r3.outro(p * 2, credit='音声: VOICEVOX:四国めたん')
 
-    高さを固定で置いていたところ、一覧が6件から7件になった日に
-    出典と登録の帯と読み上げの帯が全部同じところへ重なった。
-    実際に投稿された動画でそうなっている。
-    座標は積み上げで決めて、決め打ちを残さない。
-    """
-    im, d = base(p)
-    d.text((80, 250), "コレスポ", font=font(104), fill=ACCENT)
-    d.text((80, 380), "毎日、更新中", font=font(64), fill=TEXT)
 
-    # 見ている回そのものは外す。読み上げと同じ扱いにする。
-    # 時期で変わる枠はその日の姿で（post_common.lineup）。
-    rows = [(name, what) for kind, name, what, _ in post_common.lineup()
-            if kind != MODE_KIND.get(mode, "")]
-
-    # 1行ずつ滑り込ませる。全部を一度に出すと、ただの箇条書きに見える。
-    y = 500
-    h = 132 if len(rows) > 5 else 150
-    for i, (title, note) in enumerate(rows):
-        appear = 0.08 + i * 0.09
-        if p < appear:
-            y += h + 14
-            continue
-        e = ease_out(min(1.0, (p - appear) * 7))
-        dx = int((1 - e) * 90)
-        d.rounded_rectangle([70 - dx, y, W - 70 - dx, y + h], 16, fill=SURF)
-        d.text((104 - dx, y + 18), title, font=font(46), fill=TEXT)
-        d.text((104 - dx, y + 76), note, font=font(34), fill=DIM)
-        y += h + 14
-
-    y += 16
-    if p > 0.62:
-        d.rounded_rectangle([70, y, W - 70, y + 100], 18, fill=ACCENT)
-        d.text((110, y + 26), "チャンネル登録で毎日届きます",
-               font=font(44), fill=BG)
-    y += 124
-
-    # 出典はいちばん下。一覧の下に積むので、件数が変わっても重ならない。
-    # 話者の名前は必ず出す。進出争いと成績の回は四国めたんも読むので、
-    # ずんだもんだけの表記だと足りない。
-    d.text((80, y), "音声: VOICEVOX:ずんだもん / 四国めたん",
-           font=font(30), fill=DIM)
-    d.text((80, y + 42), "データ: MLB Stats API", font=font(30), fill=DIM)
-    d.text((80, y + 96), "collespo.com", font=font(38), fill=TEXT)
-    return im
 
 
 # ---------------------------------------------------------------------------
@@ -4045,9 +4005,9 @@ def plan_durations(segs):
     if any((s.get('meta') or {}).get('duo') for s in segs):
         import duo
         return duo.durations(segs)
-    return [max(float(.5 if (s.get('meta') or {}).get('quote_rows') else s.get("min_duration")
+    return [short_common.duration(s, max(float(.5 if (s.get('meta') or {}).get('quote_rows') else s.get("min_duration")
                       or MIN_DURATION.get(s.get("kind") or "list", 5.0)),
-                float(s.get("duration") or 0) + video_common.SEGMENT_TAIL)
+                float(s.get("duration") or 0) + video_common.SEGMENT_TAIL))
             for s in segs]
 
 
@@ -4119,6 +4079,8 @@ def build_player_video(args):
     short_content.require(dict(narration, segments=segs), durations, out_dir,
                           prof, maximum=MAX_SECONDS+post_common.BUDGET_GRACE, video_name=video_path.name)
     audio_path = build_narration_track(segs, durations, out_dir)
+    if audio_path:
+        audio_path = short_common.add_audio(audio_path, segs, durations, out_dir)
     if args.require_audio and not audio_path:
         print("::error::音声が作れませんでした。無音のまま投稿しないよう、"
               "ここで中止します(VOICEVOXの起動を確認してください)")
@@ -4212,13 +4174,12 @@ def bignumber_sound(audio, plan, out_dir):
         cues = bn.plan_cues(plan)
         import fan_events
         cues += fan_events.event_cues()
-        out = sound_mix.mix_file(audio, out_dir / "narration_mixed.wav",
+        out = sound_mix.mix_short_file(audio, out_dir / "narration_mixed.wav",
                                  bgm if bgm.is_file() else None, cues)
         print(f"[info] 数字ドーン: BGM {name if bgm.is_file() else 'なし'}・効果音{len(cues)}個")
         return out
     except Exception as e:  # noqa: BLE001
-        print(f"[warn] 数字ドーンの音を重ねられません（声だけで続けます）: {e}")
-        return audio
+        raise ValueError('ショートのBGM・効果音を作れません') from e
 
 
 def main():
@@ -4543,6 +4504,9 @@ def main():
             if any(s.get("speaker") != 2 for s in segs):
                 raise ValueError("数字ドーンの音声を四国めたん（話者2）で作り直してください")
             audio_path = bignumber_sound(audio_path, bn_plan, out_dir)
+
+    if audio_path and not daily_design and not bn_scenes:
+        audio_path = short_common.add_audio(audio_path, segs, durations, out_dir)
 
     # 音声が作れなかった場合、これまでは無音のまま書き出して投稿していた。
     # 無音の動画が出るくらいなら、その日は出さない方がよい。

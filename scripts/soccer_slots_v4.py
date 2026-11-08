@@ -1,4 +1,6 @@
 """既存の欧州予告・順位争い・週末を、同じ材料からv4に描く。"""
+
+import short_common
 import motion
 from datetime import datetime, timedelta, timezone
 import os
@@ -181,6 +183,7 @@ def package(mode,data,segs,names,head,clubs=None):
         plan=dict(mode=mode,data=data,narration=narration,shared=shared)
         __import__('short_context').slots(plan, modern=True)
         race_details(plan)
+    narration = short_common.prepare(narration)
     import host_split
     narration = host_split.adapt(narration, 'daily_soccer' if mode == 'preview' else 'soccer_'+mode)
     return dict(mode=mode,data=data,clubs=clubs or clubs_for(names),narration=narration,shared=shared)
@@ -295,7 +298,7 @@ def durations(segments,audio,check_limit=True):
         if not path.is_file():raise ValueError('実音声がありません')
         actual=sn.audio_duration(path)
         if actual<=0 or abs(actual-float(voice.get('duration') or 0))>.05:raise ValueError('音声の尺が実測と違う')
-        times.append(max(actual,10.0 if seg['kind']=='preview' and seg['meta'].get('preview_duration_limit') else 3.0 if seg['kind']=='jp_roster' else 2.6 if seg['kind']=='outro' else 2.0))
+        times.append(short_common.duration(voice, max(actual,10.0 if seg['kind']=='preview' and seg['meta'].get('preview_duration_limit') else 3.0 if seg['kind']=='jp_roster' else 2.6 if seg['kind']=='outro' else 2.0)))
     limit=55 if any(s['meta'].get('preview_duration_limit') for s in segments) else 40
     if check_limit and sum(times)>limit:raise ValueError(f'{limit}秒を超えます: {sum(times):.3f}。声の設定は変えず原稿を短くしてください')
     return times
@@ -308,7 +311,7 @@ def video_times(segments,audio):
         from soccer_readable import minimum_seconds
         times=[max(length,minimum_seconds(seg)) for length,seg in zip(times,segments)]
     if motion.enabled():
-        times=[max(t,float(row['duration'])+vc.SEGMENT_TAIL) for t,row in zip(times,audio)]
+        times=[short_common.duration(dict(seg,duration=row['duration']),max(t,float(row['duration'])+vc.SEGMENT_TAIL)) for t,row,seg in zip(times,audio,segments)]
     return [math.ceil(t*30)/30 for t in times]
 
 
@@ -437,6 +440,7 @@ def render_video(plan,audio,out,audio_dir=None):
     if not shutil.which('ffmpeg'):raise ValueError('FFmpegがありません。install_video_tools.shまたは保存材料のpreviewを使ってください')
     track=vc.build_narration_track(audio,times,out)
     if not track:raise ValueError('声がありません')
+    track=short_common.add_audio(track,audio,times,out)
     video=out/FILENAMES[plan['mode']];images=[];previous=None;clock=0
     cmd=['ffmpeg','-y','-f','rawvideo','-vcodec','rawvideo','-pix_fmt','rgb24','-s','1080x1920','-r','30','-i','-','-i',str(track),'-c:v','libx264','-preset','veryfast','-crf','23','-pix_fmt','yuv420p','-c:a','aac','-b:a','160k','-t',str(sum(times)),'-movflags','+faststart',str(video)]
     with (out/'ffmpeg.log').open('w',encoding='utf-8') as log:

@@ -134,11 +134,11 @@ class V3Rules(unittest.TestCase):
                 with patch.dict(os.environ,ENV):design=daily_v3.prepare(data,nar,'voices')
                 self.assertEqual(sum(s['speaker']==3 for s in nar['segments']),3)
                 daily_v3.validate_audio(nar['segments'],nar)
-                with patch('sound_mix.mix_file',return_value=Path('duo-mix.wav')):
+                with patch('sound_mix.mix_short_file',return_value=Path('duo-mix.wav')):
                     self.assertEqual(daily_v3.mix(None,nar['segments'],[3]*len(nar['segments']),design,ROOT/'build'),Path('duo-mix.wav'))
                 for seg in nar['segments']:
                     with patch.dict(r3._CAPTION,dict(text='' if seg['kind']=='outro' else seg['text'],
-                                   duration=8,start=0,total=40,duo=True,speaker=seg['speaker'])):
+                                   duration=8,start=0,total=40,duo=True,speaker=seg['speaker'],hide_caption=False)):
                         image=daily_v3.frame(2,seg,design,8)
                         self.assertFalse(rules.check_layout(image))
 
@@ -154,7 +154,7 @@ class V3Rules(unittest.TestCase):
             for at in (.1,.2,.45,1):
                 with patch.object(r3,'_PROGRAM_CLOCK',[None]),patch.dict(r3._CAPTION,
                     dict(text='決めたのは、だれなのだ？' if speaker==3 else '松井裕樹が1回を無失点に抑えました。',
-                         duration=4,start=0,total=40,duo=True,speaker=speaker)):
+                         duration=4,start=0,total=40,duo=True,speaker=speaker,hide_caption=False)):
                     image=Image.new('RGB',(1080,1920))
                     dp.presenter(image,at)
                     self.assertFalse(rules.check_layout(image))
@@ -351,7 +351,7 @@ class V3Rules(unittest.TestCase):
             for exclude in ('daily','postseason'):
                 self.assertEqual(unified.cues({'outro':True,'lineup_kind':exclude}),sentinel);cues.assert_called_with(exclude)
             for mode in ('voices','press'):
-                with patch('sound_mix.mix_file',return_value='mixed'):
+                with patch('sound_mix.mix_short_file',return_value='mixed'):
                     daily_v3.mix('audio',[{'kind':'outro','speaker':2}],[5],{'mode':mode},ROOT/'build')
                 cues.assert_called_with('morning_'+mode)
             r3.cues('outro',{'lineup_kind':'asset'});cues.assert_called_with('asset')

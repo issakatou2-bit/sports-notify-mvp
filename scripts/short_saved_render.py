@@ -70,13 +70,15 @@ def render(narr, frame, out, *, voiced, filename='preview.mp4', reuse_audio=Fals
         from soccer_readable import minimum_seconds
         times = [max(t, minimum_seconds(s)) for s,t in zip(narr['segments'],times)]
     if motion.enabled():motion.measured(audio)
-    times=[max(duration,len(seg['caption_en'].split())/3) if seg.get('caption_en') else duration for seg,duration in zip(narr['segments'],times)]
+    times=[__import__('short_common').duration(dict(seg,duration=row['duration']),max(duration,len(seg['caption_en'].split())/3) if seg.get('caption_en') else duration) for seg,duration,row in zip(narr['segments'],times,audio)]
     times = [math.ceil(t*30)/30 for t in times]
     if sum(times) > 40: raise ValueError('40秒を超えるため原稿を短くしてください')
     import short_content
     short_content.require(narr, times, out, narr.get('soccer_material'), maximum=40, video_name=filename)
     ffmpeg = rr.ensure_ffmpeg(out)
     track = vc.build_narration_track(audio, times, out) if voiced else None
+    if track:
+        track = __import__('short_common').add_audio(track, audio, times, out)
     cmd = [ffmpeg, '-y', '-f', 'rawvideo', '-pix_fmt', 'rgb24', '-s', '1080x1920', '-r', '30', '-i', '-']
     if track: cmd += ['-i', str(track), '-c:a', 'aac']
     cmd += ['-c:v', 'libx264', '-preset', 'veryfast', '-crf', '23', '-pix_fmt', 'yuv420p', '-t', str(sum(times)), '-movflags', '+faststart', str(out/filename)]
@@ -85,7 +87,7 @@ def render(narr, frame, out, *, voiced, filename='preview.mp4', reuse_audio=Fals
         proc = subprocess.Popen(cmd, stdin=subprocess.PIPE, stderr=log)
         try:
             for i, (seg, duration) in enumerate(zip(narr['segments'], times)):
-                r3.set_caption(seg.get('caption_en',seg['text']), duration, sum(times), speaker=2, duo=False)
+                r3.set_caption(seg.get('caption_en',seg['text']), duration, sum(times), speaker=2, duo=False, hide_caption=seg['kind']=='outro')
                 r3.set_program_clock(clock+1.8)
                 im = frame(1.8, seg)
                 errors = rules.check_layout(im)+rules.check_spacing(im)
@@ -101,6 +103,8 @@ def render(narr, frame, out, *, voiced, filename='preview.mp4', reuse_audio=Fals
         finally:
             proc.stdin.close(); code = proc.wait(); r3.set_program_clock(None)
     if code: raise ValueError('動画生成失敗: ffmpeg.log')
+    if track:
+        __import__('sound_mix').verify_short_video(out/filename)
     manifest = [dict(a,index=i,duration=duration,speech_duration=a['duration']) for i,(a,duration) in enumerate(zip(audio,times))]
     (out/'audio/manifest.json').parent.mkdir(exist_ok=True)
     payload = dict(saved_manifest, segments=manifest) if split_audio else {'segments':manifest}

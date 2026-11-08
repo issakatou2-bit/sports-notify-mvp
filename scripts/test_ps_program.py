@@ -232,7 +232,7 @@ class ProgramTests(unittest.TestCase):
         first=ev['schedule']['dates'][0]['games'][0]
         first['teams']['home']['probablePitcher']=dict(id=123,fullName='Michael King')
         pr=p.prepare(snap,ev,'forecast',now)
-        details=[s['meta']['card'] for s in pr['segments'][1:]]
+        details=[s['meta']['card'] for s in pr['segments'][1:] if s['kind']!='outro']
         self.assertEqual([c['card_index'] for c in details],[1,2,3,4])
         self.assertTrue(all(c['card_total']==4 for c in details))
         self.assertNotIn('card_index',pr['segments'][0]['meta']['card'])
@@ -246,7 +246,7 @@ class ProgramTests(unittest.TestCase):
         self.assertNotIn('0勝対0勝',pr['segments'][1]['text'])
         self.assertIn('地区シリーズ',pr['segments'][1]['text'])
         manifests=p.check_program(pr)['rendered']
-        self.assertTrue(all('black' in x['presenters'][0]['asset'] for x in manifests))
+        self.assertTrue(all('black' in x['presenters'][0]['asset'] for x in manifests if x.get('layout') != 'short_outro'))
         self.assertIsNone(p.probable({'probablePitcher':{'fullName':'Unidentified'}}))
         details[0]['card_index']=0
         with self.assertRaises(ValueError):p.render_segment(pr['segments'][1])
@@ -388,6 +388,9 @@ class ProgramTests(unittest.TestCase):
             image,manifest,foreground=p.render_segment(seg,layers=True)
             expected='left' if seg['speaker']==3 else 'right'
             self.assertEqual(manifest['presenters'][0]['side'],expected)
+            if seg['kind']=='outro':
+                self.assertTrue(image.info['v3_outro'])
+                continue
             prepared=p.motion.prepare(foreground,seg['meta']['card'])
             early=p.motion.frame(prepared,0.1)
             settled=p.motion.frame(prepared,2)

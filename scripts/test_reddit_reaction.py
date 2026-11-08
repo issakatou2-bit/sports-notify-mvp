@@ -96,8 +96,11 @@ class ReactionTests(unittest.TestCase):
                     render.r3.set_caption(seg['text'],4,20,speaker=2)
                     render.r3.set_program_clock(1.4)
                     im=render.frame(1.4,seg,n)
-                    self.assertEqual(im.info['bubble_style']['style'],style or 'glass')
-                    self.assertLessEqual(im.info['duo_caption']['rows'],2)
+                    if im.info.get('short_caption_suppressed'):
+                        self.assertNotIn('bubble_style',im.info)
+                    else:
+                        self.assertEqual(im.info['bubble_style']['style'],style or 'glass')
+                        self.assertLessEqual(im.info['duo_caption']['rows'],2)
                     render.verify_frame(im)
                 self.assertEqual(os.environ['COLLESPO_BUBBLE'],style)
         render.r3.set_program_clock(None)

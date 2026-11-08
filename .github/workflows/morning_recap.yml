@@ -4,6 +4,7 @@
 name: 毎日 17:00-20:00　夕方の4本
 
 env:
+  COLLESPO_SAMPLE_ONLY: ${{ inputs.sample_only && 'true' || 'false' }}
   COLLESPO_MLB_TITLE_V2: ${{ vars.COLLESPO_MLB_TITLE_V2 == 'on' && 'on' || 'off' }}
   COLLESPO_HOOK_AB: ${{ vars.COLLESPO_HOOK_AB || '' }}
   COLLESPO_SOLO_HOST: ${{ vars.COLLESPO_SOLO_HOST || 'metan' }}
@@ -66,6 +67,11 @@ env:
 on:
   workflow_dispatch:
     inputs:
+      sample_only:
+        description: 見本のmp4だけを保存する（公開・SNS・台帳・コミット・通知なし）
+        type: boolean
+        required: false
+        default: false
       modes:
         description: '作る本数を絞る (players postseason voices press のうち必要なものだけ)'
         required: false
@@ -313,6 +319,7 @@ jobs:
           # The user approved this two-slot shift on 9/28. Explicit false still holds.
           PS_PREVIEW_APPROVED: ${{ vars.PS_PREVIEW_APPROVED || 'true' }}
         run: |
+          # sample_only: 描画後、公開処理より前で分岐する。
           set +e
           # 定期実行では4本とも作る。手動実行では絞れるようにしてある。
           # 18:00の「現地での注目度」は2026-08-24に畳んだ。
@@ -400,6 +407,11 @@ jobs:
 
             # Evidence is lightweight and must not stop publication. No frame files.
             timeout 180 python scripts/visual_capture.py video --video "$VIDEO" --out "build/visual/$(TZ=Asia/Tokyo date +%Y%m%d)" || echo "::warning::visual contact sheet failed: $mode"
+
+            if [ "$COLLESPO_SAMPLE_ONLY" = true ]; then
+              echo "::notice::$mode の見本を保存しました"
+              echo "::endgroup::"; continue
+            fi
 
             if [ "$mode" = "postseason" ]; then
               python scripts/generate_ps_preview.py --thumbnail-out "build/morning/thumb_${mode}.png"
@@ -561,6 +573,7 @@ jobs:
         run: exit 1
 
       - name: Add to playlists
+        if: (github.event_name != 'workflow_dispatch' || inputs.sample_only != true)
         continue-on-error: true
         env:
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
@@ -576,6 +589,7 @@ jobs:
       # 自動吹き替えで音声は英語になるが、タイトルが日本語のままだと
       # 英語圏の人はそこへ辿り着けない。視聴の35.8%が日本以外。
       - name: Add English metadata
+        if: (github.event_name != 'workflow_dispatch' || inputs.sample_only != true)
         continue-on-error: true
         env:
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
@@ -589,7 +603,7 @@ jobs:
 
       # 結果はサイトからも参照できるよう、リポジトリへ残す
       - name: Commit recap
-        if: always()
+        if: (github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (always())
         run: |
           bash scripts/commit_data.sh \
             "recap: ${{ github.run_id }}" \
@@ -623,7 +637,7 @@ jobs:
           if-no-files-found: ignore
 
       - name: Save video as artifact
-        if: always()
+        if: (github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (always())
         uses: actions/upload-artifact@v4
         with:
           name: collespo-morning
@@ -634,7 +648,7 @@ jobs:
           if-no-files-found: ignore
 
       - name: Save separate Shorts for social distribution
-        if: always()
+        if: (github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (always())
         uses: actions/upload-artifact@v4
         with:
           name: collespo-social-shorts
@@ -645,7 +659,7 @@ jobs:
           if-no-files-found: ignore
 
       - name: Keep unsaved data records
-        if: always() && hashFiles('build/data-save-recovery/**/FAILED') != ''
+        if: (github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (always() && hashFiles('build/data-save-recovery/**/FAILED') != '')
         uses: actions/upload-artifact@v4
         with:
           name: unsaved-data-${{ github.job }}-${{ github.run_attempt }}
@@ -679,7 +693,7 @@ jobs:
           retention-days: 14
 
       - name: Save quota-exceeded thumbnails
-        if: always() && hashFiles('build/thumbnail_pending/**') != ''
+        if: (github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (always() && hashFiles('build/thumbnail_pending/**') != '')
         uses: actions/upload-artifact@v4
         with:
           name: thumbnail-pending
@@ -700,3 +714,65 @@ jobs:
             !build/**/portrait/**
           retention-days: 14
           if-no-files-found: ignore
+
+      - name: Mark sample-only execution
+        if: always() && inputs.sample_only
+        run: python scripts/sample_only.py --mark build/sample_only.json --require-video
+      - name: Save sample execution marker
+        if: always() && inputs.sample_only
+        uses: actions/upload-artifact@v4
+        with:
+          name: sample-state-morning
+          path: |
+            build/sample_only.json
+            !build/**/portrait/**
+          if-no-files-found: error
+          retention-days: 7
+      - name: Save sample morning
+        if: always() && inputs.sample_only && hashFiles('build/morning/collespo_morning.mp4') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: sample-morning
+          path: |
+            build/sample_only.json
+            build/morning/collespo_morning.mp4
+            build/morning/collespo_morning.audio_mix.json
+            !build/**/portrait/**
+          if-no-files-found: error
+          retention-days: 7
+      - name: Save sample morning_voices
+        if: always() && inputs.sample_only && hashFiles('build/morning/collespo_morning_voices.mp4') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: sample-morning_voices
+          path: |
+            build/sample_only.json
+            build/morning/collespo_morning_voices.mp4
+            build/morning/collespo_morning_voices.audio_mix.json
+            !build/**/portrait/**
+          if-no-files-found: error
+          retention-days: 7
+      - name: Save sample morning_press
+        if: always() && inputs.sample_only && hashFiles('build/morning/collespo_morning_press.mp4') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: sample-morning_press
+          path: |
+            build/sample_only.json
+            build/morning/collespo_morning_press.mp4
+            build/morning/collespo_morning_press.audio_mix.json
+            !build/**/portrait/**
+          if-no-files-found: error
+          retention-days: 7
+      - name: Save sample morning_postseason
+        if: always() && inputs.sample_only && hashFiles('build/morning/collespo_morning_postseason.mp4') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: sample-morning_postseason
+          path: |
+            build/sample_only.json
+            build/morning/collespo_morning_postseason.mp4
+            build/morning/collespo_morning_postseason.audio_mix.json
+            !build/**/portrait/**
+          if-no-files-found: error
+          retention-days: 7

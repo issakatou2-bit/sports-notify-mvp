@@ -5,6 +5,7 @@ on:
     types: [completed]
   workflow_dispatch: {}
 permissions:
+  actions: read
   contents: write
 concurrency:
   group: bluesky-ps-publication
@@ -17,27 +18,38 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: main
+      - name: Ignore a sample-only source run
+        id: sample_source
+        if: github.event_name == 'workflow_run'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_RUN: ${{ github.event.workflow_run.id }}
+        run: python scripts/sample_source.py --source-run "$SOURCE_RUN" --github-output "$GITHUB_OUTPUT"
       - uses: actions/setup-python@v5
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true')
         with:
           python-version: '3.11'
       - run: pip install -r scripts/requirements.txt
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true')
       - name: Publish only an unsent current PS edition with a public video
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true')
         env:
           BLUESKY_HANDLE: ${{ secrets.BLUESKY_HANDLE }}
           BLUESKY_APP_PASSWORD: ${{ secrets.BLUESKY_APP_PASSWORD }}
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
         run: python scripts/post_bluesky.py --ps-only
       - name: Keep the exact post receipt
-        if: always()
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (always())
         uses: actions/upload-artifact@v4
         with:
           name: bluesky-delivery-receipt
           path: data/bluesky_delivery.json
       - name: Save delivery ledger
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true')
         run: bash scripts/commit_data.sh "Bluesky PS delivery $GITHUB_RUN_ID" data/bluesky_delivery.json
 
       - name: Keep unsaved data records
-        if: always() && hashFiles('build/data-save-recovery/**/FAILED') != ''
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (always() && hashFiles('build/data-save-recovery/**/FAILED') != '')
         uses: actions/upload-artifact@v4
         with:
           name: unsaved-data-${{ github.job }}-${{ github.run_attempt }}
@@ -46,3 +58,13 @@ jobs:
             !build/**/portrait/**
           retention-days: 14
           if-no-files-found: error
+      - name: Preserve inherited sample-only marker
+        if: always() && steps.sample_source.outputs.allowed == 'false'
+        uses: actions/upload-artifact@v4
+        with:
+          name: sample-inherited-${{ github.job }}
+          path: |
+            build/sample_only.json
+            !build/**/portrait/**
+          if-no-files-found: error
+          retention-days: 3

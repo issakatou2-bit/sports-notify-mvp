@@ -37,6 +37,12 @@ def load(day):
 def audio_rows(doc, folder, seconds):
     folder.mkdir(parents=True, exist_ok=True)
     rows = []
+    seconds=list(seconds)
+    end=next((i for i,s in enumerate(doc['segments']) if s['kind']=='outro'),None)
+    if end is not None:
+        body=next(i for i,s in enumerate(doc['segments']) if s['kind'] not in ('outro','intro','cover'))
+        seconds[body]+=seconds[end]-2
+        seconds[end]=2
     for index, (seg, length) in enumerate(zip(doc['segments'], seconds)):
         path = folder/f'{index}.wav'
         with wave.open(str(path), 'wb') as stream:
@@ -68,7 +74,7 @@ class SavedCases(Offline):
                 data = load(day); before = copy.deepcopy(data)
                 actual = selected.program(data)['narration']
                 self.assertEqual(json.dumps(actual, ensure_ascii=False, indent=2),
-                                 json.dumps(baseline[day], ensure_ascii=False, indent=2))
+                                 json.dumps(__import__('short_common').prepare(baseline[day]), ensure_ascii=False, indent=2))
                 self.assertEqual(data, before)
         empty = load('20261026'); empty['preview_selection'].update(selected_ids=[], count=0)
         self.assertEqual(selected.program(empty)['narration']['segments'], [])

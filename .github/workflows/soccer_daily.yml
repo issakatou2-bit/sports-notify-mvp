@@ -24,12 +24,19 @@ name: 毎日 19:00　欧州サッカー
 #   19時台に作り終えていれば20時ちょうどに出る。
 
 on:
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      sample_only:
+        description: 見本のmp4だけを保存する（公開・SNS・台帳・コミット・通知なし）
+        type: boolean
+        required: false
+        default: false
   workflow_run:
     workflows: ["毎日 19:00頃　明日の注目試合"]
     types: [completed]
 
 permissions:
+  actions: read
   contents: write
 
 concurrency:
@@ -37,6 +44,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
+  COLLESPO_SAMPLE_ONLY: ${{ inputs.sample_only && 'true' || 'false' }}
   COLLESPO_HOST_SPLIT: ${{ vars.COLLESPO_HOST_SPLIT || '' }}
   COLLESPO_UI_VOICE_STOCK: ${{ vars.COLLESPO_UI_VOICE_STOCK || '' }}
   COLLESPO_UI_PARTS_KEY: ${{ secrets.COLLESPO_UI_PARTS_KEY }}
@@ -72,12 +80,21 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Ignore a sample-only source run
+        id: sample_source
+        if: github.event_name == 'workflow_run'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_RUN: ${{ github.event.workflow_run.id }}
+        run: python scripts/sample_source.py --source-run "$SOURCE_RUN" --github-output "$GITHUB_OUTPUT"
       - name: Set up Python
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true')
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
       - name: Install dependencies
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true')
         run: |
           pip install -r scripts/requirements.txt
           pip install pillow google-api-python-client google-auth imageio_ffmpeg
@@ -88,6 +105,7 @@ jobs:
       #
       # 手動実行や、日次側の取得が落ちた回のために、無ければ自分で取る。
       - name: Fetch soccer fixtures
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true')
         env:
           FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -123,6 +141,7 @@ jobs:
       # 推測せずに読む。キーは要らない。落ちても止めない
       # （取れない日は誰も題から外さない作りにしてある）。
       - name: Check who can play
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true')
         continue-on-error: true
         run: |
           python scripts/soccer_availability.py \
@@ -132,21 +151,23 @@ jobs:
       # 開幕前やオフの日は試合が無い。無い日に空の動画を出すより、
       # 何も出さない方がよい。ここで打ち切る。
       - name: Fetch supported cups and European fixtures
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true')
         run: python scripts/soccer_extra_fixtures.py | tee -a "$GITHUB_STEP_SUMMARY"
 
       - name: Select fixtures by material score
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true')
         id: gate
         env:
           FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
         run: python scripts/soccer_selection.py --github-output "$GITHUB_OUTPUT" | tee -a "$GITHUB_STEP_SUMMARY"
 
       - name: Install video tools
-        if: steps.gate.outputs.count != '0'
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (steps.gate.outputs.count != '0')
         timeout-minutes: 16
         run: bash scripts/install_video_tools.sh
 
       - name: Start VOICEVOX engine
-        if: steps.gate.outputs.count != '0'
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (steps.gate.outputs.count != '0')
         continue-on-error: true
         run: |
           docker run -d --rm -p 50021:50021 --name voicevox \
@@ -160,7 +181,7 @@ jobs:
           done
 
       - name: Generate narration
-        if: steps.gate.outputs.count != '0'
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (steps.gate.outputs.count != '0')
         continue-on-error: true
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -174,7 +195,7 @@ jobs:
       # 種類の壊れ方を、ここで止める。数字の幅は記録より広く取って
       # あるので、引っかかったらまず組み立てを疑う。
       - name: Synthesize narration
-        if: steps.gate.outputs.count != '0'
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (steps.gate.outputs.count != '0')
         continue-on-error: true
         run: |
           python scripts/synthesize_narration.py \
@@ -183,12 +204,12 @@ jobs:
 
       - name: Fill short narration from unused facts
         id: length
-        if: steps.gate.outputs.count != '0'
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (steps.gate.outputs.count != '0')
         continue-on-error: true
         run: python scripts/soccer_minimum.py --mode preview --data data/soccer_games.json --narration build/soccer_narration.json --audio-dir build/soccer_audio
 
       - name: Sanity check
-        if: steps.length.outputs.skip != 'true' && (steps.gate.outputs.count != '0')
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (steps.length.outputs.skip != 'true' && (steps.gate.outputs.count != '0'))
         id: sanity
         # ここで落ちても回は続ける。止めるのは公開だけ。
         # サイトもポッドキャストも記録も、この回の他の仕事は関係がない。
@@ -200,7 +221,7 @@ jobs:
 
       - name: Generate video
         id: video
-        if: steps.length.outputs.skip != 'true' && (steps.gate.outputs.count != '0' && steps.sanity.outcome == 'success')
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (steps.length.outputs.skip != 'true' && (steps.gate.outputs.count != '0' && steps.sanity.outcome == 'success'))
         continue-on-error: true
         run: |
           python scripts/generate_video.py \
@@ -211,9 +232,12 @@ jobs:
       - name: Retry the selected runner-up once
         id: retry
         if: >-
+          (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') &&
+          (
           steps.length.outputs.skip != 'true' &&
           steps.gate.outputs.count != '0' &&
           (steps.sanity.outcome == 'failure' || steps.video.outcome == 'failure')
+          )
         env:
           FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -223,7 +247,7 @@ jobs:
           --video-outcome '${{ steps.video.outcome }}'
 
       - name: Generate thumbnail
-        if: steps.length.outputs.skip != 'true' && (steps.gate.outputs.count != '0')
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (steps.length.outputs.skip != 'true' && (steps.gate.outputs.count != '0'))
         continue-on-error: true
         run: |
           python scripts/generate_thumbnail.py \
@@ -235,7 +259,7 @@ jobs:
       # ショート用に、動画の1枚目(1080x1920)を切り出す。
       # 16:9はショート棚で中央405pxに切り抜かれ、文字が外へ出る。
       - name: Vertical thumbnail
-        if: steps.length.outputs.skip != 'true' && (steps.gate.outputs.count != '0')
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (steps.length.outputs.skip != 'true' && (steps.gate.outputs.count != '0'))
         run: |
           bash scripts/shorts_thumbnail.sh build/soccer/collespo_short.mp4 build/soccer/short.png
 
@@ -244,9 +268,15 @@ jobs:
       - name: Upload to YouTube
         id: upload
         if: >-
+          (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') &&
+          (
+          (github.event_name != 'workflow_dispatch' || inputs.sample_only != true) &&
+          (
           steps.length.outputs.skip != 'true' &&
           steps.gate.outputs.count != '0' &&
           ((steps.sanity.outcome == 'success' && steps.video.outcome == 'success') || steps.retry.outcome == 'success')
+          )
+          )
         continue-on-error: true
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -267,11 +297,11 @@ jobs:
       # こちらは20時に「今夜の注目試合」で、1つにまとめると
       # どちらかの言い方が必ず嘘になる。
       - name: Save the actually published preview
-        if: steps.length.outputs.skip != 'true' && (steps.gate.outputs.count != '0' && steps.upload.outputs.uploaded == 'true')
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && ((github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (steps.length.outputs.skip != 'true' && (steps.gate.outputs.count != '0' && steps.upload.outputs.uploaded == 'true')))
         run: python scripts/soccer_preview_history.py
 
       - name: Post to Bluesky
-        if: steps.length.outputs.skip != 'true' && (steps.gate.outputs.count != '0' && ((steps.sanity.outcome == 'success' && steps.video.outcome == 'success') || steps.retry.outcome == 'success'))
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && ((github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (steps.length.outputs.skip != 'true' && (steps.gate.outputs.count != '0' && ((steps.sanity.outcome == 'success' && steps.video.outcome == 'success') || steps.retry.outcome == 'success'))))
         continue-on-error: true
         env:
           BLUESKY_HANDLE: ${{ secrets.BLUESKY_HANDLE }}
@@ -281,7 +311,7 @@ jobs:
         run: python scripts/post_bluesky.py --games data/soccer_games.json --kind daily_soccer
 
       - name: Post to Threads
-        if: steps.length.outputs.skip != 'true' && (steps.gate.outputs.count != '0' && ((steps.sanity.outcome == 'success' && steps.video.outcome == 'success') || steps.retry.outcome == 'success'))
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && ((github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (steps.length.outputs.skip != 'true' && (steps.gate.outputs.count != '0' && ((steps.sanity.outcome == 'success' && steps.video.outcome == 'success') || steps.retry.outcome == 'success'))))
         continue-on-error: true
         env:
           THREADS_USER_ID: ${{ secrets.THREADS_USER_ID }}
@@ -290,7 +320,7 @@ jobs:
         run: python scripts/post_threads.py --games data/soccer_games.json
 
       - name: Post to TikTok
-        if: steps.length.outputs.skip != 'true' && (steps.gate.outputs.count != '0' && ((steps.sanity.outcome == 'success' && steps.video.outcome == 'success') || steps.retry.outcome == 'success'))
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && ((github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (steps.length.outputs.skip != 'true' && (steps.gate.outputs.count != '0' && ((steps.sanity.outcome == 'success' && steps.video.outcome == 'success') || steps.retry.outcome == 'success'))))
         continue-on-error: true
         env:
           TIKTOK_CLIENT_KEY: ${{ secrets.TIKTOK_CLIENT_KEY }}
@@ -308,14 +338,14 @@ jobs:
             --video build/soccer/collespo_short.mp4 --kind daily_soccer
 
       - name: Commit record
-        if: always()
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && ((github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (always()))
         run: |
           bash scripts/commit_data.sh \
             "soccer daily: ${{ github.run_id }}" \
             data/published_videos.json data/published_tiktok.json data/soccer_games.json data/token_usage.json data/soccer_availability.json data/soccer_preview_history.json
 
       - name: Save video as artifact
-        if: always()
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && ((github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (always()))
         uses: actions/upload-artifact@v4
         with:
           name: collespo-soccer
@@ -339,13 +369,13 @@ jobs:
       # 試合があった回だけ検品する。開催が無い日は作らないのが正しいので、
       # そこを赤くすると毎週何度も嘘の警報が鳴る。
       - name: Confirm the video went out
-        if: always() && steps.length.outputs.skip != 'true' && steps.gate.outputs.count != '0'
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && ((github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (always() && steps.length.outputs.skip != 'true' && steps.gate.outputs.count != '0'))
         run: |
           python scripts/verify_published.py --kind daily_soccer \
             --games data/soccer_games.json --narration build/soccer_narration.json
 
       - name: Keep unsaved data records
-        if: always() && hashFiles('build/data-save-recovery/**/FAILED') != ''
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && ((github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (always() && hashFiles('build/data-save-recovery/**/FAILED') != ''))
         uses: actions/upload-artifact@v4
         with:
           name: unsaved-data-${{ github.job }}-${{ github.run_attempt }}
@@ -356,7 +386,7 @@ jobs:
           if-no-files-found: error
 
       - name: Save sanity gate records
-        if: always()
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (always())
         uses: actions/upload-artifact@v4
         with:
           name: sanity-gate-${{ github.job }}
@@ -367,7 +397,7 @@ jobs:
           retention-days: 14
 
       - name: Save quota-exceeded thumbnails
-        if: always() && hashFiles('build/thumbnail_pending/**') != ''
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && ((github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (always() && hashFiles('build/thumbnail_pending/**') != ''))
         uses: actions/upload-artifact@v4
         with:
           name: thumbnail-pending
@@ -378,7 +408,7 @@ jobs:
           if-no-files-found: ignore
 
       - name: Save voice and render records
-        if: always()
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (always())
         uses: actions/upload-artifact@v4
         with:
           name: voice-render-records-${{ github.job }}-${{ github.run_attempt }}
@@ -389,3 +419,29 @@ jobs:
             !build/**/portrait/**
           retention-days: 14
           if-no-files-found: ignore
+
+      - name: Mark sample-only execution
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (always() && inputs.sample_only)
+        run: python scripts/sample_only.py --mark build/sample_only.json --require-video
+      - name: Save sample video
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (always() && inputs.sample_only)
+        uses: actions/upload-artifact@v4
+        with:
+          name: sample-soccer_daily
+          path: |
+            build/sample_only.json
+            build/**/*.mp4
+            build/**/audio_mix.json
+            !build/**/portrait/**
+          if-no-files-found: error
+          retention-days: 7
+      - name: Preserve inherited sample-only marker
+        if: always() && steps.sample_source.outputs.allowed == 'false'
+        uses: actions/upload-artifact@v4
+        with:
+          name: sample-inherited-${{ github.job }}
+          path: |
+            build/sample_only.json
+            !build/**/portrait/**
+          if-no-files-found: error
+          retention-days: 3
