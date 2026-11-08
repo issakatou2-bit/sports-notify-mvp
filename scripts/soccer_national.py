@@ -283,9 +283,12 @@ def squad(data, material, as_of, page=0, upcoming=None):
     selected=pages[page] if 0<=page<len(pages) else []
     if not selected:
         return None
+    import soccer_national_pitch as pitch
+    for p in selected:p['league']=pitch.league_for(p['club'])
     return dict(version=1,mode='squad',as_of=as_of,source_url=data['source_url'],
         announced_at=data['announced_at'],page=page,total_pages=len(pages),
-        players=selected,window=data['window'],squad_size=len(players),
+        players=selected,window=data['window'],squad_size=len(players),squad_style=pitch.STYLE,
+        featured_count=len(selected),squad_roster=[squad_player(p) for p in data['players']],
         next_game=next((g for g in sorted(upcoming or [],key=lambda g:g['start_utc']) if instant(g['start_utc'])>instant(as_of)),None))
 
 
@@ -479,6 +482,9 @@ def segments_for(data):
             r=data['next_known'];d=datetime.fromisoformat(r['date_jst'])
             add('next-known',f"日本代表の次の試合は、{d.month}月{d.day}日の{r['competition']}、{r['opponent']}戦です。")
     elif mode=='squad':
+        if data.get('squad_style')=='pitch-v1':
+            import soccer_national_pitch
+            return soccer_national_pitch.segments(data)
         d=instant(data['announced_at']).astimezone(JST)
         add('squad',f"{d.month}月{d.day}日に発表された日本代表の招集メンバーを、所属クラブとともに紹介します。",intro=True)
         for i,p in enumerate(data['players']):
@@ -550,6 +556,9 @@ def check(document):
     try:
         if data.get('mode')=='squad':
             squad_source(data)
+            if data.get('squad_style')=='pitch-v1':
+                import soccer_national_pitch
+                soccer_national_pitch.validate(data)
             seen=set();english_seen=set()
             for p in data['players']:
                 squad_player(dict(p,name_jp=p['name']))
@@ -591,7 +600,6 @@ def check(document):
 
 def speech_readings(document):
     """公式招集台本だけへ読みを渡し、実queryの氏名検査・句結合を保つ。"""
-    if check(document):raise ValueError('招集台本の照合が必要です')
     data=document['national_material'];squad_source(data)
     if data['mode']!='squad':raise ValueError('招集回だけの読みです')
     import name_reading_guard as guard
@@ -605,6 +613,7 @@ def speech_readings(document):
         if not reading or not re.fullmatch(r'[ァ-ヶー]+',reading):
             raise ValueError('招集クラブの読みが未登録です: '+p['club'])
         out[p['club']]=('club',reading)
+    if check(document):raise ValueError('招集台本の照合が必要です')
     return out
 
 

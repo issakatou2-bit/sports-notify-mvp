@@ -101,9 +101,19 @@ class Screen:
                                          at=[x,y], cut=max(1,CAPTION[1]-y))]
         if line and not ctx.get('hide_caption') and not short_common.duplicate_caption(self.im, line):
             import bubble_styles
+            alpha=max(0.,min(1.,float(spec.get('caption_alpha',1.))))
+            before_caption=self.im.copy() if alpha<1 else None
             # 既存の幅・48px起点・数字強調・文節改行を引き継ぐ。
             # 胸上の下端に字幕を後から重ね、切れ目を箱の下へ隠す。
             bubble_styles.draw(self.im, speaker, line, style='slant', box=CAPTION, seconds=elapsed)
+            if before_caption is not None:
+                from PIL import Image
+                info=self.im.info
+                self.im=Image.blend(before_caption,self.im,alpha)
+                self.im.info=info
+            if 'caption_alpha' in spec:
+                self.im.info['caption_alpha']=alpha
+                self.im.info['timeline_subtitle_visible']=alpha>0
         # 出典の長文は2行。日次の詳細出典は従来の説明欄と材料に保持。
         source = spec.get('source', '')
         # 雨衣の回はクレジットが長い（10/26 朝の結果が書き出しで停止）。前置きを詰め、入らなければ字を2段まで小さくする。
