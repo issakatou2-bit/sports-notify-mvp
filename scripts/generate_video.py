@@ -936,6 +936,15 @@ DATA_SOURCES = {
 DATA_SOURCE = DATA_SOURCES["mlb"]
 
 
+def _hold_missing_game(stream, previous, n, game_index):
+    """無い試合は前のコマか背景で埋め、計画のコマ数を保つ。"""
+    print(f"[warn] game_index={game_index!r}の試合がないため、{n}コマを前の画面または背景で埋めます")
+    frame = previous if previous is not None else Image.new("RGB", (W, H), BG).tobytes()
+    for _ in range(n):
+        stream.write(frame)
+    return frame
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--games", default="notable_games.json")
@@ -1009,9 +1018,10 @@ def main():
     total_games = len(games[:3])
 
     # --- 音声を先に連結しておく ---
+    durations = [max(2.0, float(s.get('duration') or 0) or 4.0) for s in segments]
     import short_content
     short_content.require({'segments': segments},
-                          [max(2.0, float(s.get('duration') or 0) or 4.0) for s in segments],
+                          durations,
                           out_dir, games_data, maximum=post_common.MAX_SECONDS+post_common.BUDGET_GRACE, video_name=video_path.name)
     audio_files = [s["file"] for s in segments if s.get("file")]
     audio_path = None
@@ -1025,17 +1035,7 @@ def main():
         return 1
 
     if audio_files:
-        concat_list = out_dir / "audio_list.txt"
-        concat_list.write_text(
-            "\n".join(f"file '{pathlib.Path(a).resolve()}'" for a in audio_files),
-            encoding="utf-8",
-        )
-        audio_path = out_dir / "narration.wav"
-        subprocess.run(
-            ["ffmpeg", "-y", "-f", "concat", "-safe", "0",
-             "-i", str(concat_list), "-c", "copy", str(audio_path)],
-            check=True, capture_output=True,
-        )
+        audio_path = video_common.build_narration_track(segments, durations, out_dir, strict_audio=False)
 
     # --- フレームをffmpegへ直接流し込む ---
     # PNGとしてディスクに書き出すと、2000枚超で圧縮とI/Oに3分近くかかる。
@@ -1068,9 +1068,7 @@ def main():
     # 直前の画面の最後のフレーム。切り替わりの頭だけ、これと混ぜる。
     last_frame = None
     try:
-        for seg_i, seg in enumerate(segments):
-            dur = max(2.0, float(seg.get("duration") or 0) or 4.0)
-            n = int(dur * FPS)
+        for seg_i, (seg, dur, n) in enumerate(zip(segments, durations, video_common.segment_frame_counts(durations, FPS))):
             kind = seg.get("kind")
             # 何枚目かを画面上の目盛りに反映する
             set_step(seg_i, len(segments))
@@ -1081,6 +1079,11 @@ def main():
             still = None
             # 最初の画面は前が無いので混ぜない
             fade = 0 if seg_i == 0 else int(video_common.FADE_SECONDS * FPS)
+            gi = meta.get("game_index", 0)
+            if kind == "game" and not (isinstance(gi, int) and 0 <= gi < len(games)):
+                last_frame = _hold_missing_game(proc.stdin, last_frame, n, gi)
+                frame_no += n
+                continue
             for k in range(n):
                 p_, settled = video_common.anim_step(k, n)
                 if settled and still is not None and not __import__('bubble_styles').selected():
@@ -1094,9 +1097,6 @@ def main():
                     # game_index は notable_games.json の中の位置。
                     # order は読み上げの順番で、画面の「PICK N/3」はこちら。
                     # 冒頭で名乗った試合を先頭へ動かすので、2つは一致しない。
-                    gi = meta.get("game_index", 0)
-                    if gi >= len(games):
-                        continue
                     im = render_game(p_, games[gi],
                                      meta.get("order", gi), total_games)
                 elif kind == "score":

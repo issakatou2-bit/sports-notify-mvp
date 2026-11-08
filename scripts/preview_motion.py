@@ -87,9 +87,9 @@ def main():
         with (folder/'ffmpeg.log').open('w',encoding='utf8') as log:
             proc=subprocess.Popen(command,stdin=subprocess.PIPE,stderr=log)
             try:
-                for i,(seg,dur) in enumerate(zip(narr['segments'],times)):
+                for i,(seg,dur,n) in enumerate(zip(narr['segments'],times,vc.segment_frame_counts(times,a.fps))):
                     r3.set_program_clock(clock);r3.set_caption(seg['text'],dur,sum(times),speaker=seg['speaker'],hide_caption=seg['kind']=='outro')
-                    for k in range(round(dur*a.fps)):
+                    for k in range(n):
                         local=k/a.fps;now=clock+local;r3.set_program_clock(now)
                         im=draw(now,local,seg);info=im.info.get('motion')
                         if info:
