@@ -158,7 +158,9 @@ def race_program(plan):
     cover.update(text=opening['text']);cover['meta'].update(opening_hook=opening)
     keep=sorted(rows,key=lambda r:(r['team']!=primary,abs(r['position']-at),r['position']))[:4]
     keep.sort(key=lambda r:r['position'])
-    scope = f"{meta['title'].replace('　', 'の')}の境目は、{at}位と{at+1}位です。"
+    # 全角の空白を f 文字列の式の中に置くと、検査の Python 3.11 の ast.unparse が扱えない。
+    league = meta['title'].replace('　', 'の')
+    scope = f"{league}の境目は、{at}位と{at+1}位です。"
     row_texts = []
     for row in keep:
         club = ne.club_name_jp(row['team'])
