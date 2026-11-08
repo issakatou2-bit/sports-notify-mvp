@@ -72,7 +72,8 @@ class Readable(unittest.TestCase):
         self.assertEqual([g['minute'] for g in actual],['5','38','51','66','83'])
         body=''.join(e['text'] for im in frames for e in im.info['v3_layout'])
         self.assertIn('町野修斗',body);self.assertIn('宇野禅斗',body)
-        self.assertIn('Ermedin Demirovic',body);self.assertIn('Joe Scally',body)
+        self.assertNotIn('Ermedin Demirovic',body);self.assertNotIn('Joe Scally',body)
+        self.assertIn('VFB',body);self.assertIn('BMG',body)
         self.assertNotIn('情報なし',body)
         self.assertEqual(layout.minimum_seconds(seg,case['data']),8)
 

@@ -1555,6 +1555,13 @@ _PS_ROUND_PATTERN = re.compile(
 )
 
 
+# 表示文を保ち、合成直前だけ使う共通の読み辞書。
+PHRASE_READINGS = {
+    "語る上で": "かたるうえで",
+    "MLB.com": "エムエルビー・ドットコム",
+}
+
+
 def apply_readings(text: str) -> str:
     """
     音声合成へ渡す直前に、選手名を読み仮名へ置き換える。
@@ -1564,6 +1571,8 @@ def apply_readings(text: str) -> str:
     """
     if not text:
         return text
+    from scripts.phrase_readings import apply as apply_phrase_readings
+    text = apply_phrase_readings(text, PHRASE_READINGS)
     from scripts.number_readings import apply as apply_number_readings
     text = apply_number_readings(text)
     from scripts.name_reading_guard import apply as apply_name_readings

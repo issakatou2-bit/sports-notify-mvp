@@ -826,8 +826,15 @@ def jp_date(day: str) -> str:
 def build_narration(data: dict, mode: str = "all") -> dict:
     import sanity_sources
     import voices_context
+    import short_renewal
     import morning_topics
-    return morning_topics.attach(sanity_sources.attach(voices_context.attach(_build_narration(data, mode), data), data), data, mode)
+    material = data.get('reporters' if mode == 'press' else 'voices') or {}
+    if material.get('short_content_version') == '1108':
+        data = dict(data, short_content_version='1108')
+    document = _build_narration(data, mode)
+    if data.get('short_content_version') == '1108':
+        document = short_renewal.morning(document, data, mode)
+    return morning_topics.attach(sanity_sources.attach(voices_context.attach(document,data),data),data,mode)
 
 
 def _build_narration(data: dict, mode: str = "all") -> dict:
@@ -1477,9 +1484,15 @@ def _build_narration(data: dict, mode: str = "all") -> dict:
         "meta": {},
     })
     # 成績の回は、2人が交代で読む。
-    if mode in ('voices','press'):
+    if mode in ('voices','press') and data.get('short_content_version') == '1108':
+        import morning_content
+        segments=morning_content.edit(data,mode,segments,dict(date=day_iso,mode=mode))
         import content_v3
-        segments=content_v3.quotes(segments,data,mode)
+        if mode=='press':
+            segments=content_v3.quotes(segments,data,mode)
+    elif mode in ('voices', 'press'):
+        import content_v3
+        segments = content_v3.quotes(segments, data, mode)
     if mode == "players":
         import content_v3
         segments = content_v3.players(segments,players,day)
@@ -1499,7 +1512,7 @@ def _build_narration(data: dict, mode: str = "all") -> dict:
     if mode=='voices' and os.environ.get('COLLESPO_COMMENTS_DESIGN','legacy')=='comments':
         import duo
         voice_day=data.get('date_jst') or (data.get('voices') or {}).get('updated_at')
-        if duo.enabled('voices',voice_day):
+        if duo.enabled('voices',voice_day) and not any((s.get('meta') or {}).get('duo') for s in result['segments']):
             result['segments']=duo.voices(segments)
             result['duration_budget']={'limit':45,'grace':0}
     if mode=='players':
@@ -4373,6 +4386,9 @@ def main():
             at=next_line.publication_time(recap_day(data),clock)
             data['next_line']=next_line.acquire(MODE_KIND.get(args.mode,''),at,players[0].get('team_id') if players else None,args.next_schedule)
         narration = build_narration(data, args.mode)
+        if narration.get('opening_hold'):
+            print('[info] '+narration['opening_hold'])
+            return
         if args.mode == 'press':
             import hook_ab
             narration = hook_ab.prepare(narration, 'morning_press', hook_ab.publication_day(args.publish_at))
@@ -4403,15 +4419,23 @@ def main():
     #
     # 数えるのは画面の数ではなく素材の件数。見出し1件でも画面は作れてしまう。
     if args.mode == "press":
-        rep = reporters_data.get("posts") or []
-        hds = reporters_data.get("headlines") or []
-        items = len(rep) + len(hds)
-        if items < MIN_PRESS_ITEMS:
-            morning_topics.record_skip('morning_press', edition,
-                f'直近7日の題材を除外後の報道が{items}件（最低{MIN_PRESS_ITEMS}件）')
-            print(f"[info] 現地の報道が{items}件しかないため、"
-                  f"報道編は作りません(最低{MIN_PRESS_ITEMS}件)")
-            return
+        if narration.get('short_content_version') == '1108':
+            import morning_content
+            if morning_content.press_story(reporters_data) is None:
+                reason='本文・要約を2文以上確認できる報道がないため、報道編は作りません'
+                morning_topics.record_skip('morning_press', edition, reason)
+                print('[info] '+reason)
+                return
+        else:
+            rep = reporters_data.get("posts") or []
+            hds = reporters_data.get("headlines") or []
+            items = len(rep) + len(hds)
+            if items < MIN_PRESS_ITEMS:
+                morning_topics.record_skip('morning_press', edition,
+                    f'直近7日の題材を除外後の報道が{items}件（最低{MIN_PRESS_ITEMS}件）')
+                print(f"[info] 現地の報道が{items}件しかないため、"
+                      f"報道編は作りません(最低{MIN_PRESS_ITEMS}件)")
+                return
 
     # 進出争いが終わっていたら、進出争いの回は作らない。
     #

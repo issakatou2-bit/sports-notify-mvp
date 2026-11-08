@@ -855,6 +855,7 @@ def main():
              "18:00の「ファンのコメント欄」は、鮮度が足りなければ出ません")
         return
 
+    data['short_content_version'] = '1108'
     out = pathlib.Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")

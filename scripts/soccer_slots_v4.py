@@ -78,7 +78,14 @@ def preview_program(data):
     names={g[s+'_team_name'] for g in games for s in ('home','away')};clubs=clubs_for(names)
     lead=games[0];people={}
     for g in games:
-        people[str(g['game_id'])]={s:(g.get('jp_by_side') or {}).get(s) or [p['name_jp'] for p in ne.jp_players_for_club(clubs[g[s+'_team_name']]['team_en'])] for s in ('home','away')}
+        known = g.get('jp_by_side') or {}
+        people[str(g['game_id'])] = {}
+        for side in ('home', 'away'):
+            if isinstance(known.get(side), list):
+                names = list(known[side])
+            else:
+                names = [p['name_jp'] for p in ne.jp_players_for_club(clubs[g[side+'_team_name']]['team_en'])]
+            people[str(g['game_id'])][side] = names
     jp=people[str(lead['game_id'])];who=next((n for s in ('home','away') for n in jp[s]),'日本人選手')
     at=kickoff(lead,data['generated_at']);club=lead['home_team_name'] if jp['home'] else lead['away_team_name']
     head=f"{who}の{ne.club_name_jp(club)}が{ne.club_name_jp(lead['away_team_name'] if jp['home'] else lead['home_team_name'])}と対戦"
@@ -183,7 +190,12 @@ def package(mode,data,segs,names,head,clubs=None):
         plan=dict(mode=mode,data=data,narration=narration,shared=shared)
         __import__('short_context').slots(plan, modern=True)
         race_details(plan)
+    if mode=='race' and soccer_look.readable() and data.get('short_content_version') == '1108':
+        import short_renewal
+        edited=short_renewal.race_program(dict(mode=mode,data=data,narration=narration,shared=shared,clubs=clubs or clubs_for(names)))
+        narration=edited['narration'];clubs=edited['clubs']
     narration = short_common.prepare(narration)
+    narration = json.loads(json.dumps(narration, ensure_ascii=False))
     import host_split
     narration = host_split.adapt(narration, 'daily_soccer' if mode == 'preview' else 'soccer_'+mode)
     return dict(mode=mode,data=data,clubs=clubs or clubs_for(names),narration=narration,shared=shared)
@@ -240,6 +252,9 @@ def race_details(plan):
 
 @motion.slot('soccer')
 def frame(t,seg,plan):
+    if seg.get('meta',{}).get('opening_hook'):
+        import short_renewal
+        return short_renewal.hook_frame(t,seg['meta']['opening_hook'],plan['clubs'],seg['meta'])
     if not enabled():raise ValueError('v3の描画は既存の入口を使う')
     import soccer_title_v2
     if soccer_title_v2.enabled() and not soccer_look.focus() and seg['kind']=='cover' and seg['meta'].get('title_focus'):

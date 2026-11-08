@@ -728,6 +728,7 @@ def main():
     out = pathlib.Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps({
+        "short_content_version": "1108",
         "updated_at": datetime.now(timezone.utc).isoformat(),
         "hours": args.hours,
         "reporters": len(REPORTERS),

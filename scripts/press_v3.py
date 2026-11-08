@@ -9,6 +9,10 @@ import review_render_v3 as r3
 def selected(seg, reporters):
     import generate_morning_short as g
     import local_reporters as lr
+    import morning_content
+    story = morning_content.selected_press(seg, reporters)
+    if story is not None:
+        return story
     kind, meta = seg["kind"], seg.get("meta") or {}
     if kind in {"intro", "headlines"}:
         rows = reporters.get("headlines") or []
@@ -33,6 +37,11 @@ def bubbles(seg, reporters):
         rows=seg['meta']['quote_rows']
         allowed={body for _,body in selected({'kind':'reporters'},reporters)}
         allowed.update(h.get('jp') or h.get('title','') for h in reporters.get('headlines',[]))
+        import morning_content
+        allowed.update(part for collection in ('headlines','posts') for row in reporters.get(collection,[])
+                       for part in morning_content.press_parts(row,collection))
+        if (seg.get('meta') or {}).get('press_story'):
+            selected(seg, reporters)
         if any(not v.get('fact') and v['said'] not in allowed for v in rows):
             raise ValueError('引用区間の報道が原材料にありません')
         return rows

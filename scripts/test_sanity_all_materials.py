@@ -63,7 +63,7 @@ class AllMaterials(unittest.TestCase):
                     self.assertFalse(report['blocking_issues'])
                     self.assertTrue(report['odd'][0]['supported'])
                     self.assertEqual(report['odd'][0]['severity'], 'high')
-                    self.assertEqual(json.loads(Path('hold.json').read_text())['status'], 'passed')
+                    self.assertEqual(json.loads(Path('hold.json').read_text(encoding='utf-8'))['status'], 'passed')
 
     def test_wrong_affiliation_rank_points_boundary_and_series_stop_without_ai(self):
         for text in ('前田大然のセルティック。', '遠藤航のリバプール。4位で勝点12。',

@@ -20,7 +20,7 @@ def read(name):
 
 
 def original(name):
-    result = subprocess.run(['git','show','HEAD:scripts/'+name+'.py'], cwd=ROOT,
+    result = subprocess.run(['git','show','b1bdd775:scripts/'+name+'.py'], cwd=ROOT,
         capture_output=True, check=True)
     module = types.ModuleType('baseline_'+name)
     module.__file__ = str(ROOT/'scripts'/(name+'.py'))

@@ -178,6 +178,11 @@ def roster_screen(t,data,meta,clubs,spec):
 
 
 def frame(t,seg,data,clubs=None):
+    import short_renewal
+    if seg.get('meta',{}).get('opening_hook'):
+        return short_renewal.hook_frame(t,seg['meta']['opening_hook'],clubs or resolve_clubs(data),program_spec(data))
+    if seg['kind']=='impact-context':
+        return short_renewal.fact_frame(t,seg,clubs or resolve_clubs(data),program_spec(data))
     import soccer_title_v2
     if soccer_title_v2.enabled() and seg['meta'].get('title_focus_v2') and seg['kind'] in ('intro','followup'):
         focus = soccer_title_v2.result_focus(data)
@@ -361,6 +366,10 @@ def goal_short_narration(data):
 @short_common.narration
 def production_narration(data, *, goal_short=False):
     """速報は既存の得点導入、朝の結果は既存の注目試合導入を使う。"""
+    if not goal_short and (data.get('short_content_version') == '1108'
+                           or data.get('selection_policy') == 'japanese_goal_or_assist'):
+        import short_renewal
+        return __import__('host_split').adapt(short_renewal.result_program(data), 'soccer_results')
     import soccer_title_v2
     if soccer_title_v2.enabled() and not goal_short:
         return __import__('host_split').adapt(soccer_title_v2.result_narration(data), 'soccer_results')

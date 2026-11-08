@@ -40,9 +40,9 @@ def minimum_seconds(seg, data=None):
 
 
 class Screen:
-    def __init__(self, clubs, t=3):
+    def __init__(self, clubs, t=3, label='欧州サッカー'):
         self.clubs, self.t = clubs, t
-        self.im = c.canvas(t, clubs, '欧州サッカー')
+        self.im = c.canvas(t, clubs, label)
         self.im.info.update(soccer_readable=True, semantic_items=[], readable_motion='フェードイン 0.35秒・以後停止')
 
     def text(self, x, y, value, size=44, width=800, color=None, number=False, role='text'):
@@ -198,16 +198,21 @@ class Screen:
         height=sum(heights)+24*(len(rows)-1)
         if height>BODY_BOTTOM-BODY_TOP:raise ValueError('代表番組の補足は次画面が必要です')
         top=BODY_TOP+(BODY_BOTTOM-BODY_TOP-height)//2
-        y=top
-        for (label, value),height in zip(rows,heights):
+        y=top;visible_bottom=top
+        for index,((label, value),height) in enumerate(zip(rows,heights)):
+            from short_renewal import row_state
+            visible,numbers=row_state(self.t,spec,index)
             bottom=y+height
+            if not visible:
+                y=bottom+24
+                continue
             if bottom>BODY_BOTTOM:
                 raise ValueError('代表番組の補足は次画面が必要です')
-            self.panel(y,bottom)
+            self.panel(y,bottom);visible_bottom=bottom
             self.text(100,y+18,label,30,800,c.MUTED,role='supplement')
-            self.lines(100,y+70,value,size,800,role='national_fact')
+            if numbers or not any(char.isdigit() for char in str(value)):self.lines(100,y+70,value,size,800,role='national_fact')
             y=bottom+24
-        self.im.info['preview_body']=[L,top,R,y-24]
+        self.im.info['preview_body']=[L,top,R,visible_bottom if spec.get('progressive_rows') else y-24]
         return self.finish(spec)
 
     def mini_row(self, y, s):
@@ -373,18 +378,30 @@ class Screen:
         height=(bottom-top)//max(1,len(shown))
         for x,label,width in [(96,'順位',100),(220,'クラブ',420),(710,'試合',90),(830,'勝点',100)]:
             self.text(x,390,label,30,width,c.MUTED,role='supplement')
+        visible_rows=[]
         for i,row in enumerate(shown):
+            from short_renewal import row_state
+            visible,values=row_state(self.t,spec,i)
+            if not visible:continue
+            visible_rows.append(row)
             y=top+i*height;self.panel(y,y+height-14)
-            self.text(100,y+44,row['position'],60,90,number=True)
-            self.name(220,y+38,row['team'],450,40)
-            self.text(714,y+44,row['played'],60,80,number=True)
-            self.text(832,y+30,row['points'],80,84,c.LIME,True)
+            if row['team']==spec.get('primary'):
+                ImageDraw.Draw(self.im).rectangle((L,y,L+8,y+height-14),fill=c.LIME)
+            self.name(220,y+38,row['team'],450,44 if row['team']==spec.get('primary') else 40)
+            if values:
+                self.text(100,y+44,row['position'],60,90,number=True)
+                if row.get('played') is not None:self.text(714,y+44,row['played'],60,80,number=True)
+                self.text(832,y+30,row['points'],80,84,c.LIME,True)
             if row['position'] in labels:
                 label=labels[row['position']]
                 color=c.LINE_COLORS.get(c.original._line_kind(label),c.MUTED)
                 self.text(100,y+height-66,label,30,800,color,role='supplement')
                 ImageDraw.Draw(self.im).line((L,y+height-16,R,y+height-16),fill=color,width=3)
-        if spec.get('gap'):
+        if spec.get('progressive_rows'):
+            self.im.info['readable_rows']=visible_rows
+            self.im.info['preview_body']=[L,top,R,top+len(visible_rows)*height-14]
+        if spec.get('gap') and (not spec.get('progressive_rows') or row_state(self.t,spec,len(shown)-1)[1]):
+            if spec.get('progressive_rows'):self.im.info['preview_body'][3]=BODY_BOTTOM
             self.panel(1318,BODY_BOTTOM)
             self.name(100,1336,spec['focus'],400,40)
             self.text(520,1352,spec['gap'],30,390,c.LIME,role='supplement')
@@ -530,7 +547,7 @@ class Screen:
         score=self.running_scores(game)
         rows=[]
         for g in shown:
-            name=(facts.scorer_name(g) or g.get('scorer') or '').strip()
+            name=facts.scorer_name(g).strip()
             if name in ('得点者不明','不明','情報なし'):name=''
             scorer=('OG '+name if g['own_goal'] else name) if name else 'オウンゴール' if g['own_goal'] else ''
             scorer_rows=c.lines(scorer,48,R-306-190) if scorer else []
@@ -597,7 +614,7 @@ class Screen:
         size=64 if len(shown)==1 else 44
         for g in shown:
             # 名前がない行を埋め草で増やさず、同じ画面の開始位置をそろえる。
-            name=(facts.scorer_name(g) or g.get('scorer') or '').strip()
+            name=facts.scorer_name(g).strip()
             if name in ('得点者不明','不明','情報なし'):name=''
             assists=facts.assist_names(g)
             label='オウンゴール' if g['own_goal'] else '得点'
@@ -619,7 +636,7 @@ class Screen:
 
 
 def slots_frame(t, seg, plan):
-    s=Screen(plan['clubs'],t);kind=seg['kind'];spec=seg['meta']
+    spec=seg['meta'];s=Screen(plan['clubs'],max(.35,t) if spec.get('progressive_rows') else t);kind=seg['kind']
     if kind=='jp_roster':return s.roster(spec)
     if kind=='standings':return s.standings(spec)
     if plan['mode']=='preview' and kind in ('cover','preview'):
@@ -659,7 +676,7 @@ def results_frame(t,seg,data,clubs,spec):
         return s.goals(game,seg['meta'].get('goals',game['goals']),spec)
     if seg['kind']=='intro':
         person=next(p for p in data['players'] if p['name']==seg['meta']['player_detail']) if seg['meta'].get('player_detail') else next(p for p in data['players'] if p['status']!='none')
-        return s.score(game,spec,person['name']+'の試合結果',person)
+        return s.score(game,spec,person['name']+'の試合結果',person,score_only=True)
     if seg['kind']=='roster':
         rows=[p for p in data['players'] if p['status']!='none' and str(p['event_id']) not in seg['meta'].get('exclude_events',[] )]
         if not seg['meta'].get('player_names'):rows=rows[:seg['meta']['count']]

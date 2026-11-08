@@ -106,13 +106,24 @@ def measured(mode, data, narr, audio):
     return [math.ceil(t * render.FPS) / render.FPS for t in times]
 
 
+def target_seconds(narr):
+    if narr.get('short_content_version') != '1108':
+        return 27.0
+    import short_content
+    short_outro = any(seg.get('kind') == 'outro' and seg.get('meta', {}).get('short_outro')
+                      for seg in narr.get('segments', []))
+    minimum = short_content.SHORT_MIN_SECONDS if short_outro else short_content.MIN_SECONDS
+    return minimum - short_content.SHORT_GRACE
+
+
 def fit(mode, data, narr, audio, directory, *, measure=measured, rebuild=None):
     if not soccer_look.focus():
         return narr, audio, False
     import soccer_result_story as story
     rebuild = rebuild or story.rebuild_voice
     narr, audio = copy.deepcopy(narr), copy.deepcopy(audio)
-    while sum(measure(mode, data, narr, audio)) < 27 - 1e-6:
+    target = target_seconds(narr)
+    while sum(measure(mode, data, narr, audio)) < target - 1e-6:
         options = candidates(mode, data, narr)
         if not options:
             return narr, audio, True
@@ -145,7 +156,7 @@ def main():
     manifest = read(manifest_path)
     narr, audio, skip = fit(args.mode, read(args.data), narr, manifest['segments'], args.audio_dir)
     write(args.audio_dir/'minimum_result.json', dict(status='skipped' if skip else 'ready',
-          reason='追加できる未使用の事実がないため27秒未満の回を見送ります' if skip else '',
+          reason=f'追加できる未使用の事実がないため{target_seconds(narr):g}秒未満の回を見送ります' if skip else '',
           repairs=narr.get('minimum_repair', [])))
     write(args.narration, narr)
     if manifest.get('narration_path') and Path(manifest['narration_path']) != args.narration:
@@ -158,10 +169,10 @@ def main():
         with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf8') as stream:
             stream.write('skip='+str(skip).lower()+'\n')
     if skip:
-        print('::notice::追加できる事実がなく27秒未満のため制作を見送ります')
+        print(f'::notice::追加できる事実がなく{target_seconds(narr):g}秒未満のため制作を見送ります')
         if os.environ.get('GITHUB_STEP_SUMMARY'):
             with open(os.environ['GITHUB_STEP_SUMMARY'], 'a', encoding='utf8') as stream:
-                stream.write('\n27秒未満。未使用の事実がないため制作見送り（正常終了）。\n')
+                stream.write(f'\n{target_seconds(narr):g}秒未満。未使用の事実がないため制作見送り（正常終了）。\n')
 
 
 if __name__ == '__main__':
