@@ -257,7 +257,8 @@ def pick_voice(voices: dict, feed: dict, after: str, words: dict,
 def pick_reporter(quotes: list, team_jp: str, after: str, words: dict,
                   table: dict, jp: dict, jp_names: list):
     """その球団の番記者の、試合が始まった後の投稿から1つ。"""
-    rows = [x for x in quotes if x.get("team") == team_jp and x.get("jp")
+    from ps_quotes import usable_posts
+    rows = [x for x in usable_posts(quotes) if x.get("team") == team_jp and x.get("jp")
             and (x.get("at") or "") >= after]
     rows.sort(key=lambda x: (-(any(n in (x.get("jp") or "") for n in jp_names)),
                              -(("“" in (x.get("text") or "")) or ('"' in (x.get("text") or ""))),
@@ -630,10 +631,8 @@ def main() -> int:
         voices = json.loads(pathlib.Path(args.voices).read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError):
         voices = {}
-    try:
-        quotes = json.loads(pathlib.Path(args.quotes).read_text(encoding="utf-8")).get("posts") or []
-    except (OSError, json.JSONDecodeError):
-        quotes = []
+    from ps_quotes import load as load_quotes
+    quotes = load_quotes(args.quotes)
     try:
         headlines = json.loads(pathlib.Path(args.headlines).read_text(encoding="utf-8")).get("headlines") or []
     except (OSError, json.JSONDecodeError):

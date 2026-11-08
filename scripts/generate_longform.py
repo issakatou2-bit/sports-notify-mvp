@@ -957,17 +957,17 @@ def main() -> int:
     current = None                      # 指定が無ければ直前の札が残る
     # まばたきは動画1本ぶんの通し番号で決める。区間ごとに作ると
     # 台詞が変わるたびに必ず1回まばたきすることになる。
-    total_frames = sum(int(d * FPS) for _, d in pages)
+    frame_counts = video_common.segment_frame_counts([d for _, d in pages], FPS)
+    total_frames = sum(frame_counts)
     blinks = {s["name"]: video_common.blink_frames(total_frames, FPS,
                                                    s["name"])
               for s in SPEAKERS.values()}
     frame0 = 0
     try:
-        for i, (seg, dur) in enumerate(pages):
+        for i, ((seg, dur), n) in enumerate(zip(pages, frame_counts)):
             timeline.select(seg, i, page=i)
             if seg.get("panel"):
                 current = cards.get(seg["panel"])
-            n = int(dur * FPS)
             fade = 0 if i == 0 else int(video_common.FADE_SECONDS * FPS)
             is_intro = seg.get("kind") in ("intro", "outro")
             talking = _speaker(seg)["name"]

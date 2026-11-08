@@ -110,10 +110,10 @@ def main():
     with (args.out/'ffmpeg.log').open('w') as log, patch.object(characters, 'bust', preview_bust), patch.object(r3, 'source', preview_source):
         process = subprocess.Popen(command, stdin=subprocess.PIPE, stderr=log)
         try:
-            for i, (seg, duration) in enumerate(zip(narration['segments'], times)):
+            for i, (seg, duration, n) in enumerate(zip(narration['segments'], times, vc.segment_frame_counts(times, fps))):
                 r3.set_program_clock(clock)
                 r3.set_caption(seg['text'], duration, sum(times), speaker=2, hide_caption=seg['kind']=='outro')
-                for k in range(round(duration*fps)):
+                for k in range(n):
                     r3.set_program_clock(clock+k/fps)
                     im = bn.frame(clock+k/fps, plan)
                     from PIL import ImageDraw
@@ -121,7 +121,7 @@ def main():
                         draw = ImageDraw.Draw(im)
                         draw.rectangle((0, 0, im.width, 46), fill=(28, 41, 51))
                         draw.text((24, 6), '雨衣の立ち絵試作（声未生成・口は閉じたまま）', font=r3.font(24), fill='white')
-                    if k == min(round(1.5*fps), round(duration*fps)-1):
+                    if k == min(round(1.5*fps), n-1):
                         im.save(args.out/f'{i+1:02d}.png')
                         portraits = im.info.get('duo_portraits', [])
                         if not portraits or {p['who'] for p in portraits} != {'ui'}:

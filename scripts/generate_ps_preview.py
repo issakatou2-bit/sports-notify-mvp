@@ -165,11 +165,11 @@ def movie(context, script, audio_dir, out, require_audio):
         cmd += ['-c:a', 'aac', '-b:a', '160k', '-shortest']
     cmd += [str(video)]
     with subprocess.Popen(cmd, stdin=subprocess.PIPE) as process:
-        for i, (segment, duration) in enumerate(zip(script['segments'], durations)):
+        for i, (segment, duration, n) in enumerate(zip(script['segments'], durations, vc.segment_frame_counts(durations, FPS))):
             im = render(context, segment)
             im.save(out / f'ps_preview_{i:02}.png')
             frame = im.tobytes()
-            for _ in range(round(duration * FPS)):
+            for _ in range(n):
                 process.stdin.write(frame)
         process.stdin.close()
         if process.wait():

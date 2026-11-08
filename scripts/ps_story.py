@@ -282,7 +282,8 @@ QUOTE_WORDS = ("season", "series", "postseason", "playoff", "lost", "over",
 
 def pick_quote(quotes: list, team: str, table: dict, jp: dict):
     """その球団の番記者の投稿から1つ。引用符を含み、シーズンや敗退の話を優先。"""
-    rows = [x for x in quotes if x.get("team") == team and x.get("jp")
+    from ps_quotes import usable_posts
+    rows = [x for x in usable_posts(quotes) if x.get("team") == team and x.get("jp")
             and ("“" in x.get("text", "") or '"' in x.get("text", ""))]
     rows.sort(key=lambda x: (-sum(w in x.get("text", "").lower() for w in QUOTE_WORDS),
                              -(x.get("likes") or 0)))
@@ -337,10 +338,8 @@ def main() -> int:
     except (OSError, json.JSONDecodeError) as e:
         print(f"[info] PSの材料を読めません({e})")
         return 0
-    try:
-        quotes = json.loads(pathlib.Path(args.quotes).read_text(encoding="utf-8")).get("posts") or []
-    except (OSError, json.JSONDecodeError):
-        quotes = []
+    from ps_quotes import load as load_quotes
+    quotes = load_quotes(args.quotes)
     topics = build(ps, quotes)
     pathlib.Path(args.out).write_text(json.dumps(
         {"updated_at": datetime.now(timezone.utc).isoformat(),

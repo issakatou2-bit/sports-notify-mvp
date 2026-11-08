@@ -14,6 +14,20 @@ from datetime import datetime, timedelta, timezone
 KEEP_DAYS = 10
 
 
+def usable_posts(posts: list) -> list:
+    """添付情報のある保存行にも、収集時と同じ単独で読める条件を適用する。"""
+    from local_reporters import embed_dependent
+    return [p for p in posts if not embed_dependent(p.get('text') or '', p.get('embed'))]
+
+
+def load(path) -> list:
+    try:
+        posts = json.loads(pathlib.Path(path).read_text(encoding='utf-8')).get('posts') or []
+    except (OSError, json.JSONDecodeError):
+        return []
+    return usable_posts(posts)
+
+
 def merge(store: list, posts: list, now: datetime) -> list:
     from local_reporters import guard_translation
     out = []
@@ -44,7 +58,7 @@ def merge(store: list, posts: list, now: datetime) -> list:
         if same_source and item.get('jp'):
             out[index] = {**old, **item}
     cut = (now - timedelta(days=KEEP_DAYS)).isoformat()
-    return [x for x in out if (x.get("at") or "") >= cut[:19]]
+    return usable_posts([x for x in out if (x.get("at") or "") >= cut[:19]])
 
 
 def main() -> int:
@@ -54,13 +68,10 @@ def main() -> int:
         posts = json.loads(src.read_text(encoding="utf-8")).get("posts") or []
     except (OSError, json.JSONDecodeError):
         posts = []
-    try:
-        store = json.loads(dst.read_text(encoding="utf-8")).get("posts") or []
-    except (OSError, json.JSONDecodeError):
-        store = []
+    store = load(dst)
     now = datetime.now(timezone.utc)
-    keep = ("team", "author", "outlet", "handle", "text", "jp", "likes", "at", "uri")
-    merged = merge(store, [{k: p.get(k) for k in keep} for p in posts], now)
+    keep = ("team", "author", "outlet", "handle", "text", "jp", "likes", "at", "uri", "embed")
+    merged = merge(store, [{k: p[k] for k in keep if k in p} for p in posts], now)
     dst.write_text(json.dumps({"updated_at": now.isoformat(), "posts": merged},
                               ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"[info] 番記者の投稿 {len(merged)}件（新しく{len(merged) - len(store)}件）")

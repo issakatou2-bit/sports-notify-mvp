@@ -496,8 +496,7 @@ def main():
                             stdout=subprocess.DEVNULL, stderr=err_file)
     total = 0
     try:
-        for seg, dur in zip(segs, durations):
-            n = int(dur * FPS)
+        for seg, dur, n in zip(segs, durations, video_common.segment_frame_counts(durations, FPS)):
             kind, meta = seg.get("kind"), seg.get("meta") or {}
             cached = None
             still = None

@@ -22,6 +22,23 @@ from PIL import ImageChops, ImageDraw, ImageFilter, ImageFont, Image
 import wave
 import subprocess
 import pathlib
+
+
+def segment_frame_counts(durations, fps):
+    """音声と同じ通算秒を丸め、各区間のコマ数を返す。
+
+    合計は round(sum(durations) * fps)。途中の境界も音声の開始から
+    最大半コマだけの差に収まり、区間数に応じた誤差が積み重ならない。
+    """
+    durations = list(durations)
+    previous = 0
+    counts = []
+    for end_index in range(1, len(durations) + 1):
+        end = round(sum(durations[:end_index]) * fps)
+        counts.append(end - previous)
+        previous = end
+    return counts
+
 # ---------------------------------------------------------------------------
 # 画面の切り替え
 # ---------------------------------------------------------------------------
@@ -402,11 +419,22 @@ def short_effects(im,t,quote=False,score=False):
 # generate_verdict_short / generate_weekly の4本にもある。
 # 4つとも少しずつ違っていて、統合は別途(短編を測っている最中に
 # 4か所を同時に触らない)。ここは長編のための正本。
-def build_narration_track(segs, durations, out_dir):
+def build_narration_track(segs, durations, out_dir, *, strict_audio=True):
     import solo_host
-    solo_host.validate_audio(segs)
+    try:
+        solo_host.validate_audio(segs)
+    except ValueError as exc:
+        if strict_audio:
+            raise
+        print(f"[warn] 音声の話者確認: {exc}")
     import lipsync
-    lipsync.prepare(segs, durations, out_dir)
+    try:
+        lipsync.prepare(segs, durations, out_dir)
+    except (ValueError, KeyError, OSError) as exc:
+        if strict_audio:
+            raise
+        lipsync.TRACK.clear()
+        print(f"[warn] 口パク情報を使わず音声結合を続けます: {exc}")
     if not any(s.get("file") for s in segs):
         return None
     params = None
@@ -421,24 +449,60 @@ def build_narration_track(segs, durations, out_dir):
     pad_dir = out_dir / "silence"
     pad_dir.mkdir(parents=True, exist_ok=True)
     parts = []
+    sample_counts = segment_frame_counts(durations, params.framerate)
+    target_end = written_samples = 0
+    adjusted = False
     for i, (seg, dur) in enumerate(zip(segs, durations)):
         spoken = 0.0
         path = seg.get("file")
         if path and pathlib.Path(path).exists():
             with wave.open(path, "rb") as w:
                 spoken = w.getnframes() / float(w.getframerate())
+            if spoken - dur > 0.02 + 1e-9:
+                raise ValueError("音声が計画の区間尺を0.02秒より長く超えています")
             parts.append(pathlib.Path(path).resolve())
-        gap = dur - spoken
-        if gap <= 0.02:
+            written_samples += round(spoken * params.framerate)
+        target_end += sample_counts[i]
+        # 半サンプルの丸めなどで足りない分は、次の余白へ持ち越す。
+        n = target_end - written_samples
+        if n < 0:
+            adjusted = True
+            continue
+        if n == 0:
             continue
         sil = pad_dir / f"pad_{i:03d}.wav"
         with wave.open(str(sil), "wb") as w:
             w.setnchannels(params.nchannels)
             w.setsampwidth(params.sampwidth)
             w.setframerate(params.framerate)
-            n = int(gap * params.framerate)
             w.writeframes(b"\x00" * (n * params.nchannels * params.sampwidth))
         parts.append(sil.resolve())
+        written_samples += n
+
+    # 次の余白で吸収できなかった端数は末尾で調整。元の音声は書き換えない。
+    excess = max(0, written_samples - target_end)
+    while excess and parts:
+        tail = parts.pop()
+        with wave.open(str(tail), "rb") as source:
+            frames = source.getnframes()
+            keep = max(0, frames - excess)
+            excess -= frames - keep
+            if keep:
+                trimmed = pad_dir / f"trim_{len(parts):03d}.wav"
+                with wave.open(str(trimmed), "wb") as dest:
+                    dest.setparams(source.getparams())
+                    dest.setnframes(keep)
+                    left = keep
+                    width = source.getnchannels() * source.getsampwidth()
+                    while left:
+                        block = source.readframes(min(left, 65536))
+                        if not block:
+                            break
+                        dest.writeframesraw(block)
+                        left -= len(block) // width
+                parts.append(trimmed.resolve())
+    if adjusted:
+        print("[warn] 音声の0.02秒以内の超過・丸め端数を次の余白または末尾で調整しました")
 
     lst = out_dir / "audio_list.txt"
     lst.write_text("\n".join(f"file '{p}'" for p in parts), encoding="utf-8")
