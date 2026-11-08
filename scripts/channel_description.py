@@ -1,5 +1,7 @@
-"""チャンネル紹介文の先頭1行だけを置き換える。
+"""チャンネル紹介文を置き換える。
 
+既定は先頭1行だけ。--full で data/channel_description.txt の全文に置き換える
+（11/8 本人了承の刷新。Studio は名前の変更で本人確認を求め保存できないため、説明は API で）。
 既定は表示のみ。--write を付けたときだけ反映する。
 キーワードなど他の設定は、読んだ値をそのまま戻す。
 """
@@ -23,6 +25,22 @@ def replace_first_line(description):
     return NEW_FIRST_LINE + sep + rest
 
 
+FULL_TEXT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                         "data", "channel_description.txt")
+
+
+def replace_full(description, text):
+    """今の紹介文が想定どおり（前回の先頭行か、すでに新しい全文）の時だけ全文を返す。"""
+    text = (text or "").strip()
+    if not description or not text:
+        return None
+    if description.strip() == text:
+        return text
+    if description.partition("\n")[0].strip() != NEW_FIRST_LINE:
+        return None
+    return text
+
+
 def client():
     from google.oauth2.credentials import Credentials
     from googleapiclient.discovery import build
@@ -36,6 +54,7 @@ def client():
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--write", action="store_true", help="実際に反映する(既定は表示のみ)")
+    ap.add_argument("--full", action="store_true", help="data/channel_description.txt の全文に置き換える")
     args = ap.parse_args()
 
     yt = client()
@@ -46,7 +65,11 @@ def main():
         return 1
     bs = items[0].get("brandingSettings") or {}
     ch = bs.get("channel") or {}
-    new = replace_first_line(ch.get("description"))
+    if args.full:
+        with open(FULL_TEXT, encoding="utf-8") as f:
+            new = replace_full(ch.get("description"), f.read())
+    else:
+        new = replace_first_line(ch.get("description"))
     if new is None:
         print("[error] 先頭の行が想定と違うので変更しません", file=sys.stderr)
         return 1
