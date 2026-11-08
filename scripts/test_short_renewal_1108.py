@@ -14,7 +14,8 @@ import review_render_v3 as r3
 
 
 def data():
-    return json.loads((ROOT/'scripts/fixtures/soccer-results/run-40249272204.json').read_text(encoding='utf-8'))
+    material = json.loads((ROOT/'scripts/fixtures/soccer-results/run-40249272204.json').read_text(encoding='utf-8'))
+    return dict(material, short_content_version='1108')
 
 
 class Renewal(unittest.TestCase):
@@ -111,7 +112,7 @@ class Renewal(unittest.TestCase):
     def test_race_has_three_or_four_rows_and_japanese_club_is_primary(self):
         from test_soccer_race_length import material
         import soccer_slots_v4 as slots
-        original=material(28);saved=copy.deepcopy(original)
+        original=dict(material(28),short_content_version='1108');saved=copy.deepcopy(original)
         plan=slots.race_program(original);segs=plan['narration']['segments']
         self.assertEqual([s['kind'] for s in segs],['cover','standings','outro'])
         meta=segs[1]['meta'];self.assertTrue(3<=len(meta['rows'])<=4)
@@ -123,7 +124,7 @@ class Renewal(unittest.TestCase):
     def test_table_values_wait_for_their_spoken_row(self):
         from test_soccer_race_length import material
         import soccer_slots_v4 as slots
-        plan=slots.race_program(material(28));seg=plan['narration']['segments'][1]
+        plan=slots.race_program(dict(material(28),short_content_version='1108'));seg=plan['narration']['segments'][1]
         r3.set_program_clock(0);r3.set_caption(seg['text'],12,20,caption_units=seg['caption_units'])
         early=slots.frame(0,seg,plan)
         self.assertLessEqual(len(early.info['readable_rows']),1)

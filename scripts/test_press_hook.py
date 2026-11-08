@@ -13,9 +13,6 @@ class PressHookTest(HookFixtureTestCase):
     def setUp(self):
         super().setUp()
         self.data=press_data()
-        head=self.data['reporters']['headlines'][0]
-        head['url']='https://example.invalid/press-fixture'
-        head['summary_jp']=head['jp']+'。'+self.data['reporters']['posts'][0]['jp']
         self.a=g.build_narration(self.data,'press')
         self.b=hook_ab.prepare(self.a,'morning_press',DAY,preview='B')
         self.assertEqual(self.b['hook_ab']['ab_variant'],'B')

@@ -498,7 +498,7 @@ def test_real_sdk_request_shape_with_mock_http(tmp_path):
     anthropic = pytest.importorskip("anthropic")
     if not hasattr(anthropic, "__version__"):
         pytest.skip("偽の anthropic")
-    httpx = pytest.importorskip("httpx2")
+    httpx = pytest.importorskip("httpx")
     states = json.loads((FIX / "batch_states.json").read_text(encoding="utf-8"))
     sent, polls = {}, {"n": 0}
 

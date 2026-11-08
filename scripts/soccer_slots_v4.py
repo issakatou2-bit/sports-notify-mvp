@@ -78,7 +78,14 @@ def preview_program(data):
     names={g[s+'_team_name'] for g in games for s in ('home','away')};clubs=clubs_for(names)
     lead=games[0];people={}
     for g in games:
-        people[str(g['game_id'])]={s:(g.get('jp_by_side') or {}).get(s) or [p['name_jp'] for p in ne.jp_players_for_club(clubs[g[s+'_team_name']]['team_en'])] for s in ('home','away')}
+        known = g.get('jp_by_side') or {}
+        people[str(g['game_id'])] = {}
+        for side in ('home', 'away'):
+            if isinstance(known.get(side), list):
+                names = list(known[side])
+            else:
+                names = [p['name_jp'] for p in ne.jp_players_for_club(clubs[g[side+'_team_name']]['team_en'])]
+            people[str(g['game_id'])][side] = names
     jp=people[str(lead['game_id'])];who=next((n for s in ('home','away') for n in jp[s]),'日本人選手')
     at=kickoff(lead,data['generated_at']);club=lead['home_team_name'] if jp['home'] else lead['away_team_name']
     head=f"{who}の{ne.club_name_jp(club)}が{ne.club_name_jp(lead['away_team_name'] if jp['home'] else lead['home_team_name'])}と対戦"
@@ -107,14 +114,10 @@ def race_program(data):
         segs.append(segment('cover',f"{who['name']}の{who['club_jp']}は、{near['text']}。",dict(kicker=label+'　順位争い',name=who['name'],club=who['club_jp'],big=str(near['diff']),unit='勝点',big_label=near['text'].rsplit('勝点',1)[0].rstrip('。、')+('　あと' if 'まで' in near['text'] else ''),club_first=True,context=near['text'],chips=[(who['position'],'位'),(who['points'],'勝点')])))
     for comp in picked:
         highlights=[p['club_jp'] for p in comp.get('jp',[])]
-        lines=comp.get('lines',[])
-        # 主役に最も近い境目を1枚に。CL/ELが同じ勝点差でも再読しない。
-        selected=next((line for line in lines if got and comp['name_jp']==got[2] and line['at']==got[1]['line']),next(iter(lines),None))
-        for line in ([selected] if selected else []):
+        for line in comp.get('lines',[])[:3]:
             rows=sorted({r['position']:dict(position=r['position'],team=r['team_en'],played=r['played'],points=r['points']) for r in line['inside']+line['outside']}.values(),key=lambda r:r['position'])
             if not rows:continue
-            eligible=[p for p in comp.get('jp',[]) if not p.get('out') and p['position'] in [r['position'] for r in rows] and any(n['line']==line['at'] for n in p.get('lines',[]))]
-            focus=next((p for p in eligible if got and p['name']==got[0]['name']),next(iter(eligible),None))
+            focus=next((p for p in comp.get('jp',[]) if p['position'] in [r['position'] for r in rows] and any(n['line']==line['at'] for n in p.get('lines',[]))),None)
             near=next((n for n in focus['lines'] if n['line']==line['at']),None) if focus else None
             if focus:
                 focus_key=next(r['team'] for r in rows if r['position']==focus['position'])
@@ -187,11 +190,12 @@ def package(mode,data,segs,names,head,clubs=None):
         plan=dict(mode=mode,data=data,narration=narration,shared=shared)
         __import__('short_context').slots(plan, modern=True)
         race_details(plan)
-    if mode=='race':
+    if mode=='race' and soccer_look.readable() and data.get('short_content_version') == '1108':
         import short_renewal
         edited=short_renewal.race_program(dict(mode=mode,data=data,narration=narration,shared=shared,clubs=clubs or clubs_for(names)))
         narration=edited['narration'];clubs=edited['clubs']
     narration = short_common.prepare(narration)
+    narration = json.loads(json.dumps(narration, ensure_ascii=False))
     import host_split
     narration = host_split.adapt(narration, 'daily_soccer' if mode == 'preview' else 'soccer_'+mode)
     return dict(mode=mode,data=data,clubs=clubs or clubs_for(names),narration=narration,shared=shared)
@@ -233,10 +237,6 @@ def race_details(plan):
             if (not club or not person.get('name') or person.get('out') or club in seen
                     or type(rank) is not int or rank<1 or type(points) is not int):continue
             if f'{club}は{rank}位で勝点{points}' in spoken:continue
-            # 同じ所属クラブが表にあれば、順位・勝点の別カードを足さない。
-            if any(any(r.get('position')==rank and r.get('points')==points and
-                       ne.normalize_club(ne.club_name_jp(r.get('team') or r.get('team_en'))) == ne.normalize_club(club)
-                       for r in s.get('meta',{}).get('rows',[])) for s in segs if s['kind']=='standings'):continue
             seen.add(club)
             meta=dict(plan['shared'],kicker=comp['name_jp']+'　所属クラブの順位',
                       name=person['name'],club=club,big=str(rank),unit='位',

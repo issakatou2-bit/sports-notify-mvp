@@ -365,10 +365,21 @@ def goal_short_narration(data):
 
 @short_common.narration
 def production_narration(data, *, goal_short=False):
-    """日本人の得点・アシストと、その数字の意味に絞る。"""
-    import short_renewal
+    """速報は既存の得点導入、朝の結果は既存の注目試合導入を使う。"""
+    if not goal_short and (data.get('short_content_version') == '1108'
+                           or data.get('selection_policy') == 'japanese_goal_or_assist'):
+        import short_renewal
+        return __import__('host_split').adapt(short_renewal.result_program(data), 'soccer_results')
+    import soccer_title_v2
+    if soccer_title_v2.enabled() and not goal_short:
+        return __import__('host_split').adapt(soccer_title_v2.result_narration(data), 'soccer_results')
+    narr = goal_short_narration(data) if goal_short else __import__('soccer_result_story').narration(data)
+    narr = __import__('short_context').soccer(narr, data, readable=soccer_look.readable())
+    if not goal_short and soccer_look.v5() and not any(s['kind'] in ('followup','flash-results','other-results') for s in narr['segments']):
+        from soccer_v5_program import add_player_scene
+        narr = add_player_scene(narr, data)
     import host_split
-    return host_split.adapt(short_renewal.result_program(data), 'soccer_results')
+    return host_split.adapt(narr, 'soccer_results')
 
 
 def main():

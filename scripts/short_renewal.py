@@ -116,6 +116,7 @@ def result_program(data):
         remaining.append(dict(kind='player-stats',text=text,speaker=2,meta=dict(event_id=game['id'],start=index,count=1)))
     remaining.append(dict(kind='outro',text=short_common.OUTRO_TEXT,speaker=2,meta={}))
     narr['segments']=remaining;narr['opening_check']=opening_check(opening)
+    narr['short_content_version'] = '1108'
     narr['title']=title.title(opening['text'].rstrip('。'))
     narr=sanity_sources.attach(narr,selected,sport='soccer')
     return narr
@@ -127,7 +128,8 @@ def race_program(plan):
     import notability_engine as ne
     lead=race.lead(plan['data'])
     tables=[s for s in plan['narration']['segments'] if s['kind']=='standings']
-    table=next((s for s in tables if not lead or s['meta']['title'].split('　')[0]==lead[2]),None)
+    table=next((s for s in tables if not lead or (s['meta']['title'].split('　')[0]==lead[2]
+                and any(at == lead[1]['line'] for at, _ in s['meta']['lines']))),None)
     if table is None:
         plan['narration']['segments']=[]
         plan['narration']['selection_reason']='主役の大会の順位表を確認できません'
@@ -156,12 +158,19 @@ def race_program(plan):
     cover.update(text=opening['text']);cover['meta'].update(opening_hook=opening)
     keep=sorted(rows,key=lambda r:(r['team']!=primary,abs(r['position']-at),r['position']))[:4]
     keep.sort(key=lambda r:r['position'])
-    row_texts=[f"{ne.club_name_jp(r['team'])}は{r['position']}位で勝点{r['points']}。" for r in keep]
-    meta.update(rows=keep,shown=[(r['position'],r['position']) for r in keep],primary=primary,focus=primary,
-                progressive_rows=True,row_texts=row_texts)
-    table.update(text=''.join(row_texts),caption_units=row_texts)
+    scope = f"{meta['title'].replace('　', 'の')}の境目は、{at}位と{at+1}位です。"
+    row_texts = []
+    for row in keep:
+        club = ne.club_name_jp(row['team'])
+        played = row.get('played')
+        games = f'{played}試合を終え、' if type(played) is int and played >= 0 else ''
+        row_texts.append(f"{club}は{games}{row['position']}位で勝点{row['points']}。")
+    meta.update(rows=keep,shown=[[r['position'],r['position']] for r in keep],primary=primary,focus=primary,
+                progressive_rows=True,row_texts=row_texts,leading_text=scope)
+    table.update(text=scope+''.join(row_texts),caption_units=[scope]+row_texts)
     ending=dict(kind='outro',text=short_common.OUTRO_TEXT,speaker=2,meta=dict(plan['shared']))
     plan['narration']['segments']=[cover,table,ending];plan['narration']['opening_check']=opening_check(opening)
+    plan['narration']['short_content_version'] = '1108'
     return plan
 
 
@@ -175,11 +184,12 @@ def row_state(t,spec,index):
     if not spec.get('progressive_rows'):return True,True
     import review_render_v3 as r3
     units=spec.get('row_texts') or []
-    text=''.join(units);duration=r3._CAPTION.get('duration') or max(1,len(text)/7.5)
-    before=sum(len(s) for s in units[:index]);part=units[index] if index<len(units) else ''
+    prefix=spec.get('leading_text') or ''
+    text=prefix+''.join(units);duration=r3._CAPTION.get('duration') or max(1,len(text)/7.5)
+    before=len(prefix)+sum(len(s) for s in units[:index]);part=units[index] if index<len(units) else ''
     number=re.search(r'勝点(\d+)',part) or re.search(r'(\d+)',part);offset=number.start(1) if number else len(part)/2
     total=max(1,len(text));now=elapsed(t)
-    return now>=before/total*duration,now>=max(0,(before+offset)/total*duration-.08)
+    return now>=(0 if index==0 else before/total*duration),now>=max(0,(before+offset)/total*duration-.08)
 
 
 def hook_frame(t,item,clubs,spec):
@@ -214,7 +224,12 @@ def fact_frame(t,seg,clubs,spec):
 
 
 def morning(document,data,mode):
-    if mode not in ('press','voices') or not document.get('segments'):return document
+    if mode not in ('press', 'voices'):
+        return document
+    if not document.get('segments'):
+        document['opening_hold'] = '本文・要約または同じ題材のコメントを確認できません'
+        return document
+    document['short_content_version'] = '1108'
     item=None
     if mode=='voices':
         text=document['segments'][0]['text'].rstrip('。')

@@ -45,12 +45,11 @@ class Content(unittest.TestCase):
             if seg['kind'] in ('intro','thread','voices'):
                 quotes=cr.voices_for_segment(seg,voices)
                 timed=cr.reading_times(quotes,seg['text'],20)
-                all_quotes += [v['said'] for v in quotes if v.get('read') is not False and not v.get('fact')]
+                all_quotes += [v['said'] for v in quotes]
                 self.assertEqual([v['at'] for v in timed],sorted(v['at'] for v in timed))
-                self.assertTrue(all((v['at']==v['end']==0) if v.get('read') is False else 0<=v['at']<v['end']<=20 for v in timed))
-        self.assertTrue(all_quotes)
-        self.assertEqual(len(all_quotes),len(set(all_quotes)))
-        self.assertEqual(narration['segments'][0]['meta']['quote_rows'][0]['who'],'お題')
+                self.assertTrue(all(0<=v['at']<v['end']<=20 for v in timed))
+        parent=voices['voices'][narration['segments'][0]['meta']['used_voice']]['ja']
+        self.assertEqual(all_quotes.count(parent),1)
         self.assertNotIn('コレスポの見解ではありません',''.join(s['text'] for s in narration['segments']))
         self.assertIn('コレスポの見解ではありません',cr._voices_source(voices))
         self.assertEqual(common.screen_text('出典\nコレスポの見解ではありません'),'出典\nコレスポの見解ではありません')
@@ -77,10 +76,7 @@ class Content(unittest.TestCase):
                 after=g.build_narration(data,mode)
                 daily_v3.prepare(data,after,mode)
             self.assertEqual(''.join(s['text'] for s in before['segments'] if s['kind']!='outro'),''.join(s['text'] for s in after['segments'] if s['kind']!='outro'))
-            from short_common import OUTRO_TEXT
-            self.assertEqual(after['segments'][-1]['text'],OUTRO_TEXT)
-            self.assertTrue(after['segments'][-1]['meta']['short_outro'])
-            self.assertNotIn('チャンネル登録',after['segments'][-1]['text'])
+            self.assertEqual(after['segments'][-1]['text'],r3.OUTRO_TEXT)
             read_quotes=[]
             for seg in after['segments']:
                 rows=seg.get('meta',{}).get('quote_rows',[])
@@ -90,7 +86,7 @@ class Content(unittest.TestCase):
                 timed=cr.reading_times(rows,seg['text'],7.3)
                 self.assertEqual((timed[-1]['at'],timed[-1]['end']),(0,7.3))
                 self.assertTrue(all(v['end']==0 for v in timed[:-1]))
-                self.assertAlmostEqual(g.plan_durations([dict(seg,duration=1)])[0],1.0 if seg.get('meta',{}).get('duo') else 1.7)
+                self.assertAlmostEqual(g.plan_durations([dict(seg,duration=1)])[0],1.7)
                 read_quotes += [v['said'] for v in active if not v.get('fact')]
             self.assertTrue(read_quotes)
             self.assertEqual(len(read_quotes),len(set(read_quotes)))

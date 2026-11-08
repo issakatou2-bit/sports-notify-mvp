@@ -200,7 +200,7 @@ def result_narration(data):
     def add(kind, text, **meta):
         if text:
             segs.append(dict(kind=kind, text=text, speaker=2, meta=dict(event_id=g['id'], title_focus_v2=True, **meta)))
-    first = facts.result_opening(g, p)
+    first = (p['name']+__import__('soccer_results').action(p)+'。' if p else '')+g['home']['name_jp']+'対'+g['away']['name_jp']+f"は{g['score']['home']}対{g['score']['away']}。"
     add('intro' if p else 'followup', first, **(dict(player_detail=p['name']) if p else dict(score_only=True)))
     goals = sorted(g['goals'], key=lambda x: tuple(int(v) for v in (x['minute'].split('+')+['0'])[:2]))
     pages = math.ceil(len(goals)/3)
@@ -278,6 +278,6 @@ def headline_frame(t, focus, clubs, spec, preview_specs=None):
     if preview_specs:
         im = s.preview(preview_specs, spec)
     else:
-        im = s.score(focus['game'], spec, person=focus.get('lead'), score_only=True)
+        im = s.score(focus['game'], spec, person=focus.get('lead'), score_only=not focus.get('lead'))
     im.info['soccer_title_v2'] = focus['head']
     return im

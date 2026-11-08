@@ -701,6 +701,7 @@ def main() -> int:
         return 0
 
     data = build(preview, before, only=args.only)
+    data['short_content_version'] = '1108'
     out = pathlib.Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(data, ensure_ascii=False, indent=2),

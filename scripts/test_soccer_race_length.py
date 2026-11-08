@@ -39,26 +39,42 @@ class RaceLength(unittest.TestCase):
         self.look=patch.object(slots,'enabled',return_value=True)
         self.look.start();self.addCleanup(self.look.stop)
 
-    def test_two_days_keep_boundary_rows_without_padding_and_short_material_is_held(self):
-        for day in (28,29):
-            data=material(day);original=copy.deepcopy(data)
-            narr=slots.program('race',data)['narration'];segs=narr['segments']
-            self.assertEqual([s['kind'] for s in segs],['cover','standings','outro'])
-            table=segs[1]['meta'];self.assertTrue(3<=len(table['rows'])<=4)
-            person=data['competitions'][0]['jp'][0]
-            own=next(r for r in table['rows'] if r['team']==table['primary'])
-            self.assertEqual((own['position'],own['points']),(person['position'],person['points']))
-            self.assertIsNone(own['played'])  # 試合数は推測しない。
-            self.assertEqual(data,original)
-            self.assertEqual(short_content.assess(narr,[3,12,2],data,maximum=40)['status'],'held')
-            self.assertEqual(sanity_material.check(narr,sanity_material.grounding([narr])),[])
+    def test_two_days_add_personal_club_facts_and_pass_28_seconds(self):
+        for day,old_seconds in [(28,24.867),(29,24.600)]:
+            with self.subTest(day=day):
+                data=material(day);original=copy.deepcopy(data)
+                self.assertEqual(sum(len(line['inside'])+len(line['outside'])
+                                     for line in data['competitions'][0]['lines']),8)
+                narr=slots.program('race',data)['narration'];segs=narr['segments']
+                extra=[s for s in segs if s['kind']=='jp_player']
+                self.assertEqual(len(extra),2)
+                for seg,person in zip(extra,data['competitions'][0]['jp']):
+                    self.assertEqual(seg['text'],f"{person['name']}の{person['club_jp']}は{person['position']}位で勝点{person['points']}。")
+                    self.assertEqual(seg['meta']['big'],str(person['position']))
+                    self.assertEqual(seg['meta']['chips'],[[person['points'],'勝点']])
+                self.assertEqual(data,original)
+                self.assertEqual(segs[-1]['kind'],'outro')
+                # 元4区間の合計を失敗時と同じにした偽音声。追加行は極端に短い1秒。
+                # 既存の区間下限・30fps丸めを通しても28秒以上。合成・描画はしない。
+                lengths=[2 if s['kind']=='outro' else old_seconds/4 if s['kind']!='jp_player' else 1 for s in segs]
+                audio=[dict(s,file=__file__,duration=length) for s,length in zip(segs,lengths)]
+                with patch('synthesize_narration.audio_duration',side_effect=lengths):
+                    times=slots.video_times(segs,audio)
+                report=short_content.assess(narr,times,data,maximum=40)
+                self.assertGreaterEqual(report['planned_seconds'],20)
+                self.assertEqual(report['status'],'passed')
+                self.assertEqual(sanity_material.check(narr,sanity_material.grounding([narr])),[])
+                base=dict(narr,segments=[s for s in segs if s['kind']!='jp_player'])
+                self.assertEqual(short_content.assess(base,[old_seconds/4]*4,data)['status'],'held')
 
-    def test_primary_club_is_grounded_without_inheriting_another_person(self):
+    def test_other_club_does_not_inherit_previous_person(self):
         narr=slots.program('race',material(28))['narration']
-        mats=sanity_material.grounding([narr]);table=narr['segments'][1]
-        self.assertIn('カリアリ',table['text'])
-        self.assertIsNot(sanity_claims.review('菅原由勢のカリアリは9位で勝点13。',mats),False)
-        self.assertIs(sanity_claims.review('菅原由勢のカリアリは9位で勝点99。',mats),False)
+        mats=sanity_material.grounding([narr]);text=narr['segments'][1]['text']
+        # 修正前に行2のNGを生んだ比較を明示的に再現する。
+        self.assertIs(sanity_claims.review(text,mats,context=narr['segments'][0]['text']+text),False)
+        context=sanity_material.claim_context(narr,text,mats)
+        self.assertNotIn('菅原由勢',context)
+        self.assertIsNot(sanity_claims.review(text,mats,context=context),False)
 
     def test_anonymous_continuation_and_wrong_personal_values_still_stop(self):
         narr=slots.program('race',material(29))['narration']
@@ -68,7 +84,7 @@ class RaceLength(unittest.TestCase):
             context=sanity_material.claim_context(doc,text,mats)
             self.assertIs(sanity_claims.review(text,mats,context=context),expected)
         bad=copy.deepcopy(narr)
-        next(s for s in bad['segments'] if s['kind']=='standings')['text']='菅原由勢のカリアリは10位で勝点99。'
+        next(s for s in bad['segments'] if s['kind']=='jp_player')['text']='菅原由勢のカリアリは10位で勝点99。'
         self.assertTrue(sanity_material.check(bad,sanity_material.grounding([bad])))
 
     def test_empty_missing_and_unselected_material_is_not_invented(self):
@@ -77,8 +93,7 @@ class RaceLength(unittest.TestCase):
         data['competitions'].append(dict(code='PL',ready=True,jp=[dict(name='別人',club_jp='別クラブ',position=1,points=99)]))
         narr=slots.program('race',data)['narration']
         extra=[s for s in narr['segments'] if s['kind']=='jp_player']
-        self.assertEqual(len(extra),0)
-        self.assertTrue(any(s['kind']=='standings' for s in narr['segments']))
+        self.assertEqual(len(extra),1)
         self.assertNotIn('別人',str(narr['segments']))
 
     def test_original_host_snapshot_includes_added_segments(self):
@@ -88,16 +103,14 @@ class RaceLength(unittest.TestCase):
         with patch('host_split.adapt',side_effect=adapt):
             narr=slots.program('race',material(29))['narration']
         self.assertEqual(captured[-1],narr['segments'])
-        self.assertEqual([s['kind'] for s in captured[-1]],['cover','standings','outro'])
+        self.assertEqual(sum(s['kind']=='jp_player' for s in captured[-1]),2)
 
     def test_no_duplicate_clubs_out_players_or_unnecessary_expansion(self):
         data=material(29);comp=data['competitions'][0]
         comp['jp'].insert(1,dict(comp['jp'][0],name='同じクラブの別人'))
         comp['jp'].append(dict(comp['jp'][1],club_jp='別クラブ',name='離脱中',out=True))
         narr=slots.program('race',data)['narration']
-        self.assertEqual(len([s for s in narr['segments'] if s['kind']=='jp_player']),0)
-        rows=next(s for s in narr['segments'] if s['kind']=='standings')['meta']['rows']
-        self.assertEqual(len(rows),len({r['team'] for r in rows}))
+        self.assertEqual(len([s for s in narr['segments'] if s['kind']=='jp_player']),2)
         self.assertNotIn('同じクラブの別人',str(narr['segments']))
         self.assertNotIn('離脱中',str(narr['segments']))
         plan=dict(data=data,shared={},narration=dict(segments=[dict(kind='cover',text='長'*180)]))

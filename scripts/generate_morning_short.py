@@ -828,7 +828,12 @@ def build_narration(data: dict, mode: str = "all") -> dict:
     import voices_context
     import short_renewal
     import morning_topics
-    document=short_renewal.morning(_build_narration(data,mode),data,mode)
+    material = data.get('reporters' if mode == 'press' else 'voices') or {}
+    if material.get('short_content_version') == '1108':
+        data = dict(data, short_content_version='1108')
+    document = _build_narration(data, mode)
+    if data.get('short_content_version') == '1108':
+        document = short_renewal.morning(document, data, mode)
     return morning_topics.attach(sanity_sources.attach(voices_context.attach(document,data),data),data,mode)
 
 
@@ -1086,14 +1091,12 @@ def _build_narration(data: dict, mode: str = "all") -> dict:
         #   視聴率206.9%）。そしてサッカーの順位争いは9月から5月まで
         #   材料があり続ける。MLBの進出争い（9〜10月）より期間が長い。
         race = data.get("race") or {}
-        import soccer_race as race_module
-        got = race_module.lead(race)
         picked = race.get("picked") or []
         by_code = {c["code"]: c for c in (race.get("competitions") or [])}
 
         segments = [{
             "kind": "race_intro",
-            "text": (f"{got[0]['name']}の{got[0]['club_jp']}は、{got[1]['text']}。" if got else f"{day}、欧州サッカーの順位争いです。"),
+            "text": f"{day}、欧州サッカーの順位争いです。",
             "meta": {"date": day_iso, "mode": mode, "day": day},
         }]
 
@@ -1106,10 +1109,8 @@ def _build_narration(data: dict, mode: str = "all") -> dict:
                 near = (x.get("lines") or [{}])[0]
                 if not near.get("text"):
                     continue
-                if got and x["name"] == got[0]["name"]:
-                    continue
-                jp_said.append("%d位%sの%s、勝点%d" % (
-                    x["position"], x["club_jp"], x["name"], x["points"]))
+                jp_said.append("%d位%sの%s。%s" % (
+                    x["position"], x["club_jp"], x["name"], near["text"]))
         if jp_said:
             segments.append({
                 "kind": "race_japanese",
@@ -1119,9 +1120,7 @@ def _build_narration(data: dict, mode: str = "all") -> dict:
 
         for code in picked:
             comp = by_code.get(code) or {}
-            lines = comp.get("lines") or []
-            selected = next((line for line in lines if got and comp.get('name_jp')==got[2] and line['at']==got[1]['line']), next(iter(lines), None))
-            for line in ([selected] if selected else []):
+            for line in (comp.get("lines") or [])[:LINES_PER_COMP]:
                 inside = (line.get("inside") or [])[-1:]
                 outside = (line.get("outside") or [])[:1]
                 say = "%s、%sの境目。" % (comp.get("name_jp", ""),
@@ -1485,12 +1484,15 @@ def _build_narration(data: dict, mode: str = "all") -> dict:
         "meta": {},
     })
     # 成績の回は、2人が交代で読む。
-    if mode in ('voices','press'):
+    if mode in ('voices','press') and data.get('short_content_version') == '1108':
         import morning_content
         segments=morning_content.edit(data,mode,segments,dict(date=day_iso,mode=mode))
         import content_v3
         if mode=='press':
             segments=content_v3.quotes(segments,data,mode)
+    elif mode in ('voices', 'press'):
+        import content_v3
+        segments = content_v3.quotes(segments, data, mode)
     if mode == "players":
         import content_v3
         segments = content_v3.players(segments,players,day)
@@ -4417,12 +4419,23 @@ def main():
     #
     # 数えるのは画面の数ではなく素材の件数。見出し1件でも画面は作れてしまう。
     if args.mode == "press":
-        import morning_content
-        if morning_content.press_story(reporters_data) is None:
-            reason='本文・要約を2文以上確認できる報道がないため、報道編は作りません'
-            morning_topics.record_skip('morning_press',edition,reason)
-            print('[info] '+reason)
-            return
+        if narration.get('short_content_version') == '1108':
+            import morning_content
+            if morning_content.press_story(reporters_data) is None:
+                reason='本文・要約を2文以上確認できる報道がないため、報道編は作りません'
+                morning_topics.record_skip('morning_press', edition, reason)
+                print('[info] '+reason)
+                return
+        else:
+            rep = reporters_data.get("posts") or []
+            hds = reporters_data.get("headlines") or []
+            items = len(rep) + len(hds)
+            if items < MIN_PRESS_ITEMS:
+                morning_topics.record_skip('morning_press', edition,
+                    f'直近7日の題材を除外後の報道が{items}件（最低{MIN_PRESS_ITEMS}件）')
+                print(f"[info] 現地の報道が{items}件しかないため、"
+                      f"報道編は作りません(最低{MIN_PRESS_ITEMS}件)")
+                return
 
     # 進出争いが終わっていたら、進出争いの回は作らない。
     #

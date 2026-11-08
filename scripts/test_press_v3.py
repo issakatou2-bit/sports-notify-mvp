@@ -26,12 +26,12 @@ class PressV3(unittest.TestCase):
         self.assertEqual(nar, old)
 
     def test_all_screens_quote_the_exact_selected_body(self):
-        from short_common import OUTRO_TEXT
+        import review_render_v3 as r3
         data, nar = self.data(); words = [s["text"] for s in nar["segments"]]
         with patch.dict(os.environ, {"COLLESPO_PRESS_DESIGN": "v3"}):
             design = d.prepare(data, nar, "press")
         self.assertEqual([s["text"] for s in nar["segments"][:-1]], words[:-1])
-        self.assertEqual(nar['segments'][-1]['text'],OUTRO_TEXT)
+        self.assertEqual(nar['segments'][-1]['text'],r3.OUTRO_TEXT)
         for seg in nar["segments"]:
             self.assertEqual(seg["speaker"], 2)
             self.assertEqual(d.frame(3, seg, design, 18).size, (1080, 1920))
@@ -39,10 +39,10 @@ class PressV3(unittest.TestCase):
 
     def test_mismatched_caption_or_invalid_index_stops(self):
         data, nar = self.data()
-        seg = next(s for s in nar["segments"] if s["kind"] == "reporters")
-        original=seg["meta"]["press_story"]["index"]; seg["meta"]["press_story"]["index"] = -1
+        seg = next(s for s in nar["segments"] if s["kind"] == "headlines")
+        seg["meta"]["picked"] = [-1]
         with self.assertRaises(ValueError): p.bubbles(seg, data["reporters"])
-        seg["meta"]["press_story"]["index"] = original; seg["text"] = "架空の違う記事"
+        seg["meta"]["picked"] = [0]; seg["text"] = "架空の違う記事"
         with self.assertRaises(ValueError): p.bubbles(seg, data["reporters"])
 
     def test_identity_and_club_color_are_material_bound(self):
@@ -54,7 +54,7 @@ class PressV3(unittest.TestCase):
         self.assertIsNone(p.team_id(seg, data))
 
     def test_background_keeps_moving_and_cues_fit_the_voice(self):
-        data, nar = self.data(); seg = next(s for s in nar["segments"] if s["kind"] == "reporters")
+        data, nar = self.data(); seg = next(s for s in nar["segments"] if s["kind"] == "headlines")
         self.assertIsNotNone(ImageChops.difference(p.frame(4, seg, data["reporters"], 15), p.frame(5, seg, data["reporters"], 15)).getbbox())
         for at, *_ in p.cues(seg, data["reporters"], 15): self.assertLess(at, 15)
 

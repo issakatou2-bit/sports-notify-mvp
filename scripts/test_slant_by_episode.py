@@ -164,4 +164,10 @@ def test_single_tuning_table_and_fixed_camera():
 
 
 if __name__=='__main__':
-    raise SystemExit(pytest.main([__file__,'-q']))
+    import sys
+    import tempfile
+    from pathlib import Path
+    output_dir = Path(sys.argv[1]) if len(sys.argv)>1 else Path(__file__).resolve().parents[1]/'build/slant-tests'
+    output_dir.mkdir(parents=True, exist_ok=True)
+    scratch = Path(tempfile.mkdtemp(prefix='pytest-', dir=output_dir))
+    raise SystemExit(pytest.main([__file__,'-q','-p','no:cacheprovider','--basetemp',str(scratch/'cases')]))

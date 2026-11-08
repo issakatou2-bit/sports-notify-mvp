@@ -15,6 +15,7 @@ import sys
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 MIN_SECONDS = 28.0
+SHORT_MIN_SECONDS = 20.0
 # 1秒未満の不足はそのまま出す（本人 10/28：27.77秒の回が見送りになった件）
 SHORT_GRACE = 1.0
 TARGET_SECONDS = 30.0
@@ -243,7 +244,7 @@ def assess(document, durations, material=None, *, maximum=60):
     valid = valid and all(type(x) in (int, float) and math.isfinite(x) and x > 0 for x in durations)
     total = sum(durations) if valid else None
     short_outro = any(s.get('kind') == 'outro' and (s.get('meta') or {}).get('short_outro') for s in document.get('segments', []))
-    minimum = 20.0 if short_outro else MIN_SECONDS
+    minimum = SHORT_MIN_SECONDS if short_outro else MIN_SECONDS
     if valid and short_outro and any(t > 2.5 for s, t in zip(document['segments'], durations) if s.get('kind') == 'outro'):
         reasons.append('ショートの締めが2.5秒を超えます')
     if not valid:
@@ -305,7 +306,7 @@ def validate_upload(video):
                            text=True, encoding='utf-8', errors='replace')
     match = re.search(r'Duration: (\d+):(\d+):([\d.]+)', probe.stderr)
     seconds = int(match[1])*3600+int(match[2])*60+float(match[3]) if match else None
-    minimum = 20.0 if report.get('short_outro') else MIN_SECONDS
+    minimum = SHORT_MIN_SECONDS if report.get('short_outro') else MIN_SECONDS
     if (seconds is None or seconds < minimum-SHORT_GRACE-.01 or seconds > report.get('maximum_seconds', 60)+.05
             or abs(seconds-report.get('planned_seconds', 0)) > .15):
         raise ValueError('完成ショートの尺が下限・既存上限・検査時の計画を満たしません')

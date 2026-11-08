@@ -26,7 +26,7 @@ class ResultContent(unittest.TestCase):
         self.assertEqual(facts.scorer_name(goal), '久保建英')
         player = dict(name='検査選手',status='starter',subbed_out=False,red_cards=0,goals=0,assists=0)
         self.assertNotIn('90', soccer_stats.result_narration(player))
-        self.assertIn('約90分出場', soccer_stats.result_narration(dict(player,minutes=90)))
+        self.assertIn('約90分出場', soccer_stats.minutes_label(dict(player,minutes=90)))
 
     def test_both_goal_screens_do_not_fall_back_to_raw_english(self):
         from PIL import Image
@@ -105,7 +105,7 @@ class VoiceContent(unittest.TestCase):
         import review_render_v3 as r3
         data=dict(self.data(),date_jst='2026-11-08',players=[])
         with patch.dict(os.environ,dict(COLLESPO_COMMENTS_DESIGN='comments',COLLESPO_HOST_SPLIT='')),patch.object(r3,'LOOK','v4'):
-            doc=g.build_narration(data,'voices')
+            doc=g.build_narration(dict(data,short_content_version='1108'),'voices')
         self.assertEqual(doc['segments'][0]['kind'],'intro')
         self.assertEqual(sum(s.get('speaker')==3 for s in doc['segments']),2)
         data['buzz']=[]
@@ -118,7 +118,7 @@ class RaceContent(unittest.TestCase):
         from test_soccer_race_length import material
         import review_render_v3 as r3
         with patch.dict(os.environ,dict(COLLESPO_SOCCER_LOOK='v6',COLLESPO_HOST_SPLIT='')),patch.object(r3,'LOOK','v4'):
-            doc=slots.race_program(material(28))['narration']
+            doc=slots.race_program(dict(material(28),short_content_version='1108'))['narration']
         self.assertEqual(sum(s['kind']=='cover' for s in doc['segments']),1)
         self.assertEqual(sum(s['kind']=='standings' for s in doc['segments']),1)
         self.assertEqual(sum('勝点5差' in s['text'] for s in doc['segments']),1)

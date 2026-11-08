@@ -74,7 +74,7 @@ class FocusTests(unittest.TestCase):
         screen.focus_goals(dict(game,goals=[goal]),[goal],dict(source='ESPN'))
         self.assertEqual(readable.check_frame(screen.im,screen.clubs),[])
 
-    def test_english_scorer_wraps_at_words(self):
+    def test_unregistered_scorer_uses_the_club_without_raw_english(self):
         import copy
         import soccer_results_render as render
         data=json.loads((ROOT/'scripts/fixtures/soccer-results/run-40249272204.json').read_text(encoding='utf8'))
@@ -83,8 +83,8 @@ class FocusTests(unittest.TestCase):
         screen=readable.Screen(render.resolve_clubs(data),3)
         screen.focus_goals(dict(game,goals=[goal]),[goal],dict(source='ESPN'))
         texts=[row['text'] for row in screen.im.info['v3_layout']]
-        self.assertIn('Mouhamed',texts)
-        self.assertIn("N'Diaye",texts)
+        self.assertFalse(any('Mouhamed' in text or "N'Diaye" in text for text in texts))
+        self.assertIn(game[goal['side']]['name_jp'],texts)
         self.assertNotIn('e',texts)
 
     def test_focus_is_off_unless_on_and_needs_v6(self):
