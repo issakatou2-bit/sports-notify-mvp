@@ -58,7 +58,7 @@ class StoryTests(unittest.TestCase):
         self.assertTrue(all(seg['meta']['report']['source'] and seg['meta']['report']['at'] for seg in reports))
         self.assertTrue(reports[0]['meta']['report']['url'].startswith('https://bsky.app/'))
         self.assertEqual(narr['direction'], 'down')
-        self.assertEqual(narr['segments'][-1]['text'], s.RULES['down']['closing'])
+        self.assertEqual([seg for seg in narr['segments'] if seg['kind'] != 'outro'][-1]['text'], s.RULES['down']['closing'])
         self.assertEqual(sum(seg['kind'] == 'fan' for seg in narr['segments']), 1)
         self.assertNotRegex(''.join(x['text'] for x in narr['segments']), '怪我|けが|疲労|心理|原因')
         bad = deepcopy(narr); bad['segments'][1]['text'] = '第3戦を休みます。'
@@ -66,8 +66,8 @@ class StoryTests(unittest.TestCase):
 
     def test_numeric_closings_and_pitcher_hits(self):
         down = self.build(stats=self.stats([0, 0, 0])); up = self.build(stats=self.stats([2, 2, 2]))
-        self.assertEqual(down['segments'][-1]['text'], s.RULES['down']['closing'])
-        self.assertEqual(up['segments'][-1]['text'], s.RULES['up']['closing'])
+        self.assertEqual([seg for seg in down['segments'] if seg['kind'] != 'outro'][-1]['text'], s.RULES['down']['closing'])
+        self.assertEqual([seg for seg in up['segments'] if seg['kind'] != 'outro'][-1]['text'], s.RULES['up']['closing'])
         self.assertIsNone(s.numeric_flow(dict(PLAYER, type='pitcher'), self.stats([0, 0, 0])['Shohei Ohtani']))
         neutral = self.build(reporters={'posts': s.read(FIX/'reporters_20261014.json')['posts']})
         self.assertEqual(neutral['direction'], 'neutral')
@@ -110,7 +110,7 @@ class StoryTests(unittest.TestCase):
 
     def test_workflow_and_publish_guard(self):
         text = (s.ROOT/'.github/workflows/player_story.yml').read_text(encoding='utf8')
-        self.assertIn("if: vars.COLLESPO_PLAYER_STORY == 'on'", text)
+        self.assertIn("vars.COLLESPO_PLAYER_STORY == 'on'", text)
         self.assertIn("vars.PLAYER_STORY_PUBLISH == 'true'", text)
         self.assertNotIn('inputs.publish', text)
         import upload_youtube as u

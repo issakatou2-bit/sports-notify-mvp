@@ -22,11 +22,17 @@ on:
     types: [completed]
   workflow_dispatch:
     inputs:
+      sample_only:
+        description: 見本のmp4だけを保存する（公開・SNS・台帳・コミット・通知なし）
+        type: boolean
+        required: false
+        default: false
       until_utc:
         description: '見張りを止める時刻（UTC、HH:MM）。既定 06:00 = 日本時間15:00'
         default: '06:00'
 
 permissions:
+  actions: read
   contents: write
 
 concurrency:
@@ -35,6 +41,7 @@ concurrency:
 
 # ショートの見た目（v4 は字幕・大きめの立ち絵・進み具合の線）。review_render_v3.LOOK
 env:
+  COLLESPO_SAMPLE_ONLY: ${{ inputs.sample_only && 'true' || 'false' }}
   COLLESPO_SOLO_HOST: ${{ vars.COLLESPO_SOLO_HOST || 'metan' }}
   COLLESPO_HOST_SPLIT: ${{ vars.COLLESPO_HOST_SPLIT || '' }}
   COLLESPO_UI_VOICE_STOCK: ${{ vars.COLLESPO_UI_VOICE_STOCK || '' }}
@@ -60,16 +67,26 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Ignore a sample-only source run
+        id: sample_source
+        if: github.event_name == 'workflow_run'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_RUN: ${{ github.event.workflow_run.id }}
+        run: python scripts/sample_source.py --source-run "$SOURCE_RUN" --github-output "$GITHUB_OUTPUT"
       - uses: actions/setup-python@v5
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true')
         with:
           python-version: '3.11'
 
       - name: Install dependencies
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true')
         run: |
           pip install -r scripts/requirements.txt
           pip install pillow google-api-python-client google-auth
 
       - name: Anything to watch today?
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true')
         id: plan
         run: |
           python scripts/ps_game_story.py --out data/ps_game_topics.json > /dev/null 2>&1 || true
@@ -81,12 +98,12 @@ jobs:
           fi
 
       - name: Install video tools
-        if: steps.plan.outputs.go == '1'
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (steps.plan.outputs.go == '1')
         timeout-minutes: 16
         run: bash scripts/install_video_tools.sh
 
       - name: Start VOICEVOX engine
-        if: steps.plan.outputs.go == '1'
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (steps.plan.outputs.go == '1')
         continue-on-error: true
         run: |
           docker run -d --rm -p 50021:50021 --name voicevox \
@@ -100,7 +117,7 @@ jobs:
           done
 
       - name: Watch and publish
-        if: steps.plan.outputs.go == '1'
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (steps.plan.outputs.go == '1')
         env:
           FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
@@ -118,6 +135,7 @@ jobs:
           UNTIL_UTC: ${{ inputs.until_utc || '06:00' }}
           RUN_ID: ${{ github.run_id }}
         run: |
+          # sample_only: 描画後、公開処理より前で分岐する。
           set +e
           END=$(date -u -d "$(date -u +%F) ${UNTIL_UTC}" +%s)
           mkdir -p build/asset
@@ -142,6 +160,7 @@ jobs:
                 python scripts/sanity.py --general --strict --narration "build/narr_$t.json" --out "data/sanity_${t}.json" --hold-record "build/sanity_hold_${t}.json" --kind asset &&
                 python scripts/synthesize_narration.py                   --narration "build/narr_$t.json" --out-dir "build/audio_$t" &&
                 python scripts/generate_asset_video.py                   --topic "$t" --narration "build/narr_$t.json" --audio-dir "build/audio_$t" --out "build/asset_$t" &&
+                { if [ "$COLLESPO_SAMPLE_ONLY" = true ]; then echo "::notice::見本の描画で終了"; exit 0; fi; } &&
                 bash scripts/shorts_thumbnail.sh                   "build/asset_$t/collespo_asset_$t.mp4" "build/asset_$t/short.png" &&
                 python scripts/upload_youtube.py                   --video "build/asset_$t/collespo_asset_$t.mp4"                   --kind asset --asset-topic "$t"                   --thumbnail "build/asset_$t/short.png"                   --privacy public
                 if [ $? -eq 0 ]; then
@@ -162,11 +181,11 @@ jobs:
             python scripts/ps_game_now.py --watch || break
             sleep 600
           done
-          python scripts/asset_sns.py --receipt-dir build/asset
+          if [ "$COLLESPO_SAMPLE_ONLY" != true ]; then python scripts/asset_sns.py --receipt-dir build/asset; fi
           exit 0
 
       - name: Keep the videos
-        if: always()
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && ((github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (always()))
         uses: actions/upload-artifact@v4
         with:
           name: ps-game-now
@@ -187,7 +206,7 @@ jobs:
           if-no-files-found: ignore
 
       - name: Keep unsaved data records
-        if: always() && hashFiles('build/data-save-recovery/**/FAILED') != ''
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && ((github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (always() && hashFiles('build/data-save-recovery/**/FAILED') != ''))
         uses: actions/upload-artifact@v4
         with:
           name: unsaved-data-${{ github.job }}-${{ github.run_attempt }}
@@ -198,7 +217,7 @@ jobs:
           if-no-files-found: error
 
       - name: Save sanity gate records
-        if: always()
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (always())
         uses: actions/upload-artifact@v4
         with:
           name: sanity-gate-${{ github.job }}
@@ -209,7 +228,7 @@ jobs:
           retention-days: 14
 
       - name: Save quota-exceeded thumbnails
-        if: always() && hashFiles('build/thumbnail_pending/**') != ''
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && ((github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (always() && hashFiles('build/thumbnail_pending/**') != ''))
         uses: actions/upload-artifact@v4
         with:
           name: thumbnail-pending
@@ -220,7 +239,7 @@ jobs:
           if-no-files-found: ignore
 
       - name: Save voice and render records
-        if: always()
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (always())
         uses: actions/upload-artifact@v4
         with:
           name: voice-render-records-${{ github.job }}-${{ github.run_attempt }}
@@ -230,3 +249,29 @@ jobs:
             !build/**/portrait/**
           retention-days: 14
           if-no-files-found: ignore
+
+      - name: Mark sample-only execution
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (always() && inputs.sample_only)
+        run: python scripts/sample_only.py --mark build/sample_only.json --require-video
+      - name: Save sample video
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (always() && inputs.sample_only)
+        uses: actions/upload-artifact@v4
+        with:
+          name: sample-ps_game_now
+          path: |
+            build/sample_only.json
+            build/asset_*/*.mp4
+            build/asset_*/audio_mix.json
+            !build/**/portrait/**
+          if-no-files-found: error
+          retention-days: 7
+      - name: Preserve inherited sample-only marker
+        if: always() && steps.sample_source.outputs.allowed == 'false'
+        uses: actions/upload-artifact@v4
+        with:
+          name: sample-inherited-${{ github.job }}
+          path: |
+            build/sample_only.json
+            !build/**/portrait/**
+          if-no-files-found: error
+          retention-days: 3

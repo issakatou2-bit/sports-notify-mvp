@@ -33,13 +33,24 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: main
+      - name: Ignore a sample-only source run
+        id: sample_source
+        if: github.event_name == 'workflow_run'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_RUN: ${{ github.event.workflow_run.id }}
+        run: python scripts/sample_source.py --source-run "$SOURCE_RUN" --github-output "$GITHUB_OUTPUT"
       - uses: actions/setup-python@v5
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true')
         with:
           python-version: '3.11'
       # 移籍市場の回はAI絵の検査で画像を開く（11/6 Pillowが無く夕方の回がSNSへ出なかった）。
       - run: pip install requests pillow
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true')
       - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true')
       - name: Validate source and hand over once per topic and service
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true')
         env:
           GH_TOKEN: ${{ github.token }}
           BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
@@ -56,3 +67,13 @@ jobs:
           if [ "$MODE" = publish ]; then args+=(--publish); fi
           python scripts/jp_assets.py --out build/jp_asset_topics.json || echo "::warning::比較の話題を読み直せませんでした（他の動画は続けます）"
           python scripts/asset_sns.py --source-run "$SOURCE_RUN" "${args[@]}"
+      - name: Preserve inherited sample-only marker
+        if: always() && steps.sample_source.outputs.allowed == 'false'
+        uses: actions/upload-artifact@v4
+        with:
+          name: sample-inherited-${{ github.job }}
+          path: |
+            build/sample_only.json
+            !build/**/portrait/**
+          if-no-files-found: error
+          retention-days: 3

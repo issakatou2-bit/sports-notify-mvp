@@ -105,7 +105,7 @@ class ResultsPolish(unittest.TestCase):
             voices=[];seconds={}
             for i,seg in enumerate(narr['segments']):
                 path=Path(folder)/f'{i}.wav';path.write_bytes(b'fixture')
-                length=8 if seg['kind']=='followup-detail' else 6 if seg['kind']=='followup' else 3
+                length=2 if seg['kind']=='outro' else 8 if seg['kind']=='followup-detail' else 6 if seg['kind']=='followup' else 3
                 seconds[str(path)]=length;voices.append(dict(seg,file=str(path),duration=length))
             with patch('synthesize_narration.audio_duration',side_effect=lambda p:seconds[str(p)]):
                 shorter,audio=story.fit_to_audio(narr,voices)

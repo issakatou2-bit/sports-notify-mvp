@@ -122,7 +122,7 @@ class ShortPolish(unittest.TestCase):
         self.assertEqual(sum(s[1]=='transition' for s in sounds),1)
         self.assertFalse(any(s[1]=='swish' for s in sounds))
         self.assertTrue({'pop','roll','stop','marker'}.issubset({s[1] for s in sounds}))
-        self.assertEqual(r3.outro_cues(),[(0.,'transition','b',-10),(1.8,'marker','a',-4)])
+        self.assertEqual(r3.outro_cues(),[(0.,'transition','b',-12)])
 
     def test_longform_group_has_no_row_swishes_and_quotes_stay(self):
         import longform_render_v3 as longform

@@ -191,7 +191,7 @@ class OffseasonTests(unittest.TestCase):
         import ui_tone
         spec, doc = self.document()
         polite = ui_tone.text(n.OUTRO_TEXT)
-        self.assertNotEqual(polite, n.OUTRO_TEXT)
+        self.assertEqual(polite, n.OUTRO_TEXT)
         segments = [dict(s, text=polite) if s['kind'] == 'outro' else s for s in doc['segments']]
         self.assertEqual(n.check(dict(doc, segments=segments)), [])
         segments[-1] = dict(segments[-1], text='また見てね。')
@@ -270,7 +270,7 @@ class OffseasonTests(unittest.TestCase):
         with patch.dict(g.LIST_TOPICS, {spec['key']: spec}), patch.object(r3, 'LOOK', 'v4'):
             doc = g.build_narration(spec['key'])
         self.assertEqual(sanity_material.check(doc, sanity_material.grounding([doc])), [])
-        self.assertEqual(short_content.assess(doc, [8]*len(doc['segments']), spec)['status'], 'passed')
+        self.assertEqual(short_content.assess(doc, [2 if s['kind']=='outro' else 8 for s in doc['segments']], spec)['status'], 'passed')
 
     def test_unknown_name_outside_window_and_minor_moves_skip(self):
         rows = [dict(self.move(), date='2026-10-01'), dict(self.move(), date='2026-10-31'),

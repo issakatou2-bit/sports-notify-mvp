@@ -174,6 +174,7 @@ def numeric_flow(p, stats):
                 season=baseline, source=stats.get('source'))
 
 
+@__import__('short_common').narration
 def build(recap, reporters, buzz, voices, stats, as_of, *, publication_ledgers=None):
     candidates = []
     import player_publications as publications
@@ -303,7 +304,8 @@ def validate(narr, publish=False):
     if not narr.get('can_make') or not narr.get('segments'):
         raise ValueError('この日は選手の話題の材料がありません')
     direction = narr['direction']
-    if narr['segments'][-1]['text'] != RULES[direction]['closing']:
+    body = [s for s in narr['segments'] if s['kind'] != 'outro']
+    if not body or body[-1]['text'] != RULES[direction]['closing']:
         raise ValueError('締めが流れと違います')
     if not narr.get('flow') and not narr.get('reports'):
         raise ValueError('ファンの声だけでは作れません')

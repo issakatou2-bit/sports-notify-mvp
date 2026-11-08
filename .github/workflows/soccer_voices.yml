@@ -3,6 +3,11 @@ name: 手動　欧州サッカーの現地ファンの反応
 on:
   workflow_dispatch:
     inputs:
+      sample_only:
+        description: 見本のmp4だけを保存する（公開・SNS・台帳・コミット・通知なし）
+        type: boolean
+        required: false
+        default: false
       publish:
         description: 見本を確認後に予約投稿する
         type: boolean
@@ -21,6 +26,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
+  COLLESPO_SAMPLE_ONLY: ${{ inputs.sample_only && 'true' || 'false' }}
   COLLESPO_HOST_SPLIT: ${{ vars.COLLESPO_HOST_SPLIT || '' }}
   COLLESPO_UI_VOICE_STOCK: ${{ vars.COLLESPO_UI_VOICE_STOCK || '' }}
   COLLESPO_UI_PARTS_KEY: ${{ secrets.COLLESPO_UI_PARTS_KEY }}
@@ -109,7 +115,7 @@ jobs:
         run: |
           python -c "import json,os,sys; sys.path.insert(0,'scripts'); import soccer_voices as s,upload_youtube as u; s.validate_data(json.load(open('data/soccer_voices.json',encoding='utf-8')),publish=True); assert os.environ['PUBLISH_AT'] and u.resolve_publish_at(os.environ['PUBLISH_AT']), '未来の予約時刻を指定してください'"
       - name: Upload to YouTube
-        if: inputs.publish && steps.gate.outputs.ready == 'true'
+        if: (github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (inputs.publish && steps.gate.outputs.ready == 'true')
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
@@ -123,12 +129,12 @@ jobs:
             --narration build/soccer_voices/narration.json --thumbnail build/soccer_voices/short.png \
             --privacy public --publish-at "$PUBLISH_AT"
       - name: Commit record
-        if: always()
+        if: (github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (always())
         run: |
           bash scripts/commit_data.sh "soccer voices: ${{ github.run_id }}" \
             data/soccer_buzz.json data/soccer_voices.json data/published_videos.json data/token_usage.json
       - name: Save video and verification
-        if: always()
+        if: (github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (always())
         uses: actions/upload-artifact@v4
         with:
           name: soccer-voices
@@ -138,11 +144,11 @@ jobs:
             !build/**/portrait/**
           if-no-files-found: ignore
       - name: Confirm reservation
-        if: inputs.publish && steps.gate.outputs.ready == 'true'
+        if: (github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (inputs.publish && steps.gate.outputs.ready == 'true')
         run: python scripts/verify_published.py --kind soccer_voices
 
       - name: Keep unsaved data records
-        if: always() && hashFiles('build/data-save-recovery/**/FAILED') != ''
+        if: (github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (always() && hashFiles('build/data-save-recovery/**/FAILED') != '')
         uses: actions/upload-artifact@v4
         with:
           name: unsaved-data-${{ github.job }}-${{ github.run_attempt }}
@@ -164,7 +170,7 @@ jobs:
           retention-days: 14
 
       - name: Save quota-exceeded thumbnails
-        if: always() && hashFiles('build/thumbnail_pending/**') != ''
+        if: (github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (always() && hashFiles('build/thumbnail_pending/**') != '')
         uses: actions/upload-artifact@v4
         with:
           name: thumbnail-pending
@@ -185,3 +191,19 @@ jobs:
             !build/**/portrait/**
           retention-days: 14
           if-no-files-found: ignore
+
+      - name: Mark sample-only execution
+        if: always() && inputs.sample_only
+        run: python scripts/sample_only.py --mark build/sample_only.json --require-video
+      - name: Save sample video
+        if: always() && inputs.sample_only
+        uses: actions/upload-artifact@v4
+        with:
+          name: sample-soccer_voices
+          path: |
+            build/sample_only.json
+            build/**/*.mp4
+            build/**/audio_mix.json
+            !build/**/portrait/**
+          if-no-files-found: error
+          retention-days: 7

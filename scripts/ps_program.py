@@ -3,6 +3,8 @@
 No paid model calls and no new periodic workflow. A failed v2 never publishes
 the old race program. Canonical uploader and ledger remain authoritative.
 """
+
+import short_common
 import argparse
 from japanese_team_names import team_names
 import copy
@@ -168,6 +170,15 @@ def focus_at(plan,fraction):
 
 
 def render_segment(seg,layers=False):
+    if seg['kind'] == 'outro':
+        renderer = __import__('review_render_v3')
+        renderer.set_caption(seg['text'], 2, speaker=seg['speaker'], hide_caption=True)
+        image = renderer.outro(1)
+        errors = __import__('v3_rules').check_layout(image)
+        if errors:
+            raise ValueError('共通締めの安全域が不正です: '+str(errors))
+        manifest = {'layout':'short_outro', 'safe':True, 'presenters':[{'side':'right', 'speaker':2}]}
+        return (image,manifest,image.convert('RGBA')) if layers else (image,manifest)
     if seg['meta']['card'].get('next_line'):
         import next_line
         import v3_rules
@@ -581,31 +592,33 @@ def prepare(snapshot, evidence, slot, now, ledger=None):
                         phrase=team_names(row['players'], row['name'])
                         card.setdefault('v4_club_mentions',{})[row['name']]=displayed.text(phrase)
     program['segments'][0]['text'] = 'コレスポ。' + program['segments'][0]['text']
-    if os.getenv('COLLESPO_PS_DESIGN','legacy')=='v3':
-        import review_render_v3 as r3
-        first=program['segments'][0]['meta']['card']
-        card=dict(layout='facts',date=first['date'],sport='MLB',label='コレスポ',headline='コレスポ',items=[],
-                  source_url=ctx['source_url'],source_label='MLB公式',outro=True,lineup_kind='daily' if slot=='forecast' else 'postseason')
-        ending=segment(card,r3.OUTRO_TEXT)
-        ending['kind']='outro'
+    first = program['segments'][0]['meta']['card']
+    card = dict(layout='facts', date=first['date'], sport='MLB', label='コレスポ',
+                headline='コレスポ', items=[], source_url=ctx['source_url'], source_label='MLB公式',
+                outro=True, lineup_kind='daily' if slot=='forecast' else 'postseason')
+    if os.getenv('COLLESPO_PS_DESIGN','legacy') == 'v3':
         import next_line
-        at=next_line.publication_time(now.astimezone(JST).date().isoformat(),'19:00' if slot=='forecast' else '20:00',now)
-        line=next_line.choose(evidence['schedule'],'daily' if slot=='forecast' else 'postseason',at)
+        at = next_line.publication_time(now.astimezone(JST).date().isoformat(), '19:00' if slot=='forecast' else '20:00', now)
+        line = next_line.choose(evidence['schedule'], 'daily' if slot=='forecast' else 'postseason', at)
         if line:
-            upcoming=dict(card,outro=False,headline='次の試合',next_line=line,
-                          items=[dict(label='次の試合',value=line['screen'])])
-            part=segment(upcoming,line['say']);part['kind']='next_line'
+            upcoming = dict(card, outro=False, headline='次の試合', next_line=line,
+                            items=[dict(label='次の試合', value=line['screen'])])
+            part = segment(upcoming, line['say']); part['kind'] = 'next_line'
             program['segments'].append(part)
-        program['segments'].append(ending)
-    else:
-        program['segments'][-1]['text'] += 'コレスポ。'
+    ending = segment(card, short_common.OUTRO_TEXT)
+    ending['kind'] = 'outro'
+    program['segments'].append(ending)
+    program = short_common.prepare(program)
     edition = content_key(program)
-    if slot=='forecast' and before and os.getenv('COLLESPO_PS_DESIGN','legacy')=='v3':
+    if slot=='forecast' and before:
         old_program=forecast(ctx,games,rows,now,modern=False)
         if old_program:
             old_program['segments'][0]['text']='コレスポ。'+old_program['segments'][0]['text']
+            current_legacy=copy.deepcopy(old_program)
+            current_legacy['segments'].append(copy.deepcopy(ending))
+            current_legacy=short_common.prepare(current_legacy)
             old_program['segments'][-1]['text']+='コレスポ。'
-            if before.get('program_edition')==content_key(old_program):
+            if before.get('program_edition') in {content_key(old_program),content_key(current_legacy)}:
                 return None
     if before.get('program_edition') == edition:
         return None
@@ -723,7 +736,7 @@ def movie(program, audio_dir, out):
                 not a.get('file') or not Path(a['file']).exists() or not a.get('duration')):
             raise ValueError('台本と音声の不一致または音声欠落')
     out = Path(out); out.mkdir(parents=True, exist_ok=True)
-    durations = [max(3.0, float(a['duration']) + vc.SEGMENT_TAIL) for a in audio]
+    durations = [short_common.duration(a, max(3.0, float(a['duration']) + vc.SEGMENT_TAIL)) for a in audio]
     import short_content
     short_content.require(program, durations, out, video_name='collespo_short.mp4' if program['kind']=='daily' else 'collespo_morning_postseason.mp4')
     check = check_program(program)
@@ -746,8 +759,10 @@ def movie(program, audio_dir, out):
         bgm=sound_mix.bgm_path()
         cues += fan_events.event_cues()
         if not bgm.exists():raise ValueError('v3のPSのBGMがありません')
-        track=sound_mix.mix_file(track,out/'narration_mixed.wav',bgm_path=bgm,cues=cues)
+        track=sound_mix.mix_short_file(track,out/'narration_mixed.wav',bgm_path=bgm,cues=cues)
         check.update(bgm=bgm.stem,sfx_count=len(cues))
+    else:
+        track=short_common.add_audio(track,audio,durations,out)
     name = 'collespo_short.mp4' if program['kind'] == 'daily' else 'collespo_morning_postseason.mp4'
     path = out / name
     cmd = ['ffmpeg', '-y', '-nostats', '-loglevel', 'error', '-f', 'rawvideo', '-pix_fmt', 'rgb24',
@@ -775,7 +790,8 @@ def movie(program, audio_dir, out):
                 display_time=n/30
                 if v3:
                     unified.r3.set_program_clock(program_frame/30)
-                frame=(unified.frame(display_time,display_card,focus_card,cover=i==0,duration=duration,ticker_line='') if v3 else motion.frame(prepared,n/30,focus_at(plan,n/30/speech),
+                frame=(__import__('review_render_v3').outro(display_time) if seg['kind']=='outro' else
+                       unified.frame(display_time,display_card,focus_card,cover=i==0,duration=duration,ticker_line='') if v3 else motion.frame(prepared,n/30,focus_at(plan,n/30/speech),
                                    style=seg['meta']['card'].get('visual_style','stadium'),
                                    team_id=background_team(seg['meta']['card'])))
                 raw=(unified.transition(previous_frame,frame,n,round(vc.FADE_SECONDS*30),program_frame/30,ticker_line) if v3
@@ -786,6 +802,7 @@ def movie(program, audio_dir, out):
         proc.stdin.close()
         if proc.wait():
             raise ValueError('PS動画の書き出しに失敗')
+    __import__('sound_mix').verify_short_video(path)
     check.update(video=str(path), expected_segments=len(audio), durations=durations,
                  motion='sequential-left-entry / subtle-background-drift / shared-crossfade')
     write(out / 'ps_program_gate.json', check)

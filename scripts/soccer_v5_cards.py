@@ -2,6 +2,8 @@
 
 既存v4の関数・書体・色は変更しない。幅と字の実際の箱を測り、入らなければ停止する。
 """
+
+import short_common
 import motion
 from functools import lru_cache
 import math
@@ -480,20 +482,11 @@ def standings(t,spec,clubs):
 
 
 def outro(t,spec,exclude,credit,tagline):
-    # 同じ共通締めの行と文を使う。サッカーの色・字・板だけを専用層に描く。
-    im=canvas(t,{},'欧州サッカー');im.info['v3_outro']=True
-    text(im,L+20,282,'コレスポ',100,CHALK,width=R-L-40,weight=900)
-    text(im,L+20,430,tagline,36,MUTED,width=R-L-40)
-    text(im,L+20,500,'毎日のお届け',28,width=R-L-40)
-    y=558
-    for at,name in r3.outro_rows(exclude):
-        panel(im,(L,y,R-244,y+62))
-        text(im,L+28,y+10,at,42,LIME,width=124,number=True)
-        text(im,L+182,y+18,name,30,width=R-L-450)
-        y+=72
-    panel(im,(L,y+10,R-140,y+84),LIME)
-    text(im,L+42,y+32,'チャンネル登録で毎日届きます',32,DARK,width=R-L-210)
-    return finish(im,t,dict(spec,source=credit))
+    im = canvas(t, {}, '欧州サッカー')
+    im.info['v3_outro'] = True
+    text(im, L+20, 440, 'コレスポ', 100, CHALK, width=R-L-40, weight=900)
+    text(im, L+20, 640, short_common.OUTRO_LINE, 42, MUTED, width=R-L-40)
+    return finish(im, t, dict(spec, source=credit))
 
 
 def scarf_transition(previous,image,t):

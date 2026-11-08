@@ -6,6 +6,8 @@
 掛け合いの配置は本人が選んだ案1：横いっぱいの吹き出し＋その上に2人の上半身（話す方を大きく明るく）。
 絵を差し替えるときは、この1ファイルだけを変える。
 """
+
+import short_common
 import functools
 import math
 import os
@@ -339,6 +341,6 @@ def presenter(im, t, cast=("metan",)):
     if speaker not in cast:
         cast = tuple(cast) + (speaker,)
     place_busts(im, speaker, line, elapsed, ctx["duration"] or 1, cast)
-    if line and not ctx.get("hide_caption"):
+    if line and not ctx.get("hide_caption") and not im.info.get('v3_outro') and not short_common.duplicate_caption(im, line):
         bubble(im, speaker, line)
     r3.progress(ImageDraw.Draw(im))

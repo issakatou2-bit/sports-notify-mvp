@@ -7,6 +7,11 @@ on:
     - cron: '15 22 * * 0'
   workflow_dispatch:
     inputs:
+      sample_only:
+        description: 見本のmp4だけを保存する（公開・SNS・台帳・コミット・通知なし）
+        type: boolean
+        required: false
+        default: false
       upload:
         description: '月曜9:00の公開を予約する（公開変数onも必要）'
         type: boolean
@@ -20,6 +25,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
+  COLLESPO_SAMPLE_ONLY: ${{ inputs.sample_only && 'true' || 'false' }}
   COLLESPO_HOST_SPLIT: ${{ vars.COLLESPO_HOST_SPLIT || '' }}
   COLLESPO_UI_VOICE_STOCK: ${{ vars.COLLESPO_UI_VOICE_STOCK || '' }}
   COLLESPO_UI_PARTS_KEY: ${{ secrets.COLLESPO_UI_PARTS_KEY }}
@@ -147,7 +153,7 @@ jobs:
             --privacy public --publish-at '09:00'
 
       - name: Keep the video
-        if: always()
+        if: (github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (always())
         uses: actions/upload-artifact@v4
         with:
           name: soccer-week
@@ -166,7 +172,7 @@ jobs:
           if-no-files-found: warn
 
       - name: Commit the material
-        if: always() && steps.gate.outputs.due == '1'
+        if: (github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (always() && steps.gate.outputs.due == '1')
         run: |
           bash scripts/commit_data.sh \
             "soccer week: ${{ github.run_id }}" \
@@ -174,7 +180,7 @@ jobs:
             data/published_videos.json data/morning_recap.json data/player_profile.json data/token_usage.json
 
       - name: Say what happened
-        if: always()
+        if: (github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (always())
         run: |
           {
             echo "## 日本人選手の週末"
@@ -187,7 +193,7 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Keep unsaved data records
-        if: always() && hashFiles('build/data-save-recovery/**/FAILED') != ''
+        if: (github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (always() && hashFiles('build/data-save-recovery/**/FAILED') != '')
         uses: actions/upload-artifact@v4
         with:
           name: unsaved-data-${{ github.job }}-${{ github.run_attempt }}
@@ -209,7 +215,7 @@ jobs:
           retention-days: 14
 
       - name: Save quota-exceeded thumbnails
-        if: always() && hashFiles('build/thumbnail_pending/**') != ''
+        if: (github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (always() && hashFiles('build/thumbnail_pending/**') != '')
         uses: actions/upload-artifact@v4
         with:
           name: thumbnail-pending
@@ -231,3 +237,19 @@ jobs:
             !build/**/portrait/**
           retention-days: 14
           if-no-files-found: ignore
+
+      - name: Mark sample-only execution
+        if: always() && inputs.sample_only
+        run: python scripts/sample_only.py --mark build/sample_only.json --require-video
+      - name: Save sample video
+        if: always() && inputs.sample_only
+        uses: actions/upload-artifact@v4
+        with:
+          name: sample-soccer_week
+          path: |
+            build/sample_only.json
+            build/**/*.mp4
+            build/**/audio_mix.json
+            !build/**/portrait/**
+          if-no-files-found: error
+          retention-days: 7

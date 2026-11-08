@@ -1,0 +1,298 @@
+{
+  "daily_notify": {
+    "workflow_dispatch": {}
+  },
+  "morning_recap": {
+    "workflow_dispatch": {
+      "inputs": {
+        "date": {
+          "description": "公開する回の日本日付 YYYY-MM-DD（空なら正午前は前日分）",
+          "required": "false",
+          "default": ""
+        },
+        "modes": {
+          "description": "作る本数を絞る (players postseason voices press のうち必要なものだけ)",
+          "required": "false",
+          "default": "players postseason voices press"
+        },
+        "player": {
+          "description": "「今日の1人」をこの選手で作る (例: Pete Crow-Armstrong)",
+          "required": "false"
+        },
+        "tiktok_inbox": {
+          "description": "TikTokアプリの受信箱へも送る（公開は別操作、通常はBufferのみ）",
+          "required": "false",
+          "type": "boolean",
+          "default": "false"
+        },
+        "force": {
+          "description": "true にすると、その日に投稿済みでも上げ直す",
+          "required": "false",
+          "default": "false"
+        }
+      }
+    }
+  },
+  "asset_video": {
+    "workflow_run": {
+      "workflows": [
+        "毎日 17:00-20:00　夕方の4本"
+      ],
+      "types": [
+        "completed"
+      ]
+    },
+    "workflow_dispatch": {
+      "inputs": {
+        "topic": {
+          "description": "トピック名。next で未投稿から1本",
+          "type": "string",
+          "default": "next"
+        },
+        "privacy": {
+          "description": "公開設定",
+          "type": "choice",
+          "options": [
+            "public",
+            "unlisted",
+            "private"
+          ],
+          "default": "public"
+        },
+        "force": {
+          "description": "投稿済みのトピックも上げ直す(通常はオフ)",
+          "type": "boolean",
+          "default": "false"
+        }
+      }
+    }
+  },
+  "season_review": {
+    "workflow_run": {
+      "workflows": [
+        "MLB オフの公式話題"
+      ],
+      "types": [
+        "completed"
+      ]
+    },
+    "workflow_dispatch": {
+      "inputs": {
+        "count": {
+          "description": "きょう出す上限（既に出したぶんを引く）",
+          "default": "2"
+        },
+        "privacy": {
+          "description": "公開設定",
+          "type": "choice",
+          "options": [
+            "public",
+            "unlisted",
+            "private"
+          ],
+          "default": "public"
+        }
+      }
+    }
+  },
+  "offseason_news": {
+    "workflow_run": {
+      "workflows": [
+        "毎日 17:00-20:00　夕方の4本"
+      ],
+      "types": [
+        "completed"
+      ]
+    },
+    "workflow_dispatch": ""
+  },
+  "ps_game_now": {
+    "workflow_run": {
+      "workflows": [
+        "毎朝 10:00　健康診断(前日分)"
+      ],
+      "types": [
+        "completed"
+      ]
+    },
+    "workflow_dispatch": {
+      "inputs": {
+        "until_utc": {
+          "description": "見張りを止める時刻（UTC、HH:MM）。既定 06:00 = 日本時間15:00",
+          "default": "06:00"
+        }
+      }
+    }
+  },
+  "soccer_daily": {
+    "workflow_dispatch": {},
+    "workflow_run": {
+      "workflows": [
+        "毎日 19:00頃　明日の注目試合"
+      ],
+      "types": [
+        "completed"
+      ]
+    }
+  },
+  "soccer_results": {
+    "schedule": [
+      {
+        "cron": "20 22 * * *"
+      }
+    ],
+    "workflow_dispatch": {
+      "inputs": {
+        "date": {
+          "description": "終了した日本時間の日（空なら前日）",
+          "type": "string",
+          "required": "false",
+          "default": ""
+        },
+        "publish": {
+          "description": "YouTubeへ上げる（公開設定はprivacyで選ぶ）",
+          "type": "boolean",
+          "required": "true",
+          "default": "false"
+        },
+        "privacy": {
+          "description": "公開設定（privateは非公開試験・予約公開なし）",
+          "type": "choice",
+          "required": "true",
+          "default": "public",
+          "options": [
+            "public",
+            "private"
+          ]
+        },
+        "publish_at": {
+          "description": "予約する日本時間 HH:MM（公開する場合は未来の時刻）",
+          "type": "string",
+          "required": "false",
+          "default": ""
+        }
+      }
+    }
+  },
+  "soccer_race": {
+    "workflow_run": {
+      "workflows": [
+        "毎日 19:00　欧州サッカー"
+      ],
+      "types": [
+        "completed"
+      ]
+    },
+    "workflow_dispatch": {
+      "inputs": {
+        "only": {
+          "description": "大会を指定して作る (PL / PD / SA / BL1 / FL1 / CL)",
+          "required": "false",
+          "default": ""
+        },
+        "privacy": {
+          "description": "公開設定 (private / unlisted / public)",
+          "required": "false",
+          "default": "public"
+        },
+        "upload": {
+          "description": "YouTubeへ上げるか",
+          "required": "false",
+          "default": "true"
+        },
+        "publish_at": {
+          "description": "公開時刻 (HH:MM、空なら 21:00)",
+          "required": "false",
+          "default": ""
+        }
+      }
+    }
+  },
+  "soccer_week": {
+    "schedule": [
+      {
+        "cron": "15 22 * * 0"
+      }
+    ],
+    "workflow_dispatch": {
+      "inputs": {
+        "upload": {
+          "description": "月曜9:00の公開を予約する（公開変数onも必要）",
+          "type": "boolean",
+          "default": "false"
+        }
+      }
+    }
+  },
+  "soccer_voices": {
+    "workflow_dispatch": {
+      "inputs": {
+        "publish": {
+          "description": "見本を確認後に予約投稿する",
+          "type": "boolean",
+          "required": "true",
+          "default": "false"
+        },
+        "publish_at": {
+          "description": "予約する日本時間 HH:MM（公開する場合は未来の時刻）",
+          "type": "string",
+          "required": "false",
+          "default": ""
+        }
+      }
+    }
+  },
+  "soccer_national": {
+    "schedule": [
+      {
+        "cron": "15 22 * * *"
+      },
+      {
+        "cron": "15 1 * * *"
+      },
+      {
+        "cron": "0 5 * * *"
+      },
+      {
+        "cron": "0 9 * * *"
+      },
+      {
+        "cron": "15 12 * * *"
+      },
+      {
+        "cron": "40 12 * * *"
+      },
+      {
+        "cron": "0 13 * * *"
+      }
+    ],
+    "workflow_dispatch": {}
+  },
+  "soccer_now": {
+    "schedule": [
+      {
+        "cron": "7 * * * *"
+      }
+    ],
+    "workflow_dispatch": {}
+  },
+  "soccer_goal_short": {
+    "schedule": [
+      {
+        "cron": "17,47 * * * *"
+      }
+    ],
+    "workflow_dispatch": {}
+  },
+  "player_story": {
+    "schedule": [
+      {
+        "cron": "10 8 * * *"
+      }
+    ],
+    "workflow_dispatch": ""
+  },
+  "weekly_summary": {
+    "workflow_dispatch": {}
+  }
+}

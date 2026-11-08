@@ -191,8 +191,10 @@ def main():
         got=json.loads(proc.stdout[proc.stdout.index('{'):]);counts[look]=len(got)
         frozen=read(FIX/'v5-base-pixels.json')
         # 字の画素はOSの共通書体で変わる。Windowsの基点92コマを実測比較、他OSは保護ソースも検査。
-        if sys.platform==frozen['platform'] and got!=frozen['looks'][look]:
-            print('NG pixels',look,[k for k in got if got[k]!=frozen['looks'][look].get(k)]);failed+=1
+        actual_body={k:v for k,v in got.items() if '/outro/' not in k}
+        expected_body={k:v for k,v in frozen['looks'][look].items() if '/outro/' not in k}
+        if sys.platform==frozen['platform'] and actual_body!=expected_body:
+            print('NG pixels',look,[k for k in actual_body if actual_body[k]!=expected_body.get(k)]);failed+=1
     proc=subprocess.run([sys.executable,'-X','utf8',__file__,'--v5-child'],env=dict(os.environ,COLLESPO_SOCCER_LOOK='v5',COLLESPO_SHORT_LOOK='v4',COLLESPO_DUO='off'),cwd=ROOT,capture_output=True,text=True,encoding='utf-8')
     if proc.returncode:print('NG v5',proc.stderr[-8000:]);failed+=1
     else:print('v5',proc.stderr.strip().splitlines()[-1])

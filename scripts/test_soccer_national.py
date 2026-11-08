@@ -95,7 +95,7 @@ class National(unittest.TestCase):
     def test_no_previous_invented(self):
         d=n.preview(n.match(event(complete=False)),self.schedule,self.schedule,dict(events=[]),'2026-11-13T09:00:00Z')
         self.assertEqual(d['previous']['date_jst'],'2026-06-30')
-        self.assertTrue(any(s['meta']['panel']=='previous' for s in n.narration(d)['segments']))
+        self.assertTrue(any(s['meta'].get('panel')=='previous' for s in n.narration(d)['segments']))
 
     def test_preannouncement_empty(self):
         self.assertIsNone(n.squad(dict(announced_at=None),{},self.now.isoformat()))
@@ -157,10 +157,10 @@ class National(unittest.TestCase):
         with tempfile.TemporaryDirectory() as path:
             out=Path(path);n.save(out/'material.json',d);n.save(out/'narration.json',n.narration(d));n.save(out/'audio/manifest.json',{'segments':[{}]})
             count=len(n.narration(d)['segments'])
-            with patch.object(common,'durations',side_effect=[[10/count]*count,[30/(count+1)]*(count+1)]),patch.object(synth,'main') as voice:
+            with patch.object(common,'durations',side_effect=[[8/(count-1)]*(count-1)+[2],[28/count]*count+[2]]),patch.object(synth,'main') as voice:
                 self.assertTrue(r.fit_to_audio(out));voice.assert_called_once()
             self.assertEqual(n.read(out/'material.json')['length_level'],1)
-            self.assertTrue(any(s['meta']['panel']=='year-record' for s in n.read(out/'narration.json')['segments']))
+            self.assertTrue(any(s['meta'].get('panel')=='year-record' for s in n.read(out/'narration.json')['segments']))
 
     def test_squad_stats_current_and_stale(self):
         row=dict(name='上田綺世',club='試験クラブ',scope='season',as_of='2026-11-13T12:00Z',source='test',goals=5)
@@ -298,7 +298,7 @@ class Narrative(unittest.TestCase):
         import soccer_results_render as common
         import synthesize_narration as synth
         d=self.base.result();count=len(n.narration(d)['segments'])
-        lengths=[[15/count]*count,[20/(count+1)]*(count+1),[22/(count+1)]*(count+1),[24/(count+2)]*(count+2),[30/(count+3)]*(count+3)]
+        lengths=[[13/(count-1)]*(count-1)+[2],[18/count]*count+[2],[20/count]*count+[2],[22/(count+1)]*(count+1)+[2],[28/(count+2)]*(count+2)+[2]]
         with tempfile.TemporaryDirectory() as path:
             out=Path(path);n.save(out/'material.json',d);n.save(out/'narration.json',n.narration(d));n.save(out/'audio/manifest.json',{'segments':[{}]})
             with patch.object(common,'durations',side_effect=lengths),patch.object(synth,'main'):
@@ -434,7 +434,7 @@ class VerifiedHistory(unittest.TestCase):
 
     def test_cup_route_fact_is_verified_and_no_pk_score(self):
         d=self.preview();d['length_level']=3;doc=n.narration(d)
-        text=next(s['text'] for s in doc['segments'] if s['meta']['panel']=='cup-route')
+        text=next(s['text'] for s in doc['segments'] if s['meta'].get('panel')=='cup-route')
         self.assertEqual(text,'キリンカップの1回戦はエクアドルと0対0からPK戦で勝ちました。')
         self.assertEqual(n.check(doc),[])
         self.assertEqual(n.history_record(d['japan_history'],2026)['gf'],18)

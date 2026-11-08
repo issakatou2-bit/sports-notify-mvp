@@ -195,6 +195,7 @@ def streak_summary(total: int, hit: int) -> str:
             f"続いたのは{hit}件でした。")
 
 
+@__import__('short_common').narration
 def build_narration(verdict: dict, label: str, career: dict = None,
                     base_rates: dict = None) -> dict:
     streaks = verdict.get("streaks") or []
@@ -420,19 +421,7 @@ def render_base(p, meta):
 
 
 def render_outro(p):
-    im, d = base(p)
-    d.text((80, 620), "コレスポ", font=font(120), fill=ACCENT)
-    d.text((80, 780), "毎日19時", font=font(76), fill=TEXT)
-    if p > 0.10:
-        d.text((80, 880), "その日の注目試合を", font=font(50), fill=TEXT)
-        d.text((80, 950), "「なぜ注目か」の理由つきで", font=font(50), fill=TEXT)
-    if p > 0.20:
-        d.rounded_rectangle([70, 1060, W - 70, 1170], 18, fill=ACCENT)
-        d.text((110, 1088), "チャンネル登録で毎日届きます", font=font(46), fill=BG)
-    d.text((80, 1220), "collespo.com", font=font(46), fill=TEXT)
-    d.text((80, 1340), "音声: VOICEVOX:ずんだもん", font=font(38), fill=DIM)
-    d.text((80, 1400), "データ: MLB Stats API", font=font(38), fill=DIM)
-    return im
+    return __import__('review_render_v3').outro(p * 2, credit='音声: VOICEVOX:四国めたん・ずんだもん')
 
 
 # ---------------------------------------------------------------------------
@@ -440,8 +429,8 @@ def render_outro(p):
 # ---------------------------------------------------------------------------
 
 def plan_durations(segs):
-    return [max(MIN_DURATION.get(s.get("kind") or "check", 5.0),
-                float(s.get("duration") or 0) + video_common.SEGMENT_TAIL)
+    return [__import__('short_common').duration(s, max(MIN_DURATION.get(s.get("kind") or "check", 5.0),
+                float(s.get("duration") or 0) + video_common.SEGMENT_TAIL))
             for s in segs]
 
 
@@ -515,6 +504,8 @@ def main():
     short_content.require(dict(narration, segments=segs), durations, out_dir,
                           verdict, maximum=post_common.MAX_SECONDS+post_common.BUDGET_GRACE, video_name=video_path.name)
     audio_path = build_narration_track(segs, durations, out_dir)
+    if audio_path:
+        audio_path = __import__('short_common').add_audio(audio_path, segs, durations, out_dir)
 
     cmd = ["ffmpeg", "-y", "-nostats", "-loglevel", "error",
            "-f", "rawvideo", "-pix_fmt", "rgb24",
@@ -556,7 +547,8 @@ def main():
                     im = render_base(pp, meta)
                 else:
                     im = render_outro(pp)
-                im=__import__('bubble_styles').narration_frame(im,seg,k/FPS,dur)
+                if kind != 'outro':
+                    im=__import__('bubble_styles').narration_frame(im,seg,k/FPS,dur)
                 cached = im.tobytes()
                 proc.stdin.write(cached)
                 # 動きが終わった最初の1枚。これを残りに使い回す。
@@ -577,6 +569,8 @@ def main():
         sys.exit(1)
 
     secs = total / FPS
+    if audio_path:
+        __import__('sound_mix').verify_short_video(video_path)
     size_mb = video_path.stat().st_size / 1024 / 1024
     print(f"[info] 答え合わせショートを生成しました: {video_path} "
           f"({size_mb:.1f}MB, {secs:.0f}秒)")

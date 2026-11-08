@@ -1,4 +1,5 @@
 """既存の日次原稿を案Dへ。明示指定時のみ、投稿と有料生成は持たない。"""
+
 import os
 import json
 from pathlib import Path
@@ -115,7 +116,7 @@ def mix(audio, segments, durations, design, out_dir):
     if not bgm.exists():
         raise ValueError("案DのBGMがありません")
     print(f"[info] 案D: BGM {bgm.stem}・効果音{len(cues)}個")
-    return sound_mix.mix_file(audio, Path(out_dir) / "narration_mixed.wav", bgm_path=bgm, cues=cues)
+    return sound_mix.mix_short_file(audio, Path(out_dir) / "narration_mixed.wav", bgm_path=bgm, cues=cues)
 
 
 def validate_audio(segments, narration):

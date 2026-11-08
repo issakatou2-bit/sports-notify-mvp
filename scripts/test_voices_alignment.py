@@ -80,7 +80,7 @@ class VoicesAlignment(unittest.TestCase):
         with patch.object(cr, 'unified_comments', return_value='frame') as draw:
             self.assertEqual(cr.voices_screen(2, seg, data['voices'], 12), 'frame')
             self.assertEqual(draw.call_args.args[1], [])
-        with tempfile.TemporaryDirectory() as folder, patch.object(sound_mix, 'mix_file', return_value='mixed') as mix:
+        with tempfile.TemporaryDirectory() as folder, patch.object(sound_mix, 'mix_short_file', return_value='mixed') as mix:
             self.assertEqual(daily_v3.mix('audio.wav', bad['segments'], [12]*5, design, folder), 'mixed')
             report = json.loads((Path(folder)/'quote_alignment.json').read_text(encoding='utf-8'))
             self.assertEqual(len(report['omissions']), 1)

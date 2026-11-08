@@ -1,4 +1,6 @@
 """本人指定の整列一覧＋大きな一組のスコア。v6指定時だけ使用する。"""
+
+import short_common
 import copy
 import math
 
@@ -97,7 +99,7 @@ class Screen:
         self.im.paste(art, (x, y), art)
         self.im.info['duo_layer'] = [dict(who=speaker, face=face, height=360, dim=False,
                                          at=[x,y], cut=max(1,CAPTION[1]-y))]
-        if line and not ctx.get('hide_caption'):
+        if line and not ctx.get('hide_caption') and not short_common.duplicate_caption(self.im, line):
             import bubble_styles
             # 既存の幅・48px起点・数字強調・文節改行を引き継ぐ。
             # 胸上の下端に字幕を後から重ね、切れ目を箱の下へ隠す。

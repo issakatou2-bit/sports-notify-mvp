@@ -51,6 +51,7 @@ def cards(context):
     return segments
 
 
+@__import__('short_common').narration
 def narration(context):
     return {'title': 'MLBポストシーズン 組み合わせ・開幕日程',
             'date_jst': context['date_jst'], 'segments': cards(context),
@@ -67,6 +68,8 @@ def draw_lines(d, text, x, y, size, color=INK, width=920):
 
 
 def render(context, segment):
+    if segment['kind'] == 'outro':
+        return __import__('review_render_v3').outro(1)
     im = Image.new('RGB', (W, H), BG)
     d = ImageDraw.Draw(im)
     d.rectangle((70, 135, 135, 145), fill=ACCENT)
@@ -149,10 +152,12 @@ def movie(context, script, audio_dir, out, require_audio):
         raise ValueError('音声の欠落があるため公開できません')
     out = Path(out)
     out.mkdir(parents=True, exist_ok=True)
-    durations = [max(4.0, float(s['duration']) + vc.SEGMENT_TAIL) for s in audio]
+    durations = [__import__('short_common').duration(s, max(4.0, float(s['duration']) + vc.SEGMENT_TAIL)) for s in audio]
     import short_content
     short_content.require(script, durations, out, video_name='collespo_morning_postseason.mp4')
     track = vc.build_narration_track(audio, durations, out)
+    if track:
+        track = __import__('short_common').add_audio(track, audio, durations, out)
     if require_audio and not track:
         raise ValueError('音声を結合できません')
     video = out / 'collespo_morning_postseason.mp4'
@@ -174,6 +179,8 @@ def movie(context, script, audio_dir, out, require_audio):
         process.stdin.close()
         if process.wait():
             raise ValueError('PS案内動画の書き出しに失敗')
+    if track:
+        __import__('sound_mix').verify_short_video(video)
     print(f'[info] PS案内動画: {video}')
 
 

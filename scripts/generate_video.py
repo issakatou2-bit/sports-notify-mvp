@@ -16,6 +16,8 @@
       --games notable_games.json --audio-dir build/audio --out build/video
 """
 
+import short_common
+
 import argparse
 import functools
 import json
@@ -907,24 +909,10 @@ def render_score(progress: float, games: list):
 
 
 def render_outro(progress: float):
-    im, d = base_frame(progress)
-    e = ease_out(min(1.0, progress * 2))
-    d.text((80, 620), "コレスポ", font=font(120), fill=ACCENT)
-    d.text((80, 780), "毎日19時", font=font(76), fill=TEXT)
-    if progress > 0.10:
-        d.text((80, 880), "その日の注目試合を", font=font(50), fill=TEXT)
-        d.text((80, 950), "「なぜ注目か」の理由つきで", font=font(50), fill=TEXT)
-    if progress > 0.20:
-        # 何をしてほしいかを1つだけ明示する。複数並べるとどれも実行されない。
-        d.rounded_rectangle([70, 1060, W - 70, 1170], 18, fill=ACCENT)
-        d.text((110, 1088), "チャンネル登録で毎日届きます", font=font(46), fill=BG)
-    d.text((80, 1220), "collespo.com", font=font(46), fill=TEXT)
-    # VOICEVOXの利用規約で、動画内または説明欄へのクレジット表記が
-    # 求められているため、アウトロに必ず表示する
-    d.text((80, 1340), "音声: VOICEVOX:ずんだもん", font=font(38), fill=DIM)
-    # 出典は競技で変わる。サッカーの動画にMLBのAPI名が出ていては嘘になる。
-    d.text((80, 1400), DATA_SOURCE, font=font(38), fill=DIM)
-    return im
+    import review_render_v3 as r3
+    return r3.outro(progress * 2, credit='音声: VOICEVOX:四国めたん')
+
+
 
 
 # 画面の隅に出す出典。競技で変わる。
@@ -1018,7 +1006,7 @@ def main():
     total_games = len(games[:3])
 
     # --- 音声を先に連結しておく ---
-    durations = [max(2.0, float(s.get('duration') or 0) or 4.0) for s in segments]
+    durations = [short_common.duration(s, max(2.0, float(s.get('duration') or 0) or 4.0)) for s in segments]
     import short_content
     short_content.require({'segments': segments},
                           durations,
@@ -1036,6 +1024,7 @@ def main():
 
     if audio_files:
         audio_path = video_common.build_narration_track(segments, durations, out_dir, strict_audio=False)
+        audio_path = short_common.add_audio(audio_path, segments, durations, out_dir)
 
     # --- フレームをffmpegへ直接流し込む ---
     # PNGとしてディスクに書き出すと、2000枚超で圧縮とI/Oに3分近くかかる。
@@ -1127,6 +1116,8 @@ def main():
         print(f"[error] 動画の書き出しに失敗しました:\n{err}", file=sys.stderr)
         sys.exit(1)
 
+    if audio_path:
+        __import__('sound_mix').verify_short_video(video_path)
     size_mb = video_path.stat().st_size / 1024 / 1024
     print(f"[info] 動画を生成しました: {video_path} ({size_mb:.1f}MB, "
           f"{frame_no / FPS:.1f}秒)")

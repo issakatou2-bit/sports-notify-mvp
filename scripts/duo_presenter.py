@@ -68,10 +68,15 @@ def presenter(im, t):
 
 
 def caption(im,t):
+    if im.info.get('v3_outro'):
+        return
     ctx=r3._CAPTION
     if not ctx['text'] or ctx.get('hide_caption'):return
     clock=r3._PROGRAM_CLOCK[0]
     elapsed=clock-ctx['start'] if clock is not None else t
+    line=r3.current_sentence(elapsed,ctx['text'],ctx['duration'])
+    if __import__('short_common').duplicate_caption(im,line):
+        return
     import bubble_styles
     if bubble_styles.selected():
         import characters

@@ -29,13 +29,20 @@ name: 毎週日曜　週間まとめ
 # **消さずに止める。**替わりの中身が決まれば、ここを戻すだけで動く。
 # 手で回したいときは workflow_dispatch から。
 on:
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      sample_only:
+        description: 見本のmp4だけを保存する（公開・SNS・台帳・コミット・通知なし）
+        type: boolean
+        required: false
+        default: false
 
 # 投稿の記録をコミットするので write が要る。
 permissions:
   contents: write
 
 env:
+  COLLESPO_SAMPLE_ONLY: ${{ inputs.sample_only && 'true' || 'false' }}
   COLLESPO_MOTION: ${{ vars.COLLESPO_MOTION || '' }}
   COLLESPO_BUBBLE: ${{ vars.COLLESPO_BUBBLE || '' }}
   COLLESPO_CAPTION_BREAKS: ${{ vars.COLLESPO_CAPTION_BREAKS || '' }}
@@ -67,6 +74,7 @@ jobs:
             echo "日曜ではないので何もしません (曜日=$DOW)"
             echo "go=0" >> "$GITHUB_OUTPUT"
           fi
+
 
   weekly:
     needs: gate
@@ -108,10 +116,12 @@ jobs:
       # 日本人打者の直近7日の成績。選手ごとにAPIを1回ずつ叩くので、
       # 日次のパイプラインには入れず、週次でのみ取得する。
       - name: Fetch weekly OPS
+        if: github.event_name != 'workflow_dispatch' || inputs.sample_only != true
         continue-on-error: true
         run: python scripts/weekly_ops.py --out data/weekly_ops.json
 
       - name: Generate weekly narration
+        if: github.event_name != 'workflow_dispatch' || inputs.sample_only != true
         continue-on-error: true
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -121,6 +131,7 @@ jobs:
             --out build/weekly_narration.json
 
       - name: Sanity gate (weekly)
+        if: github.event_name != 'workflow_dispatch' || inputs.sample_only != true
         id: sanity_weekly
         continue-on-error: true
         env:
@@ -129,6 +140,7 @@ jobs:
         run: python scripts/sanity.py --general --strict --narration build/weekly_narration.json --out data/sanity_weekly.json --hold-record build/sanity_hold_weekly.json --kind weekly
 
       - name: Synthesize weekly narration
+        if: github.event_name != 'workflow_dispatch' || inputs.sample_only != true
         continue-on-error: true
         run: |
           python scripts/synthesize_narration.py \
@@ -136,6 +148,7 @@ jobs:
             --out-dir build/weekly_audio
 
       - name: Generate weekly video
+        if: github.event_name != 'workflow_dispatch' || inputs.sample_only != true
         run: |
           python scripts/generate_weekly.py \
             --archive-dir archive \
@@ -145,6 +158,7 @@ jobs:
       # --label を省くと、動画側と同じ条件(weekly_stats.load_week)で
       # 週の範囲をアーカイブから求める
       - name: Generate thumbnail
+        if: github.event_name != 'workflow_dispatch' || inputs.sample_only != true
         continue-on-error: true
         run: |
           python scripts/generate_thumbnail.py \
@@ -162,7 +176,7 @@ jobs:
       # 深夜に無言で現れても、誰の目にも触れない。
       # 22:00に置く。日次の枠(17:00〜20:00)とぶつからない時刻。
       - name: Upload to YouTube
-        if: steps.sanity_weekly.outcome == 'success'
+        if: (github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (steps.sanity_weekly.outcome == 'success')
         continue-on-error: true
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -225,7 +239,7 @@ jobs:
           bash scripts/shorts_thumbnail.sh build/verdict/collespo_verdict.mp4 build/verdict/short.png
 
       - name: Upload verdict short to YouTube
-        if: steps.sanity_verdict.outcome == 'success'
+        if: (github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (steps.sanity_verdict.outcome == 'success')
         continue-on-error: true
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -247,7 +261,7 @@ jobs:
       # 起動を日次の完走に乗せた今、日曜に日次を2回動かせば週次も2回動く。
       # 残しておけば2本目は弾かれる。健康診断も週次を確認できるようになる。
       - name: Commit video record
-        if: always()
+        if: (github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (always())
         run: |
           bash scripts/commit_data.sh \
             "weekly record: ${{ github.run_id }}" \
@@ -256,13 +270,13 @@ jobs:
       # 作れなかった回を緑のまま通さない。週1本しか無いので、
       # 翌朝の健康診断まで気付かないのは遅い。
       - name: Confirm the videos went out
-        if: always()
+        if: (github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (always())
         run: |
           python scripts/verify_published.py --kind weekly
           python scripts/verify_published.py --kind verdict
 
       - name: Save videos as artifact
-        if: always()
+        if: (github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (always())
         uses: actions/upload-artifact@v4
         with:
           name: collespo-weekly
@@ -273,7 +287,7 @@ jobs:
           if-no-files-found: ignore
 
       - name: Keep unsaved data records
-        if: always() && hashFiles('build/data-save-recovery/**/FAILED') != ''
+        if: (github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (always() && hashFiles('build/data-save-recovery/**/FAILED') != '')
         uses: actions/upload-artifact@v4
         with:
           name: unsaved-data-${{ github.job }}-${{ github.run_attempt }}
@@ -295,7 +309,7 @@ jobs:
           retention-days: 14
 
       - name: Save quota-exceeded thumbnails
-        if: always() && hashFiles('build/thumbnail_pending/**') != ''
+        if: (github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (always() && hashFiles('build/thumbnail_pending/**') != '')
         uses: actions/upload-artifact@v4
         with:
           name: thumbnail-pending
@@ -316,3 +330,19 @@ jobs:
             !build/**/portrait/**
           retention-days: 14
           if-no-files-found: ignore
+
+      - name: Mark sample-only execution
+        if: always() && inputs.sample_only
+        run: python scripts/sample_only.py --mark build/sample_only.json --require-video
+      - name: Save sample video
+        if: always() && inputs.sample_only
+        uses: actions/upload-artifact@v4
+        with:
+          name: sample-verdict
+          path: |
+            build/sample_only.json
+            build/verdict/*.mp4
+            build/**/audio_mix.json
+            !build/**/portrait/**
+          if-no-files-found: error
+          retention-days: 7

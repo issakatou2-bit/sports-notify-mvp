@@ -1,4 +1,6 @@
 """日本代表の親善試合。取得・選定と台本を分け、既定offで公開を止める。"""
+
+import short_common
 import argparse
 import copy
 from datetime import datetime, timedelta, timezone
@@ -532,6 +534,7 @@ def title(data):
     return titles.title(head)
 
 
+@short_common.narration
 def narration(data):
     d=copy.deepcopy(data)
     return dict(program='soccer_national',label=instant(d['as_of']).astimezone(JST).date().isoformat(),
@@ -564,7 +567,7 @@ def check(document):
             verified=history.context(data['as_of'],data['game']['opponent'],data['japan_observed'],current)
             if any(data.get(k)!=v for k,v in verified.items()):
                 return ['前回・直近・年間成績が確認済み全大会一覧の再計算と一致しません']
-        expected=segments_for(data)
+        expected=[{k:s[k] for k in ('kind','text','speaker','meta')} for s in short_common.prepare(dict(segments=segments_for(data)))['segments']]
         actual=[{k:s[k] for k in ('kind','text','speaker','meta')} for s in document.get('segments') or []]
         if actual!=expected or document.get('title')!=title(data):
             return ['日本代表の原稿・数字・得点者が保存材料と一致しません']
@@ -618,7 +621,7 @@ def information(document):
             add(g['id'],'会場',g['venue'],g['source_url'])
         else:
             add(g['id'],'最終スコア',g['score'],g['source_url'])
-        panels={s['meta']['panel'] for s in document['segments']}
+        panels={s['meta'].get('panel') for s in document['segments']}
         keys=('japan_recent','opponent_recent','previous','previous_earlier') if d['mode']=='preview' else ('japan_recent',) if 'recent-single' in panels else ()
         for key in keys:
             r=d.get(key)
@@ -731,7 +734,7 @@ def main(argv=None):
     args.out.mkdir(parents=True,exist_ok=True)
     marker=args.out/'gate.json'
     save(marker,dict(can_make=False,reason='既定off'))
-    if not enabled():
+    if not enabled() and not __import__('sample_only').enabled():
         print('日本代表の生成・公開は既定offです');return
     now=datetime.now(timezone.utc)
     games,schedules,previous=fetch_snapshot(args.out/'raw',now)
@@ -739,7 +742,7 @@ def main(argv=None):
         import requests
         r=requests.get(API+'summary',params={'event':ident},timeout=30);r.raise_for_status()
         d=r.json();save(args.out/'raw'/('summary_'+ident+'.json'),d);return d
-    data=choose(games,schedules,previous,now,read(ROOT/'data/published_videos.json'),summary,
+    data=choose(games,schedules,previous,now,{} if __import__('sample_only').enabled() else read(ROOT/'data/published_videos.json'),summary,
         read(args.squad) if args.squad.exists() else None,read(ROOT/'data/soccer_games.json'))
     if not data:
         save(marker,dict(can_make=False,reason='対象枠・終了結果・発表済みメンバーなし'));return

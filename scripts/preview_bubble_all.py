@@ -91,7 +91,7 @@ def cases():
     import generate_video as daily
     seg={'text':TEXT,'speaker':2}
     out.append(('weekly-summary',seg,lambda t:bs.narration_frame(weekly.render_intro(1,'保存材料の週次まとめ'),seg,t,20)))
-    out.append(('weekly-verdict',seg,lambda t:bs.narration_frame(verdict.render_outro(1),seg,t,20)))
+    out.append(('weekly-verdict',seg,lambda t:verdict.render_outro(1)))
     out.append(('daily-legacy',seg,lambda t:bs.narration_frame(daily.render_intro(1,'10月14日'),seg,t,20)))
     # Explicit old v3 and duo presenters remain selectable independently of v4.
     import duo_presenter as duo
@@ -109,7 +109,11 @@ def cases():
 def inspect(im):
     import bubble_styles as bs
     meta=im.info.get('bubble_style')
-    if not meta:raise ValueError('新しい吹き出しが描かれていません')
+    if not meta:
+        if im.info.get('short_caption_suppressed') or im.info.get('v3_outro'):
+            return dict(box=None,contrast=None,name_contrast=None,lines=[],
+                        bounds='PASS',breaks='PASS',suppressed=True)
+        raise ValueError('新しい吹き出しが描かれていません')
     box=im.info['duo_caption']['box'];x0,y0,x1,y1=box
     if not (0<=x0<x1<=im.width and 24<=y0<y1<=im.height):raise ValueError('吹き出しが画面外')
     if meta['contrast']<4.5 or meta['name_contrast']<4.5:raise ValueError('コントラスト不足')

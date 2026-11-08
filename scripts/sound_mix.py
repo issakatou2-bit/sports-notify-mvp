@@ -169,3 +169,120 @@ def mix_file(narration_wav, out_wav, bgm_path=None, cues=(), **kw):
         w.setframerate(SR)
         w.writeframes((np.clip(y, -1, 1) * 32767).astype(np.int16).tobytes())
     return out_wav
+
+
+def loudness(path=None, samples=None):
+    """FFmpegのEBU R128実測。モノラル声も実際の再生と同じ2chで測る。"""
+    import json
+    import subprocess
+    command = ['ffmpeg', '-hide_banner', '-nostdin', '-nostats']
+    payload = None
+    if samples is not None:
+        x = samples if samples.ndim == 2 else np.repeat(samples[:, None], 2, axis=1)
+        payload = np.asarray(x, dtype='<f4').tobytes()
+        command += ['-f', 'f32le', '-ar', str(SR), '-ac', '2', '-i', 'pipe:0']
+    else:
+        command += ['-i', str(path)]
+    command += ['-vn', '-af', 'aformat=channel_layouts=stereo,loudnorm=print_format=json', '-f', 'null', '-']
+    result = subprocess.run(command, input=payload, capture_output=True, check=True)
+    log = result.stderr.decode('utf-8', errors='replace')
+    measured = json.loads(log[log.rfind('{'):log.rfind('}') + 1])
+    return dict(lufs=float(measured['input_i']), true_peak_dbtp=float(measured['input_tp']))
+
+
+def _write_pcm(path, samples):
+    import wave
+    with wave.open(str(path), 'wb') as stream:
+        stream.setnchannels(2)
+        stream.setsampwidth(2)
+        stream.setframerate(SR)
+        stream.writeframes((np.clip(samples, -1, 1) * 32767).astype('<i2').tobytes())
+
+
+def mix_short_file(narration_wav, out_wav, bgm_path, cues=()):
+    """ショートは声より15 LU小さいBGM。長編のmix_fileの設定は保つ。"""
+    import json
+    import math
+    out_wav = pathlib.Path(out_wav)
+    if not pathlib.Path(bgm_path).is_file():
+        raise ValueError(f'ショートのBGMがありません: {bgm_path}')
+    voice = _read_wav(narration_wav)
+    n = len(voice)
+    v = np.repeat(voice[:, None], 2, axis=1)
+    voice_level = loudness(samples=v)
+    if not math.isfinite(voice_level['lufs']):
+        raise ValueError('読み上げが無音です')
+    original = _decode(bgm_path)
+    b = np.stack([loop_to(original[:, c], n) for c in range(2)], axis=1)
+    b *= duck_gain(voice, -3)[:, None]
+    # 既存のペダルの余韻を保ち、動画の最後で曲を終える。
+    ending = pathlib.Path(bgm_path).with_name(pathlib.Path(bgm_path).stem + '_end.mp3')
+    if ending.is_file():
+        tail = _decode(ending)[:n // 2]
+        start = n - len(tail)
+        k = min(start, int(.8 * SR))
+        if k:
+            b[start-k:start] *= np.linspace(1, 0, k)[:, None]
+        b[start:] = tail * duck_gain(voice, -3)[start:, None]
+    elif pathlib.Path(bgm_path).stem in TAPESTOP_BGM:
+        k = min(n // 2, int(.9 * SR))
+        if k:
+            b[-k:] = tape_stop(b[-k:])
+    else:
+        k = min(n // 2, int(.45 * SR))
+        if k:
+            b[-k:] *= np.linspace(1, 0, k)[:, None]
+    music_level = loudness(samples=b)
+    if not math.isfinite(music_level['lufs']):
+        raise ValueError('BGMが無音です')
+    b *= 10 ** ((voice_level['lufs'] - 15 - music_level['lufs']) / 20)
+    effect = np.zeros(n)
+    cues = list(cues)
+    for at, kind, variant, db in cues:
+        if 0 <= at < n / SR:
+            sample = sfx.make(kind, variant)
+            sample = sample / (np.max(np.abs(sample)) + 1e-9)
+            sfx.place(effect, sample, at, 10 ** (min(0, db) / 20))
+    # 効果音のピークは声のピークより12dB以上下。重なっても上限を越えない。
+    if np.max(np.abs(effect)) > 0:
+        effect *= min(1.0, np.max(np.abs(voice)) * 10 ** (-12 / 20) / np.max(np.abs(effect)))
+    fx = np.repeat(effect[:, None], 2, axis=1)
+    mixed = v + b + fx
+    level = loudness(samples=mixed)
+    gain_db = min(0, -14 - level['lufs'], -2 - level['true_peak_dbtp'])
+    gain = 10 ** (gain_db / 20)
+    mixed *= gain
+    out_wav.parent.mkdir(parents=True, exist_ok=True)
+    _write_pcm(out_wav, mixed)
+    final = loudness(path=out_wav)
+    report = dict(policy='short-20261108', bgm=str(pathlib.Path(bgm_path).name),
+        voice=voice_level, music_before_gain=music_level,
+        bgm_below_voice_lu=15.0, gain_db=gain_db,
+        bgm_measured=loudness(samples=b * gain), voice_measured=loudness(samples=v * gain),
+        sfx_peak_dbfs=20 * math.log10(max(1e-9, float(np.max(np.abs(fx * gain))))),
+        cues=[list(cue) for cue in cues], mixed=final)
+    difference = report['voice_measured']['lufs'] - report['bgm_measured']['lufs']
+    report['bgm_below_voice_lu'] = round(difference, 2)
+    report['pass'] = 13 <= difference <= 17 and final['true_peak_dbtp'] <= -1.5 and final['lufs'] <= -13
+    out_wav.with_name('audio_mix.json').write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+    if not report['pass']:
+        raise ValueError(f'ショートの音量検査が不合格: {report}')
+    return out_wav
+
+
+def verify_short_video(path):
+    """圧縮後の音にも検査をかける。記録がない長編はこの処理を呼ばない。"""
+    import json
+    video = pathlib.Path(path)
+    report_path = video.parent / 'audio_mix.json'
+    if not report_path.exists():
+        raise ValueError('ショートの混音記録がありません')
+    report = json.loads(report_path.read_text(encoding='utf-8'))
+    report['encoded'] = loudness(path=video)
+    report['encoded_pass'] = (report['encoded']['true_peak_dbtp'] <= -1.0
+                              and report['encoded']['lufs'] <= -12)
+    report_path.write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+    video.with_suffix('.audio_mix.json').write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+    if not report['encoded_pass']:
+        raise ValueError('完成ショートのラウドネス・真のピークが上限を越えました')
+    return report['encoded']

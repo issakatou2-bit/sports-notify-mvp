@@ -83,6 +83,7 @@ class Unified(unittest.TestCase):
         self.assertIn('5時 ホワイトソックス対ガーディアンズ',line)
         self.assertIn('7時 ブレーブス対ドジャース',line)
         for seg in data['segments']:
+            if seg['kind']=='outro':continue
             card=seg['meta']['card']
             with patch.object(r3,'ticker',wraps=r3.ticker) as ticker:
                 ps.frame(3,card,ticker_line=line)

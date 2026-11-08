@@ -3,12 +3,19 @@ on:
   schedule:
     - cron: '10 8 * * *'
   workflow_dispatch:
+    inputs:
+      sample_only:
+        description: 見本のmp4だけを保存する（公開・SNS・台帳・コミット・通知なし）
+        type: boolean
+        required: false
+        default: false
 permissions:
   contents: write
 concurrency:
   group: mlb-player-publication
   cancel-in-progress: false
 env:
+  COLLESPO_SAMPLE_ONLY: ${{ inputs.sample_only && 'true' || 'false' }}
   COLLESPO_HOST_SPLIT: ${{ vars.COLLESPO_HOST_SPLIT || '' }}
   COLLESPO_UI_VOICE_STOCK: ${{ vars.COLLESPO_UI_VOICE_STOCK || '' }}
   COLLESPO_UI_PARTS_KEY: ${{ secrets.COLLESPO_UI_PARTS_KEY }}
@@ -16,7 +23,7 @@ env:
 
 jobs:
   build:
-    if: vars.COLLESPO_PLAYER_STORY == 'on'
+    if: inputs.sample_only || (vars.COLLESPO_PLAYER_STORY == 'on')
     runs-on: ubuntu-latest
     env:
       COLLESPO_PLAYER_STORY: ${{ vars.COLLESPO_PLAYER_STORY || 'off' }}
@@ -34,6 +41,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Refresh both MLB player publication ledgers
+        if: (github.event_name != 'workflow_dispatch' || inputs.sample_only != true)
         run: python scripts/player_publications.py --sync
       - uses: actions/setup-python@v5
         with:
@@ -78,7 +86,7 @@ jobs:
           python scripts/synthesize_narration.py --narration build/player_story/narration.json --out-dir build/player_story/audio
           python scripts/player_story_render.py --narration build/player_story/narration.json --audio-dir build/player_story/audio --out build/player_story
       - name: Publish only when explicitly enabled
-        if: steps.gate.outputs.count == '1' && vars.PLAYER_STORY_PUBLISH == 'true'
+        if: (github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (steps.gate.outputs.count == '1' && vars.PLAYER_STORY_PUBLISH == 'true')
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
@@ -90,7 +98,7 @@ jobs:
           bash scripts/commit_data.sh "player story: ${{ github.run_id }}" \
             data/published_videos.json data/local_reporters.json data/local_buzz.json data/local_voices.json data/topic_hub.json data/token_usage.json
       - name: Save preview
-        if: always()
+        if: (github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (always())
         uses: actions/upload-artifact@v4
         with:
           name: player-story-preview
@@ -100,7 +108,7 @@ jobs:
           if-no-files-found: ignore
 
       - name: Keep unsaved data records
-        if: always() && hashFiles('build/data-save-recovery/**/FAILED') != ''
+        if: (github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (always() && hashFiles('build/data-save-recovery/**/FAILED') != '')
         uses: actions/upload-artifact@v4
         with:
           name: unsaved-data-${{ github.job }}-${{ github.run_attempt }}
@@ -122,7 +130,7 @@ jobs:
           retention-days: 14
 
       - name: Save quota-exceeded thumbnails
-        if: always() && hashFiles('build/thumbnail_pending/**') != ''
+        if: (github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (always() && hashFiles('build/thumbnail_pending/**') != '')
         uses: actions/upload-artifact@v4
         with:
           name: thumbnail-pending
@@ -143,3 +151,19 @@ jobs:
             !build/**/portrait/**
           retention-days: 14
           if-no-files-found: ignore
+
+      - name: Mark sample-only execution
+        if: always() && inputs.sample_only
+        run: python scripts/sample_only.py --mark build/sample_only.json --require-video
+      - name: Save sample video
+        if: always() && inputs.sample_only
+        uses: actions/upload-artifact@v4
+        with:
+          name: sample-player_story
+          path: |
+            build/sample_only.json
+            build/**/*.mp4
+            build/**/audio_mix.json
+            !build/**/portrait/**
+          if-no-files-found: error
+          retention-days: 7

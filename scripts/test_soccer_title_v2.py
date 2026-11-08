@@ -86,7 +86,7 @@ class Tests(unittest.TestCase):
                 self.assertEqual(preview.program(data)['narration'], old_preview.program(data)['narration'])
                 data=read('soccer-results/run-40249272204.json')
                 self.assertEqual(results.title(data),old_results.title(data))
-                self.assertEqual(render.production_narration(data),old_render.production_narration(data))
+                self.assertEqual(render.production_narration(data),__import__('short_common').prepare(old_render.production_narration(data)))
 
     def test_one_person_one_game_and_original_material_unchanged(self):
         import short_content

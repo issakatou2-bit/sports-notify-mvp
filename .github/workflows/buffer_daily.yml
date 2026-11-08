@@ -43,18 +43,29 @@ jobs:
     timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
+      - name: Ignore a sample-only source run
+        id: sample_source
+        if: github.event_name == 'workflow_run'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_RUN: ${{ github.event.workflow_run.id }}
+        run: python scripts/sample_source.py --source-run "$SOURCE_RUN" --github-output "$GITHUB_OUTPUT"
       - uses: actions/setup-python@v5
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true')
         with:
           python-version: '3.11'
       - name: Install delivery dependencies
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true')
         # 補充の asset_sns は移籍市場の回の AI 絵を開くので Pillow が要る（11/7 PIL が無く失敗）。
         run: python -m pip install requests pillow
       - name: Verify duplicate prevention and source validation
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true')
         run: python scripts/test_buffer_daily.py
       - name: Install media inspection tool
-        if: inputs.mode != 'reconcile'
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (inputs.mode != 'reconcile')
         run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
       - name: Validate or distribute the daily video
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true')
         env:
           GH_TOKEN: ${{ github.token }}
           BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
@@ -122,8 +133,11 @@ jobs:
           exit $DAILY
       - name: Backfill only reviewed v3 assets after publication
         if: >-
+          (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') &&
+          (
           always() && vars.V3_SNS_ENABLED == 'true' &&
           (github.event_name == 'schedule' || github.event_name == 'workflow_run' || inputs.mode == 'publish_due')
+          )
         env:
           COLLESPO_OFFSEASON_NEWS: ${{ vars.COLLESPO_OFFSEASON_NEWS || '' }}
           GH_TOKEN: ${{ github.token }}
@@ -138,10 +152,20 @@ jobs:
           python scripts/asset_sns.py --publish
 
       - name: Keep publication ledger recovery
-        if: always() && hashFiles('data/publication_recovery/**') != ''
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (always() && hashFiles('data/publication_recovery/**') != '')
         uses: actions/upload-artifact@v4
         with:
           name: publication-ledger-recovery-${{ github.run_id }}-${{ github.run_attempt }}
           path: data/publication_recovery/
           retention-days: 14
           if-no-files-found: error
+      - name: Preserve inherited sample-only marker
+        if: always() && steps.sample_source.outputs.allowed == 'false'
+        uses: actions/upload-artifact@v4
+        with:
+          name: sample-inherited-${{ github.job }}
+          path: |
+            build/sample_only.json
+            !build/**/portrait/**
+          if-no-files-found: error
+          retention-days: 3

@@ -2,13 +2,20 @@ name: 日本人選手の得点・アシスト速報
 on:
   schedule:
     - cron: '17,47 * * * *'
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      sample_only:
+        description: 見本のmp4だけを保存する（公開・SNS・台帳・コミット・通知なし）
+        type: boolean
+        required: false
+        default: false
 permissions:
   contents: write
 concurrency:
   group: soccer-flash
   cancel-in-progress: false
 env:
+  COLLESPO_SAMPLE_ONLY: ${{ inputs.sample_only && 'true' || 'false' }}
   COLLESPO_SOCCER_GOAL_SHORT: ${{ vars.COLLESPO_SOCCER_GOAL_SHORT || 'off' }}
   COLLESPO_SOCCER_LOOK: ${{ vars.COLLESPO_SOCCER_LOOK || 'v5' }}
   COLLESPO_SOCCER_FOCUS: ${{ vars.COLLESPO_SOCCER_FOCUS == 'on' && 'on' || 'off' }}
@@ -25,12 +32,13 @@ env:
   COLLESPO_SLANT_VARIANT: ${{ vars.COLLESPO_SLANT_VARIANT || 'cream' }}
 jobs:
   build:
-    if: vars.COLLESPO_SOCCER_GOAL_SHORT == 'on'
+    if: inputs.sample_only || (vars.COLLESPO_SOCCER_GOAL_SHORT == 'on')
     runs-on: ubuntu-latest
     timeout-minutes: 110
     steps:
       - uses: actions/checkout@v4
       - name: Refresh shared match publication ledger
+        if: (github.event_name != 'workflow_dispatch' || inputs.sample_only != true)
         run: python scripts/soccer_publications.py --sync
       - uses: actions/setup-python@v5
         with:
@@ -41,7 +49,8 @@ jobs:
           pip install imageio_ffmpeg pyyaml
       - name: Find completed matches with a Japanese goal or assist
         id: plan
-        run: python scripts/soccer_goal_short.py --plan | tail -1 >> "$GITHUB_OUTPUT"
+        run: |
+          if [ "$COLLESPO_SAMPLE_ONLY" = true ]; then echo "go=1" >> "$GITHUB_OUTPUT"; else python scripts/soccer_goal_short.py --plan | tail -1 >> "$GITHUB_OUTPUT"; fi
       - name: Install video tools
         if: steps.plan.outputs.go == '1'
         run: bash scripts/install_video_tools.sh
@@ -62,9 +71,14 @@ jobs:
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
-        run: python scripts/soccer_goal_short.py --out build/soccer-goal-short
+        run: |
+          if [ "$COLLESPO_SAMPLE_ONLY" = true ]; then
+            python scripts/soccer_goal_short.py --sample --out build/soccer-goal-short
+          else
+            python scripts/soccer_goal_short.py --out build/soccer-goal-short
+          fi
       - name: Keep review material
-        if: always()
+        if: (github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (always())
         uses: actions/upload-artifact@v4
         with:
           name: soccer-goal-short-${{ github.run_id }}
@@ -74,7 +88,7 @@ jobs:
           if-no-files-found: ignore
           retention-days: 7
       - name: Keep unsaved data records
-        if: always() && hashFiles('build/data-save-recovery/**/FAILED') != ''
+        if: (github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (always() && hashFiles('build/data-save-recovery/**/FAILED') != '')
         uses: actions/upload-artifact@v4
         with:
           name: unsaved-data-${{ github.job }}-${{ github.run_attempt }}
@@ -85,7 +99,7 @@ jobs:
           if-no-files-found: error
 
       - name: Save quota-exceeded thumbnails
-        if: always() && hashFiles('build/thumbnail_pending/**') != ''
+        if: (github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (always() && hashFiles('build/thumbnail_pending/**') != '')
         uses: actions/upload-artifact@v4
         with:
           name: thumbnail-pending
@@ -94,3 +108,19 @@ jobs:
             !build/**/portrait/**
           retention-days: 3
           if-no-files-found: ignore
+
+      - name: Mark sample-only execution
+        if: always() && inputs.sample_only
+        run: python scripts/sample_only.py --mark build/sample_only.json --require-video
+      - name: Save sample video
+        if: always() && inputs.sample_only
+        uses: actions/upload-artifact@v4
+        with:
+          name: sample-soccer_goal_short
+          path: |
+            build/sample_only.json
+            build/**/*.mp4
+            build/**/audio_mix.json
+            !build/**/portrait/**
+          if-no-files-found: error
+          retention-days: 7

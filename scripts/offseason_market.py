@@ -12,7 +12,7 @@ PATH = Path('data/offseason_market.json')
 PREFIX = 'offseason_market_'
 JST = timezone(timedelta(hours=9))
 DESCRIPTION = '連載「日本人選手の来季」では、確定した動きと媒体による報道を分けて追います。'
-OUTRO_TEXT = 'コレスポでは、オフの動きを確定した情報と報道に分けて追っています。チャンネル登録して、また見に来てください。'
+OUTRO_TEXT = __import__('short_common').OUTRO_TEXT
 
 
 class Fact(TypedDict):

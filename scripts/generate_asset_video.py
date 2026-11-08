@@ -1,4 +1,4 @@
-﻿"""
+"""
 資産動画(日付に依存しない、作り置きできる動画)を生成する。
 
 日次のショートとの違い:
@@ -26,6 +26,8 @@
   python3 scripts/generate_asset_video.py --topic mlb_abbr \
       --audio-dir build/asset_audio --out build/asset
 """
+
+import short_common
 
 import argparse
 import datetime as dt
@@ -631,6 +633,7 @@ def rivalry_items() -> list:
     return out
 
 
+@short_common.narration
 def build_narration(topic: str) -> dict:
     if (LIST_TOPICS.get(topic) or {}).get('mlb_term'):
         import duo
@@ -1796,13 +1799,12 @@ def add_sound(audio_path, segs, durations, spec, topic, out_dir):
     name = spec.get("bgm") or os.environ.get("COLLESPO_BGM") or DEFAULT_BGM or _sm.DEFAULT_BGM
     bgm = BGM_DIR / f"{name}.mp3" if name else BGM_DIR / ".none"
     try:
-        out = sound_mix.mix_file(audio_path, out_dir / "narration_mixed.wav",
+        out = sound_mix.mix_short_file(audio_path, out_dir / "narration_mixed.wav",
                                  bgm if bgm.exists() else None, cues)
         print(f"[info] BGM {name if bgm.exists() else 'なし'}・効果音{len(cues)}個を重ねました")
         return out
     except Exception as e:                                  # noqa: BLE001
-        print(f"[warn] BGM・効果音を重ねられません（読み上げだけで続けます）: {e}")
-        return audio_path
+        raise ValueError('ショートのBGM・効果音を作れません') from e
 
 
 METAN = 2   # VOICEVOX 四国めたん（ノーマル）
@@ -1810,16 +1812,10 @@ VOICE_CREDIT = "音声: VOICEVOX:ずんだもん"
 
 
 def render_outro(p):
-    im, d = base(p)
-    d.text((80, 640), "コレスポ", font=font(120), fill=ACCENT)
-    d.text((80, 800), "collespo.com", font=font(58), fill=TEXT)
-    if p > 0.12:
-        d.text((80, 910), __import__("offseason_text").seasonal("毎日19時 更新"), font=font(46), fill=DIM)
-    # VOICEVOXの利用規約で、動画内または説明欄へのクレジット表記が
-    # 求められているため、アウトロに必ず表示する
-    d.text((80, 1150), VOICE_CREDIT, font=font(40), fill=DIM)
-    d.text((80, 1220), "データ: MLB Stats API", font=font(40), fill=DIM)
-    return im
+    import review_render_v3 as r3
+    return r3.outro(p * 2, credit=VOICE_CREDIT)
+
+
 
 
 # ---------------------------------------------------------------------------
@@ -1827,8 +1823,8 @@ def render_outro(p):
 # ---------------------------------------------------------------------------
 
 def plan_durations(segs: list) -> list:
-    return [max(MIN_DURATION.get(s.get("kind") or "division", 6.0),
-                float(s.get("duration") or 0), 3.0)
+    return [short_common.duration(s, max(MIN_DURATION.get(s.get("kind") or "division", 6.0),
+                float(s.get("duration") or 0), 3.0))
             for s in segs]
 
 
@@ -1966,6 +1962,8 @@ def main():
     spec_main = LIST_TOPICS.get(args.topic) or {}
     if audio_path and spec_main.get("style") == "v3":
         audio_path = add_sound(audio_path, segs, durations, spec_main, args.topic, out_dir)
+    elif audio_path:
+        audio_path = short_common.add_audio(audio_path, segs, durations, out_dir)
 
     cmd = ["ffmpeg", "-y", "-nostats", "-loglevel", "error",
            "-f", "rawvideo", "-pix_fmt", "rgb24",

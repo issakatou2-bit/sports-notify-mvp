@@ -5,6 +5,11 @@ on:
     - cron: '20 22 * * *'  # JST 7:20。締め7:15、公開8:00（共通表と検査で照合）
   workflow_dispatch:
     inputs:
+      sample_only:
+        description: 見本のmp4だけを保存する（公開・SNS・台帳・コミット・通知なし）
+        type: boolean
+        required: false
+        default: false
       date:
         description: 終了した日本時間の日（空なら前日）
         type: string
@@ -34,6 +39,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
+  COLLESPO_SAMPLE_ONLY: ${{ inputs.sample_only && 'true' || 'false' }}
   COLLESPO_HOST_SPLIT: ${{ vars.COLLESPO_HOST_SPLIT || '' }}
   COLLESPO_UI_VOICE_STOCK: ${{ vars.COLLESPO_UI_VOICE_STOCK || '' }}
   COLLESPO_UI_PARTS_KEY: ${{ secrets.COLLESPO_UI_PARTS_KEY }}
@@ -175,12 +181,12 @@ jobs:
             --narration build/soccer_results/narration.json --thumbnail build/soccer_results/short.png \
             "${args[@]}"
       - name: Commit record
-        if: always()
+        if: (github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (always())
         run: |
           bash scripts/commit_data.sh "soccer results: ${{ github.run_id }}" \
             data/soccer_results.json data/published_videos.json data/token_usage.json
       - name: Save video and verification
-        if: always()
+        if: (github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (always())
         uses: actions/upload-artifact@v4
         with:
           name: soccer-results
@@ -190,11 +196,11 @@ jobs:
             !build/**/portrait/**
           if-no-files-found: ignore
       - name: Confirm reservation
-        if: steps.length.outputs.skip != 'true' && ((github.event_name == 'schedule' && vars.SOCCER_RESULTS_PUBLISH == 'true' || github.event_name == 'workflow_dispatch' && inputs.publish && inputs.privacy != 'private') && steps.gate.outputs.count != '0')
+        if: (github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (steps.length.outputs.skip != 'true' && ((github.event_name == 'schedule' && vars.SOCCER_RESULTS_PUBLISH == 'true' || github.event_name == 'workflow_dispatch' && inputs.publish && inputs.privacy != 'private') && steps.gate.outputs.count != '0'))
         run: python scripts/verify_published.py --kind soccer_results --games data/soccer_results.json
 
       - name: Keep unsaved data records
-        if: always() && hashFiles('build/data-save-recovery/**/FAILED') != ''
+        if: (github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (always() && hashFiles('build/data-save-recovery/**/FAILED') != '')
         uses: actions/upload-artifact@v4
         with:
           name: unsaved-data-${{ github.job }}-${{ github.run_attempt }}
@@ -216,7 +222,7 @@ jobs:
           retention-days: 14
 
       - name: Save quota-exceeded thumbnails
-        if: always() && hashFiles('build/thumbnail_pending/**') != ''
+        if: (github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (always() && hashFiles('build/thumbnail_pending/**') != '')
         uses: actions/upload-artifact@v4
         with:
           name: thumbnail-pending
@@ -238,3 +244,19 @@ jobs:
             !build/**/portrait/**
           retention-days: 14
           if-no-files-found: ignore
+
+      - name: Mark sample-only execution
+        if: always() && inputs.sample_only
+        run: python scripts/sample_only.py --mark build/sample_only.json --require-video
+      - name: Save sample video
+        if: always() && inputs.sample_only
+        uses: actions/upload-artifact@v4
+        with:
+          name: sample-soccer_results
+          path: |
+            build/sample_only.json
+            build/**/*.mp4
+            build/**/audio_mix.json
+            !build/**/portrait/**
+          if-no-files-found: error
+          retention-days: 7

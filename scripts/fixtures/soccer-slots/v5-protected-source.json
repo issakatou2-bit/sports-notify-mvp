@@ -2,10 +2,10 @@
   "base": "bbf0073",
   "files": {
     "scripts/soccer_v4_cards.py": "6e6a8643993a613aba756427bf527b3c42aa495f182b3cf252bc5525e57c2da5",
-    "scripts/characters.py": "df5fc697c14f022f12dc3e4ff3edaa6bffdb27b4f4d190e3442bebee881f9d9c",
+    "scripts/characters.py": "3ce4f58539e17eb60035490cc1a515c5c946e6ad35e755fedb5ee1514825eaf2",
     "scripts/video_common.py": "8a7238c52f589665863657683539f06aa46901e493f1ed8cfa07fdab8d844f2d",
-    "scripts/generate_video.py": "0a05cd0161ca92fd02652466b5049a301245c10c743d4408a5fa3039a4389753",
-    "scripts/generate_morning_short.py": "61c6345b82e11f76e63941c6818b35b3ff46f27f95be4575b9476768e7871803"
+    "scripts/generate_video.py": "bdfb819fba4a2785150c0825b91f316189c8b5b733fc27c2e743209e3e675827",
+    "scripts/generate_morning_short.py": "192fd6e3a96e9b1bc71d8a25ec36f1136a0b56b71ca5eff5bb240f4df57b93d8"
   },
   "functions": {
     "scripts/review_render_v3.py": {
@@ -37,7 +37,7 @@
       "sentences": "a9c5c0172deec4954fda6b80dd1c1f552a693be90e201bf8e6ba84cf09352658",
       "caption_chunks": "b646fb2a73f1f301f1a94a9813370a16ac3a16d3a7e786315f61209b53e74715",
       "current_sentence": "cb2515d8bcd9901816abbe5c82ac954c18a3908d7dc2355e86de3a3a0633c022",
-      "caption": "ed696c68c0a2e7a845773c59b9d2293dc72342ee7a7401c69758abeefe4d1259",
+      "caption": "7d5658074b4d3fef4faf84d39e6c65be37182cdb020801598ea635a780b5c700",
       "_has_glyph": "5023c5ffa5997582874b7c6eda712b65a05b9c0ae862990f04ee1e7a807ae353",
       "_caption_lines": "4a0ba2405c0815c37cf3f6b9e9658b2b3aea00f37ffc5639ce2124eefe6f9144",
       "progress": "8ad6f2c2acd930e391190bb6e5e608f616f47690f08b97a17ab3e3e6094c3384",
@@ -54,9 +54,9 @@
       "people": "73acd47cf0fe7c71ec583ac522f19c7d8a46516a730c2ffaf682e38cd70075b4",
       "cues": "ba9ab0c62d26a87cab0881e1979887c9b3a6b6d1c7161e834657e5657a42ca4a",
       "outro_rows": "13de847d52479ff746fdb6cf65b60055d668b79d18d29fd54c0b9611fa8ad15a",
-      "outro": "54ab95e0179647365ba08027bf48f83184849fdead78033086d5783e8f11ae85",
+      "outro": "52c7ac4dd0c67faec2d50435e319e20af3ef3f93ecc430655c15732775eb1dae",
       "_outro_row": "5100a618dbc805a2b9e9b9a7ae83cef3eade20ce1bc08e4080609b9701f0b860",
-      "outro_cues": "c1ff5991e53a7c67abee0e139cc34e2ec4a396073388fa3ada8d6454c209c813"
+      "outro_cues": "29fac756b9bb16948010c28ce51a4b66ad07c01af8cc06e5c9b966281579d1c4"
     },
     "scripts/soccer_slots_v4.py": {
       "clubs_for": "60b7e7feccb5f69cf4a0851559b26c432ae921a507bec04b26459c3e850837f4",
@@ -64,8 +64,8 @@
       "preview_program": "d5bfb73d3fe0b1ef984e9b1eb0ba7d5733fb4640c8068fdd5fd4b75100c09312",
       "race_program": "bdb40251b99df74869b0de9da1ab5b700a0dca2f8f262ead4b3cbeb11be88e57",
       "week_program": "9090815686c1c6258c169cd5d1229bba4ae2f6ae490d0064ed535c7906c3d01c",
-      "package": "b61b4f9f628c09c2c25e749fb6ed01db9d336b7dcf078364150b9b0155c1a6cb",
-      "durations": "55f753980e1ada30405e7ab6856a159b102b07fe78f60f7de726beaf270fdebe"
+      "package": "8a62a602a1f6ab0797964db365058ecd1cc1c8e4d5aba22d78730ef6c9e2cf5b",
+      "durations": "b5c8fd2c9f7039f9389868f8b815c5543d48d8ee1abdea21480b0131634a9aba"
     },
     "scripts/soccer_results_render.py": {
       "resolve_clubs": "693f56be7caf60e4ebf54b43a25eac9c62172ccc4e9f0ee2043c91f9eaa64d76",
@@ -75,7 +75,7 @@
       "timeline": "b7cff289ec9a64ba1e21113d8a80790fc5f9e17f476adcb24842a2fe8f100bca",
       "roster_screen": "62a34dcc2d243f4bad7991c09065a768a149cc652242b3776beb64b00799ea66",
       "numeric_material": "bce77ea01971d2c55a9a776575c0edba5530cacc512e34b15d51432559a61c8f",
-      "durations": "08758b321344f2f655cbdd5c03a55ec28829ac3918060854b3f85c85769f4379"
+      "durations": "bac9d58a9b1e7957e026673abc219395f4d18cf03e70db9bb50814e43a144c76"
     },
     "scripts/soccer_voices_render.py": {
       "clubs_for": "79f767f1355c886546fc2239d78bf0a94ac748b604b8debb62ef0f932441415f",

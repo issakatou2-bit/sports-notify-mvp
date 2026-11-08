@@ -5,13 +5,21 @@ on:
     workflows: ["毎日 17:00-20:00　夕方の4本"]
     types: [completed]
   workflow_dispatch:
+    inputs:
+      sample_only:
+        description: 見本のmp4だけを保存する（公開・SNS・台帳・コミット・通知なし）
+        type: boolean
+        required: false
+        default: false
 
 permissions:
+  actions: read
   contents: write
 concurrency:
   group: mlb-player-publication
   cancel-in-progress: false
 env:
+  COLLESPO_SAMPLE_ONLY: ${{ inputs.sample_only && 'true' || 'false' }}
   COLLESPO_OFFSEASON_NEWS: ${{ vars.COLLESPO_OFFSEASON_NEWS || '' }}
   COLLESPO_OUTRO_NEXT: ${{ vars.COLLESPO_OUTRO_NEXT == 'on' && 'on' || 'off' }}
   COLLESPO_SHORT_LOOK: ${{ vars.COLLESPO_SHORT_LOOK || 'v4' }}
@@ -29,34 +37,48 @@ env:
 jobs:
   news:
     if: >-
+      inputs.sample_only || (
       github.ref == 'refs/heads/main' && vars.COLLESPO_OFFSEASON_NEWS == 'on' &&
       (github.event_name == 'workflow_dispatch' ||
        (github.event.workflow_run.conclusion == 'success' &&
         github.event.workflow_run.head_branch == 'main' &&
         github.event.workflow_run.head_repository.full_name == github.repository))
+      )
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Ignore a sample-only source run
+        id: sample_source
+        if: github.event_name == 'workflow_run'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_RUN: ${{ github.event.workflow_run.id }}
+        run: python scripts/sample_source.py --source-run "$SOURCE_RUN" --github-output "$GITHUB_OUTPUT"
       - uses: actions/setup-python@v5
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true')
         with:
           python-version: '3.11'
       - name: Refresh publication ledgers
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && ((github.event_name != 'workflow_dispatch' || inputs.sample_only != true))
         run: python scripts/player_publications.py --sync
       - name: Install dependencies
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true')
         run: pip install -r scripts/requirements.txt pillow google-api-python-client google-auth
       - name: Collect official material
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true')
         run: python scripts/offseason_news.py
       - name: Pick fresh unposted material
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true')
         id: pick
         run: |
           T="$(python scripts/offseason_news.py --pick)"
           echo "topics=$(echo "$T" | xargs)" >> "$GITHUB_OUTPUT"
       - name: Install video tools
-        if: steps.pick.outputs.topics != ''
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (steps.pick.outputs.topics != '')
         timeout-minutes: 16
         run: bash scripts/install_video_tools.sh
       - name: Start VOICEVOX
-        if: steps.pick.outputs.topics != ''
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (steps.pick.outputs.topics != '')
         run: |
           docker run -d --rm -p 50021:50021 --name voicevox voicevox/voicevox_engine:cpu-latest
           for i in $(seq 1 30); do
@@ -65,13 +87,14 @@ jobs:
           done
           exit 1
       - name: Check, render and publish through existing asset pipeline
-        if: steps.pick.outputs.topics != ''
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (steps.pick.outputs.topics != '')
         env:
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
+          # sample_only: 描画後、公開処理より前で分岐する。
           set -euo pipefail
           source scripts/asset_publish_args.sh
           # 資産づくりが 16:30・22:00 を使うので、同時刻に並べない（11/3 22:00 に3本重なった）。
@@ -85,17 +108,20 @@ jobs:
             python scripts/sanity.py --general --strict --narration "build/narr_$t.json" --out "data/sanity_$t.json" --hold-record "build/sanity_hold_$t.json" --kind asset
             python scripts/synthesize_narration.py --narration "build/narr_$t.json" --out-dir "build/audio_$t"
             python scripts/generate_asset_video.py --topic "$t" --narration "build/narr_$t.json" --audio-dir "build/audio_$t" --out "build/asset_$t"
+            if [ "$COLLESPO_SAMPLE_ONLY" = true ]; then
+              echo "::notice::$t の見本を保存しました"; continue
+            fi
             bash scripts/shorts_thumbnail.sh "build/asset_$t/collespo_asset_$t.mp4" "build/asset_$t/short.png"
             python scripts/upload_youtube.py --video "build/asset_$t/collespo_asset_$t.mp4" --kind asset --asset-topic "$t" --narration "build/narr_$t.json" --thumbnail "build/asset_$t/short.png" --privacy public "${ASSET_PUBLISH_ARGS[@]}"
             python scripts/offseason_news.py --record "$t"
-            python scripts/asset_sns.py --receipt-dir "build/asset_$t"
+            if [ "$COLLESPO_SAMPLE_ONLY" != true ]; then python scripts/asset_sns.py --receipt-dir "build/asset_$t"; fi
           done
       - name: Save records
-        if: always()
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && ((github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (always()))
         run: |
           bash scripts/commit_data.sh "offseason news: ${{ github.run_id }}" data/offseason_topics.json data/offseason_published.json data/published_assets.json data/published_videos.json
       - name: Keep verification and video artifacts
-        if: always()
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && ((github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (always()))
         uses: actions/upload-artifact@v4
         with:
           name: offseason-news
@@ -111,7 +137,7 @@ jobs:
             !build/**/portrait/**
           retention-days: 14
       - name: Save sanity gate records
-        if: always()
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (always())
         uses: actions/upload-artifact@v4
         with:
           name: sanity-gate-${{ github.job }}
@@ -121,7 +147,7 @@ jobs:
             !build/**/portrait/**
           retention-days: 14
       - name: Keep unsaved data records
-        if: always() && hashFiles('build/data-save-recovery/**/FAILED') != ''
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && ((github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (always() && hashFiles('build/data-save-recovery/**/FAILED') != ''))
         uses: actions/upload-artifact@v4
         with:
           name: unsaved-data-${{ github.job }}-${{ github.run_attempt }}
@@ -131,7 +157,7 @@ jobs:
           retention-days: 14
           if-no-files-found: error
       - name: Save quota-exceeded thumbnails
-        if: always() && hashFiles('build/thumbnail_pending/**') != ''
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && ((github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (always() && hashFiles('build/thumbnail_pending/**') != ''))
         uses: actions/upload-artifact@v4
         with:
           name: thumbnail-pending
@@ -140,3 +166,29 @@ jobs:
             !build/**/portrait/**
           retention-days: 3
           if-no-files-found: error
+
+      - name: Mark sample-only execution
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (always() && inputs.sample_only)
+        run: python scripts/sample_only.py --mark build/sample_only.json --require-video
+      - name: Save sample video
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (always() && inputs.sample_only)
+        uses: actions/upload-artifact@v4
+        with:
+          name: sample-offseason_news
+          path: |
+            build/sample_only.json
+            build/asset_*/*.mp4
+            build/asset_*/audio_mix.json
+            !build/**/portrait/**
+          if-no-files-found: error
+          retention-days: 7
+      - name: Preserve inherited sample-only marker
+        if: always() && steps.sample_source.outputs.allowed == 'false'
+        uses: actions/upload-artifact@v4
+        with:
+          name: sample-inherited-${{ github.job }}
+          path: |
+            build/sample_only.json
+            !build/**/portrait/**
+          if-no-files-found: error
+          retention-days: 3

@@ -21,7 +21,7 @@ AWARDS = {'ALMVP': 'ア・リーグMVP', 'NLMVP': 'ナ・リーグMVP',
 MOVES = {'DFA': 'FAを宣言しました', 'SFA': 'FA契約を結びました',
          'SGN': '契約が公式に記録されました',
          'TR': 'トレードが公式に記録されました'}
-OUTRO_TEXT = 'コレスポでは、オフの動きを公式の記録で追っています。チャンネル登録して、また見に来てくださいね。'
+OUTRO_TEXT = __import__('short_common').OUTRO_TEXT
 # 雨衣の回は ui_tone が「ね」を外して敬体にする（11/3 表彰の回がこの差で止まった）。
 OUTRO_TEXTS = {OUTRO_TEXT, __import__('ui_tone').text(OUTRO_TEXT)}
 

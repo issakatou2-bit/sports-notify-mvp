@@ -63,7 +63,7 @@ class DailyV3(unittest.TestCase):
         import review_render_v3 as r3
         design = {"mode": "voices", "voices": {}}
         segs = [{"kind": "intro", "speaker": 2}, {"kind": "outro", "speaker": 2}]
-        with patch.object(sound_mix, "mix_file", return_value="mixed") as mix:
+        with patch.object(sound_mix, "mix_short_file", return_value="mixed") as mix:
             self.assertEqual(d.mix("voice.wav", segs, [5, 6], design, Path("build")), "mixed")
         self.assertEqual([c[0] for c in mix.call_args.kwargs["cues"]], [0.0]+[5+at for at,_,_,_ in r3.outro_cues('morning_voices')])
         self.assertEqual(mix.call_args.kwargs["bgm_path"].name, sound_mix.DEFAULT_BGM + ".mp3")

@@ -242,16 +242,20 @@ def assess(document, durations, material=None, *, maximum=60):
     valid = len(durations) == len(document.get('segments') or []) and bool(durations)
     valid = valid and all(type(x) in (int, float) and math.isfinite(x) and x > 0 for x in durations)
     total = sum(durations) if valid else None
+    short_outro = any(s.get('kind') == 'outro' and (s.get('meta') or {}).get('short_outro') for s in document.get('segments', []))
+    minimum = 20.0 if short_outro else MIN_SECONDS
+    if valid and short_outro and any(t > 2.5 for s, t in zip(document['segments'], durations) if s.get('kind') == 'outro'):
+        reasons.append('ショートの締めが2.5秒を超えます')
     if not valid:
         reasons.append('区間数または長さが不明・不正です')
-    elif total < MIN_SECONDS - SHORT_GRACE - 1e-6:
-        reasons.append(f'長さ{total:.3f}秒が下限{MIN_SECONDS - SHORT_GRACE:g}秒未満です')
+    elif total < minimum - SHORT_GRACE - 1e-6:
+        reasons.append(f'長さ{total:.3f}秒が下限{minimum - SHORT_GRACE:g}秒未満です')
     elif total > maximum + 1e-6:
         reasons.append(f'長さ{total:.3f}秒が既存上限{maximum:g}秒を超えます')
     if len(units) < MIN_INFORMATION:
         reasons.append(f'確認できる独立情報{len(units)}件。主の事実1件＋2次情報2件以上が必要です')
     return dict(version=VERSION, status='held' if reasons else 'passed',
-                minimum_seconds=MIN_SECONDS, target_seconds=TARGET_SECONDS,
+                minimum_seconds=minimum, short_outro=short_outro, target_seconds=TARGET_SECONDS,
                 maximum_seconds=maximum, planned_seconds=total,
                 information_count=len(units), supplementary_count=max(0, len(units)-1),
                 information=units, reasons=reasons,
@@ -301,7 +305,8 @@ def validate_upload(video):
                            text=True, encoding='utf-8', errors='replace')
     match = re.search(r'Duration: (\d+):(\d+):([\d.]+)', probe.stderr)
     seconds = int(match[1])*3600+int(match[2])*60+float(match[3]) if match else None
-    if (seconds is None or seconds < MIN_SECONDS-SHORT_GRACE-.01 or seconds > report.get('maximum_seconds', 60)+.05
+    minimum = 20.0 if report.get('short_outro') else MIN_SECONDS
+    if (seconds is None or seconds < minimum-SHORT_GRACE-.01 or seconds > report.get('maximum_seconds', 60)+.05
             or abs(seconds-report.get('planned_seconds', 0)) > .15):
         raise ValueError('完成ショートの尺が下限・既存上限・検査時の計画を満たしません')
     report['actual_seconds'] = seconds

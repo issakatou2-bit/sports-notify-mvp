@@ -130,7 +130,7 @@ class Slots(unittest.TestCase):
             plan=slots.program(mode,load(mode));seg=plan['narration']['segments'][-1]
             self.assertEqual(seg['text'],r3.OUTRO_TEXT)
             im=slots.frame(3,seg,plan);self.assertTrue(im.info['v3_outro'])
-            self.assertTrue(any(e.get('text')==slots.TAGLINE for e in im.info['v3_layout']))
+            self.assertTrue(any(e.get('text')==__import__('short_common').OUTRO_LINE for e in im.info['v3_layout']))
             with tempfile.TemporaryDirectory() as directory:
                 file=Path(directory)/'narr.json';file.write_text(json.dumps(plan['narration'],ensure_ascii=False),encoding='utf-8')
                 meta=upload.build_metadata(str(FIX/'preview.json'),'10月10日','daily' if mode=='preview' else 'soccer_'+mode,narration_path=str(file),sport='soccer')
@@ -147,8 +147,8 @@ class Slots(unittest.TestCase):
                 narr=slots.program(mode,load(mode))['narration']
                 audio=json.loads(json.dumps([dict(s,file=str(file),duration=1) for s in narr['segments']]))
                 self.assertLessEqual(sum(slots.durations(narr['segments'],audio)),40)
-                for s in audio:s['duration']=41
-                with patch('synthesize_narration.audio_duration',return_value=41):
+                for s in audio:s['duration']=2 if s['kind']=='outro' else 41
+                with patch('synthesize_narration.audio_duration',side_effect=[s['duration'] for s in audio]):
                     with self.assertRaisesRegex(ValueError,'40秒'):slots.durations(narr['segments'],audio)
 
     def test_cli_success_and_saved_narration(self):

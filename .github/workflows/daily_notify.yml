@@ -9,7 +9,13 @@ name: 毎日 19:00頃　明日の注目試合
 # そのため、ここではscheduleトリガーを持たず、workflow_dispatchのみを
 # 起点とする(cron-job.org側のジョブ、または手動実行のいずれかで動く)。
 on:
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      sample_only:
+        description: 見本のmp4だけを保存する（公開・SNS・台帳・コミット・通知なし）
+        type: boolean
+        required: false
+        default: false
 
 permissions:
   contents: write
@@ -17,6 +23,7 @@ permissions:
   id-token: write
 
 env:
+  COLLESPO_SAMPLE_ONLY: ${{ inputs.sample_only && 'true' || 'false' }}
   COLLESPO_SOLO_HOST: ${{ vars.COLLESPO_SOLO_HOST || 'metan' }}
   COLLESPO_HOST_SPLIT: ${{ vars.COLLESPO_HOST_SPLIT || '' }}
   COLLESPO_UI_VOICE_STOCK: ${{ vars.COLLESPO_UI_VOICE_STOCK || '' }}
@@ -166,6 +173,7 @@ jobs:
             --out feed.xml --site-url "https://collespo.com/"
 
       - name: Commit archive
+        if: (github.event_name != 'workflow_dispatch' || inputs.sample_only != true)
         run: |
           bash scripts/commit_data.sh \
             "archive: ${{ github.run_id }}" \
@@ -359,6 +367,7 @@ jobs:
       # ポッドキャストのmp3をpublic/へ出した後に、Pagesへ渡す。
       # 順序が逆だと、その日のエピソードが公開されない。
       - name: Preserve published corrections
+        if: (github.event_name != 'workflow_dispatch' || inputs.sample_only != true)
         run: |
           python scripts/apply_content_corrections.py --site public
           if [ -f public/podcast/feed.xml ]; then
@@ -372,7 +381,7 @@ jobs:
         run: python scripts/site_analytics.py --site public
 
       - name: Upload Pages artifact
-        if: steps.standings.outcome == 'success' && steps.archive.outcome == 'success' && steps.site_analytics.outcome == 'success'
+        if: (github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (steps.standings.outcome == 'success' && steps.archive.outcome == 'success' && steps.site_analytics.outcome == 'success')
         # サイトが1日古くなるより、動画が出ない方が痛い。
         # 動画の生成はこれらより後ろに並んでいる。
         continue-on-error: true
@@ -387,7 +396,7 @@ jobs:
       #  もう参照されないので、GitHub側から削除して構わない)
 
       - name: Commit podcast episode
-        if: steps.sanity.outcome == 'success'
+        if: (github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (steps.sanity.outcome == 'success')
         run: |
           bash scripts/commit_data.sh \
             "podcast: ${{ github.run_id }}" \
@@ -441,7 +450,7 @@ jobs:
             --privacy public --publish-at "19:00"
 
       - name: Save published MLB expectation
-        if: steps.sanity.outcome == 'success' && vars.COLLESPO_MLB_FORECAST == 'check'
+        if: (github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (steps.sanity.outcome == 'success' && vars.COLLESPO_MLB_FORECAST == 'check')
         run: python scripts/mlb_forecast.py --narration public/narration.json
 
       # 19時まで待って、通知とSNSを出す。
@@ -479,7 +488,7 @@ jobs:
       # 1つも動かず、動画もRSSもサイト更新も丸ごと消えた。
       # 通知は届かなければ困るが、本体はあくまで動画とサイト。
       - name: Post to Bluesky
-        if: steps.sanity.outcome == 'success'
+        if: (github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (steps.sanity.outcome == 'success')
         continue-on-error: true
         env:
           BLUESKY_HANDLE: ${{ secrets.BLUESKY_HANDLE }}
@@ -491,7 +500,7 @@ jobs:
       # Threadsは投稿ごとの確認画面を要求しないので、完全に自動で出せる。
       # 未設定なら黙って飛ぶ。落として毎日ノイズを出す価値は無い。
       - name: Post to Threads
-        if: steps.sanity.outcome == 'success'
+        if: (github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (steps.sanity.outcome == 'success')
         continue-on-error: true
         env:
           THREADS_USER_ID: ${{ secrets.THREADS_USER_ID }}
@@ -500,7 +509,7 @@ jobs:
         run: python scripts/post_threads.py
 
       - name: Send push via OneSignal
-        if: steps.sanity.outcome == 'success'
+        if: (github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && steps.sanity.outcome == 'success'
         continue-on-error: true
         env:
           ONESIGNAL_APP_ID: ${{ secrets.ONESIGNAL_APP_ID }}
@@ -554,8 +563,11 @@ jobs:
       # 審査前は video.publish が付かないので、自動的に下書き投稿になる。
       - name: Post to TikTok
         if: >-
+          (github.event_name != 'workflow_dispatch' || inputs.sample_only != true) &&
+          (
           steps.sanity.outcome == 'success' &&
           (vars.BUFFER_ENABLED != 'true' || (vars.BUFFER_CHANNELS != '' && !contains(vars.BUFFER_CHANNELS, 'tiktok')))
+          )
         continue-on-error: true
         env:
           TIKTOK_CLIENT_KEY: ${{ secrets.TIKTOK_CLIENT_KEY }}
@@ -574,6 +586,7 @@ jobs:
       # 「毎日ここに増えている」を見せるための導線。
       # youtube スコープが要るので、取り直すまでは何もせず終わる。
       - name: Add to playlists
+        if: (github.event_name != 'workflow_dispatch' || inputs.sample_only != true)
         continue-on-error: true
         env:
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
@@ -589,6 +602,7 @@ jobs:
       # 自動吹き替えで音声は英語になるが、タイトルが日本語のままだと
       # 英語圏の人はそこへ辿り着けない。視聴の35.8%が日本以外。
       - name: Add English metadata
+        if: (github.event_name != 'workflow_dispatch' || inputs.sample_only != true)
         continue-on-error: true
         env:
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
@@ -601,14 +615,14 @@ jobs:
       # 動画IDは翌日以降のアーカイブページから参照する。
       # コミットしないと記録が毎回消えてしまう。
       - name: Commit video record
-        if: always()
+        if: (github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (always())
         run: |
           bash scripts/commit_data.sh \
             "video record: ${{ github.run_id }}" \
             data/published_videos.json data/bluesky_delivery.json data/published_tiktok.json data/playlists.json data/localized.json data/base_rates.json data/soccer_games.json data/soccer_preview.json data/token_usage.json data/mlb_forecast_history.json data/en_caption_state.json
 
       - name: Save video as artifact
-        if: always()
+        if: (github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (always())
         uses: actions/upload-artifact@v4
         with:
           name: collespo-video
@@ -639,7 +653,7 @@ jobs:
       # 実行は緑になる。8/16の再実行が実際にそうだった。
       # 途中では止めず、最後に落とす。順序はそのまま、結果だけ正直にする。
       - name: Confirm the video went out
-        if: always()
+        if: (github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (always())
         run: |
           # **出さなかった日と、出し損ねた日は別。**
           # 注目試合が無いと決めたのは原稿を作る段で、そこが印を置く。
@@ -657,7 +671,7 @@ jobs:
         run: echo "::warning::順位表またはアーカイブを更新できなかったため、公開中のサイトを維持します。動画の投稿とは別の結果です。"
 
       - name: Keep unsaved data records
-        if: always() && hashFiles('build/data-save-recovery/**/FAILED') != ''
+        if: (github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (always() && hashFiles('build/data-save-recovery/**/FAILED') != '')
         uses: actions/upload-artifact@v4
         with:
           name: unsaved-data-${{ github.job }}-${{ github.run_attempt }}
@@ -668,7 +682,7 @@ jobs:
           if-no-files-found: error
 
       - name: Save quota-exceeded thumbnails
-        if: always() && hashFiles('build/thumbnail_pending/**') != ''
+        if: (github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (always() && hashFiles('build/thumbnail_pending/**') != '')
         uses: actions/upload-artifact@v4
         with:
           name: thumbnail-pending
@@ -690,15 +704,34 @@ jobs:
             !build/**/portrait/**
           retention-days: 14
           if-no-files-found: ignore
+      - name: Mark sample-only execution
+        if: always() && inputs.sample_only
+        run: python scripts/sample_only.py --mark build/sample_only.json --require-video
+      - name: Save sample video
+        if: always() && inputs.sample_only
+        uses: actions/upload-artifact@v4
+        with:
+          name: sample-daily
+          path: |
+            build/sample_only.json
+            build/video/*.mp4
+            build/ps_preview/*.mp4
+            build/**/collespo_short.mp4
+            build/**/audio_mix.json
+            !build/**/portrait/**
+          if-no-files-found: error
+          retention-days: 7
+
   deploy:
     needs: build_and_notify
-    if: needs.build_and_notify.outputs.standings_ready == 'true'
+    if: (github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && needs.build_and_notify.outputs.standings_ready == 'true'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
       - name: Deploy to GitHub Pages
+        if: (github.event_name != 'workflow_dispatch' || inputs.sample_only != true)
         id: deployment
         uses: actions/deploy-pages@v4
 

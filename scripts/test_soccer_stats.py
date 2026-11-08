@@ -227,7 +227,7 @@ class Stats(unittest.TestCase):
             narr=render.production_narration(data);voices=[]
             for i,seg in enumerate(narr['segments']):
                 path=Path(directory)/f'{i}.wav'
-                seconds=40 if seg['kind']=='team-stats' else 2 if seg['kind']=='player-stats' else 5
+                seconds=2 if seg['kind']=='outro' else 40 if seg['kind']=='team-stats' else 2 if seg['kind']=='player-stats' else 5
                 with wave.open(str(path),'wb') as f:
                     f.setparams((1,2,8000,0,'NONE','not compressed'));f.writeframes(b'\0\0'*8000*seconds)
                 voices.append(dict(seg,file=str(path),duration=seconds))

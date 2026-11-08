@@ -1,4 +1,6 @@
 """欧州サッカー結果のv4ショート。本番と保存材料の試作で同じ描画/声/尺を使う。"""
+
+import short_common
 import argparse
 import json
 import math
@@ -261,7 +263,7 @@ def durations(segments,audio):
         if not path.is_file():raise ValueError('実音声がありません')
         actual=sn.audio_duration(path)
         if actual<=0 or abs(actual-float(voice.get('duration') or 0))>.05:raise ValueError('音声の尺が実測と違う')
-        times.append(max(actual,3.0 if seg['kind']=='roster' else 2.6 if seg['kind']=='outro' else 2.0))
+        times.append(short_common.duration(voice, max(actual,3.0 if seg['kind']=='roster' else 2.6 if seg['kind']=='outro' else 2.0)))
     if sum(times)>results.LIMIT:raise ValueError(f'60秒を超えます: {sum(times):.3f}。声の設定は変えず原稿を短くしてください')
     return times
 
@@ -298,6 +300,7 @@ def render_video(data,narr,audio,out):
     short_content.require(narr, times, out, data, maximum=results.LIMIT, video_name='collespo_soccer_results.mp4')
     track=vc.build_narration_track(audio,times,out)
     if not track:raise ValueError('声つきの動画だけを作る枠です')
+    track=short_common.add_audio(track,audio,times,out)
     video=out/'collespo_soccer_results.mp4';clubs=__import__('soccer_result_story').clubs_for(data) if data.get('preview_followup') else resolve_clubs(data);images=[];layouts=[];previous=None;clock=0
     command=['ffmpeg','-y','-f','rawvideo','-vcodec','rawvideo','-pix_fmt','rgb24','-s','1080x1920','-r',str(FPS),'-i','-',
              '-i',str(track),'-c:v','libx264','-preset','veryfast','-crf','23','-pix_fmt','yuv420p','-c:a','aac','-b:a','160k',
@@ -323,6 +326,7 @@ def render_video(data,narr,audio,out):
         finally:
             proc.stdin.close();code=proc.wait();r3.set_program_clock(None)
     if code:raise ValueError('ffmpegの動画生成が失敗。ffmpeg-render.logを確認')
+    __import__('sound_mix').verify_short_video(video)
     timeline.save(video,next((Path(s['file']).parent for s in audio if s.get('file')),out))
     from preview_unified_v3 import sheet
     sheet(images,[s['kind'] for s in narr['segments']],out/'all-screens.png',columns=4)
@@ -354,6 +358,7 @@ def goal_short_narration(data):
 
 
 
+@short_common.narration
 def production_narration(data, *, goal_short=False):
     """速報は既存の得点導入、朝の結果は既存の注目試合導入を使う。"""
     import soccer_title_v2

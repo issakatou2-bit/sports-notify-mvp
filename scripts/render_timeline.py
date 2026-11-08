@@ -97,6 +97,9 @@ class Recorder:
 
     def save(self, video, audio_dir):
         """記録を保存する。失敗しても警告だけにし、動画の書き出しは成功のまま。"""
+        if (Path(video).parent / 'audio_mix.json').exists():
+            # 音量不合格は時刻表の警告処理へ飲み込ませない。
+            __import__('sound_mix').verify_short_video(video)
         if self.broken:
             print(f'::warning::字幕とカットの時刻の記録を保存しませんでした（{self.broken}）')
             return None
