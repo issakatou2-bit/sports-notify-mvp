@@ -8,6 +8,10 @@ on:
         description: "true で反映、false は表示のみ"
         required: true
         default: "false"
+      full:
+        description: "true で data/channel_description.txt の全文に置き換える"
+        required: false
+        default: "false"
 
 permissions:
   contents: read
@@ -28,9 +32,9 @@ jobs:
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
           WRITE_DESCRIPTION: ${{ inputs.write }}
+          FULL_DESCRIPTION: ${{ inputs.full }}
         run: |
-          if [ "$WRITE_DESCRIPTION" = "true" ]; then
-            python scripts/channel_description.py --write
-          else
-            python scripts/channel_description.py
-          fi
+          ARGS=""
+          if [ "$FULL_DESCRIPTION" = "true" ]; then ARGS="--full"; fi
+          if [ "$WRITE_DESCRIPTION" = "true" ]; then ARGS="$ARGS --write"; fi
+          python scripts/channel_description.py $ARGS
