@@ -21669,6 +21669,104 @@
       },
       "host_fallback_reason": null,
       "privacy": "public"
+    },
+    "season_win_2026_672960_hitting": {
+      "video_id": "c5HqMRZAz1Q",
+      "url": "https://youtu.be/c5HqMRZAz1Q",
+      "title": "岡本和真 本塁打を打った試合でチームは18勝14敗 #Shorts",
+      "published_at": "2026-11-08T06:52:21.521929+00:00",
+      "publish_at": "2026-11-08T07:30:00Z",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-08",
+        "enabled": true,
+        "assigned": "next",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false,
+        "source": "post_common.lineup:daily_soccer",
+        "next_date": "2026-11-09",
+        "next_time": "19:30",
+        "next_name": "欧州サッカー",
+        "speech": "次は11月9日19時30分の欧州サッカーです。また見に来てくださいね。",
+        "card": "次は11/9 19:30の欧州サッカー"
+      },
+      "player_ids": [
+        "672960"
+      ],
+      "duration_seconds": 35.58,
+      "short_information_count": 3,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-11-08",
+        "kind": "asset:season_win",
+        "phase": 1,
+        "planned_host": "metan",
+        "rule": "half-jst-week-v1",
+        "week": 43,
+        "weekday": 6
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-11-08T15:48:29.100980+09:00",
+        "comparison_eligible": true,
+        "planned_host": "metan",
+        "reason": null,
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
+    },
+    "season_best_2026_808959_hitting": {
+      "video_id": "EtYrn5TGL_M",
+      "url": "https://youtu.be/EtYrn5TGL_M",
+      "title": "村上宗隆 7/26のアストロズ戦で2本塁打6打点 #Shorts",
+      "published_at": "2026-11-08T06:55:52.283294+00:00",
+      "publish_at": "2026-11-08T13:00:00Z",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-08",
+        "enabled": true,
+        "assigned": "next",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false,
+        "source": "post_common.lineup:daily_soccer",
+        "next_date": "2026-11-09",
+        "next_time": "19:30",
+        "next_name": "欧州サッカー",
+        "speech": "次は11月9日19時30分の欧州サッカーです。また見に来てくださいね。",
+        "card": "次は11/9 19:30の欧州サッカー"
+      },
+      "player_ids": [
+        "808959"
+      ],
+      "duration_seconds": 35.0,
+      "short_information_count": 3,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-11-08",
+        "kind": "asset:season_best",
+        "phase": 0,
+        "planned_host": "ui",
+        "rule": "half-jst-week-v1",
+        "week": 43,
+        "weekday": 6
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-11-08T06:52:21.963007+00:00",
+        "comparison_eligible": false,
+        "label": "予定めたん（雨衣不可のため）",
+        "mode": "live",
+        "planned_host": "metan",
+        "reason": "ui_worker_stale",
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
     }
   },
   "soccer_results": {
