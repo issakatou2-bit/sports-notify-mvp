@@ -14,7 +14,6 @@ import generate_morning_short as g
 import host_split
 import review_render_v3 as r3
 import sound_mix
-import ui_tone
 
 
 class VoicesAlignment(unittest.TestCase):
@@ -31,11 +30,11 @@ class VoicesAlignment(unittest.TestCase):
 
     def test_today_quotes_survive_host_assignment_and_repeated_tone(self):
         data, _, original, adapted = self.program()
-        self.assertEqual([s['kind'] for s in adapted['segments']], ['intro', 'thread', 'voices', 'voices', 'outro'])
-        self.assertEqual(adapted['host_assignment']['planned_host'], 'ui')
-        self.assertIn('なんて試合です！', ui_tone.text(original['segments'][3]['text']))
-        with patch.dict(os.environ, COLLESPO_SOLO_HOST='ui'):
-            self.assertEqual(ui_tone.narration(adapted), adapted)
+        self.assertEqual(adapted['segments'][0]['kind'],'intro')
+        self.assertEqual(adapted['segments'][-1]['kind'],'outro')
+        self.assertTrue(any(s.get('speaker')==3 for s in adapted['segments']))
+        self.assertNotIn('host_assignment',adapted)  # 2人の回を単独話者へ割り付けない。
+        self.assertEqual(original,adapted)
         for before, after in zip(original['segments'], adapted['segments']):
             if 'quote_rows' in before['meta']:
                 self.assertEqual(before['meta']['quote_rows'], after['meta']['quote_rows'])
@@ -45,7 +44,7 @@ class VoicesAlignment(unittest.TestCase):
             self.assertEqual(issues, [])
             self.assertEqual(len(rows), len(timed))
             for row in rows:
-                if not row.get('fact'):
+                if not row.get('fact') and row.get('read') is not False:
                     self.assertIn(row['said'].strip().rstrip('。！!、.'), after['text'])
 
     def test_only_mismatched_quote_is_removed_and_cursor_recovers(self):
@@ -72,8 +71,12 @@ class VoicesAlignment(unittest.TestCase):
         data, design, original, adapted = self.program()
         # 修正前の敬語化を再現。既に作った音声や別経路の変更でも落とさない。
         bad = copy.deepcopy(adapted)
-        bad['segments'][3]['text'] = ui_tone.text(original['segments'][3]['text'])
-        seg = bad['segments'][3]
+        index=next(i for i,s in enumerate(original['segments'])
+                   if any(r.get('read') and not r.get('fact') for r in s['meta'].get('quote_rows',[])))
+        quote=next(r for r in original['segments'][index]['meta']['quote_rows'] if r.get('read') and not r.get('fact'))
+        # 引用を別文に変えた既存音声を再現する。反応や題は巻き込まない。
+        bad['segments'][index]['text']='元の引用と異なる敬語の文です。'
+        seg = bad['segments'][index]
         issues = []
         self.assertFalse(any(cue[1] in ('notify', 'marker') for cue in cr.voices_cues(seg, data['voices'], 12, issues=issues)))
         self.assertEqual(len(issues), 1)
@@ -81,13 +84,13 @@ class VoicesAlignment(unittest.TestCase):
             self.assertEqual(cr.voices_screen(2, seg, data['voices'], 12), 'frame')
             self.assertEqual(draw.call_args.args[1], [])
         with tempfile.TemporaryDirectory() as folder, patch.object(sound_mix, 'mix_short_file', return_value='mixed') as mix:
-            self.assertEqual(daily_v3.mix('audio.wav', bad['segments'], [12]*5, design, folder), 'mixed')
+            self.assertEqual(daily_v3.mix('audio.wav', bad['segments'], [12]*len(bad['segments']), design, folder), 'mixed')
             report = json.loads((Path(folder)/'quote_alignment.json').read_text(encoding='utf-8'))
             self.assertEqual(len(report['omissions']), 1)
-            self.assertEqual(report['omissions'][0]['segment'], 3)
-            self.assertEqual(report['omissions'][0]['said'], data['voices']['voices'][3]['ja'])
+            self.assertEqual(report['omissions'][0]['segment'], index)
+            self.assertEqual(report['omissions'][0]['said'], quote['said'])
             self.assertTrue(mix.call_args.kwargs['cues'])
-            daily_v3.mix('audio.wav', adapted['segments'], [12]*5, design, folder)
+            daily_v3.mix('audio.wav', adapted['segments'], [12]*len(bad['segments']), design, folder)
             self.assertEqual(json.loads((Path(folder)/'quote_alignment.json').read_text(encoding='utf-8'))['omissions'], [])
 
 

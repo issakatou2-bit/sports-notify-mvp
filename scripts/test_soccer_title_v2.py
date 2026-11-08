@@ -42,11 +42,18 @@ class Tests(unittest.TestCase):
             self.assertEqual(details[0]['caption_units'][:len(expected)], expected)
             self.assertEqual(len(details[0]['meta']['goals']), len(game['goals']))
 
-    def test_focus_off_keeps_title_v2_narration(self):
-        before = original('soccer_title_v2')
+    def test_focus_off_keeps_verified_score_goals_and_appearance(self):
+        import soccer_result_facts as facts
+        import soccer_stats
         data = read('soccer-results/run-40249272204.json')
         with patch.dict(os.environ, dict(COLLESPO_SOCCER_FOCUS='off', COLLESPO_SOCCER_TITLE_V2='on')):
-            self.assertEqual(v2.result_narration(data), before.result_narration(data))
+            current=v2.result_narration(data)
+            focus=v2.result_focus(data)
+        self.assertEqual(current['segments'][0]['text'],'3対4でル・アーブルは敗戦。')
+        details=[s for s in current['segments'] if s['kind']=='followup-detail']
+        self.assertEqual([g for s in details for g in s['meta']['goals']],focus['game']['goals'])
+        self.assertEqual(''.join(s['text'] for s in details),''.join(facts.goal_line(g,focus['game']) for g in focus['game']['goals']))
+        self.assertIn(soccer_stats.result_narration(focus['lead']),''.join(s['text'] for s in current['segments']))
 
     def test_focus_keeps_appearance_without_an_empty_stats_card(self):
         data=read('soccer-results/run-40249272204.json')
@@ -86,7 +93,12 @@ class Tests(unittest.TestCase):
                 self.assertEqual(preview.program(data)['narration'], old_preview.program(data)['narration'])
                 data=read('soccer-results/run-40249272204.json')
                 self.assertEqual(results.title(data),old_results.title(data))
-                self.assertEqual(render.production_narration(data),__import__('short_common').prepare(old_render.production_narration(data)))
+                original_narration=old_render.production_narration(data)
+                current=render.production_narration(data)
+                self.assertTrue(original_narration['segments'])
+                self.assertEqual(current['segments'][0]['text'],'水多海斗、1アシスト。')
+                self.assertTrue(current['opening_check']['passed'])
+                self.assertNotIn('登録',current['segments'][-1]['text'])
 
     def test_one_person_one_game_and_original_material_unchanged(self):
         import short_content

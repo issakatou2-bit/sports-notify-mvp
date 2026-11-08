@@ -258,7 +258,7 @@ _n = gms.build_narration({"race": _race, "date_jst": "2026-09-13",
                          mode="soccer_race")
 _kinds = [x["kind"] for x in _n["segments"]]
 check("順位争いの画面が入る", "race_line" in _kinds, True)
-check("日本人選手の画面が入る", "race_japanese" in _kinds, True)
+check("主役は冒頭で示し順位を重ねる画面を省く", "race_japanese" in _kinds, False)
 _line = next(x for x in _n["segments"] if x["kind"] == "race_line")
 check("線の名前を言う", "CL圏内" in _line["text"], True)
 # 差の言い方が画面と同じ関数から来ているか。
@@ -271,7 +271,8 @@ check("差の言い方が揃っている",
 # 順位表は「いまの順位」なので、ずらす相手がいない。
 check("date_jst を持っている", "date_jst" in _race, True)
 _intro = _n["segments"][0]["text"]
-check("渡した日付がそのまま出る", "9月13日" in _intro, True)
+check("日付は冒頭の説明より札に残す", _n["segments"][0]["meta"]["date"], "2026-09-13")
+check("冒頭は案内より結論", "勝点" in _intro, True)
 
 
 section("いま出られない選手を題と1枚目に出さない")

@@ -55,14 +55,14 @@ class Stats(unittest.TestCase):
         self.assertEqual(stats.personal_line(dict(status='starter')),'')
 
     def test_personal_narration_omits_zero_shots_and_empty_segments(self):
-        import soccer_results_render as render
+        import soccer_result_story as story
         with patch.dict(os.environ,COLLESPO_SOCCER_LOOK='v6',COLLESPO_SHORT_LOOK='v4',COLLESPO_SOLO_HOST='metan',COLLESPO_DUO='off'):
             for case in preview.cases(supplementary=True):
                 data=copy.deepcopy(case['data'])
                 game=data['games'][0]
                 for p in game['players']:
                     p.update(shots=0,on_target=0,saves=0)
-                narr=render.production_narration(data)
+                narr=__import__('short_context').soccer(story.narration(data),data,readable=True)
                 people=[p for p in game['players'] if p['status']!='none']
                 lines=[s for s in narr['segments'] if s['kind']=='player-stats']
                 self.assertEqual(len(lines),len(people))
@@ -78,7 +78,7 @@ class Stats(unittest.TestCase):
             people=data['games'][0]['players']
             people[0].update(position='MF',shots=1,on_target=0)
             for p in people[1:]:p.update(position='MF',shots=0,on_target=0)
-            narr=render.production_narration(data)
+            narr=__import__('short_context').soccer(story.narration(data),data,readable=True)
             lines=[s for s in narr['segments'] if s['kind']=='player-stats']
             self.assertIn('シュート1本、枠内はなし。',lines[0]['text'])
             self.assertTrue(all('シュート' not in s['text'] for s in lines[1:]))
@@ -95,11 +95,11 @@ class Stats(unittest.TestCase):
             self.assertEqual(stats.personal_narration(player),expected)
 
     def test_story_order_and_significant_team_differences(self):
-        import soccer_results_render as render
+        import soccer_result_story as story
         with patch.dict(os.environ,COLLESPO_SOCCER_LOOK='v6',COLLESPO_SHORT_LOOK='v4',COLLESPO_SOLO_HOST='metan',COLLESPO_DUO='off'):
             for case in preview.cases(supplementary=True):
                 data=case['data'];game=data['games'][0]
-                segments=render.production_narration(data)['segments']
+                segments=story.narration(data)['segments']
                 # 元からある試合解説の順は保持。短い回への追加統計だけ本人の後。
                 order={'followup':0,'followup-detail':1,'team-stats':2,'player-stats':3,'roster':4,'outro':6}
                 ranks=[5 if s['kind']=='team-stats' and s['meta'].get('short_context_stats')
@@ -173,13 +173,20 @@ class Stats(unittest.TestCase):
                 for case in preview.cases(supplementary=True):
                     data=case['data'];before=copy.deepcopy(data)
                     clubs=render.resolve_clubs(data);narr=render.production_narration(data)
+                    import short_renewal
+                    if not narr['segments']:
+                        self.assertFalse(any(short_renewal.positive(p) for p in data['players']))
+                        self.assertEqual(data,before)
+                        continue
                     result=narr['segments'][0]['text'];game=data['games'][0]
                     people=[p for p in game['players'] if p['status']!='none'] or game['players']
-                    for p in people:self.assertIn(p['name'],result)
-                    for side in ('home','away'):self.assertIn(game[side]['name_jp'],result)
+                    lead=narr['segments'][0]['meta']['opening_hook']['subject']
+                    self.assertIn(lead,result)
+                    self.assertTrue(narr['opening_check']['passed'])
+                    self.assertTrue(any(p['name']==lead for p in people))
                     first='away' if all(p['side']=='away' for p in people) else 'home'
                     second='home' if first=='away' else 'away'
-                    self.assertIn(f"{game['score'][first]}対{game['score'][second]}で",result)
+                    self.assertIn(f"{game['score'][first]}対{game['score'][second]}で",''.join(s['text'] for s in narr['segments']))
                     attached=sanity_sources.collect([narr])
                     self.assertTrue(any(s['games'][0].get('match_stats')==data['games'][0]['match_stats'] for s in attached))
                     self.assertTrue(any(s['players'][0].get('stats_source') for s in attached))

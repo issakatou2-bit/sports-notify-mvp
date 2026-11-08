@@ -120,6 +120,15 @@ def display_details(game,row):
     return details
 
 
+def result_opening(game, lead=None):
+    """冒頭で最終スコア。出場や個人成績は後の本人の札で1回だけ。"""
+    side=lead['side'] if lead else 'home'
+    other='away' if side=='home' else 'home'
+    gf,ga=game['score'][side],game['score'][other]
+    word='勝利' if gf>ga else '敗戦' if gf<ga else '引き分け'
+    return f"{gf}対{ga}で{game[side]['name_jp']}は{word}。"
+
+
 def result_line(game):
     """日本人の所属側を主語にする。出場状況は別の補足で扱う。"""
     people=[p for p in game['players'] if p['status']!='none'] or game['players']

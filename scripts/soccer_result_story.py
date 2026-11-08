@@ -47,7 +47,8 @@ def narration(data):
     for row in rows:
         if str(row['event_id']) in flash: continue
         g=next(g for g in data['games'] if g['id']==row['event_id'])
-        text=facts.result_line(g)
+        lead=next((p for p in g['players'] if p['status']!='none'),None)
+        text=facts.result_opening(g,lead)
         import soccer_stats
         if soccer_look.readable():
             segments.append(dict(kind='followup',text=text,speaker=2,caption_units=[text],meta=dict(event_id=g['id'],score_only=True)))

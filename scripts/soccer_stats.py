@@ -161,7 +161,8 @@ def personal_narration(player):
 def result_narration(player):
     status=player['status']
     full=status=='starter' and player.get('subbed_out') is False and player.get('red_cards')==0
-    appearance='フル出場' if full else minutes_label(player) or ('先発出場' if status=='starter' else '途中出場')
+    minutes=minutes_label(player)
+    appearance=('フル出場、'+minutes if minutes else 'フル出場') if full else minutes or ('先発出場' if status=='starter' else '途中出場')
     parts=[appearance]
     positive=positive_stats(player)
     if positive:parts.append(positive)

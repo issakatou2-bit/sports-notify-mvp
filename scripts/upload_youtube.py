@@ -1807,6 +1807,10 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
             import soccer_preview_angles
             title = soccer_preview_angles.preview_title(_angle_data)
 
+    _content_narration = _json_or_empty(narration_path)
+    _single_press = (kind=='morning' and morning_mode=='press' and _content_narration.get('opening_check',{}).get('passed'))
+    if _single_press:
+        head=next((row['said'].rstrip('。') for seg in _content_narration.get('segments',[]) for row in seg.get('meta',{}).get('quote_rows',[]) if row.get('read') and not row.get('fact')),head)
     mlb_title_v2 = (os.environ.get('COLLESPO_MLB_TITLE_V2') == 'on'
                     and kind == 'morning' and morning_mode in ('press', 'voices'))
     mlb_search_terms = []
@@ -1924,13 +1928,17 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
                   "賛成・批判・中立の別と、高評価の数を画面に出しています。",
                   "現地の報道（番記者と見出し）は別の動画で出しています。"]
     elif kind == "morning" and morning_mode == "press":
-        lines = [f"{date_label}のメジャーリーグについて、"
-                 "現地の報道をまとめました。", "",
-                 "・現地の番記者がSNSに書いた投稿（実名・所属媒体つき）",
-                 "・現地メディアの見出し（選手名で検索して取得）", "",
-                 "いずれも翻訳したもので、コレスポの見解ではありません。",
-                 "ファンのコメント欄と、数字で見る「現地での注目度」は"
-                 "別の動画で出しています。"]
+        if _single_press:
+            lines=[head,'',f'{date_label}、1件の報道の本文・要約を紹介します。',
+                   '引用は翻訳で、コレスポの見解ではありません。']
+        else:
+            lines = [f"{date_label}のメジャーリーグについて、"
+                     "現地の報道をまとめました。", "",
+                     "・現地の番記者がSNSに書いた投稿（実名・所属媒体つき）",
+                     "・現地メディアの見出し（選手名で検索して取得）", "",
+                     "いずれも翻訳したもので、コレスポの見解ではありません。",
+                     "ファンのコメント欄と、数字で見る「現地での注目度」は"
+                     "別の動画で出しています。"]
         from article_sources import references
         lines += references(_json_or_empty(narration_path))
     elif kind == "morning" and morning_mode == "local":
@@ -2139,6 +2147,8 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
                 lines = lines[:1] + head[:-1] + lines[1:]
         except Exception as e:                      # noqa: BLE001
             print(f"[warn] シリーズの一覧の行を足せません: {e}")
+    if kind == 'morning' and morning_mode in ('press','voices') and _content_narration.get('opening_check',{}).get('passed') and _content_narration.get('title'):
+        title = _content_narration['title']
     return {
         "snippet": {
             "title": title,

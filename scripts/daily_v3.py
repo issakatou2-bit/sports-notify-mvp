@@ -35,6 +35,9 @@ def prepare(data, narration, mode):
 
 
 def frame(t, seg, design, duration):
+    if seg.get('meta',{}).get('opening_hook'):
+        import short_renewal
+        return short_renewal.hook_frame(t,seg['meta']['opening_hook'],{},dict(source=__import__('solo_host').credit('VOICEVOX:四国めたん・ずんだもん / 引用：MLB公式コメント欄' if design['mode']=='voices' else 'VOICEVOX:四国めたん / 引用：各札の報道元',[seg]),label='現地のファンの声' if design['mode']=='voices' else '現地の報道'))
     import review_render_v3 as r3
     if design['mode']=='press' and seg['kind']=='intro' and seg.get('meta',{}).get('press_hook'):
         from press_hook import frame as hook_frame

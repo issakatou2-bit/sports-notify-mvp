@@ -243,6 +243,10 @@ def build(boards,summaries,target_date,football=None,roster=None,preview=None):
         import soccer_result_followup
         data['preview_expectation_results']=extras
         data=soccer_result_followup.attach(data,preview,extras)
+    from short_renewal import positive
+    data['selection_policy']='japanese_goal_or_assist'
+    data['can_make']=any(positive(p) for p in players)
+    if not data['can_make']:data['selection_reason']='日本人の得点・アシストなし'
     return data
 
 
@@ -290,7 +294,11 @@ def validate_data(data):
     if sorted(flattened,key=rank_key)!=data['players']:raise ValueError('一覧の順位/数字が試合の材料と違う')
     import soccer_result_followup
     soccer_result_followup.validate(data)
-    expected=any(p['status']!='none' for p in flattened) or bool((data.get('preview_followup') or {}).get('games'))
+    if data.get('selection_policy')=='japanese_goal_or_assist':
+        from short_renewal import positive
+        expected=any(positive(p) for p in flattened)
+    else:
+        expected=any(p['status']!='none' for p in flattened) or bool((data.get('preview_followup') or {}).get('games'))
     if bool(data['can_make'])!=expected:raise ValueError('出場ゼロの生成条件が不正')
 
 

@@ -61,7 +61,8 @@ class SoccerResults(unittest.TestCase):
         with patch.dict(os.environ,env):
             sr.validate_data(data)
             narr=story.narration(data);clubs=story.clubs_for(data)
-            seg=next(s for s in narr['segments'] if 'バルセロナ' in s['text'] and s['kind']=='followup')
+            game=next(g for g in data['games'] if any('Barcelona' in g[side]['name_en'] for side in ('home','away')))
+            seg=next(s for s in narr['segments'] if s['kind']=='followup' and s['meta']['event_id']==game['id'])
             r3.set_program_clock(0);r3.set_caption(seg['text'],12,32);r3.set_program_clock(0)
             try:
                 image=render.frame(0,seg,data,clubs)
