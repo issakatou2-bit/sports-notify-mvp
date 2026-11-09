@@ -22234,6 +22234,51 @@
       },
       "host_fallback_reason": null,
       "privacy": "public"
+    },
+    "2026-11-08": {
+      "video_id": "0-2nRo3S4O4",
+      "url": "https://youtu.be/0-2nRo3S4O4",
+      "title": "鈴木唯人がゴール｜フライブルク対ウニオン・ベルリン 2-0 #Shorts",
+      "published_at": "2026-11-09T01:50:10.979134+00:00",
+      "publish_at": "2026-11-09T02:04:00Z",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-09",
+        "enabled": true,
+        "assigned": "generic",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false,
+        "source": "post_common.lineup:daily_soccer",
+        "next_date": "2026-11-10",
+        "next_time": "19:30",
+        "next_name": "欧州サッカー"
+      },
+      "duration_seconds": 20.77,
+      "short_information_count": 4,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-11-09",
+        "kind": "soccer_results",
+        "phase": 1,
+        "planned_host": "ui",
+        "rule": "half-jst-week-v1",
+        "week": 44,
+        "weekday": 0
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-11-09T01:47:08.759157+00:00",
+        "comparison_eligible": false,
+        "label": "予定めたん（雨衣不可のため）",
+        "mode": "live",
+        "planned_host": "metan",
+        "reason": "ui_worker_stale",
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
     }
   },
   "soccer_goal_short": {
