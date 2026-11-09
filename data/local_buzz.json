@@ -1,28 +1,28 @@
 {
-  "updated_at": "2026-11-08T06:01:51.970737+00:00",
+  "updated_at": "2026-11-09T06:02:10.041462+00:00",
   "sources": [
     {
       "name": "MLB公式",
-      "items": 24
+      "items": 22
     }
   ],
-  "titles_count": 24,
+  "titles_count": 22,
   "teams": [
-    {
-      "team_id": "141",
-      "name": "ブルージェイズ",
-      "name_en": "Toronto Blue Jays",
-      "mentions": 2,
-      "tone": "話題",
-      "gist": "パーカーがAFLHR競争優勝、2027先発補強は?"
-    },
     {
       "team_id": "147",
       "name": "ヤンキース",
       "name_en": "New York Yankees",
       "mentions": 2,
-      "tone": "話題",
-      "gist": "ヤンキース傘下3A新名称発表、打線の改善点は?"
+      "tone": "好調",
+      "gist": "ヤンキース先発陣、2027年はさらに向上か"
+    },
+    {
+      "team_id": "158",
+      "name": "ブリュワーズ",
+      "name_en": "Milwaukee Brewers",
+      "mentions": 2,
+      "tone": "好調",
+      "gist": "WS王者ブリュワーズ、未来は今"
     },
     {
       "team_id": "120",
@@ -30,7 +30,15 @@
       "name_en": "Washington Nationals",
       "mentions": 1,
       "tone": "話題",
-      "gist": "2027年の鍵を握る投手3人"
+      "gist": "ナショナルズ、2027年の投手候補3人"
+    },
+    {
+      "team_id": "141",
+      "name": "ブルージェイズ",
+      "name_en": "Toronto Blue Jays",
+      "mentions": 1,
+      "tone": "好調",
+      "gist": "ブルージェイズ有望株パーカーがHRダービー優勝"
     },
     {
       "team_id": "145",
@@ -38,15 +46,15 @@
       "name_en": "Chicago White Sox",
       "mentions": 1,
       "tone": "好調",
-      "gist": "2026年の高いエネルギーを土台に前進"
+      "gist": "ホワイトソックス、2026年の勢いを土台に"
     },
     {
       "team_id": "109",
       "name": "ダイヤモンドバックス",
       "name_en": "Arizona Diamondbacks",
       "mentions": 1,
-      "tone": "話題",
-      "gist": "パーカーがAFLホームラン競争で優勝"
+      "tone": "好調",
+      "gist": "ブルージェイズ有望株パーカーがHRダービー優勝"
     },
     {
       "team_id": "119",
@@ -54,23 +62,15 @@
       "name_en": "Los Angeles Dodgers",
       "mentions": 1,
       "tone": "話題",
-      "gist": "スクーバル再契約にいくら必要か"
+      "gist": "ドジャース、スクバルの再契約に必要な額は"
     },
     {
-      "team_id": "158",
-      "name": "ブリュワーズ",
-      "name_en": "Milwaukee Brewers",
+      "team_id": "144",
+      "name": "ブレーブス",
+      "name_en": "Atlanta Braves",
       "mentions": 1,
       "tone": "好調",
-      "gist": "WS王者ブリュワーズのオフ5つの疑問"
-    },
-    {
-      "team_id": "108",
-      "name": "エンゼルス",
-      "name_en": "Los Angeles Angels",
-      "mentions": 1,
-      "tone": "話題",
-      "gist": "オフ入り時点のエンゼルス戦力の現状"
+      "gist": "セール、ブレーブス3年間は歴史的好成績"
     }
   ],
   "players": []
