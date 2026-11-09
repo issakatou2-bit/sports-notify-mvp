@@ -1,130 +1,7 @@
 {
-  "day": "2026-11-08",
+  "day": "2026-11-09",
+  "state": "ready",
   "topics": [
-    {
-      "key": "offseason_market_2026_81f9209e6e42",
-      "label": "鈴木誠也 QOは8人に提示 返事は11月18日朝6時まで",
-      "heading": "日本人選手の来季 第6回",
-      "hook": "鈴木誠也\nQOは8人に提示 返事は11月18日朝6時まで",
-      "kind_label": "MLB",
-      "style": "v3",
-      "intro_as_is": true,
-      "intro": "鈴木誠也 QOは8人に提示 返事は11月18日朝6時まで。",
-      "description_line": "連載「日本人選手の来季」では、確定した動きと媒体による報道を分けて追います。",
-      "data_credit": "各行の出典 / 確定・報道を区別",
-      "source": "確定情報・媒体報道 / 確認日 2026-11-08",
-      "source_url": "https://www.mlb.com/news/qualifying-offer-candidates-and-decisions-2026-27",
-      "v3": {
-        "who": "日本人選手の来季 第6回",
-        "source": "出典: 各行の資料 / 確定・報道を区別"
-      },
-      "items": [
-        [
-          "確定｜QOを提示された選手",
-          "今オフにQOを提示されたのは、鈴木誠也を含む8人です。"
-        ],
-        [
-          "確定｜8人の顔ぶれ",
-          "8人は、アロザレーナ、ロウ、鈴木誠也、ロジャース、バウアーズ、モレホン、ジェファーズ、ベドナーです。"
-        ],
-        [
-          "確定｜返事の期限",
-          "8人とも、日本時間の11月18日午前6時までに、受けるか断るかを決めます。"
-        ],
-        [
-          "確定｜これまでに受けた選手",
-          "2012年に今の仕組みができてから、QOを受け入れた選手は18人です。"
-        ],
-        [
-          "確定｜カブスでの5年",
-          "鈴木誠也は、カブスでの5年間で113本塁打を打ちました。"
-        ]
-      ],
-      "offseason": {
-        "kind": "market",
-        "day": "2026-11-08",
-        "season": 2026,
-        "events": [
-          {
-            "event_id": "market:suzuki-qo-eight-20261108:facts:eight",
-            "head": "確定｜QOを提示された選手",
-            "body": "今オフにQOを提示されたのは、鈴木誠也を含む8人です。",
-            "source": "https://www.mlb.com/news/qualifying-offer-candidates-and-decisions-2026-27",
-            "market_type": "facts",
-            "illustration": "ai/qo.png"
-          },
-          {
-            "event_id": "market:suzuki-qo-eight-20261108:facts:names",
-            "head": "確定｜8人の顔ぶれ",
-            "body": "8人は、アロザレーナ、ロウ、鈴木誠也、ロジャース、バウアーズ、モレホン、ジェファーズ、ベドナーです。",
-            "source": "https://www.mlb.com/news/qualifying-offer-candidates-and-decisions-2026-27",
-            "market_type": "facts"
-          },
-          {
-            "event_id": "market:suzuki-qo-eight-20261108:facts:deadline",
-            "head": "確定｜返事の期限",
-            "body": "8人とも、日本時間の11月18日午前6時までに、受けるか断るかを決めます。",
-            "source": "https://www.mlb.com/news/qualifying-offer-candidates-and-decisions-2026-27",
-            "market_type": "facts"
-          },
-          {
-            "event_id": "market:suzuki-qo-eight-20261108:facts:history",
-            "head": "確定｜これまでに受けた選手",
-            "body": "2012年に今の仕組みができてから、QOを受け入れた選手は18人です。",
-            "source": "https://www.mlb.com/news/qualifying-offer-candidates-and-decisions-2026-27",
-            "market_type": "facts"
-          },
-          {
-            "event_id": "market:suzuki-qo-eight-20261108:facts:suzuki",
-            "head": "確定｜カブスでの5年",
-            "body": "鈴木誠也は、カブスでの5年間で113本塁打を打ちました。",
-            "source": "https://www.mlb.com/news/qualifying-offer-candidates-and-decisions-2026-27",
-            "market_type": "facts"
-          }
-        ],
-        "entry": {
-          "id": "suzuki-qo-eight-20261108",
-          "title": "鈴木誠也 QOは8人に提示 返事は11月18日朝6時まで",
-          "name_en": "Seiya Suzuki",
-          "checked_on": "2026-11-08",
-          "facts": [
-            {
-              "id": "eight",
-              "label": "QOを提示された選手",
-              "text": "今オフにQOを提示されたのは、鈴木誠也を含む8人です。",
-              "source_url": "https://www.mlb.com/news/qualifying-offer-candidates-and-decisions-2026-27"
-            },
-            {
-              "id": "names",
-              "label": "8人の顔ぶれ",
-              "text": "8人は、アロザレーナ、ロウ、鈴木誠也、ロジャース、バウアーズ、モレホン、ジェファーズ、ベドナーです。",
-              "source_url": "https://www.mlb.com/news/qualifying-offer-candidates-and-decisions-2026-27"
-            },
-            {
-              "id": "deadline",
-              "label": "返事の期限",
-              "text": "8人とも、日本時間の11月18日午前6時までに、受けるか断るかを決めます。",
-              "source_url": "https://www.mlb.com/news/qualifying-offer-candidates-and-decisions-2026-27"
-            },
-            {
-              "id": "history",
-              "label": "これまでに受けた選手",
-              "text": "2012年に今の仕組みができてから、QOを受け入れた選手は18人です。",
-              "source_url": "https://www.mlb.com/news/qualifying-offer-candidates-and-decisions-2026-27"
-            },
-            {
-              "id": "suzuki",
-              "label": "カブスでの5年",
-              "text": "鈴木誠也は、カブスでの5年間で113本塁打を打ちました。",
-              "source_url": "https://www.mlb.com/news/qualifying-offer-candidates-and-decisions-2026-27"
-            }
-          ],
-          "reports": []
-        },
-        "series_number": 6,
-        "series_title": "日本人選手の来季"
-      }
-    },
     {
       "key": "offseason_schedule_2026_b49cef96a397",
       "label": "MLBオフの主な予定",
@@ -152,7 +29,7 @@
       ],
       "offseason": {
         "kind": "schedule",
-        "day": "2026-11-08",
+        "day": "2026-11-09",
         "season": 2026,
         "events": [
           {
@@ -180,6 +57,5 @@
         ]
       }
     }
-  ],
-  "state": "ready"
+  ]
 }
