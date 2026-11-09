@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-09T06:08:39.618784+00:00",
+  "generated_at": "2026-11-09T13:04:51.865029+00:00",
   "competitions": [
     {
       "code": "PL",
@@ -14,7 +14,7 @@
       "preview_angle_context": {
         "finished": {
           "source": "https://api.football-data.org/v4/competitions/PL/matches",
-          "retrieved_at": "2026-11-09T06:06:22.587437+00:00",
+          "retrieved_at": "2026-11-09T13:02:35.596409+00:00",
           "payload": {
             "matches": [
               {
@@ -6622,7 +6622,7 @@
         },
         "standings": {
           "source": "https://api.football-data.org/v4/competitions/PL/standings",
-          "retrieved_at": "2026-11-09T06:06:23.035966+00:00",
+          "retrieved_at": "2026-11-09T13:02:36.006140+00:00",
           "payload": {
             "filters": {
               "season": "2026"
@@ -7887,7 +7887,7 @@
       "preview_angle_context": {
         "finished": {
           "source": "https://api.football-data.org/v4/competitions/PD/matches",
-          "retrieved_at": "2026-11-09T06:06:25.282384+00:00",
+          "retrieved_at": "2026-11-09T13:02:37.833508+00:00",
           "payload": {
             "matches": [
               {
@@ -15630,7 +15630,7 @@
         },
         "standings": {
           "source": "https://api.football-data.org/v4/competitions/PD/standings",
-          "retrieved_at": "2026-11-09T06:06:25.744778+00:00",
+          "retrieved_at": "2026-11-09T13:02:38.391173+00:00",
           "payload": {
             "filters": {
               "season": "2026"
@@ -16896,7 +16896,7 @@
       "preview_angle_context": {
         "finished": {
           "source": "https://api.football-data.org/v4/competitions/SA/matches",
-          "retrieved_at": "2026-11-09T06:06:28.548156+00:00",
+          "retrieved_at": "2026-11-09T13:02:41.164590+00:00",
           "payload": {
             "matches": [
               {
@@ -24164,7 +24164,7 @@
         },
         "standings": {
           "source": "https://api.football-data.org/v4/competitions/SA/standings",
-          "retrieved_at": "2026-11-09T06:06:29.941712+00:00",
+          "retrieved_at": "2026-11-09T13:02:42.608141+00:00",
           "payload": {
             "filters": {
               "season": "2026"
@@ -25426,7 +25426,7 @@
       "preview_angle_context": {
         "finished": {
           "source": "https://api.football-data.org/v4/competitions/BL1/matches",
-          "retrieved_at": "2026-11-09T06:07:32.237421+00:00",
+          "retrieved_at": "2026-11-09T13:03:44.765340+00:00",
           "payload": {
             "matches": [
               {
@@ -30792,7 +30792,7 @@
         },
         "standings": {
           "source": "https://api.football-data.org/v4/competitions/BL1/standings",
-          "retrieved_at": "2026-11-09T06:07:32.669141+00:00",
+          "retrieved_at": "2026-11-09T13:03:45.182434+00:00",
           "payload": {
             "filters": {
               "season": "2026"
@@ -31945,7 +31945,7 @@
       "preview_angle_context": {
         "finished": {
           "source": "https://api.football-data.org/v4/competitions/FL1/matches",
-          "retrieved_at": "2026-11-09T06:07:34.419639+00:00",
+          "retrieved_at": "2026-11-09T13:03:46.658061+00:00",
           "payload": {
             "matches": [
               {
@@ -37893,7 +37893,7 @@
         },
         "standings": {
           "source": "https://api.football-data.org/v4/competitions/FL1/standings",
-          "retrieved_at": "2026-11-09T06:07:34.889847+00:00",
+          "retrieved_at": "2026-11-09T13:03:47.088606+00:00",
           "payload": {
             "filters": {
               "season": "2026"
@@ -39045,7 +39045,7 @@
       "preview_angle_context": {
         "finished": {
           "source": "https://api.football-data.org/v4/competitions/CL/matches",
-          "retrieved_at": "2026-11-09T06:07:38.407904+00:00",
+          "retrieved_at": "2026-11-09T13:03:50.596459+00:00",
           "payload": {
             "matches": [
               {
@@ -43805,7 +43805,7 @@
         },
         "standings": {
           "source": "https://api.football-data.org/v4/competitions/CL/standings",
-          "retrieved_at": "2026-11-09T06:08:39.202184+00:00",
+          "retrieved_at": "2026-11-09T13:04:51.438401+00:00",
           "payload": {
             "filters": {
               "season": "2026"
