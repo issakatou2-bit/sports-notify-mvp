@@ -1,7 +1,18 @@
 {
-  "updated_at": "2026-11-08T10:30:28.526078+00:00",
+  "updated_at": "2026-11-09T10:22:30.753681+00:00",
   "source": "https://fantasy.premierleague.com/api/bootstrap-static/",
   "players": {
+    "鈴木彩艶": {
+      "name_en": "Zion Suzuki",
+      "club_jp": "アストンヴィラ",
+      "minutes": 810,
+      "goals": 0,
+      "assists": 0,
+      "chance_next": null,
+      "news": "",
+      "out": false,
+      "reason": ""
+    },
     "遠藤航": {
       "name_en": "Wataru Endo",
       "club_jp": "リバプール",
@@ -27,7 +38,7 @@
     "鎌田大地": {
       "name_en": "Daichi Kamada",
       "club_jp": "クリスタル・パレス",
-      "minutes": 787,
+      "minutes": 877,
       "goals": 1,
       "assists": 3,
       "chance_next": null,
@@ -60,7 +71,7 @@
     "前田大然": {
       "name_en": "Daizen Maeda",
       "club_jp": "イプスウィッチ",
-      "minutes": 446,
+      "minutes": 510,
       "goals": 1,
       "assists": 0,
       "chance_next": null,
