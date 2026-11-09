@@ -1,0 +1,49 @@
+{
+  "publication_id": "asset:topic:season_best_2026_808967_pitching",
+  "domain": "asset",
+  "kind": "topic",
+  "key_parts": {
+    "topic": "season_best_2026_808967_pitching"
+  },
+  "version": 1,
+  "history": [
+    {
+      "source": "published_assets/assets/season_best_2026_808967_pitching",
+      "service": "youtube",
+      "video_id": "KYmhJyxM80w",
+      "state": "scheduled",
+      "scheduled_at": "2026-11-09T13:00:00Z",
+      "event_day": null,
+      "material_day": null,
+      "edition_day": "2026-11-09",
+      "run_at": "2026-11-09T06:17:22.243796+00:00",
+      "details": {
+        "privacy": "public"
+      },
+      "run_id": "42570938582",
+      "attempt": "1",
+      "recorded_at": "2026-11-09T06:17:22.247347+00:00",
+      "fingerprint": "068da144a905a458a03a32af7b7cecbd6324c41642946c37c6f3d44a437b40c0",
+      "event_id": "de57f809f15ed35abfbf096259c3f8772757f7879a3ed6f6adec28ed25132cb6"
+    },
+    {
+      "source": "published_videos/asset/season_best_2026_808967_pitching",
+      "service": "youtube",
+      "video_id": "KYmhJyxM80w",
+      "state": "scheduled",
+      "scheduled_at": "2026-11-09T13:00:00Z",
+      "event_day": null,
+      "material_day": null,
+      "edition_day": "2026-11-09",
+      "run_at": "2026-11-09T06:17:22.260508+00:00",
+      "details": {
+        "privacy": "public"
+      },
+      "run_id": "42570938582",
+      "attempt": "1",
+      "recorded_at": "2026-11-09T06:17:22.284145+00:00",
+      "fingerprint": "4a9df4bb7e1a61d33eef3590622f9de742b6e6aab74705817ca39fa0f71bc8ec",
+      "event_id": "859305c19adde68f7c50d3b176b9c21b068aa189b9b76afc8217f4f920e7fe0f"
+    }
+  ]
+}

@@ -21815,6 +21815,100 @@
       },
       "host_fallback_reason": null,
       "privacy": "public"
+    },
+    "season_win_2026_808963_pitching": {
+      "video_id": "9s7_6XdpaVg",
+      "url": "https://youtu.be/9s7_6XdpaVg",
+      "title": "佐々木朗希 先発した試合でチームは12勝11敗 #Shorts",
+      "published_at": "2026-11-09T06:14:17.264644+00:00",
+      "publish_at": "2026-11-09T07:30:00Z",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-09",
+        "enabled": true,
+        "assigned": "generic",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false,
+        "source": "post_common.lineup:daily_soccer",
+        "next_date": "2026-11-10",
+        "next_time": "19:30",
+        "next_name": "欧州サッカー"
+      },
+      "player_ids": [
+        "808963"
+      ],
+      "duration_seconds": 30.5,
+      "short_information_count": 3,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-11-09",
+        "kind": "asset:season_win",
+        "phase": 1,
+        "planned_host": "ui",
+        "rule": "half-jst-week-v1",
+        "week": 44,
+        "weekday": 0
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-11-09T06:11:06.743170+00:00",
+        "comparison_eligible": false,
+        "label": "予定めたん（雨衣不可のため）",
+        "mode": "live",
+        "planned_host": "metan",
+        "reason": "ui_worker_stale",
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
+    },
+    "season_best_2026_808967_pitching": {
+      "video_id": "KYmhJyxM80w",
+      "url": "https://youtu.be/KYmhJyxM80w",
+      "title": "山本由伸 7/4のパドレス戦と9/9のレッズ戦で7回10奪三振 #Shorts",
+      "published_at": "2026-11-09T06:17:22.260508+00:00",
+      "publish_at": "2026-11-09T13:00:00Z",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-09",
+        "enabled": true,
+        "assigned": "generic",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false,
+        "source": "post_common.lineup:daily_soccer",
+        "next_date": "2026-11-10",
+        "next_time": "19:30",
+        "next_name": "欧州サッカー"
+      },
+      "player_ids": [
+        "808967"
+      ],
+      "duration_seconds": 27.61,
+      "short_information_count": 3,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-11-09",
+        "kind": "asset:season_best",
+        "phase": 0,
+        "planned_host": "metan",
+        "rule": "half-jst-week-v1",
+        "week": 44,
+        "weekday": 0
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-11-09T15:14:17.778252+09:00",
+        "comparison_eligible": true,
+        "planned_host": "metan",
+        "reason": null,
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
     }
   },
   "soccer_results": {
