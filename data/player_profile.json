@@ -1,109 +1,96 @@
 {
-  "generated_at": "2026-11-09T21:56:12.221768+00:00",
+  "generated_at": "2026-11-10T06:01:01.970044+00:00",
   "date_jst": "2026-11-10",
-  "name": "松井裕樹",
-  "player_id": "673513",
-  "team": "パドレス",
-  "group": "pitching",
+  "name": "吉田正尚",
+  "player_id": "807799",
+  "team": "レッドソックス",
+  "group": "hitting",
   "why": "順番",
   "headline": "",
   "score": null,
   "bio": {
-    "name_en": "Yuki Matsui",
-    "age": 31,
-    "birth_city": "Yokohama",
+    "name_en": "Masataka Yoshida",
+    "age": 33,
+    "birth_city": "Fukui",
     "birth_state": null,
     "birth_country": "Japan",
-    "birth_date": "1995-10-30",
-    "debut": "2024-03-20",
+    "birth_date": "1993-07-15",
+    "debut": "2023-03-30",
     "draft_year": null,
     "bats": "Left",
-    "throws": "Left",
-    "number": "1",
-    "position": "Pitcher",
+    "throws": "Right",
+    "number": "7",
+    "position": "Designated Hitter",
     "nickname": null,
     "height": "5' 8\"",
-    "weight": 165
+    "weight": 192
   },
   "teams": [
     {
-      "team": "パドレス",
-      "from": 2024,
+      "team": "レッドソックス",
+      "from": 2023,
       "to": 2026
     }
   ],
   "career": {
-    "games": 179,
-    "avg": ".269",
-    "hr": 24,
-    "rbi": 127,
-    "ops": ".757",
-    "sb": 5,
-    "hits": 218,
-    "wins": 12,
-    "losses": 4,
-    "era": "3.17",
-    "so": 198,
-    "ip": "190.0",
-    "whip": "1.22"
+    "games": 390,
+    "avg": ".280",
+    "hr": 34,
+    "rbi": 182,
+    "ops": ".759",
+    "sb": 15,
+    "hits": 383
   },
   "this_season": {
-    "games": 54,
-    "avg": ".284",
-    "hr": 18,
-    "rbi": 82,
-    "ops": ".801",
-    "sb": 3,
-    "hits": 136,
-    "wins": 5,
-    "losses": 1,
-    "era": "1.83",
-    "so": 68,
-    "ip": "64.0",
-    "whip": "1.14"
+    "games": 87,
+    "avg": ".274",
+    "hr": 5,
+    "rbi": 28,
+    "ops": ".746",
+    "sb": 2,
+    "hits": 72
   },
   "last_season": {
-    "games": 61,
-    "avg": ".247",
-    "hr": 6,
-    "rbi": 45,
-    "ops": ".692",
-    "sb": 2,
-    "hits": 82,
-    "wins": 3,
-    "losses": 1,
-    "era": "3.98",
-    "so": 61,
-    "ip": "63.1",
-    "whip": "1.36"
+    "games": 55,
+    "avg": ".266",
+    "hr": 4,
+    "rbi": 26,
+    "ops": ".695",
+    "sb": 3,
+    "hits": 50
   },
   "recent": [
     {
-      "date": "2026-09-26",
-      "line": "0.1回 自責0 1奪三振",
-      "opponent": "Arizona Diamondbacks"
+      "date": "2026-08-15",
+      "line": "2打数1安打",
+      "opponent": "Pittsburgh Pirates"
     },
     {
-      "date": "2026-09-24",
-      "line": "1.0回 自責0 1奪三振",
-      "opponent": "Los Angeles Dodgers"
+      "date": "2026-08-14",
+      "line": "5打数2安打 1打点",
+      "opponent": "Pittsburgh Pirates"
     },
     {
-      "date": "2026-09-23",
-      "line": "1.0回 自責0 0奪三振",
-      "opponent": "Los Angeles Dodgers"
+      "date": "2026-08-13",
+      "line": "3打数2安打 1打点",
+      "opponent": "Toronto Blue Jays"
     },
     {
-      "date": "2026-09-19",
-      "line": "0.2回 自責0 0奪三振",
-      "opponent": "Miami Marlins"
+      "date": "2026-08-12",
+      "line": "4打数0安打",
+      "opponent": "Toronto Blue Jays"
     },
     {
-      "date": "2026-09-17",
-      "line": "1.0回 自責0 2奪三振",
-      "opponent": "Colorado Rockies"
+      "date": "2026-08-11",
+      "line": "5打数1安打",
+      "opponent": "Toronto Blue Jays"
     }
   ],
-  "awards": [],
+  "awards": [
+    {
+      "season": "2023",
+      "name": "AL Player of the Week"
+    }
+  ],
   "quotes": []
 }

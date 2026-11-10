@@ -1,20 +1,20 @@
 {
-  "updated_at": "2026-11-09T21:57:06.274898+00:00",
+  "updated_at": "2026-11-10T06:01:57.850990+00:00",
   "sources": [
     {
       "name": "MLB公式",
-      "items": 23
+      "items": 25
     }
   ],
-  "titles_count": 23,
+  "titles_count": 25,
   "teams": [
     {
-      "team_id": "144",
-      "name": "ブレーブス",
-      "name_en": "Atlanta Braves",
+      "team_id": "116",
+      "name": "タイガース",
+      "name_en": "Detroit Tigers",
       "mentions": 2,
       "tone": "好調",
-      "gist": "セール、ブレーブス3年間は歴史的好成績"
+      "gist": "マクゴニグルが新人王、デトロイトに栄誉"
     },
     {
       "team_id": "141",
@@ -22,7 +22,7 @@
       "name_en": "Toronto Blue Jays",
       "mentions": 1,
       "tone": "話題",
-      "gist": "ブルージェイズ、クレメント以外の2B補強案"
+      "gist": "ブルージェイズ、クレメントから二塁強化を模索か"
     },
     {
       "team_id": "143",
@@ -30,7 +30,7 @@
       "name_en": "Philadelphia Phillies",
       "mentions": 1,
       "tone": "話題",
-      "gist": "フィリーズ、アクーニャらの移籍噂"
+      "gist": "フィリーズ、アクーニャらの補強噂が浮上"
     },
     {
       "team_id": "119",
@@ -38,31 +38,31 @@
       "name_en": "Los Angeles Dodgers",
       "mentions": 1,
       "tone": "話題",
-      "gist": "ドジャース有望外野手、2B再習得は有益"
-    },
-    {
-      "team_id": "140",
-      "name": "レンジャーズ",
-      "name_en": "Texas Rangers",
-      "mentions": 1,
-      "tone": "話題",
-      "gist": "レンジャーズ、GMミーティング前の陣容"
+      "gist": "ドジャースの外野手有望株、二塁を学び直し"
     },
     {
       "team_id": "147",
       "name": "ヤンキース",
       "name_en": "New York Yankees",
       "mentions": 1,
-      "tone": "好調",
-      "gist": "ヤンキース先発陣、2027年さらに強化も"
+      "tone": "話題",
+      "gist": "ベドナー FAでヤンキースの抑え候補を整理"
     },
     {
-      "team_id": "158",
-      "name": "ブリュワーズ",
-      "name_en": "Milwaukee Brewers",
+      "team_id": "144",
+      "name": "ブレーブス",
+      "name_en": "Atlanta Braves",
+      "mentions": 1,
+      "tone": "話題",
+      "gist": "ブレーブス、GM会議に持ち込む4つの話題"
+    },
+    {
+      "team_id": "113",
+      "name": "レッズ",
+      "name_en": "Cincinnati Reds",
       "mentions": 1,
       "tone": "好調",
-      "gist": "WS王者ブリュワーズ、未来は今"
+      "gist": "レッズの強打者が新人王を受賞"
     },
     {
       "team_id": "121",
@@ -70,7 +70,7 @@
       "name_en": "New York Mets",
       "mentions": 1,
       "tone": "話題",
-      "gist": "メッツ、GMミーティングでの補強課題"
+      "gist": "メッツがGM会議で取り組みうる課題"
     }
   ],
   "players": []
