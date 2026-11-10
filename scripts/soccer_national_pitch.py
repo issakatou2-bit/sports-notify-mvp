@@ -11,7 +11,7 @@ PLAYER_SECONDS = 3.2
 PLAYER_MAX_SECONDS = 6.0
 INTRO_MAX_SECONDS = 3.0
 MOVE_SECONDS = .3
-CARD = (72, 1160, 940, 1460)
+CARD = (72, 1160, 940, 1540)
 LEAGUES = {'PL':'イングランド1部', 'ELC':'イングランド2部', 'PD':'スペイン1部',
            'SA':'イタリア1部', 'BL1':'ドイツ1部', 'FL1':'フランス1部',
            'DED':'オランダ1部', 'PPL':'ポルトガル1部'}
@@ -55,7 +55,10 @@ def segments(data):
     import soccer_national as n
     from voice_accent_common import mora_count
     readings = n.read(ROOT/'data/soccer_national_club_readings.json')
-    rows = [dict(kind='national', text=f"{match_label(data)}招集{data['squad_size']}人。", speaker=2,
+    import soccer_national_numbers as numbers
+    leading=numbers.featured(data)
+    opening=f"{leading['name']}、今季{numbers.metric(leading)[1]}{numbers.metric(leading)[2]}。" if leading else f"{match_label(data)}招集{data['squad_size']}人。"
+    rows = [dict(kind='national', text=opening, speaker=2,
                  meta=dict(panel='squad', intro=True))]
     for i, p in enumerate(data['players']):
         name, club = p['name'], p['club']
@@ -158,10 +161,14 @@ def frame(t, seg, data, clubs):
     for y in range(236,1560,144):d.rectangle((0,y,1080,min(y+71,1560)),fill=c.GRASS)
     # 上の帯に「日本代表」があるので、相手が分かる日は「ブラジル戦 招集28人」に縮める（幅に入らず止まった）。
     head = f"{match_label(data)[:-1]} 招集{data['squad_size']}人" if match_label(data) else f"日本代表 招集{data['squad_size']}人"
-    screen.text(72,258,head,70,868,c.CHALK,role='header')
-    screen.text(72,354,scope_label(data),48,868,c.LIME,role='text')
-    screen.text(72,434,'発表されたポジション',32,868,c.MUTED,role='supplement')
-    screen.text(72,482,'名簿順の並び・先発配置ではありません',30,868,c.MUTED,role='supplement')
+    import soccer_national_numbers as numbers
+    leading=numbers.featured(data)
+    if leading:head=leading['name']+' '+str(numbers.metric(leading)[1])+numbers.metric(leading)[2]
+    header_lines=c.lines(head,70,868)
+    for j,line_text in enumerate(header_lines):screen.text(72,258+j*78,line_text,70,868,c.LIME if leading else c.CHALK,role='header')
+    shift=78*(len(header_lines)-1)
+    screen.text(72,354+shift,scope_label(data),48,868,c.LIME,role='text')
+    screen.text(72,434+shift,'今季のリーグ戦' if leading else '発表されたポジション',32,868,c.MUTED,role='supplement')
     # 既存の薄いコート線と同じ色。縦のピッチとしてゴール・中央線を配置。
     line=(32,62,46)
     for top,bottom in [(590,790),(850,950),(990,1100)]:
@@ -172,7 +179,6 @@ def frame(t, seg, data, clubs):
     for top,bottom in [(540,590),(1065,1120)]:d.rectangle((565,top,715,bottom),outline=line,width=3)
     for label,y in [('MF/FW',650),('DF',880),('GK',1020)]:
         screen.text(86,y,label,36,170,c.MUTED,role='supplement')
-    screen.text(270,550,'MF/FWは一括発表',30,650,c.MUTED,role='supplement')
     selected = {p['name'] for p in data['players']}
     active = data['players'][seg['meta']['player']] if 'player' in seg['meta'] else None
     dots = points(data)
@@ -200,8 +206,10 @@ def frame(t, seg, data, clubs):
         for j,line_text in enumerate(club_lines):
             c.text(layer,104,1310+j*52,line_text,44,c.CHALK,role='national_fact',width=804)
         league = active.get('league')
+        stat=numbers.stat_line(active)
+        if stat:c.text(layer,104,1420,stat,44,c.LIME,role='national_fact',width=804)
         if league:
-            c.text(layer,104,1420,league['label'],30,c.LIME,role='supplement',width=804)
+            c.text(layer,104,1490,league['label'],30,c.LIME,role='supplement',width=804)
         # 拡大中も同じ札の内容で重複判定する。字幕が一瞬だけ出て消えるのを防ぐ。
         im.info['short_visible_texts']=[active['name']+active['club']]
         crop = layer.crop(CARD)
@@ -213,5 +221,7 @@ def frame(t, seg, data, clubs):
     im.info['national_pitch'] = dict(points=dots,selected=sorted(selected),active=active['name'] if active else None,
         card=state,scope=scope_label(data),formation=False)
     im.info['timeline_scene'] = dict(kind='national-pitch',name=active['name'] if active else 'intro')
+    if (data.get('national_numbers') or {}).get('fixture'):
+        screen.text(72,1550,'検証用・今季の数値は架空',30,650,c.LIME,role='supplement')
     # 同じ区間の字幕だけを描く。カードの出現待ちや前区間のフェードを挟まない。
     return screen.finish(dict(source='VOICEVOX:四国めたん / JFA・リーグ表' if any(p.get('league') for p in data['players']) else 'VOICEVOX:四国めたん / JFA公式発表',title='日本代表',caption_alpha=state['alpha'] if state else 1.))
