@@ -41,7 +41,7 @@ def read(path):
 def save(path, data):
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(data, ensure_ascii=False, indent=2)+'\n', encoding='utf-8')
+    path.write_text(json.dumps(data, ensure_ascii=False, indent=2)+'\n', encoding='utf-8', newline='\n')
 
 
 def instant(value):
@@ -559,6 +559,8 @@ def check(document):
             if data.get('squad_style')=='pitch-v1':
                 import soccer_national_pitch
                 soccer_national_pitch.validate(data)
+                import soccer_national_numbers
+                soccer_national_numbers.check_attached(data)
             seen=set();english_seen=set()
             for p in data['players']:
                 squad_player(dict(p,name_jp=p['name']))
@@ -668,6 +670,10 @@ def metadata(document):
     links += [p['stats']['source'] for p in d.get('players',[]) if p.get('stats')]
     if d.get('length_level',0)>=1:links += [r['source_url'] for r in d.get('japan_history') or []]
     text='\n'.join(s['text'] for s in document['segments'])
+    if d.get('mode')=='squad':
+        text+='\n\n図はJFAが発表したポジションの名簿順です。先発やフォーメーションの予想ではありません。MF/FWは一括発表です。'
+        links += [p['season_numbers']['source'] for p in d.get('players',[]) if p.get('season_numbers')]
+        if d.get('national_numbers'):text+='\n今季成績の取得日: '+instant(d['national_numbers']['as_of']).astimezone(JST).strftime('%Y/%m/%d')
     return dict(snippet=dict(title=document['title'],description=text+'\n\n出典\n'+'\n'.join(dict.fromkeys(links))+
         '\n音声: VOICEVOX:四国めたん',tags=['サッカー','日本代表','コレスポ'],categoryId='17',
         defaultLanguage='ja',defaultAudioLanguage='ja'))
@@ -755,6 +761,14 @@ def main(argv=None):
         read(args.squad) if args.squad.exists() else None,read(ROOT/'data/soccer_games.json'))
     if not data:
         save(marker,dict(can_make=False,reason='対象枠・終了結果・発表済みメンバーなし'));return
+    if data['mode']=='squad':
+        import soccer_national_numbers as numbers
+        roster=read(args.squad)
+        selected={p['name'] for p in data['players']}
+        requested=dict(roster,players=[p for p in roster['players'] if p['name_jp'] in selected])
+        sheet=numbers.collect(requested,now.isoformat(),args.out/'raw'/'numbers')
+        save(args.out/'numbers.json',sheet)
+        data=numbers.attach(data,sheet)
     narr=narration(data)
     if check(narr):
         raise ValueError(check(narr))

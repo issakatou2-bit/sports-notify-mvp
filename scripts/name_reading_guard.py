@@ -152,6 +152,9 @@ def dialogue_scope(dialogue):
     if dialogue.get('program')=='soccer_national' and (dialogue.get('national_material') or {}).get('mode')=='squad':
         import soccer_national
         extra=soccer_national.speech_readings(dialogue)
+    elif dialogue.get('program')=='soccer_national_long':
+        import soccer_national_long
+        extra=soccer_national_long.speech_readings(dialogue)
     token=scoped_readings.set(extra)
     try:
         yield

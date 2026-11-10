@@ -7,7 +7,7 @@ import soccer_national as n
 
 
 def validate(data, now):
-    if not n.enabled() or data.get('sample'):
+    if not n.enabled() or data.get('sample') or (data.get('national_numbers') or {}).get('fixture'):
         raise ValueError('代表番組は既定停止、または見本です')
     at=n.instant(data['publish_at'])
     if at.astimezone(n.JST).date()!=now.astimezone(n.JST).date():

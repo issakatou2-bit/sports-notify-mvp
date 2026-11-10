@@ -1,0 +1,147 @@
+{
+  "fixture": true,
+  "note": "ESPN保存材料の本人・チームIDを再利用。今季の数は通信形と描画を検査する架空値。実際の今季成績ではない。",
+  "responses": {
+    "https://site.api.espn.com/apis/site/v2/sports/soccer/eng.1/teams?season=2026&limit=100": {
+      "sports": [
+        {
+          "leagues": [
+            {
+              "teams": [
+                {
+                  "team": {
+                    "id": "362",
+                    "displayName": "Aston Villa"
+                  }
+                },
+                {
+                  "team": {
+                    "id": "384",
+                    "displayName": "Crystal Palace"
+                  }
+                },
+                {
+                  "team": {
+                    "id": "388",
+                    "displayName": "Coventry City"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "https://site.api.espn.com/apis/site/v2/sports/soccer/eng.1/teams/362/roster?season=2026": {
+      "athletes": [
+        {
+          "id": "265958",
+          "fullName": "Zion Suzuki",
+          "displayName": "Zion Suzuki",
+          "firstName": "Zion",
+          "lastName": "Suzuki",
+          "statistics": {
+            "$ref": "https://sports.core.api.espn.com/v2/sports/soccer/leagues/eng.1/seasons/2026/types/1/athletes/265958/statistics"
+          }
+        }
+      ]
+    },
+    "https://sports.core.api.espn.com/v2/sports/soccer/leagues/eng.1/seasons/2026/types/1/athletes/265958/statistics": {
+      "splits": {
+        "categories": [
+          {
+            "name": "general",
+            "stats": [
+              {
+                "name": "appearances",
+                "value": 8
+              },
+              {
+                "name": "totalGoals",
+                "value": 0
+              },
+              {
+                "name": "goalAssists",
+                "value": 1
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "https://site.api.espn.com/apis/site/v2/sports/soccer/eng.1/teams/384/roster?season=2026": {
+      "athletes": [
+        {
+          "id": "219362",
+          "fullName": "Daichi Kamada",
+          "displayName": "Daichi Kamada",
+          "firstName": "Daichi",
+          "lastName": "Kamada",
+          "statistics": {
+            "$ref": "https://sports.core.api.espn.com/v2/sports/soccer/leagues/eng.1/seasons/2026/types/1/athletes/219362/statistics"
+          }
+        }
+      ]
+    },
+    "https://sports.core.api.espn.com/v2/sports/soccer/leagues/eng.1/seasons/2026/types/1/athletes/219362/statistics": {
+      "splits": {
+        "categories": [
+          {
+            "name": "general",
+            "stats": [
+              {
+                "name": "appearances",
+                "value": 13
+              },
+              {
+                "name": "totalGoals",
+                "value": 2
+              },
+              {
+                "name": "goalAssists",
+                "value": 1
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "https://site.api.espn.com/apis/site/v2/sports/soccer/eng.1/teams/388/roster?season=2026": {
+      "athletes": [
+        {
+          "id": "302002",
+          "fullName": "Tatsuhiro Sakamoto",
+          "displayName": "Tatsuhiro Sakamoto",
+          "firstName": "Tatsuhiro",
+          "lastName": "Sakamoto",
+          "statistics": {
+            "$ref": "https://sports.core.api.espn.com/v2/sports/soccer/leagues/eng.1/seasons/2026/types/1/athletes/302002/statistics"
+          }
+        }
+      ]
+    },
+    "https://sports.core.api.espn.com/v2/sports/soccer/leagues/eng.1/seasons/2026/types/1/athletes/302002/statistics": {
+      "splits": {
+        "categories": [
+          {
+            "name": "general",
+            "stats": [
+              {
+                "name": "appearances",
+                "value": 11
+              },
+              {
+                "name": "totalGoals",
+                "value": 7
+              },
+              {
+                "name": "goalAssists",
+                "value": 1
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}
