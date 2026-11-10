@@ -81,6 +81,7 @@ jobs:
           MODE: ${{ github.event_name == 'schedule' && 'publish_due' || github.event_name == 'workflow_run' && 'publish' || inputs.mode || 'validate' }}
           PYTHONUNBUFFERED: '1'
           COLLESPO_SOCCER_NATIONAL: ${{ vars.COLLESPO_SOCCER_NATIONAL == 'on' && 'on' || 'off' }}
+          RETRY_REJECTED: ${{ inputs.retry_rejected && 'true' || 'false' }}
         run: |
           if [ "$MODE" = "reconcile" ]; then
             python scripts/buffer_daily.py --reconcile
@@ -118,7 +119,7 @@ jobs:
           if [ "$MODE" = "publish" ]; then args+=(--publish); fi
           # 11/8 の夕方、GitHub のリリース置き場が 504 で読めず、6件が rejected のまま止まった。
           # 定時の回は rejected を送り直さないので、手で送り直す入口を置く。
-          if [ "$MODE" = "publish" ] && [ "${{ inputs.retry_rejected }}" = "true" ]; then args+=(--retry-rejected); fi
+          if [ "$MODE" = "publish" ] && [ "${RETRY_REJECTED:-false}" = "true" ]; then args+=(--retry-rejected); fi
           DAILY=0
           python scripts/buffer_daily.py --source-run "$SOURCE_RUN" \
             --kind "${{ inputs.kind || 'daily' }}" "${args[@]}" || DAILY=$?
