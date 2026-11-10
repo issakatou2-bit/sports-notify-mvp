@@ -20,6 +20,10 @@ on:
         type: choice
         options: [daily, morning, morning_voices, morning_press, morning_postseason, soccer_national]
         default: daily
+      retry_rejected:
+        description: 'Buffer に拒否された枠を手で送り直す（publish のときだけ。先に実投稿と照合するので二重にはならない）'
+        type: boolean
+        default: false
   workflow_run:
     workflows: [毎日 19:00頃　明日の注目試合]
     types: [completed]
@@ -77,6 +81,7 @@ jobs:
           MODE: ${{ github.event_name == 'schedule' && 'publish_due' || github.event_name == 'workflow_run' && 'publish' || inputs.mode || 'validate' }}
           PYTHONUNBUFFERED: '1'
           COLLESPO_SOCCER_NATIONAL: ${{ vars.COLLESPO_SOCCER_NATIONAL == 'on' && 'on' || 'off' }}
+          RETRY_REJECTED: ${{ inputs.retry_rejected && 'true' || 'false' }}
         run: |
           if [ "$MODE" = "reconcile" ]; then
             python scripts/buffer_daily.py --reconcile
@@ -112,6 +117,9 @@ jobs:
           fi
           args=()
           if [ "$MODE" = "publish" ]; then args+=(--publish); fi
+          # 11/8 の夕方、GitHub のリリース置き場が 504 で読めず、6件が rejected のまま止まった。
+          # 定時の回は rejected を送り直さないので、手で送り直す入口を置く。
+          if [ "$MODE" = "publish" ] && [ "${RETRY_REJECTED:-false}" = "true" ]; then args+=(--retry-rejected); fi
           DAILY=0
           python scripts/buffer_daily.py --source-run "$SOURCE_RUN" \
             --kind "${{ inputs.kind || 'daily' }}" "${args[@]}" || DAILY=$?
