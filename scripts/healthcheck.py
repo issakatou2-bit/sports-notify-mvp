@@ -557,6 +557,14 @@ def check_credit() -> tuple:
         return "| APIの使用量 | まだ記録が無い | 次の回から溜まります |", 0
     line = (f"| APIの使用量 | ${s['avg_usd']:.3f}/日 "
             f"(月あたり ${s['month_usd']:.2f}) |")
+    if "cycle_spent" in s:
+        # 自分の使用が枠の半分を超えたら知らせる（他の案件も同じ枠を使う）。
+        share = s["cycle_spent"] / s["monthly_usd"] if s["monthly_usd"] else 0
+        text = (f" {s['cycle_start']}からの使用 ${s['cycle_spent']:.2f}"
+                f"（月の枠 ${s['monthly_usd']:.0f}。残高は請求の画面で）")
+        if share >= 0.5:
+            return line + " **" + text.strip() + "**  使い方を見直す |", 1
+        return line + text + " |", 0
     if "days_left" not in s or s.get("days_left") is None:
         return line + " data/credit.json に残高を入れると日数が出ます |", 0
     d = s["days_left"]
