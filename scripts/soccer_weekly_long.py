@@ -72,24 +72,39 @@ def identity(club):
 def club_label(value):
     import club_display_names as clubs
     label = clubs.display(value) if clubs.lookup(value) else results.ne.club_name_jp(value)
-    if re.search(r'[A-Za-z]', label) and not re.search(r'[一-龯ぁ-んァ-ヶ]', label):
+    if (re.search(r'[A-Za-z]', label) and not re.search(r'[一-龯ぁ-んァ-ヶ]', label)
+            and label not in latin_display_names()):
         raise ValueError('英字のクラブ名が残っています: '+label)
     return label
+
+
+def display_names():
+    import club_display_names as clubs
+    names = set(results.ne.SOCCER_CLUB_NAME_JP.values())
+    for row in clubs.rows():
+        names.update(row.get(key) or '' for key in ('display', 'short', 'legacy', 'current'))
+    return {n for n in names if n}
+
+
+def latin_display_names():
+    # 表示名の表に英字だけで載せた名前（PSV・AZ・NEC・PSG・QPR）は、日本の報道でもこの形。
+    # 表に無い英字だけを止める（11/9 15時の週の長編が「PSV」で止まった）。
+    return {n for n in display_names()
+            if re.search(r'[A-Za-z]', n) and not re.search(r'[一-龯ぁ-んァ-ヶ]', n)}
 
 
 def known_japanese_names():
     # 表示名の表にある日本語の名前（マンチェスターU、ボルシアMG、ハンブルガーSV等）は、
     # 英字を含んでも正しい。略号を1つずつ許すと、表に足した名前のたびに止まる（11/3「U」で停止）。
-    import club_display_names as clubs
-    names = set(results.ne.SOCCER_CLUB_NAME_JP.values())
-    for row in clubs.rows():
-        names.update(row.get(key) or '' for key in ('display', 'short', 'legacy', 'current'))
+    names = display_names()
     return sorted((n for n in names if re.search(r'[ァ-ヶ]', n) and re.search(r'[A-Za-z]', n)), key=len, reverse=True)
 
 
 def check_public_names(text):
     for name in known_japanese_names():
         text = text.replace(name, '')
+    for name in sorted(latin_display_names(), key=len, reverse=True):
+        text = re.sub(r'(?<![A-Za-z])'+re.escape(name)+r'(?![A-Za-z])', '', text)
     # リーグ名・大会の略号（セリエA、CL等）は保つ。
     allowed = {'A', 'B', 'C', 'CL', 'EL'}
     unknown = sorted({m[0] for m in re.finditer(r'[A-Za-z]+', text) if m[0] not in allowed})
