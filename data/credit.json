@@ -1,9 +1,5 @@
 {
-  "_note": "Console (console.anthropic.com) の Plans & Billing で見た残高を、見た日付とともに書く。ここからの消費を token_usage.json で引いて、あと何日持つかを出す。自動リロードは $5 を割ったら $15 まで補充する設定。",
-  "balance_usd": 15.0,
-  "as_of": "2026-08-28",
-  "auto_reload": {
-    "trigger_usd": 5,
-    "topup_to_usd": 15
-  }
+  "_note": "Claude API は Max の特典で月100ドル（claude.ai の 設定→請求→APIクレジット。区切りで切れ、繰り越しなし。10/11 受け取り）。区切りは Max の更新日（10/13 時点で毎月4日）。残高は API で取れないので、今の区切りに入ってからの使用だけを数える。8/28 の Console の残高15ドルから引く計算は 11/10 にやめた（特典が始まってからずれていた）。他の案件も同じ枠を使うので、コレスポの使用が枠の半分を超えたら健康診断が知らせる。",
+  "monthly_usd": 100,
+  "cycle_start_day": 4
 }

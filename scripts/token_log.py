@@ -199,6 +199,23 @@ def summary(path: str = PATH, credit_path: str = "data/credit.json") -> dict:
            "avg_usd": round(avg, 4), "month_usd": round(avg * 30, 2)}
     try:
         c = json.loads(pathlib.Path(credit_path).read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        c = {}
+    if "monthly_usd" in c:
+        # 月の枠（Max の特典の100ドル。区切りで切れ、繰り越しなし）。
+        # 残高は API で取れないので、今の区切りに入ってからの使用だけを数える。
+        # 8/28 の残高から引き続けていた計算は、特典が始まってからずれていた（11/10）。
+        start_day = int(c.get("cycle_start_day", 1))
+        today = datetime.now(JST).date()
+        if today.day >= start_day:
+            start = today.replace(day=start_day)
+        else:
+            start = (today.replace(day=1) - timedelta(days=1)).replace(day=start_day)
+        spent = sum(v["usd"] for k, v in days.items() if k >= start.isoformat())
+        out.update({"cycle_start": start.isoformat(), "cycle_spent": round(spent, 2),
+                    "monthly_usd": float(c["monthly_usd"])})
+        return out
+    try:
         bal, since = float(c["balance_usd"]), str(c["as_of"])
         spent = sum(v["usd"] for k, v in days.items() if k >= since)
         left = bal - spent
