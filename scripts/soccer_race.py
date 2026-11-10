@@ -587,8 +587,10 @@ def title_of(race: dict) -> str:
     got = lead(race)
     if got:
         who, near, comp_jp = got
-        return "%sの%s、%s｜%s 順位争い" % (
-            who["name"], who["club_jp"], near["text"], comp_jp)
+        # リーグ名を先に置く（11/10 Argon：伸びた「セリエA 順位争い｜…」の形。
+        # 10/25〜11/7 で順位争いの最上位 546再生はリーグ名が先頭）。
+        return "%s 順位争い｜%sの%sは%s" % (
+            comp_jp, who["name"], who["club_jp"], near["text"])
     names = [c.get("name_jp", "") for c in (race.get("competitions") or [])
              if c.get("code") in (race.get("picked") or [])]
     if names:

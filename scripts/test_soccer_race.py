@@ -436,4 +436,10 @@ check("出した節は繰り返さない",
       sr.due(_table([5] * 20), {"PD:2026": 5}), [])
 check("次の節になれば出す",
       [d["round"] for d in sr.due(_table([6] * 20), {"PD:2026": 5})], [6])
+section("題はリーグ名から")
+# 11/10 Argon：10/25〜11/7 の順位争いで最上位（546再生）は
+# 「セリエA 順位争い｜…」とリーグ名が先頭。選手の名前は後ろに置く。
+_t = sr.title_of(_race)
+check("リーグ名が先頭", _t.startswith("ラ・リーガ 順位争い｜"), True)
+check("日本人選手の名前が入る", "久保建英" in _t, True)
 sys.exit(done())
