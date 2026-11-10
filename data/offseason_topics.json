@@ -1,5 +1,6 @@
 {
-  "day": "2026-11-09",
+  "day": "2026-11-10",
+  "state": "ready",
   "topics": [
     {
       "key": "offseason_schedule_2026_b49cef96a397",
@@ -28,7 +29,7 @@
       ],
       "offseason": {
         "kind": "schedule",
-        "day": "2026-11-09",
+        "day": "2026-11-10",
         "season": 2026,
         "events": [
           {
@@ -55,7 +56,99 @@
           }
         ]
       }
+    },
+    {
+      "key": "offseason_awards_2026_087b31644a68",
+      "label": "2026年のMLB公式表彰",
+      "heading": "2026年のMLB公式表彰",
+      "kind_label": "MLB",
+      "data_credit": "MLB Stats API",
+      "v3": {
+        "source": "出典: MLB公式 / 受賞・取引記録"
+      },
+      "hook": "2026年のMLB公式表彰",
+      "intro": "2026年のMLBの表彰です。MLB公式の受賞記録からお伝えします。",
+      "intro_as_is": true,
+      "style": "v3",
+      "source": "MLB公式 / 受賞・取引記録",
+      "source_url": "https://statsapi.mlb.com/api/v1/awards/ALROY/recipients?season=2026",
+      "items": [
+        [
+          "ケビン・マクゴニグル｜ア・リーグ新人王・遊撃手",
+          "ケビン・マクゴニグルは2026年のア・リーグ新人王を受賞しました"
+        ],
+        [
+          "サル・スチュワート｜ナ・リーグ新人王・一塁手",
+          "サル・スチュワートは2026年のナ・リーグ新人王を受賞しました"
+        ]
+      ],
+      "offseason": {
+        "kind": "awards",
+        "day": "2026-11-10",
+        "season": 2026,
+        "events": [
+          {
+            "event_id": "award:2026:ALROY:805808:winner",
+            "head": "ケビン・マクゴニグル｜ア・リーグ新人王・遊撃手",
+            "body": "ケビン・マクゴニグルは2026年のア・リーグ新人王を受賞しました",
+            "name": "ケビン・マクゴニグル",
+            "japanese": false,
+            "source": "https://statsapi.mlb.com/api/v1/awards/ALROY/recipients?season=2026",
+            "raw": {
+              "id": "ALROY",
+              "name": "Jackie Robinson AL Rookie of the Year",
+              "date": "2026-11-09",
+              "season": "2026",
+              "team": {
+                "id": 116,
+                "link": "/api/v1/teams/116"
+              },
+              "player": {
+                "id": 805808,
+                "link": "/api/v1/people/805808",
+                "primaryPosition": {
+                  "code": "6",
+                  "name": "Shortstop",
+                  "type": "Infielder",
+                  "abbreviation": "SS"
+                },
+                "nameFirstLast": "Kevin McGonigle",
+                "nameSlug": "kevin-mcgonigle-805808"
+              }
+            }
+          },
+          {
+            "event_id": "award:2026:NLROY:701398:winner",
+            "head": "サル・スチュワート｜ナ・リーグ新人王・一塁手",
+            "body": "サル・スチュワートは2026年のナ・リーグ新人王を受賞しました",
+            "name": "サル・スチュワート",
+            "japanese": false,
+            "source": "https://statsapi.mlb.com/api/v1/awards/NLROY/recipients?season=2026",
+            "raw": {
+              "id": "NLROY",
+              "name": "Jackie Robinson NL Rookie of the Year",
+              "date": "2026-11-09",
+              "season": "2026",
+              "team": {
+                "id": 113,
+                "link": "/api/v1/teams/113"
+              },
+              "player": {
+                "id": 701398,
+                "link": "/api/v1/people/701398",
+                "primaryPosition": {
+                  "code": "3",
+                  "name": "First Base",
+                  "type": "Infielder",
+                  "abbreviation": "1B"
+                },
+                "nameFirstLast": "Sal Stewart",
+                "nameSlug": "sal-stewart-701398"
+              }
+            }
+          }
+        ]
+      }
     }
-  ],
-  "state": "ready"
+  ]
 }
