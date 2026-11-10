@@ -17,7 +17,7 @@ AS_OF='2026-11-10T12:00:00+09:00'
 
 def fixture_sheet():
     fixture=n.read(ROOT/'scripts/fixtures/soccer_national_numbers.json')
-    roster=n.read(ROOT/'data/soccer_national_squad.json')
+    roster=n.read(ROOT/'scripts/fixtures/soccer_national_squad_1110.json')
     def fetch(url):
         if url in fixture['responses']:return copy.deepcopy(fixture['responses'][url])
         raise OSError('fixtureにない取得は行いません')
@@ -27,7 +27,7 @@ def fixture_sheet():
 class Numbers(unittest.TestCase):
     def setUp(self):
         self.env=patch.dict(os.environ,COLLESPO_SAMPLE_ONLY='true');self.env.start();self.addCleanup(self.env.stop)
-        self.roster=n.read(ROOT/'data/soccer_national_squad.json')
+        self.roster=n.read(ROOT/'scripts/fixtures/soccer_national_squad_1110.json')
         self.sheet=fixture_sheet()
 
     def test_fixture_matches_three_identities(self):
