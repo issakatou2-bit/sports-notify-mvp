@@ -44,6 +44,19 @@ class Numbers(unittest.TestCase):
     def test_conflicting_counts_rejected(self):
         with self.assertRaises(ValueError):numbers.values({'categories':[{'stats':[{'name':'goals','value':2},{'name':'totalGoals','value':3}]}]})
 
+    def test_unexpected_api_shape_omits_numbers_and_keeps_all_missing(self):
+        sheet=numbers.collect(self.roster,AS_OF,fetch=lambda url:[],fixture=True)
+        self.assertFalse(sheet['players'])
+        self.assertEqual(len(sheet['missing']),28)
+        self.assertEqual(len(sheet['league_errors']),len(numbers.LEAGUES))
+
+    def test_assists_alone_are_not_counted_as_confirmed_card_numbers(self):
+        responses=n.read(ROOT/'scripts/fixtures/soccer_national_numbers.json')['responses']
+        for payload in responses.values():
+            if 'splits' in payload:payload['splits']['categories']=[{'stats':[{'name':'goalAssists','value':2}]}]
+        sheet=numbers.collect(self.roster,AS_OF,fetch=lambda url:copy.deepcopy(responses.get(url)),fixture=True)
+        self.assertFalse(sheet['players']);self.assertEqual(len(sheet['missing']),28)
+
     def test_raw_counts_identity_club_and_season_tamper_rejected(self):
         for field,value in [('values',{'goals':999}),('athlete_id','1'),('club','FC町田ゼルビア'),('season_year',2025),('scope','match')]:
             with self.subTest(field=field):
@@ -60,6 +73,9 @@ class Numbers(unittest.TestCase):
         good=self.sheet['players'][0]
         for source in (good['source'].replace('/2026/','/2025/'),good['source'].replace('sports.core.api.espn.com','example.com'),good['source'].replace('/statistics','/events')):
             with self.assertRaises(ValueError):numbers.stats_url(source,good['league_slug'],2026,good['athlete_id'])
+        team_source=good['source'].replace('/athletes/','/teams/'+good['team_id']+'/athletes/')+'/0'
+        self.assertEqual(numbers.stats_url(team_source,good['league_slug'],2026,good['athlete_id'],good['team_id']),team_source)
+        with self.assertRaises(ValueError):numbers.stats_url(team_source,good['league_slug'],2026,good['athlete_id'],'999')
 
     def test_fixture_cannot_enter_normal_narration(self):
         with patch.dict(os.environ,COLLESPO_SAMPLE_ONLY='false'):
@@ -74,16 +90,28 @@ class Numbers(unittest.TestCase):
         self.assertIsNone(data['players'][0]['season_numbers'])
         altered=copy.deepcopy(doc);altered['national_material']['players'][2]['season_numbers']['values']['goals']=8
         self.assertTrue(n.check(altered))
+        missing=copy.deepcopy(doc);missing['national_material'].pop('national_numbers')
+        self.assertTrue(n.check(missing))
 
     def test_no_numbers_keeps_original_hook(self):
         data=n.squad(self.roster,{},AS_OF,0)
         self.assertIn('招集28人',pitch.segments(data)[0]['text'])
         self.assertEqual(numbers.stat_line(data['players'][0]),'')
+        self.assertEqual(pitch.badge_for({'league':{'label':'旧札'},'season_numbers':{'league':'BEL','league_label':'ベルギー1部'}})['label'],'ベルギー1部')
 
     def test_gk_only_appearances(self):
         p={'position':'GK','season_numbers':{'values':{'appearances':8,'goals':9}}}
         self.assertEqual(numbers.metric(p),('appearances',8,'試合出場'))
         self.assertEqual(numbers.stat_line(p),'リーグ戦 8試合')
+        data=numbers.attach(n.squad(self.roster,{},AS_OF,0),self.sheet)
+        doc=n.narration(data)
+        self.assertEqual(doc['segments'][0]['text'],'鈴木彩艶、今季8試合。')
+        self.assertEqual(n.check(doc),[])
+
+    def test_known_zero_goals_do_not_outrank_positive_appearances(self):
+        zero=dict(name='zero',position='FW',season_numbers={'values':{'goals':0}})
+        keeper=dict(name='keeper',position='GK',season_numbers={'values':{'appearances':8}})
+        self.assertEqual(numbers.featured({'players':[zero,keeper]}),keeper)
 
 
 if __name__=='__main__':unittest.main(argv=[sys.argv[0]])

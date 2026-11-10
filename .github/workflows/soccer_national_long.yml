@@ -1,0 +1,79 @@
+name: 日本代表 試合前の今季数字（見本・書き出しのみ）
+
+on:
+  workflow_dispatch:
+    inputs:
+      opponent:
+        description: 'JFA発表の対象試合'
+        type: choice
+        options: [brazil, paraguay]
+        default: brazil
+      sample_only:
+        description: '見本のみ（公開しない）'
+        type: boolean
+        default: true
+      render_only:
+        description: '書き出しのみ（公開しない）'
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: soccer-national-long
+  cancel-in-progress: false
+
+env:
+  PYTHONUTF8: '1'
+  COLLESPO_SAMPLE_ONLY: ${{ inputs.sample_only && 'true' || 'false' }}
+  COLLESPO_LONGFORM_STYLE: v3
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Allow preview modes only
+        env:
+          SAMPLE_ONLY: ${{ inputs.sample_only }}
+          RENDER_ONLY: ${{ inputs.render_only }}
+        run: test "$SAMPLE_ONLY" = true || test "$RENDER_ONLY" = true
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: pip install -r scripts/requirements.txt
+      - name: Collect league season numbers and write fixed dialogue
+        env:
+          OPPONENT: ${{ inputs.opponent }}
+        run: python scripts/soccer_national_long.py --opponent "$OPPONENT" --out build/national_long
+      - name: Check material, names and every panel
+        run: python scripts/render_soccer_national_long.py --dialogue build/national_long/dialogue.json --check
+      - name: Install video tools
+        run: bash scripts/install_video_tools.sh
+      - name: Start VOICEVOX engine
+        run: |
+          docker run -d --rm -p 50021:50021 --name voicevox voicevox/voicevox_engine:cpu-latest
+          for i in $(seq 1 60); do
+            if curl -fsS http://127.0.0.1:50021/version; then exit 0; fi
+            sleep 2
+          done
+          exit 1
+      - name: Synthesize both voices
+        run: python scripts/synthesize_narration.py --narration build/national_long/dialogue.json --out-dir build/national_long/audio
+      - name: Render review frames and 3 to 4 minute video
+        run: |
+          python scripts/render_soccer_national_long.py --dialogue build/national_long/dialogue.json --frames build/national_long/frames
+          python scripts/render_soccer_national_long.py --dialogue build/national_long/dialogue.json --audio-dir build/national_long/audio --out build/national_long --require-audio
+      - name: Save preview and source evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: soccer-national-long-${{ inputs.opponent }}-${{ github.run_id }}
+          path: |
+            build/national_long/
+            !build/**/portrait/**
+          retention-days: 7
+          if-no-files-found: error

@@ -1,5 +1,6 @@
 """数字入り招集の試験・静的検査・静止画・無音見本を一度に確認（通信なし）。"""
 from contextlib import redirect_stderr, redirect_stdout
+import argparse
 from datetime import datetime, timedelta, timezone
 import os
 from pathlib import Path
@@ -20,7 +21,9 @@ def available(minutes=0):
 
 
 def main():
-    available(15)
+    ap=argparse.ArgumentParser(description=__doc__)
+    ap.add_argument('--long',action='store_true',help='両相手の長編の試験・CLI・全札も続けて確認する')
+    args=ap.parse_args();available(30 if args.long else 15)
     import soccer_national as n
     import soccer_national_numbers as numbers
     import soccer_national_render as render
@@ -65,6 +68,9 @@ def main():
         sample.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(out/'silent_sample.mp4',sample)
         n.save(out/'result.json',dict(tests=results,static=static,video=str(sample),fixture=True,real_audio=False,publication=False))
     print('数字入り招集: 試験・静的検査・描画・無音動画の確認完了')
+    if args.long:
+        import verify_national_long
+        verify_national_long.main()
 
 
 if __name__=='__main__':main()

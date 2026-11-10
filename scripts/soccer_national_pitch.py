@@ -50,6 +50,13 @@ def match_label(data):
     return f'{opponent}戦の' if opponent else ''
 
 
+def badge_for(player):
+    row=player.get('season_numbers')
+    if row:
+        return dict(code=row['league'],label=LEAGUES.get(row['league'],row['league_label']))
+    return player.get('league')
+
+
 def segments(data):
     """長い所属は札で伝える。声を速めたり、発話途中で切ったりしない。"""
     import soccer_national as n
@@ -57,7 +64,9 @@ def segments(data):
     readings = n.read(ROOT/'data/soccer_national_club_readings.json')
     import soccer_national_numbers as numbers
     leading=numbers.featured(data)
-    opening=f"{leading['name']}、今季{numbers.metric(leading)[1]}{numbers.metric(leading)[2]}。" if leading else f"{match_label(data)}招集{data['squad_size']}人。"
+    item=numbers.metric(leading) if leading else None
+    unit='試合' if item and item[0]=='appearances' else item[2] if item else ''
+    opening=f"{leading['name']}、今季{item[1]}{unit}。" if leading else f"{match_label(data)}招集{data['squad_size']}人。"
     rows = [dict(kind='national', text=opening, speaker=2,
                  meta=dict(panel='squad', intro=True))]
     for i, p in enumerate(data['players']):
@@ -168,7 +177,7 @@ def frame(t, seg, data, clubs):
     for j,line_text in enumerate(header_lines):screen.text(72,258+j*78,line_text,70,868,c.LIME if leading else c.CHALK,role='header')
     shift=78*(len(header_lines)-1)
     screen.text(72,354+shift,scope_label(data),48,868,c.LIME,role='text')
-    screen.text(72,434+shift,'今季のリーグ戦' if leading else '発表されたポジション',32,868,c.MUTED,role='supplement')
+    screen.text(72,434+shift,'今季のリーグ戦・発表されたポジション' if leading else '発表されたポジション',32,868,c.MUTED,role='supplement')
     # 既存の薄いコート線と同じ色。縦のピッチとしてゴール・中央線を配置。
     line=(32,62,46)
     for top,bottom in [(590,790),(850,950),(990,1100)]:
@@ -205,7 +214,7 @@ def frame(t, seg, data, clubs):
         if len(club_lines)>2:raise ValueError('所属クラブの札が入りません')
         for j,line_text in enumerate(club_lines):
             c.text(layer,104,1310+j*52,line_text,44,c.CHALK,role='national_fact',width=804)
-        league = active.get('league')
+        league = badge_for(active)
         stat=numbers.stat_line(active)
         if stat:c.text(layer,104,1420,stat,44,c.LIME,role='national_fact',width=804)
         if league:
@@ -224,4 +233,5 @@ def frame(t, seg, data, clubs):
     if (data.get('national_numbers') or {}).get('fixture'):
         screen.text(72,1550,'検証用・今季の数値は架空',30,650,c.LIME,role='supplement')
     # 同じ区間の字幕だけを描く。カードの出現待ちや前区間のフェードを挟まない。
-    return screen.finish(dict(source='VOICEVOX:四国めたん / JFA・リーグ表' if any(p.get('league') for p in data['players']) else 'VOICEVOX:四国めたん / JFA公式発表',title='日本代表',caption_alpha=state['alpha'] if state else 1.))
+    source='VOICEVOX:四国めたん / JFA・ESPN' if any(p.get('season_numbers') for p in data['players']) else 'VOICEVOX:四国めたん / JFA・リーグ表' if any(p.get('league') for p in data['players']) else 'VOICEVOX:四国めたん / JFA公式発表'
+    return screen.finish(dict(source=source,title='日本代表',caption_alpha=state['alpha'] if state else 1.))

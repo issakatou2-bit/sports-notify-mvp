@@ -2,9 +2,7 @@
 import copy
 from datetime import timedelta
 import hashlib
-import json
 from pathlib import Path
-import re
 from urllib.parse import urlparse
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -53,10 +51,14 @@ def athlete_rows(payload):
     return [dict(athlete=r.get('athlete',r)) for r in rows]
 
 
-def stats_url(url,slug,year,athlete_id):
+def stats_url(url,slug,year,athlete_id,team_id=None):
     parsed=urlparse(str(url))
     path=f'/v2/sports/soccer/leagues/{slug}/seasons/{year}/types/1/athletes/{athlete_id}/statistics'
-    if parsed.hostname!='sports.core.api.espn.com' or parsed.path.rstrip('/')!=path:
+    paths=[path,path+'/0']
+    if team_id:
+        team_path=path.replace('/athletes/','/teams/'+str(team_id)+'/athletes/')
+        paths += [team_path,team_path+'/0']
+    if parsed.hostname!='sports.core.api.espn.com' or parsed.path.rstrip('/') not in paths:
         raise ValueError('リーグ・季・選手が特定できる今季集計の参照ではありません')
     return 'https://sports.core.api.espn.com'+parsed.path+('?' + parsed.query if parsed.query else '')
 
@@ -90,7 +92,9 @@ def collect(roster,as_of,directory=None,fetch=None,fixture=False):
     cache={};failures={}
     def get(url):
         if url not in cache:
-            payload=fetch(url);cache[url]=payload
+            payload=fetch(url)
+            if not isinstance(payload,dict):raise ValueError('今季集計の応答がJSONオブジェクトではありません')
+            cache[url]=payload
             if directory:
                 path=Path(directory);path.mkdir(parents=True,exist_ok=True)
                 n.save(path/(hashlib.sha256(url.encode()).hexdigest()+'.json'),dict(url=url,as_of=as_of,payload=payload))
@@ -104,7 +108,7 @@ def collect(roster,as_of,directory=None,fetch=None,fixture=False):
                 name=team.get('displayName') or team.get('name')
                 if not name or not str(team.get('id','')).isdigit():continue
                 candidates.setdefault(club_id(name),[]).append((code,slug,label,year,team,url))
-        except (OSError,ValueError,KeyError,TypeError):failures[code]='teams_unavailable'
+        except (OSError,ValueError,KeyError,TypeError,AttributeError):failures[code]='teams_unavailable'
     accepted=[];missing=[]
     for player in roster['players']:
         canonical=CLUBS.get(player['club'],player['club'])
@@ -126,16 +130,17 @@ def collect(roster,as_of,directory=None,fetch=None,fixture=False):
                 if str(profile.get('id'))!=ident or results.resolve_player([dict(athlete=profile)],player['name_en']) is None:
                     raise ValueError('athlete_profile_mismatch')
                 ref=profile.get('statistics') or {}
-            url=stats_url(ref.get('$ref'),slug,year,ident)
+            if not isinstance(ref,dict):raise ValueError('今季集計への参照がありません')
+            url=stats_url(ref.get('$ref'),slug,year,ident,str(team['id']))
             raw=get(url);counts=values(raw)
-            if not counts or player['position']=='GK' and 'appearances' not in counts:
+            if 'appearances' not in counts and (player['position']=='GK' or 'goals' not in counts):
                 raise ValueError('season_counts_missing')
             accepted.append(dict(name=player['name_jp'],name_en=player['name_en'],club=player['club'],
                 athlete_id=ident,team_id=str(team['id']),league=code,league_slug=slug,league_label=label,
                 season=str(year) if code=='J1' else roster['season'],season_year=year,
                 scope='league_season',as_of=as_of,source=url,roster_source=roster_url,teams_source=teams_source,
                 values=counts,evidence=dict(athlete=athlete,team=team,statistics=raw)))
-        except (OSError,ValueError,KeyError,TypeError):
+        except (OSError,ValueError,KeyError,TypeError,AttributeError):
             missing.append(dict(name=player['name_jp'],reason='athlete_or_season_unconfirmed'))
     return dict(version=1,as_of=as_of,season=roster['season'],fixture=fixture,players=accepted,missing=missing,league_errors=failures)
 
@@ -161,7 +166,7 @@ def validate(sheet,roster,as_of):
             raise ValueError('今季集計の季が違います')
         if row['league_slug']!=slug or row['league_label']!=label or row['as_of']!=sheet['as_of']:
             raise ValueError('リーグ・取得時刻が違います')
-        stats_url(row['source'],slug,year,row['athlete_id'])
+        stats_url(row['source'],slug,year,row['athlete_id'],row['team_id'])
         if row['roster_source']!=f'{SITE}/{slug}/teams/{row["team_id"]}/roster?season={year}':
             raise ValueError('所属名簿の出典が違います')
         if row['teams_source']!=f'{SITE}/{slug}/teams?season={year}&limit=100':raise ValueError('リーグ名簿の出典が違います')
@@ -171,6 +176,8 @@ def validate(sheet,roster,as_of):
         if str(team['id'])!=row['team_id'] or club_id(team.get('displayName') or team.get('name'))!=club_id(CLUBS.get(p['club'],p['club'])):
             raise ValueError('所属クラブが一致しません')
         if values(evidence['statistics'])!=row['values'] or not row['values']:raise ValueError('今季の数字が元の応答と一致しません')
+        if 'appearances' not in row['values'] and (p['position']=='GK' or 'goals' not in row['values']):
+            raise ValueError('表示に使う出場数・得点がありません')
     return sheet
 
 
@@ -185,7 +192,10 @@ def attach(data,sheet):
 
 
 def check_attached(data):
-    if 'national_numbers' not in data:return
+    if 'national_numbers' not in data:
+        if any(p.get('season_numbers') is not None for p in data['players']):
+            raise ValueError('今季の数字の出典材料がありません')
+        return
     import soccer_national as n
     validate(data['national_numbers'],n.read(ROOT/'data/soccer_national_squad.json'),data['as_of'])
     expected={p['name']:p for p in data['national_numbers']['players']}
@@ -205,7 +215,12 @@ def metric(player):
 
 def featured(data):
     pool=[p for p in data['players'] if metric(p)]
-    return max(pool,key=lambda p:(metric(p)[0]=='goals',metric(p)[1])) if pool else None
+    return max(pool,key=rank) if pool else None
+
+
+def rank(player):
+    item=metric(player)
+    return (item[0]=='goals' and item[1]>0,item[1]) if item else (False,-1)
 
 
 def stat_line(player):
