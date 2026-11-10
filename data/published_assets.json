@@ -1867,6 +1867,62 @@
       "duration_seconds": 27.61,
       "short_information_count": 3,
       "short_content_policy": "short-content-20261027-v1"
+    },
+    "season_win_2026_684007_pitching": {
+      "video_id": "56b-pdfojwY",
+      "url": "https://youtu.be/56b-pdfojwY",
+      "privacy": "public",
+      "published_at": "2026-11-10T06:14:49.319046+00:00",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-10",
+        "enabled": true,
+        "assigned": "next",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false,
+        "source": "post_common.lineup:daily_soccer",
+        "next_date": "2026-11-11",
+        "next_time": "19:30",
+        "next_name": "欧州サッカー",
+        "speech": "次は11月11日19時30分の欧州サッカーです。また見に来てくださいね。",
+        "card": "次は11/11 19:30の欧州サッカー"
+      },
+      "player_ids": [
+        "684007"
+      ],
+      "publish_at": "2026-11-10T07:30:00Z",
+      "duration_seconds": 30.02,
+      "short_information_count": 3,
+      "short_content_policy": "short-content-20261027-v1"
+    },
+    "season_vs_2026_660271_hitting": {
+      "video_id": "gPYfGYnu5Rs",
+      "url": "https://youtu.be/gPYfGYnu5Rs",
+      "privacy": "public",
+      "published_at": "2026-11-10T06:17:56.485929+00:00",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-10",
+        "enabled": true,
+        "assigned": "next",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false,
+        "source": "post_common.lineup:daily_soccer",
+        "next_date": "2026-11-11",
+        "next_time": "19:30",
+        "next_name": "欧州サッカー",
+        "speech": "次は11月11日19時30分の欧州サッカーです。また見に来てくださいね。",
+        "card": "次は11/11 19:30の欧州サッカー"
+      },
+      "player_ids": [
+        "660271"
+      ],
+      "publish_at": "2026-11-10T13:00:00Z",
+      "duration_seconds": 27.0,
+      "short_information_count": 3,
+      "short_content_policy": "short-content-20261027-v1"
     }
   }
 }
