@@ -39,7 +39,13 @@
     "rbi": 34,
     "ops": ".718",
     "sb": 19,
-    "hits": 64
+    "hits": 64,
+    "wins": 12,
+    "losses": 4,
+    "era": "3.17",
+    "so": 198,
+    "ip": "190.0",
+    "whip": "1.22"
   },
   "this_season": {
     "games": 74,
@@ -48,9 +54,29 @@
     "rbi": 34,
     "ops": ".718",
     "sb": 19,
-    "hits": 64
+    "hits": 64,
+    "wins": 5,
+    "losses": 1,
+    "era": "1.83",
+    "so": 68,
+    "ip": "64.0",
+    "whip": "1.14"
   },
-  "last_season": {},
+  "last_season": {
+    "games": 55,
+    "avg": ".266",
+    "hr": 4,
+    "rbi": 26,
+    "ops": ".695",
+    "sb": 3,
+    "hits": 50,
+    "wins": 3,
+    "losses": 1,
+    "era": "3.98",
+    "so": 61,
+    "ip": "63.1",
+    "whip": "1.36"
+  },
   "recent": [
     {
       "date": "2026-09-27",
