@@ -726,7 +726,12 @@
       "score": 0,
       "game_type": "R",
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 0,
+        "away": 0,
+        "winner": "draw"
+      }
     },
     {
       "game_id": "558535",
@@ -788,7 +793,12 @@
           "text": "パルマ（昨季セリエA12位）とボローニャ（昨季セリエA8位）の対戦",
           "weight": 0
         }
-      ]
+      ],
+      "final_score": {
+        "home": 1,
+        "away": 2,
+        "winner": "away"
+      }
     },
     {
       "game_id": "560641",
@@ -850,7 +860,12 @@
           "text": "ノッティンガム・フォレスト（昨季プレミアリーグ16位）とマンチェスター・シティ（昨季プレミアリーグ2位）の対戦",
           "weight": 0
         }
-      ]
+      ],
+      "final_score": {
+        "home": 3,
+        "away": 1,
+        "winner": "home"
+      }
     },
     {
       "game_id": "564739",
@@ -907,7 +922,12 @@
           "text": "オサスナ（昨季ラ・リーガ16位）とアスレティック・ビルバオ（昨季ラ・リーガ12位）の対戦",
           "weight": 0
         }
-      ]
+      ],
+      "final_score": {
+        "home": 1,
+        "away": 1,
+        "winner": "draw"
+      }
     },
     {
       "game_id": "565849",
@@ -964,7 +984,12 @@
           "text": "シュツットガルト（昨季ブンデスリーガ4位）とブレーメン（昨季ブンデスリーガ15位）の対戦",
           "weight": 0
         }
-      ]
+      ],
+      "final_score": {
+        "home": 1,
+        "away": 0,
+        "winner": "home"
+      }
     },
     {
       "game_id": "559637",
@@ -1021,7 +1046,12 @@
           "text": "オセール（昨季リーグ・アン15位）とパリFC（昨季リーグ・アン11位）の対戦",
           "weight": 0
         }
-      ]
+      ],
+      "final_score": {
+        "home": 0,
+        "away": 1,
+        "winner": "away"
+      }
     },
     {
       "game_id": "558531",
