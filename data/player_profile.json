@@ -1,113 +1,95 @@
 {
-  "generated_at": "2026-11-10T06:01:01.970044+00:00",
-  "date_jst": "2026-11-10",
-  "name": "吉田正尚",
-  "player_id": "807799",
-  "team": "レッドソックス",
+  "generated_at": "2026-11-10T19:19:00.883580+00:00",
+  "date_jst": "2026-11-11",
+  "name": "Cooper Pratt",
+  "player_id": "806198",
+  "team": "ブリュワーズ",
   "group": "hitting",
-  "why": "順番",
-  "headline": "",
-  "score": null,
+  "why": "2026-10-29のMLBで最も活躍",
+  "headline": "3打数2安打　2打点",
+  "score": 76,
   "bio": {
-    "name_en": "Masataka Yoshida",
-    "age": 33,
-    "birth_city": "Fukui",
-    "birth_state": null,
-    "birth_country": "Japan",
-    "birth_date": "1993-07-15",
-    "debut": "2023-03-30",
-    "draft_year": null,
-    "bats": "Left",
+    "name_en": "Cooper Pratt",
+    "age": 22,
+    "birth_city": "Hialeah",
+    "birth_state": "FL",
+    "birth_country": "USA",
+    "birth_date": "2004-08-18",
+    "debut": "2026-06-16",
+    "draft_year": 2023,
+    "bats": "Right",
     "throws": "Right",
-    "number": "7",
-    "position": "Designated Hitter",
+    "number": "12",
+    "position": "Shortstop",
     "nickname": null,
-    "height": "5' 8\"",
-    "weight": 192
+    "height": "6' 4\"",
+    "weight": 210
   },
   "teams": [
     {
-      "team": "レッドソックス",
-      "from": 2023,
+      "team": "ブリュワーズ",
+      "from": 2026,
       "to": 2026
     }
   ],
   "career": {
-    "games": 390,
-    "avg": ".280",
-    "hr": 34,
-    "rbi": 182,
-    "ops": ".759",
-    "sb": 15,
-    "hits": 383,
-    "wins": 12,
-    "losses": 4,
-    "era": "3.17",
-    "so": 198,
-    "ip": "190.0",
-    "whip": "1.22"
+    "games": 74,
+    "avg": ".281",
+    "hr": 3,
+    "rbi": 34,
+    "ops": ".718",
+    "sb": 19,
+    "hits": 64
   },
   "this_season": {
-    "games": 87,
-    "avg": ".274",
-    "hr": 5,
-    "rbi": 28,
-    "ops": ".746",
-    "sb": 2,
-    "hits": 72,
-    "wins": 5,
-    "losses": 1,
-    "era": "1.83",
-    "so": 68,
-    "ip": "64.0",
-    "whip": "1.14"
+    "games": 74,
+    "avg": ".281",
+    "hr": 3,
+    "rbi": 34,
+    "ops": ".718",
+    "sb": 19,
+    "hits": 64
   },
-  "last_season": {
-    "games": 55,
-    "avg": ".266",
-    "hr": 4,
-    "rbi": 26,
-    "ops": ".695",
-    "sb": 3,
-    "hits": 50,
-    "wins": 3,
-    "losses": 1,
-    "era": "3.98",
-    "so": 61,
-    "ip": "63.1",
-    "whip": "1.36"
-  },
+  "last_season": {},
   "recent": [
     {
-      "date": "2026-08-15",
-      "line": "2打数1安打",
-      "opponent": "Pittsburgh Pirates"
+      "date": "2026-09-27",
+      "line": "4打数1安打",
+      "opponent": "St. Louis Cardinals"
     },
     {
-      "date": "2026-08-14",
-      "line": "5打数2安打 1打点",
-      "opponent": "Pittsburgh Pirates"
+      "date": "2026-09-26",
+      "line": "3打数1安打",
+      "opponent": "St. Louis Cardinals"
     },
     {
-      "date": "2026-08-13",
+      "date": "2026-09-25",
+      "line": "1打数0安打",
+      "opponent": "St. Louis Cardinals"
+    },
+    {
+      "date": "2026-09-24",
       "line": "3打数2安打 1打点",
-      "opponent": "Toronto Blue Jays"
+      "opponent": "Philadelphia Phillies"
     },
     {
-      "date": "2026-08-12",
+      "date": "2026-09-22",
       "line": "4打数0安打",
-      "opponent": "Toronto Blue Jays"
-    },
-    {
-      "date": "2026-08-11",
-      "line": "5打数1安打",
-      "opponent": "Toronto Blue Jays"
+      "opponent": "Philadelphia Phillies"
     }
   ],
   "awards": [
     {
-      "season": "2023",
-      "name": "AL Player of the Week"
+      "season": "2026",
+      "name": "World Series Championship"
+    },
+    {
+      "season": "2024",
+      "name": "Rawlings MiLB Gold Glove"
+    },
+    {
+      "season": "2024",
+      "name": "CAR Post-Season All-Star"
     }
   ],
   "quotes": []

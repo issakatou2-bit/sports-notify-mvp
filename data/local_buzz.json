@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-10T06:01:57.850990+00:00",
+  "updated_at": "2026-11-10T19:19:49.078517+00:00",
   "sources": [
     {
       "name": "MLB公式",
@@ -9,12 +9,28 @@
   "titles_count": 25,
   "teams": [
     {
+      "team_id": "143",
+      "name": "フィリーズ",
+      "name_en": "Philadelphia Phillies",
+      "mentions": 2,
+      "tone": "話題",
+      "gist": "フィリーズ、Acuña・Seager・deGrom獲得の噂と"
+    },
+    {
       "team_id": "116",
       "name": "タイガース",
       "name_en": "Detroit Tigers",
       "mentions": 2,
       "tone": "好調",
-      "gist": "マクゴニグルが新人王、デトロイトに栄誉"
+      "gist": "McGonigleが新人王、タイガースに栄誉"
+    },
+    {
+      "team_id": "135",
+      "name": "パドレス",
+      "name_en": "San Diego Padres",
+      "mentions": 2,
+      "tone": "話題",
+      "gist": "パドレス、Skubal・Seiya獲得の噂と動く補強期"
     },
     {
       "team_id": "141",
@@ -22,23 +38,7 @@
       "name_en": "Toronto Blue Jays",
       "mentions": 1,
       "tone": "話題",
-      "gist": "ブルージェイズ、クレメントから二塁強化を模索か"
-    },
-    {
-      "team_id": "143",
-      "name": "フィリーズ",
-      "name_en": "Philadelphia Phillies",
-      "mentions": 1,
-      "tone": "話題",
-      "gist": "フィリーズ、アクーニャらの補強噂が浮上"
-    },
-    {
-      "team_id": "119",
-      "name": "ドジャース",
-      "name_en": "Los Angeles Dodgers",
-      "mentions": 1,
-      "tone": "話題",
-      "gist": "ドジャースの外野手有望株、二塁を学び直し"
+      "gist": "ブルージェイズ、Clementから2B補強検討か"
     },
     {
       "team_id": "147",
@@ -46,15 +46,15 @@
       "name_en": "New York Yankees",
       "mentions": 1,
       "tone": "話題",
-      "gist": "ベドナー FAでヤンキースの抑え候補を整理"
+      "gist": "Bednar FAで2027年のヤンキース守護神は誰か"
     },
     {
-      "team_id": "144",
-      "name": "ブレーブス",
-      "name_en": "Atlanta Braves",
+      "team_id": "111",
+      "name": "レッドソックス",
+      "name_en": "Boston Red Sox",
       "mentions": 1,
       "tone": "話題",
-      "gist": "ブレーブス、GM会議に持ち込む4つの話題"
+      "gist": "Breslow、遊撃手の選択肢を広く残す"
     },
     {
       "team_id": "113",
@@ -62,15 +62,7 @@
       "name_en": "Cincinnati Reds",
       "mentions": 1,
       "tone": "好調",
-      "gist": "レッズの強打者が新人王を受賞"
-    },
-    {
-      "team_id": "121",
-      "name": "メッツ",
-      "name_en": "New York Mets",
-      "mentions": 1,
-      "tone": "話題",
-      "gist": "メッツがGM会議で取り組みうる課題"
+      "gist": "レッズの強打者が新人王に選出"
     }
   ],
   "players": []
