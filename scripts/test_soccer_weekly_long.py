@@ -219,6 +219,11 @@ class WeeklyTests(unittest.TestCase):
         w.check_public_names('次はマンチェスターU、その次はボルシアMGとハンブルガーSVです。')
         with self.assertRaisesRegex(ValueError, 'Manchester'):
             w.check_public_names('次はManchester United')
+        # 表に英字だけで載せた名前（PSV 等）も止めない（11/9 15時の長編が「PSV」で止まった）。
+        self.assertEqual(w.club_label('PSV'), 'PSV')
+        w.check_public_names('佐野航大のPSVは、次はAZと当たります。')
+        with self.assertRaisesRegex(ValueError, 'PSVX'):
+            w.check_public_names('次はPSVXです。')
         bad = copy.deepcopy(self.nights)
         bad[0]['games'][0]['away']['name_jp'] = 'Mystery FC'
         with self.assertRaisesRegex(ValueError, '英字'):
