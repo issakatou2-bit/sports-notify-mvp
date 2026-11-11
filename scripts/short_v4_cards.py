@@ -122,6 +122,12 @@ def panel(im, box, fill=None, outline=None):
     if not (L <= box[0] < box[2] <= R and r3.CONTENT_TOP <= box[1] < box[3] <= r3.CONTENT_BOTTOM):
         raise ValueError('v4の札が安全域外です: '+str(box))
     d=ImageDraw.Draw(im);x,y,right,bottom=box
+    if r3.STYLE_V2 and fill is None:
+        # 新しい見た目：地より一段明るい札。影・枠・金の短い線を付けず、上辺だけ細い光
+        d.rectangle(box,fill=(16,28,56))
+        d.line((x,y,right,y),fill=outline or (52,66,100),width=2)
+        r3.record_box(im, 'card', box)
+        return
     d.rounded_rectangle(box,radius=22,fill=(5,12,20))
     d.rounded_rectangle((x,y,right-2,bottom-4),radius=22,fill=fill or r3.colors(None)[0],
                         outline=outline or r3.colors(None)[1],width=2)

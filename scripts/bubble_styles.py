@@ -10,6 +10,10 @@ import review_render_v3 as r3
 
 WHITE = (255, 255, 255)
 GOLD = (255, 210, 90)
+# 新しい見た目（COLLESPO_STYLE=v2、scripts/style_v2.py）：字幕は暗い半透明の真っ直ぐな帯、数字は黄1色
+STYLE_V2 = os.environ.get('COLLESPO_STYLE') == 'v2'
+if STYLE_V2:
+    GOLD = (214, 250, 70)
 SHADOW = (15, 18, 24)
 
 
@@ -167,6 +171,7 @@ def draw(im, speaker, text, *, style=None, variant=None, seconds=None, box=None,
     variant = variant or (slant_by_episode.slant_variant(episode) if style=='slant' else 'glass')
     variant = {'a':'dark','b':'band','c':'glass'}.get(variant,variant)
     if style=='slant' and variant not in ('cream','dark','band','glass'):variant='cream'
+    if STYLE_V2 and style=='slant':variant='dark'
     box = box or geometry();x0,y0,x1,y1 = box
     if seconds is None:seconds = r3._PROGRAM_CLOCK[0] or 0
     color = c.COLORS[speaker]
@@ -185,10 +190,12 @@ def draw(im, speaker, text, *, style=None, variant=None, seconds=None, box=None,
             ImageDraw.Draw(base).polygon([(x0+34,y0),(x1,y0),(x1-34,y1),(x0,y1)],outline=(210,225,222,180),width=2)
     elif variant=='dark':
         blurred=base.filter(ImageFilter.GaussianBlur(5))
-        tint=Image.new('RGBA',base.size,(20,28,38,205));blurred.alpha_composite(tint)
+        tint=Image.new('RGBA',base.size,(4,8,18,205) if STYLE_V2 else (20,28,38,205));blurred.alpha_composite(tint)
         mask=Image.new('L',base.size)
-        ImageDraw.Draw(mask).polygon([(x0+34,y0),(x1,y0),(x1-34,y1),(x0,y1)],fill=255)
+        k=0 if STYLE_V2 else 34
+        ImageDraw.Draw(mask).polygon([(x0+k,y0),(x1,y0),(x1-k,y1),(x0,y1)],fill=255)
         base=Image.composite(blurred,base,mask)
+
     else:
         k = 34
         poly = [(x0+k,y0),(x1,y0),(x1-k,y1),(x0,y1)]
@@ -215,12 +222,16 @@ def draw(im, speaker, text, *, style=None, variant=None, seconds=None, box=None,
     d = ImageDraw.Draw(base); f = r3.font(28); w = d.textlength(c.NAMES[speaker],font=f)+56
     name_ink=max((WHITE,SHADOW),key=lambda ink:float(contrast(ink,color)))
     name_ratio=float(contrast(name_ink,color))
-    if style == 'slant':
+    if style == 'slant' and STYLE_V2:
+        # 新しい見た目：名前の札を置かない（Argon 11/11「ピンクの座布団が浮く」）。立ち絵で誰か分かる。
+        pass
+    elif style == 'slant':
         if variant=='band':
             d.polygon([(x0+30,y0-12),(x1+0,y0-12),(x1-8,y0+32),(x0+22,y0+32)],fill=color)
             d.text((x0+92,y0+10),c.NAMES[speaker],font=f,fill=name_ink,anchor='lm')
         else:
-            d.polygon([(x0+74,y0-24),(x0+74+w,y0-24),(x0+60+w,y0+24),(x0+60,y0+24)],fill=color)
+            k=0 if STYLE_V2 else 14
+            d.polygon([(x0+60+k,y0-24),(x0+60+k+w,y0-24),(x0+60+w,y0+24),(x0+60,y0+24)],fill=color)
             d.text((x0+67+w/2,y0),c.NAMES[speaker],font=f,fill=name_ink,anchor='mm')
     else:
         base = liquid_glass.liquid_glass(base,(x0+30,y0-24,x0+30+int(w),y0+24),radius=20,
