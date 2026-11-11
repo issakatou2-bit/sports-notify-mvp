@@ -1,8 +1,9 @@
 {
-  "day": "2026-11-10",
+  "day": "2026-11-11",
+  "state": "ready",
   "topics": [
     {
-      "key": "offseason_schedule_2026_b49cef96a397",
+      "key": "offseason_schedule_2026_7da499181e39",
       "label": "MLBオフの主な予定",
       "heading": "MLBオフの主な予定",
       "kind_label": "MLB",
@@ -24,11 +25,19 @@
         [
           "11月12日｜MVP",
           "11月12日、BBWAAのMVPが発表される予定です"
+        ],
+        [
+          "11月17日｜シルバースラッガー",
+          "11月17日、シルバースラッガー賞が発表される予定です"
+        ],
+        [
+          "11月17日｜QO受諾期限",
+          "11月17日、クオリファイングオファーを受諾する期限です"
         ]
       ],
       "offseason": {
         "kind": "schedule",
-        "day": "2026-11-10",
+        "day": "2026-11-11",
         "season": 2026,
         "events": [
           {
@@ -51,6 +60,28 @@
             "event_id": "calendar:mvp",
             "head": "11月12日｜MVP",
             "body": "11月12日、BBWAAのMVPが発表される予定です",
+            "japanese": false
+          },
+          {
+            "id": "silver",
+            "date_et": "2026-11-17",
+            "label": "シルバースラッガー",
+            "text": "シルバースラッガー賞が発表される予定です",
+            "source": "https://www.mlb.com/news/phillies-key-offseason-dates-2026-2027",
+            "event_id": "calendar:silver",
+            "head": "11月17日｜シルバースラッガー",
+            "body": "11月17日、シルバースラッガー賞が発表される予定です",
+            "japanese": false
+          },
+          {
+            "id": "qo-accept",
+            "date_et": "2026-11-17",
+            "label": "QO受諾期限",
+            "text": "クオリファイングオファーを受諾する期限です",
+            "source": "https://www.mlb.com/news/braves-key-offseason-dates-2026-2027",
+            "event_id": "calendar:qo-accept",
+            "head": "11月17日｜QO受諾期限",
+            "body": "11月17日、クオリファイングオファーを受諾する期限です",
             "japanese": false
           }
         ]
@@ -83,7 +114,7 @@
       ],
       "offseason": {
         "kind": "awards",
-        "day": "2026-11-10",
+        "day": "2026-11-11",
         "season": 2026,
         "events": [
           {
@@ -149,6 +180,5 @@
         ]
       }
     }
-  ],
-  "state": "ready"
+  ]
 }

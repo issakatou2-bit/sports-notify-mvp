@@ -1923,6 +1923,28 @@
       "duration_seconds": 27.0,
       "short_information_count": 3,
       "short_content_policy": "short-content-20261027-v1"
+    },
+    "offseason_schedule_2026_7da499181e39": {
+      "video_id": "yKMf_ZIGwxE",
+      "url": "https://youtu.be/yKMf_ZIGwxE",
+      "privacy": "public",
+      "published_at": "2026-11-11T06:11:08.023001+00:00",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-11",
+        "enabled": true,
+        "assigned": "generic",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false,
+        "source": "post_common.lineup:daily_soccer",
+        "next_date": "2026-11-12",
+        "next_time": "19:30",
+        "next_name": "欧州サッカー"
+      },
+      "duration_seconds": 27.78,
+      "short_information_count": 4,
+      "short_content_policy": "short-content-20261027-v1"
     }
   }
 }

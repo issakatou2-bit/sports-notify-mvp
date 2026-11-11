@@ -1,0 +1,49 @@
+{
+  "publication_id": "asset:topic:offseason_schedule_2026_7da499181e39",
+  "domain": "asset",
+  "kind": "topic",
+  "key_parts": {
+    "topic": "offseason_schedule_2026_7da499181e39"
+  },
+  "version": 1,
+  "history": [
+    {
+      "source": "published_assets/assets/offseason_schedule_2026_7da499181e39",
+      "service": "youtube",
+      "video_id": "yKMf_ZIGwxE",
+      "state": "uploaded",
+      "scheduled_at": null,
+      "event_day": null,
+      "material_day": null,
+      "edition_day": null,
+      "run_at": "2026-11-11T06:11:08.023001+00:00",
+      "details": {
+        "privacy": "public"
+      },
+      "run_id": "42969770656",
+      "attempt": "1",
+      "recorded_at": "2026-11-11T06:11:08.025541+00:00",
+      "fingerprint": "e3b483a6d7efef22250342d897215f2ab28a970e0495bc8aa8cebd91ce2e6f4e",
+      "event_id": "7c801741ef182ca750e75951e394c1cb880db393d807c200b49d77f7373a770b"
+    },
+    {
+      "source": "published_videos/asset/offseason_schedule_2026_7da499181e39",
+      "service": "youtube",
+      "video_id": "yKMf_ZIGwxE",
+      "state": "scheduled",
+      "scheduled_at": "2026-11-11T13:30:00Z",
+      "event_day": null,
+      "material_day": null,
+      "edition_day": "2026-11-11",
+      "run_at": "2026-11-11T06:11:08.035387+00:00",
+      "details": {
+        "privacy": "public"
+      },
+      "run_id": "42969770656",
+      "attempt": "1",
+      "recorded_at": "2026-11-11T06:11:08.052429+00:00",
+      "fingerprint": "fe9659a6dc73f3be70918d7300628336f9a27dfc31bbaa22a04503f3b40e2d80",
+      "event_id": "6dcd262f278383ac6c1b5ccbabd69deec919111a57bc2851e25d9f4cfde8debc"
+    }
+  ]
+}

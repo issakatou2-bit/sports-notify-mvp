@@ -22095,6 +22095,51 @@
       },
       "host_fallback_reason": null,
       "privacy": "public"
+    },
+    "offseason_schedule_2026_7da499181e39": {
+      "video_id": "yKMf_ZIGwxE",
+      "url": "https://youtu.be/yKMf_ZIGwxE",
+      "title": "【MLB】MLBオフの主な予定 #Shorts",
+      "published_at": "2026-11-11T06:11:08.035387+00:00",
+      "publish_at": "2026-11-11T13:30:00Z",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-11",
+        "enabled": true,
+        "assigned": "generic",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false,
+        "source": "post_common.lineup:daily_soccer",
+        "next_date": "2026-11-12",
+        "next_time": "19:30",
+        "next_name": "欧州サッカー"
+      },
+      "duration_seconds": 27.78,
+      "short_information_count": 4,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-11-11",
+        "kind": "asset:offseason",
+        "phase": 1,
+        "planned_host": "ui",
+        "rule": "half-jst-week-v1",
+        "week": 44,
+        "weekday": 2
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-11-11T06:09:19.843392+00:00",
+        "comparison_eligible": false,
+        "label": "予定めたん（雨衣不可のため）",
+        "mode": "live",
+        "planned_host": "metan",
+        "reason": "ui_worker_stale",
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
     }
   },
   "soccer_results": {
