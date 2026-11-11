@@ -1,6 +1,2997 @@
 {
   "generated_at": "2026-11-11T09:53:43.294003+00:00",
-  "games": [],
+  "games": [
+    {
+      "game_id": "espn-401928506",
+      "espn_event_id": "401928506",
+      "competition_code": "CDR",
+      "league": "コパ・デル・レイ",
+      "start_time_utc": "2026-11-12T17:30:00+00:00",
+      "start_time_jst": "11/13 02:30",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/esp.copa_del_rey/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Calvo Sotelo",
+      "home_team_id": "espn-21291",
+      "away_team_name": "Albacete",
+      "away_team_id": "espn-2737",
+      "espn_team_ids": {
+        "home": "espn-21291",
+        "away": "espn-2737"
+      },
+      "phase": "knockout",
+      "phase_source": "first round",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401928551",
+      "espn_event_id": "401928551",
+      "competition_code": "CDR",
+      "league": "コパ・デル・レイ",
+      "start_time_utc": "2026-11-12T18:00:00+00:00",
+      "start_time_jst": "11/13 03:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/esp.copa_del_rey/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "CD Artistico Navalcarnero",
+      "home_team_id": "espn-19288",
+      "away_team_name": "Real Betis Balompié",
+      "away_team_id": "espn-244",
+      "espn_team_ids": {
+        "home": "espn-19288",
+        "away": "espn-244"
+      },
+      "phase": "knockout",
+      "phase_source": "first round",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401928527",
+      "espn_event_id": "401928527",
+      "competition_code": "CDR",
+      "league": "コパ・デル・レイ",
+      "start_time_utc": "2026-11-12T18:00:00+00:00",
+      "start_time_jst": "11/13 03:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/esp.copa_del_rey/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "CD Tarancon",
+      "home_team_id": "espn-133837",
+      "away_team_name": "Levante UD",
+      "away_team_id": "espn-1538",
+      "espn_team_ids": {
+        "home": "espn-133837",
+        "away": "espn-1538"
+      },
+      "phase": "knockout",
+      "phase_source": "first round",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401928487",
+      "espn_event_id": "401928487",
+      "competition_code": "CDR",
+      "league": "コパ・デル・レイ",
+      "start_time_utc": "2026-11-13T20:00:00+00:00",
+      "start_time_jst": "11/14 05:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/esp.copa_del_rey/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Salamanca UDS",
+      "home_team_id": "espn-22440",
+      "away_team_name": "RC Celta de Vigo",
+      "away_team_id": "espn-85",
+      "espn_team_ids": {
+        "home": "espn-22440",
+        "away": "espn-85"
+      },
+      "phase": "knockout",
+      "phase_source": "first round",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401928518",
+      "espn_event_id": "401928518",
+      "competition_code": "CDR",
+      "league": "コパ・デル・レイ",
+      "start_time_utc": "2026-11-18T18:00:00+00:00",
+      "start_time_jst": "11/19 03:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/esp.copa_del_rey/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Portugalete",
+      "home_team_id": "espn-5464",
+      "away_team_name": "Real Unión Irun",
+      "away_team_id": "espn-8678",
+      "espn_team_ids": {
+        "home": "espn-5464",
+        "away": "espn-8678"
+      },
+      "phase": "knockout",
+      "phase_source": "first round",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401928497",
+      "espn_event_id": "401928497",
+      "competition_code": "CDR",
+      "league": "コパ・デル・レイ",
+      "start_time_utc": "2026-11-18T18:00:00+00:00",
+      "start_time_jst": "11/19 03:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/esp.copa_del_rey/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Utebo",
+      "home_team_id": "espn-21723",
+      "away_team_name": "CD Sabadell",
+      "away_team_id": "espn-11487",
+      "espn_team_ids": {
+        "home": "espn-21723",
+        "away": "espn-11487"
+      },
+      "phase": "knockout",
+      "phase_source": "first round",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401928505",
+      "espn_event_id": "401928505",
+      "competition_code": "CDR",
+      "league": "コパ・デル・レイ",
+      "start_time_utc": "2026-11-18T19:00:00+00:00",
+      "start_time_jst": "11/19 04:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/esp.copa_del_rey/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Alcoyano",
+      "home_team_id": "espn-6827",
+      "away_team_name": "Mallorca",
+      "away_team_id": "espn-84",
+      "espn_team_ids": {
+        "home": "espn-6827",
+        "away": "espn-84"
+      },
+      "phase": "knockout",
+      "phase_source": "first round",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401928532",
+      "espn_event_id": "401928532",
+      "competition_code": "CDR",
+      "league": "コパ・デル・レイ",
+      "start_time_utc": "2026-11-18T19:00:00+00:00",
+      "start_time_jst": "11/19 04:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/esp.copa_del_rey/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Badajoz",
+      "home_team_id": "espn-5535",
+      "away_team_name": "Tenerife",
+      "away_team_id": "espn-245",
+      "espn_team_ids": {
+        "home": "espn-5535",
+        "away": "espn-245"
+      },
+      "phase": "knockout",
+      "phase_source": "first round",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401928524",
+      "espn_event_id": "401928524",
+      "competition_code": "CDR",
+      "league": "コパ・デル・レイ",
+      "start_time_utc": "2026-11-18T19:30:00+00:00",
+      "start_time_jst": "11/19 04:30",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/esp.copa_del_rey/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "CD Minera",
+      "home_team_id": "espn-22437",
+      "away_team_name": "FC Cartagena",
+      "away_team_id": "espn-5419",
+      "espn_team_ids": {
+        "home": "espn-22437",
+        "away": "espn-5419"
+      },
+      "phase": "knockout",
+      "phase_source": "first round",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401928500",
+      "espn_event_id": "401928500",
+      "competition_code": "CDR",
+      "league": "コパ・デル・レイ",
+      "start_time_utc": "2026-11-18T19:30:00+00:00",
+      "start_time_jst": "11/19 04:30",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/esp.copa_del_rey/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Reus FC Reddis",
+      "home_team_id": "espn-131470",
+      "away_team_name": "Barakaldo",
+      "away_team_id": "espn-5421",
+      "espn_team_ids": {
+        "home": "espn-131470",
+        "away": "espn-5421"
+      },
+      "phase": "knockout",
+      "phase_source": "first round",
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932846",
+      "espn_event_id": "401932846",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-12T18:00:00+00:00",
+      "start_time_jst": "11/13 03:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Chambéry Savoie",
+      "home_team_id": "espn-134117",
+      "away_team_name": "Grenoble",
+      "away_team_id": "espn-6994",
+      "espn_team_ids": {
+        "home": "espn-134117",
+        "away": "espn-6994"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932838",
+      "espn_event_id": "401932838",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-13T19:00:00+00:00",
+      "start_time_jst": "11/14 04:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Dijon FCO",
+      "home_team_id": "espn-3170",
+      "away_team_name": "Orléans",
+      "away_team_id": "espn-17483",
+      "espn_team_ids": {
+        "home": "espn-3170",
+        "away": "espn-17483"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932841",
+      "espn_event_id": "401932841",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-13T19:00:00+00:00",
+      "start_time_jst": "11/14 04:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Neuvillette-Jamin",
+      "home_team_id": "espn-134079",
+      "away_team_name": "Valenciennes",
+      "away_team_id": "espn-6732",
+      "espn_team_ids": {
+        "home": "espn-134079",
+        "away": "espn-6732"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932845",
+      "espn_event_id": "401932845",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-13T19:00:00+00:00",
+      "start_time_jst": "11/14 04:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "US Saint-Philbert-de-Grand-Lieu",
+      "home_team_id": "espn-22476",
+      "away_team_name": "La Roche-sur-Yon",
+      "away_team_id": "espn-16917",
+      "espn_team_ids": {
+        "home": "espn-22476",
+        "away": "espn-16917"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932858",
+      "espn_event_id": "401932858",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-14T13:00:00+00:00",
+      "start_time_jst": "11/14 22:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Balagne",
+      "home_team_id": "espn-134128",
+      "away_team_name": "Montpellier",
+      "away_team_id": "espn-274",
+      "espn_team_ids": {
+        "home": "espn-134128",
+        "away": "espn-274"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932857",
+      "espn_event_id": "401932857",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-14T13:00:00+00:00",
+      "start_time_jst": "11/14 22:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Le Puy",
+      "home_team_id": "espn-18906",
+      "away_team_name": "Diables Noirs",
+      "away_team_id": "espn-21804",
+      "espn_team_ids": {
+        "home": "espn-18906",
+        "away": "espn-21804"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401933096",
+      "espn_event_id": "401933096",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-14T13:00:00+00:00",
+      "start_time_jst": "11/14 22:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Saint-Pauloise FC",
+      "home_team_id": "espn-134138",
+      "away_team_name": "La Tamponnaise",
+      "away_team_id": "espn-21769",
+      "espn_team_ids": {
+        "home": "espn-134138",
+        "away": "espn-21769"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932840",
+      "espn_event_id": "401932840",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-14T13:00:00+00:00",
+      "start_time_jst": "11/14 22:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Tourcoing",
+      "home_team_id": "espn-134109",
+      "away_team_name": "Stade de Reims",
+      "away_team_id": "espn-3243",
+      "espn_team_ids": {
+        "home": "espn-134109",
+        "away": "espn-3243"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932856",
+      "espn_event_id": "401932856",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-14T13:00:00+00:00",
+      "start_time_jst": "11/14 22:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Versailles 78",
+      "home_team_id": "espn-10675",
+      "away_team_name": "Rodez Aveyron",
+      "away_team_id": "espn-7719",
+      "espn_team_ids": {
+        "home": "espn-10675",
+        "away": "espn-7719"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932843",
+      "espn_event_id": "401932843",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-14T13:30:00+00:00",
+      "start_time_jst": "11/14 22:30",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "CA Boulay",
+      "home_team_id": "espn-134069",
+      "away_team_name": "Sochaux",
+      "away_team_id": "espn-272",
+      "espn_team_ids": {
+        "home": "espn-134069",
+        "away": "espn-272"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932776",
+      "espn_event_id": "401932776",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-14T14:00:00+00:00",
+      "start_time_jst": "11/14 23:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Rhone Crussol Foot",
+      "home_team_id": "espn-134153",
+      "away_team_name": "Frejus",
+      "away_team_id": "espn-9021",
+      "espn_team_ids": {
+        "home": "espn-134153",
+        "away": "espn-9021"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932836",
+      "espn_event_id": "401932836",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-14T15:00:00+00:00",
+      "start_time_jst": "11/15 00:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Chalon-sur-Saone",
+      "home_team_id": "espn-134147",
+      "away_team_name": "Hauts Lyonnais",
+      "away_team_id": "espn-18101",
+      "espn_team_ids": {
+        "home": "espn-134147",
+        "away": "espn-18101"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932777",
+      "espn_event_id": "401932777",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-14T15:00:00+00:00",
+      "start_time_jst": "11/15 00:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Choisy Au Bac",
+      "home_team_id": "espn-134091",
+      "away_team_name": "Caen",
+      "away_team_id": "espn-2927",
+      "espn_team_ids": {
+        "home": "espn-134091",
+        "away": "espn-2927"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932833",
+      "espn_event_id": "401932833",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-14T15:00:00+00:00",
+      "start_time_jst": "11/15 00:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Fontenay Foot",
+      "home_team_id": "espn-11313",
+      "away_team_name": "Clermont Foot",
+      "away_team_id": "espn-3171",
+      "espn_team_ids": {
+        "home": "espn-11313",
+        "away": "espn-3171"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932778",
+      "espn_event_id": "401932778",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-14T16:00:00+00:00",
+      "start_time_jst": "11/15 01:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Firminy",
+      "home_team_id": "espn-134108",
+      "away_team_name": "Annecy",
+      "away_team_id": "espn-18066",
+      "espn_team_ids": {
+        "home": "espn-134108",
+        "away": "espn-18066"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932832",
+      "espn_event_id": "401932832",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-14T16:00:00+00:00",
+      "start_time_jst": "11/15 01:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "IC Croix",
+      "home_team_id": "espn-16916",
+      "away_team_name": "ES Thaon",
+      "away_team_id": "espn-21303",
+      "espn_team_ids": {
+        "home": "espn-16916",
+        "away": "espn-21303"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932803",
+      "espn_event_id": "401932803",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-14T16:00:00+00:00",
+      "start_time_jst": "11/15 01:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Le Poire SV",
+      "home_team_id": "espn-9024",
+      "away_team_name": "Vertou",
+      "away_team_id": "espn-11303",
+      "espn_team_ids": {
+        "home": "espn-9024",
+        "away": "espn-11303"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932834",
+      "espn_event_id": "401932834",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-14T16:00:00+00:00",
+      "start_time_jst": "11/15 01:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Pont-de-Cheruy",
+      "home_team_id": "espn-134146",
+      "away_team_name": "Bourg-Peronnas",
+      "away_team_id": "espn-11895",
+      "espn_team_ids": {
+        "home": "espn-134146",
+        "away": "espn-11895"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932758",
+      "espn_event_id": "401932758",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-14T16:00:00+00:00",
+      "start_time_jst": "11/15 01:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Saint Sebastien",
+      "home_team_id": "espn-134152",
+      "away_team_name": "La Baule-Le Pouliguen",
+      "away_team_id": "espn-134121",
+      "espn_team_ids": {
+        "home": "espn-134152",
+        "away": "espn-134121"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932844",
+      "espn_event_id": "401932844",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-14T16:00:00+00:00",
+      "start_time_jst": "11/15 01:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Tinteniac St Domineuc",
+      "home_team_id": "espn-134125",
+      "away_team_name": "Concarneau",
+      "away_team_id": "espn-7718",
+      "espn_team_ids": {
+        "home": "espn-134125",
+        "away": "espn-7718"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932757",
+      "espn_event_id": "401932757",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-14T16:30:00+00:00",
+      "start_time_jst": "11/15 01:30",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Koetzingue",
+      "home_team_id": "espn-134088",
+      "away_team_name": "Biesheim",
+      "away_team_id": "espn-18901",
+      "espn_team_ids": {
+        "home": "espn-134088",
+        "away": "espn-18901"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932802",
+      "espn_event_id": "401932802",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-14T17:00:00+00:00",
+      "start_time_jst": "11/15 02:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Amneville",
+      "home_team_id": "espn-7725",
+      "away_team_name": "Sundhoffen",
+      "away_team_id": "espn-134097",
+      "espn_team_ids": {
+        "home": "espn-7725",
+        "away": "espn-134097"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932822",
+      "espn_event_id": "401932822",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-14T17:00:00+00:00",
+      "start_time_jst": "11/15 02:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Asptt Dijon",
+      "home_team_id": "espn-134090",
+      "away_team_name": "Selongey",
+      "away_team_id": "espn-9011",
+      "espn_team_ids": {
+        "home": "espn-134090",
+        "away": "espn-9011"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932768",
+      "espn_event_id": "401932768",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-14T17:00:00+00:00",
+      "start_time_jst": "11/15 02:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Caen",
+      "home_team_id": "espn-2927",
+      "away_team_name": "FC Chambly",
+      "away_team_id": "espn-11880",
+      "espn_team_ids": {
+        "home": "espn-2927",
+        "away": "espn-11880"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932808",
+      "espn_event_id": "401932808",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-14T17:00:00+00:00",
+      "start_time_jst": "11/15 02:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Contres",
+      "home_team_id": "espn-134080",
+      "away_team_name": "ESA Linas-Montlhery",
+      "away_team_id": "espn-20275",
+      "espn_team_ids": {
+        "home": "espn-134080",
+        "away": "espn-20275"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932738",
+      "espn_event_id": "401932738",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-14T17:00:00+00:00",
+      "start_time_jst": "11/15 02:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Cournon",
+      "home_team_id": "espn-134134",
+      "away_team_name": "Chassieu Declines FC",
+      "away_team_id": "espn-134063",
+      "espn_team_ids": {
+        "home": "espn-134134",
+        "away": "espn-134063"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932839",
+      "espn_event_id": "401932839",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-14T17:00:00+00:00",
+      "start_time_jst": "11/15 02:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Dunkerque",
+      "home_team_id": "espn-7732",
+      "away_team_name": "US Quevilly",
+      "away_team_id": "espn-7721",
+      "espn_team_ids": {
+        "home": "espn-7732",
+        "away": "espn-7721"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932737",
+      "espn_event_id": "401932737",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-14T17:00:00+00:00",
+      "start_time_jst": "11/15 02:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Grau-Du-Roi",
+      "home_team_id": "espn-134127",
+      "away_team_name": "Riviera",
+      "away_team_id": "espn-134135",
+      "espn_team_ids": {
+        "home": "espn-134127",
+        "away": "espn-134135"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932835",
+      "espn_event_id": "401932835",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-14T17:00:00+00:00",
+      "start_time_jst": "11/15 02:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "GSI Pontivy",
+      "home_team_id": "espn-19393",
+      "away_team_name": "Rennes TA",
+      "away_team_id": "espn-10677",
+      "espn_team_ids": {
+        "home": "espn-19393",
+        "away": "espn-10677"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932829",
+      "espn_event_id": "401932829",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-14T17:00:00+00:00",
+      "start_time_jst": "11/15 02:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Le Touquet",
+      "home_team_id": "espn-134126",
+      "away_team_name": "Avranches",
+      "away_team_id": "espn-9017",
+      "espn_team_ids": {
+        "home": "espn-134126",
+        "away": "espn-9017"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932740",
+      "espn_event_id": "401932740",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-14T17:00:00+00:00",
+      "start_time_jst": "11/15 02:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Lyon-la-Duchere",
+      "home_team_id": "espn-134150",
+      "away_team_name": "US Feurs",
+      "away_team_id": "espn-22138",
+      "espn_team_ids": {
+        "home": "espn-134150",
+        "away": "espn-22138"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932812",
+      "espn_event_id": "401932812",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-14T17:00:00+00:00",
+      "start_time_jst": "11/15 02:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Pays de Saint-Omer",
+      "home_team_id": "espn-134101",
+      "away_team_name": "AF Virois",
+      "away_team_id": "espn-21817",
+      "espn_team_ids": {
+        "home": "espn-134101",
+        "away": "espn-21817"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932814",
+      "espn_event_id": "401932814",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-14T17:00:00+00:00",
+      "start_time_jst": "11/15 02:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Racing Besancon",
+      "home_team_id": "espn-18064",
+      "away_team_name": "Am. du Personnel Municipal Metz",
+      "away_team_id": "espn-18120",
+      "espn_team_ids": {
+        "home": "espn-18064",
+        "away": "espn-18120"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932831",
+      "espn_event_id": "401932831",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-14T17:00:00+00:00",
+      "start_time_jst": "11/15 02:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Saint-Brieuc",
+      "home_team_id": "espn-18068",
+      "away_team_name": "Rouen",
+      "away_team_id": "espn-9009",
+      "espn_team_ids": {
+        "home": "espn-18068",
+        "away": "espn-9009"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932830",
+      "espn_event_id": "401932830",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-14T17:00:00+00:00",
+      "start_time_jst": "11/15 02:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "St-Ouen L'Aumone",
+      "home_team_id": "espn-10689",
+      "away_team_name": "Boulogne",
+      "away_team_id": "espn-7869",
+      "espn_team_ids": {
+        "home": "espn-10689",
+        "away": "espn-7869"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932813",
+      "espn_event_id": "401932813",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-14T17:00:00+00:00",
+      "start_time_jst": "11/15 02:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Stade Béthunois",
+      "home_team_id": "espn-131572",
+      "away_team_name": "AS Nancy Lorraine",
+      "away_team_id": "espn-3267",
+      "espn_team_ids": {
+        "home": "espn-131572",
+        "away": "espn-3267"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932801",
+      "espn_event_id": "401932801",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-14T17:00:00+00:00",
+      "start_time_jst": "11/15 02:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Strasbourg Koenigshoffen",
+      "home_team_id": "espn-21773",
+      "away_team_name": "Oberlauterbach",
+      "away_team_id": "espn-134120",
+      "espn_team_ids": {
+        "home": "espn-21773",
+        "away": "espn-134120"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932811",
+      "espn_event_id": "401932811",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-14T17:00:00+00:00",
+      "start_time_jst": "11/15 02:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "US Cheminots Paray-Foot",
+      "home_team_id": "espn-134142",
+      "away_team_name": "Villefranche",
+      "away_team_id": "espn-10235",
+      "espn_team_ids": {
+        "home": "espn-134142",
+        "away": "espn-10235"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932842",
+      "espn_event_id": "401932842",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-14T17:00:00+00:00",
+      "start_time_jst": "11/15 02:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Vesoul",
+      "home_team_id": "espn-7296",
+      "away_team_name": "FC Fleury 91",
+      "away_team_id": "espn-18400",
+      "espn_team_ids": {
+        "home": "espn-7296",
+        "away": "espn-18400"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932765",
+      "espn_event_id": "401932765",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-14T17:00:00+00:00",
+      "start_time_jst": "11/15 02:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Vitre",
+      "home_team_id": "espn-10232",
+      "away_team_name": "Saint-Pierre Milizac",
+      "away_team_id": "espn-134087",
+      "espn_team_ids": {
+        "home": "espn-10232",
+        "away": "espn-134087"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932806",
+      "espn_event_id": "401932806",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-14T17:30:00+00:00",
+      "start_time_jst": "11/15 02:30",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Balma",
+      "home_team_id": "espn-10680",
+      "away_team_name": "Castanet",
+      "away_team_id": "espn-134106",
+      "espn_team_ids": {
+        "home": "espn-10680",
+        "away": "espn-134106"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932760",
+      "espn_event_id": "401932760",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-14T18:00:00+00:00",
+      "start_time_jst": "11/15 03:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Avenir Foot Lozere",
+      "home_team_id": "espn-14381",
+      "away_team_name": "Entente Crest-Aouste",
+      "away_team_id": "espn-134067",
+      "espn_team_ids": {
+        "home": "espn-14381",
+        "away": "espn-134067"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932809",
+      "espn_event_id": "401932809",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-14T18:00:00+00:00",
+      "start_time_jst": "11/15 03:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Boulazac",
+      "home_team_id": "espn-134107",
+      "away_team_name": "Anglet Genets",
+      "away_team_id": "espn-17621",
+      "espn_team_ids": {
+        "home": "espn-134107",
+        "away": "espn-17621"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932804",
+      "espn_event_id": "401932804",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-14T18:00:00+00:00",
+      "start_time_jst": "11/15 03:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Bressuire",
+      "home_team_id": "espn-16925",
+      "away_team_name": "FC Challans",
+      "away_team_id": "espn-20272",
+      "espn_team_ids": {
+        "home": "espn-16925",
+        "away": "espn-20272"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932817",
+      "espn_event_id": "401932817",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-14T18:00:00+00:00",
+      "start_time_jst": "11/15 03:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Brive",
+      "home_team_id": "espn-134149",
+      "away_team_name": "Angouleme",
+      "away_team_id": "espn-7720",
+      "espn_team_ids": {
+        "home": "espn-134149",
+        "away": "espn-7720"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932825",
+      "espn_event_id": "401932825",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-14T18:00:00+00:00",
+      "start_time_jst": "11/15 03:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Cercle Paul Bert Brequigny Football",
+      "home_team_id": "espn-134068",
+      "away_team_name": "Montlucon Football",
+      "away_team_id": "espn-134071",
+      "espn_team_ids": {
+        "home": "espn-134068",
+        "away": "espn-134071"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932827",
+      "espn_event_id": "401932827",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-14T18:00:00+00:00",
+      "start_time_jst": "11/15 03:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Chauny",
+      "home_team_id": "espn-10225",
+      "away_team_name": "Le Pays Du Valois",
+      "away_team_id": "espn-134113",
+      "espn_team_ids": {
+        "home": "espn-10225",
+        "away": "espn-134113"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932810",
+      "espn_event_id": "401932810",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-14T18:00:00+00:00",
+      "start_time_jst": "11/15 03:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Claira / St Laurent",
+      "home_team_id": "espn-134130",
+      "away_team_name": "Puissalicon Magalas",
+      "away_team_id": "espn-134144",
+      "espn_team_ids": {
+        "home": "espn-134130",
+        "away": "espn-134144"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932815",
+      "espn_event_id": "401932815",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-14T18:00:00+00:00",
+      "start_time_jst": "11/15 03:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "ES Buxerolles",
+      "home_team_id": "espn-134118",
+      "away_team_name": "Sablé FC",
+      "away_team_id": "espn-12957",
+      "espn_team_ids": {
+        "home": "espn-134118",
+        "away": "espn-12957"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932837",
+      "espn_event_id": "401932837",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-14T18:00:00+00:00",
+      "start_time_jst": "11/15 03:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "FC Lourdes",
+      "home_team_id": "espn-134122",
+      "away_team_name": "Pau",
+      "away_team_id": "espn-10678",
+      "espn_team_ids": {
+        "home": "espn-134122",
+        "away": "espn-10678"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932828",
+      "espn_event_id": "401932828",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-14T18:00:00+00:00",
+      "start_time_jst": "11/15 03:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Lannion",
+      "home_team_id": "espn-21772",
+      "away_team_name": "Guingamp",
+      "away_team_id": "espn-171",
+      "espn_team_ids": {
+        "home": "espn-21772",
+        "away": "espn-171"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932826",
+      "espn_event_id": "401932826",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-14T18:00:00+00:00",
+      "start_time_jst": "11/15 03:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "St Andre St Macaire",
+      "home_team_id": "espn-134132",
+      "away_team_name": "Nueillaubiers",
+      "away_team_id": "espn-134103",
+      "espn_team_ids": {
+        "home": "espn-134132",
+        "away": "espn-134103"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932816",
+      "espn_event_id": "401932816",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-14T18:00:00+00:00",
+      "start_time_jst": "11/15 03:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Stade Bordelais",
+      "home_team_id": "espn-134148",
+      "away_team_name": "Mazeres Uzos Rontignon",
+      "away_team_id": "espn-134105",
+      "espn_team_ids": {
+        "home": "espn-134148",
+        "away": "espn-134105"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932824",
+      "espn_event_id": "401932824",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-14T19:00:00+00:00",
+      "start_time_jst": "11/15 04:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Olympique des Membres de Cambrai Amerique",
+      "home_team_id": "espn-134065",
+      "away_team_name": "SC Amiens",
+      "away_team_id": "espn-3335",
+      "espn_team_ids": {
+        "home": "espn-134065",
+        "away": "espn-3335"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401933039",
+      "espn_event_id": "401933039",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-14T21:00:00+00:00",
+      "start_time_jst": "11/15 06:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "AS Tefana",
+      "home_team_id": "espn-134076",
+      "away_team_name": "Thionville",
+      "away_team_id": "espn-10683",
+      "espn_team_ids": {
+        "home": "espn-134076",
+        "away": "espn-10683"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401933060",
+      "espn_event_id": "401933060",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-15T13:00:00+00:00",
+      "start_time_jst": "11/15 22:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Chateaubriant",
+      "home_team_id": "espn-7729",
+      "away_team_name": "Horizon Patho",
+      "away_team_id": "espn-134074",
+      "espn_team_ids": {
+        "home": "espn-7729",
+        "away": "espn-134074"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932823",
+      "espn_event_id": "401932823",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-15T13:00:00+00:00",
+      "start_time_jst": "11/15 22:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Chatou",
+      "home_team_id": "espn-134123",
+      "away_team_name": "Les Ulis",
+      "away_team_id": "espn-134085",
+      "espn_team_ids": {
+        "home": "espn-134123",
+        "away": "espn-134085"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932773",
+      "espn_event_id": "401932773",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-15T13:00:00+00:00",
+      "start_time_jst": "11/15 22:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "ESAP Metz",
+      "home_team_id": "espn-134066",
+      "away_team_name": "Reipertswiller",
+      "away_team_id": "espn-134129",
+      "espn_team_ids": {
+        "home": "espn-134066",
+        "away": "espn-134129"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932755",
+      "espn_event_id": "401932755",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-15T13:00:00+00:00",
+      "start_time_jst": "11/15 22:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Massay",
+      "home_team_id": "espn-134102",
+      "away_team_name": "Montlouis",
+      "away_team_id": "espn-134098",
+      "espn_team_ids": {
+        "home": "espn-134102",
+        "away": "espn-134098"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932772",
+      "espn_event_id": "401932772",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-15T13:00:00+00:00",
+      "start_time_jst": "11/15 22:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Montigny-Les-Metz",
+      "home_team_id": "espn-134131",
+      "away_team_name": "Pontarlier",
+      "away_team_id": "espn-14439",
+      "espn_team_ids": {
+        "home": "espn-134131",
+        "away": "espn-14439"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932767",
+      "espn_event_id": "401932767",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-15T13:00:00+00:00",
+      "start_time_jst": "11/15 22:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Montreuil FC",
+      "home_team_id": "espn-131576",
+      "away_team_name": "Loon Plage FC",
+      "away_team_id": "espn-20876",
+      "espn_team_ids": {
+        "home": "espn-131576",
+        "away": "espn-20876"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932770",
+      "espn_event_id": "401932770",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-15T13:00:00+00:00",
+      "start_time_jst": "11/15 22:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Neslois",
+      "home_team_id": "espn-16735",
+      "away_team_name": "Furiani-Agliani",
+      "away_team_id": "espn-134119",
+      "espn_team_ids": {
+        "home": "espn-16735",
+        "away": "espn-134119"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932800",
+      "espn_event_id": "401932800",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-15T13:00:00+00:00",
+      "start_time_jst": "11/15 22:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Olympique Charleville Prix AM",
+      "home_team_id": "espn-134064",
+      "away_team_name": "Olympique Marcquois",
+      "away_team_id": "espn-16913",
+      "espn_team_ids": {
+        "home": "espn-134064",
+        "away": "espn-16913"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932797",
+      "espn_event_id": "401932797",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-15T13:00:00+00:00",
+      "start_time_jst": "11/15 22:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Paris 13 Atletico",
+      "home_team_id": "espn-132434",
+      "away_team_name": "Red Star FC 93",
+      "away_team_id": "espn-11884",
+      "espn_team_ids": {
+        "home": "espn-132434",
+        "away": "espn-11884"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932759",
+      "espn_event_id": "401932759",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-15T13:00:00+00:00",
+      "start_time_jst": "11/15 22:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Racing Chambery",
+      "home_team_id": "espn-134078",
+      "away_team_name": "Chamois Niortais FC",
+      "away_team_id": "espn-3200",
+      "espn_team_ids": {
+        "home": "espn-134078",
+        "away": "espn-3200"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932741",
+      "espn_event_id": "401932741",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-15T13:00:00+00:00",
+      "start_time_jst": "11/15 22:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "RIOM",
+      "home_team_id": "espn-134133",
+      "away_team_name": "FC Limonest",
+      "away_team_id": "espn-19388",
+      "espn_team_ids": {
+        "home": "espn-134133",
+        "away": "espn-19388"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932819",
+      "espn_event_id": "401932819",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-15T13:00:00+00:00",
+      "start_time_jst": "11/15 22:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Rives 82",
+      "home_team_id": "espn-134115",
+      "away_team_name": "Trelissac FC",
+      "away_team_id": "espn-10685",
+      "espn_team_ids": {
+        "home": "espn-134115",
+        "away": "espn-10685"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932805",
+      "espn_event_id": "401932805",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-15T13:00:00+00:00",
+      "start_time_jst": "11/15 22:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Rochefort FC",
+      "home_team_id": "espn-134070",
+      "away_team_name": "Juventus Papus",
+      "away_team_id": "espn-134093",
+      "espn_team_ids": {
+        "home": "espn-134070",
+        "away": "espn-134093"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932818",
+      "espn_event_id": "401932818",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-15T13:00:00+00:00",
+      "start_time_jst": "11/15 22:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Sag Cestas",
+      "home_team_id": "espn-134082",
+      "away_team_name": "Bayonne",
+      "away_team_id": "espn-7733",
+      "espn_team_ids": {
+        "home": "espn-134082",
+        "away": "espn-7733"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932859",
+      "espn_event_id": "401932859",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-15T13:00:00+00:00",
+      "start_time_jst": "11/15 22:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Saint-Die Kellermann",
+      "home_team_id": "espn-134114",
+      "away_team_name": "Metz",
+      "away_team_id": "espn-177",
+      "espn_team_ids": {
+        "home": "espn-134114",
+        "away": "espn-177"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932860",
+      "espn_event_id": "401932860",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-15T13:00:00+00:00",
+      "start_time_jst": "11/15 22:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Saint-Renan",
+      "home_team_id": "espn-134151",
+      "away_team_name": "Stade Laval",
+      "away_team_id": "espn-3266",
+      "espn_team_ids": {
+        "home": "espn-134151",
+        "away": "espn-3266"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932798",
+      "espn_event_id": "401932798",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-15T13:00:00+00:00",
+      "start_time_jst": "11/15 22:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Sedan",
+      "home_team_id": "espn-168",
+      "away_team_name": "Bourges Foot",
+      "away_team_id": "espn-18085",
+      "espn_team_ids": {
+        "home": "espn-168",
+        "away": "espn-18085"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932807",
+      "espn_event_id": "401932807",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-15T13:00:00+00:00",
+      "start_time_jst": "11/15 22:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Senlis",
+      "home_team_id": "espn-18907",
+      "away_team_name": "Saint-Pryvé Saint Hilaire",
+      "away_team_id": "espn-19386",
+      "espn_team_ids": {
+        "home": "espn-18907",
+        "away": "espn-19386"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932821",
+      "espn_event_id": "401932821",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-15T13:00:00+00:00",
+      "start_time_jst": "11/15 22:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Seyssinet",
+      "home_team_id": "espn-134072",
+      "away_team_name": "Nimes",
+      "away_team_id": "espn-7730",
+      "espn_team_ids": {
+        "home": "espn-134072",
+        "away": "espn-7730"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401933040",
+      "espn_event_id": "401933040",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-15T13:00:00+00:00",
+      "start_time_jst": "11/15 22:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "St Martin Tatinghem",
+      "home_team_id": "espn-134124",
+      "away_team_name": "Racing Club de France",
+      "away_team_id": "espn-22139",
+      "espn_team_ids": {
+        "home": "espn-134124",
+        "away": "espn-22139"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932855",
+      "espn_event_id": "401932855",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-15T13:00:00+00:00",
+      "start_time_jst": "11/15 22:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Stade Castelbourgeois",
+      "home_team_id": "espn-134111",
+      "away_team_name": "Nantes",
+      "away_team_id": "espn-165",
+      "espn_team_ids": {
+        "home": "espn-134111",
+        "away": "espn-165"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932795",
+      "espn_event_id": "401932795",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-15T13:00:00+00:00",
+      "start_time_jst": "11/15 22:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Stade Pontivy",
+      "home_team_id": "espn-19390",
+      "away_team_name": "Plabennec",
+      "away_team_id": "espn-10693",
+      "espn_team_ids": {
+        "home": "espn-19390",
+        "away": "espn-10693"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932775",
+      "espn_event_id": "401932775",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-15T13:00:00+00:00",
+      "start_time_jst": "11/15 22:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Talange",
+      "home_team_id": "espn-134116",
+      "away_team_name": "Baume-Les-Dames",
+      "away_team_id": "espn-134110",
+      "espn_team_ids": {
+        "home": "espn-134116",
+        "away": "espn-134110"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932796",
+      "espn_event_id": "401932796",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-15T13:00:00+00:00",
+      "start_time_jst": "11/15 22:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Tremblay",
+      "home_team_id": "espn-134086",
+      "away_team_name": "Maisons-Alfort",
+      "away_team_id": "espn-134077",
+      "espn_team_ids": {
+        "home": "espn-134086",
+        "away": "espn-134077"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932820",
+      "espn_event_id": "401932820",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-15T13:00:00+00:00",
+      "start_time_jst": "11/15 22:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "US Marseille Endoume",
+      "home_team_id": "espn-17623",
+      "away_team_name": "SC Toulon",
+      "away_team_id": "espn-132785",
+      "espn_team_ids": {
+        "home": "espn-17623",
+        "away": "espn-132785"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932766",
+      "espn_event_id": "401932766",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-15T13:00:00+00:00",
+      "start_time_jst": "11/15 22:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Val Yerres Crosne",
+      "home_team_id": "espn-134094",
+      "away_team_name": "Union Cosnoise",
+      "away_team_id": "espn-134092",
+      "espn_team_ids": {
+        "home": "espn-134094",
+        "away": "espn-134092"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932771",
+      "espn_event_id": "401932771",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-15T13:00:00+00:00",
+      "start_time_jst": "11/15 22:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Vandruvre",
+      "home_team_id": "espn-134084",
+      "away_team_name": "Epinal",
+      "away_team_id": "espn-9010",
+      "espn_team_ids": {
+        "home": "espn-134084",
+        "away": "espn-9010"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932739",
+      "espn_event_id": "401932739",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-15T13:00:00+00:00",
+      "start_time_jst": "11/15 22:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Veauche",
+      "home_team_id": "espn-134081",
+      "away_team_name": "St Paul en Jarez",
+      "away_team_id": "espn-134089",
+      "espn_team_ids": {
+        "home": "espn-134081",
+        "away": "espn-134089"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932769",
+      "espn_event_id": "401932769",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-15T13:00:00+00:00",
+      "start_time_jst": "11/15 22:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Verson",
+      "home_team_id": "espn-134075",
+      "away_team_name": "Calais",
+      "away_team_id": "espn-4744",
+      "espn_team_ids": {
+        "home": "espn-134075",
+        "away": "espn-4744"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932756",
+      "espn_event_id": "401932756",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-15T13:00:00+00:00",
+      "start_time_jst": "11/15 22:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Violaines",
+      "home_team_id": "espn-134112",
+      "away_team_name": "Vermelles",
+      "away_team_id": "espn-134145",
+      "espn_team_ids": {
+        "home": "espn-134112",
+        "away": "espn-134145"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932774",
+      "espn_event_id": "401932774",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-15T13:30:00+00:00",
+      "start_time_jst": "11/15 22:30",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Perros-Louannec",
+      "home_team_id": "espn-134083",
+      "away_team_name": "Vannes OC",
+      "away_team_id": "espn-7574",
+      "espn_team_ids": {
+        "home": "espn-134083",
+        "away": "espn-7574"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932799",
+      "espn_event_id": "401932799",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-15T13:30:00+00:00",
+      "start_time_jst": "11/15 22:30",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Stade Sotteville",
+      "home_team_id": "espn-134099",
+      "away_team_name": "USF Fecamp",
+      "away_team_id": "espn-134104",
+      "espn_team_ids": {
+        "home": "espn-134099",
+        "away": "espn-134104"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932736",
+      "espn_event_id": "401932736",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-15T14:00:00+00:00",
+      "start_time_jst": "11/15 23:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Atlas Paillade",
+      "home_team_id": "espn-134096",
+      "away_team_name": "AS Cannes",
+      "away_team_id": "espn-21306",
+      "espn_team_ids": {
+        "home": "espn-134096",
+        "away": "espn-21306"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    },
+    {
+      "game_id": "espn-401932735",
+      "espn_event_id": "401932735",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-15T14:00:00+00:00",
+      "start_time_jst": "11/15 23:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Rumilly Vallières",
+      "home_team_id": "espn-20871",
+      "away_team_name": "Saint-Étienne",
+      "away_team_id": "espn-178",
+      "espn_team_ids": {
+        "home": "espn-20871",
+        "away": "espn-178"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "season_players": []
+    }
+  ],
   "ai_status": {
     "targets": 0,
     "succeeded": 0,
@@ -95,7 +3086,7 @@
   ],
   "club_registration_check": {
     "days": 7,
-    "checked_at": "2026-11-10T19:11:21.529421+09:00",
+    "checked_at": "2026-11-11T19:01:18.257299+09:00",
     "missing": [
       {
         "club": "AF Virois",
@@ -143,20 +3134,6 @@
         "club": "Amneville",
         "game_ids": [
           "espn-401932802"
-        ],
-        "candidates": []
-      },
-      {
-        "club": "Amorebieta",
-        "game_ids": [
-          "espn-401928519"
-        ],
-        "candidates": []
-      },
-      {
-        "club": "Anaitasuna",
-        "game_ids": [
-          "espn-401928514"
         ],
         "candidates": []
       },
@@ -297,13 +3274,6 @@
         "club": "CD Artistico Navalcarnero",
         "game_ids": [
           "espn-401928551"
-        ],
-        "candidates": []
-      },
-      {
-        "club": "CD Pamplona",
-        "game_ids": [
-          "espn-401928516"
         ],
         "candidates": []
       },
@@ -487,13 +3457,6 @@
         "club": "ESAP Metz",
         "game_ids": [
           "espn-401932773"
-        ],
-        "candidates": []
-      },
-      {
-        "club": "Eibar",
-        "game_ids": [
-          "espn-401928516"
         ],
         "candidates": []
       },
@@ -704,13 +3667,6 @@
         "candidates": []
       },
       {
-        "club": "Leganés",
-        "game_ids": [
-          "espn-401928550"
-        ],
-        "candidates": []
-      },
-      {
         "club": "Les Ulis",
         "game_ids": [
           "espn-401932823"
@@ -761,13 +3717,6 @@
         "club": "Metz",
         "game_ids": [
           "espn-401932859"
-        ],
-        "candidates": []
-      },
-      {
-        "club": "Mijas Las Lagunas",
-        "game_ids": [
-          "espn-401928528"
         ],
         "candidates": []
       },
@@ -966,13 +3915,6 @@
         "club": "Racing Club de France",
         "game_ids": [
           "espn-401933040"
-        ],
-        "candidates": []
-      },
-      {
-        "club": "Real Jaen CF",
-        "game_ids": [
-          "espn-401928528"
         ],
         "candidates": []
       },
@@ -1321,20 +4263,6 @@
         "candidates": []
       },
       {
-        "club": "Trival Valderas",
-        "game_ids": [
-          "espn-401928550"
-        ],
-        "candidates": []
-      },
-      {
-        "club": "UD Logroñés",
-        "game_ids": [
-          "espn-401928519"
-        ],
-        "candidates": []
-      },
-      {
         "club": "US Cheminots Paray-Foot",
         "game_ids": [
           "espn-401932811"
@@ -1484,39 +4412,16 @@
   },
   "source": "ESPN",
   "preview_selection": {
-    "day": "2026-11-10",
+    "day": "2026-11-11",
     "threshold": 30,
     "max_games": 4,
     "policy_sha256": "585b6eb07dd181762e53d0d10718ce0f8109e330863ca80770cf4a8e305d9faf",
-    "selected_ids": [
-      "espn-401928504"
-    ],
-    "count": 1,
-    "reason": "",
-    "rejected": [
-      {
-        "id": "espn-401928514",
-        "reason": "クラブの表示名/読みが未登録"
-      },
-      {
-        "id": "espn-401928516",
-        "reason": "クラブの表示名/読みが未登録"
-      },
-      {
-        "id": "espn-401928519",
-        "reason": "クラブの表示名/読みが未登録"
-      },
-      {
-        "id": "espn-401928528",
-        "reason": "クラブの表示名/読みが未登録"
-      },
-      {
-        "id": "espn-401928550",
-        "reason": "クラブの表示名/読みが未登録"
-      }
-    ],
-    "source_errors": [],
-    "rescued": []
+    "selected_ids": [],
+    "count": 0,
+    "reason": "対象時間帯の試合なし",
+    "rejected": [],
+    "rescued": [],
+    "source_errors": []
   },
   "schedule_date": "2026-11-11",
   "preview_angles_version": 1
