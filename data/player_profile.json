@@ -1,120 +1,106 @@
 {
-  "generated_at": "2026-11-10T19:19:00.883580+00:00",
+  "generated_at": "2026-11-11T06:01:02.214636+00:00",
   "date_jst": "2026-11-11",
-  "name": "Cooper Pratt",
-  "player_id": "806198",
-  "team": "ブリュワーズ",
+  "name": "Chandler Simpson",
+  "player_id": "802415",
+  "team": "レイズ",
   "group": "hitting",
   "why": "2026-10-29のMLBで最も活躍",
-  "headline": "3打数2安打　2打点",
-  "score": 76,
+  "headline": "4打数2安打　1二塁打　1打点",
+  "score": 73,
   "bio": {
-    "name_en": "Cooper Pratt",
-    "age": 22,
-    "birth_city": "Hialeah",
-    "birth_state": "FL",
+    "name_en": "Chandler Simpson",
+    "age": 25,
+    "birth_city": "Atlanta",
+    "birth_state": "GA",
     "birth_country": "USA",
-    "birth_date": "2004-08-18",
-    "debut": "2026-06-16",
-    "draft_year": 2023,
-    "bats": "Right",
+    "birth_date": "2000-11-18",
+    "debut": "2025-04-19",
+    "draft_year": 2022,
+    "bats": "Left",
     "throws": "Right",
-    "number": "12",
-    "position": "Shortstop",
+    "number": "14",
+    "position": "Outfielder",
     "nickname": null,
-    "height": "6' 4\"",
-    "weight": 210
+    "height": "5' 11\"",
+    "weight": 170
   },
   "teams": [
     {
-      "team": "ブリュワーズ",
-      "from": 2026,
+      "team": "レイズ",
+      "from": 2025,
       "to": 2026
     }
   ],
   "career": {
-    "games": 74,
-    "avg": ".281",
-    "hr": 3,
-    "rbi": 34,
-    "ops": ".718",
-    "sb": 19,
-    "hits": 64,
-    "wins": 12,
-    "losses": 4,
-    "era": "3.17",
-    "so": 198,
-    "ip": "190.0",
-    "whip": "1.22"
+    "games": 260,
+    "avg": ".302",
+    "hr": 0,
+    "rbi": 64,
+    "ops": ".681",
+    "sb": 90,
+    "hits": 297
   },
   "this_season": {
-    "games": 74,
-    "avg": ".281",
-    "hr": 3,
-    "rbi": 34,
-    "ops": ".718",
-    "sb": 19,
-    "hits": 64,
-    "wins": 5,
-    "losses": 1,
-    "era": "1.83",
-    "so": 68,
-    "ip": "64.0",
-    "whip": "1.14"
+    "games": 151,
+    "avg": ".306",
+    "hr": 0,
+    "rbi": 38,
+    "ops": ".689",
+    "sb": 46,
+    "hits": 175
   },
   "last_season": {
-    "games": 55,
-    "avg": ".266",
-    "hr": 4,
+    "games": 109,
+    "avg": ".295",
+    "hr": 0,
     "rbi": 26,
-    "ops": ".695",
-    "sb": 3,
-    "hits": 50,
-    "wins": 3,
-    "losses": 1,
-    "era": "3.98",
-    "so": 61,
-    "ip": "63.1",
-    "whip": "1.36"
+    "ops": ".671",
+    "sb": 44,
+    "hits": 122
   },
   "recent": [
     {
-      "date": "2026-09-27",
-      "line": "4打数1安打",
-      "opponent": "St. Louis Cardinals"
-    },
-    {
-      "date": "2026-09-26",
-      "line": "3打数1安打",
-      "opponent": "St. Louis Cardinals"
-    },
-    {
       "date": "2026-09-25",
-      "line": "1打数0安打",
-      "opponent": "St. Louis Cardinals"
+      "line": "3打数0安打",
+      "opponent": "Philadelphia Phillies"
     },
     {
       "date": "2026-09-24",
-      "line": "3打数2安打 1打点",
-      "opponent": "Philadelphia Phillies"
+      "line": "5打数1安打",
+      "opponent": "New York Yankees"
     },
     {
       "date": "2026-09-22",
-      "line": "4打数0安打",
-      "opponent": "Philadelphia Phillies"
+      "line": "4打数1安打",
+      "opponent": "New York Yankees"
+    },
+    {
+      "date": "2026-09-22",
+      "line": "3打数1安打",
+      "opponent": "New York Yankees"
+    },
+    {
+      "date": "2026-09-20",
+      "line": "3打数1安打 2打点",
+      "opponent": "Boston Red Sox"
     }
   ],
   "awards": [
     {
-      "season": "2026",
-      "name": "World Series Championship"
+      "season": "2024",
+      "name": "SOU Post-Season All-Star"
     },
     {
       "season": "2024",
-      "name": "Rawlings MiLB Gold Glove"
+      "name": "Baseball America Double-A All-Star"
     },
     {
-      "season": "2024",
+      "season": "2023",
+      "name": "MiLB.com Organization All-Star"
+    },
+    {
+      "season": "2023",
       "name": "CAR Post-Season All-Star"
     }
   ],

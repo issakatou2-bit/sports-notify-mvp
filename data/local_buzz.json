@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-10T19:19:49.078517+00:00",
+  "updated_at": "2026-11-11T06:01:47.362579+00:00",
   "sources": [
     {
       "name": "MLB公式",
@@ -9,60 +9,68 @@
   "titles_count": 25,
   "teams": [
     {
+      "team_id": "135",
+      "name": "パドレス",
+      "name_en": "San Diego Padres",
+      "mentions": 3,
+      "tone": "話題",
+      "gist": "Weiss獲得、補強噂とGM会議で捕手余剰"
+    },
+    {
+      "team_id": "134",
+      "name": "パイレーツ",
+      "name_en": "Pittsburgh Pirates",
+      "mentions": 1,
+      "tone": "話題",
+      "gist": "Lowe復帰の可能性にCheringtonが言及"
+    },
+    {
+      "team_id": "145",
+      "name": "ホワイトソックス",
+      "name_en": "Chicago White Sox",
+      "mentions": 1,
+      "tone": "好調",
+      "gist": "VenableがホワイトソックスX6人目の最優秀監督"
+    },
+    {
+      "team_id": "136",
+      "name": "マリナーズ",
+      "name_en": "Seattle Mariners",
+      "mentions": 1,
+      "tone": "話題",
+      "gist": "MarinersがCrawfordに来季構想外を通告"
+    },
+    {
       "team_id": "143",
       "name": "フィリーズ",
       "name_en": "Philadelphia Phillies",
-      "mentions": 2,
+      "mentions": 1,
       "tone": "話題",
-      "gist": "フィリーズ、Acuña・Seager・deGrom獲得の噂と"
+      "gist": "DombrowskiがGM会議でPhilliesの補強点に言"
+    },
+    {
+      "team_id": "119",
+      "name": "ドジャース",
+      "name_en": "Los Angeles Dodgers",
+      "mentions": 1,
+      "tone": "話題",
+      "gist": "DodgersがSkubal再獲得を狙うと認める"
     },
     {
       "team_id": "116",
       "name": "タイガース",
       "name_en": "Detroit Tigers",
-      "mentions": 2,
-      "tone": "好調",
-      "gist": "McGonigleが新人王、タイガースに栄誉"
-    },
-    {
-      "team_id": "135",
-      "name": "パドレス",
-      "name_en": "San Diego Padres",
-      "mentions": 2,
-      "tone": "話題",
-      "gist": "パドレス、Skubal・Seiya獲得の噂と動く補強期"
-    },
-    {
-      "team_id": "141",
-      "name": "ブルージェイズ",
-      "name_en": "Toronto Blue Jays",
       "mentions": 1,
       "tone": "話題",
-      "gist": "ブルージェイズ、Clementから2B補強検討か"
+      "gist": "PagánがTigersと1年1100万ドルで合意"
     },
     {
-      "team_id": "147",
-      "name": "ヤンキース",
-      "name_en": "New York Yankees",
+      "team_id": "117",
+      "name": "アストロズ",
+      "name_en": "Houston Astros",
       "mentions": 1,
       "tone": "話題",
-      "gist": "Bednar FAで2027年のヤンキース守護神は誰か"
-    },
-    {
-      "team_id": "111",
-      "name": "レッドソックス",
-      "name_en": "Boston Red Sox",
-      "mentions": 1,
-      "tone": "話題",
-      "gist": "Breslow、遊撃手の選択肢を広く残す"
-    },
-    {
-      "team_id": "113",
-      "name": "レッズ",
-      "name_en": "Cincinnati Reds",
-      "mentions": 1,
-      "tone": "好調",
-      "gist": "レッズの強打者が新人王に選出"
+      "gist": "FloresがAstros新監督選びの最終段階"
     }
   ],
   "players": []
