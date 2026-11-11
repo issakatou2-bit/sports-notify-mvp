@@ -201,6 +201,33 @@ class Screen:
                     self.text(box[2]+10,stat_y+36,unit,30,110,role='supplement')
         return self.finish(spec)
 
+    def week_player(self, spec):
+        """週の回の1人の札（新しい見た目の時だけ。他の場面と同じ配置・字幕帯にそろえる、Argon 11/11）。
+        上の札：名前・クラブ・大きな数字と単位・補足。下の札：小さな数字（数字のすぐ下に単位）。情報域の下端まで使う。"""
+        self.title(spec['kicker'])
+        values = [v for v in spec.get('chips', []) if v and str(v[0]) != ''][:3]
+        top, gap = BODY_TOP, 28
+        bottom = top + 640 if values else BODY_BOTTOM
+        self.panel(top, bottom)
+        self.text(100, top+36, spec['name'], 76, 800)
+        self.name(100, top+150, spec['club'], 800, 48)
+        if spec.get('big'):
+            box = self.text(100, top+250, spec['big'], 240, 520, c.LIME, True)
+            self.text(box[2]+24, box[3]-76, spec.get('unit', ''), 56, max(120, R-box[2]-60), role='supplement')
+        y = bottom - 40 - 52*len(spec.get('notes', []))
+        for line in spec.get('notes', []):
+            y = self.lines(100, y, line, 40, 800, c.MUTED)
+        if values:
+            y = bottom + gap
+            w = (R-L-gap*(len(values)-1))//len(values)
+            mid = (y + BODY_BOTTOM)//2
+            for i, (value, unit) in enumerate(values):
+                x = L+i*(w+gap)
+                self.panel(y, BODY_BOTTOM, x, x+w)
+                box = self.text(x+36, mid-110, value, 120, w-72, c.LIME, True)
+                self.text(x+36, box[3]+18, unit, 36, w-72, role='supplement')
+        return self.finish(spec)
+
     def centered_score(self, game, y):
         value=f"{game['score']['home']}-{game['score']['away']}"
         box=c.measure(value,246,True)[2]
@@ -679,6 +706,7 @@ def slots_frame(t, seg, plan):
     spec=seg['meta'];s=Screen(plan['clubs'],max(.35,t) if spec.get('progressive_rows') else t);kind=seg['kind']
     if kind=='jp_roster':return s.roster(spec)
     if kind=='standings':return s.standings(spec)
+    if kind=='jp_player' and c.STYLE_V2:return s.week_player(spec)
     if plan['mode']=='preview' and kind in ('cover','preview'):
         specs=[x['meta'] for x in plan['narration']['segments'] if x['kind']=='preview']
         from datetime import datetime

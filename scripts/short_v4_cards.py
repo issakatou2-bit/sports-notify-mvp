@@ -105,6 +105,9 @@ def pinstripe_badge(im,x,y,tid,width,height,inline=False):
     return stamp.width
 
 
+NO_LINE_START = '。、，．！？」』）〕】ー…・%％'
+
+
 def lines(value, size, width):
     """書体の送り幅で折る。本文は縮小も省略もしない。"""
     f = r3.font(size); result=[]; line=''
@@ -117,6 +120,9 @@ def lines(value, size, width):
                 word=re.search(r'[A-Za-z]+$',line)
                 if word and word.start()>0:
                     result.append(line[:word.start()]);line=line[word.start():]+ch;continue
+            # 句読点・閉じ括弧を行頭に置かない（Argon 11/11「。だけが次の行に落ちる」）。前の1字と一緒に送る。
+            if ch in NO_LINE_START and len(line)>1:
+                result.append(line[:-1]);line=line[-1]+ch;continue
             result.append(line);line=''
         line += ch
     if line:result.append(line)

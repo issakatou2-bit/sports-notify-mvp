@@ -317,7 +317,8 @@ def _presenter(im,t):
     import solo_host
     speaker,cast=solo_host.presentation('metan',('metan',))
     characters.place_busts(im,speaker,line,elapsed,ctx['duration'] or 1,cast)
-    styled = os.environ.get('COLLESPO_BUBBLE') in ('slant','glass')
+    # 新しい見た目では古い画面でも字幕を暗い真っ直ぐな帯にそろえる（白い吹き出しを残さない）
+    styled = os.environ.get('COLLESPO_BUBBLE') in ('slant','glass') or STYLE_V2
     if line and not ctx.get('hide_caption') and styled:
         characters.bubble(im,speaker,line)
     if line and not ctx.get('hide_caption') and not styled:
@@ -348,8 +349,12 @@ def finish(im,t,spec):
     if len(body)>2:raise ValueError('出典が2行に入りません')
     for i,line in enumerate(body):text(im,L,1166+i*28,line,22,MUTED,width=860 if im.info.get('v3_outro') and soccer_look.focus() else 610,role='source')
     d=ImageDraw.Draw(im);d.rectangle((0,1486,1080,1574),fill=PITCH)
-    d.line((0,1488,1080,1488),fill=LIME,width=2);d.line((0,1572,1080,1572),fill=LIME,width=2)
-    for yy in range(1495,1570,8):d.line((0,yy,1080,yy),fill=GRASS,width=1)
+    if STYLE_V2:
+        # 新しい見た目：下の帯は縞と黄の二重線をやめ、上だけ細い線
+        d.line((0,1486,1080,1486),fill=(46,58,86),width=2)
+    else:
+        d.line((0,1488,1080,1488),fill=LIME,width=2);d.line((0,1572,1080,1572),fill=LIME,width=2)
+        for yy in range(1495,1570,8):d.line((0,yy,1080,yy),fill=GRASS,width=1)
     if spec.get('ticker'):
         value=spec['ticker'];text(im,L,1512,value,30,CHALK,width=R-L,role='ticker')
     _presenter(im,t)
