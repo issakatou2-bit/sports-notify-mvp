@@ -1,379 +1,8 @@
 {
-  "updated_at": "2026-11-11T06:04:54.540092+00:00",
+  "updated_at": "2026-11-11T09:52:33.969256+00:00",
   "start": "2026-10-21",
   "end": "2026-11-11",
   "players": {
-    "621111": {
-      "kind": "from_il",
-      "date": "2026-10-05",
-      "name_en": "Walker Buehler",
-      "team": "San Diego Padres",
-      "text": "San Diego Padres activated RHP Walker Buehler from the paternity list."
-    },
-    "593974": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "Wandy Peralta",
-      "team": "San Diego Padres",
-      "text": "San Diego Padres activated LHP Wandy Peralta."
-    },
-    "695243": {
-      "kind": "from_il",
-      "date": "2026-10-07",
-      "name_en": "Mason Miller",
-      "team": "San Diego Padres",
-      "text": "San Diego Padres activated RHP Mason Miller from the paternity list."
-    },
-    "686218": {
-      "kind": "from_il",
-      "date": "2026-10-16",
-      "name_en": "Emmet Sheehan",
-      "team": "Los Angeles Dodgers",
-      "text": "Los Angeles Dodgers activated RHP Emmet Sheehan."
-    },
-    "571657": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "Kyle Farmer",
-      "team": "Atlanta Braves",
-      "text": "Atlanta Braves activated DH Kyle Farmer."
-    },
-    "676702": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "Hunter Stratton",
-      "team": "San Diego Padres",
-      "text": "San Diego Padres activated RHP Hunter Stratton."
-    },
-    "683409": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "Angel Chivilli",
-      "team": "New York Yankees",
-      "text": "New York Yankees activated RHP Angel Chivilli."
-    },
-    "686628": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "Blake Burkhalter",
-      "team": "Atlanta Braves",
-      "text": "Atlanta Braves activated RHP Blake Burkhalter."
-    },
-    "527048": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "Martín Pérez",
-      "team": "Atlanta Braves",
-      "text": "Atlanta Braves activated LHP Martín Pérez."
-    },
-    "592450": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "Aaron Judge",
-      "team": "New York Yankees",
-      "text": "New York Yankees activated RF Aaron Judge."
-    },
-    "700413": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "Tyler Uberstine",
-      "team": "Atlanta Braves",
-      "text": "Atlanta Braves activated RHP Tyler Uberstine."
-    },
-    "641555": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "J.C. Escarra",
-      "team": "New York Yankees",
-      "text": "New York Yankees activated C J.C. Escarra."
-    },
-    "678184": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "Garrett Hawkins",
-      "team": "San Diego Padres",
-      "text": "San Diego Padres activated RHP Garrett Hawkins."
-    },
-    "695238": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "Will Wagner",
-      "team": "San Diego Padres",
-      "text": "San Diego Padres activated DH Will Wagner."
-    },
-    "669200": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "Mason McCoy",
-      "team": "San Diego Padres",
-      "text": "San Diego Padres activated 2B Mason McCoy."
-    },
-    "823550": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "Sung-Mun Song",
-      "team": "San Diego Padres",
-      "text": "San Diego Padres activated 2B Sung-Mun Song."
-    },
-    "669398": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "Gage Workman",
-      "team": "San Diego Padres",
-      "text": "San Diego Padres activated 3B Gage Workman."
-    },
-    "663897": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "Luke Williams",
-      "team": "Atlanta Braves",
-      "text": "Atlanta Braves activated SS Luke Williams."
-    },
-    "695684": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "Elmer Rodríguez",
-      "team": "New York Yankees",
-      "text": "New York Yankees activated RHP Elmer Rodríguez."
-    },
-    "625643": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "Reynaldo López",
-      "team": "Atlanta Braves",
-      "text": "Atlanta Braves activated RHP Reynaldo López."
-    },
-    "675916": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "James Karinchak",
-      "team": "Atlanta Braves",
-      "text": "Atlanta Braves activated RHP James Karinchak."
-    },
-    "642708": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "Amed Rosario",
-      "team": "New York Yankees",
-      "text": "New York Yankees activated 3B Amed Rosario."
-    },
-    "642086": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "Dominic Smith",
-      "team": "Atlanta Braves",
-      "text": "Atlanta Braves activated DH Dominic Smith."
-    },
-    "663554": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "Casey Mize",
-      "team": "San Diego Padres",
-      "text": "San Diego Padres activated RHP Casey Mize from the 15-day injured list."
-    },
-    "657376": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "Clarke Schmidt",
-      "team": "New York Yankees",
-      "text": "New York Yankees activated RHP Clarke Schmidt."
-    },
-    "656288": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "Griffin Canning",
-      "team": "San Diego Padres",
-      "text": "San Diego Padres activated RHP Griffin Canning."
-    },
-    "691548": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "Rolddy Muñoz",
-      "team": "Atlanta Braves",
-      "text": "Atlanta Braves activated RHP Rolddy Muñoz."
-    },
-    "691176": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "Jasson Domínguez",
-      "team": "New York Yankees",
-      "text": "New York Yankees activated RF Jasson Domínguez."
-    },
-    "660787": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "Yerry De los Santos",
-      "team": "New York Yankees",
-      "text": "New York Yankees activated RHP Yerry De los Santos."
-    },
-    "605242": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "Michael Fulmer",
-      "team": "New York Yankees",
-      "text": "New York Yankees activated RHP Michael Fulmer."
-    },
-    "693821": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "Bryce Elder",
-      "team": "Atlanta Braves",
-      "text": "Atlanta Braves activated RHP Bryce Elder."
-    },
-    "657612": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "Tim Hill",
-      "team": "New York Yankees",
-      "text": "New York Yankees activated LHP Tim Hill."
-    },
-    "680474": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "Max Schuemann",
-      "team": "New York Yankees",
-      "text": "New York Yankees activated LF Max Schuemann."
-    },
-    "680577": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "DaShawn Keirsey Jr.",
-      "team": "Atlanta Braves",
-      "text": "Atlanta Braves activated CF DaShawn Keirsey Jr.."
-    },
-    "666745": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "Jhony Brito",
-      "team": "San Diego Padres",
-      "text": "San Diego Padres activated RHP Jhony Brito."
-    },
-    "805347": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "Jim Jarvis",
-      "team": "Atlanta Braves",
-      "text": "Atlanta Braves activated SS Jim Jarvis."
-    },
-    "681190": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "Randy Vásquez",
-      "team": "San Diego Padres",
-      "text": "San Diego Padres activated RHP Randy Vásquez."
-    },
-    "676664": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "JP Sears",
-      "team": "San Diego Padres",
-      "text": "San Diego Padres activated LHP JP Sears."
-    },
-    "669093": {
-      "kind": "from_il",
-      "date": "2026-10-08",
-      "name_en": "Jeremiah Estrada",
-      "team": "San Diego Padres",
-      "text": "San Diego Padres activated RHP Jeremiah Estrada."
-    },
-    "669165": {
-      "kind": "from_il",
-      "date": "2026-10-16",
-      "name_en": "Kyle Hurt",
-      "team": "Los Angeles Dodgers",
-      "text": "Los Angeles Dodgers activated RHP Kyle Hurt."
-    },
-    "675627": {
-      "kind": "up",
-      "date": "2026-10-08",
-      "name_en": "Michael Grove",
-      "team": "Atlanta Braves",
-      "text": "Atlanta Braves recalled RHP Michael Grove from Gwinnett Stripers."
-    },
-    "702566": {
-      "kind": "up",
-      "date": "2026-10-08",
-      "name_en": "Owen Murphy",
-      "team": "Atlanta Braves",
-      "text": "Atlanta Braves recalled RHP Owen Murphy from FCL Braves."
-    },
-    "694341": {
-      "kind": "up",
-      "date": "2026-10-08",
-      "name_en": "Brendan Beck",
-      "team": "New York Yankees",
-      "text": "New York Yankees recalled RHP Brendan Beck from FCL Yankees."
-    },
-    "702047": {
-      "kind": "from_il",
-      "date": "2026-11-02",
-      "name_en": "Alex Cook",
-      "team": "Tampa Bay Rays",
-      "text": "Tampa Bay Rays activated RHP Alex Cook."
-    },
-    "676467": {
-      "kind": "up",
-      "date": "2026-10-08",
-      "name_en": "Colton Gordon",
-      "team": "Milwaukee Brewers",
-      "text": "Milwaukee Brewers recalled LHP Colton Gordon from Biloxi Shuckers."
-    },
-    "661563": {
-      "kind": "up",
-      "date": "2026-10-08",
-      "name_en": "Luis Gil",
-      "team": "New York Yankees",
-      "text": "New York Yankees recalled RHP Luis Gil from FCL Yankees."
-    },
-    "690440": {
-      "kind": "up",
-      "date": "2026-10-08",
-      "name_en": "Bradley Hanner",
-      "team": "New York Yankees",
-      "text": "New York Yankees recalled RHP Bradley Hanner from FCL Yankees."
-    },
-    "606996": {
-      "kind": "up",
-      "date": "2026-10-08",
-      "name_en": "Kyle Hart",
-      "team": "San Diego Padres",
-      "text": "San Diego Padres recalled LHP Kyle Hart from ACL Padres."
-    },
-    "664849": {
-      "kind": "up",
-      "date": "2026-10-09",
-      "name_en": "Danny Young",
-      "team": "Atlanta Braves",
-      "text": "Atlanta Braves selected the contract of LHP Danny Young from Gwinnett Stripers."
-    },
-    "680736": {
-      "kind": "from_il",
-      "date": "2026-10-11",
-      "name_en": "Justin Wrobleski",
-      "team": "Los Angeles Dodgers",
-      "text": "Los Angeles Dodgers activated LHP Justin Wrobleski."
-    },
-    "811315": {
-      "kind": "from_il",
-      "date": "2026-11-02",
-      "name_en": "Brody Hopkins",
-      "team": "Tampa Bay Rays",
-      "text": "Tampa Bay Rays activated RHP Brody Hopkins."
-    },
-    "677944": {
-      "kind": "from_il",
-      "date": "2026-10-12",
-      "name_en": "Slade Cecconi",
-      "team": "Cleveland Guardians",
-      "text": "Cleveland Guardians activated RHP Slade Cecconi."
-    },
-    "689172": {
-      "kind": "up",
-      "date": "2026-10-15",
-      "name_en": "Brett Wisely",
-      "team": "Atlanta Braves",
-      "text": "Atlanta Braves selected the contract of 2B Brett Wisely from Gwinnett Stripers."
-    },
     "605540": {
       "kind": "from_il",
       "date": "2026-10-23",
@@ -388,292 +17,19 @@
       "team": "Tampa Bay Rays",
       "text": "Tampa Bay Rays activated LHP Garrett Cleavinger."
     },
-    "689672": {
-      "kind": "from_il",
-      "date": "2026-10-11",
-      "name_en": "Drew Thorpe",
-      "team": "Chicago White Sox",
-      "text": "Chicago White Sox activated RHP Drew Thorpe."
-    },
-    "663698": {
-      "kind": "from_il",
-      "date": "2026-10-11",
-      "name_en": "Joey Bart",
-      "team": "Chicago White Sox",
-      "text": "Chicago White Sox activated C Joey Bart."
-    },
-    "623211": {
-      "kind": "from_il",
-      "date": "2026-10-11",
-      "name_en": "Huascar Brazobán",
-      "team": "Chicago White Sox",
-      "text": "Chicago White Sox activated RHP Huascar Brazobán."
-    },
-    "686563": {
-      "kind": "from_il",
-      "date": "2026-10-11",
-      "name_en": "Jonathan Cannon",
-      "team": "Chicago White Sox",
-      "text": "Chicago White Sox activated RHP Jonathan Cannon."
-    },
-    "701780": {
-      "kind": "from_il",
-      "date": "2026-10-11",
-      "name_en": "Tanner McDougal",
-      "team": "Chicago White Sox",
-      "text": "Chicago White Sox activated RHP Tanner McDougal."
-    },
-    "691011": {
-      "kind": "from_il",
-      "date": "2026-10-11",
-      "name_en": "Drew Romo",
-      "team": "Chicago White Sox",
-      "text": "Chicago White Sox activated C Drew Romo."
-    },
-    "700337": {
-      "kind": "from_il",
-      "date": "2026-10-11",
-      "name_en": "Edgar Quero",
-      "team": "Chicago White Sox",
-      "text": "Chicago White Sox activated C Edgar Quero."
-    },
-    "678577": {
-      "kind": "from_il",
-      "date": "2026-10-11",
-      "name_en": "Junior Perez",
-      "team": "Chicago White Sox",
-      "text": "Chicago White Sox activated CF Junior Perez."
-    },
-    "807747": {
-      "kind": "from_il",
-      "date": "2026-10-11",
-      "name_en": "Rikuu Nishida",
-      "team": "Chicago White Sox",
-      "text": "Chicago White Sox activated RF Rikuu Nishida."
-    },
-    "805326": {
-      "kind": "from_il",
-      "date": "2026-10-11",
-      "name_en": "Tyler Schweitzer",
-      "team": "Chicago White Sox",
-      "text": "Chicago White Sox activated LHP Tyler Schweitzer."
-    },
-    "622491": {
-      "kind": "from_il",
-      "date": "2026-10-11",
-      "name_en": "Luis Castillo",
-      "team": "Chicago White Sox",
-      "text": "Chicago White Sox activated RHP Luis Castillo."
-    },
-    "681343": {
-      "kind": "from_il",
-      "date": "2026-10-11",
-      "name_en": "Shane Smith",
-      "team": "Chicago White Sox",
-      "text": "Chicago White Sox activated RHP Shane Smith."
-    },
-    "670950": {
-      "kind": "from_il",
-      "date": "2026-10-11",
-      "name_en": "Trevor Richards",
-      "team": "Chicago White Sox",
-      "text": "Chicago White Sox activated RHP Trevor Richards."
-    },
-    "669684": {
-      "kind": "from_il",
-      "date": "2026-10-11",
-      "name_en": "Chris Murphy",
-      "team": "Chicago White Sox",
-      "text": "Chicago White Sox activated LHP Chris Murphy."
-    },
-    "690976": {
-      "kind": "from_il",
-      "date": "2026-10-16",
-      "name_en": "Alex Freeland",
-      "team": "Los Angeles Dodgers",
-      "text": "Los Angeles Dodgers activated 2B Alex Freeland."
-    },
-    "691947": {
-      "kind": "from_il",
-      "date": "2026-10-16",
-      "name_en": "Ronan Kopp",
-      "team": "Los Angeles Dodgers",
-      "text": "Los Angeles Dodgers activated LHP Ronan Kopp."
-    },
-    "595014": {
-      "kind": "from_il",
-      "date": "2026-10-16",
-      "name_en": "Blake Treinen",
-      "team": "Los Angeles Dodgers",
-      "text": "Los Angeles Dodgers activated RHP Blake Treinen."
-    },
-    "676263": {
-      "kind": "from_il",
-      "date": "2026-10-16",
-      "name_en": "Jack Dreyer",
-      "team": "Los Angeles Dodgers",
-      "text": "Los Angeles Dodgers activated LHP Jack Dreyer."
-    },
-    "689017": {
-      "kind": "from_il",
-      "date": "2026-10-16",
-      "name_en": "Landon Knack",
-      "team": "Los Angeles Dodgers",
-      "text": "Los Angeles Dodgers activated RHP Landon Knack."
-    },
-    "678020": {
-      "kind": "from_il",
-      "date": "2026-10-16",
-      "name_en": "Seth Halvorsen",
-      "team": "Los Angeles Dodgers",
-      "text": "Los Angeles Dodgers activated RHP Seth Halvorsen."
-    },
-    "676272": {
-      "kind": "from_il",
-      "date": "2026-10-16",
-      "name_en": "Bobby Miller",
-      "team": "Los Angeles Dodgers",
-      "text": "Los Angeles Dodgers activated RHP Bobby Miller."
-    },
-    "808975": {
-      "kind": "from_il",
-      "date": "2026-10-16",
-      "name_en": "Hyeseong Kim",
-      "team": "Los Angeles Dodgers",
-      "text": "Los Angeles Dodgers activated SS Hyeseong Kim."
-    },
-    "801434": {
-      "kind": "from_il",
-      "date": "2026-10-16",
-      "name_en": "Paul Gervase",
-      "team": "Los Angeles Dodgers",
-      "text": "Los Angeles Dodgers activated RHP Paul Gervase."
-    },
-    "687221": {
-      "kind": "from_il",
-      "date": "2026-10-16",
-      "name_en": "Dalton Rushing",
-      "team": "Los Angeles Dodgers",
-      "text": "Los Angeles Dodgers activated C Dalton Rushing."
-    },
-    "672613": {
-      "kind": "from_il",
-      "date": "2026-10-16",
-      "name_en": "Eliezer Alfonzo",
-      "team": "Los Angeles Dodgers",
-      "text": "Los Angeles Dodgers activated C Eliezer Alfonzo."
-    },
-    "669743": {
-      "kind": "from_il",
-      "date": "2026-10-16",
-      "name_en": "Alex Call",
-      "team": "Los Angeles Dodgers",
-      "text": "Los Angeles Dodgers activated LF Alex Call."
-    },
-    "804926": {
-      "kind": "from_il",
-      "date": "2026-10-20",
-      "name_en": "Austin Peterson",
-      "team": "Cleveland Guardians",
-      "text": "Cleveland Guardians activated RHP Austin Peterson."
-    },
-    "691414": {
-      "kind": "from_il",
-      "date": "2026-10-20",
-      "name_en": "Yorman Gómez",
-      "team": "Cleveland Guardians",
-      "text": "Cleveland Guardians activated RHP Yorman Gómez."
-    },
-    "671106": {
-      "kind": "from_il",
-      "date": "2026-10-20",
-      "name_en": "Logan Allen",
-      "team": "Cleveland Guardians",
-      "text": "Cleveland Guardians activated LHP Logan Allen."
-    },
-    "663368": {
-      "kind": "from_il",
-      "date": "2026-10-20",
-      "name_en": "Blake Perkins",
-      "team": "Cleveland Guardians",
-      "text": "Cleveland Guardians activated CF Blake Perkins."
-    },
-    "682177": {
-      "kind": "from_il",
-      "date": "2026-10-20",
-      "name_en": "Daniel Schneemann",
-      "team": "Cleveland Guardians",
-      "text": "Cleveland Guardians activated CF Daniel Schneemann."
-    },
-    "694876": {
-      "kind": "from_il",
-      "date": "2026-10-20",
-      "name_en": "Cooper Ingle",
-      "team": "Cleveland Guardians",
-      "text": "Cleveland Guardians activated C Cooper Ingle."
-    },
-    "670059": {
-      "kind": "from_il",
-      "date": "2026-10-20",
-      "name_en": "Colin Holderman",
-      "team": "Cleveland Guardians",
-      "text": "Cleveland Guardians activated RHP Colin Holderman."
-    },
-    "680916": {
-      "kind": "from_il",
-      "date": "2026-10-20",
-      "name_en": "Franco Aleman",
-      "team": "Cleveland Guardians",
-      "text": "Cleveland Guardians activated RHP Franco Aleman."
-    },
-    "692216": {
-      "kind": "from_il",
-      "date": "2026-10-20",
-      "name_en": "CJ Kayfus",
-      "team": "Cleveland Guardians",
-      "text": "Cleveland Guardians activated 1B CJ Kayfus."
-    },
-    "656555": {
-      "kind": "from_il",
-      "date": "2026-10-20",
-      "name_en": "Rhys Hoskins",
-      "team": "Cleveland Guardians",
-      "text": "Cleveland Guardians activated 1B Rhys Hoskins."
-    },
-    "684974": {
-      "kind": "from_il",
-      "date": "2026-10-20",
-      "name_en": "Craig Yoho",
-      "team": "Cleveland Guardians",
-      "text": "Cleveland Guardians activated RHP Craig Yoho."
-    },
-    "700932": {
-      "kind": "from_il",
-      "date": "2026-10-20",
-      "name_en": "Kyle Manzardo",
-      "team": "Cleveland Guardians",
-      "text": "Cleveland Guardians activated 1B Kyle Manzardo."
-    },
-    "696135": {
-      "kind": "from_il",
-      "date": "2026-10-20",
-      "name_en": "Kahlil Watson",
-      "team": "Cleveland Guardians",
-      "text": "Cleveland Guardians activated RF Kahlil Watson."
-    },
-    "689958": {
-      "kind": "from_il",
-      "date": "2026-10-20",
-      "name_en": "Andrew Walters",
-      "team": "Cleveland Guardians",
-      "text": "Cleveland Guardians activated RHP Andrew Walters."
-    },
     "694462": {
       "kind": "from_il",
       "date": "2026-10-29",
       "name_en": "Hurston Waldrep",
       "team": "Atlanta Braves",
       "text": "Atlanta Braves activated RHP Hurston Waldrep from the 60-day injured list."
+    },
+    "657424": {
+      "kind": "from_il",
+      "date": "2026-10-29",
+      "name_en": "Matt Gage",
+      "team": "San Francisco Giants",
+      "text": "San Francisco Giants activated LHP Matt Gage from the 60-day injured list."
     },
     "694362": {
       "kind": "from_il",
@@ -682,19 +38,19 @@
       "team": "Cincinnati Reds",
       "text": "Cincinnati Reds activated CF Blake Dunn from the 60-day injured list."
     },
-    "607455": {
+    "672860": {
       "kind": "from_il",
       "date": "2026-10-29",
-      "name_en": "Anthony Banda",
-      "team": "Minnesota Twins",
-      "text": "Minnesota Twins activated LHP Anthony Banda from the 60-day injured list."
+      "name_en": "Prelander Berroa",
+      "team": "Chicago White Sox",
+      "text": "Chicago White Sox activated RHP Prelander Berroa from the 60-day injured list."
     },
-    "668881": {
+    "695020": {
       "kind": "from_il",
       "date": "2026-10-29",
-      "name_en": "Hunter Greene",
-      "team": "Cincinnati Reds",
-      "text": "Cincinnati Reds activated RHP Hunter Greene from the 60-day injured list."
+      "name_en": "Tanner Murray",
+      "team": "Chicago White Sox",
+      "text": "Chicago White Sox activated LF Tanner Murray from the 60-day injured list."
     },
     "681066": {
       "kind": "from_il",
@@ -702,6 +58,13 @@
       "name_en": "Ky Bush",
       "team": "Chicago White Sox",
       "text": "Chicago White Sox activated LHP Ky Bush."
+    },
+    "607455": {
+      "kind": "from_il",
+      "date": "2026-10-29",
+      "name_en": "Anthony Banda",
+      "team": "Minnesota Twins",
+      "text": "Minnesota Twins activated LHP Anthony Banda from the 60-day injured list."
     },
     "680885": {
       "kind": "from_il",
@@ -724,12 +87,12 @@
       "team": "Atlanta Braves",
       "text": "Atlanta Braves activated LHP Joey Wentz from the 60-day injured list."
     },
-    "657424": {
+    "668881": {
       "kind": "from_il",
       "date": "2026-10-29",
-      "name_en": "Matt Gage",
-      "team": "San Francisco Giants",
-      "text": "San Francisco Giants activated LHP Matt Gage from the 60-day injured list."
+      "name_en": "Hunter Greene",
+      "team": "Cincinnati Reds",
+      "text": "Cincinnati Reds activated RHP Hunter Greene from the 60-day injured list."
     },
     "673929": {
       "kind": "from_il",
@@ -744,20 +107,6 @@
       "name_en": "Brooks Baldwin",
       "team": "Chicago White Sox",
       "text": "Chicago White Sox activated LF Brooks Baldwin from the 60-day injured list."
-    },
-    "672860": {
-      "kind": "from_il",
-      "date": "2026-10-29",
-      "name_en": "Prelander Berroa",
-      "team": "Chicago White Sox",
-      "text": "Chicago White Sox activated RHP Prelander Berroa from the 60-day injured list."
-    },
-    "695020": {
-      "kind": "from_il",
-      "date": "2026-10-29",
-      "name_en": "Tanner Murray",
-      "team": "Chicago White Sox",
-      "text": "Chicago White Sox activated LF Tanner Murray from the 60-day injured list."
     },
     "686799": {
       "kind": "from_il",
@@ -780,13 +129,6 @@
       "team": "Los Angeles Angels",
       "text": "Los Angeles Angels selected the contract of LHP Nicolo Pinazzi from Rocket City Trash Pandas."
     },
-    "681882": {
-      "kind": "from_il",
-      "date": "2026-10-31",
-      "name_en": "Colin Selby",
-      "team": "Baltimore Orioles",
-      "text": "Baltimore Orioles activated RHP Colin Selby from the 60-day injured list."
-    },
     "695778": {
       "kind": "up",
       "date": "2026-10-30",
@@ -794,369 +136,12 @@
       "team": "Texas Rangers",
       "text": "Texas Rangers selected the contract of RHP Aidan Curry from Frisco RoughRiders."
     },
-    "670955": {
+    "681882": {
       "kind": "from_il",
-      "date": "2026-11-02",
-      "name_en": "Edwin Uceta",
-      "team": "Tampa Bay Rays",
-      "text": "Tampa Bay Rays activated RHP Edwin Uceta from the 60-day injured list."
-    },
-    "671213": {
-      "kind": "from_il",
-      "date": "2026-11-02",
-      "name_en": "Triston Casas",
-      "team": "Boston Red Sox",
-      "text": "Boston Red Sox activated 1B Triston Casas from the 60-day injured list."
-    },
-    "676710": {
-      "kind": "from_il",
-      "date": "2026-11-02",
-      "name_en": "Kutter Crawford",
-      "team": "Boston Red Sox",
-      "text": "Boston Red Sox activated RHP Kutter Crawford from the 60-day injured list."
-    },
-    "670912": {
-      "kind": "from_il",
-      "date": "2026-11-02",
-      "name_en": "Johan Oviedo",
-      "team": "Boston Red Sox",
-      "text": "Boston Red Sox activated RHP Johan Oviedo from the 60-day injured list."
-    },
-    "667670": {
-      "kind": "from_il",
-      "date": "2026-11-02",
-      "name_en": "Brent Rooker",
-      "team": "Athletics",
-      "text": "Athletics activated DH Brent Rooker from the 60-day injured list."
-    },
-    "691016": {
-      "kind": "from_il",
-      "date": "2026-11-02",
-      "name_en": "Tyler Soderstrom",
-      "team": "Athletics",
-      "text": "Athletics activated LF Tyler Soderstrom from the 60-day injured list."
-    },
-    "518585": {
-      "kind": "from_il",
-      "date": "2026-11-02",
-      "name_en": "Fernando Cruz",
-      "team": "New York Yankees",
-      "text": "New York Yankees activated RHP Fernando Cruz from the 60-day injured list."
-    },
-    "664208": {
-      "kind": "from_il",
-      "date": "2026-11-02",
-      "name_en": "Phil Maton",
-      "team": "Chicago Cubs",
-      "text": "Chicago Cubs activated RHP Phil Maton from the 60-day injured list."
-    },
-    "687863": {
-      "kind": "from_il",
-      "date": "2026-11-02",
-      "name_en": "Porter Hodge",
-      "team": "Chicago Cubs",
-      "text": "Chicago Cubs activated RHP Porter Hodge from the 60-day injured list."
-    },
-    "678692": {
-      "kind": "from_il",
-      "date": "2026-11-02",
-      "name_en": "Ronny Henriquez",
-      "team": "Miami Marlins",
-      "text": "Miami Marlins activated RHP Ronny Henriquez from the 60-day injured list."
-    },
-    "680718": {
-      "kind": "from_il",
-      "date": "2026-11-02",
-      "name_en": "Addison Barger",
-      "team": "Toronto Blue Jays",
-      "text": "Toronto Blue Jays activated RF Addison Barger from the 60-day injured list."
-    },
-    "682729": {
-      "kind": "from_il",
-      "date": "2026-11-02",
-      "name_en": "Jonatan Clase",
-      "team": "Toronto Blue Jays",
-      "text": "Toronto Blue Jays activated LF Jonatan Clase from the 60-day injured list."
-    },
-    "700242": {
-      "kind": "from_il",
-      "date": "2026-11-02",
-      "name_en": "Trey Sweeney",
-      "team": "Detroit Tigers",
-      "text": "Detroit Tigers activated SS Trey Sweeney from the 60-day injured list."
-    },
-    "642201": {
-      "kind": "from_il",
-      "date": "2026-11-02",
-      "name_en": "Eli White",
-      "team": "Boston Red Sox",
-      "text": "Boston Red Sox activated CF Eli White from the 60-day injured list."
-    },
-    "687888": {
-      "kind": "from_il",
-      "date": "2026-11-02",
-      "name_en": "Brandon Walter",
-      "team": "Houston Astros",
-      "text": "Houston Astros activated LHP Brandon Walter from the 60-day injured list."
-    },
-    "702474": {
-      "kind": "from_il",
-      "date": "2026-11-02",
-      "name_en": "Mike Paredes",
-      "team": "Minnesota Twins",
-      "text": "Minnesota Twins activated RHP Mike Paredes from the 60-day injured list."
-    },
-    "666374": {
-      "kind": "from_il",
-      "date": "2026-11-02",
-      "name_en": "Matt Brash",
-      "team": "Seattle Mariners",
-      "text": "Seattle Mariners activated RHP Matt Brash from the 60-day injured list."
-    },
-    "689546": {
-      "kind": "from_il",
-      "date": "2026-11-02",
-      "name_en": "Nick Davila",
-      "team": "Seattle Mariners",
-      "text": "Seattle Mariners activated RHP Nick Davila from the 60-day injured list."
-    },
-    "806068": {
-      "kind": "from_il",
-      "date": "2026-11-02",
-      "name_en": "Colt Emerson",
-      "team": "Seattle Mariners",
-      "text": "Seattle Mariners activated SS Colt Emerson from the 60-day injured list."
-    },
-    "670042": {
-      "kind": "from_il",
-      "date": "2026-11-02",
-      "name_en": "Luke Raley",
-      "team": "Seattle Mariners",
-      "text": "Seattle Mariners activated RF Luke Raley from the 60-day injured list."
-    },
-    "680694": {
-      "kind": "from_il",
-      "date": "2026-11-02",
-      "name_en": "Kyle Bradish",
+      "date": "2026-10-31",
+      "name_en": "Colin Selby",
       "team": "Baltimore Orioles",
-      "text": "Baltimore Orioles activated RHP Kyle Bradish from the 60-day injured list."
-    },
-    "664854": {
-      "kind": "from_il",
-      "date": "2026-11-02",
-      "name_en": "Ryan Helsley",
-      "team": "Baltimore Orioles",
-      "text": "Baltimore Orioles activated RHP Ryan Helsley from the 60-day injured list."
-    },
-    "621244": {
-      "kind": "from_il",
-      "date": "2026-11-02",
-      "name_en": "José Berríos",
-      "team": "Toronto Blue Jays",
-      "text": "Toronto Blue Jays activated RHP José Berríos from the 60-day injured list."
-    },
-    "623993": {
-      "kind": "from_il",
-      "date": "2026-11-02",
-      "name_en": "Anthony Santander",
-      "team": "Toronto Blue Jays",
-      "text": "Toronto Blue Jays activated RF Anthony Santander from the 60-day injured list."
-    },
-    "669438": {
-      "kind": "from_il",
-      "date": "2026-11-02",
-      "name_en": "Mason Englert",
-      "team": "Tampa Bay Rays",
-      "text": "Tampa Bay Rays activated RHP Mason Englert."
-    },
-    "691441": {
-      "kind": "from_il",
-      "date": "2026-11-02",
-      "name_en": "Cristian Mena",
-      "team": "Arizona Diamondbacks",
-      "text": "Arizona Diamondbacks activated RHP Cristian Mena from the 60-day injured list."
-    },
-    "657006": {
-      "kind": "from_il",
-      "date": "2026-11-02",
-      "name_en": "Justin Steele",
-      "team": "Chicago Cubs",
-      "text": "Chicago Cubs activated LHP Justin Steele from the 60-day injured list."
-    },
-    "676962": {
-      "kind": "from_il",
-      "date": "2026-11-02",
-      "name_en": "Ben Brown",
-      "team": "Chicago Cubs",
-      "text": "Chicago Cubs activated RHP Ben Brown from the 60-day injured list."
-    },
-    "690990": {
-      "kind": "from_il",
-      "date": "2026-11-02",
-      "name_en": "Cade Horton",
-      "team": "Chicago Cubs",
-      "text": "Chicago Cubs activated RHP Cade Horton from the 60-day injured list."
-    },
-    "685326": {
-      "kind": "from_il",
-      "date": "2026-11-02",
-      "name_en": "McCade Brown",
-      "team": "Colorado Rockies",
-      "text": "Colorado Rockies activated RHP McCade Brown from the 60-day injured list."
-    },
-    "592178": {
-      "kind": "from_il",
-      "date": "2026-11-02",
-      "name_en": "Kris Bryant",
-      "team": "Colorado Rockies",
-      "text": "Colorado Rockies activated DH Kris Bryant from the 60-day injured list."
-    },
-    "801403": {
-      "kind": "from_il",
-      "date": "2026-11-02",
-      "name_en": "Chase Dollander",
-      "team": "Colorado Rockies",
-      "text": "Colorado Rockies activated RHP Chase Dollander from the 60-day injured list."
-    },
-    "676508": {
-      "kind": "from_il",
-      "date": "2026-11-02",
-      "name_en": "Ben Casparius",
-      "team": "Los Angeles Dodgers",
-      "text": "Los Angeles Dodgers activated RHP Ben Casparius from the 60-day injured list."
-    },
-    "664776": {
-      "kind": "from_il",
-      "date": "2026-11-02",
-      "name_en": "Jake Cousins",
-      "team": "Los Angeles Dodgers",
-      "text": "Los Angeles Dodgers activated RHP Jake Cousins from the 60-day injured list."
-    },
-    "677053": {
-      "kind": "from_il",
-      "date": "2026-11-02",
-      "name_en": "Andrew Nardi",
-      "team": "Miami Marlins",
-      "text": "Miami Marlins activated LHP Andrew Nardi from the 60-day injured list."
-    },
-    "800049": {
-      "kind": "from_il",
-      "date": "2026-11-02",
-      "name_en": "Adam Mazur",
-      "team": "Miami Marlins",
-      "text": "Miami Marlins activated RHP Adam Mazur from the 60-day injured list."
-    },
-    "702281": {
-      "kind": "from_il",
-      "date": "2026-11-02",
-      "name_en": "Robby Snelling",
-      "team": "Miami Marlins",
-      "text": "Miami Marlins activated LHP Robby Snelling from the 60-day injured list."
-    },
-    "683679": {
-      "kind": "from_il",
-      "date": "2026-11-02",
-      "name_en": "Jesus Rodriguez",
-      "team": "San Francisco Giants",
-      "text": "San Francisco Giants activated C Jesus Rodriguez."
-    },
-    "668984": {
-      "kind": "from_il",
-      "date": "2026-11-02",
-      "name_en": "Casey Legumina",
-      "team": "Tampa Bay Rays",
-      "text": "Tampa Bay Rays activated RHP Casey Legumina."
-    },
-    "663556": {
-      "kind": "from_il",
-      "date": "2026-11-02",
-      "name_en": "Shane McClanahan",
-      "team": "Tampa Bay Rays",
-      "text": "Tampa Bay Rays activated LHP Shane McClanahan."
-    },
-    "700652": {
-      "kind": "from_il",
-      "date": "2026-11-02",
-      "name_en": "Kenny Piper",
-      "team": "Tampa Bay Rays",
-      "text": "Tampa Bay Rays activated C Kenny Piper."
-    },
-    "692030": {
-      "kind": "from_il",
-      "date": "2026-11-02",
-      "name_en": "Jose Corniell",
-      "team": "Texas Rangers",
-      "text": "Texas Rangers activated RHP Jose Corniell from the 60-day injured list."
-    },
-    "668390": {
-      "kind": "from_il",
-      "date": "2026-11-02",
-      "name_en": "Cole Winn",
-      "team": "Texas Rangers",
-      "text": "Texas Rangers activated RHP Cole Winn from the 60-day injured list."
-    },
-    "663773": {
-      "kind": "from_il",
-      "date": "2026-11-02",
-      "name_en": "Bryan Hoeing",
-      "team": "San Diego Padres",
-      "text": "San Diego Padres activated RHP Bryan Hoeing from the 60-day injured list."
-    },
-    "656305": {
-      "kind": "from_il",
-      "date": "2026-11-02",
-      "name_en": "Matt Chapman",
-      "team": "San Francisco Giants",
-      "text": "San Francisco Giants activated 3B Matt Chapman from the 60-day injured list."
-    },
-    "666711": {
-      "kind": "from_il",
-      "date": "2026-11-02",
-      "name_en": "Joel Peguero",
-      "team": "San Francisco Giants",
-      "text": "San Francisco Giants activated RHP Joel Peguero from the 60-day injured list."
-    },
-    "682988": {
-      "kind": "from_il",
-      "date": "2026-11-02",
-      "name_en": "Tyler Locklear",
-      "team": "Arizona Diamondbacks",
-      "text": "Arizona Diamondbacks activated 1B Tyler Locklear from the 60-day injured list."
-    },
-    "685314": {
-      "kind": "from_il",
-      "date": "2026-11-02",
-      "name_en": "Andrew Saalfrank",
-      "team": "Arizona Diamondbacks",
-      "text": "Arizona Diamondbacks activated LHP Andrew Saalfrank from the 60-day injured list."
-    },
-    "694813": {
-      "kind": "from_il",
-      "date": "2026-11-02",
-      "name_en": "Gavin Stone",
-      "team": "Los Angeles Dodgers",
-      "text": "Los Angeles Dodgers activated RHP Gavin Stone from the 60-day injured list."
-    },
-    "691740": {
-      "kind": "from_il",
-      "date": "2026-11-02",
-      "name_en": "Daniel Susac",
-      "team": "San Francisco Giants",
-      "text": "San Francisco Giants activated C Daniel Susac from the 60-day injured list."
-    },
-    "676775": {
-      "kind": "from_il",
-      "date": "2026-11-02",
-      "name_en": "Keaton Winn",
-      "team": "San Francisco Giants",
-      "text": "San Francisco Giants activated RHP Keaton Winn from the 60-day injured list."
-    },
-    "671212": {
-      "kind": "from_il",
-      "date": "2026-11-02",
-      "name_en": "Joe Boyle",
-      "team": "Tampa Bay Rays",
-      "text": "Tampa Bay Rays activated RHP Joe Boyle."
+      "text": "Baltimore Orioles activated RHP Colin Selby from the 60-day injured list."
     },
     "701762": {
       "kind": "from_il",
@@ -1178,6 +163,83 @@
       "name_en": "Jacob Wilson",
       "team": "Athletics",
       "text": "Athletics activated SS Jacob Wilson from the 60-day injured list."
+    },
+    "672761": {
+      "kind": "from_il",
+      "date": "2026-11-02",
+      "name_en": "Wenceel Pérez",
+      "team": "Detroit Tigers",
+      "text": "Detroit Tigers activated RF Wenceel Pérez from the 60-day injured list."
+    },
+    "681857": {
+      "kind": "from_il",
+      "date": "2026-11-02",
+      "name_en": "Reese Olson",
+      "team": "Detroit Tigers",
+      "text": "Detroit Tigers activated RHP Reese Olson from the 60-day injured list."
+    },
+    "676684": {
+      "kind": "from_il",
+      "date": "2026-11-02",
+      "name_en": "Will Vest",
+      "team": "Detroit Tigers",
+      "text": "Detroit Tigers activated RHP Will Vest from the 60-day injured list."
+    },
+    "677161": {
+      "kind": "from_il",
+      "date": "2026-11-02",
+      "name_en": "Zack Kelly",
+      "team": "Boston Red Sox",
+      "text": "Boston Red Sox activated RHP Zack Kelly from the 60-day injured list."
+    },
+    "686580": {
+      "kind": "from_il",
+      "date": "2026-11-02",
+      "name_en": "Justin Slaten",
+      "team": "Boston Red Sox",
+      "text": "Boston Red Sox activated RHP Justin Slaten from the 60-day injured list."
+    },
+    "679032": {
+      "kind": "from_il",
+      "date": "2026-11-02",
+      "name_en": "Johan Rojas",
+      "team": "Philadelphia Phillies",
+      "text": "Philadelphia Phillies activated CF Johan Rojas from the 60-day injured list."
+    },
+    "691008": {
+      "kind": "from_il",
+      "date": "2026-11-02",
+      "name_en": "Max Rajcic",
+      "team": "St. Louis Cardinals",
+      "text": "St. Louis Cardinals activated RHP Max Rajcic from the 60-day injured list."
+    },
+    "656731": {
+      "kind": "from_il",
+      "date": "2026-11-02",
+      "name_en": "Tylor Megill",
+      "team": "New York Mets",
+      "text": "New York Mets activated RHP Tylor Megill from the 60-day injured list."
+    },
+    "593871": {
+      "kind": "from_il",
+      "date": "2026-11-02",
+      "name_en": "Jorge Polanco",
+      "team": "New York Mets",
+      "text": "New York Mets activated DH Jorge Polanco from the 60-day injured list."
+    },
+    "656605": {
+      "kind": "from_il",
+      "date": "2026-11-02",
+      "name_en": "Mitch Keller",
+      "team": "Pittsburgh Pirates",
+      "text": "Pittsburgh Pirates activated RHP Mitch Keller from the 60-day injured list."
+    },
+    "682848": {
+      "kind": "from_il",
+      "date": "2026-11-02",
+      "name_en": "Endy Rodríguez",
+      "team": "Pittsburgh Pirates",
+      "text": "Pittsburgh Pirates activated C Endy Rodríguez from the 60-day injured list."
     },
     "690953": {
       "kind": "from_il",
@@ -1256,124 +318,19 @@
       "team": "San Francisco Giants",
       "text": "San Francisco Giants activated RHP Adrian Houser from the 60-day injured list."
     },
-    "641745": {
+    "700242": {
       "kind": "from_il",
       "date": "2026-11-02",
-      "name_en": "Brad Keller",
-      "team": "Philadelphia Phillies",
-      "text": "Philadelphia Phillies activated RHP Brad Keller from the 60-day injured list."
-    },
-    "668873": {
-      "kind": "from_il",
-      "date": "2026-11-02",
-      "name_en": "Caleb Kilian",
-      "team": "Philadelphia Phillies",
-      "text": "Philadelphia Phillies activated RHP Caleb Kilian from the 60-day injured list."
-    },
-    "694025": {
-      "kind": "from_il",
-      "date": "2026-11-02",
-      "name_en": "Felix Reyes",
-      "team": "Philadelphia Phillies",
-      "text": "Philadelphia Phillies activated LF Felix Reyes."
-    },
-    "680695": {
-      "kind": "from_il",
-      "date": "2026-11-02",
-      "name_en": "Brennen Davis",
-      "team": "Seattle Mariners",
-      "text": "Seattle Mariners activated CF Brennen Davis from the 60-day injured list."
-    },
-    "688138": {
-      "kind": "from_il",
-      "date": "2026-11-02",
-      "name_en": "Logan Evans",
-      "team": "Seattle Mariners",
-      "text": "Seattle Mariners activated RHP Logan Evans from the 60-day injured list."
-    },
-    "669717": {
-      "kind": "from_il",
-      "date": "2026-11-02",
-      "name_en": "Will Wilson",
-      "team": "Seattle Mariners",
-      "text": "Seattle Mariners activated 3B Will Wilson from the 60-day injured list."
-    },
-    "641933": {
-      "kind": "from_il",
-      "date": "2026-11-02",
-      "name_en": "Tyler O'Neill",
-      "team": "Baltimore Orioles",
-      "text": "Baltimore Orioles activated RF Tyler O'Neill from the 60-day injured list."
-    },
-    "664074": {
-      "kind": "from_il",
-      "date": "2026-11-02",
-      "name_en": "Cody Ponce",
-      "team": "Toronto Blue Jays",
-      "text": "Toronto Blue Jays activated RHP Cody Ponce from the 60-day injured list."
-    },
-    "681481": {
-      "kind": "from_il",
-      "date": "2026-11-02",
-      "name_en": "Kerry Carpenter",
+      "name_en": "Trey Sweeney",
       "team": "Detroit Tigers",
-      "text": "Detroit Tigers activated RF Kerry Carpenter from the 60-day injured list."
+      "text": "Detroit Tigers activated SS Trey Sweeney from the 60-day injured list."
     },
-    "571946": {
+    "642201": {
       "kind": "from_il",
       "date": "2026-11-02",
-      "name_en": "Shelby Miller",
-      "team": "Chicago Cubs",
-      "text": "Chicago Cubs activated RHP Shelby Miller from the 60-day injured list."
-    },
-    "694361": {
-      "kind": "from_il",
-      "date": "2026-11-02",
-      "name_en": "Will Klein",
-      "team": "Los Angeles Dodgers",
-      "text": "Los Angeles Dodgers activated RHP Will Klein from the 60-day injured list."
-    },
-    "694918": {
-      "kind": "from_il",
-      "date": "2026-11-02",
-      "name_en": "Blade Tidwell",
-      "team": "San Francisco Giants",
-      "text": "San Francisco Giants activated RHP Blade Tidwell from the 60-day injured list."
-    },
-    "687931": {
-      "kind": "from_il",
-      "date": "2026-11-02",
-      "name_en": "Carson Whisenhunt",
-      "team": "San Francisco Giants",
-      "text": "San Francisco Giants activated LHP Carson Whisenhunt from the 60-day injured list."
-    },
-    "678009": {
-      "kind": "from_il",
-      "date": "2026-11-02",
-      "name_en": "Parker Meadows",
-      "team": "Detroit Tigers",
-      "text": "Detroit Tigers activated CF Parker Meadows from the 60-day injured list."
-    },
-    "621043": {
-      "kind": "from_il",
-      "date": "2026-11-02",
-      "name_en": "Carlos Correa",
-      "team": "Houston Astros",
-      "text": "Houston Astros activated SS Carlos Correa from the 60-day injured list."
-    },
-    "663485": {
-      "kind": "from_il",
-      "date": "2026-11-02",
-      "name_en": "Cole Sands",
-      "team": "Minnesota Twins",
-      "text": "Minnesota Twins activated RHP Cole Sands from the 60-day injured list."
-    },
-    "592858": {
-      "kind": "from_il",
-      "date": "2026-11-02",
-      "name_en": "Rowan Wick",
-      "team": "San Francisco Giants",
-      "text": "San Francisco Giants activated RHP Rowan Wick from the 60-day injured list."
+      "name_en": "Eli White",
+      "team": "Boston Red Sox",
+      "text": "Boston Red Sox activated CF Eli White from the 60-day injured list."
     },
     "622663": {
       "kind": "from_il",
@@ -1381,6 +338,13 @@
       "name_en": "Luis Severino",
       "team": "Athletics",
       "text": "Athletics activated RHP Luis Severino from the 60-day injured list."
+    },
+    "702047": {
+      "kind": "from_il",
+      "date": "2026-11-02",
+      "name_en": "Alex Cook",
+      "team": "Tampa Bay Rays",
+      "text": "Tampa Bay Rays activated RHP Alex Cook."
     },
     "694494": {
       "kind": "from_il",
@@ -1480,47 +444,82 @@
       "team": "San Francisco Giants",
       "text": "San Francisco Giants activated LF Casey Schmitt from the 60-day injured list."
     },
-    "679032": {
+    "696275": {
       "kind": "from_il",
       "date": "2026-11-02",
-      "name_en": "Johan Rojas",
-      "team": "Philadelphia Phillies",
-      "text": "Philadelphia Phillies activated CF Johan Rojas from the 60-day injured list."
+      "name_en": "RJ Petit",
+      "team": "Colorado Rockies",
+      "text": "Colorado Rockies activated RHP RJ Petit from the 60-day injured list."
     },
-    "691008": {
+    "670955": {
       "kind": "from_il",
       "date": "2026-11-02",
-      "name_en": "Max Rajcic",
-      "team": "St. Louis Cardinals",
-      "text": "St. Louis Cardinals activated RHP Max Rajcic from the 60-day injured list."
+      "name_en": "Edwin Uceta",
+      "team": "Tampa Bay Rays",
+      "text": "Tampa Bay Rays activated RHP Edwin Uceta from the 60-day injured list."
     },
-    "656731": {
+    "671213": {
       "kind": "from_il",
       "date": "2026-11-02",
-      "name_en": "Tylor Megill",
-      "team": "New York Mets",
-      "text": "New York Mets activated RHP Tylor Megill from the 60-day injured list."
+      "name_en": "Triston Casas",
+      "team": "Boston Red Sox",
+      "text": "Boston Red Sox activated 1B Triston Casas from the 60-day injured list."
     },
-    "593871": {
+    "676710": {
       "kind": "from_il",
       "date": "2026-11-02",
-      "name_en": "Jorge Polanco",
-      "team": "New York Mets",
-      "text": "New York Mets activated DH Jorge Polanco from the 60-day injured list."
+      "name_en": "Kutter Crawford",
+      "team": "Boston Red Sox",
+      "text": "Boston Red Sox activated RHP Kutter Crawford from the 60-day injured list."
     },
-    "656605": {
+    "670912": {
       "kind": "from_il",
       "date": "2026-11-02",
-      "name_en": "Mitch Keller",
-      "team": "Pittsburgh Pirates",
-      "text": "Pittsburgh Pirates activated RHP Mitch Keller from the 60-day injured list."
+      "name_en": "Johan Oviedo",
+      "team": "Boston Red Sox",
+      "text": "Boston Red Sox activated RHP Johan Oviedo from the 60-day injured list."
     },
-    "682848": {
+    "667670": {
       "kind": "from_il",
       "date": "2026-11-02",
-      "name_en": "Endy Rodríguez",
-      "team": "Pittsburgh Pirates",
-      "text": "Pittsburgh Pirates activated C Endy Rodríguez from the 60-day injured list."
+      "name_en": "Brent Rooker",
+      "team": "Athletics",
+      "text": "Athletics activated DH Brent Rooker from the 60-day injured list."
+    },
+    "691016": {
+      "kind": "from_il",
+      "date": "2026-11-02",
+      "name_en": "Tyler Soderstrom",
+      "team": "Athletics",
+      "text": "Athletics activated LF Tyler Soderstrom from the 60-day injured list."
+    },
+    "518585": {
+      "kind": "from_il",
+      "date": "2026-11-02",
+      "name_en": "Fernando Cruz",
+      "team": "New York Yankees",
+      "text": "New York Yankees activated RHP Fernando Cruz from the 60-day injured list."
+    },
+    "664208": {
+      "kind": "from_il",
+      "date": "2026-11-02",
+      "name_en": "Phil Maton",
+      "team": "Chicago Cubs",
+      "text": "Chicago Cubs activated RHP Phil Maton from the 60-day injured list."
+    },
+    "687863": {
+      "kind": "from_il",
+      "date": "2026-11-02",
+      "name_en": "Porter Hodge",
+      "team": "Chicago Cubs",
+      "text": "Chicago Cubs activated RHP Porter Hodge from the 60-day injured list."
+    },
+    "678692": {
+      "kind": "from_il",
+      "date": "2026-11-02",
+      "name_en": "Ronny Henriquez",
+      "team": "Miami Marlins",
+      "text": "Miami Marlins activated RHP Ronny Henriquez from the 60-day injured list."
     },
     "657585": {
       "kind": "from_il",
@@ -1585,47 +584,411 @@
       "team": "San Francisco Giants",
       "text": "San Francisco Giants activated CF Harrison Bader from the 60-day injured list."
     },
-    "672761": {
+    "641745": {
       "kind": "from_il",
       "date": "2026-11-02",
-      "name_en": "Wenceel Pérez",
+      "name_en": "Brad Keller",
+      "team": "Philadelphia Phillies",
+      "text": "Philadelphia Phillies activated RHP Brad Keller from the 60-day injured list."
+    },
+    "668873": {
+      "kind": "from_il",
+      "date": "2026-11-02",
+      "name_en": "Caleb Kilian",
+      "team": "Philadelphia Phillies",
+      "text": "Philadelphia Phillies activated RHP Caleb Kilian from the 60-day injured list."
+    },
+    "694025": {
+      "kind": "from_il",
+      "date": "2026-11-02",
+      "name_en": "Felix Reyes",
+      "team": "Philadelphia Phillies",
+      "text": "Philadelphia Phillies activated LF Felix Reyes."
+    },
+    "680695": {
+      "kind": "from_il",
+      "date": "2026-11-02",
+      "name_en": "Brennen Davis",
+      "team": "Seattle Mariners",
+      "text": "Seattle Mariners activated CF Brennen Davis from the 60-day injured list."
+    },
+    "688138": {
+      "kind": "from_il",
+      "date": "2026-11-02",
+      "name_en": "Logan Evans",
+      "team": "Seattle Mariners",
+      "text": "Seattle Mariners activated RHP Logan Evans from the 60-day injured list."
+    },
+    "669717": {
+      "kind": "from_il",
+      "date": "2026-11-02",
+      "name_en": "Will Wilson",
+      "team": "Seattle Mariners",
+      "text": "Seattle Mariners activated 3B Will Wilson from the 60-day injured list."
+    },
+    "641933": {
+      "kind": "from_il",
+      "date": "2026-11-02",
+      "name_en": "Tyler O'Neill",
+      "team": "Baltimore Orioles",
+      "text": "Baltimore Orioles activated RF Tyler O'Neill from the 60-day injured list."
+    },
+    "664074": {
+      "kind": "from_il",
+      "date": "2026-11-02",
+      "name_en": "Cody Ponce",
+      "team": "Toronto Blue Jays",
+      "text": "Toronto Blue Jays activated RHP Cody Ponce from the 60-day injured list."
+    },
+    "681481": {
+      "kind": "from_il",
+      "date": "2026-11-02",
+      "name_en": "Kerry Carpenter",
       "team": "Detroit Tigers",
-      "text": "Detroit Tigers activated RF Wenceel Pérez from the 60-day injured list."
+      "text": "Detroit Tigers activated RF Kerry Carpenter from the 60-day injured list."
     },
-    "681857": {
+    "571946": {
       "kind": "from_il",
       "date": "2026-11-02",
-      "name_en": "Reese Olson",
-      "team": "Detroit Tigers",
-      "text": "Detroit Tigers activated RHP Reese Olson from the 60-day injured list."
+      "name_en": "Shelby Miller",
+      "team": "Chicago Cubs",
+      "text": "Chicago Cubs activated RHP Shelby Miller from the 60-day injured list."
     },
-    "676684": {
+    "694361": {
       "kind": "from_il",
       "date": "2026-11-02",
-      "name_en": "Will Vest",
-      "team": "Detroit Tigers",
-      "text": "Detroit Tigers activated RHP Will Vest from the 60-day injured list."
+      "name_en": "Will Klein",
+      "team": "Los Angeles Dodgers",
+      "text": "Los Angeles Dodgers activated RHP Will Klein from the 60-day injured list."
     },
-    "677161": {
+    "694918": {
       "kind": "from_il",
       "date": "2026-11-02",
-      "name_en": "Zack Kelly",
-      "team": "Boston Red Sox",
-      "text": "Boston Red Sox activated RHP Zack Kelly from the 60-day injured list."
+      "name_en": "Blade Tidwell",
+      "team": "San Francisco Giants",
+      "text": "San Francisco Giants activated RHP Blade Tidwell from the 60-day injured list."
     },
-    "686580": {
+    "687931": {
       "kind": "from_il",
       "date": "2026-11-02",
-      "name_en": "Justin Slaten",
-      "team": "Boston Red Sox",
-      "text": "Boston Red Sox activated RHP Justin Slaten from the 60-day injured list."
+      "name_en": "Carson Whisenhunt",
+      "team": "San Francisco Giants",
+      "text": "San Francisco Giants activated LHP Carson Whisenhunt from the 60-day injured list."
     },
-    "669261": {
-      "kind": "up",
+    "680718": {
+      "kind": "from_il",
       "date": "2026-11-02",
-      "name_en": "Jack Suwinski",
+      "name_en": "Addison Barger",
+      "team": "Toronto Blue Jays",
+      "text": "Toronto Blue Jays activated RF Addison Barger from the 60-day injured list."
+    },
+    "682729": {
+      "kind": "from_il",
+      "date": "2026-11-02",
+      "name_en": "Jonatan Clase",
+      "team": "Toronto Blue Jays",
+      "text": "Toronto Blue Jays activated LF Jonatan Clase from the 60-day injured list."
+    },
+    "671212": {
+      "kind": "from_il",
+      "date": "2026-11-02",
+      "name_en": "Joe Boyle",
       "team": "Tampa Bay Rays",
-      "text": "Tampa Bay Rays selected the contract of RF Jack Suwinski from Durham Bulls."
+      "text": "Tampa Bay Rays activated RHP Joe Boyle."
+    },
+    "668984": {
+      "kind": "from_il",
+      "date": "2026-11-02",
+      "name_en": "Casey Legumina",
+      "team": "Tampa Bay Rays",
+      "text": "Tampa Bay Rays activated RHP Casey Legumina."
+    },
+    "663556": {
+      "kind": "from_il",
+      "date": "2026-11-02",
+      "name_en": "Shane McClanahan",
+      "team": "Tampa Bay Rays",
+      "text": "Tampa Bay Rays activated LHP Shane McClanahan."
+    },
+    "700652": {
+      "kind": "from_il",
+      "date": "2026-11-02",
+      "name_en": "Kenny Piper",
+      "team": "Tampa Bay Rays",
+      "text": "Tampa Bay Rays activated C Kenny Piper."
+    },
+    "692030": {
+      "kind": "from_il",
+      "date": "2026-11-02",
+      "name_en": "Jose Corniell",
+      "team": "Texas Rangers",
+      "text": "Texas Rangers activated RHP Jose Corniell from the 60-day injured list."
+    },
+    "668390": {
+      "kind": "from_il",
+      "date": "2026-11-02",
+      "name_en": "Cole Winn",
+      "team": "Texas Rangers",
+      "text": "Texas Rangers activated RHP Cole Winn from the 60-day injured list."
+    },
+    "663773": {
+      "kind": "from_il",
+      "date": "2026-11-02",
+      "name_en": "Bryan Hoeing",
+      "team": "San Diego Padres",
+      "text": "San Diego Padres activated RHP Bryan Hoeing from the 60-day injured list."
+    },
+    "656305": {
+      "kind": "from_il",
+      "date": "2026-11-02",
+      "name_en": "Matt Chapman",
+      "team": "San Francisco Giants",
+      "text": "San Francisco Giants activated 3B Matt Chapman from the 60-day injured list."
+    },
+    "666711": {
+      "kind": "from_il",
+      "date": "2026-11-02",
+      "name_en": "Joel Peguero",
+      "team": "San Francisco Giants",
+      "text": "San Francisco Giants activated RHP Joel Peguero from the 60-day injured list."
+    },
+    "687888": {
+      "kind": "from_il",
+      "date": "2026-11-02",
+      "name_en": "Brandon Walter",
+      "team": "Houston Astros",
+      "text": "Houston Astros activated LHP Brandon Walter from the 60-day injured list."
+    },
+    "702474": {
+      "kind": "from_il",
+      "date": "2026-11-02",
+      "name_en": "Mike Paredes",
+      "team": "Minnesota Twins",
+      "text": "Minnesota Twins activated RHP Mike Paredes from the 60-day injured list."
+    },
+    "682988": {
+      "kind": "from_il",
+      "date": "2026-11-02",
+      "name_en": "Tyler Locklear",
+      "team": "Arizona Diamondbacks",
+      "text": "Arizona Diamondbacks activated 1B Tyler Locklear from the 60-day injured list."
+    },
+    "685314": {
+      "kind": "from_il",
+      "date": "2026-11-02",
+      "name_en": "Andrew Saalfrank",
+      "team": "Arizona Diamondbacks",
+      "text": "Arizona Diamondbacks activated LHP Andrew Saalfrank from the 60-day injured list."
+    },
+    "694813": {
+      "kind": "from_il",
+      "date": "2026-11-02",
+      "name_en": "Gavin Stone",
+      "team": "Los Angeles Dodgers",
+      "text": "Los Angeles Dodgers activated RHP Gavin Stone from the 60-day injured list."
+    },
+    "691740": {
+      "kind": "from_il",
+      "date": "2026-11-02",
+      "name_en": "Daniel Susac",
+      "team": "San Francisco Giants",
+      "text": "San Francisco Giants activated C Daniel Susac from the 60-day injured list."
+    },
+    "676775": {
+      "kind": "from_il",
+      "date": "2026-11-02",
+      "name_en": "Keaton Winn",
+      "team": "San Francisco Giants",
+      "text": "San Francisco Giants activated RHP Keaton Winn from the 60-day injured list."
+    },
+    "666374": {
+      "kind": "from_il",
+      "date": "2026-11-02",
+      "name_en": "Matt Brash",
+      "team": "Seattle Mariners",
+      "text": "Seattle Mariners activated RHP Matt Brash from the 60-day injured list."
+    },
+    "689546": {
+      "kind": "from_il",
+      "date": "2026-11-02",
+      "name_en": "Nick Davila",
+      "team": "Seattle Mariners",
+      "text": "Seattle Mariners activated RHP Nick Davila from the 60-day injured list."
+    },
+    "806068": {
+      "kind": "from_il",
+      "date": "2026-11-02",
+      "name_en": "Colt Emerson",
+      "team": "Seattle Mariners",
+      "text": "Seattle Mariners activated SS Colt Emerson from the 60-day injured list."
+    },
+    "670042": {
+      "kind": "from_il",
+      "date": "2026-11-02",
+      "name_en": "Luke Raley",
+      "team": "Seattle Mariners",
+      "text": "Seattle Mariners activated RF Luke Raley from the 60-day injured list."
+    },
+    "680694": {
+      "kind": "from_il",
+      "date": "2026-11-02",
+      "name_en": "Kyle Bradish",
+      "team": "Baltimore Orioles",
+      "text": "Baltimore Orioles activated RHP Kyle Bradish from the 60-day injured list."
+    },
+    "664854": {
+      "kind": "from_il",
+      "date": "2026-11-02",
+      "name_en": "Ryan Helsley",
+      "team": "Baltimore Orioles",
+      "text": "Baltimore Orioles activated RHP Ryan Helsley from the 60-day injured list."
+    },
+    "621244": {
+      "kind": "from_il",
+      "date": "2026-11-02",
+      "name_en": "José Berríos",
+      "team": "Toronto Blue Jays",
+      "text": "Toronto Blue Jays activated RHP José Berríos from the 60-day injured list."
+    },
+    "623993": {
+      "kind": "from_il",
+      "date": "2026-11-02",
+      "name_en": "Anthony Santander",
+      "team": "Toronto Blue Jays",
+      "text": "Toronto Blue Jays activated RF Anthony Santander from the 60-day injured list."
+    },
+    "669438": {
+      "kind": "from_il",
+      "date": "2026-11-02",
+      "name_en": "Mason Englert",
+      "team": "Tampa Bay Rays",
+      "text": "Tampa Bay Rays activated RHP Mason Englert."
+    },
+    "811315": {
+      "kind": "from_il",
+      "date": "2026-11-02",
+      "name_en": "Brody Hopkins",
+      "team": "Tampa Bay Rays",
+      "text": "Tampa Bay Rays activated RHP Brody Hopkins."
+    },
+    "691441": {
+      "kind": "from_il",
+      "date": "2026-11-02",
+      "name_en": "Cristian Mena",
+      "team": "Arizona Diamondbacks",
+      "text": "Arizona Diamondbacks activated RHP Cristian Mena from the 60-day injured list."
+    },
+    "657006": {
+      "kind": "from_il",
+      "date": "2026-11-02",
+      "name_en": "Justin Steele",
+      "team": "Chicago Cubs",
+      "text": "Chicago Cubs activated LHP Justin Steele from the 60-day injured list."
+    },
+    "676962": {
+      "kind": "from_il",
+      "date": "2026-11-02",
+      "name_en": "Ben Brown",
+      "team": "Chicago Cubs",
+      "text": "Chicago Cubs activated RHP Ben Brown from the 60-day injured list."
+    },
+    "690990": {
+      "kind": "from_il",
+      "date": "2026-11-02",
+      "name_en": "Cade Horton",
+      "team": "Chicago Cubs",
+      "text": "Chicago Cubs activated RHP Cade Horton from the 60-day injured list."
+    },
+    "685326": {
+      "kind": "from_il",
+      "date": "2026-11-02",
+      "name_en": "McCade Brown",
+      "team": "Colorado Rockies",
+      "text": "Colorado Rockies activated RHP McCade Brown from the 60-day injured list."
+    },
+    "592178": {
+      "kind": "from_il",
+      "date": "2026-11-02",
+      "name_en": "Kris Bryant",
+      "team": "Colorado Rockies",
+      "text": "Colorado Rockies activated DH Kris Bryant from the 60-day injured list."
+    },
+    "801403": {
+      "kind": "from_il",
+      "date": "2026-11-02",
+      "name_en": "Chase Dollander",
+      "team": "Colorado Rockies",
+      "text": "Colorado Rockies activated RHP Chase Dollander from the 60-day injured list."
+    },
+    "676508": {
+      "kind": "from_il",
+      "date": "2026-11-02",
+      "name_en": "Ben Casparius",
+      "team": "Los Angeles Dodgers",
+      "text": "Los Angeles Dodgers activated RHP Ben Casparius from the 60-day injured list."
+    },
+    "664776": {
+      "kind": "from_il",
+      "date": "2026-11-02",
+      "name_en": "Jake Cousins",
+      "team": "Los Angeles Dodgers",
+      "text": "Los Angeles Dodgers activated RHP Jake Cousins from the 60-day injured list."
+    },
+    "677053": {
+      "kind": "from_il",
+      "date": "2026-11-02",
+      "name_en": "Andrew Nardi",
+      "team": "Miami Marlins",
+      "text": "Miami Marlins activated LHP Andrew Nardi from the 60-day injured list."
+    },
+    "800049": {
+      "kind": "from_il",
+      "date": "2026-11-02",
+      "name_en": "Adam Mazur",
+      "team": "Miami Marlins",
+      "text": "Miami Marlins activated RHP Adam Mazur from the 60-day injured list."
+    },
+    "702281": {
+      "kind": "from_il",
+      "date": "2026-11-02",
+      "name_en": "Robby Snelling",
+      "team": "Miami Marlins",
+      "text": "Miami Marlins activated LHP Robby Snelling from the 60-day injured list."
+    },
+    "683679": {
+      "kind": "from_il",
+      "date": "2026-11-02",
+      "name_en": "Jesus Rodriguez",
+      "team": "San Francisco Giants",
+      "text": "San Francisco Giants activated C Jesus Rodriguez."
+    },
+    "678009": {
+      "kind": "from_il",
+      "date": "2026-11-02",
+      "name_en": "Parker Meadows",
+      "team": "Detroit Tigers",
+      "text": "Detroit Tigers activated CF Parker Meadows from the 60-day injured list."
+    },
+    "621043": {
+      "kind": "from_il",
+      "date": "2026-11-02",
+      "name_en": "Carlos Correa",
+      "team": "Houston Astros",
+      "text": "Houston Astros activated SS Carlos Correa from the 60-day injured list."
+    },
+    "663485": {
+      "kind": "from_il",
+      "date": "2026-11-02",
+      "name_en": "Cole Sands",
+      "team": "Minnesota Twins",
+      "text": "Minnesota Twins activated RHP Cole Sands from the 60-day injured list."
+    },
+    "592858": {
+      "kind": "from_il",
+      "date": "2026-11-02",
+      "name_en": "Rowan Wick",
+      "team": "San Francisco Giants",
+      "text": "San Francisco Giants activated RHP Rowan Wick from the 60-day injured list."
     },
     "693739": {
       "kind": "up",
@@ -1633,6 +996,13 @@
       "name_en": "Alexander Alberto",
       "team": "Tampa Bay Rays",
       "text": "Tampa Bay Rays selected the contract of RHP Alexander Alberto from Durham Bulls."
+    },
+    "663967": {
+      "kind": "up",
+      "date": "2026-11-02",
+      "name_en": "César Salazar",
+      "team": "Houston Astros",
+      "text": "Houston Astros selected the contract of C César Salazar from Sugar Land Space Cowboys."
     },
     "682610": {
       "kind": "up",
@@ -1648,12 +1018,12 @@
       "team": "San Diego Padres",
       "text": "San Diego Padres selected the contract of LHP Luis Gutierrez from El Paso Chihuahuas."
     },
-    "663967": {
+    "669261": {
       "kind": "up",
       "date": "2026-11-02",
-      "name_en": "César Salazar",
-      "team": "Houston Astros",
-      "text": "Houston Astros selected the contract of C César Salazar from Sugar Land Space Cowboys."
+      "name_en": "Jack Suwinski",
+      "team": "Tampa Bay Rays",
+      "text": "Tampa Bay Rays selected the contract of RF Jack Suwinski from Durham Bulls."
     },
     "682617": {
       "kind": "up",
@@ -1661,23 +1031,7 @@
       "name_en": "Marco Luciano",
       "team": "New York Yankees",
       "text": "New York Yankees selected the contract of SS Marco Luciano from Scranton/Wilkes-Barre RailRiders."
-    },
-    "696275": {
-      "kind": "from_il",
-      "date": "2026-11-02",
-      "name_en": "RJ Petit",
-      "team": "Colorado Rockies",
-      "text": "Colorado Rockies activated RHP RJ Petit from the 60-day injured list."
     }
   },
-  "japanese": {
-    "807747": {
-      "kind": "from_il",
-      "date": "2026-10-11",
-      "name_en": "Rikuu Nishida",
-      "team": "Chicago White Sox",
-      "text": "Chicago White Sox activated RF Rikuu Nishida.",
-      "name_jp": "西田陸浮"
-    }
-  }
+  "japanese": {}
 }
