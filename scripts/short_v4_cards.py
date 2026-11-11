@@ -121,7 +121,8 @@ def lines(value, size, width):
                 if word and word.start()>0:
                     result.append(line[:word.start()]);line=line[word.start():]+ch;continue
             # 句読点・閉じ括弧を行頭に置かない（Argon 11/11「。だけが次の行に落ちる」）。前の1字と一緒に送る。
-            if ch in NO_LINE_START and len(line)>1:
+            # 今の見た目の画素は凍結の比較があるので、新しい見た目（v2）の時だけ。
+            if r3.STYLE_V2 and ch in NO_LINE_START and len(line)>1:
                 result.append(line[:-1]);line=line[-1]+ch;continue
             result.append(line);line=''
         line += ch
