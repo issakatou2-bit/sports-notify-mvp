@@ -9,6 +9,7 @@ concurrency:
 env:
   COLLESPO_MOTION: ${{ vars.COLLESPO_MOTION || '' }}
   COLLESPO_BUBBLE: ${{ vars.COLLESPO_BUBBLE || '' }}
+  COLLESPO_STYLE: ${{ vars.COLLESPO_STYLE || '' }}
 
 jobs:
   repair:

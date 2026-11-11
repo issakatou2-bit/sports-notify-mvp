@@ -28,6 +28,7 @@ env:
   PYTHONUTF8: '1'
   COLLESPO_SAMPLE_ONLY: ${{ inputs.sample_only && 'true' || 'false' }}
   COLLESPO_LONGFORM_STYLE: v3
+  COLLESPO_STYLE: ${{ vars.COLLESPO_STYLE || '' }}
 
 jobs:
   render:
