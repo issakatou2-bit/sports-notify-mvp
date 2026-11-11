@@ -87,6 +87,8 @@ class Screen:
         import solo_host
         # 下部も情報・字幕・胸上で使う。旧v5の1150px下端やtickerは持ち込まない。
         ctx = r3._CAPTION
+        # 新しい見た目の動き用：キャラ・字幕・出典を描く前の絵（上の札＋真ん中の情報）
+        body_only = self.im.copy() if c.STYLE_V2 else None
         elapsed = self.t if r3._PROGRAM_CLOCK[0] is None else r3._PROGRAM_CLOCK[0]-ctx['start']
         line = r3.current_sentence(elapsed, ctx['text'], ctx['duration']) if ctx['text'] else ''
         speaker, _ = solo_host.presentation('metan', ('metan',))
@@ -131,6 +133,8 @@ class Screen:
         if rows:
             self.text(40 if c.measure(rows[0],size)[1]>R-L else L, 1880, rows[0], size, 1000, c.MUTED, role='source')
         self.im.info['readable_zones'] = dict(body=[L,BODY_TOP,R,BODY_BOTTOM], caption=CAPTION, portrait=PORTRAIT)
+        if c.STYLE_V2:
+            return self._slide_v2(body_only, ctx.get('duration') or 0)
         # 出現演出は1つ。説明中に動かさず、キャラ・字幕も同時にフェード。
         if self.t < .35:
             from PIL import Image
@@ -139,6 +143,42 @@ class Screen:
             self.im = Image.blend(c._background(), self.im, max(0,self.t/.35))
             self.im.info = info
         return self.im
+
+    def _slide_v2(self, body_only, duration):
+        """新しい見た目の動き（Argon 11/10 の見本と同じ）。真ん中の情報だけが右から0.28秒で入り、
+        区間の終わりに左へ0.14秒で抜ける。上の札・キャラ・字幕・出典は動かさない。説明中は完全に止まる。"""
+        import style_v2
+        from PIL import Image, ImageChops
+        t, out_len = self.t, style_v2.TR / 2
+        if t < style_v2.TR:
+            u = style_v2.ease_sharp(t / style_v2.TR); dx, alpha = (1-u)*540, u
+            phase = 'enter'
+        elif duration and duration - t < out_len:
+            u = style_v2.ease_out((t-(duration-out_len)) / out_len); dx, alpha = -u*540, 1-u
+            phase = 'exit'
+        else:
+            self.im.info['readable_motion'] = 'v2 右から0.28秒・説明中停止・左へ0.14秒'
+            return self.im
+        final = self.im
+        info = final.info
+        top, bottom = 236, 1600
+        # 後から重ねたキャラ・字幕・出典の画素は動かさない（描く前との差がある所）
+        overlay = ImageChops.difference(final.convert('RGB'), body_only.convert('RGB')).convert('L').point(lambda v: 255 if v else 0)
+        frame = final.copy().convert('RGBA')
+        ground = c._background(tuple(info.get('v5_tints', ()))).convert('RGBA').crop((0, top, 1080, bottom))
+        moving = style_v2.shifted(body_only.convert('RGBA').crop((0, top, 1080, bottom)), dx, alpha)
+        if moving is not None:
+            ground.alpha_composite(moving)
+        frame.paste(ground, (0, top))
+        frame.paste(final.convert('RGBA'), (0, 0), overlay)
+        out = frame.convert(final.mode)
+        out.info = info
+        out.info['readable_motion'] = 'v2 右から0.28秒・説明中停止・左へ0.14秒'
+        out.info['v2_slide'] = dict(phase=phase, dx=round(dx), alpha=round(alpha, 3))
+        if phase == 'enter':
+            info['timeline_subtitle_visible'] = t > 0
+        self.im = out
+        return out
 
     def roster(self, spec):
         rows = spec['rows']
@@ -159,6 +199,33 @@ class Screen:
                     x=100+j*268
                     box=self.text(x,stat_y,value,120 if len(shown)==1 else 76,160,c.LIME,True)
                     self.text(box[2]+10,stat_y+36,unit,30,110,role='supplement')
+        return self.finish(spec)
+
+    def week_player(self, spec):
+        """週の回の1人の札（新しい見た目の時だけ。他の場面と同じ配置・字幕帯にそろえる、Argon 11/11）。
+        上の札：名前・クラブ・大きな数字と単位・補足。下の札：小さな数字（数字のすぐ下に単位）。情報域の下端まで使う。"""
+        self.title(spec['kicker'])
+        values = [v for v in spec.get('chips', []) if v and str(v[0]) != ''][:3]
+        top, gap = BODY_TOP, 28
+        bottom = top + 640 if values else BODY_BOTTOM
+        self.panel(top, bottom)
+        self.text(100, top+36, spec['name'], 76, 800)
+        self.name(100, top+150, spec['club'], 800, 48)
+        if spec.get('big'):
+            box = self.text(100, top+250, spec['big'], 240, 520, c.LIME, True)
+            self.text(box[2]+24, box[3]-76, spec.get('unit', ''), 56, max(120, R-box[2]-60), role='supplement')
+        y = bottom - 40 - 52*len(spec.get('notes', []))
+        for line in spec.get('notes', []):
+            y = self.lines(100, y, line, 40, 800, c.MUTED)
+        if values:
+            y = bottom + gap
+            w = (R-L-gap*(len(values)-1))//len(values)
+            mid = (y + BODY_BOTTOM)//2
+            for i, (value, unit) in enumerate(values):
+                x = L+i*(w+gap)
+                self.panel(y, BODY_BOTTOM, x, x+w)
+                box = self.text(x+36, mid-110, value, 120, w-72, c.LIME, True)
+                self.text(x+36, box[3]+18, unit, 36, w-72, role='supplement')
         return self.finish(spec)
 
     def centered_score(self, game, y):
@@ -639,6 +706,7 @@ def slots_frame(t, seg, plan):
     spec=seg['meta'];s=Screen(plan['clubs'],max(.35,t) if spec.get('progressive_rows') else t);kind=seg['kind']
     if kind=='jp_roster':return s.roster(spec)
     if kind=='standings':return s.standings(spec)
+    if kind=='jp_player' and c.STYLE_V2:return s.week_player(spec)
     if plan['mode']=='preview' and kind in ('cover','preview'):
         specs=[x['meta'] for x in plan['narration']['segments'] if x['kind']=='preview']
         from datetime import datetime

@@ -39,6 +39,7 @@ jobs:
       COLLESPO_SOCCER_FOCUS: ${{ vars.COLLESPO_SOCCER_FOCUS == 'on' && 'on' || 'off' }}
       COLLESPO_SOCCER_WEEK: ${{ vars.COLLESPO_SOCCER_WEEK || 'off' }}
       COLLESPO_BUBBLE: ${{ vars.COLLESPO_BUBBLE || '' }}
+      COLLESPO_STYLE: ${{ vars.COLLESPO_STYLE || '' }}
       COLLESPO_MOTION: ${{ vars.COLLESPO_MOTION || '' }}
       COLLESPO_CAPTION_BREAKS: ${{ vars.COLLESPO_CAPTION_BREAKS || '' }}
       COLLESPO_SLANT_VARIANT: ${{ vars.COLLESPO_SLANT_VARIANT || 'cream' }}

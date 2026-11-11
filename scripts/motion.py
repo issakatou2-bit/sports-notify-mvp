@@ -101,11 +101,16 @@ def excerpt(text, fits):
 @lru_cache(maxsize=32)
 def _list_tiles(payload, heading, soccer, quote_keys=()):
     scale = SETTINGS['scale']; w = VIEW[2]-VIEW[0]; h = VIEW[3]-VIEW[1]
+    import review_render_v3 as r3
+    flat = r3.STYLE_V2   # 新しい見た目：濃紺の面、斜線・角丸の枠なし、左の黄の線だけ
     ink = (242, 243, 228); accent = (192, 224, 93) if soccer else (242, 207, 135)
     bg = (23, 53, 43) if soccer else (28, 41, 51)
+    if flat:
+        import style_v2
+        ink, accent, bg = style_v2.WHITE, style_v2.ACCENT, (12, 20, 40)
     canvas = Image.new('RGB', (w*scale, h*scale), bg)
     d = ImageDraw.Draw(canvas)
-    for y in range(0, h*scale, 48*scale):
+    for y in range(0, h*scale, 48*scale) if not flat else ():
         d.line((0, y, w*scale, y-180*scale), fill=(34, 59, 60), width=2*scale)
     top = 145 if len(payload)<=3 else 110
     step = min(210, (h-top-140)//len(payload))
@@ -116,8 +121,12 @@ def _list_tiles(payload, heading, soccer, quote_keys=()):
         index = len(tiles); box = (80, top+index*step, w-80, top+(index+1)*step-(6 if len(payload)>=6 else 12))
         tile = Image.new('RGB', ((box[2]-box[0])*scale, (box[3]-box[1])*scale), bg)
         draw = ImageDraw.Draw(tile)
-        draw.rounded_rectangle((0, 0, tile.width-1, tile.height-1), radius=16*scale,
-                               fill=(40, 63, 62) if soccer else (43, 57, 69), outline=accent, width=2*scale)
+        if flat:
+            draw.rectangle((0, 0, tile.width-1, tile.height-1), fill=(24, 36, 64))
+            draw.rectangle((0, 0, 6*scale-1, tile.height-1), fill=accent)
+        else:
+            draw.rounded_rectangle((0, 0, tile.width-1, tile.height-1), radius=16*scale,
+                                   fill=(40, 63, 62) if soccer else (43, 57, 69), outline=accent, width=2*scale)
         original_title = title
         suffix = '　'.join(v for v in (body,metric) if v)
         compact=len(payload)>3;dense=len(payload)>=6
@@ -167,6 +176,11 @@ def _list_tiles(payload, heading, soccer, quote_keys=()):
             texts.append(dict(key=key,box=tuple(v/scale + (box[0] if i%2==0 else box[1]) for i,v in enumerate(b)),text=metric,size=28))
         tiles.append((tile, number_box));boxes.append(box)
     return canvas, tiles, boxes, texts
+
+
+def r3_flat():
+    import review_render_v3 as r3
+    return r3.STYLE_V2
 
 
 def pulse(tile, box, elapsed):
@@ -223,7 +237,7 @@ def list_frame(im, t, rows, heading, cues=(), duration=8, entrance=True, soccer=
             transformed.append(dict(entry,box=new))
     piece=canvas.resize((w,h),Image.Resampling.LANCZOS)
     head=base.crop((0,0,w*s,68*s))
-    ImageDraw.Draw(head).text((24*s,12*s),heading,font=font(36*s),fill=(242,243,228))
+    ImageDraw.Draw(head).text((24*s,12*s),heading,font=font(36*s),fill=(244,246,250) if r3_flat() else (242,243,228))
     piece.paste(head.resize((w,68),Image.Resampling.LANCZOS),(0,0))
     out=im.copy();out.paste(piece,VIEW[:2]);out.info.update(im.info)
     out.info['motion']=dict(active=str(rows[active]['key']) if active is not None else None,zoom=1.,

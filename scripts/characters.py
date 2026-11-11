@@ -280,6 +280,10 @@ def bubble(im, speaker, text):
     if os.environ.get("COLLESPO_BUBBLE") in ("slant", "glass"):
         import bubble_styles
         return bubble_styles.draw(im, speaker, text)
+    if r3.STYLE_V2:
+        # 新しい見た目：白い吹き出しをやめ、サッカーと同じ暗い真っ直ぐな字幕帯（数字は黄）
+        import bubble_styles
+        return bubble_styles.draw(im, speaker, text, style='slant')
     x0, y0, x1, y1 = BUBBLE
     color = COLORS[speaker]
     base = im.convert("RGBA")

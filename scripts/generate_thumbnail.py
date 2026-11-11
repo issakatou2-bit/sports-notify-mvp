@@ -78,6 +78,11 @@ TEXT = (242, 240, 230)
 DIM = (136, 145, 163)
 ACCENT = (255, 176, 32)
 JP = (73, 197, 182)
+# 新しい見た目（COLLESPO_STYLE=v2、11/10 本人）：濃紺の地・白と灰・黄1色。既定は今のまま。
+STYLE_V2 = os.environ.get("COLLESPO_STYLE") == "v2"
+if STYLE_V2:
+    BG, SURF, TEXT, DIM = (10, 16, 32), (22, 32, 56), (244, 246, 250), (150, 162, 186)
+    ACCENT = JP = (214, 250, 70)
 
 
 
@@ -143,6 +148,12 @@ def fit(d, text: str, max_w: int, sizes) -> int:
 
 
 def base():
+    if STYLE_V2:
+        import style_v2
+        im = style_v2.background(0, W, H).convert("RGB")
+        d = ImageDraw.Draw(im)
+        d.rectangle([0, H - 10, W, H], fill=ACCENT)
+        return im, d
     im = Image.new("RGB", (W, H), BG)
     d = ImageDraw.Draw(im)
     for i in range(-1, 7):

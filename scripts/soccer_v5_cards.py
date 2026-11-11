@@ -31,6 +31,19 @@ DARK=(18,28,24)
 BOARD=(20,48,36)
 FONT_DIR=Path(__file__).resolve().parents[1]/'assets/fonts/soccer-v5'
 LINE_COLORS=original.LINE_COLORS
+# 新しい見た目（11/10 Argon と作った濃紺＋黄1色、scripts/style_v2.py）。切替 COLLESPO_STYLE=v2 の時だけ。
+# 既定値は下の関数の引数に入るので、関数の定義より前で入れ替える。斜めの札は真っ直ぐに。
+STYLE_V2=os.environ.get('COLLESPO_STYLE')=='v2'
+if STYLE_V2:
+    import style_v2
+    SLANT=0.
+    PITCH=style_v2.NAVY_OUT
+    GRASS=(12,22,46)
+    CHALK=style_v2.WHITE
+    LIME=style_v2.ACCENT
+    MUTED=style_v2.GREY
+    DARK=(8,14,30)
+    BOARD=(16,28,56)   # 地より一段明るいだけ。のっぺりした箱に見せない
 
 
 @lru_cache(maxsize=128)
@@ -42,6 +55,8 @@ def jp(size,weight=700):
 
 @lru_cache(maxsize=96)
 def num(size):
+    if STYLE_V2:
+        return style_v2.num(size)
     return ImageFont.truetype(str(FONT_DIR/'BarlowCondensed-ExtraBoldItalic.ttf'),size)
 
 
@@ -154,12 +169,18 @@ def scarf(im,box,club,variant=None,label=True,fringe=False,inline=False):
         if h>=60:
             for yy in range(3,h,8):d.line((0,yy,w,yy),fill=mix(base,woven,.08),width=1)
     sk=round(h*SLANT);band=max(4,round(h*.36))
-    d.polygon([(sk+3,0),(sk+3+band,0),(3+band,h),(3,h)],fill=second)
-    d.polygon([(w-4,0),(w,0),(w-sk,h),(w-sk-4,h)],fill=second)
+    if STYLE_V2:
+        # 新しい見た目：主色の真っ直ぐな札だけ。2色目の帯と外の線を重ねない（Argon 11/11「二重でうるさい」）
+        band=0
+        layer=Image.new('RGB',(w,h),base)
+    else:
+        d.polygon([(sk+3,0),(sk+3+band,0),(3+band,h),(3,h)],fill=second)
+        d.polygon([(w-4,0),(w,0),(w-sk,h),(w-sk-4,h)],fill=second)
     mask=Image.new('L',(w,h),0);shape=para((0,0,w-1,h-1))
     ImageDraw.Draw(mask).polygon(shape,fill=255)
     im.paste(layer,(x,y),mask)
-    ImageDraw.Draw(im).line(para((x,y,right-1,bottom-1))+[para((x,y,right-1,bottom-1))[0]],fill=outline,width=2)
+    if not STYLE_V2:
+        ImageDraw.Draw(im).line(para((x,y,right-1,bottom-1))+[para((x,y,right-1,bottom-1))[0]],fill=outline,width=2)
     if fringe:
         if h<60:raise ValueError('房は大きい札だけ')
         for yy in range(y+5,bottom-3,7):
@@ -199,12 +220,24 @@ def club_name(im,x,y,club,size=36,color=CHALK,suffix='',width=None,display_name=
 def panel(im,box,fill=BOARD,edge=None):
     d=ImageDraw.Draw(im)
     d.polygon(para(box),fill=fill)
+    if STYLE_V2 and fill==BOARD:
+        # 札の上辺だけ細い光（見本の補足帯と同じ控えめな縁）
+        d.line((box[0],box[1],box[2],box[1]),fill=(52,66,100),width=2)
     if edge:d.line(para(box)+[para(box)[0]],fill=edge,width=2)
     rec(im,'card',box)
 
 
 @lru_cache(maxsize=12)
 def _background(tints=()):
+    if STYLE_V2:
+        # 芝の縞・ピッチの線をやめ、中心が明るい濃紺に粒子。試合結果の両クラブ色は薄く左右に残す。
+        im=style_v2.background(0).convert('RGB')
+        if len(tints)==2:
+            a,b=tints;tint=Image.new('RGBA',im.size,(0,0,0,0));d=ImageDraw.Draw(tint)
+            d.polygon([(0,236),(1080,236),(760,1150),(0,1150)],fill=tuple(a)+(26,))
+            d.polygon([(1080,236),(1080,1150),(760,1150)],fill=tuple(b)+(26,))
+            im=Image.alpha_composite(im.convert('RGBA'),tint).convert('RGB')
+        return im
     im=Image.new('RGB',(1080,1920),PITCH);d=ImageDraw.Draw(im)
     for y in range(0,1920,144):d.rectangle((0,y,1080,y+71),fill=GRASS)
     if len(tints)==2:
@@ -223,6 +256,12 @@ def canvas(t,clubs,label='欧州サッカー',tints=()):
     im=motion.background(_background(tuple(tints)).copy(),t)
     im.info=dict(soccer_v5=True,v3_layout=[],soccer_club_names=tuple(sorted({n for n,c in clubs.items() if n in (c.get('name_jp'),c['team_en']) and len(n)>=2},key=len,reverse=True)),v5_elapsed=t)
     d=ImageDraw.Draw(im)
+    if STYLE_V2:
+        # 上の札は文字だけ＋細い線（差し色の四角を置かない）
+        text(im,L,168,'コレスポ',40,role='header',weight=900,width=260)
+        text(im,L+250,175,label,30,MUTED,role='header',width=R-L-250)
+        d.line((L,224,R,224),fill=(46,58,86),width=2)
+        return im
     d.polygon(para((L,168,L+12,206)),fill=LIME)
     text(im,L+30,168,'コレスポ',40,role='header',weight=900,width=260)
     text(im,L+310,175,label,30,MUTED,role='header',width=R-L-310)
@@ -278,7 +317,8 @@ def _presenter(im,t):
     import solo_host
     speaker,cast=solo_host.presentation('metan',('metan',))
     characters.place_busts(im,speaker,line,elapsed,ctx['duration'] or 1,cast)
-    styled = os.environ.get('COLLESPO_BUBBLE') in ('slant','glass')
+    # 新しい見た目では古い画面でも字幕を暗い真っ直ぐな帯にそろえる（白い吹き出しを残さない）
+    styled = os.environ.get('COLLESPO_BUBBLE') in ('slant','glass') or STYLE_V2
     if line and not ctx.get('hide_caption') and styled:
         characters.bubble(im,speaker,line)
     if line and not ctx.get('hide_caption') and not styled:
@@ -309,8 +349,12 @@ def finish(im,t,spec):
     if len(body)>2:raise ValueError('出典が2行に入りません')
     for i,line in enumerate(body):text(im,L,1166+i*28,line,22,MUTED,width=860 if im.info.get('v3_outro') and soccer_look.focus() else 610,role='source')
     d=ImageDraw.Draw(im);d.rectangle((0,1486,1080,1574),fill=PITCH)
-    d.line((0,1488,1080,1488),fill=LIME,width=2);d.line((0,1572,1080,1572),fill=LIME,width=2)
-    for yy in range(1495,1570,8):d.line((0,yy,1080,yy),fill=GRASS,width=1)
+    if STYLE_V2:
+        # 新しい見た目：下の帯は縞と黄の二重線をやめ、上だけ細い線
+        d.line((0,1486,1080,1486),fill=(46,58,86),width=2)
+    else:
+        d.line((0,1488,1080,1488),fill=LIME,width=2);d.line((0,1572,1080,1572),fill=LIME,width=2)
+        for yy in range(1495,1570,8):d.line((0,yy,1080,yy),fill=GRASS,width=1)
     if spec.get('ticker'):
         value=spec['ticker'];text(im,L,1512,value,30,CHALK,width=R-L,role='ticker')
     _presenter(im,t)

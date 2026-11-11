@@ -124,13 +124,13 @@ def cover(t,data,clubs):
 
 
 def quote_panel(im,y,voice,layout,clubs,reply=False,reading=True):
-    h=layout['height'];color=v4.CREAM if reading else (186,185,173)
+    h=layout['height'];color=v4.CREAM if reading else v4.READ_CARD
     v4.panel(im,(L,y,R,y+h),color)
-    v4.text(im,L+24,y+4,'“',72,(163,125,54),width=80)
-    cards.plain(im,L+74,y+20,'↳ 返信（訳）' if reply else 'コメント（訳）',26,r3.DARK_INK,width=R-L-105)
-    pos=draw_lines(im,L+44,y+70,layout['ja'],layout['size'],r3.DARK_INK)
-    cards.plain(im,L+44,pos+8,'原文',24,(85,89,93),width=R-L-88)
-    pos=draw_lines(im,L+44,pos+42,layout['raw'],layout['original_size'],r3.DARK_INK)
+    v4.text(im,L+24,y+4,'“',72,v4.QUOTE_MARK,width=80)
+    cards.plain(im,L+74,y+20,'↳ 返信（訳）' if reply else 'コメント（訳）',26,v4.CARD_INK,width=R-L-105)
+    pos=draw_lines(im,L+44,y+70,layout['ja'],layout['size'],v4.CARD_INK)
+    cards.plain(im,L+44,pos+8,'原文',24,(150,162,186) if r3.STYLE_V2 else (85,89,93),width=R-L-88)
+    pos=draw_lines(im,L+44,pos+42,layout['raw'],layout['original_size'],v4.CARD_INK)
     x=L+30
     for value,fill in layout['metadata']:
         x+=v4.tag(im,x,y+h-68,value,fill or (49,60,73),size=24,width=min(260,R-30-x))+12

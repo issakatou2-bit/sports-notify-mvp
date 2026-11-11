@@ -1109,6 +1109,11 @@ def render_line(t, seg, portrait_dir="", topic="", panel=None, state=None, score
     dur: この画面の尺（秒）。字幕を尺のうちに出し切るのに使う。
     team_id: 球団（分かっていれば）。無ければ札・試合の球団名から探す。
     """
+    import longform_v2
+    if longform_v2.enabled(panel):
+        # 新しい見た目（COLLESPO_STYLE=v2）で、札に数字の形の中身がある回だけ。
+        return longform_v2.render_line(t, seg, topic, panel, chapters=chapters, progress=progress,
+                                       panel_t=panel_t, dur=dur)
     seg = seg or {}
     pt = t if panel_t is None else panel_t
     ct = t if chapter_t is None else chapter_t

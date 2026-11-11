@@ -59,6 +59,15 @@ CONTENT_BOTTOM = 1150 if LOOK == "v4" else 1216
 CAPTION_TOP, CAPTION_RIGHT, CAPTION_BOTTOM = 1248, 668, 1472
 SOURCE_BOTTOM = 1218 if LOOK == "v4" else 1478
 METAN_PINK = (238, 140, 186)
+# 新しい見た目（11/10 本人了承、scripts/style_v2.py）。切替 COLLESPO_STYLE=v2 の時だけ。
+# 地は球団色の縞ではなく濃紺＋粒子、字は白、差し色は黄1色。多くの部品が r3.INK / r3.GOLD を
+# 描く時に読むので、ここで入れ替えると MLB 側のショート全部に効く。
+STYLE_V2 = os.environ.get('COLLESPO_STYLE') == 'v2'
+if STYLE_V2:
+    import style_v2
+    INK = style_v2.WHITE
+    GOLD = style_v2.ACCENT
+    DARK_INK = (8, 14, 30)
 
 
 def record_box(im, role, box, text=''):
@@ -122,6 +131,9 @@ def _lum(c):
 def colors(team_id):
     """地の色（暗くして文字を読めるように）・2色目・札の色。"""
     import notability_engine as ne
+    if STYLE_V2:
+        # 球団色は札の小さな印だけに残し、地と札は共通の濃紺
+        return style_v2.NAVY_OUT, style_v2.GREY, (16, 28, 56)
     base = _hex(ne.MLB_TEAM_COLOR.get(str(team_id)) or "#183b35")
     # 明るさだけでなく、色の強さ（赤など）も抑える。地が派手だと文字が読みにくい
     while _lum(base) > 0.16 or max(base) > 120:
@@ -169,6 +181,9 @@ def _beam():
 def background(t, team_id):
     import motion
     if motion.enabled():t *= motion.SETTINGS['background_speed']
+    if STYLE_V2:
+        # 縞・照明の光・上の色帯をやめ、斜めの光がゆっくり流れるだけ
+        return motion.background(style_v2.background(t, W, H).convert('RGB'), t)
     base, second, _ = colors(team_id)
     im = Image.new("RGB", (W, H), base)
     d = ImageDraw.Draw(im)
@@ -190,7 +205,7 @@ def background(t, team_id):
 
 # ------------------------------------------------------------------ 部品
 def _header(d, label, page=None, second=(196, 206, 212)):
-    _text(d,(LEFT, 168), "コレスポ", font=font(44), fill=GOLD, role="header")
+    _text(d,(LEFT, 168), "コレスポ", font=font(44), fill=INK if STYLE_V2 else GOLD, role="header")
     _text(d,(LEFT + 210, 180), label, font=font(28), fill=second, role="header")
     if page:
         _text(d,(SAFE_RIGHT, 172), page, font=num_font(40), fill=GOLD, anchor="ra", role="header")
@@ -210,10 +225,11 @@ def _ticker_strip(text):
     probe = ImageDraw.Draw(Image.new("RGB", (8, 8)))
     w = round(probe.textlength(text, font=f)) + 112
     repeats = (W+w-1)//w+2
-    im = Image.new("RGB", (w * repeats, 88), GOLD)
+    # 新しい見た目では黄の塗りの帯にしない（Argon 11/10「蛍光色のベタ塗りは目を刺す」）。暗い帯に黄の字
+    im = Image.new("RGB", (w * repeats, 88), (12, 22, 46) if STYLE_V2 else GOLD)
     d = ImageDraw.Draw(im)
     for k in range(repeats):
-        _text(d,(k * w + 56, 44), text, font=f, fill=DARK_INK, anchor="lm")
+        _text(d,(k * w + 56, 44), text, font=f, fill=GOLD if STYLE_V2 else DARK_INK, anchor="lm")
     return im, w
 
 
@@ -222,8 +238,8 @@ def _single_ticker(text):
     f = font(40)
     probe = ImageDraw.Draw(Image.new('RGB',(8,8)))
     box = probe.textbbox((0,44),text,font=f,anchor='lm')
-    strip = Image.new('RGB',(box[2]-box[0]+112,88),GOLD)
-    ImageDraw.Draw(strip).text((56-box[0],44),text,font=f,fill=DARK_INK,anchor='lm')
+    strip = Image.new('RGB',(box[2]-box[0]+112,88),(12, 22, 46) if STYLE_V2 else GOLD)
+    ImageDraw.Draw(strip).text((56-box[0],44),text,font=f,fill=GOLD if STYLE_V2 else DARK_INK,anchor='lm')
     return strip
 
 

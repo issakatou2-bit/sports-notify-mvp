@@ -9,6 +9,11 @@ from PIL import ImageDraw, ImageEnhance
 import review_render_v3 as r3
 
 CREAM = (247, 242, 223)
+CARD_INK, QUOTE_MARK, CARD_GOLD, READ_CARD = r3.DARK_INK, (163, 125, 54), (152, 110, 37), (186, 185, 173)
+if r3.STYLE_V2:
+    # 新しい見た目：紙の札（クリーム）をやめ、地より明るい紺の札＋左の黄の線、字は白（Argon 11/11）
+    import style_v2
+    CREAM, CARD_INK, QUOTE_MARK, CARD_GOLD, READ_CARD = (30, 41, 59), style_v2.WHITE, style_v2.ACCENT, style_v2.ACCENT, (22, 30, 46)
 L, R = r3.LEFT, r3.SAFE_RIGHT
 TONE_COLORS = {'称賛': (40, 108, 80), '批判': (163, 56, 62), '中立': (75, 83, 98)}
 
@@ -100,6 +105,9 @@ def pinstripe_badge(im,x,y,tid,width,height,inline=False):
     return stamp.width
 
 
+NO_LINE_START = '。、，．！？」』）〕】ー…・%％'
+
+
 def lines(value, size, width):
     """書体の送り幅で折る。本文は縮小も省略もしない。"""
     f = r3.font(size); result=[]; line=''
@@ -112,6 +120,10 @@ def lines(value, size, width):
                 word=re.search(r'[A-Za-z]+$',line)
                 if word and word.start()>0:
                     result.append(line[:word.start()]);line=line[word.start():]+ch;continue
+            # 句読点・閉じ括弧を行頭に置かない（Argon 11/11「。だけが次の行に落ちる」）。前の1字と一緒に送る。
+            # 今の見た目の画素は凍結の比較があるので、新しい見た目（v2）の時だけ。
+            if r3.STYLE_V2 and ch in NO_LINE_START and len(line)>1:
+                result.append(line[:-1]);line=line[-1]+ch;continue
             result.append(line);line=''
         line += ch
     if line:result.append(line)
@@ -122,6 +134,18 @@ def panel(im, box, fill=None, outline=None):
     if not (L <= box[0] < box[2] <= R and r3.CONTENT_TOP <= box[1] < box[3] <= r3.CONTENT_BOTTOM):
         raise ValueError('v4の札が安全域外です: '+str(box))
     d=ImageDraw.Draw(im);x,y,right,bottom=box
+    if r3.STYLE_V2 and fill is None:
+        # 新しい見た目：地より一段明るい札。影・枠・金の短い線を付けず、上辺だけ細い光
+        d.rectangle(box,fill=(16,28,56))
+        d.line((x,y,right,y),fill=outline or (52,66,100),width=2)
+        r3.record_box(im, 'card', box)
+        return
+    if r3.STYLE_V2 and fill in (CREAM, READ_CARD):
+        # 引用・1位の札：明るい紺＋左だけ黄の線（6px）
+        d.rectangle(box,fill=fill)
+        d.rectangle((x,y,x+5,bottom),fill=r3.GOLD if fill==CREAM else (90,100,80))
+        r3.record_box(im, 'card', box)
+        return
     d.rounded_rectangle(box,radius=22,fill=(5,12,20))
     d.rounded_rectangle((x,y,right-2,bottom-4),radius=22,fill=fill or r3.colors(None)[0],
                         outline=outline or r3.colors(None)[1],width=2)
@@ -458,8 +482,8 @@ def ranking(t,spec,rows,source):
     for i,row in enumerate(rows[:5]):
         y=346+i*160;first=i==0
         panel(im,(L,y,R,y+146),CREAM if first else None)
-        ink=r3.DARK_INK if first else r3.INK
-        gold=(152,110,37) if first else r3.GOLD
+        ink=CARD_INK if first else r3.INK
+        gold=CARD_GOLD if first else r3.GOLD
         text(im,L+22,y+25,row['rank'],86,gold,number=True,width=80)
         text(im,L+114,y+26,row['name'],46,ink,width=335)
         team_badge(im,L+116,y+84,row['abbr'],row.get('team_id'))
@@ -577,8 +601,8 @@ def quotes(t,voices,label,live,ticker,source,animate=True):
         parent_h=110+len(wrapped)*52
         if parent_h+300 <= r3.CONTENT_BOTTOM-top:
             panel(im,(L,top,R,top+parent_h),CREAM)
-            text(im,L+24,top+12,'“',64,(163,125,54))
-            for i,line in enumerate(wrapped):text(im,L+44,top+58+i*52,line,38,r3.DARK_INK,width=R-L-88)
+            text(im,L+24,top+12,'“',64,QUOTE_MARK)
+            for i,line in enumerate(wrapped):text(im,L+44,top+58+i*52,line,38,CARD_INK,width=R-L-88)
             parent_chips=metadata(parent)
             x=L+28
             for value,color in parent_chips:
@@ -602,9 +626,9 @@ def quotes(t,voices,label,live,ticker,source,animate=True):
     h=min(h,r3.CONTENT_BOTTOM-top)
     panel(im,(L,top,R,top+h),CREAM)
     if not row.get('fact'):
-        text(im,L+22,top+6,'“',92,(163,125,54),width=80)
+        text(im,L+22,top+6,'“',92,QUOTE_MARK,width=80)
     for i,line in enumerate(body):
-        text(im,L+44,top+74+i*(size+14),line,size,r3.DARK_INK,width=R-L-88)
+        text(im,L+44,top+74+i*(size+14),line,size,CARD_INK,width=R-L-88)
     x=L+28;y=top+h-60
     chips=metadata(row)
     for value,color in chips:
