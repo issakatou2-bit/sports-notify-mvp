@@ -34,6 +34,23 @@ for case in cases:
         out['variants'].add((im.info.get('bubble_style') or {}).get('variant'))
         out['pixels'].append(list(im.convert('RGB').getpixel((540, 40))))
 out['variants'] = sorted(v for v in out['variants'] if v)
+# 動き：入り（0.07秒）・説明中（3秒）・抜け（終わりの0.05秒前）。字幕の帯とキャラの所は動かさない。
+import review_render_v3 as r3
+case = cases[0]; seg = case['narration']['segments'][1]
+preview.caption(seg); d = r3._CAPTION['duration']
+draw = (lambda t: slots.frame(t, seg, case['plan'])) if case.get('plan') else (lambda t: results.frame(t, seg, case['data'], case['clubs']))
+shots = {k: draw(t) for k, t in (('enter', .07), ('still', 3), ('exit', d - .05))}
+out['slide'] = {k: (im.info.get('v2_slide') or {}).get('phase') for k, im in shots.items()}
+if c.STYLE_V2:
+    # 同じ時刻で「動き無し」に描いた絵と、胸上の下端より下（字幕の帯・出典）が同じか。キャラ・字幕は動かない。
+    box = (0, layout.PORTRAIT[3] + 4, 1080, 1920)
+    slide = layout.Screen._slide_v2
+    layout.Screen._slide_v2 = lambda self, body, duration: self.im
+    still = {k: draw(t) for k, t in (('enter', .07), ('exit', d - .05))}
+    layout.Screen._slide_v2 = slide
+    out['caption_fixed'] = all(shots[k].convert('RGB').crop(box).tobytes() == still[k].convert('RGB').crop(box).tobytes() for k in still)
+else:
+    out['caption_fixed'] = None
 out['lime'] = list(c.LIME); out['slant'] = c.SLANT
 print(json.dumps(out))
 '''
@@ -69,6 +86,11 @@ class StyleV2(unittest.TestCase):
             self.assertLess(r, 40)
             self.assertGreater(b, r)   # 地は濃紺（青が赤より強い）
 
+    def test_only_the_middle_slides_in_and_out(self):
+        # 右から入り、説明中は止まり、終わりに左へ抜ける。字幕の帯から下（キャラ・出典）は動かない。
+        self.assertEqual(self.v2['slide'], dict(enter='enter', still=None, exit='exit'))
+        self.assertTrue(self.v2['caption_fixed'])
+
     def test_default_look_is_unchanged_without_the_switch(self):
         self.assertEqual(self.default['lime'], [196, 244, 76])
         self.assertNotEqual(self.default['slant'], 0.0)
@@ -77,4 +99,4 @@ class StyleV2(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main(argv=[__file__])

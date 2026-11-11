@@ -39,6 +39,17 @@ def _wrap(cards, value, size, width):
 
 
 NEWS_BG, NEWS_RED, PAPER, INK_DARK = (20, 32, 56), (196, 44, 52), (247, 242, 223), (34, 36, 42)
+NEWS_TAG_INK, NEWS_SOURCE = (255, 255, 255), (110, 112, 120)
+
+
+def _v2_colors():
+    """新しい見た目（COLLESPO_STYLE=v2）：赤と紙をやめ、黄の札＋明るい紺の見出し（Argon 11/11）。"""
+    global NEWS_BG, NEWS_RED, PAPER, INK_DARK, NEWS_TAG_INK, NEWS_SOURCE, SOFT
+    import review_render_v3 as r3
+    if r3.STYLE_V2:
+        import style_v2
+        NEWS_BG, NEWS_RED, PAPER, INK_DARK = (16, 28, 56), style_v2.ACCENT, (30, 41, 59), style_v2.WHITE
+        NEWS_TAG_INK, NEWS_SOURCE, SOFT = (8, 14, 30), style_v2.GREY, style_v2.GREY
 
 
 def _art(spec):
@@ -67,6 +78,7 @@ def _news(im, cards, r3, spec, t, y, width):
     """ニュースの見出しを2〜3本。実在の局名・ロゴは出さず、日付と出典を添える。
     1本ずつ0.3秒で現れる（順出し）。揺れ・動きはつけない。"""
     from PIL import Image
+    _v2_colors()
     rows = spec['news'][:3]
     inner = width - 40
     plans = []
@@ -82,7 +94,7 @@ def _news(im, cards, r3, spec, t, y, width):
     cards.panel(im, (cards.L, top, cards.R, top + height), fill=NEWS_BG)
     draw = __import__('PIL.ImageDraw', fromlist=['Draw']).Draw(im)
     draw.rounded_rectangle((cards.L + 28, top + 24, cards.L + 28 + 178, top + 24 + 56), 10, fill=NEWS_RED)
-    cards.text(im, cards.L + 50, top + 34, 'ニュース', 36, (255, 255, 255), width=150)
+    cards.text(im, cards.L + 50, top + 34, 'ニュース', 36, NEWS_TAG_INK, width=150)
     cards.text(im, cards.L + 230, top + 38, '最近の見出し', 30, SOFT, width=width - 230)
     yy = top + head
     for i, (row, lines, h) in enumerate(plans):
@@ -90,14 +102,15 @@ def _news(im, cards, r3, spec, t, y, width):
         # 四角の描画は右・下の端の1pxも塗るので、重ねる範囲を1px広げる（出る前の線を残さない）。
         area = (box[0], box[1], box[2] + 1, box[3] + 1)
         before = im.crop(area)
-        draw.rounded_rectangle(box, 12, fill=PAPER)
-        draw.rectangle((box[0], yy, box[0] + 12, yy + h), fill=NEWS_RED)
+        flat = NEWS_TAG_INK != (255, 255, 255)   # 新しい見た目：角を丸めず、左の線は細く
+        draw.rounded_rectangle(box, 0 if flat else 12, fill=PAPER)
+        draw.rectangle((box[0], yy, box[0] + (5 if flat else 12), yy + h), fill=NEWS_RED)
         cards.text(im, box[0] + 32, yy + 22, row['date'], 28, NEWS_RED, width=inner)
         ly = yy + 22 + 30 + 10
         for line in lines:
             cards.text(im, box[0] + 32, ly, line, 46, INK_DARK, width=inner - 24)
             ly += 46 + 10
-        cards.text(im, box[0] + 32, ly + 2, row['source'], 26, (110, 112, 120), width=inner - 24)
+        cards.text(im, box[0] + 32, ly + 2, row['source'], 26, NEWS_SOURCE, width=inner - 24)
         alpha = max(0.0, min(1.0, (t - 0.15 - 0.35 * i) / 0.3))
         if alpha < 1:
             after = im.crop(area)
