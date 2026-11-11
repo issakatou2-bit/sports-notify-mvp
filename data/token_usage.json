@@ -1,5 +1,149 @@
 {
   "days": {
+    "2026-10-08": {
+      "calls": 5,
+      "in": 12228,
+      "out": 4243,
+      "usd": 0.03344,
+      "by": {
+        "dialogue": {
+          "calls": 1,
+          "in": 5754,
+          "out": 2585,
+          "batch": 1
+        },
+        "sanity": {
+          "calls": 2,
+          "in": 4452,
+          "out": 807
+        },
+        "localize": {
+          "calls": 2,
+          "in": 2022,
+          "out": 851
+        }
+      }
+    },
+    "2026-10-09": {
+      "calls": 21,
+      "in": 32276,
+      "out": 10378,
+      "usd": 0.08418,
+      "by": {
+        "topic": {
+          "calls": 1,
+          "in": 129,
+          "out": 44
+        },
+        "buzz": {
+          "calls": 1,
+          "in": 1542,
+          "out": 235
+        },
+        "voices": {
+          "calls": 1,
+          "in": 797,
+          "out": 500
+        },
+        "reporters": {
+          "calls": 2,
+          "in": 2094,
+          "out": 744
+        },
+        "sanity": {
+          "calls": 6,
+          "in": 10238,
+          "out": 2161
+        },
+        "localize": {
+          "calls": 5,
+          "in": 5720,
+          "out": 2650
+        },
+        "dialogue": {
+          "calls": 2,
+          "in": 10318,
+          "out": 3776,
+          "batch": 2
+        },
+        "narration": {
+          "calls": 3,
+          "in": 1438,
+          "out": 268
+        }
+      }
+    },
+    "2026-10-10": {
+      "calls": 16,
+      "in": 16010,
+      "out": 5126,
+      "usd": 0.04165,
+      "by": {
+        "topic": {
+          "calls": 4,
+          "in": 538,
+          "out": 132
+        },
+        "buzz": {
+          "calls": 1,
+          "in": 1326,
+          "out": 214
+        },
+        "voices": {
+          "calls": 1,
+          "in": 1006,
+          "out": 442
+        },
+        "reporters": {
+          "calls": 2,
+          "in": 2257,
+          "out": 890
+        },
+        "sanity": {
+          "calls": 4,
+          "in": 6015,
+          "out": 1231
+        },
+        "localize": {
+          "calls": 4,
+          "in": 4868,
+          "out": 2217
+        }
+      }
+    },
+    "2026-10-11": {
+      "calls": 13,
+      "in": 17149,
+      "out": 5896,
+      "usd": 0.04663,
+      "by": {
+        "buzz": {
+          "calls": 1,
+          "in": 1678,
+          "out": 139
+        },
+        "voices": {
+          "calls": 1,
+          "in": 1127,
+          "out": 676
+        },
+        "reporters": {
+          "calls": 2,
+          "in": 2260,
+          "out": 989
+        },
+        "sanity": {
+          "calls": 5,
+          "in": 7393,
+          "out": 1872
+        },
+        "localize": {
+          "calls": 4,
+          "in": 4691,
+          "out": 2220
+        }
+      }
+    },
     "2026-10-12": {
       "calls": 17,
       "in": 30978,
