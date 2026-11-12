@@ -166,8 +166,12 @@ def frame(t, seg, data, clubs):
     im = screen.im
     im.info.update(soccer_readable=True,semantic_items=[],readable_motion='点から拡大＋フェード 0.3秒・説明中停止・点へ縮小 0.3秒')
     d = ImageDraw.Draw(im)
+    # 新しい見た目（COLLESPO_STYLE=v2）は濃紺の無地。芝の縞・緑の帯をやめ、黄は数字と今日の3人だけ（11/12 初回公開で緑が残った）。
+    flat = r3.STYLE_V2
+    row_fill,line,dim_dot,card_fill,card_line = ((16,28,56),(52,66,100),(71,85,105),(16,28,56),(52,66,100)) if flat else ((12,39,28),(32,62,46),(51,82,66),(22,54,41),c.LIME)
     d.rectangle((0,236,1080,1560),fill=c.PITCH)
-    for y in range(236,1560,144):d.rectangle((0,y,1080,min(y+71,1560)),fill=c.GRASS)
+    if not flat:
+        for y in range(236,1560,144):d.rectangle((0,y,1080,min(y+71,1560)),fill=c.GRASS)
     # 上の帯に「日本代表」があるので、相手が分かる日は「ブラジル戦 招集28人」に縮める（幅に入らず止まった）。
     head = f"{match_label(data)[:-1]} 招集{data['squad_size']}人" if match_label(data) else f"日本代表 招集{data['squad_size']}人"
     import soccer_national_numbers as numbers
@@ -179,9 +183,8 @@ def frame(t, seg, data, clubs):
     screen.text(72,354+shift,scope_label(data),48,868,c.LIME,role='text')
     screen.text(72,434+shift,'今季のリーグ戦・発表されたポジション' if leading else '発表されたポジション',32,868,c.MUTED,role='supplement')
     # 既存の薄いコート線と同じ色。縦のピッチとしてゴール・中央線を配置。
-    line=(32,62,46)
     for top,bottom in [(590,790),(850,950),(990,1100)]:
-        d.rounded_rectangle((72,top,940,bottom),radius=12,fill=(12,39,28))
+        d.rounded_rectangle((72,top,940,bottom),radius=12,fill=row_fill)
     d.rectangle((440,540,840,1120),outline=line,width=3)
     d.line((440,830,840,830),fill=line,width=3)
     d.ellipse((585,775,695,885),outline=line,width=3)
@@ -197,7 +200,7 @@ def frame(t, seg, data, clubs):
         radius = 13 if today else 8
         if active and point['name']==active['name']:
             d.ellipse((x-22,y-22,x+22,y+22),outline=c.LIME,width=3)
-        d.ellipse((x-radius,y-radius,x+radius,y+radius),fill=c.LIME if today else (51,82,66))
+        d.ellipse((x-radius,y-radius,x+radius,y+radius),fill=c.LIME if today else dim_dot)
     state = None
     if active:
         point = next(p for p in dots if p['name']==active['name'])
@@ -207,7 +210,8 @@ def frame(t, seg, data, clubs):
         layer = Image.new('RGB',im.size,c.PITCH)
         layer.info = dict(v3_layout=[])
         draw = ImageDraw.Draw(layer)
-        draw.rounded_rectangle(CARD,radius=22,fill=(22,54,41),outline=c.LIME,width=3)
+        draw.rounded_rectangle(CARD,radius=22,fill=card_fill,outline=card_line,width=2 if flat else 3)
+        if flat:draw.rectangle((CARD[0],CARD[1]+22,CARD[0]+6,CARD[3]-22),fill=c.LIME)
         c.text(layer,104,1182,active['position'],30,c.MUTED,role='supplement',width=790)
         c.text(layer,104,1228,active['name'],64,c.CHALK,role='national_fact',width=804)
         club_lines = c.lines(active['club'],44,804)
