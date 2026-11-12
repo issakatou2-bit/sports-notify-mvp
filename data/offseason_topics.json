@@ -1,93 +1,9 @@
 {
-  "day": "2026-11-11",
+  "day": "2026-11-12",
+  "state": "ready",
   "topics": [
     {
-      "key": "offseason_schedule_2026_7da499181e39",
-      "label": "MLBオフの主な予定",
-      "heading": "MLBオフの主な予定",
-      "kind_label": "MLB",
-      "data_credit": "MLB.com",
-      "v3": {
-        "source": "出典: MLB.com / 日付は米東部"
-      },
-      "hook": "MLBオフの主な予定",
-      "intro": "この先のMLBオフの主な予定です。日付はすべてアメリカ東部の日付でお伝えします。",
-      "intro_as_is": true,
-      "style": "v3",
-      "source": "MLB公式｜日付は米東部",
-      "source_url": "https://www.mlb.com/news/when-are-2026-mlb-awards-announced-mvp-cy-young-rookie-of-the-year",
-      "items": [
-        [
-          "11月11日｜サイ・ヤング賞と救援賞",
-          "11月11日、BBWAAのサイ・ヤング賞と救援の賞が発表される予定です"
-        ],
-        [
-          "11月12日｜MVP",
-          "11月12日、BBWAAのMVPが発表される予定です"
-        ],
-        [
-          "11月17日｜シルバースラッガー",
-          "11月17日、シルバースラッガー賞が発表される予定です"
-        ],
-        [
-          "11月17日｜QO受諾期限",
-          "11月17日、クオリファイングオファーを受諾する期限です"
-        ]
-      ],
-      "offseason": {
-        "kind": "schedule",
-        "day": "2026-11-11",
-        "season": 2026,
-        "events": [
-          {
-            "id": "cy-relief",
-            "date_et": "2026-11-11",
-            "label": "サイ・ヤング賞と救援賞",
-            "text": "BBWAAのサイ・ヤング賞と救援の賞が発表される予定です",
-            "source": "https://www.mlb.com/news/when-are-2026-mlb-awards-announced-mvp-cy-young-rookie-of-the-year",
-            "event_id": "calendar:cy-relief",
-            "head": "11月11日｜サイ・ヤング賞と救援賞",
-            "body": "11月11日、BBWAAのサイ・ヤング賞と救援の賞が発表される予定です",
-            "japanese": false
-          },
-          {
-            "id": "mvp",
-            "date_et": "2026-11-12",
-            "label": "MVP",
-            "text": "BBWAAのMVPが発表される予定です",
-            "source": "https://www.mlb.com/news/when-are-2026-mlb-awards-announced-mvp-cy-young-rookie-of-the-year",
-            "event_id": "calendar:mvp",
-            "head": "11月12日｜MVP",
-            "body": "11月12日、BBWAAのMVPが発表される予定です",
-            "japanese": false
-          },
-          {
-            "id": "silver",
-            "date_et": "2026-11-17",
-            "label": "シルバースラッガー",
-            "text": "シルバースラッガー賞が発表される予定です",
-            "source": "https://www.mlb.com/news/phillies-key-offseason-dates-2026-2027",
-            "event_id": "calendar:silver",
-            "head": "11月17日｜シルバースラッガー",
-            "body": "11月17日、シルバースラッガー賞が発表される予定です",
-            "japanese": false
-          },
-          {
-            "id": "qo-accept",
-            "date_et": "2026-11-17",
-            "label": "QO受諾期限",
-            "text": "クオリファイングオファーを受諾する期限です",
-            "source": "https://www.mlb.com/news/braves-key-offseason-dates-2026-2027",
-            "event_id": "calendar:qo-accept",
-            "head": "11月17日｜QO受諾期限",
-            "body": "11月17日、クオリファイングオファーを受諾する期限です",
-            "japanese": false
-          }
-        ]
-      }
-    },
-    {
-      "key": "offseason_awards_2026_087b31644a68",
+      "key": "offseason_awards_2026_ee18e75d60ad",
       "label": "2026年のMLB公式表彰",
       "heading": "2026年のMLB公式表彰",
       "kind_label": "MLB",
@@ -100,11 +16,19 @@
       "intro_as_is": true,
       "style": "v3",
       "source": "MLB公式 / 受賞・取引記録",
-      "source_url": "https://statsapi.mlb.com/api/v1/awards/ALROY/recipients?season=2026",
+      "source_url": "https://statsapi.mlb.com/api/v1/awards/ALCY/recipients?season=2026",
       "items": [
+        [
+          "キャム・シュリトラー｜ア・リーグのサイ・ヤング賞・投手",
+          "キャム・シュリトラーは2026年のア・リーグのサイ・ヤング賞を受賞しました"
+        ],
         [
           "ケビン・マクゴニグル｜ア・リーグ新人王・遊撃手",
           "ケビン・マクゴニグルは2026年のア・リーグ新人王を受賞しました"
+        ],
+        [
+          "ジェイコブ・ミジオロウスキー｜ナ・リーグのサイ・ヤング賞・投手",
+          "ジェイコブ・ミジオロウスキーは2026年のナ・リーグのサイ・ヤング賞を受賞しました"
         ],
         [
           "サル・スチュワート｜ナ・リーグ新人王・一塁手",
@@ -113,9 +37,39 @@
       ],
       "offseason": {
         "kind": "awards",
-        "day": "2026-11-11",
+        "day": "2026-11-12",
         "season": 2026,
         "events": [
+          {
+            "event_id": "award:2026:ALCY:693645:winner",
+            "head": "キャム・シュリトラー｜ア・リーグのサイ・ヤング賞・投手",
+            "body": "キャム・シュリトラーは2026年のア・リーグのサイ・ヤング賞を受賞しました",
+            "name": "キャム・シュリトラー",
+            "japanese": false,
+            "source": "https://statsapi.mlb.com/api/v1/awards/ALCY/recipients?season=2026",
+            "raw": {
+              "id": "ALCY",
+              "name": "AL Cy Young",
+              "date": "2026-11-11",
+              "season": "2026",
+              "team": {
+                "id": 147,
+                "link": "/api/v1/teams/147"
+              },
+              "player": {
+                "id": 693645,
+                "link": "/api/v1/people/693645",
+                "primaryPosition": {
+                  "code": "1",
+                  "name": "Pitcher",
+                  "type": "Pitcher",
+                  "abbreviation": "P"
+                },
+                "nameFirstLast": "Cam Schlittler",
+                "nameSlug": "cam-schlittler-693645"
+              }
+            }
+          },
           {
             "event_id": "award:2026:ALROY:805808:winner",
             "head": "ケビン・マクゴニグル｜ア・リーグ新人王・遊撃手",
@@ -143,6 +97,36 @@
                 },
                 "nameFirstLast": "Kevin McGonigle",
                 "nameSlug": "kevin-mcgonigle-805808"
+              }
+            }
+          },
+          {
+            "event_id": "award:2026:NLCY:694819:winner",
+            "head": "ジェイコブ・ミジオロウスキー｜ナ・リーグのサイ・ヤング賞・投手",
+            "body": "ジェイコブ・ミジオロウスキーは2026年のナ・リーグのサイ・ヤング賞を受賞しました",
+            "name": "ジェイコブ・ミジオロウスキー",
+            "japanese": false,
+            "source": "https://statsapi.mlb.com/api/v1/awards/NLCY/recipients?season=2026",
+            "raw": {
+              "id": "NLCY",
+              "name": "NL Cy Young",
+              "date": "2026-11-11",
+              "season": "2026",
+              "team": {
+                "id": 158,
+                "link": "/api/v1/teams/158"
+              },
+              "player": {
+                "id": 694819,
+                "link": "/api/v1/people/694819",
+                "primaryPosition": {
+                  "code": "1",
+                  "name": "Pitcher",
+                  "type": "Pitcher",
+                  "abbreviation": "P"
+                },
+                "nameFirstLast": "Jacob Misiorowski",
+                "nameSlug": "jacob-misiorowski-694819"
               }
             }
           },
@@ -179,6 +163,5 @@
         ]
       }
     }
-  ],
-  "state": "ready"
+  ]
 }

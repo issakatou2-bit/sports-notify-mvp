@@ -22236,6 +22236,51 @@
       },
       "host_fallback_reason": null,
       "privacy": "public"
+    },
+    "offseason_awards_2026_ee18e75d60ad": {
+      "video_id": "oeVvsOeJquI",
+      "url": "https://youtu.be/oeVvsOeJquI",
+      "title": "【MLB】2026年のMLB公式表彰 #Shorts",
+      "published_at": "2026-11-12T06:07:18.586468+00:00",
+      "publish_at": "2026-11-12T13:30:00Z",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-12",
+        "enabled": true,
+        "assigned": "next",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false,
+        "source": "post_common.lineup:daily_soccer",
+        "next_date": "2026-11-13",
+        "next_time": "19:30",
+        "next_name": "欧州サッカー",
+        "speech": "次は11月13日19時30分の欧州サッカーです。また見に来てくださいね。",
+        "card": "次は11/13 19:30の欧州サッカー"
+      },
+      "duration_seconds": 27.11,
+      "short_information_count": 4,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-11-12",
+        "kind": "asset:offseason",
+        "phase": 1,
+        "planned_host": "metan",
+        "rule": "half-jst-week-v1",
+        "week": 44,
+        "weekday": 3
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-11-12T15:05:02.325252+09:00",
+        "comparison_eligible": true,
+        "planned_host": "metan",
+        "reason": null,
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
     }
   },
   "soccer_results": {

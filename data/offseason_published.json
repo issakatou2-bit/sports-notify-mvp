@@ -1,5 +1,6 @@
 {
   "events": [
+    "award:2026:ALCY:693645:winner",
     "award:2026:ALGG:572233:winner",
     "award:2026:ALGG:641355:winner",
     "award:2026:ALGG:670764:winner",
@@ -10,6 +11,8 @@
     "award:2026:ALGG:693307:winner",
     "award:2026:ALGG:702284:winner",
     "award:2026:ALGG:702332:winner",
+    "award:2026:ALROY:805808:winner",
+    "award:2026:NLCY:694819:winner",
     "award:2026:NLGG:608324:winner",
     "award:2026:NLGG:621566:winner",
     "award:2026:NLGG:643289:winner",
@@ -20,6 +23,7 @@
     "award:2026:NLGG:690997:winner",
     "award:2026:NLGG:691718:winner",
     "award:2026:NLGG:694192:winner",
+    "award:2026:NLROY:701398:winner",
     "calendar:cy-relief",
     "calendar:finalists",
     "calendar:free-agency",
@@ -109,6 +113,9 @@
       "series_number": 6
     },
     "offseason_schedule_2026_7da499181e39": {
+      "style": "v3"
+    },
+    "offseason_awards_2026_ee18e75d60ad": {
       "style": "v3"
     }
   }
