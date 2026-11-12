@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-11T06:01:47.362579+00:00",
+  "updated_at": "2026-11-12T06:01:39.033147+00:00",
   "sources": [
     {
       "name": "MLB公式",
@@ -9,60 +9,20 @@
   "titles_count": 25,
   "teams": [
     {
-      "team_id": "135",
-      "name": "パドレス",
-      "name_en": "San Diego Padres",
-      "mentions": 3,
-      "tone": "話題",
-      "gist": "Weiss獲得、補強噂とGM会議で捕手余剰"
-    },
-    {
-      "team_id": "134",
-      "name": "パイレーツ",
-      "name_en": "Pittsburgh Pirates",
-      "mentions": 1,
-      "tone": "話題",
-      "gist": "Lowe復帰の可能性にCheringtonが言及"
-    },
-    {
-      "team_id": "145",
-      "name": "ホワイトソックス",
-      "name_en": "Chicago White Sox",
-      "mentions": 1,
+      "team_id": "147",
+      "name": "ヤンキース",
+      "name_en": "New York Yankees",
+      "mentions": 2,
       "tone": "好調",
-      "gist": "VenableがホワイトソックスX6人目の最優秀監督"
+      "gist": "シュリトラーが新人でサイ・ヤング賞、球団7人目"
     },
     {
-      "team_id": "136",
-      "name": "マリナーズ",
-      "name_en": "Seattle Mariners",
+      "team_id": "141",
+      "name": "ブルージェイズ",
+      "name_en": "Toronto Blue Jays",
       "mentions": 1,
       "tone": "話題",
-      "gist": "MarinersがCrawfordに来季構想外を通告"
-    },
-    {
-      "team_id": "143",
-      "name": "フィリーズ",
-      "name_en": "Philadelphia Phillies",
-      "mentions": 1,
-      "tone": "話題",
-      "gist": "DombrowskiがGM会議でPhilliesの補強点に言"
-    },
-    {
-      "team_id": "119",
-      "name": "ドジャース",
-      "name_en": "Los Angeles Dodgers",
-      "mentions": 1,
-      "tone": "話題",
-      "gist": "DodgersがSkubal再獲得を狙うと認める"
-    },
-    {
-      "team_id": "116",
-      "name": "タイガース",
-      "name_en": "Detroit Tigers",
-      "mentions": 1,
-      "tone": "話題",
-      "gist": "PagánがTigersと1年1100万ドルで合意"
+      "gist": "ブルージェイズがスクーバル獲得に関心、実現性は"
     },
     {
       "team_id": "117",
@@ -70,8 +30,21 @@
       "name_en": "Houston Astros",
       "mentions": 1,
       "tone": "話題",
-      "gist": "FloresがAstros新監督選びの最終段階"
+      "gist": "アストロズが次期監督にブラッド・オースマスを起用"
+    },
+    {
+      "team_id": "112",
+      "name": "カブス",
+      "name_en": "Chicago Cubs",
+      "mentions": 1,
+      "tone": "話題",
+      "gist": "ストーブリーグ噂：シーガー、スクーバル、外野手など"
     }
   ],
-  "players": []
+  "players": [
+    {
+      "name": "大谷翔平",
+      "mentions": 1
+    }
+  ]
 }
