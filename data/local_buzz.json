@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-12T06:01:39.033147+00:00",
+  "updated_at": "2026-11-12T19:32:50.451479+00:00",
   "sources": [
     {
       "name": "MLB公式",
@@ -9,28 +9,20 @@
   "titles_count": 25,
   "teams": [
     {
-      "team_id": "147",
-      "name": "ヤンキース",
-      "name_en": "New York Yankees",
-      "mentions": 2,
-      "tone": "好調",
-      "gist": "シュリトラーが新人でサイ・ヤング賞、球団7人目"
-    },
-    {
-      "team_id": "141",
-      "name": "ブルージェイズ",
-      "name_en": "Toronto Blue Jays",
+      "team_id": "158",
+      "name": "ブリュワーズ",
+      "name_en": "Milwaukee Brewers",
       "mentions": 1,
       "tone": "話題",
-      "gist": "ブルージェイズがスクーバル獲得に関心、実現性は"
+      "gist": "ブリュワーズはWS MVPコントレラスを放出するのか"
     },
     {
-      "team_id": "117",
-      "name": "アストロズ",
-      "name_en": "Houston Astros",
+      "team_id": "144",
+      "name": "ブレーブス",
+      "name_en": "Atlanta Braves",
       "mentions": 1,
       "tone": "話題",
-      "gist": "アストロズが次期監督にブラッド・オースマスを起用"
+      "gist": "ブレーブスの27年にプロファーの居場所はあるか"
     },
     {
       "team_id": "112",
@@ -38,12 +30,24 @@
       "name_en": "Chicago Cubs",
       "mentions": 1,
       "tone": "話題",
-      "gist": "ストーブリーグ噂：シーガー、スクーバル、外野手など"
+      "gist": "シーガーやスクーバルなど各球団の補強噂が浮上"
+    },
+    {
+      "team_id": "121",
+      "name": "メッツ",
+      "name_en": "New York Mets",
+      "mentions": 1,
+      "tone": "話題",
+      "gist": "メッツは新二塁手不要、セミエンの復調に期待"
     }
   ],
   "players": [
     {
       "name": "大谷翔平",
+      "mentions": 1
+    },
+    {
+      "name": "鈴木誠也",
       "mentions": 1
     }
   ]
