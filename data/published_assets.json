@@ -2021,6 +2021,62 @@
       "duration_seconds": 27.11,
       "short_information_count": 4,
       "short_content_policy": "short-content-20261027-v1"
+    },
+    "season_streak_2026_673513_pitching": {
+      "video_id": "i26jyEKnOUo",
+      "url": "https://youtu.be/i26jyEKnOUo",
+      "privacy": "public",
+      "published_at": "2026-11-12T06:13:14.753455+00:00",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-12",
+        "enabled": true,
+        "assigned": "next",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false,
+        "source": "post_common.lineup:daily_soccer",
+        "next_date": "2026-11-13",
+        "next_time": "19:30",
+        "next_name": "欧州サッカー",
+        "speech": "次は11月13日19時30分の欧州サッカーです。また見に来てくださいね。",
+        "card": "次は11/13 19:30の欧州サッカー"
+      },
+      "player_ids": [
+        "673513"
+      ],
+      "publish_at": "2026-11-12T07:30:00Z",
+      "duration_seconds": 31.58,
+      "short_information_count": 3,
+      "short_content_policy": "short-content-20261027-v1"
+    },
+    "season_best_2026_837227_pitching": {
+      "video_id": "ZJCcpoSrBMk",
+      "url": "https://youtu.be/ZJCcpoSrBMk",
+      "privacy": "public",
+      "published_at": "2026-11-12T06:16:12.964896+00:00",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-12",
+        "enabled": true,
+        "assigned": "next",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false,
+        "source": "post_common.lineup:daily_soccer",
+        "next_date": "2026-11-13",
+        "next_time": "19:30",
+        "next_name": "欧州サッカー",
+        "speech": "次は11月13日19時30分の欧州サッカーです。また見に来てくださいね。",
+        "card": "次は11/13 19:30の欧州サッカー"
+      },
+      "player_ids": [
+        "837227"
+      ],
+      "publish_at": "2026-11-12T13:00:00Z",
+      "duration_seconds": 28.08,
+      "short_information_count": 3,
+      "short_content_policy": "short-content-20261027-v1"
     }
   }
 }
