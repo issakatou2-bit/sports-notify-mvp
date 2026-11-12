@@ -24,5 +24,561 @@
       "reason": "終了実時刻なし"
     }
   ],
+  "preview_expectation_results": {},
+  "preview_next_fixtures": [
+    {
+      "home": "Athletic Club",
+      "away": "RCD Espanyol de Barcelona",
+      "start_utc": "2026-11-20T20:00:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PD/matches",
+      "competition": "PD"
+    },
+    {
+      "home": "Deportivo Alavés",
+      "away": "RC Deportivo La Coruña",
+      "start_utc": "2026-11-21T13:00:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PD/matches",
+      "competition": "PD"
+    },
+    {
+      "home": "Rayo Vallecano de Madrid",
+      "away": "Valencia CF",
+      "start_utc": "2026-11-21T15:15:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PD/matches",
+      "competition": "PD"
+    },
+    {
+      "home": "Sevilla FC",
+      "away": "Real Betis Balompié",
+      "start_utc": "2026-11-21T17:30:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PD/matches",
+      "competition": "PD"
+    },
+    {
+      "home": "Real Madrid CF",
+      "away": "RC Celta de Vigo",
+      "start_utc": "2026-11-21T20:00:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PD/matches",
+      "competition": "PD"
+    },
+    {
+      "home": "FC Barcelona",
+      "away": "Villarreal CF",
+      "start_utc": "2026-11-22T13:00:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PD/matches",
+      "competition": "PD"
+    },
+    {
+      "home": "Real Racing Club de Santander",
+      "away": "Real Sociedad de Fútbol",
+      "start_utc": "2026-11-22T15:15:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PD/matches",
+      "competition": "PD"
+    },
+    {
+      "home": "CA Osasuna",
+      "away": "Málaga CF",
+      "start_utc": "2026-11-22T17:30:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PD/matches",
+      "competition": "PD"
+    },
+    {
+      "home": "Getafe CF",
+      "away": "Club Atlético de Madrid",
+      "start_utc": "2026-11-22T20:00:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PD/matches",
+      "competition": "PD"
+    },
+    {
+      "home": "Levante UD",
+      "away": "Elche CF",
+      "start_utc": "2026-11-23T20:00:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PD/matches",
+      "competition": "PD"
+    },
+    {
+      "home": "Manchester City FC",
+      "away": "Fulham FC",
+      "start_utc": "2026-11-21T12:30:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PL/matches",
+      "competition": "PL"
+    },
+    {
+      "home": "Chelsea FC",
+      "away": "Leeds United FC",
+      "start_utc": "2026-11-21T15:00:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PL/matches",
+      "competition": "PL"
+    },
+    {
+      "home": "Aston Villa FC",
+      "away": "Sunderland AFC",
+      "start_utc": "2026-11-21T15:00:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PL/matches",
+      "competition": "PL"
+    },
+    {
+      "home": "AFC Bournemouth",
+      "away": "Nottingham Forest FC",
+      "start_utc": "2026-11-21T15:00:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PL/matches",
+      "competition": "PL"
+    },
+    {
+      "home": "Tottenham Hotspur FC",
+      "away": "Ipswich Town FC",
+      "start_utc": "2026-11-21T15:00:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PL/matches",
+      "competition": "PL"
+    },
+    {
+      "home": "Coventry City FC",
+      "away": "Crystal Palace FC",
+      "start_utc": "2026-11-21T15:00:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PL/matches",
+      "competition": "PL"
+    },
+    {
+      "home": "Newcastle United FC",
+      "away": "Arsenal FC",
+      "start_utc": "2026-11-21T17:30:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PL/matches",
+      "competition": "PL"
+    },
+    {
+      "home": "Hull City AFC",
+      "away": "Brighton & Hove Albion FC",
+      "start_utc": "2026-11-22T14:00:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PL/matches",
+      "competition": "PL"
+    },
+    {
+      "home": "Liverpool FC",
+      "away": "Manchester United FC",
+      "start_utc": "2026-11-22T16:30:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PL/matches",
+      "competition": "PL"
+    },
+    {
+      "home": "Brentford FC",
+      "away": "Everton FC",
+      "start_utc": "2026-11-23T20:00:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PL/matches",
+      "competition": "PL"
+    },
+    {
+      "home": "Como 1907",
+      "away": "Cagliari Calcio",
+      "start_utc": "2026-11-21T14:00:00Z",
+      "source": "https://api.football-data.org/v4/competitions/SA/matches",
+      "competition": "SA"
+    },
+    {
+      "home": "SS Lazio",
+      "away": "US Lecce",
+      "start_utc": "2026-11-21T14:00:00Z",
+      "source": "https://api.football-data.org/v4/competitions/SA/matches",
+      "competition": "SA"
+    },
+    {
+      "home": "Parma Calcio 1913",
+      "away": "AS Roma",
+      "start_utc": "2026-11-21T17:00:00Z",
+      "source": "https://api.football-data.org/v4/competitions/SA/matches",
+      "competition": "SA"
+    },
+    {
+      "home": "SSC Napoli",
+      "away": "Torino FC",
+      "start_utc": "2026-11-21T19:45:00Z",
+      "source": "https://api.football-data.org/v4/competitions/SA/matches",
+      "competition": "SA"
+    },
+    {
+      "home": "Juventus FC",
+      "away": "Venezia FC",
+      "start_utc": "2026-11-22T11:30:00Z",
+      "source": "https://api.football-data.org/v4/competitions/SA/matches",
+      "competition": "SA"
+    },
+    {
+      "home": "Bologna FC 1909",
+      "away": "Udinese Calcio",
+      "start_utc": "2026-11-22T14:00:00Z",
+      "source": "https://api.football-data.org/v4/competitions/SA/matches",
+      "competition": "SA"
+    },
+    {
+      "home": "US Sassuolo Calcio",
+      "away": "Genoa CFC",
+      "start_utc": "2026-11-22T14:00:00Z",
+      "source": "https://api.football-data.org/v4/competitions/SA/matches",
+      "competition": "SA"
+    },
+    {
+      "home": "AC Milan",
+      "away": "Frosinone Calcio",
+      "start_utc": "2026-11-22T17:00:00Z",
+      "source": "https://api.football-data.org/v4/competitions/SA/matches",
+      "competition": "SA"
+    },
+    {
+      "home": "Atalanta BC",
+      "away": "FC Internazionale Milano",
+      "start_utc": "2026-11-22T19:45:00Z",
+      "source": "https://api.football-data.org/v4/competitions/SA/matches",
+      "competition": "SA"
+    },
+    {
+      "home": "AC Monza",
+      "away": "ACF Fiorentina",
+      "start_utc": "2026-11-23T19:45:00Z",
+      "source": "https://api.football-data.org/v4/competitions/SA/matches",
+      "competition": "SA"
+    }
+  ],
+  "preview_followup": {
+    "day": "2026-11-08",
+    "video_id": "en-bgDd1-A8",
+    "games": [
+      {
+        "event_id": "401882816",
+        "forecast": {
+          "game_id": "564746",
+          "espn_event_id": "401882816",
+          "league": "ラ・リーガ",
+          "competition_code": "PD",
+          "home": "アトレティコ・マドリード",
+          "away": "バルセロナ",
+          "start_utc": "2026-11-09T05:00:00+09:00",
+          "reasons": [
+            {
+              "kind": "points",
+              "score": 100,
+              "text": "ラ・リーガではアトレティコ・マドリードは3位で勝点28、バルセロナは勝点30で、両チームの勝点差は2です。",
+              "source": "https://site.api.espn.com/apis/v2/sports/soccer/esp.1/standings",
+              "retrieved_at": "2026-11-08T10:31:38.152164+00:00",
+              "values": {
+                "competition": "PD",
+                "gap": 2,
+                "rows": {
+                  "home": {
+                    "team_id": "1068",
+                    "rank": 3,
+                    "points": 28,
+                    "played": 11,
+                    "tied": false
+                  },
+                  "away": {
+                    "team_id": "83",
+                    "rank": 1,
+                    "points": 30,
+                    "played": 11,
+                    "tied": true
+                  }
+                },
+                "league": "ラ・リーガ"
+              }
+            },
+            {
+              "kind": "form",
+              "score": 85,
+              "text": "アトレティコ・マドリードはラ・リーガの直近5試合で5勝0分0敗です。",
+              "source": "https://api.football-data.org/v4/competitions/PD/matches",
+              "retrieved_at": "2026-11-08T10:30:52.336231+00:00",
+              "values": {
+                "side": "home",
+                "form": [
+                  "W",
+                  "W",
+                  "W",
+                  "W",
+                  "W"
+                ],
+                "match_ids": [
+                  564730,
+                  564724,
+                  564710,
+                  564699,
+                  564688
+                ]
+              }
+            },
+            {
+              "kind": "h2h",
+              "score": 80,
+              "text": "前回の対戦は2026年4月14日のアトレティコ・マドリード対バルセロナで1対2でした。",
+              "source": "https://api.football-data.org/v4/matches/564746/head2head",
+              "retrieved_at": "2026-11-08T10:30:58.843359+00:00",
+              "values": {
+                "match_id": 556724,
+                "score": {
+                  "home": 1,
+                  "away": 2
+                }
+              }
+            }
+          ],
+          "expectation": null,
+          "spoken": "日本時間11月9日5時、アトレティコ・マドリード対バルセロナ。ラ・リーガではアトレティコ・マドリードは3位で勝点28、バルセロナは勝点30で、両チームの勝点差は2です。アトレティコ・マドリードはラ・リーガの直近5試合で5勝0分0敗です。前回の対戦は2026年4月14日のアトレティコ・マドリード対バルセロナで1対2でした。",
+          "standings": {
+            "home": {
+              "team_id": "1068",
+              "rank": 3,
+              "points": 28,
+              "played": 11,
+              "tied": false,
+              "as_of": "2026-11-08T09:53:44.395626+00:00",
+              "competition": "PD",
+              "season": null
+            },
+            "away": {
+              "team_id": "83",
+              "rank": 1,
+              "points": 30,
+              "played": 11,
+              "tied": true,
+              "as_of": "2026-11-08T09:53:44.395626+00:00",
+              "competition": "PD",
+              "season": null
+            }
+          }
+        },
+        "answer": null,
+        "rank_changes": [],
+        "next_game": {
+          "home": "FC Barcelona",
+          "away": "Villarreal CF",
+          "start_utc": "2026-11-22T13:00:00Z",
+          "source": "https://api.football-data.org/v4/competitions/PD/matches",
+          "competition": "PD"
+        }
+      },
+      {
+        "event_id": "401874808",
+        "forecast": {
+          "game_id": "558530",
+          "espn_event_id": "401874808",
+          "league": "セリエA",
+          "competition_code": "SA",
+          "home": "インテル",
+          "away": "コモ",
+          "start_utc": "2026-11-09T02:00:00+09:00",
+          "reasons": [
+            {
+              "kind": "points",
+              "score": 100,
+              "text": "セリエAではインテルは3位で勝点25、コモは4位で勝点23で、両チームの勝点差は2です。",
+              "source": "https://site.api.espn.com/apis/v2/sports/soccer/ita.1/standings",
+              "retrieved_at": "2026-11-08T10:31:38.270862+00:00",
+              "values": {
+                "competition": "SA",
+                "gap": 2,
+                "rows": {
+                  "home": {
+                    "team_id": "110",
+                    "rank": 3,
+                    "points": 25,
+                    "played": 10,
+                    "tied": false
+                  },
+                  "away": {
+                    "team_id": "2572",
+                    "rank": 4,
+                    "points": 23,
+                    "played": 10,
+                    "tied": false
+                  }
+                },
+                "league": "セリエA"
+              }
+            },
+            {
+              "kind": "form",
+              "score": 85,
+              "text": "インテルはセリエAの直近5試合で4勝0分1敗です。",
+              "source": "https://api.football-data.org/v4/competitions/SA/matches",
+              "retrieved_at": "2026-11-08T10:31:11.855539+00:00",
+              "values": {
+                "side": "home",
+                "form": [
+                  "L",
+                  "W",
+                  "W",
+                  "W",
+                  "W"
+                ],
+                "match_ids": [
+                  558548,
+                  558550,
+                  558563,
+                  558571,
+                  558582
+                ]
+              }
+            },
+            {
+              "kind": "h2h",
+              "score": 80,
+              "text": "前回の対戦は2026年4月12日のコモ対インテルで3対4でした。",
+              "source": "https://api.football-data.org/v4/matches/558530/head2head",
+              "retrieved_at": "2026-11-08T10:31:18.318393+00:00",
+              "values": {
+                "match_id": 537131,
+                "score": {
+                  "home": 3,
+                  "away": 4
+                }
+              }
+            }
+          ],
+          "expectation": null,
+          "spoken": "日本時間11月9日2時、インテル対コモ。セリエAではインテルは3位で勝点25、コモは4位で勝点23で、両チームの勝点差は2です。",
+          "standings": {
+            "home": {
+              "team_id": "110",
+              "rank": 3,
+              "points": 25,
+              "played": 10,
+              "tied": false,
+              "as_of": "2026-11-08T09:53:44.395626+00:00",
+              "competition": "SA",
+              "season": null
+            },
+            "away": {
+              "team_id": "2572",
+              "rank": 4,
+              "points": 23,
+              "played": 10,
+              "tied": false,
+              "as_of": "2026-11-08T09:53:44.395626+00:00",
+              "competition": "SA",
+              "season": null
+            }
+          }
+        },
+        "answer": null,
+        "rank_changes": [],
+        "next_game": {
+          "home": "Como 1907",
+          "away": "Cagliari Calcio",
+          "start_utc": "2026-11-21T14:00:00Z",
+          "source": "https://api.football-data.org/v4/competitions/SA/matches",
+          "competition": "SA"
+        }
+      },
+      {
+        "event_id": "401879243",
+        "forecast": {
+          "game_id": "560635",
+          "espn_event_id": "401879243",
+          "league": "プレミアリーグ",
+          "competition_code": "PL",
+          "home": "クリスタル・パレス",
+          "away": "リバプール",
+          "start_utc": "2026-11-08T23:00:00+09:00",
+          "reasons": [
+            {
+              "kind": "points",
+              "score": 100,
+              "text": "プレミアリーグではクリスタルパレスは勝点7、リバプールは6位で勝点15で、両チームの勝点差は8です。",
+              "source": "https://site.api.espn.com/apis/v2/sports/soccer/eng.1/standings",
+              "retrieved_at": "2026-11-08T10:31:38.209032+00:00",
+              "values": {
+                "competition": "PL",
+                "gap": 8,
+                "rows": {
+                  "home": {
+                    "team_id": "384",
+                    "rank": 19,
+                    "points": 7,
+                    "played": 9,
+                    "tied": true
+                  },
+                  "away": {
+                    "team_id": "364",
+                    "rank": 6,
+                    "points": 15,
+                    "played": 9,
+                    "tied": false
+                  }
+                },
+                "league": "プレミアリーグ"
+              }
+            },
+            {
+              "kind": "form",
+              "score": 85,
+              "text": "クリスタルパレスはプレミアリーグの直近5試合で1勝1分3敗です。",
+              "source": "https://api.football-data.org/v4/competitions/PL/matches",
+              "retrieved_at": "2026-11-08T10:31:31.615065+00:00",
+              "values": {
+                "side": "home",
+                "form": [
+                  "L",
+                  "L",
+                  "L",
+                  "W",
+                  "D"
+                ],
+                "match_ids": [
+                  560627,
+                  560613,
+                  560609,
+                  560596,
+                  560585
+                ]
+              }
+            },
+            {
+              "kind": "season_player",
+              "score": 82,
+              "text": "鎌田大地は今季のプレミアリーグで1得点3アシストです。",
+              "source": "https://fantasy.premierleague.com/api/bootstrap-static/",
+              "retrieved_at": "2026-11-08T10:00:58.408314+00:00",
+              "values": {
+                "name": "鎌田大地",
+                "goals": 1,
+                "assists": 3
+              }
+            }
+          ],
+          "expectation": null,
+          "spoken": "日本時間23時、クリスタルパレス対リバプール。",
+          "standings": {
+            "home": {
+              "team_id": "384",
+              "rank": 19,
+              "points": 7,
+              "played": 9,
+              "tied": true,
+              "as_of": "2026-11-08T09:53:44.395626+00:00",
+              "competition": "PL",
+              "season": null
+            },
+            "away": {
+              "team_id": "364",
+              "rank": 6,
+              "points": 15,
+              "played": 9,
+              "tied": false,
+              "as_of": "2026-11-08T09:53:44.395626+00:00",
+              "competition": "PL",
+              "season": null
+            }
+          }
+        },
+        "answer": null,
+        "rank_changes": [],
+        "next_game": {
+          "home": "Coventry City FC",
+          "away": "Crystal Palace FC",
+          "start_utc": "2026-11-21T15:00:00Z",
+          "source": "https://api.football-data.org/v4/competitions/PL/matches",
+          "competition": "PL"
+        }
+      }
+    ]
+  },
   "short_content_version": "1108"
 }
