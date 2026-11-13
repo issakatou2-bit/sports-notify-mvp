@@ -30,7 +30,9 @@ def clubs_for(data):
 
 def result_board(r):
     at=national.datetime.fromisoformat(r['date_jst'])
-    return (f"{at.year}/{at.month}/{at.day} {r['team']}",f"{r['gf']}-{r['ga']} {r['opponent']}")
+    # 日本の行は「日本」と書いても情報にならないので、段階（決勝など）か大会名を出す
+    label=r['team'] if r.get('team')!='日本' else (r.get('stage') or r.get('competition') or '')
+    return ((f"{at.year}/{at.month}/{at.day} {label}").strip(),f"{r['gf']}-{r['ga']} {r['opponent']}")
 
 
 def frame(t,seg,data,clubs):

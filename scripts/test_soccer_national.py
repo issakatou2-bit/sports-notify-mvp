@@ -447,4 +447,16 @@ class VerifiedHistory(unittest.TestCase):
         self.assertTrue(n.check(doc))
 
 
+class ResultBoardLabel(unittest.TestCase):
+    def test_japan_row_shows_stage_not_team(self):
+        import soccer_national_render as R
+        r=dict(team='日本',date_jst='2026-10-05T19:00:00+09:00',competition='キリンカップ',stage='決勝',gf=2,ga=1,opponent='ニュージーランド')
+        self.assertEqual(R.result_board(r),('2026/10/5 決勝','2-1 ニュージーランド'))
+        self.assertEqual(R.result_board(dict(r,stage=None))[0],'2026/10/5 キリンカップ')
+    def test_opponent_row_keeps_team(self):
+        import soccer_national_render as R
+        r=dict(team='ブラジル',date_jst='2026-10-10T08:00:00+09:00',gf=3,ga=0,opponent='チリ')
+        self.assertEqual(R.result_board(r)[0],'2026/10/10 ブラジル')
+
+
 if __name__=='__main__':unittest.main(argv=[sys.argv[0]])
