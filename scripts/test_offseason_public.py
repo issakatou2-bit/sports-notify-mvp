@@ -35,7 +35,9 @@ class OffseasonPublic(unittest.TestCase):
             spec = row['spec']
             with patch.object(yt, 'generated_topic', return_value=spec):
                 snippet = yt.build_asset_metadata(spec['key'], row['narration'])['snippet']
-            self.assertEqual(snippet['title'], f'【MLB】{spec["heading"]} #Shorts')
+            _day = spec['offseason']['day']  # 予定の回は同じ題の再発防止に作成日を付ける
+            _when = f" {int(_day[5:7])}月{int(_day[8:10])}日時点" if spec['offseason']['kind'] == 'schedule' else ''
+            self.assertEqual(snippet['title'], f'【MLB】{spec["heading"]}{_when} #Shorts')
             desc = snippet['description']
             self.assertNotIn('（）', desc)
             self.assertNotIn('同じ内容を音声で', desc)

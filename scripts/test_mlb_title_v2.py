@@ -42,9 +42,10 @@ class MlbTitleV2(unittest.TestCase):
         self.assertEqual(after['title'],
                          '「ドジャース大谷、手術を回避　2027年に二刀流で復帰の見込み」｜現地の報道 #Shorts')
         self.assertLess(len(after['title']), len(before['title']))
-        self.assertIn(before['title'], after['description'])
+        # 冒頭は元の題1行（検索語の羅列行は出さない）。検索語は tags に残す。
+        self.assertEqual(after['description'].splitlines()[0], before['title'].removesuffix(' #Shorts'))
+        self.assertNotIn('MLB｜', after['description'].splitlines()[0])
         for word in ('MLB', '大谷翔平', 'ドジャース'):
-            self.assertIn(word, after['description'].splitlines()[0])
             self.assertIn(word, after['tags'])
         self.assertIn(before['description'], after['description'])
 
@@ -53,7 +54,7 @@ class MlbTitleV2(unittest.TestCase):
         self.assertEqual(after['title'], 'ブルワーズ、初の優勝を祝うパレードに現地ファンの声 #Shorts')
         for unwanted in ('【MLB】', '返信4件', '11月1日', '何と言ったか'):
             self.assertNotIn(unwanted, after['title'])
-        self.assertIn(before['title'], after['description'])
+        self.assertIn(before['title'].removesuffix(' #Shorts'), after['description'])
         self.assertIn(before['description'], after['description'])
         self.assertIn(CARD, after['description'])
         self.assertIn('ブルワーズ', after['tags'])

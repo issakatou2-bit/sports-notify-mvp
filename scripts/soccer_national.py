@@ -660,6 +660,28 @@ def information(document):
     return units
 
 
+def squad_description(d):
+    """招集の回の概要欄。台本の流し込みをやめ、材料にある名前・所属・数字だけで組む。"""
+    players=d.get('players') or []
+    names='・'.join(p['name'] for p in players)
+    try:
+        day=instant(d['announced_at']).astimezone(JST);head=f"{day.month}月{day.day}日にJFAが発表した"
+    except (KeyError,TypeError,ValueError):head='JFAが発表した'
+    lines=[f"{head}日本代表の招集メンバーから、{names}を紹介します。",'']
+    units={'goals':'得点','assists':'アシスト','minutes':'分出場','appearances':'試合出場'}
+    for p in players:
+        row=f"・{p['name']}（{p['club']}）"
+        src=p.get('season_numbers') or p.get('stats') or {}
+        vals=[str(v)+units[k] for k,v in (src.get('values') or {}).items() if k in units]
+        if vals:row+=' 今季'+'・'.join(vals)
+        lines.append(row)
+    g=d.get('next_game')
+    if g and g.get('kickoff_jst') and g.get('opponent'):
+        at=instant(g['kickoff_jst'])
+        lines+=['',f"次の代表戦：{g['opponent']}戦 日本時間{at.month}月{at.day}日{at.hour}時{at.minute:02d}分"]
+    return '\n'.join(lines)
+
+
 def metadata(document):
     if check(document):
         raise ValueError('代表番組の原稿検査に失敗しました')
@@ -671,11 +693,18 @@ def metadata(document):
     if d.get('length_level',0)>=1:links += [r['source_url'] for r in d.get('japan_history') or []]
     text='\n'.join(s['text'] for s in document['segments'])
     if d.get('mode')=='squad':
+        text=squad_description(d)
         text+='\n\n図はJFAが発表したポジションの名簿順です。先発やフォーメーションの予想ではありません。MF/FWは一括発表です。'
         links += [p['season_numbers']['source'] for p in d.get('players',[]) if p.get('season_numbers')]
         if d.get('national_numbers'):text+='\n今季成績の取得日: '+instant(d['national_numbers']['as_of']).astimezone(JST).strftime('%Y/%m/%d')
-    return dict(snippet=dict(title=document['title'],description=text+'\n\n出典\n'+'\n'.join(dict.fromkeys(links))+
-        '\n音声: VOICEVOX:四国めたん',tags=['サッカー','日本代表','コレスポ'],categoryId='17',
+    # ESPNの成績APIのURLは読み手に意味が無いので外し、名前だけ書く。試合ページ(www.espn.com)は残す。
+    shown=[u for u in dict.fromkeys(links) if urlparse(u).hostname!='sports.core.api.espn.com']
+    dropped=len(shown)<len(set(links))
+    names=[p['name'] for p in d.get('players',[])][:3]
+    tagline=' '.join(['#サッカー日本代表',*['#'+n for n in names],'#Shorts'])
+    return dict(snippet=dict(title=document['title'],description=text+'\n\n'+tagline+'\n\n出典\n'+'\n'.join(shown)+
+        ('\n今季成績: ESPN' if dropped else '')+
+        '\n音声: VOICEVOX:四国めたん',tags=['サッカー','日本代表','コレスポ',*names],categoryId='17',
         defaultLanguage='ja',defaultAudioLanguage='ja'))
 
 
