@@ -33,7 +33,82 @@ def block(im, value, y, size=48, color=None, x=L+24, width=R-L-48):
     return y
 
 
+HOOK_BOTTOM = 1020
+
+
+def hook_v2(spec):
+    """新しい見た目（v2）の日本人選手の数字の回：1枚目を名前・特大の数字・結論・札で描く。"""
+    return bool(r3.STYLE_V2 and spec.get('jp_stock') and (spec.get('v3') or {}).get('big'))
+
+
+def _fit(value, size, width, floor=40):
+    while size > floor and c.text_length(value, size) > width:
+        size -= 2
+    return size
+
+
+def intro_v2(t, spec, label):
+    """名前（96前後）→特大の数字＋単位→結論の句→札3行（左にラベル・右にOswaldの数字）。"""
+    im = c.canvas(t, label)
+    v = spec.get('v3') or {}
+    width = R-L
+    who = str(v.get('who') or spec.get('label', ''))
+    who_size = _fit(who, 96, width)
+    c.text(im, L+(width-c.text_length(who, who_size))/2, 262, who, who_size)
+    big, unit = str(v['big']), str(v.get('unit') or '')
+    chips = (v.get('chips') or [])[:3]
+    row_h, gap = 88, 8
+    chips_h = len(chips)*row_h+max(0, len(chips)-1)*gap
+    sub = str(v.get('sub') or '')
+    unit_size = 72
+    uw = r3.font(unit_size).getlength(unit)+14 if unit else 0
+    top = 380
+    size = 340
+    while size > 120 and r3.num_font(size).getlength(big)+uw > width:
+        size -= 4
+    def metrics(n):
+        bb = r3.num_font(n).getbbox(big)
+        return bb[3]-bb[1]
+    # 右下のキャラの頭（y約1035）より上に札が収まるまで数字を縮める。
+    while size > 120 and top+metrics(size)+36+(76 if sub else 0)+(34+chips_h if chips else 0) > HOOK_BOTTOM:
+        size -= 4
+    height = metrics(size)
+    nw = r3.num_font(size).getlength(big)
+    x = L+(width-nw-uw)/2
+    c.text(im, x, top, big, size, r3.GOLD, number=True)
+    r3.record_box(im, 'number', (x, top, x+nw, top+height), big)
+    if unit:
+        uh = r3.font(unit_size).getbbox(unit)
+        c.text(im, x+nw+14, top+height-(uh[3]-uh[1]), unit, unit_size, r3.GOLD, width=uw)
+    y = top+height+36
+    sub_size = 0
+    if sub:
+        sub_size = _fit(sub, 56, width)
+        c.text(im, L+(width-c.text_length(sub, sub_size))/2, y, sub, sub_size)
+        y += 76
+    y += 34
+    chip_sizes = []
+    for chip in chips:
+        c.panel(im, (L, y, R, y+row_h))
+        score, label_text = str(chip.get('score', '')), str(chip.get('label', ''))
+        num_size = 56
+        nwid = r3.num_font(num_size).getlength(score)
+        nb = r3.num_font(num_size).getbbox(score)
+        c.text(im, R-28-nwid, y+(row_h-(nb[3]-nb[1]))/2, score, num_size, r3.GOLD, number=True)
+        room = width-28-nwid-28-24
+        ls = _fit(label_text, 40, room)
+        lb = r3.font(ls).getbbox(label_text)
+        c.text(im, L+28, y+(row_h-(lb[3]-lb[1]))/2, label_text, ls, width=room)
+        chip_sizes.append(ls)
+        y += row_h+gap
+    im.info['asset_v4'] = {'kind': 'intro', 'v2_hook': dict(who=who, who_size=who_size, big=big, big_size=size,
+                           unit=unit, sub=sub, chips=len(chips), chip_label_sizes=chip_sizes)}
+    return finish(im, t, spec)
+
+
 def intro(t, spec, label):
+    if hook_v2(spec):
+        return intro_v2(t, spec, label)
     im = c.canvas(t, label)
     v = spec.get('v3') or {}
     c.text(im, L, 262, v.get('who') or spec.get('label', ''), 44, width=R-L)
