@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-13T06:01:47.485950+00:00",
+  "updated_at": "2026-11-13T19:13:26.750311+00:00",
   "sources": [
     {
       "name": "MLB公式",
@@ -9,12 +9,44 @@
   "titles_count": 25,
   "teams": [
     {
+      "team_id": "109",
+      "name": "ダイヤモンドバックス",
+      "name_en": "Arizona Diamondbacks",
+      "mentions": 1,
+      "tone": "話題",
+      "gist": "アリゾナ秋季リーグ準決勝を生中継"
+    },
+    {
+      "team_id": "111",
+      "name": "レッドソックス",
+      "name_en": "Boston Red Sox",
+      "mentions": 1,
+      "tone": "好調",
+      "gist": "ポストシーズンの飛躍株バウアーズ、4年契約で合意"
+    },
+    {
+      "team_id": "147",
+      "name": "ヤンキース",
+      "name_en": "New York Yankees",
+      "mentions": 1,
+      "tone": "話題",
+      "gist": "ヤンキース、GM会議後に複数の戦力補強を狙う"
+    },
+    {
       "team_id": "158",
       "name": "ブリュワーズ",
       "name_en": "Milwaukee Brewers",
       "mentions": 1,
       "tone": "話題",
-      "gist": "ブリュワーズ、WS MVPコントレラス放出か"
+      "gist": "ブリュワーズはWS MVPコントレラスを放出か"
+    },
+    {
+      "team_id": "117",
+      "name": "アストロズ",
+      "name_en": "Houston Astros",
+      "mentions": 1,
+      "tone": "話題",
+      "gist": "アストロズのオースマス監督起用にバグウェルが語る"
     },
     {
       "team_id": "144",
@@ -22,14 +54,18 @@
       "name_en": "Atlanta Braves",
       "mentions": 1,
       "tone": "好調",
-      "gist": "ブレーブス、フィリップスと3年契約"
+      "gist": "救援の柱フィリップス、ブレーブスと3年契約"
+    },
+    {
+      "team_id": "113",
+      "name": "レッズ",
+      "name_en": "Cincinnati Reds",
+      "mentions": 1,
+      "tone": "話題",
+      "gist": "レッズはデラクルーズを放出するのか検証"
     }
   ],
   "players": [
-    {
-      "name": "大谷翔平",
-      "mentions": 2
-    },
     {
       "name": "鈴木誠也",
       "mentions": 1
