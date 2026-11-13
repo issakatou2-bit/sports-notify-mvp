@@ -249,6 +249,19 @@ def checkpoint_receipt(path, key, entry, extra=()):
         raise ValueError('本番台帳に記録できないため投稿停止')
 
 
+def goal_short_metadata(data):
+    """得点速報の題・概要欄・タグ。ハッシュタグと tags に得点した日本人選手名を入れる。"""
+    lines = results.description_lines(data)
+    ended = results.utc(data['games'][0]['finished_utc']).astimezone(results.JST)
+    lines[0] = f"日本時間{ended:%Y年%m月%d日 %H:%M}に終了した試合の、日本人選手の得点・アシスト速報です。"
+    scorers = [p['name'] for p in data['players'] if p.get('status') != 'none' and p.get('goals')]
+    names = list(dict.fromkeys(scorers or [p['name'] for p in data['players']
+                                           if p.get('status') != 'none' and p.get('assists')]))[:3]
+    lines += ['', ' '.join(['#サッカー', *['#' + n for n in names], '#Shorts'])]
+    return dict(title=results.title(data), description='\n'.join(lines),
+                tags=['サッカー', '欧州サッカー', '海外サッカー', 'コレスポ', *names])
+
+
 def publish(data, out, ledger, *, goal_short=False):
     __import__('sample_only').assert_publish_allowed()
     enabled = (os.environ.get('COLLESPO_SOCCER_GOAL_SHORT') == 'on' if goal_short else
@@ -291,12 +304,9 @@ def publish(data, out, ledger, *, goal_short=False):
     creds = Credentials(None, refresh_token=os.environ['YOUTUBE_REFRESH_TOKEN'],token_uri='https://oauth2.googleapis.com/token',client_id=os.environ['YOUTUBE_CLIENT_ID'],client_secret=os.environ['YOUTUBE_CLIENT_SECRET'])
     meta = metadata(data) if not goal_short else None
     if goal_short:
-        lines = results.description_lines(data)
-        ended = results.utc(data['games'][0]['finished_utc']).astimezone(results.JST)
-        lines[0] = f"日本時間{ended:%Y年%m月%d日 %H:%M}に終了した試合の、日本人選手の得点・アシスト速報です。"
-        meta = dict(title=results.title(data), description='\n'.join(lines))
+        meta = goal_short_metadata(data)
     meta['description'] = host_split.credit(meta['description'])
-    body = {'snippet':dict(title=meta['title'],description=meta['description'],categoryId='17',defaultLanguage='ja',defaultAudioLanguage='ja'), 'status':dict(privacyStatus='public',selfDeclaredMadeForKids=False)}
+    body = {'snippet':dict(title=meta['title'],description=meta['description'],categoryId='17',defaultLanguage='ja',defaultAudioLanguage='ja',**({'tags': meta['tags']} if meta.get('tags') else {})), 'status':dict(privacyStatus='public',selfDeclaredMadeForKids=False)}
     import localize_videos
     body = localize_videos.prepare_upload(body)
     response = api_build('youtube','v3',credentials=creds,cache_discovery=False).videos().insert(part=localize_videos.upload_parts(body),body=body,media_body=MediaFileUpload(str(video),resumable=True)).execute()

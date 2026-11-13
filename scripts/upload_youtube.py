@@ -1535,7 +1535,9 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
         # コメントで名前が挙がった日本人選手がいれば、先頭へ。
         # 所属しているだけの日は出さない(voiced_japanese の説明を参照)。
         who = "・".join(voiced_japanese()[:2])
-        if who and card:
+        if who and card and who in card:
+            title = f"【MLB】{card} 現地のファンは何と言ったか{tail}"
+        elif who and card:
             title = f"【MLB】{who}｜{card} 現地のファンは何と言ったか{tail}"
         elif who:
             title = f"【MLB】{who} 現地のファンは何と言ったか{tail}"
@@ -1822,13 +1824,15 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
             title = f'「{head}」｜現地の報道 #Shorts' if head else 'MLB 現地の報道まとめ #Shorts'
         else:
             short_card = card.removesuffix('のハイライト')
-            subject = '｜'.join(x for x in (who, short_card) if x)
+            subject = short_card if (who and who in short_card) else '｜'.join(x for x in (who, short_card) if x)
             # 主題の言葉は材料のまま。説明だけを短い定型にする。
             title = (f'{subject}に現地ファンの声 #Shorts' if subject
                      else 'MLB公式ハイライトに現地ファンの声 #Shorts')
         title = video_titles.public_title(title)
+        _raw_tail = None if morning_mode == 'press' else (m.get('matchup_jp') or m.get('topic_jp'))
         raw_subject = (head if morning_mode == 'press' else
-                       '｜'.join(x for x in (who, m.get('matchup_jp') or m.get('topic_jp')) if x))
+                       (_raw_tail if (who and _raw_tail and who in _raw_tail) else
+                        '｜'.join(x for x in (who, _raw_tail) if x)))
         narration_text = '\n'.join(str(s.get('text') or '') for s in
                                     _json_or_empty(narration_path).get('segments', []))
         mlb_search_terms = mlb_title_terms(raw_subject)
@@ -2062,7 +2066,8 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
         lines.append("")
     if mlb_title_v2:
         # 元の題の情報（日付・返信数・枠の説明）と本文を全部残す。
-        lines = ['｜'.join(mlb_search_terms), raw_subject, original_title, '', *lines]
+        # 検索語は tags と「#MLB #選手名」の行で足りる。冒頭は元の題1行だけ。
+        lines = [original_title.removesuffix(' #Shorts').strip(), '', *lines]
     editorial_text = title + "\n" + "\n".join(lines)
     # 順位争いは必ずサッカー。**渡し忘れると #MLB が付く。**
     # 区分から分かることを、呼ぶ側の引数に頼らない。

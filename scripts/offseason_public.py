@@ -24,18 +24,32 @@ def metadata(spec):
     lead = [label + 'を、MLB公式の記録から紹介します。', '']
     if spec['offseason']['kind'] == 'market':
         lead = [label, spec['label'] + '。確定情報と報道を分けて紹介します。', '']
-    if spec.get('intro'):
+    def _norm(t):
+        return re.sub(r'[。.\s]+$', '', str(t or '').strip())
+    if spec.get('intro') and not (spec['offseason']['kind'] == 'market'
+                                  and _norm(spec['intro']) == _norm(spec['label'])):
         lead += [spec['intro'], '']
     lead += [f'・{head}　{body}' for head, body in spec.get('items', [])]
     lead += ['', '出典: ' + spec.get('source', 'MLB公式')]
     if spec.get('source_url'):
         lead.append(spec['source_url'])
     if spec['offseason']['kind'] == 'market':
-        lead += [r['head'] + ': ' + r['source'] for r in spec['offseason']['events']]
+        seen = {spec.get('source_url')}
+        for r in spec['offseason']['events']:
+            if r['source'] not in seen:
+                lead.append(r['head'] + ': ' + r['source'])
+                seen.add(r['source'])
         lead += __import__('market_art').credits(spec)
     # 連載は見出しが「第N回」だけなので、題は選手名と動きが入った label を使う。
     series = spec['offseason'].get('series_number')
-    return dict(title=f'【MLB】{spec["label"] if series else label} #Shorts', lead=lead,
+    name = spec["label"] if series else label
+    if spec['offseason']['kind'] == 'schedule' and not series:
+        # 同じ題の回が日を変えて出るので、作成日（日本時間）を付けて区別する。
+        day = str(spec['offseason'].get('day') or '')
+        m = re.match(r'(\d{4})-(\d{2})-(\d{2})', day)
+        if m:
+            name += f' {int(m.group(2))}月{int(m.group(3))}日時点'
+    return dict(title=f'【MLB】{name} #Shorts', lead=lead,
                 tags=['MLB', 'メジャーリーグ', '野球', 'コレスポ'])
 
 
