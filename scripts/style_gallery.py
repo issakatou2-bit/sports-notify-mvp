@@ -2,6 +2,7 @@
 """新しい見た目（COLLESPO_STYLE=v2）の全種類の見本を1枚に並べる。"""
 import argparse
 import os
+import re
 import subprocess
 import sys
 import tempfile
@@ -9,7 +10,110 @@ from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFont
 
+try:
+    import yaml
+except ImportError:
+    yaml = None
+
 ROOT = Path(__file__).resolve().parents[1]
+
+
+def _workflow_path(workflow_file: str | Path) -> Path:
+    path = Path(workflow_file)
+    if not path.is_absolute():
+        if path.parts[:2] == (".github", "workflows"):
+            path = ROOT / path
+        else:
+            path = ROOT / ".github" / "workflows" / path
+    if path.suffix != ".yml":
+        path = path.with_suffix(".yml")
+    return path
+
+
+def _resolve_env_value(value, repo_vars: dict[str, str]) -> str | None:
+    if not isinstance(value, str):
+        return None
+    text = value.strip()
+    m = re.fullmatch(
+        r"\$\{\{\s*vars\.([A-Za-z_][A-Za-z0-9_]*)\s*\|\|\s*(['\"])(.*?)\2\s*\}\}",
+        text,
+    )
+    if m:
+        return repo_vars.get(m.group(1), m.group(3))
+    m = re.fullmatch(r"\$\{\{\s*vars\.([A-Za-z_][A-Za-z0-9_]*)\s*\}\}", text)
+    if m:
+        return repo_vars.get(m.group(1), "")
+    if text.startswith("${{"):
+        return None
+    if len(text) >= 2 and text[0] == text[-1] and text[0] in ("'", '"'):
+        return text[1:-1]
+    return text
+
+
+def _workflow_env_pairs_from_yaml(path: Path) -> list[tuple[str, object]]:
+    data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    pairs: list[tuple[str, object]] = []
+    top_env = data.get("env")
+    if isinstance(top_env, dict):
+        pairs.extend(top_env.items())
+    jobs = data.get("jobs")
+    if isinstance(jobs, dict):
+        for job in jobs.values():
+            if not isinstance(job, dict):
+                continue
+            env = job.get("env")
+            if isinstance(env, dict):
+                pairs.extend(env.items())
+            steps = job.get("steps")
+            if isinstance(steps, list):
+                for step in steps:
+                    if not isinstance(step, dict):
+                        continue
+                    env = step.get("env")
+                    if isinstance(env, dict):
+                        pairs.extend(env.items())
+    return pairs
+
+
+def _workflow_env_pairs_from_lines(path: Path) -> list[tuple[str, str]]:
+    pairs: list[tuple[str, str]] = []
+    lines = path.read_text(encoding="utf-8").splitlines()
+    i = 0
+    while i < len(lines):
+        line = lines[i]
+        stripped = line.strip()
+        if stripped == "env:" or stripped.startswith("env:"):
+            indent = len(line) - len(line.lstrip())
+            i += 1
+            while i < len(lines):
+                raw = lines[i]
+                if not raw.strip() or raw.lstrip().startswith("#"):
+                    i += 1
+                    continue
+                raw_indent = len(raw) - len(raw.lstrip())
+                if raw_indent <= indent:
+                    break
+                m = re.match(r"\s*([A-Za-z_][A-Za-z0-9_]*)\s*:\s*(.*)$", raw)
+                if m:
+                    pairs.append((m.group(1), m.group(2).strip()))
+                i += 1
+            continue
+        i += 1
+    return pairs
+
+
+def workflow_env(workflow_file: str | Path, repo_vars: dict[str, str]) -> dict[str, str]:
+    path = _workflow_path(workflow_file)
+    # PyYAML は on/off を真偽に変えて落とすので、GitHub と同じく文字のまま行で読む。
+    pairs = _workflow_env_pairs_from_lines(path)
+    env: dict[str, str] = {}
+    for key, value in pairs:
+        if not key.startswith("COLLESPO_") or key == "COLLESPO_SAMPLE_ONLY":
+            continue
+        resolved = _resolve_env_value(value, repo_vars)
+        if resolved is not None:
+            env[key] = resolved
+    return env
 
 
 def _run_code(body: str, env: dict | None = None) -> Image:
@@ -522,10 +626,12 @@ def main() -> None:
     ap.add_argument("--vars", type=Path, help="本番の切替（KEY=値 の行。gh variable list で取る）。見本を本番と同じ旗で描く")
     args = ap.parse_args()
     # 見本は本番と同じ旗で描く（11/12 代表の回が見本から漏れ、本番で旧い見た目が出た）。
+    repo_vars: dict[str, str] = {}
     if args.vars:
         for line in args.vars.read_text(encoding="utf-8").splitlines():
             key, sep, value = line.strip().partition("=")
             if sep and key.startswith("COLLESPO_"):
+                repo_vars[key] = value
                 os.environ[key] = value
     # 試験の材料で描くので、本番の材料として扱わない印を付ける。
     os.environ["COLLESPO_SAMPLE_ONLY"] = "true"
@@ -540,11 +646,23 @@ def main() -> None:
         if fn is None:
             results.append((name, "unsupported", info.get("why", "")))
             continue
+        kind_env = {}
+        if info.get("workflows"):
+            kind_env = workflow_env(info["workflows"][0], repo_vars)
+        saved = {key: os.environ.get(key) for key in kind_env}
+        os.environ.update(kind_env)
         try:
             im = fn()
-            results.append((name, "ok", im))
         except Exception as exc:
             results.append((name, "error", (str(exc).splitlines() or [type(exc).__name__])[0]))
+        else:
+            results.append((name, "ok", im))
+        finally:
+            for key, value in saved.items():
+                if value is None:
+                    os.environ.pop(key, None)
+                else:
+                    os.environ[key] = value
 
     cell_w, cell_h = 500, 550
     cols = 3

@@ -41,6 +41,17 @@ class WorkflowCoverage(unittest.TestCase):
                 f"KINDS に書かれたワークフローが実在しません: {name}.yml",
             )
 
+    def test_workflow_env_resolves_soccer_daily(self):
+        """ワークフローの env を本番のリポジトリ変数で解決する。"""
+        env = style_gallery.workflow_env(
+            "soccer_daily.yml",
+            {"COLLESPO_SOCCER_LOOK": "v6", "COLLESPO_STYLE": "v2"},
+        )
+        self.assertEqual(env["COLLESPO_SHORT_LOOK"], "v6")
+        self.assertEqual(env["COLLESPO_STYLE"], "v2")
+        self.assertEqual(env["COLLESPO_GLASS_BACKGROUND"], "stripes")
+        self.assertNotIn("COLLESPO_SAMPLE_ONLY", env)
+
 
 if __name__ == "__main__":
     unittest.main(argv=[__file__])
