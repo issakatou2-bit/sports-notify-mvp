@@ -22381,6 +22381,103 @@
       },
       "host_fallback_reason": null,
       "privacy": "public"
+    },
+    "season_compare_2026_807799_hitting_663457": {
+      "video_id": "UZkE0ZgzIhY",
+      "url": "https://youtu.be/UZkE0ZgzIhY",
+      "title": "吉田正尚とヌートバー 7月の打率.300と.169 #Shorts",
+      "published_at": "2026-11-13T06:13:10.737132+00:00",
+      "publish_at": "2026-11-13T07:30:00Z",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-13",
+        "enabled": true,
+        "assigned": "generic",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false,
+        "source": "post_common.lineup:daily_soccer",
+        "next_date": "2026-11-14",
+        "next_time": "19:30",
+        "next_name": "欧州サッカー"
+      },
+      "player_ids": [
+        "663457",
+        "807799"
+      ],
+      "duration_seconds": 30.54,
+      "short_information_count": 3,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-11-13",
+        "kind": "asset:season_compare",
+        "phase": 1,
+        "planned_host": "ui",
+        "rule": "half-jst-week-v1",
+        "week": 44,
+        "weekday": 4
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-11-13T06:11:15.092231+00:00",
+        "comparison_eligible": false,
+        "label": "予定めたん（雨衣不可のため）",
+        "mode": "live",
+        "planned_host": "metan",
+        "reason": "ui_worker_stale",
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
+    },
+    "season_month_2026_673540_pitching": {
+      "video_id": "5t6dfbVeKVA",
+      "url": "https://youtu.be/5t6dfbVeKVA",
+      "title": "千賀滉大 防御率1.74の8月と11.57の4月 #Shorts",
+      "published_at": "2026-11-13T06:15:09.234241+00:00",
+      "publish_at": "2026-11-13T13:00:00Z",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-13",
+        "enabled": true,
+        "assigned": "generic",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false,
+        "source": "post_common.lineup:daily_soccer",
+        "next_date": "2026-11-14",
+        "next_time": "19:30",
+        "next_name": "欧州サッカー"
+      },
+      "player_ids": [
+        "673540"
+      ],
+      "duration_seconds": 30.66,
+      "short_information_count": 3,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-11-13",
+        "kind": "asset:season_month",
+        "phase": 1,
+        "planned_host": "ui",
+        "rule": "half-jst-week-v1",
+        "week": 44,
+        "weekday": 4
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-11-13T06:13:11.536928+00:00",
+        "comparison_eligible": false,
+        "label": "予定めたん（雨衣不可のため）",
+        "mode": "live",
+        "planned_host": "metan",
+        "reason": "ui_worker_stale",
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
     }
   },
   "soccer_results": {

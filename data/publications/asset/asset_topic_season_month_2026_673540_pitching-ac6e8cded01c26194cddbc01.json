@@ -1,0 +1,49 @@
+{
+  "publication_id": "asset:topic:season_month_2026_673540_pitching",
+  "domain": "asset",
+  "kind": "topic",
+  "key_parts": {
+    "topic": "season_month_2026_673540_pitching"
+  },
+  "version": 1,
+  "history": [
+    {
+      "source": "published_assets/assets/season_month_2026_673540_pitching",
+      "service": "youtube",
+      "video_id": "5t6dfbVeKVA",
+      "state": "scheduled",
+      "scheduled_at": "2026-11-13T13:00:00Z",
+      "event_day": null,
+      "material_day": null,
+      "edition_day": "2026-11-13",
+      "run_at": "2026-11-13T06:15:09.222484+00:00",
+      "details": {
+        "privacy": "public"
+      },
+      "run_id": "43376701466",
+      "attempt": "1",
+      "recorded_at": "2026-11-13T06:15:09.225291+00:00",
+      "fingerprint": "05f17ce45616545df522ed26d11c2acff481832f95fe2e6b118bb0056cdbf11e",
+      "event_id": "9a679e25706e576f30c71e76a941a5a78843ad84c51a6a51312b934b0da4b321"
+    },
+    {
+      "source": "published_videos/asset/season_month_2026_673540_pitching",
+      "service": "youtube",
+      "video_id": "5t6dfbVeKVA",
+      "state": "scheduled",
+      "scheduled_at": "2026-11-13T13:00:00Z",
+      "event_day": null,
+      "material_day": null,
+      "edition_day": "2026-11-13",
+      "run_at": "2026-11-13T06:15:09.234241+00:00",
+      "details": {
+        "privacy": "public"
+      },
+      "run_id": "43376701466",
+      "attempt": "1",
+      "recorded_at": "2026-11-13T06:15:09.250570+00:00",
+      "fingerprint": "dbec92d7b1a1d231fc39b46ca33c99f7726be775d75632011937e42b9a6c3d47",
+      "event_id": "e67e199cca3fcf3d6a7cb4434219ff94a58f365abf5881350a28edeb879a07cd"
+    }
+  ]
+}
