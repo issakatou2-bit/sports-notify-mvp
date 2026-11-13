@@ -629,9 +629,12 @@ def _reel(d, im, x, y, value, t, size=400):
 def intro(t, spec, kind_label):
     if LOOK == 'v4':
         import asset_v4_cards as cards
-        if cards.enabled(spec):
+        if cards.enabled(spec) or cards.hook_v2(spec):
             return cards.intro(t, spec, kind_label)
     v3 = spec.get("v3") or {}
+    if spec.get('jp_stock') and not STYLE_V2:
+        # 日本人選手の数字の回の大きな1枚目はv2だけ。今の見た目は画素を変えない。
+        v3 = {k: x for k, x in v3.items() if k not in ('who', 'big', 'unit', 'sub', 'chips')}
     tid = design_team(spec)
     base, second, _ = colors(tid)
     im = background(t, tid)

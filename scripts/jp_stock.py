@@ -104,6 +104,17 @@ def rate(s, group):
     return Fraction(s['hits'], s['atBats'])
 
 
+def ip_dec(outs):
+    """投球回の数字（10.1 は10回と1/3）。MLBの表記で、数字だけ。"""
+    return f'{outs//3}.{outs%3}'
+
+
+def hook_v3(who, big, unit, sub, chips):
+    """1枚目の大きな見せ方（v2）。数字はその回の items・集計にある値だけ。"""
+    chips = [dict(score=str(a), label=b) for b, a in chips][:3]
+    return dict(who=who, big=str(big), unit=unit, sub=sub, chips=chips)
+
+
 def number(value):
     # 小数第4位を四捨五入。二進浮動小数の誤差を持ち込まない。
     n = (value.numerator*2000+value.denominator)//(value.denominator*2)
@@ -363,7 +374,7 @@ def expression_errors(spec):
     errors = [word for word in ('史上', '球団記録', '日本人記録', '歴代', '新記録', 'キャリア最高', '活躍') if word in text]
     if '、' in spec['title'] or re.search(r'[？?！!]', spec['title']):
         errors.append('題の呼びかけ・読点')
-    if not spec['title'].startswith(spec['jp']):
+    if not re.sub(r'^【[^】]+】', '', spec['title']).startswith(spec['jp']):
         errors.append('日本人名が先頭にない')
     if spec.get('editorial_version') == 2:
         for phrase in ('比較しました', '同じ最高値', '母数', 'だけを対象', '順に確認', '比較します', '並べます', '代打', '満塁'):
@@ -406,6 +417,7 @@ def editorial(spec, players):
     relief = sum(r['stat'].get('gamesStarted', 0) for r in rows)*2 < len(rows)
     note = '2026年レギュラーシーズン／MLB公式'
     title = None
+    tag = hook = None
     if kind == 'best':
         a = selected[0]; s = a['stat']
         if group == 'hitting':
@@ -458,6 +470,14 @@ def editorial(spec, players):
         record = (f"{s['homeRuns']}本塁打" + (f"{s['rbi']}打点" if s['rbi'] >= 5 else '') if group == 'hitting'
                   else (f"今季最多{s['strikeOuts']}奪三振" if len(selected) == 1 else f"{ip(s['outs'])}{s['strikeOuts']}奪三振"))
         title = f"{name} {games_label(selected)}で{record}"
+        tag = '今季最高'
+        tie = f'（同数{len(selected)}試合）' if len(selected) > 1 else ''
+        if group == 'hitting':
+            hook = hook_v3(name, s['homeRuns'], '本塁打', '今季の1試合最多'+tie,
+                           [('打点', s['rbi']), ('安打', s['hits']), ('塁打', s['totalBases'])])
+        else:
+            hook = hook_v3(name, s['strikeOuts'], '奪三振', '今季の1試合最多'+tie,
+                           [('投球回', ip_dec(s['outs'])), ('被安打', s['hits']), ('失点', s['runs'])])
     elif kind in ('month', 'vs'):
         buckets = defaultdict(list)
         for r in rows:
@@ -480,6 +500,12 @@ def editorial(spec, players):
                      (f'{b}月の記録', detail(sb, group)+(f"。{sb['plateAppearances']}打席" if group == 'hitting' else f"。{sb['appearances']}登板"))]
             c = next(k for k in spec['qualified'] if k not in (a,b))
             items.append((f'{c}月の記録', f'{metric}{display_rate(totals[c], group)}。'+detail(totals[c], group)))
+            tag = '月別の成績'
+            # 率は数字の後ろに「防御率」を置くと読みにくいので、単位を空にして句の側で言う。
+            hook = hook_v3(name, va, '', f'{a}月の{metric}',
+                           [(f'{b}月の{metric}', vb),
+                            (f'{a}月の'+('打席' if group == 'hitting' else '登板'), sa['plateAppearances'] if group == 'hitting' else sa['appearances']),
+                            (f'{c}月の{metric}', display_rate(totals[c], group))])
         else:
             cutoff = Fraction(325 if pid in ('660271','808959') else 350, 1000)
             if (good < cutoff if group == 'hitting' else good > Fraction(3, 2)):
@@ -491,6 +517,11 @@ def editorial(spec, players):
                      ('打席の数' if group == 'hitting' else '投球の内訳', f"{sa['plateAppearances']}打席、{sa['totalBases']}塁打、四球{sa['baseOnBalls']}" if group == 'hitting' else f"{ip(sa['outs'])}で被安打{sa['hits']}、与四球{sa['baseOnBalls']}")]
             c = sorted((k for k in spec['qualified'] if k != a), key=lambda k: (rate(totals[k], group) if group == 'pitching' else -rate(totals[k], group),k))[0]
             items.append((f"{club(buckets[c][0])}戦では", f'{metric}{display_rate(totals[c], group)}。'+detail(totals[c], group)))
+            tag = '相手別の成績'
+            hook = hook_v3(name, value, '', f'{opponent}戦の{metric}',
+                           [('試合' if group == 'hitting' else '登板', sa['appearances']),
+                            ('打席' if group == 'hitting' else '投球回', sa['plateAppearances'] if group == 'hitting' else ip_dec(sa['outs'])),
+                            ('本塁打' if group == 'hitting' else '奪三振', sa['homeRuns'] if group == 'hitting' else sa['strikeOuts'])])
     elif kind in ('home', 'daynight', 'half'):
         field, keys, labels = ('isHome', (True, False), ('ホーム', 'アウェー')) if kind == 'home' else ('dayNight', ('day', 'night'), ('デーゲーム', 'ナイター'))
         if kind == 'half':
@@ -508,6 +539,14 @@ def editorial(spec, players):
                       f"{la}{sa['appearances']}登板、{lb}{sb['appearances']}登板"))
         _, minimum = limits(group, relief)
         note += '／両方'+(f'{minimum}打席以上' if group == 'hitting' else ip(minimum)+'以上')
+        tag = {'home': '本拠地と敵地', 'daynight': '昼と夜', 'half': '前半と後半'}[kind]
+        first_better = (rate(sa, group) >= rate(sb, group)) == (group == 'hitting')
+        (ga, gl), (ba, bl) = ((sa, la), (sb, lb)) if first_better else ((sb, lb), (sa, la))
+        count = 'plateAppearances' if group == 'hitting' else 'appearances'
+        unit_count = '打席' if group == 'hitting' else '登板'
+        hook = hook_v3(name, display_rate(ga, group), '', f'{gl}の{metric}',
+                       [(f'{bl}の{metric}', display_rate(ba, group)),
+                        (f'{la}の{unit_count}', sa[count]), (f'{lb}の{unit_count}', sb[count])])
         if kind == 'daynight':
             note += '／昼夜はMLB公式日程'
         if kind == 'half':
@@ -526,6 +565,14 @@ def editorial(spec, players):
                  (f'チームが勝った{wins}試合', concise_stats(aggregate([r for r in selected if r['isWin']]), group)),
                  (f'チームが敗れた{losses}試合', concise_stats(aggregate([r for r in selected if not r['isWin']]), group))]
         note += '／'+team+'の試合勝敗・個人の勝敗ではない'
+        tag = '本塁打と勝敗' if group == 'hitting' else '先発と勝敗'
+        won, lost = aggregate([r for r in selected if r['isWin']]), aggregate([r for r in selected if not r['isWin']])
+        if group == 'hitting':
+            chips = [('勝った試合の本塁打', won.get('homeRuns', 0)), ('敗れた試合の本塁打', lost.get('homeRuns', 0))]
+        else:
+            chips = [('勝った試合の防御率', display_rate(won, group) if won.get('outs') else None),
+                     ('敗れた試合の防御率', display_rate(lost, group) if lost.get('outs') else None)]
+        hook = hook_v3(name, wins, '勝', f'{losses}敗（{condition}{len(selected)}試合）', [c for c in chips if c[1] is not None])
     elif kind == 'streak':
         n = spec['streak_length']
         minimum = (8 if pid in ('660271','808959') else 10) if group == 'hitting' else (8 if relief else 4)
@@ -539,6 +586,14 @@ def editorial(spec, players):
                  (f"始まりは{club(a)}戦", f"{date(a['date'])}は"+detail(a['stat'], group)),
                  (f"最後は{club(b)}戦", f"{date(b['date'])}は"+detail(b['stat'], group))]
         note += '／本人の出場順・失点0で判定'
+        tag = '連続記録'
+        agg = aggregate(selected)
+        if group == 'hitting':
+            hook = hook_v3(name, n, '試合', '連続で安打',
+                           [('期間中の安打', agg['hits']), ('打数', agg['atBats']), ('本塁打', agg['homeRuns'])])
+        else:
+            hook = hook_v3(name, n, '登板', '連続で無失点',
+                           [('期間中の投球回', ip_dec(agg['outs'])), ('奪三振', agg['strikeOuts']), ('失点', agg['runs'])])
     else:
         b = players[spec['player_ids'][1]]
         pairs = []
@@ -553,9 +608,12 @@ def editorial(spec, players):
         intro = f'{name}は{m}月に{metric}{va}、{b["jp"]}は{vb}を記録しました。'
         items = [(f'{month}月の{metric}', f"{name}は{display_rate(aa,group)}、{b['jp']}は{display_rate(bb,group)}。"+(f"打席数は{aa['plateAppearances']}と{bb['plateAppearances']}" if group == 'hitting' else f"投球回は{ip(aa['outs'])}と{ip(bb['outs'])}")) for month,aa,bb in pairs]
         note += '／同月同士・'+('各50打席以上' if group == 'hitting' else '各15回以上')
-    spec.update(title=(title or heading)+' #Shorts', label=heading, heading=heading, hook=heading,
+        tag = '2人を比べる'
+        hook = hook_v3(f'{name}と{b["jp"]}', f'{va}/{vb}', '', f'{m}月の{metric}（左が{name}）',
+                       [(f'{month}月の{metric}', f'{display_rate(aa,group)}/{display_rate(bb,group)}') for month,aa,bb in pairs])
+    spec.update(title=f'【{tag}】'+(title or heading)+' #Shorts', label=heading, heading=heading, hook=heading,
                 intro=intro, items=items, criteria_note=note, editorial_version=2)
-    spec['v3'] = dict(spec.get('v3') or {}, source=note)
+    spec['v3'] = dict(spec.get('v3') or {}, source=note, **hook)
     return spec, None
 
 
