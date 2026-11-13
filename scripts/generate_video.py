@@ -69,6 +69,19 @@ ACCENT = (255, 176, 32)
 ACCENT_DIM = (74, 58, 26)
 JP = (73, 197, 182)
 
+# 新しい見た目（COLLESPO_STYLE=v2、scripts/style_v2.py）。偽のときは上の色のまま、絵は変わらない。
+STYLE_V2 = os.environ.get("COLLESPO_STYLE") == "v2"
+if STYLE_V2:
+    import style_v2
+    BG = (10, 18, 38)
+    SURF = (22, 32, 56)
+    SURF2 = (28, 40, 68)
+    TEXT = style_v2.WHITE
+    DIM = style_v2.GREY
+    ACCENT = style_v2.ACCENT
+    ACCENT_DIM = style_v2.BAR_OFF
+    JP = style_v2.WHITE
+
 # 日本語フォントの場所は環境によって違う(手元のコンテナとGitHub Actionsの
 # ランナーでは入っているフォントが異なる)。決め打ちにすると片方で必ず落ちるため、
 # 候補を順に探し、最後はfc-matchでシステムに問い合わせる。
@@ -162,7 +175,7 @@ def _draw_steps(d) -> None:
     w = (W - pad * 2 - gap * (_STEPS - 1)) / _STEPS
     for i in range(_STEPS):
         x = pad + i * (w + gap)
-        col = ACCENT if i <= _STEP else (44, 52, 66)
+        col = ACCENT if i <= _STEP else ((70, 78, 98) if STYLE_V2 else (44, 52, 66))
         d.rounded_rectangle([x, 30, x + w, 30 + h], h // 2, fill=col)
 
 
@@ -191,7 +204,7 @@ def draw_spoken(d) -> None:
     h = len(lines) * 46 + 36
     # いちばん下には collespo.com が置いてある。その上に載せる。
     y = H - 260 - h
-    d.rounded_rectangle([60, y, W - 60, y + h], 18, fill=(16, 20, 28))
+    d.rounded_rectangle([60, y, W - 60, y + h], 18, fill=(8, 14, 30) if STYLE_V2 else (16, 20, 28))
     d.rounded_rectangle([60, y, 68, y + h], 4, fill=ACCENT)
     for i, ln in enumerate(lines):
         d.text((92, y + 18 + i * 46), ln, font=font(34), fill=DIM)
@@ -199,6 +212,14 @@ def draw_spoken(d) -> None:
 
 def base_frame(progress: float):
     """全画面共通の下地。背景がゆっくり動いて単調さを避ける。"""
+    if STYLE_V2:
+        # 濃紺の地。斜線・野球場の線・下端の帯は置かない（背景はANIM_ENDで止める）。
+        im = style_v2.background(min(progress, ANIM_END) * 8, W, H).convert("RGB")
+        d = ImageDraw.Draw(im)
+        d.rectangle([0, H - 10, W, H], fill=ACCENT)
+        _draw_steps(d)
+        draw_spoken(d)
+        return im, d
     im = Image.new("RGB", (W, H), BG)
     d = ImageDraw.Draw(im)
     # ゆっくり流れる斜めのアクセント
@@ -278,6 +299,11 @@ def label_chip(d, x, y, text, color, fg=None):
 
 def draw_brand(d, small=False):
     d.text((70, 70), "コレスポ", font=font(46 if small else 56), fill=ACCENT)
+
+
+def numfont(size: int):
+    """数字だけの字。v2 は Oswald、それ以外は従来の字。"""
+    return style_v2.num(size) if STYLE_V2 else font(size)
 
 
 def team_badge(d, x, y, abbr, color, w=118, h=64):
@@ -370,11 +396,11 @@ def render_intro(progress: float, date_label: str, meta: dict = None):
         mf = font(fit_size(d, top["matchup"], W - 240, (66, 58, 50, 44)))
         d.rounded_rectangle([60, y2, W - 60, y2 + box_h], 26, fill=ACCENT)
         d.text((110, y2 + 36), top.get("time") or "", font=font(44),
-               fill=(92, 58, 8))
+               fill=BG if STYLE_V2 else (92, 58, 8))
         d.text((110, y2 + 110), top["matchup"], font=mf, fill=BG)
         if series:
             sf = font(fit_size(d, series, W - 240, (46, 42, 38, 34)))
-            d.text((110, y2 + 228), series, font=sf, fill=(92, 58, 8))
+            d.text((110, y2 + 228), series, font=sf, fill=BG if STYLE_V2 else (92, 58, 8))
 
     d.text((80, H - 170), "コレスポ　collespo.com", font=font(38), fill=DIM)
     return im
@@ -735,8 +761,8 @@ def render_recap(progress: float, meta: dict):
         e0 = ease_out(min(1.0, progress * 2.2))
         card(d, 60, y, W - 60, y + 150, stripe=JP)
         n = int(base["games"] * e0)
-        d.text((100, y + 26), f"{n}", font=font(74), fill=ACCENT)
-        nw = d.textlength(f"{n}", font=font(74))
+        d.text((100, y + 26), f"{n}", font=numfont(74), fill=ACCENT)
+        nw = d.textlength(f"{n}", font=numfont(74))
         d.text((110 + nw, y + 58), "試合を記録しました", font=font(40), fill=TEXT)
         # 数えた結果を並べる。予想ではないので、外れることが無い。
         #
@@ -883,7 +909,7 @@ def render_score(progress: float, games: list):
 
         # 点数は右上に大きく。3試合を見比べられるようにする
         stxt = f"{sc}"
-        f_s = font(88)
+        f_s = numfont(88)
         d.text((W - 150 - dx - d.textlength(stxt, font=f_s), y + 16),
                stxt, font=f_s, fill=ACCENT)
         d.text((W - 138 - dx, y + 66), "点", font=font(38), fill=ACCENT)

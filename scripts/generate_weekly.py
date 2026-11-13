@@ -94,6 +94,21 @@ JP = (73, 197, 182)
 WIN_COL = (73, 197, 182)
 LOSE_COL = (232, 116, 116)
 
+# 新しい見た目（COLLESPO_STYLE=v2、scripts/style_v2.py）。偽のときは上の色のまま、絵は変わらない。
+STYLE_V2 = os.environ.get("COLLESPO_STYLE") == "v2"
+if STYLE_V2:
+    import style_v2
+    BG = (10, 18, 38)
+    SURF = (22, 32, 56)
+    SURF2 = (28, 40, 68)
+    TEXT = style_v2.WHITE
+    DIM = style_v2.GREY
+    ACCENT = style_v2.ACCENT
+    ACCENT_DIM = style_v2.BAR_OFF
+    JP = style_v2.WHITE
+    WIN_COL = style_v2.ACCENT
+    LOSE_COL = style_v2.GREY
+
 # フォントは video_common の正本を使う。
 # ここには自前の font() があったが、**キャッシュが付いていなかった**。
 # ImageFont.truetype はそのつどファイルを開くので、
@@ -106,6 +121,11 @@ _resolve_font = video_common._resolve_font
 wrap = video_common.wrap
 
 def base(progress):
+    if STYLE_V2:
+        im = style_v2.background(min(progress, ANIM_END) * 8, W, H).convert("RGB")
+        d = ImageDraw.Draw(im)
+        d.rectangle([0, H - 10, W, H], fill=ACCENT)
+        return im, d
     im = Image.new("RGB", (W, H), BG)
     d = ImageDraw.Draw(im)
     # 背景はANIM_ENDで動きを止める。ここが動き続けると全フレームが
