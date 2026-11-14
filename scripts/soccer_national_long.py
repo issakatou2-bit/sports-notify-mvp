@@ -1,7 +1,8 @@
-"""試合前の招集28人と今季の数字。取得・見本だけ。公開機能は持たない。"""
+"""試合前の招集28人と今季の数字。見本の経路は公開しない。公開の経路は --publish と upload_youtube の kind soccer_national_long だけ。"""
 import argparse
 import copy
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, time as dtime
+import json
 import os
 from pathlib import Path
 
@@ -11,9 +12,28 @@ import soccer_national_numbers as numbers
 ROOT=Path(__file__).resolve().parents[1]
 FIXTURES=ROOT/'data/soccer_national_fixtures.json'
 POSITIONS=('GK','DF','MF/FW')
+PUBLISHED=ROOT/'data/published_videos.json'
+RECORD_KIND='soccer_national_long'
+TITLE_MAX=50
 
 
-def material(key,as_of,sheet):
+def previous_match(history,roster,game,as_of):
+    """同じ招集期間（発表日〜この試合の前日）で、この試合より前に終わった代表戦のうち最新の1つ。無ければ None。"""
+    start=n.instant(roster['announced_at']).astimezone(n.JST).date().isoformat()
+    kick=n.instant(game['kickoff_jst']).astimezone(n.JST).date().isoformat()
+    until=min(kick,(n.instant(as_of).astimezone(n.JST).date()+timedelta(days=1)).isoformat())
+    rows=[r for r in history.get('matches',[]) if start<=r['date']<until]
+    if not rows:return None
+    r=max(rows,key=lambda r:r['date'])
+    if type(r['gf']) is not int or type(r['ga']) is not int or min(r['gf'],r['ga'])<0:raise ValueError('前の試合の得失点が不正です')
+    row=dict(date=r['date'],competition=r['competition'],opponent=r['opponent'],gf=r['gf'],ga=r['ga'])
+    if r.get('scorers'):
+        if not all(isinstance(x,str) and x for x in r['scorers']):raise ValueError('前の試合の得点者が不正です')
+        row['scorers']=list(r['scorers'])
+    return row
+
+
+def material(key,as_of,sheet,publish=False):
     roster=n.read(ROOT/'data/soccer_national_squad.json')
     n.squad_source(roster)
     # 同じ公式名簿・確定した読み・重複検査を短編と共用する。
@@ -32,13 +52,22 @@ def material(key,as_of,sheet):
     for p in people:p['season_numbers']=copy.deepcopy(lookup.get(p['name']))
     history=n.read(ROOT/'data/soccer_national_results.json')
     previous=copy.deepcopy(history.get('previous_meetings',{}).get(game['opponent'],[]))
+    last=previous_match(history,roster,game,as_of)
     return dict(version=1,as_of=as_of,key=key,game=copy.deepcopy(game),source_url=fixtures['source_url'],
         season=roster['season'],players=people,numbers=copy.deepcopy(sheet),history=previous,
-        history_sources=history['sources'],planned_publish_at=planned.isoformat(),publication_enabled=False)
+        history_sources=history['sources'],previous_match=last,planned_publish_at=planned.isoformat(),publication_enabled=bool(publish))
 
 
 def title(data):
+    last=data.get('previous_match')
+    if last:
+        text=last['opponent']+'戦の結果と '+data['game']['opponent']+'戦へ 招集'+str(len(data['players']))+'人の今季'
+        if len(text)<=TITLE_MAX:return text
     return data['game']['opponent']+'戦へ 招集'+str(len(data['players']))+'人を今季の数字で'
+
+
+def result_word(row):
+    return '勝利' if row['gf']>row['ga'] else '敗戦' if row['gf']<row['ga'] else '引き分け'
 
 
 def highlighted(data):
@@ -73,6 +102,9 @@ def dialogue(data):
     panels={};segments=[]
     chapters=[dict(id='positions',title='ポジション別の今季成績'),dict(id='focus',title='数字で注目する選手'),
               dict(id='history',title='過去の対戦'),dict(id='kickoff',title='試合日時')]
+    last=data.get('previous_match')
+    if last:chapters.insert(0,dict(id='previous',title='前の試合'));chapters.insert(0,dict(id='opening',title='冒頭'))
+    first_chapter='opening' if last else 'positions'
     fixture=data['numbers'].get('fixture',False)
     def card(key,heading,rows,chapter,atomic=(),v2=None):
         if fixture:heading='【検証用・数値は架空】 '+heading
@@ -85,7 +117,7 @@ def dialogue(data):
     count=len(data['players']);known=len(data['numbers']['players'])
     day=n.instant(data['as_of']).astimezone(n.JST)
     opening=card('opening',title(data),[f'招集{count}人 / 数値確認 {known}人','所属リーグごとの今季成績',
-        f'取得日 {day.year}/{day.month}/{day.day}','未取得の数値は「未確認」。ゼロとして数えません。'],'positions',
+        f'取得日 {day.year}/{day.month}/{day.day}','未取得の数値は「未確認」。ゼロとして数えません。'],first_chapter,
         v2=dict(layout='opening',lead=data['game']['opponent']+'戦へ向けて',count=count,
             facts=[['内訳','　'.join(f"{pos} {sum(p['position']==pos for p in data['players'])}人" for pos in POSITIONS)],
                 ['今季の数値を確認',f'{known}人'],['取得日',f'{day.year}.{day.month}.{day.day}']],
@@ -95,9 +127,21 @@ def dialogue(data):
         first=leaders[0];metric=numbers.metric(first)
         say(3,f"{first['name']}、今季{metric[1]}{metric[2]}なのだ。",opening)
     else:say(3,f"{data['game']['opponent']}戦へ、招集{count}人を見るのだ。",opening)
-    say(2,f"{data['game']['opponent']}戦へ向けた招集{count}人です。ポジションごとの今季成績、注目の選手、過去の対戦、試合日時の順に見ていきます。",opening)
+    order='前の試合の結果、ポジションごとの今季成績' if last else 'ポジションごとの今季成績'
+    say(2,f"{data['game']['opponent']}戦へ向けた招集{count}人です。{order}、注目の選手、過去の対戦、試合日時の順に見ていきます。",opening)
     say(3,'数字はカップ戦も合わせた合計なのだ？',opening)
     say(2,f"ここで使うのは所属リーグの今季集計だけです。取得日は{day.month}月{day.day}日。確認できたのは{known}人で、未確認はゼロとして数えません。",opening)
+    if last:
+        when=datetime.fromisoformat(last['date']);word=result_word(last);who=last['opponent']
+        rows=[f"{when.month}月{when.day}日 {last['competition']}",f"日本 {last['gf']}対{last['ga']} {who} / {word}"]
+        if last.get('scorers'):rows.append('得点者 '+'・'.join(last['scorers']))
+        ref=card('previous',f'前の試合 {who}戦',rows,'previous',
+            v2=dict(layout='matches',title=f'前の試合 {who}戦',matches=[match_numbers(last,who)],empty=''))
+        say(3,f'まず、前の試合の結果なのだ。',ref)
+        ending='日本の勝ち' if last['gf']>last['ga'] else '日本の負け' if last['gf']<last['ga'] else '引き分け'
+        text=f"{when.month}月{when.day}日、日本は{who}と{last['competition']}で対戦し、{last['gf']}対{last['ga']}で{ending}でした。"
+        if last.get('scorers'):text+='得点者は'+'、'.join(last['scorers'])+'です。'
+        say(2,text,ref)
     for position in POSITIONS:
         group=[p for p in data['players'] if p['position']==position]
         for offset in range(0,len(group),3):
@@ -151,7 +195,7 @@ def dialogue(data):
 
 def validate_document(doc):
     data=doc['national_long_material']
-    rebuilt=material(data['key'],data['as_of'],data['numbers'])
+    rebuilt=material(data['key'],data['as_of'],data['numbers'],publish=bool(data.get('publication_enabled')))
     if data!=rebuilt:raise ValueError('長編の材料が公式名簿・数字・保存済みの対戦結果と一致しません')
     expected=dialogue(rebuilt)
     for key in ('program','kind','label','title','top','panels','chapters','segments'):
@@ -166,23 +210,98 @@ def speech_readings(doc):
     return readings
 
 
-def metadata(doc):
-    validate_document(doc);data=doc['national_long_material']
-    lines=[title(data),'今季のリーグ戦のみ。取得日 '+data['as_of'],
+def description(doc,chapters=None):
+    """概要欄。何の回か・章の時刻・出典・取得日・音声のクレジット。数字は材料の値だけ。"""
+    data=doc['national_long_material'];day=n.instant(data['as_of']).astimezone(n.JST)
+    kick=n.instant(data['game']['kickoff_jst']).astimezone(n.JST)
+    lines=[title(data),f"日本代表 対 {data['game']['opponent']}（{kick.month}月{kick.day}日 {kick.hour}時{kick.minute:02d}分 日本時間）の試合前に、招集{len(data['players'])}人の所属リーグでの今季成績を確認する回です。",'']
+    if chapters:lines+=list(chapters)+['']
+    last=data.get('previous_match')
+    if last:
+        when=datetime.fromisoformat(last['date'])
+        lines.append(f"前の試合：{when.month}月{when.day}日 {last['competition']} 日本 {last['gf']}対{last['ga']} {last['opponent']}（{result_word(last)}）"+('　得点者：'+'、'.join(last['scorers']) if last.get('scorers') else ''))
+    lines+=['今季のリーグ戦のみ。取得日 '+f'{day.year}年{day.month}月{day.day}日',
         '未確認の数字はゼロとして扱いません。図は発表されたポジションの名簿順で、先発やフォーメーションの予想ではありません。',
-        'MF/FWはJFAの一括発表です。過去の対戦は保存済みの結果のみです。',data['source_url']]
-    lines += [p['source'] for p in data['numbers']['players']]+data['history_sources']
-    return dict(snippet=dict(title=title(data),description='\n'.join(dict.fromkeys(lines))+'\n音声：VOICEVOX 四国めたん / ずんだもん',categoryId='17'),
-        planned_publish_at=data['planned_publish_at'],publication_enabled=False)
+        'MF/FWはJFAの一括発表です。過去の対戦は保存済みの結果のみです。','','出典：',
+        'JFA発表（招集名簿・試合日時）：'+data['source_url']]
+    lines+=[p['source'] for p in data['numbers']['players']]+data['history_sources']
+    lines+=['','音声：VOICEVOX 四国めたん / ずんだもん','#日本代表 #サッカー日本代表']
+    return chr(10).join(_dedupe(lines))
+
+
+def _dedupe(lines):
+    """出典URLの重複だけ除く。空行と章の並びは残す。"""
+    seen=set();out=[]
+    for line in lines:
+        if line.startswith('http') or line.startswith('JFA発表'):
+            if line in seen:continue
+            seen.add(line)
+        out.append(line)
+    return out
+
+
+def metadata(doc,timeline_path=None):
+    validate_document(doc);data=doc['national_long_material']
+    chapters=[]
+    if timeline_path:
+        import soccer_weekly_long
+        chapters=soccer_weekly_long.rendered_chapters(doc,timeline_path)
+    return dict(snippet=dict(title=title(data),description=description(doc,chapters),categoryId='17',
+        tags=['日本代表','サッカー日本代表',data['game']['opponent'],'招集メンバー'],defaultLanguage='ja',defaultAudioLanguage='ja'),
+        planned_publish_at=data['planned_publish_at'],publication_enabled=bool(data.get('publication_enabled')))
+
+
+def published(key,path=PUBLISHED):
+    try:rows=json.loads(Path(path).read_text(encoding='utf8')).get(RECORD_KIND) or {}
+    except (OSError,json.JSONDecodeError):return False
+    return bool(rows.get(key,{}).get('video_id'))
+
+
+def due(now=None,fixtures=None,record=PUBLISHED):
+    """JSTのきょうが、未公開のどれかの試合の前日なら、その試合の key。違えば None。"""
+    now=(now or datetime.now(n.JST)).astimezone(n.JST)
+    fixtures=fixtures or n.read(FIXTURES)
+    for game in fixtures['matches']:
+        kick=n.instant(game['kickoff_jst']).astimezone(n.JST)
+        if now.date()==kick.date()-timedelta(days=1) and now<kick and not published(game['key'],record):
+            return game['key']
+    return None
+
+
+def validate_upload(args,now=None):
+    """公開の最終関門。前日の20:00に間に合う時だけ通す。"""
+    now=(now or datetime.now(n.JST)).astimezone(n.JST)
+    doc=n.read(args.narration);validate_document(doc)
+    data=n.read(args.games)
+    if data!=doc['national_long_material']:raise ValueError('投稿用の材料と台本が一致しません')
+    if not data.get('publication_enabled'):raise ValueError('公開の経路で作った材料ではありません')
+    if data['numbers'].get('fixture'):raise ValueError('検証用の架空数値は公開しません')
+    if args.force:raise ValueError('代表の長編は試合のkeyでの二重投稿を許可しません')
+    if args.video_date!=data['key']:raise ValueError('記録する試合のkeyが材料と一致しません')
+    planned=n.instant(data['planned_publish_at']).astimezone(n.JST)
+    if planned.hour!=20 or planned.minute!=0:raise ValueError('公開予定が前日20:00ではありません')
+    if args.publish_at!='20:00':raise ValueError('公開時刻は20:00だけ指定できます')
+    if now.date()!=planned.date():raise ValueError('投稿は試合前日の当日に限ります')
+    if now>=planned-timedelta(minutes=10):raise ValueError('前日20:00の予約に間に合わないため投稿しません')
 
 
 def main():
     ap=argparse.ArgumentParser(description=__doc__)
-    ap.add_argument('--opponent',required=True,choices=('brazil','paraguay'))
+    ap.add_argument('--opponent',choices=('brazil','paraguay'))
+    ap.add_argument('--due',action='store_true',help='きょうが未公開の試合の前日なら、GITHUB_OUTPUTへ due と opponent を書いて終わる')
+    ap.add_argument('--publish',action='store_true',help='公開の経路。見本では付けない')
     ap.add_argument('--as-of',default=None)
     ap.add_argument('--fixture',type=Path)
     ap.add_argument('--out',type=Path,default=ROOT/'build/national_long')
-    args=ap.parse_args();as_of=args.as_of or datetime.now(n.JST).isoformat()
+    args=ap.parse_args()
+    if args.due:
+        key=due();lines=[f'due={"true" if key else "false"}',f'opponent={key or ""}']
+        print(chr(10).join(lines))
+        if os.environ.get('GITHUB_OUTPUT'):
+            with open(os.environ['GITHUB_OUTPUT'],'a',encoding='utf8') as out:out.write(chr(10).join(lines)+chr(10))
+        return
+    if not args.opponent:raise ValueError('--opponent か --due が必要です')
+    as_of=args.as_of or datetime.now(n.JST).isoformat()
     roster=n.read(ROOT/'data/soccer_national_squad.json')
     fetcher=None
     if args.fixture:
@@ -193,11 +312,13 @@ def main():
             return copy.deepcopy(responses[url])
         fetcher=fixture_fetch
     sheet=numbers.collect(roster,as_of,args.out/'raw',fetch=fetcher,fixture=bool(args.fixture))
-    data=material(args.opponent,as_of,sheet);doc=dialogue(data);validate_document(doc)
+    if args.publish and (args.fixture or sheet.get('fixture')):raise ValueError('公開の経路で検証用データは使えません')
+    data=material(args.opponent,as_of,sheet,publish=args.publish)
+    doc=dialogue(data);validate_document(doc)
     import name_reading_guard
     name_reading_guard.validate_dialogue(doc)
     for filename,value in (('numbers.json',sheet),('material.json',data),('dialogue.json',doc),('metadata.json',metadata(doc))):n.save(args.out/filename,value)
-    print(title(data)+' / 予定 '+data['planned_publish_at']+' / 公開機能なし')
+    print(title(data)+' / 予定 '+data['planned_publish_at']+(' / 公開の経路' if args.publish else ' / 見本のみ'))
 
 
 if __name__=='__main__':main()
