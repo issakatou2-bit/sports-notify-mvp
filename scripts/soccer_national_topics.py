@@ -14,6 +14,7 @@ ROOT = Path(__file__).resolve().parents[1]
 LEDGER = ROOT / 'data/soccer_national_topics_published.json'
 NAMES = ROOT / 'data/soccer_national_opponent_names.json'
 RESULTS = ROOT / 'data/soccer_national_results.json'
+REACTIONS = ROOT / 'data/soccer_national_reactions.json'
 PROGRAM = 'soccer_national_topic'
 VIDEO = 'collespo_national_topic.mp4'
 LIMIT = 45
@@ -260,8 +261,27 @@ def rematch(m):
     return f'W杯で敗れた{m.other}に{m.score[0]}-{m.score[1]}で勝利',rows
 
 
-# reactions は一次材料と生成関数を用意してからここへ登録する。
-TOPICS={'team-numbers':team_numbers,'late-winner':late_winner,'opponent-star':opponent_star,'keeper':keeper,'early-goals':early_goals,'rematch':rematch}
+def reaction_material(event):
+    return (national.read(REACTIONS).get('events') or {}).get(str(event))
+
+
+def reactions(m):
+    """試合後の声。記事の鍵括弧の中の言葉だけを、発言者と媒体つきで言う。"""
+    data=reaction_material(m.raw['header']['id'])
+    if not data or not data.get('checked_on') or not data.get('quotes'):raise Unavailable('試合後の声の確認済み材料がない')
+    rows=[]
+    for q in data['quotes']:
+        if not q.get('source_url','').startswith('https://') or not q.get('quote') or '「' in q['quote'] or '」' in q['quote']:
+            raise Unavailable('発言の出典・中身が未確認: '+q.get('who',''))
+        said=f"{q['lead']}は、「{q['quote']}」と話しました。"+(f"{q['via']}の報道です。" if q.get('via') else '')
+        rows.append((q['ask'],said,q['head'],[('話した人',q['who']),('出典',q['source'])]))
+    for f in data.get('facts',[]):
+        if len(f.get('sources',[]))<2:raise Unavailable('2つの出典で確かめていない事実がある')
+        rows.append((f['ask'],f['text'],f['head'],[tuple(r) for r in f['rows']]))
+    return data['title'],rows
+
+
+TOPICS={'team-numbers':team_numbers,'late-winner':late_winner,'opponent-star':opponent_star,'keeper':keeper,'early-goals':early_goals,'rematch':rematch,'reactions':reactions}
 
 
 def narration(summary, topic, *, names=None, meetings=None):
@@ -280,6 +300,9 @@ def narration(summary, topic, *, names=None, meetings=None):
     if topic=='rematch':
         doc['previous_meetings']=[copy.deepcopy(r) for r in m.meetings if r['date']<m.today]
         doc['meeting_sources']=national.read(RESULTS)['sources']
+    if topic=='reactions':
+        doc['reaction_material']=copy.deepcopy(reaction_material(raw['header']['id']))
+        doc['sanity_materials'].append(dict(source='試合後の発言（確認済み）',sport='soccer',facts=doc['reaction_material']))
     return short_common.prepare(doc)
 
 
@@ -332,8 +355,13 @@ def speech_readings(doc):
 
 def information(doc):
     if check(doc):raise ValueError('材料が不一致')
+    answers=[(i,s) for i,s in enumerate(doc['segments']) if s['speaker']==METAN and s['kind']!='outro']
+    if doc['topic']=='reactions':
+        r=doc['reaction_material'];sources=[q['source_url'] for q in r['quotes']]+[' '.join(f['sources']) for f in r.get('facts',[])]
+        return [dict(subject=s['meta']['head'],fact='試合後の発言・試合の最後の出来事',value=s['meta']['rows'],source=src,segments=[i])
+                for (i,s),src in zip(answers,sources)]
     return [dict(subject=s['meta']['head'],fact='当該試合の数字・経過',value=s['meta']['rows'],source=doc['source_url'],segments=[i])
-            for i,s in enumerate(doc['segments']) if s['speaker']==METAN and s['kind']!='outro']
+            for i,s in answers]
 
 
 GLOSSARY={'枠内シュート':'枠内シュート：ゴールの枠の中に向かったシュート。','セーブ':'セーブ：GKが相手のシュートを防いだ記録。',
@@ -347,6 +375,12 @@ def metadata(doc):
     source='出典: ESPN 試合ページ\n'+doc['source_url']
     if doc['topic']=='rematch':
         source+='\n過去の対戦: 日本代表の試合の確認一覧\n'+'\n'.join(doc['meeting_sources'])
+    if doc['topic']=='reactions':
+        r=doc['reaction_material']
+        source='出典:\n'+'\n'.join(f"{q['who']}（{q['where']}）: {q['source']}\n{q['source_url']}" for q in r['quotes'])
+        urls=list(dict.fromkeys(u for f in r.get('facts',[]) for u in f['sources']))
+        if urls:source+='\n試合の最後の退場:\n'+'\n'.join(urls)
+        source+='\n試合の結果: ESPN 試合ページ\n'+doc['source_url']
     return dict(snippet=dict(title=doc['title'],description=said+('\n\n'+'\n'.join(terms) if terms else '')+'\n\n'+source+
         '\n音声: VOICEVOX:ずんだもん・四国めたん\n#サッカー日本代表 #Shorts',tags=['サッカー','日本代表','コレスポ'],categoryId='17',defaultLanguage='ja',defaultAudioLanguage='ja'))
 
@@ -366,6 +400,8 @@ def validate_upload(args, now=None):
     if __import__('os').getenv('COLLESPO_NATIONAL_TOPIC_PUBLISH')!='true':raise ValueError('話題の公開は手動指定が必要です')
     if doc['topic']=='rematch' and doc['previous_meetings']!=[r for r in meetings_for(Material(doc['topic_summary']).other) if r['date']<doc['date_jst']]:
         raise ValueError('過去の対戦が確認一覧と一致しません')
+    if doc['topic']=='reactions' and doc.get('reaction_material')!=reaction_material(doc['event_id']):
+        raise ValueError('試合後の声が確認済みの材料と一致しません')
     ledger=national.read(LEDGER)
     if doc['topic_key'] in ledger:raise ValueError('同じ試合の同じ話題は予約・投稿済みです')
     if not args.publish_at:raise ValueError('未来の予約時刻が必要です')
