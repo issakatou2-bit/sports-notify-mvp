@@ -22,6 +22,7 @@ NARRATIONS = {
     'soccer_voices': ['build/soccer_voices/narration.json'],
     'soccer_week': ['build/week_narration.json'],
     'soccer_weekly_long': ['build/soccer_weekly/dialogue.json'],
+    'soccer_national_long': ['build/national_long/dialogue.json'],
     'weekly_summary': ['build/weekly_narration.json', 'build/vs_narration.json'],
 }
 KINDS = {
@@ -32,6 +33,7 @@ KINDS = {
     'soccer_voices': 'soccer_voices', 'soccer_week': 'soccer_week',
     'soccer_national': 'soccer_national',
     'soccer_weekly_long': 'soccer_weekly',
+    'soccer_national_long': 'soccer_national_long',
 }
 PUBLISHER = re.compile(r'scripts/(?:upload_youtube|soccer_results_upload|soccer_week_publish)\.py'
                       r'|scripts/soccer_national_publish\.py\s+--upload'

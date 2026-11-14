@@ -28,6 +28,12 @@ class NationalLong(unittest.TestCase):
             self.assertFalse(long.metadata(doc)['publication_enabled'])
             self.assertIn(opponent+'戦へ 招集28人',doc['title'])
 
+    def test_zundamon_only_asks(self):
+        # 11/14 本人「ずんだもんの疑問にめたんが答える形」：ずんだもんの台詞は問いだけで、数字はめたんが読む。
+        talk=[s for s in self.doc['segments'] if s['kind']=='talk' and s['speaker']==3]
+        self.assertTrue(talk)
+        for seg in talk:self.assertTrue(seg['text'].endswith('？'),seg['text'])
+
     def test_all_twenty_eight_have_table_rows_and_missing_is_not_zero(self):
         tables=[p for k,p in self.doc['panels'].items() if k.startswith('position_')]
         text='\n'.join(row for p in tables for row in p['rows'])
@@ -103,12 +109,124 @@ class NationalLong(unittest.TestCase):
             missing=manifest(210);missing['segments'].pop()
             with self.assertRaises(ValueError):render.audio_duration(self.doc,missing)
 
-    def test_workflow_has_no_schedule_credentials_or_publication_path(self):
+    def with_previous(self,rows=None):
+        """結果の一覧に前の試合を足した材料。ファイルは変えず、読む所だけ差し替える。"""
+        real=long.n.read
+        rows=rows if rows is not None else [dict(date='2026-11-08',competition='親善試合',opponent='ブラジル',gf=2,ga=1,result='win',scorers=['鎌田大地','坂元達裕'])]
+        def fake(path,*a,**k):
+            data=real(path,*a,**k)
+            if Path(path).name=='soccer_national_results.json':
+                data=copy.deepcopy(data);data['matches']=data['matches']+rows
+            return data
+        return patch.object(long.n,'read',fake)
+
+    def test_previous_chapter_only_when_result_exists(self):
+        plain=long.dialogue(long.material('paraguay',AS_OF,self.sheet))
+        self.assertNotIn('previous',plain['panels']);self.assertEqual([c['id'] for c in plain['chapters']][0],'positions')
+        self.assertIn('パラグアイ戦へ 招集28人を今季の数字で',plain['title'])
+        with self.with_previous():
+            data=long.material('paraguay',AS_OF,self.sheet);doc=long.dialogue(data);long.validate_document(doc)
+        self.assertEqual(data['previous_match']['opponent'],'ブラジル')
+        self.assertEqual([c['id'] for c in doc['chapters']][:3],['opening','previous','positions'])
+        text=' '.join(s['text'] for s in doc['segments'] if s['panel']=='previous')
+        self.assertIn('2対1で日本の勝ち',text);self.assertIn('鎌田大地',text)
+        # 前の試合の章は冒頭の次
+        self.assertEqual(list(doc['panels'])[:2],['opening','previous'])
+
+    def test_previous_match_is_not_made_up_outside_the_call_window_or_after_the_game(self):
+        old=[dict(date='2026-10-05',competition='キリンカップ',opponent='ニュージーランド',gf=2,ga=1,result='win')]
+        with self.with_previous(rows=old):
+            self.assertIsNone(long.material('paraguay',AS_OF,self.sheet)['previous_match'])
+        # 取得日より後の結果・その試合の当日以降の結果は入れない
+        later=[dict(date='2026-11-14',competition='親善試合',opponent='ブラジル',gf=2,ga=1,result='win'),
+               dict(date='2026-11-17',competition='親善試合',opponent='パラグアイ',gf=1,ga=0,result='win')]
+        with self.with_previous(rows=later):
+            self.assertIsNone(long.material('paraguay',AS_OF,self.sheet)['previous_match'])
+            self.assertIsNone(long.material('brazil',AS_OF,self.sheet)['previous_match'])
+
+    def test_title_switches_and_stays_within_fifty(self):
+        with self.with_previous():
+            data=long.material('paraguay',AS_OF,self.sheet)
+        title=long.title(data)
+        self.assertEqual(title,'ブラジル戦の結果と パラグアイ戦へ 招集28人の今季')
+        self.assertLessEqual(len(title),50)
+        for bad in ('【','】','！','？'):self.assertNotIn(bad,title)
+        data['previous_match']['opponent']='あ'*60
+        self.assertLessEqual(len(long.title(data)),50)
+        self.assertIn('を今季の数字で',long.title(data))
+
+    def test_due_only_on_the_day_before_an_unpublished_match(self):
+        from datetime import datetime,timedelta,timezone
+        jst=timezone(timedelta(hours=9))
+        with tempfile.TemporaryDirectory() as folder:
+            record=Path(folder)/'published.json'
+            at=lambda d,h,m=30:datetime(2026,11,d,h,m,tzinfo=jst)
+            self.assertEqual(long.due(at(16,12),record=record),'paraguay')
+            self.assertEqual(long.due(at(13,12),record=record),'brazil')
+            for day in (12,14,15,17,18):self.assertIsNone(long.due(at(day,12),record=record),day)
+            record.write_text('{"soccer_national_long":{"paraguay":{"video_id":"abc"}}}',encoding='utf8')
+            self.assertIsNone(long.due(at(16,12),record=record))
+            self.assertEqual(long.due(at(13,12),record=record),'brazil')
+
+    def upload_args(self,**kw):
+        import types
+        base=dict(narration='n.json',games='m.json',force=False,video_date='paraguay',publish_at='20:00')
+        base.update(kw);return types.SimpleNamespace(**base)
+
+    def test_publish_at_is_previous_day_twenty_and_late_runs_stop(self):
+        from datetime import datetime,timedelta,timezone
+        jst=timezone(timedelta(hours=9))
+        data=long.material('paraguay',AS_OF,self.sheet,publish=True)
+        self.assertEqual(data['planned_publish_at'],'2026-11-16T20:00:00+09:00')
+        # 検証用の架空数値の拒否は別の試験で見る。ここでは日時の判定だけ。
+        data['numbers']['fixture']=False
+        doc=long.dialogue(data)
+        def run(now,**kw):
+            with patch.object(long.n,'read',lambda path:doc if str(path)=='n.json' else data),patch.object(long,'validate_document',lambda d:None):
+                return long.validate_upload(self.upload_args(**kw),now)
+        ok=datetime(2026,11,16,12,40,tzinfo=jst)
+        self.assertIsNone(run(ok))
+        for now in (datetime(2026,11,16,19,55,tzinfo=jst),datetime(2026,11,16,21,0,tzinfo=jst),datetime(2026,11,15,12,40,tzinfo=jst),datetime(2026,11,17,9,0,tzinfo=jst)):
+            with self.subTest(now=now),self.assertRaises(ValueError):run(now)
+        with self.assertRaises(ValueError):run(ok,publish_at='21:00')
+        with self.assertRaises(ValueError):run(ok,video_date='brazil')
+        with self.assertRaises(ValueError):run(ok,force=True)
+
+    def test_sample_material_cannot_be_published(self):
+        from datetime import datetime,timedelta,timezone
+        jst=timezone(timedelta(hours=9))
+        data=long.material('paraguay',AS_OF,self.sheet,publish=True);doc=long.dialogue(data)
+        with patch.object(long.n,'read',lambda path:doc if str(path)=='n.json' else data),patch.object(long,'validate_document',lambda d:None):
+            with self.assertRaises(ValueError):long.validate_upload(self.upload_args(),datetime(2026,11,16,12,40,tzinfo=jst))
+        plain=long.dialogue(self.data)
+        with patch.object(long.n,'read',lambda path:plain if str(path)=='n.json' else self.data),patch.object(long,'validate_document',lambda d:None):
+            with self.assertRaises(ValueError):long.validate_upload(self.upload_args(video_date='brazil'),datetime(2026,11,13,12,40,tzinfo=jst))
+
+    def test_description_has_sources_fetch_date_credit_and_flag_path(self):
+        doc=long.dialogue(long.material('paraguay',AS_OF,self.sheet,publish=True));long.validate_document(doc)
+        meta=long.metadata(doc);text=meta['snippet']['description']
+        self.assertTrue(meta['publication_enabled'])
+        self.assertIn('https://www.jfa.jp/samuraiblue/news/00036974/',text)
+        self.assertIn('取得日',text);self.assertIn('音声：VOICEVOX 四国めたん / ずんだもん',text)
+        self.assertIn(doc['national_long_material']['numbers']['players'][0]['source'],text)
+        self.assertLessEqual(len(meta['snippet']['title']),50)
+        self.assertFalse(long.metadata(long.dialogue(self.data))['publication_enabled'])
+
+    def test_upload_youtube_knows_the_kind_and_keeps_the_record_key(self):
+        import upload_youtube as up
+        self.assertIn('soccer_national_long',up.DATED_KINDS);self.assertIn('soccer_national_long',up.LANDSCAPE_KINDS)
+        self.assertEqual(up.record_kind('soccer_national_long'),'soccer_national_long')
+        self.assertEqual(up.material_date_key('soccer_national_long','soccer',{},'paraguay'),'paraguay')
+
+    def test_workflow_publishes_only_on_schedule_or_publish_true(self):
         text=(ROOT/'.github/workflows/soccer_national_long.yml').read_text(encoding='utf8')
-        for forbidden in ('cron:','secrets.','upload_youtube','commit_data','published_','contents: write'):
-            self.assertNotIn(forbidden,text)
-        for required in ('sample_only:','render_only:','contents: read','--require-audio'):
+        for required in ('sample_only:','render_only:','publish:','default: false',"cron: '30 3 * * *'",'contents: write','--require-audio',
+                         '--kind soccer_national_long','--privacy public',"--publish-at '20:00'",'frames/opening.png','verify_national_long.py',
+                         'commit_data.sh','--due','group: soccer-national-long','cancel-in-progress: false',
+                         "github.event_name == 'schedule' || inputs.publish"):
             self.assertIn(required,text)
+        self.assertIn('test "$PUBLISH" = true || test "$SAMPLE_ONLY" = true || test "$RENDER_ONLY" = true',text)
+        self.assertEqual(text.count('upload_youtube.py'),1)
 
 
 if __name__=='__main__':unittest.main(argv=[sys.argv[0]])

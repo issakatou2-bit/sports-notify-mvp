@@ -725,7 +725,7 @@ def record_kind(kind: str, morning_mode: str = "players",
 # 資産動画(asset)だけは日付ではなく話題で引くので、別の分岐が受け持つ。
 # --kind の選択肢と食い違っていないかは test_consistency が見る。
 DATED_KINDS = ("daily", "morning", "longform", "weekly", "verdict",
-               "soccer_race", "soccer_week", "soccer_results", "soccer_voices", "soccer_national", "player_story", "soccer_weekly")
+               "soccer_race", "soccer_week", "soccer_results", "soccer_voices", "soccer_national", "player_story", "soccer_weekly", "soccer_national_long")
 
 
 def published_video(kind: str, date_key: str,
@@ -1318,7 +1318,7 @@ OTHER_CHANNEL_LINES = _other_channels()
 # 「kind != weekly」で判定していたので、長編がショート扱いのまま
 # 公開された。説明欄に #Shorts が入り、タグにも Shorts が付いていた。
 # 種類が増えるたびに同じ間違いが起きるので、集合で持つ。
-LANDSCAPE_KINDS = {"weekly", "longform", "soccer_weekly"}
+LANDSCAPE_KINDS = {"weekly", "longform", "soccer_weekly", "soccer_national_long"}
 
 
 def _postseason_data(path: str = "data/postseason.json") -> dict:
@@ -1450,6 +1450,9 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
     if kind == 'soccer_weekly':
         return __import__('soccer_weekly_long').metadata(_json_or_empty(narration_path),
                                                        pathlib.Path(narration_path).parent/'render_timeline.json')
+    if kind == 'soccer_national_long':
+        return __import__('soccer_national_long').metadata(_json_or_empty(narration_path),
+                                                         pathlib.Path(narration_path).parent/'render_timeline.json')
     if kind == 'soccer_national':
         return __import__('soccer_national').metadata(_json_or_empty(narration_path))
     if kind == 'player_story':
@@ -2193,7 +2196,7 @@ def main():
     parser.add_argument("--kind", default="daily",
                         choices=["daily", "weekly", "asset", "verdict",
                                  "morning", "longform", "soccer_race",
-                                 "soccer_week", "soccer_results", "soccer_voices", "soccer_national", "player_story", "soccer_weekly"],
+                                 "soccer_week", "soccer_results", "soccer_voices", "soccer_national", "player_story", "soccer_weekly", "soccer_national_long"],
                         help="daily=ショート / weekly=週次まとめ / "
                              "asset=資産動画 / verdict=答え合わせ / "
                              "morning=夕方の5本 / longform=対話の通常動画 / "
@@ -2240,6 +2243,8 @@ def main():
     ui_voice_queue.configure(args)
     if args.kind == 'soccer_weekly':
         __import__('soccer_weekly_long').validate_upload(args)
+    if args.kind == 'soccer_national_long':
+        __import__('soccer_national_long').validate_upload(args)
     if args.kind == 'soccer_national':
         import soccer_national
         if not soccer_national.enabled():

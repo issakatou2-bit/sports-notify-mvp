@@ -1,6 +1,11 @@
-name: 日本代表 試合前の今季数字（見本・書き出しのみ）
+name: 日本代表 試合前の今季数字（長編）
+
+# 手動の既定は見本・書き出しのみ。公開は schedule（試合前日の12:30 JST、前日判定は
+# scripts/soccer_national_long.py --due）か、手動で publish=true のときだけ。
 
 on:
+  schedule:
+    - cron: '30 3 * * *' # 12:30 JST。試合の前日だけ先へ進む
   workflow_dispatch:
     inputs:
       opponent:
@@ -16,9 +21,13 @@ on:
         description: '書き出しのみ（公開しない）'
         type: boolean
         default: true
+      publish:
+        description: '公開する（試合前日の20:00に予約。前日でなければ止まる）'
+        type: boolean
+        default: false
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: soccer-national-long
@@ -26,7 +35,8 @@ concurrency:
 
 env:
   PYTHONUTF8: '1'
-  COLLESPO_SAMPLE_ONLY: ${{ inputs.sample_only && 'true' || 'false' }}
+  COLLESPO_SAMPLE_ONLY: ${{ (github.event_name == 'workflow_dispatch' && !inputs.publish && inputs.sample_only) && 'true' || 'false' }}
+  PUBLISH: ${{ (github.event_name == 'schedule' || inputs.publish) && 'true' || 'false' }}
   COLLESPO_LONGFORM_STYLE: v3
   COLLESPO_STYLE: ${{ vars.COLLESPO_STYLE || '' }}
 
@@ -35,26 +45,58 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 120
     steps:
-      - name: Allow preview modes only
+      - name: Allow preview modes unless publishing
+        # 公開は schedule か publish=true のときだけ。手動の既定は見本・書き出しのみ。
         env:
           SAMPLE_ONLY: ${{ inputs.sample_only }}
           RENDER_ONLY: ${{ inputs.render_only }}
-        run: test "$SAMPLE_ONLY" = true || test "$RENDER_ONLY" = true
+        run: test "$PUBLISH" = true || test "$SAMPLE_ONLY" = true || test "$RENDER_ONLY" = true
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
       - name: Install dependencies
-        run: pip install -r scripts/requirements.txt
-      - name: Collect league season numbers and write fixed dialogue
+        run: |
+          pip install -r scripts/requirements.txt
+          pip install pillow google-api-python-client google-auth imageio_ffmpeg pyyaml
+      - name: Decide the match
+        # schedule は「きょうが未公開の試合の前日」のときだけ進む。それ以外は何もせず成功で終わる。
+        id: due
         env:
           OPPONENT: ${{ inputs.opponent }}
-        run: python scripts/soccer_national_long.py --opponent "$OPPONENT" --out build/national_long
+        run: |
+          if [ "${{ github.event_name }}" = schedule ]; then
+            python scripts/soccer_national_long.py --due
+          else
+            echo "due=true" >> "$GITHUB_OUTPUT"
+            echo "opponent=$OPPONENT" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Collect league season numbers and write fixed dialogue
+        if: steps.due.outputs.due == 'true'
+        env:
+          OPPONENT: ${{ steps.due.outputs.opponent }}
+        run: |
+          ARGS=()
+          if [ "$PUBLISH" = true ]; then ARGS+=(--publish); fi
+          python scripts/soccer_national_long.py --opponent "$OPPONENT" "${ARGS[@]}" --out build/national_long
       - name: Check material, names and every panel
-        run: python scripts/render_soccer_national_long.py --dialogue build/national_long/dialogue.json --check
+        if: steps.due.outputs.due == 'true'
+        run: |
+          python scripts/render_soccer_national_long.py --dialogue build/national_long/dialogue.json --check
+      - name: Sanity gate
+        if: steps.due.outputs.due == 'true' && env.PUBLISH == 'true'
+        env:
+          ANTHROPIC_API_KEY: ''
+        run: python scripts/sanity.py --general --strict --narration build/national_long/dialogue.json --out data/sanity_soccer_national_long.json --hold-record build/sanity_hold_soccer_national_long.json --kind soccer_national_long
+        # 定型台本の全文再構成で照合する。生成API・有料の二段目は使用しない。
+      - name: Verify long-form tests and every panel (publish only)
+        if: steps.due.outputs.due == 'true' && env.PUBLISH == 'true'
+        run: python scripts/verify_national_long.py
       - name: Install video tools
+        if: steps.due.outputs.due == 'true'
         run: bash scripts/install_video_tools.sh
       - name: Start VOICEVOX engine
+        if: steps.due.outputs.due == 'true'
         run: |
           docker run -d --rm -p 50021:50021 --name voicevox voicevox/voicevox_engine:cpu-latest
           for i in $(seq 1 60); do
@@ -63,21 +105,66 @@ jobs:
           done
           exit 1
       - name: Synthesize both voices
+        if: steps.due.outputs.due == 'true'
         run: python scripts/synthesize_narration.py --narration build/national_long/dialogue.json --out-dir build/national_long/audio
       - name: Render review frames and 3 to 4 minute video
+        if: steps.due.outputs.due == 'true'
         run: |
           python scripts/render_soccer_national_long.py --dialogue build/national_long/dialogue.json --frames build/national_long/frames
           python scripts/render_soccer_national_long.py --dialogue build/national_long/dialogue.json --audio-dir build/national_long/audio --out build/national_long --require-audio
-      - name: Save preview and source evidence
-        if: always()
+      - name: Upload to YouTube
+        if: steps.due.outputs.due == 'true' && env.PUBLISH == 'true'
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+          MATCH_KEY: ${{ steps.due.outputs.opponent }}
+        run: |
+          # 前日20:00に間に合わない・前日でない時は upload_youtube 側（validate_upload）が失敗で止める。
+          python scripts/upload_youtube.py --video build/national_long/collespo_longform.mp4 --games build/national_long/material.json --narration build/national_long/dialogue.json --kind soccer_national_long --sport soccer --video-date "$MATCH_KEY" --thumbnail build/national_long/frames/opening.png --privacy public --publish-at '20:00'
+          python scripts/verify_published.py --kind soccer_national_long --video-date "$MATCH_KEY" --hold-record build/sanity_hold_soccer_national_long.json
+      - name: Commit video record
+        if: always() && steps.due.outputs.due == 'true' && env.PUBLISH == 'true'
+        run: bash scripts/commit_data.sh "soccer national long record" data/published_videos.json data/playlists.json data/localized.json
+      - name: Save quota-exceeded thumbnails
+        if: always() && hashFiles('build/thumbnail_pending/**') != ''
         uses: actions/upload-artifact@v4
         with:
-          name: soccer-national-long-${{ inputs.opponent }}-${{ github.run_id }}
+          name: thumbnail-pending
+          path: |
+            build/thumbnail_pending/
+            !build/**/portrait/**
+          retention-days: 3
+          if-no-files-found: ignore
+      - name: Save preview and source evidence
+        if: always() && steps.due.outputs.due == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: soccer-national-long-${{ steps.due.outputs.opponent }}-${{ github.run_id }}
           path: |
             build/national_long/
             !build/**/portrait/**
           retention-days: 7
           if-no-files-found: error
+      - name: Keep unsaved data records
+        if: always() && hashFiles('build/data-save-recovery/**/FAILED') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: unsaved-data-${{ github.job }}-${{ github.run_attempt }}
+          path: build/data-save-recovery/
+          retention-days: 14
+          if-no-files-found: error
+      - name: Save sanity gate records
+        if: always() && steps.due.outputs.due == 'true' && env.PUBLISH == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: sanity-gate-soccer-national-long
+          path: |
+            data/sanity_soccer_national_long.json
+            build/sanity_hold_soccer_national_long.json
+          retention-days: 14
+          if-no-files-found: ignore
       - name: Save voice and render records
         if: always()
         uses: actions/upload-artifact@v4
