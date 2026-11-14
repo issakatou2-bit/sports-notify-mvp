@@ -13,7 +13,8 @@ def validate(data, now):
     if data['mode']=='result':
         # 結果は定時の回ではないので、日付をまたいでも出す（11/14 本人）。ただし試合から36時間を過ぎた古い結果は出さない。
         at=max(at,now+timedelta(minutes=2))
-        if at-n.instant(data['game']['start_utc'])>timedelta(hours=36):
+        start=(data.get('game') or {}).get('start_utc')
+        if start and at-n.instant(start)>timedelta(hours=36):
             raise ValueError('試合から36時間を過ぎた結果は公開しません')
     else:
         if at.astimezone(n.JST).date()!=now.astimezone(n.JST).date():

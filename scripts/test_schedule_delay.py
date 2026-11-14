@@ -122,7 +122,9 @@ class NationalWindows(unittest.TestCase):
 
     def test_evening_result_fallback_until_noon_and_no_duplicate(self):
         kickoff = '2026-11-14T10:15:00+00:00'
-        self.assertIsNone(self.choose(kickoff, '2026-11-15T06:59:59+09:00'))
+        # 0時〜7時も待たずに出す（11/14 本人「定時の回と違うので普通に投稿していい」）。
+        early = self.choose(kickoff, '2026-11-15T06:59:59+09:00')
+        self.assertEqual((early['mode'], early['publish_at']), ('result', '2026-11-15T07:20:00+09:00'))
         for at in ['2026-11-15T07:00:00+09:00', '2026-11-15T11:16:38+09:00', '2026-11-15T11:59:59+09:00']:
             with self.subTest(at=at):
                 self.assertEqual(self.choose(kickoff, at)['mode'], 'result')
@@ -161,10 +163,15 @@ class NationalReservation(unittest.TestCase):
                          instant(self.data['publish_at']))
         self.assertEqual(self.data['publish_at'], '2026-11-14T22:00:00+09:00')
 
-    def test_midnight_rollover_and_preview_kickoff_remain_blocked(self):
-        for at in ['2026-11-15T00:00:00+09:00', '2026-11-14T23:58:00+09:00']:
-            with self.subTest(at=at), self.assertRaises(ValueError):
-                publish.validate(self.data, instant(at))
+    def test_result_crosses_midnight_and_preview_kickoff_remains_blocked(self):
+        # 結果は定時の回ではないので、0時を越えても予約する（11/14 本人）。試合から36時間を過ぎたら止める。
+        for at, expected in [('2026-11-15T00:00:00+09:00', '2026-11-15T00:02:00+09:00'),
+                             ('2026-11-14T23:58:00+09:00', '2026-11-15T00:00:00+09:00')]:
+            with self.subTest(at=at):
+                self.assertEqual(publish.validate(self.data, instant(at)), instant(expected))
+        old = dict(self.data, game={'start_utc': '2026-11-14T10:15:00+00:00'})
+        with self.assertRaises(ValueError):
+            publish.validate(old, instant('2026-11-16T08:00:00+09:00'))
         preview = dict(self.data, mode='preview', game={'start_utc': '2026-11-14T22:02:00+09:00'})
         with self.assertRaises(ValueError):
             publish.validate(preview, instant('2026-11-14T22:00:00+09:00'))
@@ -198,6 +205,11 @@ class NationalReservation(unittest.TestCase):
             with patch.object(publish, 'datetime') as frozen, \
                     patch.object(uploader, 'main', side_effect=lambda: uploader.resolve_publish_at('22:00')):
                 frozen.now.side_effect = [instant('2026-11-14T23:50:00+09:00'), instant('2026-11-15T00:01:00+09:00')]
+                # 送る直前に日付が変わっても、結果は取り直した時刻で出す。共通の予約処理は元に戻す。
+                self.assertEqual(instant(publish.upload(['--kind', 'soccer_national', '--games', str(path)])),
+                                 instant('2026-11-15T00:03:00+09:00'))
+            with patch.object(publish, 'datetime') as frozen,                     patch.object(uploader, 'main', side_effect=lambda: uploader.resolve_publish_at('21:00')):
+                frozen.now.side_effect = [instant('2026-11-14T23:50:00+09:00')]
                 with self.assertRaises(ValueError):
                     publish.upload(['--kind', 'soccer_national', '--games', str(path)])
         self.assertIs(uploader.resolve_publish_at, resolver)
