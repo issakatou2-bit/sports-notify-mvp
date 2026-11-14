@@ -412,6 +412,25 @@ im = v3.render_line(8, page, topic=doc["top"], panel=doc["panels"][key], panel_t
     return _run_code(body)
 
 
+def render_offseason_weekly_long() -> Image:
+    body = """
+import json, tempfile
+from datetime import date
+from PIL import Image
+import offseason_weekly_long as w
+import render_offseason_weekly_long as r
+fix = ROOT / "scripts/fixtures/offseason-weekly-long"
+data = w.material(date(2026, 11, 11), json.loads((fix / "market.json").read_text(encoding="utf8")),
+                  json.loads((fix / "deadlines.json").read_text(encoding="utf8")), fixture=True)
+doc = w.dialogue(data)
+r.prepare(doc)
+folder = r.frames(doc, Path(tempfile.mkdtemp()), keys=["deadlines"])
+im = Image.open(folder / "deadlines.png").copy()
+
+"""
+    return _run_code(body)
+
+
 def render_soccer_weekly_long() -> Image:
     body = """
 import json
@@ -572,6 +591,11 @@ KINDS = {
     "soccer_national_long": {
         "workflows": ["soccer_national_long"],
         "render": render_soccer_national_long,
+        "why": "",
+    },
+    "offseason_weekly_long": {
+        "workflows": ["offseason_weekly_long"],
+        "render": render_offseason_weekly_long,
         "why": "",
     },
     "soccer_weekly_long": {
