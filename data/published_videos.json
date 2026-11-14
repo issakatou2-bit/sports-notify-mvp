@@ -22478,6 +22478,51 @@
       },
       "host_fallback_reason": null,
       "privacy": "public"
+    },
+    "offseason_market_2026_6c87bf817e82": {
+      "video_id": "a270DrqraJs",
+      "url": "https://youtu.be/a270DrqraJs",
+      "title": "【MLB】平良海馬 カブスとホワイトソックスが関心と米報道 #Shorts",
+      "published_at": "2026-11-14T06:08:51.596563+00:00",
+      "publish_at": "2026-11-14T13:30:00Z",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-14",
+        "enabled": true,
+        "assigned": "next",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false,
+        "source": "post_common.lineup:daily_soccer",
+        "next_date": "2026-11-15",
+        "next_time": "19:30",
+        "next_name": "欧州サッカー",
+        "speech": "次は11月15日19時30分の欧州サッカーです。また見に来てくださいね。",
+        "card": "次は11/15 19:30の欧州サッカー"
+      },
+      "duration_seconds": 40.67,
+      "short_information_count": 5,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-11-14",
+        "kind": "asset:offseason",
+        "phase": 1,
+        "planned_host": "metan",
+        "rule": "half-jst-week-v1",
+        "week": 44,
+        "weekday": 5
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-11-14T15:05:55.261209+09:00",
+        "comparison_eligible": true,
+        "planned_host": "metan",
+        "reason": null,
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
     }
   },
   "soccer_results": {

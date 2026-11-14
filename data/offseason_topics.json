@@ -1,5 +1,175 @@
 {
-  "day": "2026-11-13",
-  "topics": [],
-  "state": "ready"
+  "day": "2026-11-14",
+  "state": "ready",
+  "topics": [
+    {
+      "key": "offseason_market_2026_6c87bf817e82",
+      "label": "平良海馬 カブスとホワイトソックスが関心と米報道",
+      "heading": "日本人選手の来季 第7回",
+      "hook": "平良海馬\nカブスとホワイトソックスが関心と米報道",
+      "kind_label": "MLB",
+      "style": "v3",
+      "intro_as_is": true,
+      "intro": "平良海馬 カブスとホワイトソックスが関心と米報道。",
+      "description_line": "連載「日本人選手の来季」では、確定した動きと媒体による報道を分けて追います。",
+      "data_credit": "各行の出典 / 確定・報道を区別",
+      "source": "確定情報・媒体報道 / 確認日 2026-11-14",
+      "source_url": "https://news.infoseek.co.jp/article/sponichin_20261102_0101/",
+      "v3": {
+        "who": "日本人選手の来季 第7回",
+        "source": "出典: 各行の資料 / 確定・報道を区別"
+      },
+      "items": [
+        [
+          "確定｜交渉の開始",
+          "平良海馬は日本時間の11月2日から、MLBの全30球団と交渉できるようになりました。"
+        ],
+        [
+          "確定｜2026年の成績",
+          "平良海馬は2026年に146回を投げ、防御率1.36でした。"
+        ],
+        [
+          "報道｜シカゴの2球団",
+          "カブスとホワイトソックスが強い関心を持ち、今週代理人と会う予定だと670 The Scoreが報じています。"
+        ],
+        [
+          "報道｜パドレス",
+          "パドレスはポスティングされた3人の中でも特に平良海馬に力を入れているとサンディエゴ・ユニオン・トリビューンが報じています。"
+        ],
+        [
+          "報道｜ロックアウトと交渉",
+          "12月にロックアウトになっても日本からの選手の交渉期間は止まらないとジ・アスレチックが報じています。"
+        ]
+      ],
+      "offseason": {
+        "kind": "market",
+        "day": "2026-11-14",
+        "season": 2026,
+        "events": [
+          {
+            "event_id": "market:taira-interest-20261114:facts:open",
+            "head": "確定｜交渉の開始",
+            "body": "平良海馬は日本時間の11月2日から、MLBの全30球団と交渉できるようになりました。",
+            "source": "https://news.infoseek.co.jp/article/sponichin_20261102_0101/",
+            "market_type": "facts",
+            "illustration": "handshake.png"
+          },
+          {
+            "event_id": "market:taira-interest-20261114:facts:stats",
+            "head": "確定｜2026年の成績",
+            "body": "平良海馬は2026年に146回を投げ、防御率1.36でした。",
+            "source": "https://npb.jp/bis/2026/stats/idp1_l.html",
+            "market_type": "facts"
+          },
+          {
+            "event_id": "market:taira-interest-20261114:reports:chicago",
+            "head": "報道｜シカゴの2球団",
+            "body": "カブスとホワイトソックスが強い関心を持ち、今週代理人と会う予定だと670 The Scoreが報じています。",
+            "source": "https://www.mlbtraderumors.com/2026/11/kaima-taira-rumors-cubs-white-sox-padres-giants-blue-jays.html",
+            "market_type": "reports"
+          },
+          {
+            "event_id": "market:taira-interest-20261114:reports:padres",
+            "head": "報道｜パドレス",
+            "body": "パドレスはポスティングされた3人の中でも特に平良海馬に力を入れているとサンディエゴ・ユニオン・トリビューンが報じています。",
+            "source": "https://www.mlbtraderumors.com/2026/11/kaima-taira-rumors-cubs-white-sox-padres-giants-blue-jays.html",
+            "market_type": "reports"
+          },
+          {
+            "event_id": "market:taira-interest-20261114:reports:lockout",
+            "head": "報道｜ロックアウトと交渉",
+            "body": "12月にロックアウトになっても日本からの選手の交渉期間は止まらないとジ・アスレチックが報じています。",
+            "source": "https://www.mlbtraderumors.com/2026/11/potential-lockout-will-not-pause-npb-negotiating-window.html",
+            "market_type": "reports"
+          }
+        ],
+        "entry": {
+          "id": "taira-interest-20261114",
+          "title": "平良海馬 カブスとホワイトソックスが関心と米報道",
+          "name_en": "Kaima Taira",
+          "checked_on": "2026-11-14",
+          "facts": [
+            {
+              "id": "open",
+              "label": "交渉の開始",
+              "text": "平良海馬は日本時間の11月2日から、MLBの全30球団と交渉できるようになりました。",
+              "source_url": "https://news.infoseek.co.jp/article/sponichin_20261102_0101/",
+              "illustration": "handshake.png"
+            },
+            {
+              "id": "stats",
+              "label": "2026年の成績",
+              "text": "平良海馬は2026年に146回を投げ、防御率1.36でした。",
+              "source_url": "https://npb.jp/bis/2026/stats/idp1_l.html"
+            }
+          ],
+          "reports": [
+            {
+              "id": "chicago",
+              "label": "シカゴの2球団",
+              "outlet": "670 The Score",
+              "text": "カブスとホワイトソックスが強い関心を持ち、今週代理人と会う予定だと670 The Scoreが報じています。",
+              "source_url": "https://www.mlbtraderumors.com/2026/11/kaima-taira-rumors-cubs-white-sox-padres-giants-blue-jays.html"
+            },
+            {
+              "id": "padres",
+              "label": "パドレス",
+              "outlet": "サンディエゴ・ユニオン・トリビューン",
+              "text": "パドレスはポスティングされた3人の中でも特に平良海馬に力を入れているとサンディエゴ・ユニオン・トリビューンが報じています。",
+              "source_url": "https://www.mlbtraderumors.com/2026/11/kaima-taira-rumors-cubs-white-sox-padres-giants-blue-jays.html"
+            },
+            {
+              "id": "lockout",
+              "label": "ロックアウトと交渉",
+              "outlet": "ジ・アスレチック",
+              "text": "12月にロックアウトになっても日本からの選手の交渉期間は止まらないとジ・アスレチックが報じています。",
+              "source_url": "https://www.mlbtraderumors.com/2026/11/potential-lockout-will-not-pause-npb-negotiating-window.html"
+            }
+          ]
+        },
+        "series_number": 7,
+        "series_title": "日本人選手の来季"
+      }
+    },
+    {
+      "key": "offseason_schedule_2026_4814184ba9eb",
+      "label": "MLBオフの主な予定",
+      "heading": "MLBオフの主な予定",
+      "kind_label": "MLB",
+      "data_credit": "MLB.com",
+      "v3": {
+        "source": "出典: MLB.com / 日付は米東部"
+      },
+      "hook": "MLBオフの主な予定",
+      "intro": "この先のMLBオフの主な予定です。日付はすべてアメリカ東部の日付でお伝えします。",
+      "intro_as_is": true,
+      "style": "v3",
+      "source": "MLB公式｜日付は米東部",
+      "source_url": "https://www.mlb.com/news/vladimir-guerrero-jr-and-other-blue-jays-could-win-2026-mlb-awards",
+      "items": [
+        [
+          "11月20日｜契約提示の期限",
+          "11月20日、契約提示の期限、ノンテンダーの判断を確認する日になります"
+        ]
+      ],
+      "offseason": {
+        "kind": "schedule",
+        "day": "2026-11-14",
+        "season": 2026,
+        "events": [
+          {
+            "id": "tender",
+            "date_et": "2026-11-20",
+            "label": "契約提示の期限",
+            "text": "契約提示の期限、ノンテンダーの判断を確認する日になります",
+            "source": "https://www.mlb.com/news/vladimir-guerrero-jr-and-other-blue-jays-could-win-2026-mlb-awards",
+            "event_id": "calendar:tender",
+            "head": "11月20日｜契約提示の期限",
+            "body": "11月20日、契約提示の期限、ノンテンダーの判断を確認する日になります",
+            "japanese": false
+          }
+        ]
+      }
+    }
+  ]
 }
