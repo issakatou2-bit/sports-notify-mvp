@@ -23,6 +23,7 @@ class PauseTests(unittest.TestCase):
         with patch.dict(sys.modules, {'generate_asset_video': generator}), \
                 patch.object(na, 'published', return_value=set()), \
                 patch.object(na, 'posted_today', return_value=0), \
+                patch.object(na, 'season_stats_recent', return_value=0), \
                 patch.object(na, 'measured', return_value=avg or {}), \
                 patch.object(ui_voice_stock, 'prioritize', side_effect=lambda x: x), \
                 patch.object(na, 'superseded', return_value=False), \

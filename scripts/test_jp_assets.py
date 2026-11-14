@@ -111,9 +111,36 @@ class JapaneseAssets(unittest.TestCase):
             path = Path(tmp)/'assets.json'
             path.write_text(json.dumps({'assets': records or {}}), encoding='utf8')
             out = io.StringIO()
-            with patch.object(generator, 'LIST_TOPICS', catalog), patch.object(pp, 'load', return_value=({}, {'assets': records or {}})), contextlib.redirect_stdout(out):
+            with patch.object(generator, 'LIST_TOPICS', catalog), patch.object(pp, 'load', return_value=({}, {'assets': records or {}})), \
+                    patch.object(na, 'SEASON_STATS_PER_DAY', 9), patch.object(na, 'SEASON_STATS_PER_WEEK', 9), contextlib.redirect_stdout(out):
                 na.pick_season(types.SimpleNamespace(published=str(path), season=count))
             return out.getvalue().strip().split()
+
+    def test_season_stats_weekly_cap(self):
+        """11/14 本人：今季の数字の回は直近7日で3本・1日1本まで（オフの話題は数えない）。"""
+        import generate_asset_video as generator
+        jst = timezone(timedelta(hours=9))
+        now = datetime.now(jst)
+        catalog = {t['key']: t for t in self.topics}
+
+        def rec(days):
+            return {'publish_at': (now - timedelta(days=days)).isoformat()}
+
+        def pick(records):
+            with tempfile.TemporaryDirectory(dir='build') as tmp:
+                path = Path(tmp)/'assets.json'
+                path.write_text(json.dumps({'assets': records}), encoding='utf8')
+                out = io.StringIO()
+                with patch.object(generator, 'LIST_TOPICS', catalog), patch.object(pp, 'load', return_value=({}, {'assets': records})), \
+                        contextlib.redirect_stdout(out), contextlib.redirect_stderr(io.StringIO()):
+                    na.pick_season(types.SimpleNamespace(published=str(path), season=3))
+                return out.getvalue().strip().split()
+        self.assertEqual(len(pick({})), 1)
+        self.assertEqual(len(pick({'season_x_1': rec(1), 'season_x_2': rec(2)})), 1)
+        self.assertEqual(pick({'season_x_1': rec(1), 'season_x_2': rec(2), 'season_x_3': rec(6)}), [])
+        self.assertEqual(len(pick({'season_x_1': rec(7), 'season_x_2': rec(8), 'season_x_3': rec(9)})), 1)
+        self.assertEqual(pick({'season_x_1': rec(0)}), [])
+        self.assertEqual(na.season_stats_recent('nope.json', extra={'offseason_market_2026_a': rec(0), 'season_y': rec(3)}), 1)
 
     def test_no_same_kind_or_player_in_batch(self):
         keys = self.select()

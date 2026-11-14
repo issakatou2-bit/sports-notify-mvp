@@ -229,6 +229,50 @@
         }
       ],
       "reports": []
+    },
+    {
+      "id": "taira-interest-20261114",
+      "title": "平良海馬 カブスとホワイトソックスが関心と米報道",
+      "name_en": "Kaima Taira",
+      "checked_on": "2026-11-14",
+      "facts": [
+        {
+          "id": "open",
+          "label": "交渉の開始",
+          "text": "平良海馬は日本時間の11月2日から、MLBの全30球団と交渉できるようになりました。",
+          "source_url": "https://news.infoseek.co.jp/article/sponichin_20261102_0101/",
+          "illustration": "handshake.png"
+        },
+        {
+          "id": "stats",
+          "label": "2026年の成績",
+          "text": "平良海馬は2026年に146回を投げ、防御率1.36でした。",
+          "source_url": "https://npb.jp/bis/2026/stats/idp1_l.html"
+        }
+      ],
+      "reports": [
+        {
+          "id": "chicago",
+          "label": "シカゴの2球団",
+          "outlet": "670 The Score",
+          "text": "カブスとホワイトソックスが強い関心を持ち、今週代理人と会う予定だと670 The Scoreが報じています。",
+          "source_url": "https://www.mlbtraderumors.com/2026/11/kaima-taira-rumors-cubs-white-sox-padres-giants-blue-jays.html"
+        },
+        {
+          "id": "padres",
+          "label": "パドレス",
+          "outlet": "サンディエゴ・ユニオン・トリビューン",
+          "text": "パドレスはポスティングされた3人の中でも特に平良海馬に力を入れているとサンディエゴ・ユニオン・トリビューンが報じています。",
+          "source_url": "https://www.mlbtraderumors.com/2026/11/kaima-taira-rumors-cubs-white-sox-padres-giants-blue-jays.html"
+        },
+        {
+          "id": "lockout",
+          "label": "ロックアウトと交渉",
+          "outlet": "ジ・アスレチック",
+          "text": "12月にロックアウトになっても日本からの選手の交渉期間は止まらないとジ・アスレチックが報じています。",
+          "source_url": "https://www.mlbtraderumors.com/2026/11/potential-lockout-will-not-pause-npb-negotiating-window.html"
+        }
+      ]
     }
   ]
 }

@@ -230,6 +230,36 @@ def offseason_order(spec):
     return __import__('offseason_market').order(spec)
 
 
+# 11/14 本人「シーズンが終わって暫く経つ。サッカーや MLB のオフの攻防の方」：
+# 今季の数字の回（season_*）は直近7日で3本・1日1本まで。オフの話題（移籍市場）はこの上限に数えない。
+SEASON_STATS_PER_WEEK = 3
+SEASON_STATS_PER_DAY = 1
+
+
+def season_stats_recent(path, extra=None, today=None, days=7):
+    """直近 days 日（きょうを含む、JST）に出した今季の数字の回（season_*）の本数。"""
+    from datetime import timedelta
+    jst = timezone(timedelta(hours=9))
+    today = today or datetime.now(jst).date()
+    try:
+        rows = json.loads(pathlib.Path(path).read_text(encoding="utf-8")).get("assets") or {}
+    except (json.JSONDecodeError, OSError):
+        rows = {}
+    rows = merge_records(extra or {}, rows)
+    n = 0
+    for key, rec in rows.items():
+        if kind_of(key) != "season":
+            continue
+        stamp = (rec or {}).get("publish_at") or (rec or {}).get("published_at")
+        try:
+            day = datetime.fromisoformat(str(stamp).replace("Z", "+00:00")).astimezone(jst).date()
+        except (TypeError, ValueError):
+            continue
+        if 0 <= (today - day).days < days:
+            n += 1
+    return n
+
+
 def pick_season(args) -> int:
     """シーズンまとめを、その日の残りの本数まで選ぶ。
 
@@ -261,6 +291,9 @@ def pick_season(args) -> int:
     todo.sort(key=lambda k: not gav.LIST_TOPICS[k].get('jp_stock'))
     todo.sort(key=lambda k: offseason_order(gav.LIST_TOPICS[k])[0])
     picked = []
+    stats_left = max(0, min(SEASON_STATS_PER_WEEK - season_stats_recent(args.published, extra=ledgers[0].get('asset', {})),
+                            SEASON_STATS_PER_DAY - posted_today(args.published, kinds={"season"}, count=True,
+                                                                extra=ledgers[0].get('asset', {}))))
     used = season_kinds_today(args.published, extra=ledgers[0].get('asset', {}))
     used_players = set()
     for k in todo:
@@ -269,10 +302,14 @@ def pick_season(args) -> int:
         kind = season_kind(k)
         if k.startswith(offseason_market.PREFIX) and any(x.startswith(offseason_market.PREFIX) for x in picked):
             continue
+        is_stats = kind_of(k) == "season"
+        if is_stats and stats_left <= 0:
+            continue
         players = jp_assets.ids(k, gav.LIST_TOPICS[k])
         if kind in used or players & used_players:
             continue
         if not superseded(gav.LIST_TOPICS[k]):
+            stats_left -= is_stats
             picked.append(k)
             used.add(kind)
             used_players.update(players)
