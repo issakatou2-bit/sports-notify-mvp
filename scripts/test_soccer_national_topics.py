@@ -21,6 +21,17 @@ MEETINGS = [
     dict(date='2025-10-14', competition='親善試合', gf=3, ga=2, result='win'),
 ]
 ALL = ('team-numbers', 'late-winner', 'opponent-star', 'keeper', 'early-goals', 'rematch')
+REACTIONS_FIXTURE = ROOT / 'scripts/fixtures/soccer_national_reactions.json'
+_REACTIONS = topics.REACTIONS
+
+
+def setUpModule():
+    # 本物の data/ ではなく、試験用の写しの試合後の声を読む。
+    topics.REACTIONS = REACTIONS_FIXTURE
+
+
+def tearDownModule():
+    topics.REACTIONS = _REACTIONS
 DIGITS = '[0-9０-９〇一二三四五六七八九十百千万]'
 
 
@@ -45,7 +56,7 @@ def stat(raw, team, key):
 class Topics(unittest.TestCase):
     def test_all_six_topics_are_made_from_the_fixture(self):
         made, excluded = topics.available(summary(), meetings=MEETINGS)
-        self.assertEqual(sorted(made), sorted(ALL))
+        self.assertEqual(sorted(made), sorted(ALL + ('reactions',)))
         self.assertEqual(excluded, {})
 
     def test_numbers_match_the_material(self):
@@ -290,6 +301,64 @@ def probe(style):
     if run.returncode:
         raise AssertionError(run.stderr[-2500:])
     return json.loads(run.stdout.strip().splitlines()[-1])
+
+
+class Reactions(unittest.TestCase):
+    def material(self):
+        return json.loads(REACTIONS_FIXTURE.read_text(encoding='utf-8'))['events']['401916337']
+
+    def test_quotes_are_said_exactly_with_who_and_source(self):
+        doc = make('reactions')
+        answers = [s for s in doc['segments'] if s['speaker'] == METAN and s['kind'] != 'outro']
+        quotes = self.material()['quotes']
+        for q, s in zip(quotes, answers):
+            self.assertIn('「' + q['quote'] + '」', s['text'])
+            self.assertTrue(s['text'].startswith(q['lead'] + 'は、'))
+            self.assertEqual([list(r) for r in s['meta']['rows']], [['話した人', q['who']], ['出典', q['source']]])
+        self.assertIn('グローボの報道です。', answers[3]['text'])
+        self.assertIn('レッドカードで退場しました。', answers[4]['text'])
+        for s in doc['segments']:
+            if s['speaker'] == ZUNDA:
+                self.assertTrue(s['text'].endswith('？'))
+                self.assertIsNone(re.search(DIGITS, s['text']), s['text'])
+        self.assertEqual(topics.check(doc), [])
+        description = topics.metadata(doc)['snippet']['description']
+        for q in quotes:
+            self.assertIn(q['source_url'], description)
+        for url in self.material()['facts'][0]['sources']:
+            self.assertIn(url, description)
+        self.assertIn('https://www.espn.com/soccer/match/_/gameId/401916337', description)
+        self.assertEqual([i['source'] for i in topics.information(doc)][:4], [q['source_url'] for q in quotes])
+
+    def test_held_claims_and_evaluative_words_are_not_said(self):
+        text = ' '.join(spoken(make('reactions')))
+        for word in ('代表初ゴール', '初ゴール', '通算2勝', '最後の試合', 'ラストマッチ', '圧倒', '完璧', '歴史的', '衝撃', '快挙', '抗議'):
+            self.assertNotIn(word, text)
+        self.assertLessEqual(topics.estimate(make('reactions')), topics.LIMIT)
+
+    def test_unchecked_material_does_not_make_the_topic(self):
+        import tempfile
+        cases = []
+        base = json.loads(REACTIONS_FIXTURE.read_text(encoding='utf-8'))
+        empty = copy.deepcopy(base); empty['events'] = {}
+        cases.append(empty)
+        one_source = copy.deepcopy(base); one_source['events']['401916337']['facts'][0]['sources'] = ['https://example.com/a']
+        cases.append(one_source)
+        no_url = copy.deepcopy(base); no_url['events']['401916337']['quotes'][0]['source_url'] = ''
+        cases.append(no_url)
+        unchecked = copy.deepcopy(base); unchecked['events']['401916337']['checked_on'] = ''
+        cases.append(unchecked)
+        for data in cases:
+            with tempfile.TemporaryDirectory() as tmp:
+                path = Path(tmp) / 'reactions.json'
+                path.write_text(json.dumps(data, ensure_ascii=False), encoding='utf-8')
+                topics.REACTIONS = path
+                try:
+                    made, excluded = topics.available(summary(), meetings=MEETINGS)
+                finally:
+                    topics.REACTIONS = REACTIONS_FIXTURE
+                self.assertNotIn('reactions', made)
+                self.assertIn('reactions', excluded)
 
 
 class RenderV2(unittest.TestCase):
