@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-13T19:13:26.750311+00:00",
+  "updated_at": "2026-11-14T06:02:10.003363+00:00",
   "sources": [
     {
       "name": "MLB公式",
@@ -14,7 +14,7 @@
       "name_en": "Arizona Diamondbacks",
       "mentions": 1,
       "tone": "話題",
-      "gist": "アリゾナ秋季リーグ準決勝を生中継"
+      "gist": "ダイヤモンドバックス、秋季リーグ有望株に注目"
     },
     {
       "team_id": "111",
@@ -22,7 +22,7 @@
       "name_en": "Boston Red Sox",
       "mentions": 1,
       "tone": "好調",
-      "gist": "ポストシーズンの飛躍株バウアーズ、4年契約で合意"
+      "gist": "ポストシーズンで活躍のバウアーズ、レッドソックスと4年契約"
     },
     {
       "team_id": "147",
@@ -30,15 +30,23 @@
       "name_en": "New York Yankees",
       "mentions": 1,
       "tone": "話題",
-      "gist": "ヤンキース、GM会議後に複数の戦力補強を狙う"
+      "gist": "ヤンキース、GM会議後に複数の戦力補強を検討"
     },
     {
       "team_id": "158",
       "name": "ブリュワーズ",
       "name_en": "Milwaukee Brewers",
       "mentions": 1,
+      "tone": "不振",
+      "gist": "バウアーズ流出でブリュワーズは優先ドラフト指名権獲得"
+    },
+    {
+      "team_id": "108",
+      "name": "エンゼルス",
+      "name_en": "Los Angeles Angels",
+      "mentions": 1,
       "tone": "話題",
-      "gist": "ブリュワーズはWS MVPコントレラスを放出か"
+      "gist": "エンゼルス、ハイネマン捕手と1年契約で再契約"
     },
     {
       "team_id": "117",
@@ -46,15 +54,15 @@
       "name_en": "Houston Astros",
       "mentions": 1,
       "tone": "話題",
-      "gist": "アストロズのオースマス監督起用にバグウェルが語る"
+      "gist": "アストロズ、オースマス新監督招へいを深掘り"
     },
     {
-      "team_id": "144",
-      "name": "ブレーブス",
-      "name_en": "Atlanta Braves",
+      "team_id": "112",
+      "name": "カブス",
+      "name_en": "Chicago Cubs",
       "mentions": 1,
-      "tone": "好調",
-      "gist": "救援の柱フィリップス、ブレーブスと3年契約"
+      "tone": "話題",
+      "gist": "カブスやレイズなど、ストーブリーグ移籍の噂"
     },
     {
       "team_id": "113",
@@ -62,7 +70,7 @@
       "name_en": "Cincinnati Reds",
       "mentions": 1,
       "tone": "話題",
-      "gist": "レッズはデラクルーズを放出するのか検証"
+      "gist": "レッズ、デラクルーズ放出の可能性を検証"
     }
   ],
   "players": [

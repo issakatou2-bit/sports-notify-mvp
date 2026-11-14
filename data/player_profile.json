@@ -1,134 +1,87 @@
 {
-  "generated_at": "2026-11-13T19:12:48.590623+00:00",
+  "generated_at": "2026-11-14T06:01:19.467123+00:00",
   "date_jst": "2026-11-14",
-  "name": "William Contreras",
-  "player_id": "661388",
-  "team": "ブリュワーズ",
+  "name": "岡本和真",
+  "player_id": "672960",
+  "team": "ブルージェイズ",
   "group": "hitting",
-  "why": "2026-10-29のMLBで最も活躍",
-  "headline": "4打数1安打　1二塁打　1打点",
-  "score": 59,
+  "why": "順番",
+  "headline": "",
+  "score": null,
   "bio": {
-    "name_en": "William Contreras",
-    "age": 28,
-    "birth_city": "Puerto Cabello",
+    "name_en": "Kazuma Okamoto",
+    "age": 30,
+    "birth_city": "Gojo",
     "birth_state": null,
-    "birth_country": "Venezuela",
-    "birth_date": "1997-12-24",
-    "debut": "2020-07-24",
+    "birth_country": "Japan",
+    "birth_date": "1996-06-30",
+    "debut": "2026-03-27",
     "draft_year": null,
     "bats": "Right",
     "throws": "Right",
-    "number": "24",
-    "position": "Catcher",
+    "number": "7",
+    "position": "Third Base",
     "nickname": null,
-    "height": "5' 10\"",
-    "weight": 217
+    "height": "6' 1\"",
+    "weight": 220
   },
   "teams": [
     {
-      "team": "ブレーブス",
-      "from": 2020,
-      "to": 2022
-    },
-    {
-      "team": "ブリュワーズ",
-      "from": 2023,
+      "team": "ブルージェイズ",
+      "from": 2026,
       "to": 2026
     }
   ],
   "career": {
-    "games": 746,
-    "avg": ".272",
-    "hr": 103,
-    "rbi": 409,
-    "ops": ".796",
-    "sb": 24,
-    "hits": 755,
-    "wins": 13,
-    "losses": 10,
-    "era": "4.03",
-    "so": 222,
-    "ip": "189.2",
-    "whip": "1.14"
+    "games": 156,
+    "avg": ".232",
+    "hr": 33,
+    "rbi": 92,
+    "ops": ".762",
+    "sb": 1,
+    "hits": 132
   },
   "this_season": {
-    "games": 147,
-    "avg": ".270",
-    "hr": 18,
-    "rbi": 94,
-    "ops": ".758",
+    "games": 156,
+    "avg": ".232",
+    "hr": 33,
+    "rbi": 92,
+    "ops": ".762",
     "sb": 1,
-    "hits": 153,
-    "wins": 9,
-    "losses": 7,
-    "era": "4.21",
-    "so": 158,
-    "ip": "132.2",
-    "whip": "1.13"
+    "hits": 132
   },
-  "last_season": {
-    "games": 150,
-    "avg": ".260",
-    "hr": 17,
-    "rbi": 76,
-    "ops": ".754",
-    "sb": 6,
-    "hits": 147,
-    "wins": 4,
-    "losses": 3,
-    "era": "3.63",
-    "so": 64,
-    "ip": "57.0",
-    "whip": "1.18"
-  },
+  "last_season": {},
   "recent": [
     {
+      "date": "2026-09-27",
+      "line": "2打数0安打",
+      "opponent": "Cincinnati Reds"
+    },
+    {
       "date": "2026-09-26",
-      "line": "3打数1安打",
-      "opponent": "St. Louis Cardinals"
+      "line": "3打数0安打",
+      "opponent": "Cincinnati Reds"
     },
     {
       "date": "2026-09-25",
-      "line": "5打数1安打 1打点",
-      "opponent": "St. Louis Cardinals"
-    },
-    {
-      "date": "2026-09-24",
-      "line": "2打数0安打",
-      "opponent": "Philadelphia Phillies"
+      "line": "3打数2安打 3打点",
+      "opponent": "Cincinnati Reds"
     },
     {
       "date": "2026-09-23",
-      "line": "4打数1安打 2打点",
-      "opponent": "Philadelphia Phillies"
+      "line": "4打数0安打",
+      "opponent": "Baltimore Orioles"
     },
     {
-      "date": "2026-09-22",
-      "line": "3打数1安打 3打点",
-      "opponent": "Philadelphia Phillies"
+      "date": "2026-09-23",
+      "line": "3打数0安打",
+      "opponent": "Baltimore Orioles"
     }
   ],
   "awards": [
     {
       "season": "2026",
-      "name": "World Series Championship"
-    },
-    {
-      "season": "2026",
-      "name": "Willie Mays World Series MVP"
-    },
-    {
-      "season": "2026",
-      "name": "NL All-Star"
-    },
-    {
-      "season": "2025",
-      "name": "NL Player of the Week"
-    },
-    {
-      "season": "2024",
-      "name": "NL Silver Slugger"
+      "name": "AL Rookie of the Month"
     }
   ],
   "quotes": []
