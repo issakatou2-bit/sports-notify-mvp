@@ -25,6 +25,25 @@
       "recorded_at": "2026-11-14T16:46:58.068161+00:00",
       "fingerprint": "1c1ed5f6d872b78211fbf7b465d8774380d350ce1d0e7b447e482ffe4c0349df",
       "event_id": "cc5ce98112ed541bd0f07a8e42a55c294ee3f62a3efe749e49c22d9657230a21"
+    },
+    {
+      "source": "published_videos/soccer_national_topic/401916337:early-goals",
+      "service": "youtube",
+      "video_id": "UD8mGf7Bjjs",
+      "state": "scheduled",
+      "scheduled_at": "2026-11-16T12:30:00Z",
+      "event_day": null,
+      "material_day": null,
+      "edition_day": "2026-11-16",
+      "run_at": "2026-11-14T17:39:54.575734+00:00",
+      "details": {
+        "privacy": "public"
+      },
+      "run_id": "43621941416",
+      "attempt": "1",
+      "recorded_at": "2026-11-14T17:39:54.597721+00:00",
+      "fingerprint": "a9c4e05b87ca6c9f1d204f1a1ef49ebaf594d8b5002e4530df0d96d360e9ce1c",
+      "event_id": "15900332a9ec80f1e27463411734eecf06bd185e019ffff3303b0fdb5bc9f4a2"
     }
   ]
 }
