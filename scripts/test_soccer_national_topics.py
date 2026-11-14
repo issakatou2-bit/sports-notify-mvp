@@ -314,9 +314,11 @@ class Reactions(unittest.TestCase):
         for q, s in zip(quotes, answers):
             self.assertIn('「' + q['quote'] + '」', s['text'])
             self.assertTrue(s['text'].startswith(q['lead'] + 'は、'))
-            self.assertEqual([list(r) for r in s['meta']['rows']], [['話した人', q['who']], ['出典', q['source']]])
+            # 画面の中央に発言そのものと媒体を出す（Argon 11/15：話した人と出典だけでは中身が見えない）
+            self.assertEqual([list(r) for r in s['meta']['rows']], [[q['who'] + 'の発言', '「' + q['quote'] + '」'], ['出典', q['source']]])
         self.assertIn('グローボの報道です。', answers[3]['text'])
         self.assertIn('レッドカードで退場しました。', answers[4]['text'])
+        self.assertEqual(list(answers[4]['meta']['rows'][-1]), ['出典', 'サッカーキング・GOAL'])
         for s in doc['segments']:
             if s['speaker'] == ZUNDA:
                 self.assertTrue(s['text'].endswith('？'))
@@ -329,6 +331,21 @@ class Reactions(unittest.TestCase):
             self.assertIn(url, description)
         self.assertIn('https://www.espn.com/soccer/match/_/gameId/401916337', description)
         self.assertEqual([i['source'] for i in topics.information(doc)][:4], [q['source_url'] for q in quotes])
+
+    def test_quote_panels_do_not_start_a_line_with_punctuation_and_credit_names_the_media(self):
+        import soccer_national_topics_render as render
+        lines = render.balanced_lines('日本は強豪チームであり、トップレベルで十分に戦えるチームだ', 64, 812)
+        self.assertEqual(''.join(lines), '日本は強豪チームであり、トップレベルで十分に戦えるチームだ')
+        for line in lines[1:]:
+            self.assertNotIn(line[0], render.NO_START)
+        self.assertGreater(min(len(l) for l in lines), 2)
+        self.assertEqual(render.credit(make('reactions')), '音声: VOICEVOX:ずんだもん・四国めたん　出典: サッカーキング・グローボ・GOAL・ESPN')
+        self.assertEqual(render.credit(make('keeper')), render.CREDIT)
+
+    def test_reading_of_bu_ga_aru(self):
+        sys.path.insert(0, str(ROOT))
+        from notability_engine import apply_readings
+        self.assertIn('ぶがある', apply_readings('僕の方に分があると思っていた'))
 
     def test_held_claims_and_evaluative_words_are_not_said(self):
         text = ' '.join(spoken(make('reactions')))

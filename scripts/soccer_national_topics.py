@@ -277,10 +277,10 @@ def reactions(m):
         if not q.get('source_url','').startswith('https://') or not q.get('quote') or '「' in q['quote'] or '」' in q['quote']:
             raise Unavailable('発言の出典・中身が未確認: '+q.get('who',''))
         said=f"{q['lead']}は、「{q['quote']}」と話しました。"+(f"{q['via']}の報道です。" if q.get('via') else '')
-        rows.append((q['ask'],said,q['head'],[('話した人',q['who']),('出典',q['source'])]))
+        rows.append((q['ask'],said,q['head'],[(q['who']+'の発言','「'+q['quote']+'」'),('出典',q['source'])]))
     for f in data.get('facts',[]):
         if len(f.get('sources',[]))<2:raise Unavailable('2つの出典で確かめていない事実がある')
-        rows.append((f['ask'],f['text'],f['head'],[tuple(r) for r in f['rows']]))
+        rows.append((f['ask'],f['text'],f['head'],[tuple(r) for r in f['rows']]+([('出典',f['source_names'])] if f.get('source_names') else [])))
     return data['title'],rows
 
 
