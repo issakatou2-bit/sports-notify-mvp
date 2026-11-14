@@ -28,6 +28,12 @@ class NationalLong(unittest.TestCase):
             self.assertFalse(long.metadata(doc)['publication_enabled'])
             self.assertIn(opponent+'戦へ 招集28人',doc['title'])
 
+    def test_zundamon_only_asks(self):
+        # 11/14 本人「ずんだもんの疑問にめたんが答える形」：ずんだもんの台詞は問いだけで、数字はめたんが読む。
+        talk=[s for s in self.doc['segments'] if s['kind']=='talk' and s['speaker']==3]
+        self.assertTrue(talk)
+        for seg in talk:self.assertTrue(seg['text'].endswith('？'),seg['text'])
+
     def test_all_twenty_eight_have_table_rows_and_missing_is_not_zero(self):
         tables=[p for k,p in self.doc['panels'].items() if k.startswith('position_')]
         text='\n'.join(row for p in tables for row in p['rows'])

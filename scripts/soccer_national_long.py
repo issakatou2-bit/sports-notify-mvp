@@ -123,10 +123,11 @@ def dialogue(data):
                 ['今季の数値を確認',f'{known}人'],['取得日',f'{day.year}.{day.month}.{day.day}']],
             note='数値は所属リーグの今季集計。未取得は「未確認」で、ゼロとして数えません。'))
     leaders=highlighted(data)
+    # 11/14 本人「ずんだもんの疑問にめたんが答える形」：ずんだもんは問い、数字と事実はめたんが答える。
+    say(3,f"{data['game']['opponent']}戦へ、どんな選手が呼ばれたのだ？",opening)
     if leaders:
         first=leaders[0];metric=numbers.metric(first)
-        say(3,f"{first['name']}、今季{metric[1]}{metric[2]}なのだ。",opening)
-    else:say(3,f"{data['game']['opponent']}戦へ、招集{count}人を見るのだ。",opening)
+        say(2,f"{first['name']}は、今季{metric[1]}{metric[2]}です。",opening)
     order='前の試合の結果、ポジションごとの今季成績' if last else 'ポジションごとの今季成績'
     say(2,f"{data['game']['opponent']}戦へ向けた招集{count}人です。{order}、注目の選手、過去の対戦、試合日時の順に見ていきます。",opening)
     say(3,'数字はカップ戦も合わせた合計なのだ？',opening)
@@ -137,7 +138,7 @@ def dialogue(data):
         if last.get('scorers'):rows.append('得点者 '+'・'.join(last['scorers']))
         ref=card('previous',f'前の試合 {who}戦',rows,'previous',
             v2=dict(layout='matches',title=f'前の試合 {who}戦',matches=[match_numbers(last,who)],empty=''))
-        say(3,f'まず、前の試合の結果なのだ。',ref)
+        say(3,f'前の{who}戦は、どうだったのだ？',ref)
         ending='日本の勝ち' if last['gf']>last['ga'] else '日本の負け' if last['gf']<last['ga'] else '引き分け'
         text=f"{when.month}月{when.day}日、日本は{who}と{last['competition']}で対戦し、{last['gf']}対{last['ga']}で{ending}でした。"
         if last.get('scorers'):text+='得点者は'+'、'.join(last['scorers'])+'です。'
@@ -152,18 +153,20 @@ def dialogue(data):
                      v2=dict(layout='roster',title=f'{position}　全{len(group)}人',players=[player_numbers(p) for p in group],
                          focus=[p['name'] for p in people],enter=offset==0))
             if offset==0:
-                say(3,f'{position}は{len(group)}人なのだ。',ref)
+                say(3,f'{position}は、誰が呼ばれたのだ？',ref)
+                say(2,f'{position}は{len(group)}人です。',ref)
                 if position=='GK':say(2,'ゴールキーパーはリーグ戦の出場数を見ます。ここから先の札は、発表されたポジションと名簿の順です。',ref)
                 elif position=='DF':say(2,'続いてディフェンダーです。所属の異なる選手も、確認できたリーグ戦の出場と得点を並べます。',ref)
                 else:say(2,'発表ではミッドフィルダーとフォワードが一つの区分です。役割をこちらで分けず、この区分のまま紹介します。',ref)
+            if offset:say(3,f'{position}は、ほかに誰がいるのだ？',ref)
             for index,p in enumerate(people):
                 line=numbers.stat_line(p)
                 text=p['name']+'は'+(line+'です。' if line else p['club']+'からです。')
                 if p.get('first_call'):text+='初めての招集です。'
-                say(2 if index%2==0 else 3,text.replace('です。','なのだ。') if index%2 else text,ref)
+                say(2,text,ref)
     focus=card('focus_intro','数字で注目する選手',[p['name']+' / '+numbers.stat_line(p) for p in leaders] or ['数値を確認できた選手はいません。'],'focus',
         v2=dict(layout='players',title='数字で注目する選手',players=[player_numbers(p) for p in leaders],empty='数値を確認できた選手はいません。'))
-    say(3,'ここからは数字を確認できた選手に注目するのだ。',focus)
+    say(3,'数字で目立つのは、誰なのだ？',focus)
     say(2,'得点が記録された選手を先に、その次に出場数を見ます。異なるリーグの数字なので、単純な実力の順位にはしません。',focus)
     for i,p in enumerate(leaders):
         row=p['season_numbers']
@@ -171,7 +174,7 @@ def dialogue(data):
             '取得日 '+day.strftime('%Y/%m/%d')],'focus',[p['name'],p['club']],
             v2=dict(layout='player',player=dict(player_numbers(p),league=row['season']+'　'+row['league_label']),
                 note=f'リーグ戦だけの数字　取得日 {day.year}.{day.month}.{day.day}'))
-        say(3,p['name']+'に注目なのだ。',ref)
+        say(3,p['name']+'は、どんな数字なのだ？',ref)
         say(2,p['club']+'所属。'+numbers.stat_line(p)+'です。'+('ゴールキーパーなので、ここでは出場数だけを使っています。' if p['position']=='GK' else 'リーグ戦だけを切り出した数字です。'),ref)
     if len(leaders)<3:say(2,'数値を確認できた選手が3人に満たないため、残りを推測で補うことはしません。',focus)
     ref=card('history',data['game']['opponent']+'との過去の対戦',[history_line(r) for r in data['history']] or ['確認できる対戦結果はありません。'],'history',
@@ -186,7 +189,7 @@ def dialogue(data):
     ref=card('kickoff','日本 対 '+game['opponent'],[when,'会場 '+game['venue'],'招集名簿・試合日時：JFA発表'],'kickoff',
         v2=dict(layout='kickoff',opponent=game['opponent'],date=f'{kick.month}.{kick.day}',time=f'{kick.hour}:{kick.minute:02d}',
             weekday=WEEKDAYS[kick.weekday()]+'曜',facts=[['会場',game['venue']],['出典','JFA発表（招集名簿・試合日時）']]))
-    say(3,'最後に試合の日時なのだ。',ref)
+    say(3,'試合は、いつなのだ？',ref)
     say(2,f"日本対{game['opponent']}は、{kick.month}月{kick.day}日、日本時間の{kick.hour}時{kick.minute}分開始です。会場は{game['venue']}です。",ref)
     say(2,'今季の数字と所属を見たうえで、代表でどんな組み合わせになるか。試合を楽しみに待ちましょう。',ref)
     return dict(program='soccer_national_long',kind='soccer_national_long',label=game['key'],title=title(data),top=title(data),
