@@ -150,11 +150,14 @@ def team_numbers(m):
         return [(t,shown[i][1 if t=='日本' else 2]) for i in indexes for t in ('日本',m.other)]
     panels=[('ボール支配率は、どうだったのだ？',f'ボール支配率は、日本が{ja}パーセント、{m.other}が{oa}パーセントでした。','ボール支配率',
              rows(0),compare(1)),
-            (f'{m.other}にシュートを何本打たれたのだ？',f'シュートは、日本が{pairs[1][1]}本、{m.other}が{pairs[1][2]}本。枠内シュートは、日本が{pairs[2][1]}本、{m.other}が{pairs[2][2]}本でした。',
+            ('シュートの数は、どうだったのだ？',f'シュートは、日本が{pairs[1][1]}本、{m.other}が{pairs[1][2]}本。枠内シュートは、日本が{pairs[2][1]}本、{m.other}が{pairs[2][2]}本でした。',
              'シュートと枠内シュート',rows(1,2),compare(3)),
             ('コーナーキックは、どうだったのだ？',f'コーナーキックは、日本が{pairs[3][1]}本、{m.other}が{pairs[3][2]}本でした。','コーナーキック',
              rows(3),compare(4))]
-    return f'日本{m.score[0]}-{m.score[1]}{m.other} 支配率{ja}% シュート{pairs[1][1]}本で勝利',panels+[m.result()]
+    # 題で結果を言うので、結果を先に言い、数字で上回られていたことへつなぐ（Argon 11/15）。
+    opening=(f'{m.other}戦は、どうなったのだ？',f'日本が{m.score[0]}対{m.score[1]}で勝ちました。ただ、試合の数字では{m.other}が上回っていました。',
+             '試合結果',[('日本 対 '+m.other,f'{m.score[0]}-{m.score[1]}')])
+    return f'日本{m.score[0]}-{m.score[1]}{m.other} 支配率{ja}% シュート{pairs[1][1]}本で勝利',[opening]+panels
 
 
 def late_winner(m):
