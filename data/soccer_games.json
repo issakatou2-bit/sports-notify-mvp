@@ -3725,6 +3725,35 @@
       "home_has_jp": false,
       "away_has_jp": false,
       "season_players": []
+    },
+    {
+      "game_id": "espn-401933096",
+      "espn_event_id": "401933096",
+      "competition_code": "CDF",
+      "league": "クープ・ドゥ・フランス",
+      "start_time_utc": "2026-11-15T13:00:00+00:00",
+      "start_time_jst": "11/15 22:00",
+      "is_notable": false,
+      "fixture_source": "https://site.api.espn.com/apis/site/v2/sports/soccer/fra.coupe_de_france/scoreboard",
+      "home_standing": null,
+      "away_standing": null,
+      "fixture_sources": [
+        "ESPN"
+      ],
+      "home_team_name": "Saint-Pauloise FC",
+      "home_team_id": "espn-134138",
+      "away_team_name": "La Tamponnaise",
+      "away_team_id": "espn-21769",
+      "espn_team_ids": {
+        "home": "espn-134138",
+        "away": "espn-21769"
+      },
+      "jp_by_side": {
+        "home": [],
+        "away": []
+      },
+      "home_has_jp": false,
+      "away_has_jp": false
     }
   ],
   "ai_status": {
