@@ -97,16 +97,24 @@ class Topics(unittest.TestCase):
         self.assertIn('ブラジルのゴールキーパーのセーブ数は1', keeper)
 
         early = '\n'.join(spoken(make('early-goals')))
-        self.assertIn('15分に久保建英', early)
-        self.assertIn('19分に中村敬斗', early)
-        self.assertIn('4分間で2点', early)
+        self.assertIn('前半15分、堂安律のスルーパスから、久保建英が左足で決めました', early)
+        self.assertIn('4分後の前半19分、中野就斗のクロスから、中村敬斗が右足で決めました', early)
+        # 2点のあとの流れも言う（Argon 11/15：3-2 に飛ばない）。
+        self.assertIn('ヴィニシウス・ジュニオールが33分と75分に決めて2対2', early)
+        self.assertIn('坂元達裕が後半追加時間1分に決めて3対2', early)
+        flow = make('early-goals')['segments'][-2]['meta']['rows']
+        self.assertEqual([list(r) for r in flow], [['15分 日本', '久保建英'], ['19分 日本', '中村敬斗'], ['33分 ブラジル', 'ヴィニシウス'],
+                                                  ['75分 ブラジル', 'ヴィニシウス'], ['90+1分 日本', '坂元達裕']])
 
         rematch = '\n'.join(spoken(make('rematch')))
+        self.assertTrue(rematch.split('\n')[1].startswith('日本が3対2で勝ちました'), rematch)
         self.assertIn('6月30日のワールドカップのラウンド32', rematch)
         self.assertIn('1対2で敗れました', rematch)
-        self.assertIn('3対2で勝ちました', rematch)
-        self.assertIn('2025年10月の親善試合でも、日本は3対2で勝っています', rematch)
+        self.assertIn('2025年10月の親善試合では、日本が3対2で勝っています', rematch)
         self.assertNotIn('通算', rematch)
+        # 画面の対戦は両国名つきで新しい順に積む（「1-2 ブラジル」だけにしない）。
+        board = [list(r) for r in make('rematch')['segments'][-2]['meta']['rows']]
+        self.assertEqual([v for _, v in board], ['日本 3-2 ブラジル', '日本 1-2 ブラジル', '日本 3-2 ブラジル'])
 
     def test_names_come_from_the_roster_not_by_hand(self):
         self.assertEqual(n.player_name('Tatsuhiro Sakamoto', True), '坂元達裕')
@@ -273,7 +281,7 @@ for topic in ('team-numbers', 'late-winner', 'opponent-star', 'keeper', 'early-g
         if seg['kind'] == 'outro':
             continue
         r3.set_program_clock(0); r3.set_caption(seg['text'], 4.0, 20, speaker=seg['speaker'])
-        for t in (.1, 1.5, 3.9):
+        for t in (.1, 1.5, 3.0, 3.9):
             im = render.frame(t, seg, doc, clubs, i, len(doc['segments']))
             out['errors'] += [[topic, i, str(e)[:160]] for e in render.validate_frame(im, clubs, doc)]
             rgb = im.convert('RGB')
@@ -406,6 +414,8 @@ class RenderV2(unittest.TestCase):
         self.assertIsNone(slides[(ZUNDA, 3.9)])        # 問いの終わりでは抜けない
         self.assertIsNone(slides[(METAN, .1)])         # 答えの始まりで入り直さない
         self.assertEqual(slides[(METAN, 3.9)], 'exit')
+        # 答えは話し終わるまで残す（時刻を1秒進めた分だけ早く抜けていた。Argon 11/15）。
+        self.assertIsNone(slides[(METAN, 3.0)])
 
 
 class Workflow(unittest.TestCase):

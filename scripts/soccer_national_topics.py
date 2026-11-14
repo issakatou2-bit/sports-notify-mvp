@@ -224,18 +224,54 @@ def keeper(m):
     return f'{name} {saves}セーブ'+(f'で{m.other}に勝利' if win else f' {m.other}のシュート{shots}本'),rows+[m.result()]
 
 
+FOOT={'left footed shot':'左足','right footed shot':'右足'}
+PASS={'with a through ball':'スルーパス','with a cross':'クロス'}
+
+
+def how(e):
+    """ESPN の得点の文から、決めた足とアシストの形（分かる物だけ）。"""
+    text=e.get('text','')
+    return next((v for k,v in FOOT.items() if k in text),None),next((v for k,v in PASS.items() if k in text),None)
+
+
+def goal_flow(m):
+    """全得点の流れ（同じ選手の続けての得点はまとめる）と、画面の表。"""
+    groups=[]
+    for e in m.goals:
+        if e.get('ownGoal'):raise Unavailable('オウンゴールは選手の得点として紹介しない')
+        ident=e['participants'][0]['athlete']['id']
+        if groups and groups[-1][0]==ident:groups[-1][1].append(e)
+        else:groups.append((ident,[e]))
+    return groups,[(m.minute(e)+'分 '+('日本' if str(e['team']['id'])==national.JAPAN else m.other),m.short(e['participants'][0]['athlete'],e['team']['id'])) for e in m.goals]
+
+
 def early_goals(m):
+    if m.score[0]<=m.score[1]:raise Unavailable('日本の勝利ではない')
     goals=[e for e in m.goals if str(e['team']['id'])==national.JAPAN and e.get('period',{}).get('number')==1]
     pair=next(((a,b) for a,b in zip(goals,goals[1:]) if 0<m.minute_number(b)-m.minute_number(a)<=5),None)
     if not pair:raise Unavailable('前半に5分以内の間隔の日本の2得点がない')
     a,b=pair;gap=m.minute_number(b)-m.minute_number(a);rows=[]
-    for e,q,head in ((a,'先制点は、どう決まったのだ？','前半の得点'),(b,'続く得点は、どう決まったのだ？','前半の続く得点')):
+    for e,q,head,lead in ((a,'先制点は、どう決まったのだ？','前半の得点','前半'),(b,'続く得点は、どう決まったのだ？','前半の続く得点',f'{gap}分後の前半')):
         name=m.who(e);minute=m.minute(e)
         if 'Assisted by ' not in e.get('text','') or len(e.get('participants',[]))<2:raise Unavailable('アシストが未確認')
-        assist=m.who(e,1)
-        rows.append((q,f'前半{national.minute_words(minute)}に{name}が得点しました。アシストは{assist}でした。',head,[(name,minute+'分'),('アシスト',assist)]))
-    rows.append(('得点の間隔は、どうだったのだ？',f'日本の得点時刻は{national.minute_words(m.minute(a))}と{national.minute_words(m.minute(b))}。記録上、{gap}分間で2点を挙げました。','得点の間隔',[('前半の得点時刻',m.minute(a)+'分・'+m.minute(b)+'分'),('間隔',str(gap)+'分')]))
-    return f'{m.who(a)}と{m.who(b)} {gap}分間で2得点',rows+[m.result()]
+        assist=m.who(e,1);foot,kind=how(e)
+        said=f'{lead}{national.minute_words(minute)}、{assist}の'+(kind or 'アシスト')+f'から、{name}が'+(f'{foot}で' if foot else '')+'決めました。'
+        rows.append((q,said,head,[(name,minute+'分')]+([('シュート',foot)] if foot else [])+[('アシスト',assist+('の'+kind if kind else ''))]))
+    # 2点のあとの流れも言う（「3-2」だけに飛ばさない。Argon 11/15）。
+    groups,flow=goal_flow(m)
+    later=[g for g in groups if m.minute_number(g[1][0])>m.minute_number(b)]
+    if not later:raise Unavailable('その後の得点がない')
+    tally={national.JAPAN:0,m.oid:0}
+    for e in m.goals:
+        if m.minute_number(e)<=m.minute_number(b):tally[str(e['team']['id'])]+=1
+    parts=[]
+    for _,es in later:
+        for e in es:tally[str(e['team']['id'])]+=1
+        team='' if str(es[0]['team']['id'])==national.JAPAN else f'{m.other}の'
+        parts.append(f"{team}{m.who(es[0])}が{'と'.join(national.minute_words(m.minute(e)) for e in es)}に決めて{tally[national.JAPAN]}対{tally[m.oid]}")
+    said='その後、'+'。'.join(parts)+'。日本が勝ちました。'
+    rows.append(('試合は、そのあとどうなったのだ？',said,'全得点の流れ',flow))
+    return f'{m.who(a)}と{m.who(b)} {gap}分間で2得点',rows
 
 
 def day_words(row):
@@ -245,7 +281,8 @@ def day_words(row):
 
 def board(row,other):
     year,month,day=row['date'].split('-')
-    return (f"{year}/{int(month)}/{int(day)} {row['competition']}"+((' '+row['stage']) if row.get('stage') else ''),f"{row['gf']}-{row['ga']} {other}")
+    # 両国名を書く（「1-2 ブラジル」だけではどちらの点か分からない。Argon 11/15）。
+    return (f"{year}/{int(month)}/{int(day)} {row['competition']}"+((' '+row['stage']) if row.get('stage') else ''),f"日本 {row['gf']}-{row['ga']} {other}")
 
 
 def rematch(m):
@@ -255,12 +292,13 @@ def rematch(m):
     if not lost:raise Unavailable('ワールドカップで敗れた対戦が確認一覧にない')
     stage=lost.get('stage','')
     now=dict(date=m.today,competition='親善試合',gf=m.score[0],ga=m.score[1])
-    rows=[('ワールドカップでの対戦は、どうだったのだ？',f"{m.other}とは、{day_words(lost)}のワールドカップの{stage}で対戦し、日本は{lost['gf']}対{lost['ga']}で敗れました。",
-            '敗れた対戦',[board(lost,m.other)]),
-          ('今回は、どうなったのだ？',f'今回は、日本が{m.score[0]}対{m.score[1]}で勝ちました。','今回の結果',[board(now,m.other)])]
+    # 今回の勝ちから入り、対戦を新しい順に1行ずつ積む（Argon 11/15：結論を先に・一覧で）。
+    rows=[(f'{m.other}戦は、どうなったのだ？',f'日本が{m.score[0]}対{m.score[1]}で勝ちました。ワールドカップで敗れた相手です。','対戦の記録',[board(now,m.other)]),
+          ('ワールドカップでは、どうだったのだ？',f"{day_words(lost)}のワールドカップの{stage}で、日本は{lost['gf']}対{lost['ga']}で敗れました。",
+            '対戦の記録',[board(now,m.other),board(lost,m.other)])]
     won=next((r for r in before if r['result']=='win' and r['gf']>r['ga'] and r['date']<lost['date']),None)
-    if won:rows.append(('その前の対戦は、どうだったのだ？',f"{won['date'][:4]}年{int(won['date'][5:7])}月の{won['competition']}でも、日本は{won['gf']}対{won['ga']}で勝っています。",
-            '前の対戦',[board(won,m.other)]))
+    if won:rows.append(('その前の対戦は、どうだったのだ？',f"{won['date'][:4]}年{int(won['date'][5:7])}月の{won['competition']}では、日本が{won['gf']}対{won['ga']}で勝っています。",
+            '対戦の記録',[board(now,m.other),board(lost,m.other),board(won,m.other)]))
     return f'W杯で敗れた{m.other}に{m.score[0]}-{m.score[1]}で勝利',rows
 
 
