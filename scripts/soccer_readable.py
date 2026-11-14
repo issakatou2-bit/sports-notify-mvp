@@ -92,11 +92,13 @@ class Screen:
         elapsed = self.t if r3._PROGRAM_CLOCK[0] is None else r3._PROGRAM_CLOCK[0]-ctx['start']
         line = r3.current_sentence(elapsed, ctx['text'], ctx['duration']) if ctx['text'] else ''
         speaker, _ = solo_host.presentation('metan', ('metan',))
+        speaker = spec.get('presenter', speaker)
+        if speaker not in ('metan', 'zundamon', 'ui'):raise ValueError('未知の画面話者')
         face = r3.face_for(line, elapsed, ctx['duration'] or 1)
         art = characters.bust(speaker, face, 360, False)
         if art is None:
             raise ValueError('胸上の既存素材がありません')
-        x = PORTRAIT[2]-art.width
+        x = L if speaker == 'zundamon' else PORTRAIT[2]-art.width
         y = PORTRAIT[3]-art.height
         self.im.paste(art, (x, y), art)
         self.im.info['duo_layer'] = [dict(who=speaker, face=face, height=360, dim=False,
@@ -134,7 +136,7 @@ class Screen:
             self.text(40 if c.measure(rows[0],size)[1]>R-L else L, 1880, rows[0], size, 1000, c.MUTED, role='source')
         self.im.info['readable_zones'] = dict(body=[L,BODY_TOP,R,BODY_BOTTOM], caption=CAPTION, portrait=PORTRAIT)
         if c.STYLE_V2:
-            return self._slide_v2(body_only, ctx.get('duration') or 0)
+            return self._slide_v2(body_only, ctx.get('duration') or 0, spec.get('slide_in', True), spec.get('slide_out', True))
         # 出現演出は1つ。説明中に動かさず、キャラ・字幕も同時にフェード。
         if self.t < .35:
             from PIL import Image
@@ -144,16 +146,16 @@ class Screen:
             self.im.info = info
         return self.im
 
-    def _slide_v2(self, body_only, duration):
+    def _slide_v2(self, body_only, duration, enter=True, leave=True):
         """新しい見た目の動き（Argon 11/10 の見本と同じ）。真ん中の情報だけが右から0.28秒で入り、
         区間の終わりに左へ0.14秒で抜ける。上の札・キャラ・字幕・出典は動かさない。説明中は完全に止まる。"""
         import style_v2
         from PIL import Image, ImageChops
         t, out_len = self.t, style_v2.TR / 2
-        if t < style_v2.TR:
+        if enter and t < style_v2.TR:
             u = style_v2.ease_sharp(t / style_v2.TR); dx, alpha = (1-u)*540, u
             phase = 'enter'
-        elif duration and duration - t < out_len:
+        elif leave and duration and duration - t < out_len:
             u = style_v2.ease_out((t-(duration-out_len)) / out_len); dx, alpha = -u*540, 1-u
             phase = 'exit'
         else:
@@ -280,6 +282,42 @@ class Screen:
             if numbers or not any(char.isdigit() for char in str(value)):self.lines(100,y+70,value,size,800,role='national_fact')
             y=bottom+24
         self.im.info['preview_body']=[L,top,R,visible_bottom if spec.get('progressive_rows') else y-24]
+        return self.finish(spec)
+
+    def national_compare(self, title, rows, teams, spec, sub='親善試合'):
+        """数字の比べ。1行ごとに「項目 / 左チームの数字 / 右チームの数字」。字級は代表番組の補足と同じ系統。"""
+        self.title(title, sub)
+        size={1:132,2:112,3:96,4:84}[len(rows)]
+        import re
+        def split(value):
+            m=re.fullmatch(r'(\d+(?:\.\d+)?)(\D*)',value)
+            return (m[1],m[2]) if m else (value,'')
+        unit_size=size*2//5
+        boxes=[c.measure(split(a)[0],size,True)[2] for _,a,_ in rows]
+        heights=[30+24+(b[3]-b[1])+36 for b in boxes]
+        header=70
+        height=header+sum(heights)+24*len(rows)
+        if height>BODY_BOTTOM-BODY_TOP:raise ValueError('数字の比べは次画面が必要です')
+        top=BODY_TOP+(BODY_BOTTOM-BODY_TOP-height)//2
+        cols=[L+(R-L)*27//100, L+(R-L)*73//100]
+        for team,cx in zip(teams,cols):
+            width=c.measure(team,44)[1]
+            self.text(cx-width//2,top,team,44,360,c.MUTED,role='supplement')
+        y=top+header
+        for (label,a,b),box,h in zip(rows,boxes,heights):
+            self.panel(y,y+h)
+            self.text(100,y+14,label,30,800,c.MUTED,role='supplement')
+            for value,cx in zip((a,b),cols):
+                digits,unit=split(value)
+                nw=c.measure(digits,size,True)[1]
+                uw=c.measure(unit,unit_size)[1]+10 if unit else 0
+                x0=cx-(nw+uw)//2;ty=y+14+30+14
+                nb=self.text(x0,ty,digits,size,420,number=True,role='national_fact')
+                if unit:
+                    ub=c.measure(unit,unit_size)[2]
+                    self.text(nb[2]+10,nb[3]-(ub[3]-ub[1]),unit,unit_size,200,role='supplement')
+            y+=h+24
+        self.im.info['preview_body']=[L,top,R,y-24]
         return self.finish(spec)
 
     def mini_row(self, y, s):

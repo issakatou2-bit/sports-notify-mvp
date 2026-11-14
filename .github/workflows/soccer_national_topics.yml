@@ -1,0 +1,173 @@
+name: 日本代表 話題ショート
+
+# 手動だけ（schedule なし）。既定は予約投稿をしない。公開は publish=true のときだけで、
+# 事実の照合と講評のあとに Claude が手で流す。
+on:
+  workflow_dispatch:
+    inputs:
+      topic:
+        description: '話題（team-numbers / late-winner / opponent-star / keeper / early-goals / rematch）'
+        type: string
+        required: true
+      event:
+        description: 'ESPN の event id（既定は日本3-2ブラジル）'
+        type: string
+        required: false
+        default: '401916337'
+      publish:
+        description: '予約投稿する（false なら見本のmp4だけ）'
+        type: boolean
+        required: false
+        default: false
+      publish_at:
+        description: '予約時刻（JSTのISO 例 2026-11-15T12:00:00+09:00）。空なら今から21分後'
+        type: string
+        required: false
+        default: ''
+      sample_only:
+        description: '見本のmp4だけを保存する（公開・台帳・コミット・通知なし）'
+        type: boolean
+        required: false
+        default: false
+
+permissions:
+  contents: write
+concurrency:
+  group: soccer-national-topics
+  cancel-in-progress: false
+
+env:
+  PYTHONUTF8: '1'
+  COLLESPO_SAMPLE_ONLY: ${{ inputs.sample_only && 'true' || 'false' }}
+  PUBLISH: ${{ (inputs.publish && !inputs.sample_only) && 'true' || 'false' }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      COLLESPO_SOCCER_LOOK: v6
+      COLLESPO_SOCCER_FOCUS: 'on'
+      COLLESPO_SHORT_LOOK: v4
+      COLLESPO_SOCCER_TITLE_V2: 'on'
+      COLLESPO_SOLO_HOST: metan
+      COLLESPO_HOST_SPLIT: 'off'
+      COLLESPO_DUO: 'off'
+      COLLESPO_MOTION: ${{ vars.COLLESPO_MOTION || '' }}
+      COLLESPO_BUBBLE: ${{ vars.COLLESPO_BUBBLE || '' }}
+      COLLESPO_STYLE: ${{ vars.COLLESPO_STYLE || '' }}
+      COLLESPO_CAPTION_BREAKS: ${{ vars.COLLESPO_CAPTION_BREAKS || '' }}
+      COLLESPO_SLANT_VARIANT: ${{ vars.COLLESPO_SLANT_VARIANT || 'cream' }}
+      COLLESPO_GLASS_BACKGROUND: ${{ vars.COLLESPO_GLASS_BACKGROUND || 'stripes' }}
+      ANTHROPIC_API_KEY: ''  # 翻訳・AI二段目はこの種類では実行しない。
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          pip install -r scripts/requirements.txt
+          pip install imageio_ffmpeg pyyaml
+      - name: Build the topic script from the finished match
+        env:
+          TOPIC: ${{ inputs.topic }}
+          EVENT: ${{ inputs.event }}
+        run: python scripts/soccer_national_topics.py --topic "$TOPIC" --event "$EVENT" --out build/soccer_national_topics
+      - name: Install video tools
+        run: bash scripts/install_video_tools.sh
+      - name: Start VOICEVOX
+        run: |
+          docker run -d --rm -p 50021:50021 --name voicevox voicevox/voicevox_engine:cpu-latest
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:50021/version > /dev/null; then break; fi
+            sleep 2
+          done
+          curl -fsS http://127.0.0.1:50021/version
+      - name: Synthesize narration
+        run: python scripts/synthesize_narration.py --narration build/soccer_national_topics/narration.json --out-dir build/soccer_national_topics/audio
+      - name: Render with layout, number and duration gates
+        run: python scripts/soccer_national_topics_render.py --out build/soccer_national_topics
+      - name: Sanity gate
+        env:
+          ANTHROPIC_API_KEY: ''  # この種類は機械照合だけ。有料の二段目は呼ばない。
+        run: python scripts/sanity.py --general --strict --narration build/soccer_national_topics/narration.json --out build/soccer_national_topics/sanity.json --hold-record build/soccer_national_topics/sanity_hold.json --kind soccer_national_topic
+      - name: Resolve the reservation time
+        if: env.PUBLISH == 'true'
+        env:
+          PUBLISH_AT: ${{ inputs.publish_at }}
+        run: |
+          if [ -z "$PUBLISH_AT" ]; then
+            PUBLISH_AT=$(python -c "from datetime import datetime, timedelta, timezone; print((datetime.now(timezone(timedelta(hours=9)))+timedelta(minutes=21)).replace(microsecond=0).isoformat())")
+          fi
+          echo "PUBLISH_AT=$PUBLISH_AT" >> "$GITHUB_ENV"
+          echo "予約時刻: $PUBLISH_AT"
+      - name: Vertical thumbnail
+        run: bash scripts/shorts_thumbnail.sh build/soccer_national_topics/collespo_national_topic.mp4 build/soccer_national_topics/short.png
+      - name: Upload to YouTube
+        if: env.PUBLISH == 'true'
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+          COLLESPO_NATIONAL_TOPIC_PUBLISH: 'true'
+        run: |
+          VIDEO_DAY=$(python -c "import json; print(json.load(open('build/soccer_national_topics/narration.json'))['date_jst'])")
+          python scripts/upload_youtube.py --video build/soccer_national_topics/collespo_national_topic.mp4 --kind soccer_national_topic --sport soccer --games build/soccer_national_topics/material.json --narration build/soccer_national_topics/narration.json --thumbnail build/soccer_national_topics/short.png --video-date "$VIDEO_DAY" --publish-at "$PUBLISH_AT" --privacy public
+      - name: Commit publication record
+        if: env.PUBLISH == 'true' && always()
+        run: |
+          bash scripts/commit_data.sh "soccer national topic: ${{ github.run_id }}" data/published_videos.json data/soccer_national_topics_published.json
+      - name: Confirm publication reservation
+        if: env.PUBLISH == 'true'
+        run: |
+          TOPIC_KEY=$(python -c "import json; print(json.load(open('build/soccer_national_topics/narration.json'))['topic_key'])")
+          python scripts/verify_published.py --kind soccer_national_topic --video-date "$TOPIC_KEY"
+      - name: Save sanity gate records
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: national-topic-verification
+          path: |
+            build/soccer_national_topics/
+            !build/**/portrait/**
+          retention-days: 14
+      - name: Stop own VOICEVOX
+        if: always()
+        run: docker stop voicevox || true
+      - name: Keep unsaved data records
+        if: env.PUBLISH == 'true' && always() && hashFiles('build/data-save-recovery/**/FAILED') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: unsaved-data-${{ github.job }}-${{ github.run_attempt }}
+          path: |
+            build/data-save-recovery/
+            !build/**/portrait/**
+          retention-days: 14
+          if-no-files-found: error
+      - name: Save voice and render records
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: voice-render-records-${{ github.job }}-${{ github.run_attempt }}
+          path: |
+            build/**/voice_manifest.json
+            build/**/render_timeline.json
+            !build/**/portrait/**
+          retention-days: 14
+          if-no-files-found: ignore
+      - name: Mark sample-only execution
+        if: always() && inputs.sample_only
+        run: python scripts/sample_only.py --mark build/sample_only.json --require-video
+      - name: Save sample video
+        if: always() && inputs.sample_only
+        uses: actions/upload-artifact@v4
+        with:
+          name: sample-soccer_national_topics
+          path: |
+            build/sample_only.json
+            build/**/*.mp4
+            build/**/audio_mix.json
+            !build/**/portrait/**
+          if-no-files-found: error
+          retention-days: 7

@@ -45,7 +45,7 @@ if c.STYLE_V2:
     # 同じ時刻で「動き無し」に描いた絵と、胸上の下端より下（字幕の帯・出典）が同じか。キャラ・字幕は動かない。
     box = (0, layout.PORTRAIT[3] + 4, 1080, 1920)
     slide = layout.Screen._slide_v2
-    layout.Screen._slide_v2 = lambda self, body, duration: self.im
+    layout.Screen._slide_v2 = lambda self, body, duration, *a: self.im
     still = {k: draw(t) for k, t in (('enter', .07), ('exit', d - .05))}
     layout.Screen._slide_v2 = slide
     out['caption_fixed'] = all(shots[k].convert('RGB').crop(box).tobytes() == still[k].convert('RGB').crop(box).tobytes() for k in still)

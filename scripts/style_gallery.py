@@ -395,6 +395,31 @@ r3.set_caption("", 0, 0)
     return _run_code(body, env)
 
 
+def render_soccer_national_topics() -> Image:
+    env = {
+        "COLLESPO_SOCCER_LOOK": "v6",
+        "COLLESPO_SOCCER_FOCUS": "on",
+        "COLLESPO_SHORT_LOOK": "v4",
+        "COLLESPO_SOLO_HOST": "metan",
+    }
+    body = """
+import soccer_national as n
+import soccer_national_topics as topics
+import soccer_national_topics_render as render
+import review_render_v3 as r3
+doc = topics.narration(n.read(ROOT / "scripts/fixtures/soccer_national_topics.json"), "team-numbers", meetings=[])
+clubs = render.clubs_for(doc)
+seg = doc["segments"][5]
+r3.set_program_clock(0)
+r3.set_caption(seg["text"], 3.2, 20, speaker=seg["speaker"])
+im = render.frame(1.0, seg, doc, clubs)
+r3.set_program_clock(None)
+r3.set_caption("", 0, 0)
+
+"""
+    return _run_code(body, env)
+
+
 def render_soccer_national_long() -> Image:
     body = """
 from test_soccer_national_numbers import fixture_sheet, AS_OF
@@ -567,6 +592,11 @@ KINDS = {
     "soccer_national": {
         "workflows": ["soccer_national"],
         "render": render_soccer_national,
+        "why": "",
+    },
+    "soccer_national_topics": {
+        "workflows": ["soccer_national_topics"],
+        "render": render_soccer_national_topics,
         "why": "",
     },
     "soccer_national_long": {
