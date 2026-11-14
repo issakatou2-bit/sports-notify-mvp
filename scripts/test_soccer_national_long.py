@@ -20,13 +20,37 @@ class NationalLong(unittest.TestCase):
         self.sheet=fixture_sheet();self.data=long.material('brazil',AS_OF,self.sheet);self.doc=long.dialogue(self.data)
 
     def test_both_opponents_and_previous_day_twenty_are_material_driven(self):
-        for key,opponent,planned,history_count in [('brazil','ブラジル','2026-11-13T20:00:00+09:00',2),('paraguay','パラグアイ','2026-11-16T20:00:00+09:00',1)]:
+        for key,opponent,planned,history_count,count in [('brazil','ブラジル','2026-11-13T20:00:00+09:00',2,'招集28人'),('paraguay','パラグアイ','2026-11-16T20:00:00+09:00',1,'代表27人')]:
             data=long.material(key,AS_OF,self.sheet);doc=long.dialogue(data);long.validate_document(doc)
             self.assertEqual(data['game']['opponent'],opponent)
             self.assertEqual(data['planned_publish_at'],planned)
             self.assertEqual(len(data['history']),history_count)
             self.assertFalse(long.metadata(doc)['publication_enabled'])
-            self.assertIn(opponent+'戦へ 招集28人',doc['title'])
+            self.assertIn(opponent+'戦へ '+count,doc['title'])
+
+    def test_withdrawn_player_is_left_out_and_said(self):
+        # 11/14 JFA「鎌田大地 所属クラブの都合で離脱」：パラグアイ戦の回だけ外し、外したことを言う。
+        data=long.material('paraguay',AS_OF,self.sheet);doc=long.dialogue(data);long.validate_document(doc)
+        self.assertNotIn('鎌田大地',[p['name'] for p in data['players']])
+        self.assertEqual((len(data['players']),data['called']),(27,28))
+        self.assertNotIn('鎌田大地',[p['name'] for p in data['numbers']['players']])
+        talk=[(s['speaker'],s['text']) for s in doc['segments'] if s['kind']=='talk']
+        i=talk.index((3,'離脱したのは、誰なのだ？'))
+        self.assertEqual(talk[i+1],(2,'鎌田大地です。11月14日のJFAの発表で、理由は所属クラブの都合です。'))
+        self.assertIn('招集28人のうち、離脱を除く27人です。',talk[i-1][1])
+        text=long.description(doc)
+        self.assertIn('離脱：鎌田大地（所属クラブの都合、11月14日 JFA発表）',text)
+        self.assertIn('https://www.jfa.jp/samuraiblue/news/00037030/',text)
+        # ブラジル戦の回は離脱の前の発表どおり28人
+        self.assertEqual(len(long.material('brazil',AS_OF,self.sheet)['players']),28)
+
+    def test_withdrawal_needs_jfa_source_and_a_called_player(self):
+        roster=long.n.read(long.ROOT/'data/soccer_national_squad.json')
+        bad=dict(roster,withdrawals=[dict(roster['withdrawals'][0],source_url='https://example.com/x')])
+        with self.assertRaises(ValueError):long.withdrawals(bad,'paraguay')
+        bad=dict(roster,withdrawals=[dict(roster['withdrawals'][0],name_en='Taro Notcalled')])
+        with self.assertRaises(ValueError):long.withdrawals(bad,'paraguay')
+        self.assertEqual(long.withdrawals(roster,'brazil'),{})
 
     def test_zundamon_only_asks(self):
         # 11/14 本人「ずんだもんの疑問にめたんが答える形」：ずんだもんの台詞は問いだけで、数字はめたんが読む。
@@ -123,7 +147,7 @@ class NationalLong(unittest.TestCase):
     def test_previous_chapter_only_when_result_exists(self):
         plain=long.dialogue(long.material('paraguay',AS_OF,self.sheet))
         self.assertNotIn('previous',plain['panels']);self.assertEqual([c['id'] for c in plain['chapters']][0],'positions')
-        self.assertIn('パラグアイ戦へ 招集28人を今季の数字で',plain['title'])
+        self.assertIn('パラグアイ戦へ 代表27人を今季の数字で',plain['title'])
         with self.with_previous():
             data=long.material('paraguay',AS_OF,self.sheet);doc=long.dialogue(data);long.validate_document(doc)
         self.assertEqual(data['previous_match']['opponent'],'ブラジル')
@@ -148,7 +172,7 @@ class NationalLong(unittest.TestCase):
         with self.with_previous():
             data=long.material('paraguay',AS_OF,self.sheet)
         title=long.title(data)
-        self.assertEqual(title,'ブラジル戦の結果と パラグアイ戦へ 招集28人の今季')
+        self.assertEqual(title,'ブラジル戦の結果と パラグアイ戦へ 代表27人の今季')
         self.assertLessEqual(len(title),50)
         for bad in ('【','】','！','？'):self.assertNotIn(bad,title)
         data['previous_match']['opponent']='あ'*60

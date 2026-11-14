@@ -1,11 +1,13 @@
 {
   "note": "日本代表の2026年の全試合。ESPN は大会ごとに分かれ、キリンカップが無い。直近・前回の対戦・年間成績はこの一覧を正とする。日付は日本時間。score は日本から見た得点-失点。",
-  "checked_at": "2026-11-02",
+  "checked_at": "2026-11-15",
   "checked_by": "Claude",
   "sources": [
     "https://www.soccer-king.jp/news/japan/national/fixed/2138530.html",
     "https://ja.wikipedia.org/wiki/2026年のサッカー日本代表",
-    "https://site.api.espn.com/apis/site/v2/sports/soccer/all/teams/627/schedule"
+    "https://site.api.espn.com/apis/site/v2/sports/soccer/all/teams/627/schedule",
+    "https://site.api.espn.com/apis/site/v2/sports/soccer/all/summary?event=401916337",
+    "https://www.soccer-king.jp/news/japan/national/20261114/2227723.html"
   ],
   "matches": [
     {"date": "2026-03-29", "competition": "親善試合", "opponent": "スコットランド", "gf": 1, "ga": 0, "result": "win"},
@@ -18,7 +20,8 @@
     {"date": "2026-09-24", "competition": "親善試合", "opponent": "ウルグアイ", "gf": 3, "ga": 1, "result": "win"},
     {"date": "2026-09-28", "competition": "親善試合", "opponent": "ベネズエラ", "gf": 2, "ga": 1, "result": "win"},
     {"date": "2026-10-01", "competition": "キリンカップ", "stage": "1回戦", "opponent": "エクアドル", "gf": 0, "ga": 0, "result": "draw", "note": "PK戦で勝利。PK のスコアは資料で食い違うので言わない"},
-    {"date": "2026-10-05", "competition": "キリンカップ", "stage": "決勝", "opponent": "ニュージーランド", "gf": 2, "ga": 1, "result": "win", "note": "優勝"}
+    {"date": "2026-10-05", "competition": "キリンカップ", "stage": "決勝", "opponent": "ニュージーランド", "gf": 2, "ga": 1, "result": "win", "note": "優勝"},
+    {"date": "2026-11-14", "competition": "親善試合", "opponent": "ブラジル", "gf": 3, "ga": 2, "result": "win", "scorers": ["久保建英", "中村敬斗", "坂元達裕"]}
   ],
   "previous_meetings": {
     "ブラジル": [
