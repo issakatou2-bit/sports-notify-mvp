@@ -122,6 +122,19 @@ class Weekly(unittest.TestCase):
                          sum(len(e['facts'])+len(e['reports']) for e in self.data['entries']))
 
     # ---- 期限
+    def test_zundamon_asks_and_metan_answers(self):
+        # 11/14 本人「ずんだもんの疑問にめたんが答える形」：ずんだもんの台詞は問いだけ、材料の文はめたんが読む。
+        talk = [s for s in self.doc['segments'] if s['kind'] == 'talk']
+        for seg in talk:
+            if seg['speaker'] == 3:
+                self.assertTrue(seg['text'].endswith('？'), seg['text'])
+        metan = {s['text'] for s in talk if s['speaker'] == 2}
+        for e in self.data['entries']:
+            for r in e['facts'] + e['reports']:
+                self.assertIn(r['text'], metan)
+        self.assertEqual(w.question('返事の期限'), '返事の期限は、いつなのだ？')
+        self.assertEqual(w.question('2026年の成績'), '2026年の成績は、どうだったのだ？')
+
     def test_deadline_status_done_and_days(self):
         qo = next(i for i in deadlines()['items'] if i['id'] == 'qo-2026')
         self.assertEqual(w.tag(qo, date(2026, 11, 11)), 'あと7日')

@@ -325,13 +325,14 @@ def dialogue(data):
     ref = card('opening', '日本人選手の来季　今週の動き', plain, 'opening', rows,
                atomic=[data['names'][e['name_en']] for e in heads],
                note=f'対象：日本時間 {start.month}月{start.day}日〜{end.month}月{end.day}日に確認した動き')
-    say(3, '今週のMLBオフ、日本人選手の来季の動きを見ていくのだ。', ref)
+    # 11/14 本人「ずんだもんの疑問にめたんが答える形」：ずんだもんは問い、事実はめたんが答える。
+    say(3, '今週のMLBオフ、日本人選手の来季はどう動いたのだ？', ref)
     count = {1: '一つ', 2: '二つ', 3: '三つ'}[len(heads)]
     say(2, f"今週の要点は{count}です。"+'、'.join(e['title'] for e in heads)+'。', ref)
     if nxt:
         state, days = deadline_state(nxt, day)
         say(2, f"次の期限は、{nxt['label']}。日本時間の{when_text(nxt)}で、"+('本日です。' if days == 0 else f'あと{days}日です。'), ref)
-        say(3, 'この期限は、あとで表でも確認するのだ。', ref)
+        say(3, 'ほかには、どんな期限があるのだ？', ref)
     else:
         say(2, 'いま登録されている、これからの期限はありません。', ref)
 
@@ -339,11 +340,10 @@ def dialogue(data):
         ref = card('deadlines', '期限の表', [date_line(i) for i in shown], 'deadlines', [date_row(i) for i in shown],
                    atomic=[i['label'] for i in shown],
                    note='あとの日数は、公開日の日本時間の始まりから数えています')
-        say(3, '期限を日付の順に表で確認するのだ。', ref)
-        say(2, '済と書いてあるものは、すでに過ぎた期限です。', ref)
+        say(2, '日付の順に表にしました。済と書いてあるものは、すでに過ぎた期限です。', ref)
         for item in shown:
-            say(3, item['label']+'なのだ。', ref)
             state, days = deadline_state(item, day)
+            say(3, item['label']+('は、もう過ぎたのだ？' if state == '済' else 'は、いつなのだ？'), ref)
             say(2, item['text']+('この期限は済みです。' if state == '済' else '期限は本日です。' if days == 0 else f'期限まであと{days}日です。'), ref)
 
     for index, en in enumerate(players_in_order(data)):
@@ -351,39 +351,47 @@ def dialogue(data):
         mine = [e for e in data['entries'] if e['name_en'] == en]
         facts = [dict(badge='確定', text=r['text'], tone='fact') for e in mine for r in e['facts']]
         reports = [dict(badge='報道', text=r['text'], tone='report') for e in mine for r in e['reports']]
+        asks = {id(row): r.get('label') for row, r in zip(facts+reports, [r for e in mine for r in e['facts']]+[r for e in mine for r in e['reports']])}
+
+        def answer(group, ref):
+            # 1行目は札の問いへの答え。2行目からは、行の見出しをずんだもんが聞いてからめたんが読む。
+            for n, row in enumerate(group):
+                if n and asks.get(id(row)):
+                    say(3, question(asks[id(row)]), ref)
+                say(2, row['text'], ref)
         first = True
         fact_groups, report_groups = chunks(facts), chunks(reports)
         for part, group in enumerate(fact_groups):
             heading = f'{jp}　確定した動き'+('（続き）' if part else '')
             ref = card(f'p{index}_f{part}', heading, ['確定｜'+r['text'] for r in group], 'players', group, atomic=[jp])
-            say(3, f'{jp}の動きなのだ。' if first else f'{jp}、続きなのだ。', ref)
+            say(3, f'{jp}は、何が決まったのだ？' if first else f'{jp}は、ほかにも決まったことがあるのだ？', ref)
             first = False
-            for row in group:
-                say(2, row['text'], ref)
+            answer(group, ref)
         for part, group in enumerate(report_groups):
             heading = f'{jp}　報道（確定ではありません）'+('（続き）' if part else '')
             outlets = [o for e in mine for o in (r['outlet'] for r in e['reports'])]
             ref = card(f'p{index}_r{part}', heading, ['報道｜'+r['text'] for r in group], 'players', group, atomic=[jp]+outlets)
-            if first:
-                say(3, f'{jp}の動きなのだ。', ref)
-                first = False
-            say(3, 'ここからは報道なのだ。確定とは分けて聞いてほしいのだ。' if part == 0 else f'{jp}の報道、続きなのだ。', ref)
-            for row in group:
-                say(2, row['text'], ref)
+            first = False
+            if part == 0:
+                say(3, f'{jp}について、どんな報道が出ているのだ？', ref)
+                say(2, 'ここからは報道で、まだ決まったことではありません。', ref)
+            else:
+                say(3, 'ほかの報道もあるのだ？', ref)
+            answer(group, ref)
 
     coming = upcoming[:NEXT_WEEK_DEADLINES]
     if coming:
         ref = card('next', '来週の注目', [date_line(i) for i in coming], 'next', [date_row(i) for i in coming],
                    atomic=[i['label'] for i in coming])
-        say(3, '来週の注目は、これからの期限なのだ。', ref)
-        say(2, '近い順に見ていきます。', ref)
+        say(3, '来週は、何に注目すればいいのだ？', ref)
+        say(2, 'これからの期限を、近い順に見ていきます。', ref)
         for item in coming:
             state, days = deadline_state(item, day)
             say(2, f"{item['label']}は、日本時間の{when_text(item)}です。"+('期限は本日です。' if days == 0 else f'あと{days}日です。'), ref)
     else:
         ref = card('next', '来週の注目', ['登録されているこれからの期限はありません'], 'next',
                    [dict(text='登録されているこれからの期限はありません', tone='plain')])
-        say(3, '来週の注目なのだ。', ref)
+        say(3, '来週は、何に注目すればいいのだ？', ref)
         say(2, 'いま登録されている、これからの期限はありません。', ref)
 
     ref = card('closing', 'コレスポ', ['日本人選手の来季　今週の動き', f'{start.month}/{start.day}〜{end.month}/{end.day}'], 'closing',
@@ -394,6 +402,17 @@ def dialogue(data):
     return dict(kind=KIND, label=data['key'], top='日本人選手の来季 今週の動き', title=title(data),
                 chapters=[dict(id=k, title=titles[k]) for k in used], panels=panels,
                 segments=call('intro')+segments+call('outro'), offseason_weekly_material=copy.deepcopy(data))
+
+
+def question(label):
+    """行の見出しから、ずんだもんの問いを作る（中身の言い換えはしない）。"""
+    if '期限' in label:
+        return label + 'は、いつなのだ？'
+    if '期間' in label:
+        return label + 'は、どれくらいなのだ？'
+    if any(w in label for w in ('年', '開始', '容認', '提示', '受けた', '去年')):
+        return label + 'は、どうだったのだ？'
+    return label + 'は、どうなのだ？'
 
 
 def allowed_numbers(data):
