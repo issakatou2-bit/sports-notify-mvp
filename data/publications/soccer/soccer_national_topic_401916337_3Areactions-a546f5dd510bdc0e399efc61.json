@@ -44,6 +44,25 @@
       "recorded_at": "2026-11-14T17:34:54.292148+00:00",
       "fingerprint": "b7d8ffc5db55e3e64236e0c1eba79df98a76d251134343312e0d1064b2e1111e",
       "event_id": "26a75672471008055c86b27085a36114b01741fdf391e5e7a2f0d3e58b1fa0b7"
+    },
+    {
+      "source": "published_videos/soccer_national_topic/401916337:reactions",
+      "service": "youtube",
+      "video_id": "4ya5yDydHGM",
+      "state": "scheduled",
+      "scheduled_at": "2026-11-15T12:30:00Z",
+      "event_day": null,
+      "material_day": null,
+      "edition_day": "2026-11-15",
+      "run_at": "2026-11-14T18:09:25.314134+00:00",
+      "details": {
+        "privacy": "public"
+      },
+      "run_id": "43624163031",
+      "attempt": "1",
+      "recorded_at": "2026-11-14T18:09:25.336239+00:00",
+      "fingerprint": "b20f8408657413024a99daf08fd24c72c2adaf342be491f65d0dcebc3d257ea9",
+      "event_id": "99ed653f5a00198cc368fcca9ac38a733c1c5c5b85661581632aeefd746e8df8"
     }
   ]
 }
