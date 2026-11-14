@@ -8,6 +8,24 @@ import unittest
 from unittest.mock import patch
 
 import soccer_national as n
+import soccer_national_history as history
+
+
+def setUpModule():
+    # 試験の架空の試合（11/14 ブラジル 2-1 など）を、本物の確認一覧に入った同じ日の結果（11/14 3-2）と混ぜない。
+    # 一覧は11/13までの行だけの写しにする。本物の一覧の中身は test_soccer_national_long などで見る。
+    import json
+    global _HISTORY_PATCH
+    data=json.loads(history.PATH.read_text(encoding='utf8'))
+    data['matches']=[r for r in data['matches'] if r['date']<'2026-11-14']
+    data['checked_at']='2026-11-02'  # 古さの境目の試験（11/24）は11/2の確認日で数える
+    tmp=Path(tempfile.mkdtemp())/'soccer_national_results.json'
+    tmp.write_text(json.dumps(data,ensure_ascii=False),encoding='utf8')
+    _HISTORY_PATCH=patch.object(history,'PATH',tmp);_HISTORY_PATCH.start()
+
+
+def tearDownModule():
+    _HISTORY_PATCH.stop()
 
 
 def event(ident='test', score=(2,1), complete=True, date='2026-11-14T10:15Z', opp='205'):

@@ -47,23 +47,52 @@ def material(key,as_of,sheet,publish=False):
     kickoff=n.instant(game['kickoff_jst'])
     if n.instant(as_of)>=kickoff:raise ValueError('試合前の長編だけを作ります')
     planned=(kickoff-timedelta(days=1)).replace(hour=20,minute=0,second=0,microsecond=0)
-    people=[n.squad_player(p) for p in roster['players']]
+    # 発表後の離脱（JFAの別の発表）は、その試合の回から外し、外したことを台本で言う（11/14 鎌田大地）。
+    gone=withdrawals(roster,key)
+    people=[n.squad_player(p) for p in roster['players'] if p['name_en'] not in gone]
+    left=[dict(name=n.squad_player(p)['name'],**{k:gone[p['name_en']][k] for k in ('reason','announced_on','source_url')})
+        for p in roster['players'] if p['name_en'] in gone]
     lookup={p['name']:p for p in sheet['players']}
     for p in people:p['season_numbers']=copy.deepcopy(lookup.get(p['name']))
     history=n.read(ROOT/'data/soccer_national_results.json')
     previous=copy.deepcopy(history.get('previous_meetings',{}).get(game['opponent'],[]))
     last=previous_match(history,roster,game,as_of)
     return dict(version=1,as_of=as_of,key=key,game=copy.deepcopy(game),source_url=fixtures['source_url'],
-        season=roster['season'],players=people,numbers=copy.deepcopy(sheet),history=previous,
-        history_sources=history['sources'],previous_match=last,planned_publish_at=planned.isoformat(),publication_enabled=bool(publish))
+        season=roster['season'],players=people,numbers=kept_numbers(sheet,people),history=previous,
+        history_sources=history['sources'],previous_match=last,withdrawn=left,called=len(roster['players']),planned_publish_at=planned.isoformat(),publication_enabled=bool(publish))
+
+
+def withdrawals(roster,key):
+    """{英語名: 離脱の記録}。JFAの発表・理由・日付が揃った物だけ。名簿にいない名前は止める。"""
+    names={p['name_en'] for p in roster['players']};out={}
+    for w in roster.get('withdrawals') or []:
+        if w.get('match_key')!=key:continue
+        if w.get('name_en') not in names:raise ValueError('離脱の選手が招集名簿にいません: '+str(w.get('name_en')))
+        if not (w.get('reason') and w.get('announced_on') and str(w.get('source_url','')).startswith('https://www.jfa.jp/')):
+            raise ValueError('離脱の発表（理由・日付・JFAの出典）が足りません')
+        out[w['name_en']]=w
+    return out
+
+
+def kept_numbers(sheet,people):
+    """離脱した選手の数字は、その回の集計・出典に入れない。"""
+    out=copy.deepcopy(sheet);names={p['name'] for p in people}
+    out['players']=[p for p in out['players'] if p['name'] in names]
+    return out
+
+
+def squad_words(data):
+    """「招集28人」か、離脱があれば「離脱を除く27人」。"""
+    if data.get('withdrawn'):return f"離脱を除く{len(data['players'])}人"
+    return f"招集{len(data['players'])}人"
 
 
 def title(data):
     last=data.get('previous_match')
     if last:
-        text=last['opponent']+'戦の結果と '+data['game']['opponent']+'戦へ 招集'+str(len(data['players']))+'人の今季'
+        text=last['opponent']+'戦の結果と '+data['game']['opponent']+'戦へ '+('代表' if data.get('withdrawn') else '招集')+str(len(data['players']))+'人の今季'
         if len(text)<=TITLE_MAX:return text
-    return data['game']['opponent']+'戦へ 招集'+str(len(data['players']))+'人を今季の数字で'
+    return data['game']['opponent']+'戦へ '+('代表' if data.get('withdrawn') else '招集')+str(len(data['players']))+'人を今季の数字で'
 
 
 def result_word(row):
@@ -116,7 +145,7 @@ def dialogue(data):
             meta=dict(who='めたん' if speaker==2 else 'ずんだもん')))
     count=len(data['players']);known=len(data['numbers']['players'])
     day=n.instant(data['as_of']).astimezone(n.JST)
-    opening=card('opening',title(data),[f'招集{count}人 / 数値確認 {known}人','所属リーグごとの今季成績',
+    opening=card('opening',title(data),[f'{squad_words(data)} / 数値確認 {known}人','所属リーグごとの今季成績',
         f'取得日 {day.year}/{day.month}/{day.day}','未取得の数値は「未確認」。ゼロとして数えません。'],first_chapter,
         v2=dict(layout='opening',lead=data['game']['opponent']+'戦へ向けて',count=count,
             facts=[['内訳','　'.join(f"{pos} {sum(p['position']==pos for p in data['players'])}人" for pos in POSITIONS)],
@@ -129,7 +158,14 @@ def dialogue(data):
         first=leaders[0];metric=numbers.metric(first)
         say(2,f"{first['name']}は、今季{metric[1]}{metric[2]}です。",opening)
     order='前の試合の結果、ポジションごとの今季成績' if last else 'ポジションごとの今季成績'
-    say(2,f"{data['game']['opponent']}戦へ向けた招集{count}人です。{order}、注目の選手、過去の対戦、試合日時の順に見ていきます。",opening)
+    if data.get('withdrawn'):
+        say(2,f"{data['game']['opponent']}戦へ向けた招集{data['called']}人のうち、離脱を除く{count}人です。{order}、注目の選手、過去の対戦、試合日時の順に見ていきます。",opening)
+        say(3,'離脱したのは、誰なのだ？',opening)
+        for w in data['withdrawn']:
+            d=datetime.fromisoformat(w['announced_on'])
+            say(2,f"{w['name']}です。{d.month}月{d.day}日のJFAの発表で、理由は{w['reason']}です。",opening)
+    else:
+        say(2,f"{data['game']['opponent']}戦へ向けた招集{count}人です。{order}、注目の選手、過去の対戦、試合日時の順に見ていきます。",opening)
     say(3,'数字はカップ戦も合わせた合計なのだ？',opening)
     say(2,f"ここで使うのは所属リーグの今季集計だけです。取得日は{day.month}月{day.day}日。確認できたのは{known}人で、未確認はゼロとして数えません。",opening)
     if last:
@@ -217,7 +253,10 @@ def description(doc,chapters=None):
     """概要欄。何の回か・章の時刻・出典・取得日・音声のクレジット。数字は材料の値だけ。"""
     data=doc['national_long_material'];day=n.instant(data['as_of']).astimezone(n.JST)
     kick=n.instant(data['game']['kickoff_jst']).astimezone(n.JST)
-    lines=[title(data),f"日本代表 対 {data['game']['opponent']}（{kick.month}月{kick.day}日 {kick.hour}時{kick.minute:02d}分 日本時間）の試合前に、招集{len(data['players'])}人の所属リーグでの今季成績を確認する回です。",'']
+    lines=[title(data),f"日本代表 対 {data['game']['opponent']}（{kick.month}月{kick.day}日 {kick.hour}時{kick.minute:02d}分 日本時間）の試合前に、{squad_words(data)}の所属リーグでの今季成績を確認する回です。",'']
+    for w in data.get('withdrawn') or []:
+        d=datetime.fromisoformat(w['announced_on'])
+        lines.insert(2,f"離脱：{w['name']}（{w['reason']}、{d.month}月{d.day}日 JFA発表）")
     if chapters:lines+=list(chapters)+['']
     last=data.get('previous_match')
     if last:
@@ -226,7 +265,7 @@ def description(doc,chapters=None):
     lines+=['今季のリーグ戦のみ。取得日 '+f'{day.year}年{day.month}月{day.day}日',
         '未確認の数字はゼロとして扱いません。図は発表されたポジションの名簿順で、先発やフォーメーションの予想ではありません。',
         'MF/FWはJFAの一括発表です。過去の対戦は保存済みの結果のみです。','','出典：',
-        'JFA発表（招集名簿・試合日時）：'+data['source_url']]
+        'JFA発表（招集名簿・試合日時）：'+data['source_url']]+['JFA発表（離脱）：'+w['source_url'] for w in data.get('withdrawn') or []]
     lines+=[p['source'] for p in data['numbers']['players']]+data['history_sources']
     lines+=['','音声：VOICEVOX 四国めたん / ずんだもん','#日本代表 #サッカー日本代表']
     return chr(10).join(_dedupe(lines))
