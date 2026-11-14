@@ -1,0 +1,145 @@
+name: MLBオフ 日本人選手の来季 今週の動き（長尺）
+
+on:
+  schedule:
+    - cron: '30 3 * * *' # 毎日12:30 JST。スクリプトが公開日（初回11/18、以後は水曜）で未公開の日だけ進む
+  workflow_dispatch:
+    inputs:
+      sample_only:
+        description: '見本だけ作る（公開・記録・コミットなし。公開日でなくても作る）'
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: offseason-weekly-long
+  cancel-in-progress: false
+
+env:
+  PYTHONUTF8: '1'
+  COLLESPO_OFFSEASON_WEEKLY_LONG: ${{ vars.COLLESPO_OFFSEASON_WEEKLY_LONG || 'off' }}
+  COLLESPO_LONGFORM_STYLE: v3
+  COLLESPO_MOTION: ${{ vars.COLLESPO_MOTION || '' }}
+  COLLESPO_BUBBLE: ${{ vars.COLLESPO_BUBBLE || '' }}
+  COLLESPO_STYLE: ${{ vars.COLLESPO_STYLE || '' }}
+  COLLESPO_CAPTION_BREAKS: ${{ vars.COLLESPO_CAPTION_BREAKS || '' }}
+  COLLESPO_GLASS_BACKGROUND: ${{ vars.COLLESPO_GLASS_BACKGROUND || 'stripes' }}
+  COLLESPO_SLANT_VARIANT: ${{ vars.COLLESPO_SLANT_VARIANT || 'cream' }}
+  # 見本の実行（手動でsample_onlyがtrue）だけ公開・記録・コミットをしない
+  SAMPLE_ONLY: ${{ github.event_name == 'workflow_dispatch' && inputs.sample_only }}
+
+jobs:
+  weekly:
+    if: github.event_name == 'workflow_dispatch' || vars.COLLESPO_OFFSEASON_WEEKLY_LONG == 'on'
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          pip install -r scripts/requirements.txt
+          pip install pillow google-api-python-client google-auth
+      - name: Check material and write fixed dialogue
+        id: material
+        run: |
+          set -o pipefail
+          python scripts/offseason_weekly_long.py --check | tee -a "$GITHUB_STEP_SUMMARY"
+          ARGS=()
+          if [ "$SAMPLE_ONLY" = "true" ]; then ARGS+=(--sample); fi
+          python scripts/offseason_weekly_long.py "${ARGS[@]}" --out-dir build/offseason_weekly | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: Sanity gate
+        if: steps.material.outputs.can_make == 'true'
+        env:
+          ANTHROPIC_API_KEY: ''
+        run: python scripts/sanity.py --general --strict --narration build/offseason_weekly/dialogue.json --out data/sanity_offseason_weekly.json --hold-record build/sanity_hold_offseason_weekly.json --kind offseason_weekly_long
+        # 定型台本の全文再構成で照合する。生成API・有料の二段目は使用しない。
+      - name: Install video tools
+        if: steps.material.outputs.can_make == 'true'
+        timeout-minutes: 16
+        run: bash scripts/install_video_tools.sh
+      - name: Start VOICEVOX engine
+        if: steps.material.outputs.can_make == 'true'
+        run: |
+          docker run -d --rm -p 50021:50021 --name voicevox voicevox/voicevox_engine:cpu-latest
+          for i in $(seq 1 60); do
+            if curl -fsS http://127.0.0.1:50021/version; then exit 0; fi
+            sleep 2
+          done
+          exit 1
+      - name: Synthesize both voices
+        if: steps.material.outputs.can_make == 'true'
+        run: python scripts/synthesize_narration.py --narration build/offseason_weekly/dialogue.json --out-dir build/offseason_weekly/audio
+      - name: Render and review frames
+        if: steps.material.outputs.can_make == 'true'
+        run: |
+          python scripts/render_offseason_weekly_long.py --dialogue build/offseason_weekly/dialogue.json --frames build/offseason_weekly/frames
+          python scripts/render_offseason_weekly_long.py --dialogue build/offseason_weekly/dialogue.json --audio-dir build/offseason_weekly/audio --out build/offseason_weekly --require-audio
+      - name: Upload to YouTube
+        if: steps.material.outputs.can_make == 'true' && vars.COLLESPO_OFFSEASON_WEEKLY_LONG == 'on' && env.SAMPLE_ONLY != 'true'
+        env:
+          # 題と説明の英訳（全ての投稿と同じ既存の経路）。台本・sanity では使わない。
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+          WEEK_KEY: ${{ steps.material.outputs.key }}
+        run: |
+          python scripts/upload_youtube.py --video build/offseason_weekly/collespo_longform.mp4 --games build/offseason_weekly/material.json --narration build/offseason_weekly/dialogue.json --kind offseason_weekly_long --video-date "$WEEK_KEY" --thumbnail build/offseason_weekly/frames/opening.png --privacy public --publish-at '20:00'
+          python scripts/verify_published.py --kind offseason_weekly_long --video-date "$WEEK_KEY" --hold-record build/sanity_hold_offseason_weekly.json
+      - name: Commit video record
+        if: always() && vars.COLLESPO_OFFSEASON_WEEKLY_LONG == 'on' && env.SAMPLE_ONLY != 'true'
+        run: bash scripts/commit_data.sh "offseason weekly long record" data/published_videos.json data/playlists.json data/localized.json
+      - name: Save quota-exceeded thumbnails
+        if: always() && hashFiles('build/thumbnail_pending/**') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: thumbnail-pending
+          path: |
+            build/thumbnail_pending/
+            !build/**/portrait/**
+          retention-days: 3
+          if-no-files-found: ignore
+      - name: Save videos and material
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: offseason-weekly-long-${{ github.run_id }}
+          path: |
+            build/offseason_weekly/
+            !build/**/portrait/**
+          retention-days: 14
+          if-no-files-found: ignore
+      - name: Save sanity gate records
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sanity-gate-offseason-weekly
+          path: |
+            data/sanity_offseason_weekly.json
+            build/sanity_hold_offseason_weekly.json
+          retention-days: 14
+          if-no-files-found: ignore
+      - name: Save voice and render records
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: voice-render-records-${{ github.job }}-${{ github.run_attempt }}
+          path: |
+            build/**/voice_manifest.json
+            build/**/render_timeline.json
+            !build/**/portrait/**
+          retention-days: 14
+          if-no-files-found: ignore
+      - name: Keep unsaved data records
+        if: always() && hashFiles('build/data-save-recovery/**/FAILED') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: unsaved-data-${{ github.job }}-${{ github.run_attempt }}
+          path: build/data-save-recovery/
+          retention-days: 14
+          if-no-files-found: error
