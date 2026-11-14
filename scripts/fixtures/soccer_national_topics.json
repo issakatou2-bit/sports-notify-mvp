@@ -1,0 +1,2017 @@
+{
+  "header": {
+    "id": "401916337",
+    "competitions": [
+      {
+        "id": "401916337",
+        "date": "2026-11-14T10:15Z",
+        "status": {
+          "type": {
+            "id": "28",
+            "name": "STATUS_FULL_TIME",
+            "state": "post",
+            "completed": true,
+            "description": "Full Time",
+            "detail": "FT",
+            "shortDetail": "FT"
+          }
+        },
+        "competitors": [
+          {
+            "id": "627",
+            "score": "3",
+            "team": {
+              "id": "627",
+              "displayName": "Japan",
+              "abbreviation": "JPN"
+            }
+          },
+          {
+            "id": "205",
+            "score": "2",
+            "team": {
+              "id": "205",
+              "displayName": "Brazil",
+              "abbreviation": "BRA"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "boxscore": {
+    "teams": [
+      {
+        "team": {
+          "id": "627"
+        },
+        "statistics": [
+          {
+            "name": "wonCorners",
+            "displayValue": "1"
+          },
+          {
+            "name": "saves",
+            "displayValue": "4"
+          },
+          {
+            "name": "possessionPct",
+            "displayValue": "42.4"
+          },
+          {
+            "name": "totalShots",
+            "displayValue": "8"
+          },
+          {
+            "name": "shotsOnTarget",
+            "displayValue": "4"
+          }
+        ]
+      },
+      {
+        "team": {
+          "id": "205"
+        },
+        "statistics": [
+          {
+            "name": "wonCorners",
+            "displayValue": "9"
+          },
+          {
+            "name": "saves",
+            "displayValue": "1"
+          },
+          {
+            "name": "possessionPct",
+            "displayValue": "57.6"
+          },
+          {
+            "name": "totalShots",
+            "displayValue": "17"
+          },
+          {
+            "name": "shotsOnTarget",
+            "displayValue": "6"
+          }
+        ]
+      }
+    ]
+  },
+  "rosters": [
+    {
+      "team": {
+        "id": "627"
+      },
+      "roster": [
+        {
+          "athlete": {
+            "id": "265958",
+            "displayName": "Zion Suzuki"
+          },
+          "starter": true,
+          "position": {
+            "name": "Goalkeeper",
+            "displayName": "Goalkeeper",
+            "abbreviation": "G"
+          },
+          "stats": [
+            {
+              "name": "saves",
+              "displayValue": "4"
+            },
+            {
+              "name": "shotsOnTarget",
+              "displayValue": "0"
+            },
+            {
+              "name": "totalShots",
+              "displayValue": "0"
+            }
+          ]
+        },
+        {
+          "athlete": {
+            "id": "238025",
+            "displayName": "Koki Machida"
+          },
+          "starter": true,
+          "position": {
+            "name": "Center Left Defender",
+            "displayName": "Center Left Defender",
+            "abbreviation": "CD-L"
+          },
+          "stats": [
+            {
+              "name": "shotsOnTarget",
+              "displayValue": "0"
+            },
+            {
+              "name": "totalShots",
+              "displayValue": "0"
+            }
+          ]
+        },
+        {
+          "athlete": {
+            "id": "258270",
+            "displayName": "Ayumu Seko"
+          },
+          "starter": true,
+          "position": {
+            "name": "Center Right Defender",
+            "displayName": "Center Right Defender",
+            "abbreviation": "CD-R"
+          },
+          "stats": [
+            {
+              "name": "shotsOnTarget",
+              "displayValue": "0"
+            },
+            {
+              "name": "totalShots",
+              "displayValue": "0"
+            }
+          ]
+        },
+        {
+          "athlete": {
+            "id": "97111",
+            "displayName": "Hiroki Ito"
+          },
+          "starter": true,
+          "position": {
+            "name": "Left Back",
+            "displayName": "Left Back",
+            "abbreviation": "LB"
+          },
+          "stats": [
+            {
+              "name": "shotsOnTarget",
+              "displayValue": "0"
+            },
+            {
+              "name": "totalShots",
+              "displayValue": "1"
+            }
+          ]
+        },
+        {
+          "athlete": {
+            "id": "336049",
+            "displayName": "Shuto Nakano"
+          },
+          "starter": true,
+          "position": {
+            "name": "Right Back",
+            "displayName": "Right Back",
+            "abbreviation": "RB"
+          },
+          "stats": [
+            {
+              "name": "shotsOnTarget",
+              "displayValue": "0"
+            },
+            {
+              "name": "totalShots",
+              "displayValue": "0"
+            }
+          ]
+        },
+        {
+          "athlete": {
+            "id": "219362",
+            "displayName": "Daichi Kamada"
+          },
+          "starter": true,
+          "position": {
+            "name": "Center Left Midfielder",
+            "displayName": "Center Left Midfielder",
+            "abbreviation": "CM-L"
+          },
+          "stats": [
+            {
+              "name": "shotsOnTarget",
+              "displayValue": "0"
+            },
+            {
+              "name": "totalShots",
+              "displayValue": "0"
+            }
+          ]
+        },
+        {
+          "athlete": {
+            "id": "253173",
+            "displayName": "Ao Tanaka"
+          },
+          "starter": true,
+          "position": {
+            "name": "Center Right Midfielder",
+            "displayName": "Center Right Midfielder",
+            "abbreviation": "CM-R"
+          },
+          "stats": [
+            {
+              "name": "shotsOnTarget",
+              "displayValue": "0"
+            },
+            {
+              "name": "totalShots",
+              "displayValue": "0"
+            }
+          ]
+        },
+        {
+          "athlete": {
+            "id": "256587",
+            "displayName": "Takefusa Kubo"
+          },
+          "starter": true,
+          "position": {
+            "name": "Center Left Forward",
+            "displayName": "Center Left Forward",
+            "abbreviation": "CF-L"
+          },
+          "stats": [
+            {
+              "name": "shotsOnTarget",
+              "displayValue": "1"
+            },
+            {
+              "name": "totalShots",
+              "displayValue": "1"
+            }
+          ]
+        },
+        {
+          "athlete": {
+            "id": "286347",
+            "displayName": "Daizen Maeda"
+          },
+          "starter": true,
+          "position": {
+            "name": "Center Right Forward",
+            "displayName": "Center Right Forward",
+            "abbreviation": "CF-R"
+          },
+          "stats": [
+            {
+              "name": "shotsOnTarget",
+              "displayValue": "1"
+            },
+            {
+              "name": "totalShots",
+              "displayValue": "2"
+            }
+          ]
+        },
+        {
+          "athlete": {
+            "id": "265953",
+            "displayName": "Keito Nakamura"
+          },
+          "starter": true,
+          "position": {
+            "name": "Attacking Midfielder Left",
+            "displayName": "Attacking Midfielder Left",
+            "abbreviation": "AM-L"
+          },
+          "stats": [
+            {
+              "name": "shotsOnTarget",
+              "displayValue": "1"
+            },
+            {
+              "name": "totalShots",
+              "displayValue": "1"
+            }
+          ]
+        },
+        {
+          "athlete": {
+            "id": "219627",
+            "displayName": "Ritsu Doan"
+          },
+          "starter": true,
+          "position": {
+            "name": "Attacking Midfielder Right",
+            "displayName": "Attacking Midfielder Right",
+            "abbreviation": "AM-R"
+          },
+          "stats": [
+            {
+              "name": "shotsOnTarget",
+              "displayValue": "0"
+            },
+            {
+              "name": "totalShots",
+              "displayValue": "0"
+            }
+          ]
+        },
+        {
+          "athlete": {
+            "id": "238016",
+            "displayName": "Koki Ogawa"
+          },
+          "starter": false,
+          "position": {
+            "name": "Substitute",
+            "displayName": "Substitute",
+            "abbreviation": "SUB"
+          },
+          "stats": [
+            {
+              "name": "shotsOnTarget",
+              "displayValue": "0"
+            },
+            {
+              "name": "totalShots",
+              "displayValue": "1"
+            }
+          ]
+        },
+        {
+          "athlete": {
+            "id": "276279",
+            "displayName": "Tsuyoshi Watanabe"
+          },
+          "starter": false,
+          "position": {
+            "name": "Substitute",
+            "displayName": "Substitute",
+            "abbreviation": "SUB"
+          },
+          "stats": [
+            {
+              "name": "shotsOnTarget",
+              "displayValue": "0"
+            },
+            {
+              "name": "totalShots",
+              "displayValue": "0"
+            }
+          ]
+        },
+        {
+          "athlete": {
+            "id": "341715",
+            "displayName": "Kodai Sano"
+          },
+          "starter": false,
+          "position": {
+            "name": "Substitute",
+            "displayName": "Substitute",
+            "abbreviation": "SUB"
+          },
+          "stats": [
+            {
+              "name": "shotsOnTarget",
+              "displayValue": "0"
+            },
+            {
+              "name": "totalShots",
+              "displayValue": "1"
+            }
+          ]
+        },
+        {
+          "athlete": {
+            "id": "277360",
+            "displayName": "Yuki Soma"
+          },
+          "starter": false,
+          "position": {
+            "name": "Substitute",
+            "displayName": "Substitute",
+            "abbreviation": "SUB"
+          },
+          "stats": [
+            {
+              "name": "shotsOnTarget",
+              "displayValue": "0"
+            },
+            {
+              "name": "totalShots",
+              "displayValue": "0"
+            }
+          ]
+        },
+        {
+          "athlete": {
+            "id": "265965",
+            "displayName": "Yukinari Sugawara"
+          },
+          "starter": false,
+          "position": {
+            "name": "Substitute",
+            "displayName": "Substitute",
+            "abbreviation": "SUB"
+          },
+          "stats": [
+            {
+              "name": "shotsOnTarget",
+              "displayValue": "0"
+            },
+            {
+              "name": "totalShots",
+              "displayValue": "0"
+            }
+          ]
+        },
+        {
+          "athlete": {
+            "id": "219350",
+            "displayName": "Junya Ito"
+          },
+          "starter": false,
+          "position": {
+            "name": "Substitute",
+            "displayName": "Substitute",
+            "abbreviation": "SUB"
+          },
+          "stats": [
+            {
+              "name": "shotsOnTarget",
+              "displayValue": "0"
+            },
+            {
+              "name": "totalShots",
+              "displayValue": "0"
+            }
+          ]
+        },
+        {
+          "athlete": {
+            "id": "159348",
+            "displayName": "Takumi Minamino"
+          },
+          "starter": false,
+          "position": {
+            "name": "Substitute",
+            "displayName": "Substitute",
+            "abbreviation": "SUB"
+          },
+          "stats": [
+            {
+              "name": "shotsOnTarget",
+              "displayValue": "0"
+            },
+            {
+              "name": "totalShots",
+              "displayValue": "0"
+            }
+          ]
+        },
+        {
+          "athlete": {
+            "id": "357030",
+            "displayName": "Kaishu Sano"
+          },
+          "starter": false,
+          "position": {
+            "name": "Substitute",
+            "displayName": "Substitute",
+            "abbreviation": "SUB"
+          },
+          "stats": [
+            {
+              "name": "shotsOnTarget",
+              "displayValue": "0"
+            },
+            {
+              "name": "totalShots",
+              "displayValue": "0"
+            }
+          ]
+        },
+        {
+          "athlete": {
+            "id": "302002",
+            "displayName": "Tatsuhiro Sakamoto"
+          },
+          "starter": false,
+          "position": {
+            "name": "Substitute",
+            "displayName": "Substitute",
+            "abbreviation": "SUB"
+          },
+          "stats": [
+            {
+              "name": "shotsOnTarget",
+              "displayValue": "1"
+            },
+            {
+              "name": "totalShots",
+              "displayValue": "1"
+            }
+          ]
+        },
+        {
+          "athlete": {
+            "id": "238033",
+            "displayName": "Kou Itakura"
+          },
+          "starter": false,
+          "position": {
+            "name": "Substitute",
+            "displayName": "Substitute",
+            "abbreviation": "SUB"
+          },
+          "stats": [
+            {
+              "name": "shotsOnTarget",
+              "displayValue": "0"
+            },
+            {
+              "name": "totalShots",
+              "displayValue": "0"
+            }
+          ]
+        },
+        {
+          "athlete": {
+            "id": "333663",
+            "displayName": "Junnosuke Suzuki"
+          },
+          "starter": false,
+          "position": {
+            "name": "Substitute",
+            "displayName": "Substitute",
+            "abbreviation": "SUB"
+          },
+          "stats": [
+            {
+              "name": "shotsOnTarget",
+              "displayValue": "0"
+            },
+            {
+              "name": "totalShots",
+              "displayValue": "0"
+            }
+          ]
+        },
+        {
+          "athlete": {
+            "id": "303031",
+            "displayName": "Yuito Suzuki"
+          },
+          "starter": false,
+          "position": {
+            "name": "Substitute",
+            "displayName": "Substitute",
+            "abbreviation": "SUB"
+          },
+          "stats": [
+            {
+              "name": "shotsOnTarget",
+              "displayValue": "0"
+            },
+            {
+              "name": "totalShots",
+              "displayValue": "0"
+            }
+          ]
+        },
+        {
+          "athlete": {
+            "id": "327161",
+            "displayName": "Leo Brian Kokubo"
+          },
+          "starter": false,
+          "position": {
+            "name": "Substitute",
+            "displayName": "Substitute",
+            "abbreviation": "SUB"
+          },
+          "stats": [
+            {
+              "name": "saves",
+              "displayValue": "0"
+            },
+            {
+              "name": "shotsOnTarget",
+              "displayValue": "0"
+            },
+            {
+              "name": "totalShots",
+              "displayValue": "0"
+            }
+          ]
+        },
+        {
+          "athlete": {
+            "id": "312924",
+            "displayName": "Tomoki Hayakawa"
+          },
+          "starter": false,
+          "position": {
+            "name": "Substitute",
+            "displayName": "Substitute",
+            "abbreviation": "SUB"
+          },
+          "stats": [
+            {
+              "name": "saves",
+              "displayValue": "0"
+            },
+            {
+              "name": "shotsOnTarget",
+              "displayValue": "0"
+            },
+            {
+              "name": "totalShots",
+              "displayValue": "0"
+            }
+          ]
+        },
+        {
+          "athlete": {
+            "id": "346208",
+            "displayName": "Keisuke Goto"
+          },
+          "starter": false,
+          "position": {
+            "name": "Substitute",
+            "displayName": "Substitute",
+            "abbreviation": "SUB"
+          },
+          "stats": [
+            {
+              "name": "shotsOnTarget",
+              "displayValue": "0"
+            },
+            {
+              "name": "totalShots",
+              "displayValue": "0"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "team": {
+        "id": "205"
+      },
+      "roster": [
+        {
+          "athlete": {
+            "id": "364880",
+            "displayName": "Pedro Luccas"
+          },
+          "starter": true,
+          "position": {
+            "name": "Goalkeeper",
+            "displayName": "Goalkeeper",
+            "abbreviation": "G"
+          },
+          "stats": [
+            {
+              "name": "saves",
+              "displayValue": "1"
+            },
+            {
+              "name": "shotsOnTarget",
+              "displayValue": "0"
+            },
+            {
+              "name": "totalShots",
+              "displayValue": "0"
+            }
+          ]
+        },
+        {
+          "athlete": {
+            "id": "236322",
+            "displayName": "Gabriel Magalhães"
+          },
+          "starter": true,
+          "position": {
+            "name": "Center Left Defender",
+            "displayName": "Center Left Defender",
+            "abbreviation": "CD-L"
+          },
+          "stats": [
+            {
+              "name": "shotsOnTarget",
+              "displayValue": "0"
+            },
+            {
+              "name": "totalShots",
+              "displayValue": "2"
+            }
+          ]
+        },
+        {
+          "athlete": {
+            "id": "338876",
+            "displayName": "Jair Cunha"
+          },
+          "starter": true,
+          "position": {
+            "name": "Center Right Defender",
+            "displayName": "Center Right Defender",
+            "abbreviation": "CD-R"
+          },
+          "stats": [
+            {
+              "name": "shotsOnTarget",
+              "displayValue": "0"
+            },
+            {
+              "name": "totalShots",
+              "displayValue": "0"
+            }
+          ]
+        },
+        {
+          "athlete": {
+            "id": "271769",
+            "displayName": "Carlos Augusto"
+          },
+          "starter": true,
+          "position": {
+            "name": "Left Back",
+            "displayName": "Left Back",
+            "abbreviation": "LB"
+          },
+          "stats": [
+            {
+              "name": "shotsOnTarget",
+              "displayValue": "0"
+            },
+            {
+              "name": "totalShots",
+              "displayValue": "0"
+            }
+          ]
+        },
+        {
+          "athlete": {
+            "id": "332354",
+            "displayName": "Wesley"
+          },
+          "starter": true,
+          "position": {
+            "name": "Right Back",
+            "displayName": "Right Back",
+            "abbreviation": "RB"
+          },
+          "stats": [
+            {
+              "name": "shotsOnTarget",
+              "displayValue": "0"
+            },
+            {
+              "name": "totalShots",
+              "displayValue": "0"
+            }
+          ]
+        },
+        {
+          "athlete": {
+            "id": "314858",
+            "displayName": "Andrey Santos"
+          },
+          "starter": true,
+          "position": {
+            "name": "Center Midfielder",
+            "displayName": "Center Midfielder",
+            "abbreviation": "CM"
+          },
+          "stats": [
+            {
+              "name": "shotsOnTarget",
+              "displayValue": "0"
+            },
+            {
+              "name": "totalShots",
+              "displayValue": "1"
+            }
+          ]
+        },
+        {
+          "athlete": {
+            "id": "409662",
+            "displayName": "André"
+          },
+          "starter": true,
+          "position": {
+            "name": "Left Midfielder",
+            "displayName": "Left Midfielder",
+            "abbreviation": "LM"
+          },
+          "stats": [
+            {
+              "name": "shotsOnTarget",
+              "displayValue": "1"
+            },
+            {
+              "name": "totalShots",
+              "displayValue": "1"
+            }
+          ]
+        },
+        {
+          "athlete": {
+            "id": "218522",
+            "displayName": "Bruno Guimarães"
+          },
+          "starter": true,
+          "position": {
+            "name": "Right Midfielder",
+            "displayName": "Right Midfielder",
+            "abbreviation": "RM"
+          },
+          "stats": [
+            {
+              "name": "shotsOnTarget",
+              "displayValue": "0"
+            },
+            {
+              "name": "totalShots",
+              "displayValue": "0"
+            }
+          ]
+        },
+        {
+          "athlete": {
+            "id": "231050",
+            "displayName": "Raphinha"
+          },
+          "starter": true,
+          "position": {
+            "name": "Forward",
+            "displayName": "Forward",
+            "abbreviation": "F"
+          },
+          "stats": [
+            {
+              "name": "shotsOnTarget",
+              "displayValue": "2"
+            },
+            {
+              "name": "totalShots",
+              "displayValue": "2"
+            }
+          ]
+        },
+        {
+          "athlete": {
+            "id": "252107",
+            "displayName": "Vinícius Júnior"
+          },
+          "starter": true,
+          "position": {
+            "name": "Left Forward",
+            "displayName": "Left Forward",
+            "abbreviation": "LF"
+          },
+          "stats": [
+            {
+              "name": "shotsOnTarget",
+              "displayValue": "2"
+            },
+            {
+              "name": "totalShots",
+              "displayValue": "4"
+            }
+          ]
+        },
+        {
+          "athlete": {
+            "id": "376481",
+            "displayName": "Estêvão"
+          },
+          "starter": true,
+          "position": {
+            "name": "Right Forward",
+            "displayName": "Right Forward",
+            "abbreviation": "RF"
+          },
+          "stats": [
+            {
+              "name": "shotsOnTarget",
+              "displayValue": "1"
+            },
+            {
+              "name": "totalShots",
+              "displayValue": "3"
+            }
+          ]
+        },
+        {
+          "athlete": {
+            "id": "301748",
+            "displayName": "Bento"
+          },
+          "starter": false,
+          "position": {
+            "name": "Substitute",
+            "displayName": "Substitute",
+            "abbreviation": "SUB"
+          },
+          "stats": [
+            {
+              "name": "saves",
+              "displayValue": "0"
+            },
+            {
+              "name": "shotsOnTarget",
+              "displayValue": "0"
+            },
+            {
+              "name": "totalShots",
+              "displayValue": "0"
+            }
+          ]
+        },
+        {
+          "athlete": {
+            "id": "382966",
+            "displayName": "Allan Elias"
+          },
+          "starter": false,
+          "position": {
+            "name": "Substitute",
+            "displayName": "Substitute",
+            "abbreviation": "SUB"
+          },
+          "stats": [
+            {
+              "name": "shotsOnTarget",
+              "displayValue": "0"
+            },
+            {
+              "name": "totalShots",
+              "displayValue": "0"
+            }
+          ]
+        },
+        {
+          "athlete": {
+            "id": "359420",
+            "displayName": "Alisson Santana"
+          },
+          "starter": false,
+          "position": {
+            "name": "Substitute",
+            "displayName": "Substitute",
+            "abbreviation": "SUB"
+          },
+          "stats": [
+            {
+              "name": "shotsOnTarget",
+              "displayValue": "0"
+            },
+            {
+              "name": "totalShots",
+              "displayValue": "1"
+            }
+          ]
+        },
+        {
+          "athlete": {
+            "id": "357719",
+            "displayName": "Rayan"
+          },
+          "starter": false,
+          "position": {
+            "name": "Substitute",
+            "displayName": "Substitute",
+            "abbreviation": "SUB"
+          },
+          "stats": [
+            {
+              "name": "shotsOnTarget",
+              "displayValue": "0"
+            },
+            {
+              "name": "totalShots",
+              "displayValue": "0"
+            }
+          ]
+        },
+        {
+          "athlete": {
+            "id": "301524",
+            "displayName": "João Gomes"
+          },
+          "starter": false,
+          "position": {
+            "name": "Substitute",
+            "displayName": "Substitute",
+            "abbreviation": "SUB"
+          },
+          "stats": [
+            {
+              "name": "shotsOnTarget",
+              "displayValue": "0"
+            },
+            {
+              "name": "totalShots",
+              "displayValue": "1"
+            }
+          ]
+        },
+        {
+          "athlete": {
+            "id": "399179",
+            "displayName": "Gabriel Bontempo"
+          },
+          "starter": false,
+          "position": {
+            "name": "Substitute",
+            "displayName": "Substitute",
+            "abbreviation": "SUB"
+          },
+          "stats": [
+            {
+              "name": "shotsOnTarget",
+              "displayValue": "0"
+            },
+            {
+              "name": "totalShots",
+              "displayValue": "0"
+            }
+          ]
+        },
+        {
+          "athlete": {
+            "id": "314851",
+            "displayName": "Marlon Gomes"
+          },
+          "starter": false,
+          "position": {
+            "name": "Substitute",
+            "displayName": "Substitute",
+            "abbreviation": "SUB"
+          },
+          "stats": [
+            {
+              "name": "shotsOnTarget",
+              "displayValue": "0"
+            },
+            {
+              "name": "totalShots",
+              "displayValue": "0"
+            }
+          ]
+        },
+        {
+          "athlete": {
+            "id": "186575",
+            "displayName": "Douglas Santos"
+          },
+          "starter": false,
+          "position": {
+            "name": "Substitute",
+            "displayName": "Substitute",
+            "abbreviation": "SUB"
+          },
+          "stats": [
+            {
+              "name": "shotsOnTarget",
+              "displayValue": "0"
+            },
+            {
+              "name": "totalShots",
+              "displayValue": "0"
+            }
+          ]
+        },
+        {
+          "athlete": {
+            "id": "346612",
+            "displayName": "Endrick"
+          },
+          "starter": false,
+          "position": {
+            "name": "Substitute",
+            "displayName": "Substitute",
+            "abbreviation": "SUB"
+          },
+          "stats": [
+            {
+              "name": "shotsOnTarget",
+              "displayValue": "0"
+            },
+            {
+              "name": "totalShots",
+              "displayValue": "1"
+            }
+          ]
+        },
+        {
+          "athlete": {
+            "id": "310640",
+            "displayName": "Vanderson"
+          },
+          "starter": false,
+          "position": {
+            "name": "Substitute",
+            "displayName": "Substitute",
+            "abbreviation": "SUB"
+          },
+          "stats": [
+            {
+              "name": "shotsOnTarget",
+              "displayValue": "0"
+            },
+            {
+              "name": "totalShots",
+              "displayValue": "0"
+            }
+          ]
+        },
+        {
+          "athlete": {
+            "id": "361434",
+            "displayName": "Vitor Reis"
+          },
+          "starter": false,
+          "position": {
+            "name": "Substitute",
+            "displayName": "Substitute",
+            "abbreviation": "SUB"
+          },
+          "stats": [
+            {
+              "name": "shotsOnTarget",
+              "displayValue": "0"
+            },
+            {
+              "name": "totalShots",
+              "displayValue": "0"
+            }
+          ]
+        },
+        {
+          "athlete": {
+            "id": "363020",
+            "displayName": "Jonathan Jesus"
+          },
+          "starter": false,
+          "position": {
+            "name": "Substitute",
+            "displayName": "Substitute",
+            "abbreviation": "SUB"
+          },
+          "stats": [
+            {
+              "name": "shotsOnTarget",
+              "displayValue": "0"
+            },
+            {
+              "name": "totalShots",
+              "displayValue": "1"
+            }
+          ]
+        },
+        {
+          "athlete": {
+            "id": "252406",
+            "displayName": "Lucas Perri"
+          },
+          "starter": false,
+          "position": {
+            "name": "Substitute",
+            "displayName": "Substitute",
+            "abbreviation": "SUB"
+          },
+          "stats": [
+            {
+              "name": "saves",
+              "displayValue": "0"
+            },
+            {
+              "name": "shotsOnTarget",
+              "displayValue": "0"
+            },
+            {
+              "name": "totalShots",
+              "displayValue": "0"
+            }
+          ]
+        },
+        {
+          "athlete": {
+            "id": "381170",
+            "displayName": "Arthur Dias"
+          },
+          "starter": false,
+          "position": {
+            "name": "Substitute",
+            "displayName": "Substitute",
+            "abbreviation": "SUB"
+          },
+          "stats": [
+            {
+              "name": "shotsOnTarget",
+              "displayValue": "0"
+            },
+            {
+              "name": "totalShots",
+              "displayValue": "0"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "keyEvents": [
+    {
+      "id": "55237714",
+      "type": {
+        "id": "70",
+        "text": "Goal",
+        "type": "goal"
+      },
+      "text": "Goal! Japan 1, Brazil 0. Takefusa Kubo (Japan) left footed shot from the centre of the box to the bottom right corner. Assisted by Ritsu Doan with a through ball.",
+      "clock": {
+        "value": 856.0,
+        "displayValue": "15'"
+      },
+      "scoringPlay": true,
+      "team": {
+        "id": "627",
+        "displayName": "Japan"
+      },
+      "participants": [
+        {
+          "athlete": {
+            "id": "256587",
+            "displayName": "Takefusa Kubo"
+          }
+        },
+        {
+          "athlete": {
+            "id": "219627",
+            "displayName": "Ritsu Doan"
+          }
+        }
+      ],
+      "period": {
+        "number": 1
+      },
+      "shootout": false
+    },
+    {
+      "id": "55237758",
+      "type": {
+        "id": "70",
+        "text": "Goal",
+        "type": "goal"
+      },
+      "text": "Goal! Japan 2, Brazil 0. Keito Nakamura (Japan) right footed shot from the centre of the box to the bottom left corner. Assisted by Shuto Nakano with a cross.",
+      "clock": {
+        "value": 1120.0,
+        "displayValue": "19'"
+      },
+      "scoringPlay": true,
+      "team": {
+        "id": "627",
+        "displayName": "Japan"
+      },
+      "participants": [
+        {
+          "athlete": {
+            "id": "265953",
+            "displayName": "Keito Nakamura"
+          }
+        },
+        {
+          "athlete": {
+            "id": "336049",
+            "displayName": "Shuto Nakano"
+          }
+        }
+      ],
+      "period": {
+        "number": 1
+      },
+      "shootout": false
+    },
+    {
+      "id": "55237981",
+      "type": {
+        "id": "70",
+        "text": "Goal",
+        "type": "goal"
+      },
+      "text": "Goal! Japan 2, Brazil 1. Vinícius Júnior (Brazil) right footed shot from outside the box to the top left corner. Assisted by Bruno Guimarães.",
+      "clock": {
+        "value": 1967.0,
+        "displayValue": "33'"
+      },
+      "scoringPlay": true,
+      "team": {
+        "id": "205",
+        "displayName": "Brazil"
+      },
+      "participants": [
+        {
+          "athlete": {
+            "id": "252107",
+            "displayName": "Vinícius Júnior"
+          }
+        },
+        {
+          "athlete": {
+            "id": "218522",
+            "displayName": "Bruno Guimarães"
+          }
+        }
+      ],
+      "period": {
+        "number": 1
+      },
+      "shootout": false
+    },
+    {
+      "id": "55238456",
+      "type": {
+        "id": "76",
+        "text": "Substitution",
+        "type": "substitution"
+      },
+      "text": "Substitution, Brazil. Alisson Santana replaces Estêvão.",
+      "clock": {
+        "value": 3439.0,
+        "displayValue": "58'"
+      },
+      "scoringPlay": false,
+      "team": {
+        "id": "205",
+        "displayName": "Brazil"
+      },
+      "participants": [
+        {
+          "athlete": {
+            "id": "359420",
+            "displayName": "Alisson Santana"
+          }
+        },
+        {
+          "athlete": {
+            "id": "376481",
+            "displayName": "Estêvão"
+          }
+        }
+      ],
+      "period": {
+        "number": 2
+      },
+      "shootout": false
+    },
+    {
+      "id": "55238447",
+      "type": {
+        "id": "76",
+        "text": "Substitution",
+        "type": "substitution"
+      },
+      "text": "Substitution, Brazil. Marlon Gomes replaces André.",
+      "clock": {
+        "value": 3450.0,
+        "displayValue": "58'"
+      },
+      "scoringPlay": false,
+      "team": {
+        "id": "205",
+        "displayName": "Brazil"
+      },
+      "participants": [
+        {
+          "athlete": {
+            "id": "314851",
+            "displayName": "Marlon Gomes"
+          }
+        },
+        {
+          "athlete": {
+            "id": "409662",
+            "displayName": "André"
+          }
+        }
+      ],
+      "period": {
+        "number": 2
+      },
+      "shootout": false
+    },
+    {
+      "id": "55238457",
+      "type": {
+        "id": "76",
+        "text": "Substitution",
+        "type": "substitution"
+      },
+      "text": "Substitution, Brazil. Jonathan Jesus replaces Jair Cunha.",
+      "clock": {
+        "value": 3454.0,
+        "displayValue": "58'"
+      },
+      "scoringPlay": false,
+      "team": {
+        "id": "205",
+        "displayName": "Brazil"
+      },
+      "participants": [
+        {
+          "athlete": {
+            "id": "363020",
+            "displayName": "Jonathan Jesus"
+          }
+        },
+        {
+          "athlete": {
+            "id": "338876",
+            "displayName": "Jair Cunha"
+          }
+        }
+      ],
+      "period": {
+        "number": 2
+      },
+      "shootout": false
+    },
+    {
+      "id": "55238519",
+      "type": {
+        "id": "76",
+        "text": "Substitution",
+        "type": "substitution"
+      },
+      "text": "Substitution, Japan. Yukinari Sugawara replaces Shuto Nakano.",
+      "clock": {
+        "value": 3698.0,
+        "displayValue": "62'"
+      },
+      "scoringPlay": false,
+      "team": {
+        "id": "627",
+        "displayName": "Japan"
+      },
+      "participants": [
+        {
+          "athlete": {
+            "id": "265965",
+            "displayName": "Yukinari Sugawara"
+          }
+        },
+        {
+          "athlete": {
+            "id": "336049",
+            "displayName": "Shuto Nakano"
+          }
+        }
+      ],
+      "period": {
+        "number": 2
+      },
+      "shootout": false
+    },
+    {
+      "id": "55238520",
+      "type": {
+        "id": "76",
+        "text": "Substitution",
+        "type": "substitution"
+      },
+      "text": "Substitution, Japan. Kaishu Sano replaces Takefusa Kubo.",
+      "clock": {
+        "value": 3703.0,
+        "displayValue": "62'"
+      },
+      "scoringPlay": false,
+      "team": {
+        "id": "627",
+        "displayName": "Japan"
+      },
+      "participants": [
+        {
+          "athlete": {
+            "id": "357030",
+            "displayName": "Kaishu Sano"
+          }
+        },
+        {
+          "athlete": {
+            "id": "256587",
+            "displayName": "Takefusa Kubo"
+          }
+        }
+      ],
+      "period": {
+        "number": 2
+      },
+      "shootout": false
+    },
+    {
+      "id": "55238626",
+      "type": {
+        "id": "76",
+        "text": "Substitution",
+        "type": "substitution"
+      },
+      "text": "Substitution, Brazil. Endrick replaces Raphinha.",
+      "clock": {
+        "value": 4240.0,
+        "displayValue": "71'"
+      },
+      "scoringPlay": false,
+      "team": {
+        "id": "205",
+        "displayName": "Brazil"
+      },
+      "participants": [
+        {
+          "athlete": {
+            "id": "346612",
+            "displayName": "Endrick"
+          }
+        },
+        {
+          "athlete": {
+            "id": "231050",
+            "displayName": "Raphinha"
+          }
+        }
+      ],
+      "period": {
+        "number": 2
+      },
+      "shootout": false
+    },
+    {
+      "id": "55238629",
+      "type": {
+        "id": "76",
+        "text": "Substitution",
+        "type": "substitution"
+      },
+      "text": "Substitution, Japan. Junya Ito replaces Keito Nakamura.",
+      "clock": {
+        "value": 4296.0,
+        "displayValue": "72'"
+      },
+      "scoringPlay": false,
+      "team": {
+        "id": "627",
+        "displayName": "Japan"
+      },
+      "participants": [
+        {
+          "athlete": {
+            "id": "219350",
+            "displayName": "Junya Ito"
+          }
+        },
+        {
+          "athlete": {
+            "id": "265953",
+            "displayName": "Keito Nakamura"
+          }
+        }
+      ],
+      "period": {
+        "number": 2
+      },
+      "shootout": false
+    },
+    {
+      "id": "55238630",
+      "type": {
+        "id": "76",
+        "text": "Substitution",
+        "type": "substitution"
+      },
+      "text": "Substitution, Japan. Koki Ogawa replaces Daizen Maeda.",
+      "clock": {
+        "value": 4306.0,
+        "displayValue": "72'"
+      },
+      "scoringPlay": false,
+      "team": {
+        "id": "627",
+        "displayName": "Japan"
+      },
+      "participants": [
+        {
+          "athlete": {
+            "id": "238016",
+            "displayName": "Koki Ogawa"
+          }
+        },
+        {
+          "athlete": {
+            "id": "286347",
+            "displayName": "Daizen Maeda"
+          }
+        }
+      ],
+      "period": {
+        "number": 2
+      },
+      "shootout": false
+    },
+    {
+      "id": "55238643",
+      "type": {
+        "id": "76",
+        "text": "Substitution",
+        "type": "substitution"
+      },
+      "text": "Substitution, Japan. Takumi Minamino replaces Daichi Kamada.",
+      "clock": {
+        "value": 4311.0,
+        "displayValue": "72'"
+      },
+      "scoringPlay": false,
+      "team": {
+        "id": "627",
+        "displayName": "Japan"
+      },
+      "participants": [
+        {
+          "athlete": {
+            "id": "159348",
+            "displayName": "Takumi Minamino"
+          }
+        },
+        {
+          "athlete": {
+            "id": "219362",
+            "displayName": "Daichi Kamada"
+          }
+        }
+      ],
+      "period": {
+        "number": 2
+      },
+      "shootout": false
+    },
+    {
+      "id": "55238642",
+      "type": {
+        "id": "76",
+        "text": "Substitution",
+        "type": "substitution"
+      },
+      "text": "Substitution, Japan. Tatsuhiro Sakamoto replaces Ritsu Doan.",
+      "clock": {
+        "value": 4320.0,
+        "displayValue": "72'"
+      },
+      "scoringPlay": false,
+      "team": {
+        "id": "627",
+        "displayName": "Japan"
+      },
+      "participants": [
+        {
+          "athlete": {
+            "id": "302002",
+            "displayName": "Tatsuhiro Sakamoto"
+          }
+        },
+        {
+          "athlete": {
+            "id": "219627",
+            "displayName": "Ritsu Doan"
+          }
+        }
+      ],
+      "period": {
+        "number": 2
+      },
+      "shootout": false
+    },
+    {
+      "id": "55238660",
+      "type": {
+        "id": "70",
+        "text": "Goal",
+        "type": "goal"
+      },
+      "text": "Goal! Japan 2, Brazil 2. Vinícius Júnior (Brazil) right footed shot from outside the box to the bottom left corner. Assisted by Bruno Guimarães following a corner.",
+      "clock": {
+        "value": 4448.0,
+        "displayValue": "75'"
+      },
+      "scoringPlay": true,
+      "team": {
+        "id": "205",
+        "displayName": "Brazil"
+      },
+      "participants": [
+        {
+          "athlete": {
+            "id": "252107",
+            "displayName": "Vinícius Júnior"
+          }
+        },
+        {
+          "athlete": {
+            "id": "218522",
+            "displayName": "Bruno Guimarães"
+          }
+        }
+      ],
+      "period": {
+        "number": 2
+      },
+      "shootout": false
+    },
+    {
+      "id": "55238706",
+      "type": {
+        "id": "76",
+        "text": "Substitution",
+        "type": "substitution"
+      },
+      "text": "Substitution, Brazil. Vanderson replaces Wesley.",
+      "clock": {
+        "value": 4670.0,
+        "displayValue": "78'"
+      },
+      "scoringPlay": false,
+      "team": {
+        "id": "205",
+        "displayName": "Brazil"
+      },
+      "participants": [
+        {
+          "athlete": {
+            "id": "310640",
+            "displayName": "Vanderson"
+          }
+        },
+        {
+          "athlete": {
+            "id": "332354",
+            "displayName": "Wesley"
+          }
+        }
+      ],
+      "period": {
+        "number": 2
+      },
+      "shootout": false
+    },
+    {
+      "id": "55238746",
+      "type": {
+        "id": "76",
+        "text": "Substitution",
+        "type": "substitution"
+      },
+      "text": "Substitution, Brazil. João Gomes replaces Andrey Santos.",
+      "clock": {
+        "value": 4677.0,
+        "displayValue": "78'"
+      },
+      "scoringPlay": false,
+      "team": {
+        "id": "205",
+        "displayName": "Brazil"
+      },
+      "participants": [
+        {
+          "athlete": {
+            "id": "301524",
+            "displayName": "João Gomes"
+          }
+        },
+        {
+          "athlete": {
+            "id": "314858",
+            "displayName": "Andrey Santos"
+          }
+        }
+      ],
+      "period": {
+        "number": 2
+      },
+      "shootout": false
+    },
+    {
+      "id": "55238847",
+      "type": {
+        "id": "76",
+        "text": "Substitution",
+        "type": "substitution"
+      },
+      "text": "Substitution, Japan. Ko Itakura replaces Koki Machida.",
+      "clock": {
+        "value": 5111.0,
+        "displayValue": "86'"
+      },
+      "scoringPlay": false,
+      "team": {
+        "id": "627",
+        "displayName": "Japan"
+      },
+      "participants": [
+        {
+          "athlete": {
+            "id": "238033",
+            "displayName": "Kou Itakura"
+          }
+        },
+        {
+          "athlete": {
+            "id": "238025",
+            "displayName": "Koki Machida"
+          }
+        }
+      ],
+      "period": {
+        "number": 2
+      },
+      "shootout": false
+    },
+    {
+      "id": "55238871",
+      "type": {
+        "id": "76",
+        "text": "Substitution",
+        "type": "substitution"
+      },
+      "text": "Substitution, Japan. Junnosuke Suzuki replaces Hiroki Ito.",
+      "clock": {
+        "value": 5124.0,
+        "displayValue": "86'"
+      },
+      "scoringPlay": false,
+      "team": {
+        "id": "627",
+        "displayName": "Japan"
+      },
+      "participants": [
+        {
+          "athlete": {
+            "id": "333663",
+            "displayName": "Junnosuke Suzuki"
+          }
+        },
+        {
+          "athlete": {
+            "id": "97111",
+            "displayName": "Hiroki Ito"
+          }
+        }
+      ],
+      "period": {
+        "number": 2
+      },
+      "shootout": false
+    },
+    {
+      "id": "55238872",
+      "type": {
+        "id": "76",
+        "text": "Substitution",
+        "type": "substitution"
+      },
+      "text": "Substitution, Japan. Kodai Sano replaces Ao Tanaka.",
+      "clock": {
+        "value": 5131.0,
+        "displayValue": "86'"
+      },
+      "scoringPlay": false,
+      "team": {
+        "id": "627",
+        "displayName": "Japan"
+      },
+      "participants": [
+        {
+          "athlete": {
+            "id": "341715",
+            "displayName": "Kodai Sano"
+          }
+        },
+        {
+          "athlete": {
+            "id": "253173",
+            "displayName": "Ao Tanaka"
+          }
+        }
+      ],
+      "period": {
+        "number": 2
+      },
+      "shootout": false
+    },
+    {
+      "id": "55238977",
+      "type": {
+        "id": "70",
+        "text": "Goal",
+        "type": "goal"
+      },
+      "text": "Goal! Japan 3, Brazil 2. Tatsuhiro Sakamoto (Japan) right footed shot from the right side of the six yard box to the top left corner.Goal confirmed following VAR Review.",
+      "clock": {
+        "value": 5400.0,
+        "displayValue": "90'+1'"
+      },
+      "scoringPlay": true,
+      "team": {
+        "id": "627",
+        "displayName": "Japan"
+      },
+      "participants": [
+        {
+          "athlete": {
+            "id": "302002",
+            "displayName": "Tatsuhiro Sakamoto"
+          }
+        }
+      ],
+      "period": {
+        "number": 2
+      },
+      "shootout": false
+    },
+    {
+      "id": "55239004",
+      "type": {
+        "id": "93",
+        "text": "Red Card",
+        "type": "red-card"
+      },
+      "text": "Raphinha (Brazil) is shown the red card.",
+      "clock": {
+        "value": 5400.0,
+        "displayValue": "90'+2'"
+      },
+      "scoringPlay": false,
+      "team": {
+        "id": "205",
+        "displayName": "Brazil"
+      },
+      "participants": [
+        {
+          "athlete": {
+            "id": "231050",
+            "displayName": "Raphinha"
+          }
+        }
+      ],
+      "period": {
+        "number": 2
+      },
+      "shootout": false
+    }
+  ],
+  "commentary": [
+    {
+      "text": "Goal! Japan 3, Brazil 2. Tatsuhiro Sakamoto (Japan) right footed shot from the right side of the six yard box to the top left corner.Goal confirmed following VAR Review.",
+      "time": {
+        "value": 5428.0,
+        "displayValue": "90'+1'"
+      }
+    }
+  ]
+}

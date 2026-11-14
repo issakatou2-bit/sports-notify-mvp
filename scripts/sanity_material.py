@@ -122,6 +122,8 @@ def check(document, materials=None):
     errors = verify_numbers.check(document) + game_fact_guard.check(document)
     import soccer_national
     errors += soccer_national.check(document)
+    import soccer_national_topics
+    errors += soccer_national_topics.check(document)
     import soccer_preview_angles
     errors += soccer_preview_angles.check(document)
     import offseason_news

@@ -19,6 +19,7 @@ NARRATIONS = {
     'soccer_race': ['build/race_narration.json'],
     'soccer_results': ['build/soccer_results/narration.json'],
     'soccer_national': ['build/soccer_national/narration.json'],
+    'soccer_national_topics': ['build/soccer_national_topics/narration.json'],
     'soccer_voices': ['build/soccer_voices/narration.json'],
     'soccer_week': ['build/week_narration.json'],
     'soccer_weekly_long': ['build/soccer_weekly/dialogue.json'],
@@ -32,6 +33,7 @@ KINDS = {
     'soccer_daily': 'daily_soccer', 'soccer_race': 'soccer_race', 'soccer_results': 'soccer_results',
     'soccer_voices': 'soccer_voices', 'soccer_week': 'soccer_week',
     'soccer_national': 'soccer_national',
+    'soccer_national_topics': 'soccer_national_topic',
     'soccer_weekly_long': 'soccer_weekly',
     'soccer_national_long': 'soccer_national_long',
 }
