@@ -310,12 +310,23 @@ def reactions(m):
     """試合後の声。記事の鍵括弧の中の言葉だけを、発言者と媒体つきで言う。"""
     data=reaction_material(m.raw['header']['id'])
     if not data or not data.get('checked_on') or not data.get('quotes'):raise Unavailable('試合後の声の確認済み材料がない')
-    rows=[]
+    groups=[]
     for q in data['quotes']:
         if not q.get('source_url','').startswith('https://') or not q.get('quote') or '「' in q['quote'] or '」' in q['quote']:
             raise Unavailable('発言の出典・中身が未確認: '+q.get('who',''))
-        said=f"{q['lead']}は、「{q['quote']}」と話しました。"+(f"{q['via']}の報道です。" if q.get('via') else '')
-        rows.append((q['ask'],said,q['head'],[(q['who']+'の発言','「'+q['quote']+'」'),('出典',q['source'])]))
+        # 続けて同じ問いの発言は1つの問いにまとめる（毎回「〇〇は何と話したのだ？」で単調。Argon 11/15）。
+        if groups and groups[-1][0]['ask']==q['ask']:groups[-1].append(q)
+        else:groups.append([q])
+    rows=[]
+    a,b=m.score
+    for i,qs in enumerate(groups):
+        said='と話し、'.join(f"{q['lead']}は、「{q['quote']}」" for q in qs)+'と話しました。'+''.join(f"{q['via']}の報道です。" for q in qs if q.get('via'))
+        panel=[(q['who']+'の発言','「'+q['quote']+'」') for q in qs]+[('出典','・'.join(dict.fromkeys(q['source'] for q in qs)))]
+        if i==0:
+            # 最初に何の試合の声かを出す（Argon 11/15：結果が画面に無い）。
+            said=f"{m.other}に{a}対{b}で"+('勝った' if a>b else '敗れた' if a<b else '引き分けた')+'試合の後、'+said
+            panel=[('試合結果',f'日本 {a}-{b} {m.other}')]+panel
+        rows.append((qs[0]['ask'],said,qs[0]['head'],panel))
     for f in data.get('facts',[]):
         if len(f.get('sources',[]))<2:raise Unavailable('2つの出典で確かめていない事実がある')
         rows.append((f['ask'],f['text'],f['head'],[tuple(r) for r in f['rows']]+([('出典',f['source_names'])] if f.get('source_names') else [])))

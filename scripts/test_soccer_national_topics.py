@@ -319,14 +319,23 @@ class Reactions(unittest.TestCase):
         doc = make('reactions')
         answers = [s for s in doc['segments'] if s['speaker'] == METAN and s['kind'] != 'outro']
         quotes = self.material()['quotes']
-        for q, s in zip(quotes, answers):
-            self.assertIn('「' + q['quote'] + '」', s['text'])
-            self.assertTrue(s['text'].startswith(q['lead'] + 'は、'))
+        for q in quotes:
+            s = next(a for a in answers if '「' + q['quote'] + '」' in a['text'])
+            self.assertIn(q['lead'] + 'は、「' + q['quote'] + '」と話し', s['text'])
             # 画面の中央に発言そのものと媒体を出す（Argon 11/15：話した人と出典だけでは中身が見えない）
-            self.assertEqual([list(r) for r in s['meta']['rows']], [[q['who'] + 'の発言', '「' + q['quote'] + '」'], ['出典', q['source']]])
-        self.assertIn('グローボの報道です。', answers[3]['text'])
-        self.assertIn('レッドカードで退場しました。', answers[4]['text'])
-        self.assertEqual(list(answers[4]['meta']['rows'][-1]), ['出典', 'サッカーキング・GOAL'])
+            self.assertIn([q['who'] + 'の発言', '「' + q['quote'] + '」'], [list(r) for r in s['meta']['rows']])
+            self.assertIn(['出典', q['source']], [list(r) for r in s['meta']['rows']])
+        # 最初に何の試合の声かを言い、画面にも結果（Argon 11/15）。
+        self.assertTrue(answers[0]['text'].startswith('ブラジルに3対2で勝った試合の後、森保一監督は、'))
+        self.assertEqual(list(answers[0]['meta']['rows'][0]), ['試合結果', '日本 3-2 ブラジル'])
+        # 得点した2人は1つの問いにまとめる（毎回同じ問いで単調。Argon 11/15）。
+        asks = [s['text'] for s in doc['segments'] if s['speaker'] == ZUNDA]
+        self.assertEqual(len(asks), 4)
+        self.assertIn('得点した久保建英と中村敬斗は、何と話したのだ？', asks)
+        self.assertIn('分があると思っていた」と話し、中村敬斗は、「本当に僕は決めるだけだった」と話しました。', answers[1]['text'])
+        self.assertIn('グローボの報道です。', answers[2]['text'])
+        self.assertIn('レッドカードで退場しました。', answers[3]['text'])
+        self.assertEqual(list(answers[3]['meta']['rows'][-1]), ['出典', 'サッカーキング・GOAL'])
         for s in doc['segments']:
             if s['speaker'] == ZUNDA:
                 self.assertTrue(s['text'].endswith('？'))
