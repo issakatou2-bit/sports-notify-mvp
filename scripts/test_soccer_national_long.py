@@ -45,7 +45,10 @@ class NationalLong(unittest.TestCase):
         self.assertEqual(len(long.material('brazil',AS_OF,self.sheet)['players']),28)
 
     def test_withdrawal_needs_jfa_source_and_a_called_player(self):
-        roster=long.n.read(long.ROOT/'data/soccer_national_squad.json')
+        w=dict(name_en='Daichi Kamada',match_key='paraguay',reason='所属クラブの都合',announced_on='2026-11-14',
+               source_url='https://www.jfa.jp/samuraiblue/news/00037030/')
+        roster=dict(players=[dict(name_en='Daichi Kamada')],withdrawals=[w])
+        self.assertEqual(list(long.withdrawals(roster,'paraguay')),['Daichi Kamada'])
         bad=dict(roster,withdrawals=[dict(roster['withdrawals'][0],source_url='https://example.com/x')])
         with self.assertRaises(ValueError):long.withdrawals(bad,'paraguay')
         bad=dict(roster,withdrawals=[dict(roster['withdrawals'][0],name_en='Taro Notcalled')])
