@@ -149,7 +149,7 @@ def validate_dialogue(dialogue):
 @contextmanager
 def dialogue_scope(dialogue):
     extra={}
-    if dialogue.get('program')=='soccer_national' and (dialogue.get('national_material') or {}).get('mode')=='squad':
+    if dialogue.get('program')=='soccer_national' and (dialogue.get('national_material') or {}).get('mode') in ('squad','result'):
         import soccer_national
         extra=soccer_national.speech_readings(dialogue)
     elif dialogue.get('program')=='soccer_national_long':

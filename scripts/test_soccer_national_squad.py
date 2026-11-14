@@ -101,8 +101,17 @@ class OfficialSquad(unittest.TestCase):
     def test_normal_tracking_and_result_names_still_42_and_reject_new_players(self):
         self.assertEqual(len(ne.JP_PLAYERS_SOCCER),42)
         self.assertEqual(len(n.read(ROOT/'data/soccer_player_names.json')['players']),42)
-        with self.assertRaises(ValueError):n.player_name('Tomoki Hayakawa',True)
+        with self.assertRaises(ValueError):n.player_name('Taro Notcalled',True)
+        # 公式招集名簿（JFA発表）の選手は結果の回の得点者に使える。追跡の42人と全体の読みは増やさない。
+        self.assertEqual(n.player_name('Tomoki Hayakawa',True),'早川友基')
+        self.assertEqual(n.player_name('Keito Nakamura',True),'中村敬斗')
         self.assertIsNone(guard.player_reading('早川友基'))
+        doc=dict(program='soccer_national',national_material=dict(mode='result',goals=[
+            dict(team_id=n.JAPAN,name='中村敬斗',name_en='Keito Nakamura',own_goal=False),
+            dict(team_id='205',name=None,name_en='Someone Else',own_goal=False)]))
+        self.assertEqual(n.speech_readings(doc),{'中村敬斗':('player','ナカムラケイト')})
+        with guard.dialogue_scope(doc):self.assertEqual(guard.player_reading('中村敬斗'),'ナカムラケイト')
+        self.assertIsNone(guard.player_reading('中村敬斗'))
 
     def test_scope_covers_every_name_club_and_both_import_paths(self):
         from scripts import name_reading_guard as other_guard

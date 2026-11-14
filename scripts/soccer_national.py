@@ -75,7 +75,11 @@ def player_name(english, japanese=False):
     names = {p['name_en']:p['name_jp'] for p in confirmed if p.get('status') == 'confirmed'}
     jp = names.get(english) if japanese else table['names'].get(english)
     if japanese and (not jp or not next((p for p in confirmed if p['name_en']==english and p.get('reading')), None)):
-        raise ValueError('日本代表選手の名前・読みが未登録です: '+english)
+        # 11/14 ブラジル戦の結果の回が中村敬斗（追跡の42人の外）で止まった。公式招集名簿（JFA発表）の選手はそこから引く。
+        official=official_squad_player(english)
+        if not official:
+            raise ValueError('日本代表選手の名前・読みが未登録です: '+english)
+        jp=official['name']
     if jp and re.search(r'[A-Za-z]', jp):
         raise ValueError('日本語名にローマ字があります')
     return jp or None
@@ -239,6 +243,20 @@ def season_rows(material, club, english, as_of, season, *, name_jp=None):
 def squad_source(data):
     if data.get('sample') or urlparse(data.get('source_url','')).hostname!='www.jfa.jp':
         raise ValueError('本物のJFA公式発表だけを使います')
+
+
+def official_squad_player(english):
+    """公式招集名簿（JFA発表、data/soccer_national_squad.json）にいる選手。なければ None。"""
+    path=ROOT/'data/soccer_national_squad.json'
+    if not english or not path.exists():
+        return None
+    data=read(path)
+    try:
+        squad_source(data)
+    except ValueError:
+        return None
+    p=next((p for p in data.get('players') or [] if p.get('name_en')==english),None)
+    return squad_player(p) if p else None
 
 
 def squad_player(p):
@@ -602,9 +620,21 @@ def check(document):
 
 def speech_readings(document):
     """公式招集台本だけへ読みを渡し、実queryの氏名検査・句結合を保つ。"""
-    data=document['national_material'];squad_source(data)
-    if data['mode']!='squad':raise ValueError('招集回だけの読みです')
+    data=document['national_material']
     import name_reading_guard as guard
+    if data['mode']=='result':
+        # 結果の回：日本の得点者のうち、公式招集名簿にいる選手の読みだけを渡す。
+        out={}
+        for g in data.get('goals') or []:
+            p=official_squad_player(g.get('name_en')) if g.get('team_id')==JAPAN and not g.get('own_goal') else None
+            if not p or p['name']!=g.get('name'):
+                continue
+            existing=guard.player_data().get('readings',{}).get(p['name'])
+            if existing and existing!=p['reading']:raise ValueError('名前の読みの守りと招集名簿が不一致です')
+            out[p['name']]=('player',p['reading'])
+        return out
+    squad_source(data)
+    if data['mode']!='squad':raise ValueError('招集回だけの読みです')
     clubs=read(ROOT/'data/soccer_national_club_readings.json')
     out={}
     for p in data['players']:
