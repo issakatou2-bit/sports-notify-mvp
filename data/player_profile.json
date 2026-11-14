@@ -1,113 +1,105 @@
 {
-  "generated_at": "2026-11-14T06:01:19.467123+00:00",
-  "date_jst": "2026-11-14",
-  "name": "岡本和真",
-  "player_id": "672960",
-  "team": "ブルージェイズ",
-  "group": "hitting",
-  "why": "順番",
-  "headline": "",
-  "score": null,
+  "generated_at": "2026-11-14T17:40:03.515063+00:00",
+  "date_jst": "2026-11-15",
+  "name": "Bryan Baker",
+  "player_id": "641329",
+  "team": "レイズ",
+  "group": "pitching",
+  "why": "2026-10-29のMLBで最も活躍",
+  "headline": "1.0回　1奪三振　自責0",
+  "score": 58,
   "bio": {
-    "name_en": "Kazuma Okamoto",
-    "age": 30,
-    "birth_city": "Gojo",
-    "birth_state": null,
-    "birth_country": "Japan",
-    "birth_date": "1996-06-30",
-    "debut": "2026-03-27",
-    "draft_year": null,
+    "name_en": "Bryan Baker",
+    "age": 31,
+    "birth_city": "Fort Walton Beach",
+    "birth_state": "FL",
+    "birth_country": "USA",
+    "birth_date": "1994-12-02",
+    "debut": "2021-09-05",
+    "draft_year": 2016,
     "bats": "Right",
     "throws": "Right",
-    "number": "7",
-    "position": "Third Base",
+    "number": "47",
+    "position": "Pitcher",
     "nickname": null,
-    "height": "6' 1\"",
-    "weight": 220
+    "height": "6' 6\"",
+    "weight": 235
   },
   "teams": [
     {
       "team": "ブルージェイズ",
-      "from": 2026,
+      "from": 2021,
+      "to": 2021
+    },
+    {
+      "team": "オリオールズ",
+      "from": 2022,
+      "to": 2025
+    },
+    {
+      "team": "レイズ",
+      "from": 2025,
       "to": 2026
     }
   ],
   "career": {
-    "games": 156,
-    "avg": ".232",
-    "hr": 33,
-    "rbi": 92,
-    "ops": ".762",
-    "sb": 1,
-    "hits": 132,
-    "wins": 13,
-    "losses": 10,
-    "era": "4.03",
-    "so": 222,
-    "ip": "189.2",
-    "whip": "1.14"
-  },
-  "this_season": {
-    "games": 156,
-    "avg": ".232",
-    "hr": 33,
-    "rbi": 92,
-    "ops": ".762",
-    "sb": 1,
-    "hits": 132,
-    "wins": 9,
-    "losses": 7,
-    "era": "4.21",
-    "so": 158,
-    "ip": "132.2",
+    "games": 270,
+    "wins": 17,
+    "losses": 13,
+    "era": "3.30",
+    "so": 297,
+    "ip": "270.0",
     "whip": "1.13"
   },
-  "last_season": {
-    "games": 150,
-    "avg": ".260",
-    "hr": 17,
-    "rbi": 76,
-    "ops": ".754",
-    "sb": 6,
-    "hits": 147,
+  "this_season": {
+    "games": 65,
     "wins": 4,
-    "losses": 3,
-    "era": "3.63",
-    "so": 64,
-    "ip": "57.0",
-    "whip": "1.18"
+    "losses": 2,
+    "era": "1.44",
+    "so": 63,
+    "ip": "62.1",
+    "whip": "0.91"
+  },
+  "last_season": {
+    "games": 73,
+    "wins": 4,
+    "losses": 4,
+    "era": "4.06",
+    "so": 83,
+    "ip": "68.2",
+    "whip": "1.11"
   },
   "recent": [
     {
-      "date": "2026-09-27",
-      "line": "2打数0安打",
-      "opponent": "Cincinnati Reds"
-    },
-    {
-      "date": "2026-09-26",
-      "line": "3打数0安打",
-      "opponent": "Cincinnati Reds"
-    },
-    {
       "date": "2026-09-25",
-      "line": "3打数2安打 3打点",
-      "opponent": "Cincinnati Reds"
+      "line": "1.0回 自責0 0奪三振",
+      "opponent": "Philadelphia Phillies"
     },
     {
-      "date": "2026-09-23",
-      "line": "4打数0安打",
-      "opponent": "Baltimore Orioles"
+      "date": "2026-09-22",
+      "line": "1.0回 自責0 1奪三振",
+      "opponent": "New York Yankees"
     },
     {
-      "date": "2026-09-23",
-      "line": "3打数0安打",
-      "opponent": "Baltimore Orioles"
+      "date": "2026-09-19",
+      "line": "1.0回 自責0 0奪三振",
+      "opponent": "Boston Red Sox"
+    },
+    {
+      "date": "2026-09-15",
+      "line": "1.0回 自責0 0奪三振",
+      "opponent": "Athletics"
+    },
+    {
+      "date": "2026-09-12",
+      "line": "1.1回 自責0 1奪三振",
+      "opponent": "Houston Astros"
     }
   ],
   "awards": [
     {
       "season": "2026",
-      "name": "AL Rookie of the Month"
+      "name": "AL All-Star"
     }
   ],
   "quotes": []
