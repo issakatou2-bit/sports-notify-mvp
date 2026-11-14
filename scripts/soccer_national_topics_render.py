@@ -24,6 +24,16 @@ VIDEO = topics.VIDEO
 CREDIT = '音声: VOICEVOX:ずんだもん・四国めたん　出典: ESPN'
 
 
+def credit(doc):
+    """画面の出典。試合後の声は記事の媒体を先に出す（ESPN は試合結果だけ）。"""
+    if doc.get('topic') != 'reactions':
+        return CREDIT
+    names = [q['source'].replace('／', '・') for q in doc['reaction_material']['quotes']]
+    names += [f['source_names'] for f in doc['reaction_material'].get('facts', []) if f.get('source_names')]
+    media = '・'.join(dict.fromkeys(n for part in names for n in part.split('・')))
+    return f'音声: VOICEVOX:ずんだもん・四国めたん　出典: {media}・ESPN'
+
+
 def clubs_for(doc):
     c = doc['topic_summary']['header']['competitions'][0]
     names = {}
@@ -37,7 +47,7 @@ def frame(t, seg, doc, clubs, index=0, count=1):
     """index 番目の区間の時刻 t の絵。問い（ずんだもん）と答え（めたん）の組は同じ画面。"""
     if seg['kind'] == 'outro':
         import review_render_v3 as r3
-        return r3.outro(t, credit=CREDIT)
+        return r3.outro(t, credit=credit(doc))
     import soccer_readable as readable
     import soccer_v5_cards as cards
 
@@ -57,14 +67,49 @@ def frame(t, seg, doc, clubs, index=0, count=1):
     s = TopicScreen(clubs, t if asking else t + 1.0)
     s.im = cards.canvas(s.t, clubs, '日本代表')
     s.im.info.update(soccer_readable=True, semantic_items=[], readable_motion='v2 右から0.28秒・説明中停止・左へ0.14秒')
-    spec = dict(source=CREDIT, title='日本代表', presenter='zundamon' if asking else 'metan',
+    spec = dict(source=credit(doc), title='日本代表', presenter='zundamon' if asking else 'metan',
                 slide_in=asking, slide_out=not asking)
     other = next(n for n in clubs if n != '日本')
     sub = f'日本対{other}' + ('' if meta.get('topic') == 'rematch' else '　親善試合')
+    rows = [tuple(r) for r in meta['rows']]
+    if meta.get('topic') == 'reactions':
+        sub = f'日本対{other}　試合後'
+        size = 72 if len(rows) == 1 else 64
+        rows = [(label, chr(10).join(balanced_lines(value, size, readable.R - readable.L - 56))) for label, value in rows]
+
     if meta.get('compare'):
         cmp = meta['compare']
         return s.national_compare(meta['head'], cmp['rows'], cmp['teams'], spec, sub)
-    return s.national_facts(meta['head'], [tuple(r) for r in meta['rows']], spec, sub)
+    return s.national_facts(meta['head'], rows, spec, sub)
+
+
+NO_START = '、。，．」』）】!?！？ーぁぃぅぇぉっゃゅょ'
+
+
+def kinsoku_lines(value, size, width):
+    """行頭に句読点・閉じ括弧・小書きを置かない折り返し（前の行の最後の字を送る）。"""
+    import soccer_v5_cards as cards
+    out, current = [], ''
+    for ch in str(value):
+        if current and cards.measure(current + ch, size)[1] > width:
+            if ch in NO_START and len(current) > 1:
+                out.append(current[:-1]); current = current[-1]
+            else:
+                out.append(current); current = ''
+        current += ch
+    if current:
+        out.append(current)
+    return out
+
+
+def balanced_lines(value, size, width):
+    """同じ行数のまま、いちばん狭い幅で折り返して行の長さを揃える（最後の行に1〜2字だけ残さない）。"""
+    count = len(kinsoku_lines(value, size, width))
+    for w in range(width // 2, width + 1, 8):
+        out = kinsoku_lines(value, size, w)
+        if len(out) == count:
+            return out
+    return kinsoku_lines(value, size, width)
 
 
 def allowed_numbers(doc):

@@ -1558,6 +1558,7 @@ _PS_ROUND_PATTERN = re.compile(
 # 表示文を保ち、合成直前だけ使う共通の読み辞書。
 PHRASE_READINGS = {
     "語る上で": "かたるうえで",
+    "分がある": "ぶがある",  # VOICEVOX は「わけがある」と読む（11/15 Argon の指摘）
     "MLB.com": "エムエルビー・ドットコム",
 }
 
