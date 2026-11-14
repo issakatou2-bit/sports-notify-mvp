@@ -128,6 +128,15 @@ class National(unittest.TestCase):
         d=n.choose([g,self.future],{'627':self.schedule,'205':self.schedule,'210':self.schedule},dict(events=[]),now,{},loader)
         self.assertEqual(d['mode'],'result');self.assertEqual(d['publish_at'],'2026-11-14T22:00:00+09:00')
         self.assertIsNone(n.choose([g],{'627':self.schedule},dict(events=[]),now,{'soccer_national':{'2026-11-14':{'video_id':'TEST'}}},loader))
+        # 0時を越えても待たずに出す。朝7時からはこれまでどおり8:00（11/14 本人「定時の回と違う」）。
+        args=([g,self.future],{'627':self.schedule,'205':self.schedule,'210':self.schedule},dict(events=[]))
+        late=n.choose(*args,n.instant('2026-11-14T15:05Z'),{},loader)
+        self.assertEqual((late['mode'],late['publish_at']),('result','2026-11-15T00:26:00+09:00'))
+        morning=n.choose(*args,n.instant('2026-11-14T22:15Z'),{},loader)
+        self.assertEqual(morning['publish_at'],'2026-11-15T08:00:00+09:00')
+        done={'soccer_national':{'2026-11-15':dict(video_id='X',national_mode='result',national_event_id=g['id'])}}
+        self.assertIsNone(n.choose(*args,n.instant('2026-11-14T22:15Z'),done,loader))
+        self.assertIsNone(n.choose(*args,n.instant('2026-11-15T03:30Z'),{},loader))
 
     def test_late_game_next_morning(self):
         now=n.instant('2026-11-17T22:20Z')
@@ -180,7 +189,11 @@ class National(unittest.TestCase):
             self.assertTrue(p.validate(d,self.now))
             self.assertEqual(p.validate(d,n.instant('2026-11-14T22:01:00+09:00')),
                              n.instant('2026-11-14T22:03:00+09:00'))
-            with self.assertRaises(ValueError):p.validate(d,n.instant('2026-11-15T00:01:00+09:00'))
+            # 結果は日付をまたいでも出す（11/14 本人）。試合から36時間を過ぎたら出さない。
+            self.assertEqual(p.validate(d,n.instant('2026-11-15T00:01:00+09:00')),n.instant('2026-11-15T00:03:00+09:00'))
+            with self.assertRaises(ValueError):p.validate(d,n.instant('2026-11-16T08:00:00+09:00'))
+            pre=copy.deepcopy(d);pre['mode']='preview';pre['game']=dict(pre['game'],start_utc='2026-11-20T10:00:00Z')
+            with self.assertRaises(ValueError):p.validate(pre,n.instant('2026-11-15T00:01:00+09:00'))
             d['sample']=True
             with self.assertRaises(ValueError):p.validate(d,self.now)
 

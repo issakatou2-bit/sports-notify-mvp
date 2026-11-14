@@ -768,8 +768,10 @@ def choose(games, schedules, previous, now, ledger, summary_loader, squad_data=N
         result_done=any(e.get('national_mode')=='result' and e.get('national_event_id')==g['id'] for e in entries)
         target=kick.replace(hour=22,minute=0) if kick.hour<20 else (kick+timedelta(days=1)).replace(hour=8,minute=0)
         target=target.replace(second=0,microsecond=0)
-        end=target.replace(hour=12) if target.hour==8 else target+timedelta(hours=2)
-        due=local.date()==target.date() and target-timedelta(minutes=45)<=local<end
+        # 結果は定時の回ではない（11/14 本人「0時超えても普通に投稿していい」）。22時の回は翌日12時まで
+        # 途切れずに出す。0時〜7時はすぐ、7時〜12時は8:00（これまでの朝の枠）に予約する。
+        end=target.replace(hour=12) if target.hour==8 else (target+timedelta(days=1)).replace(hour=12)
+        due=target-timedelta(minutes=45)<=local<end
         fallback=kick.hour<20 and local.date()==target.date()+timedelta(days=1) and 7<=local.hour<12
         if not result_done and (due or fallback):
             summary=summary_loader(g['id'])
