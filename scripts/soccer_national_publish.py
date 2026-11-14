@@ -10,11 +10,18 @@ def validate(data, now):
     if not n.enabled() or data.get('sample') or (data.get('national_numbers') or {}).get('fixture'):
         raise ValueError('代表番組は既定停止、または見本です')
     at=n.instant(data['publish_at'])
-    if at.astimezone(n.JST).date()!=now.astimezone(n.JST).date():
-        raise ValueError('当日の予約時刻が必要です。日付を越えた回は公開しません')
-    at=max(at,now+timedelta(minutes=2))
-    if at.astimezone(n.JST).date()!=now.astimezone(n.JST).date():
-        raise ValueError('当日中の未来の予約時刻を確保できません')
+    if data['mode']=='result':
+        # 結果は定時の回ではないので、日付をまたいでも出す（11/14 本人）。ただし試合から36時間を過ぎた古い結果は出さない。
+        at=max(at,now+timedelta(minutes=2))
+        start=(data.get('game') or {}).get('start_utc')
+        if start and at-n.instant(start)>timedelta(hours=36):
+            raise ValueError('試合から36時間を過ぎた結果は公開しません')
+    else:
+        if at.astimezone(n.JST).date()!=now.astimezone(n.JST).date():
+            raise ValueError('当日の予約時刻が必要です。日付を越えた回は公開しません')
+        at=max(at,now+timedelta(minutes=2))
+        if at.astimezone(n.JST).date()!=now.astimezone(n.JST).date():
+            raise ValueError('当日中の未来の予約時刻を確保できません')
     if data['mode']=='preview' and at>=n.instant(data['game']['start_utc']):
         raise ValueError('開始後の予告は公開しません')
     return at
