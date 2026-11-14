@@ -52,8 +52,13 @@ def frame(t, seg, doc, clubs, index=0, count=1):
     import soccer_v5_cards as cards
 
     class TopicScreen(readable.Screen):
-        def __init__(self, clubs, t):
-            self.clubs, self.t = clubs, t
+        def __init__(self, clubs, t, shift=0.0):
+            self.clubs, self.t, self.shift = clubs, t + shift, shift
+
+        def _slide_v2(self, body_only, duration, enter=True, leave=True):
+            # 答えの区間は行を出し切った状態にするため時刻を進めている。抜ける時刻は区間の本当の終わりで測る
+            # （進めた分だけ早く消えていた。Argon 11/15「話し終わる約1秒前に枠が消える」）。
+            return super()._slide_v2(body_only, duration + self.shift if duration else duration, enter, leave)
 
         def text(self, x, y, value, size=44, width=800, color=None, number=False, role='text'):
             # 国名「日本」をクラブの言及と取り違えない（代表番組と同じ）。
@@ -64,7 +69,7 @@ def frame(t, seg, doc, clubs, index=0, count=1):
     meta = seg['meta']
     asking = seg['speaker'] == ZUNDA
     # 答えの区間は同じ画面の続き。入場の動きを繰り返さない。
-    s = TopicScreen(clubs, t if asking else t + 1.0)
+    s = TopicScreen(clubs, t, 0.0 if asking else 1.0)
     s.im = cards.canvas(s.t, clubs, '日本代表')
     s.im.info.update(soccer_readable=True, semantic_items=[], readable_motion='v2 右から0.28秒・説明中停止・左へ0.14秒')
     spec = dict(source=credit(doc), title='日本代表', presenter='zundamon' if asking else 'metan',
