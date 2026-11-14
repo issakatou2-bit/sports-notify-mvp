@@ -129,12 +129,19 @@ def fetch_player(pid, log=print):
             if play['matchup']['batter']['id'] != int(pid):
                 continue
             found += 1
-            hd = next((e['hitData'] for e in play.get('playEvents', []) if e.get('hitData')), None)
+            ev = next((e for e in play.get('playEvents', []) if e.get('hitData')), None) or {}
+            hd = ev.get('hitData')
+            res, ab = play.get('result') or {}, play.get('about') or {}
             co = (hd or {}).get('coordinates') or {}
             if hd and co.get('coordX') is not None and co.get('coordY') is not None and hd.get('totalDistance'):
                 homers.append(dict(date=date, game_pk=pk, at_bat=play['about']['atBatIndex'],
                                    x=co['coordX'], y=co['coordY'], dist=hd['totalDistance'],
-                                   ls=hd.get('launchSpeed'), la=hd.get('launchAngle')))
+                                   ls=hd.get('launchSpeed'), la=hd.get('launchAngle'),
+                                   traj=hd.get('trajectory'),
+                                   pitch_mph=(ev.get('pitchData') or {}).get('startSpeed'),
+                                   pitch_type=((ev.get('details') or {}).get('type') or {}).get('code'),
+                                   rbi=res.get('rbi'), inning=ab.get('inning'), top=ab.get('isTopInning'),
+                                   home_after=res.get('homeScore'), away_after=res.get('awayScore')))
             else:
                 no_coords += 1
         if found != n:
