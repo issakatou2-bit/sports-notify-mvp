@@ -72,14 +72,20 @@ def screen_text(value,number=False):
     return ''.join(ch for ch in str(value) if ch.isspace() or has_glyph(ch,number))
 
 
+def base_ascent(size,number=False,weight=700):
+    """数字まじりの文の基準線。日本語の字（数字だけの時は数字の字）の上端からの高さ。"""
+    return (num(size) if number else jp(size,weight)).getmetrics()[0]
+
+
 def measure(value,size,number=False,weight=700):
-    """本文内の数字もBarlow。送り幅と実際の張り出しを同じ字列で測る。"""
+    """本文内の数字もBarlow。送り幅と実際の張り出しを同じ字列で測る。
+    数字と日本語は同じ基準線にそろえる（本人 11/15「数字と文字が上下ずれてる」：上端でそろえると数字が沈む）。"""
     parts=[str(value)] if number else [s for s in re.split(r'(\d[\d.,:+\-]*)',str(value)) if s]
-    runs=[];x=0;boxes=[]
+    runs=[];x=0;boxes=[];ascent=base_ascent(size,number,weight)
     for part in parts:
         numeric=number or part[0].isdigit()
         f=num(size if number else round(size*1.12)) if numeric else jp(size,weight)
-        b=f.getbbox(part);runs.append((part,f,x));boxes.append((x+b[0],b[1],x+b[2],b[3]));x+=f.getlength(part)
+        b=f.getbbox(part,anchor='ls');runs.append((part,f,x));boxes.append((x+b[0],b[1]+ascent,x+b[2],b[3]+ascent));x+=f.getlength(part)
     if not boxes:return runs,0,(0,0,0,0)
     box=(min(b[0] for b in boxes),min(b[1] for b in boxes),max(b[2] for b in boxes),max(b[3] for b in boxes))
     return runs,max(x,box[2]-box[0]),box
@@ -143,8 +149,9 @@ def text(im,x,y,value,size=36,color=CHALK,width=None,number=False,role='text',cl
     # 斜体の負のbearingと右側の張り出しも含めて、実際の字の左上を合わせる。
     x,y=round(x),round(y)
     d=ImageDraw.Draw(im)
+    ascent=base_ascent(size,number,weight)
     for part,font,offset in measure(value,size,number,weight)[0]:
-        d.text((x-b[0]+offset,y-b[1]),part,font=font,fill=color)
+        d.text((x-b[0]+offset,y-b[1]+ascent),part,font=font,fill=color,anchor='ls')
     box=[x,y,x+b[2]-b[0],y+b[3]-b[1]]
     rec(im,role,box,value,club_id=club_id,v5_font=size,v5_advance=w,v5_color=color)
     return box
