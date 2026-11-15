@@ -252,6 +252,111 @@
             ]
           }
         ]
+      },
+      "endo": {
+        "checked_on": "2026-11-16",
+        "title": "遠藤航は今どこに？ W杯直前に離脱して代表引退、リバプールで出番なし",
+        "readings": {
+          "遠藤航": "エンドウワタル",
+          "遠藤": "エンドウ",
+          "町野修斗": "マチノシュウト"
+        },
+        "reading_sources": [
+          "https://ja.wikipedia.org/wiki/%E9%81%A0%E8%97%A4%E8%88%AA"
+        ],
+        "hook": {
+          "score": "W杯の日本代表",
+          "result": "直前に離脱",
+          "subject": "リバプールのリーグ戦",
+          "big": "10",
+          "unit": "試合で出番なし",
+          "note": "元主将の遠藤航"
+        },
+        "items": [
+          {
+            "ask": "そういえば、遠藤航はどこに行ったのだ？",
+            "text": "W杯の初戦の直前に、けがで日本代表を離れました。代わりに町野修斗が呼ばれています。",
+            "head": "W杯 日本代表",
+            "rows": [
+              [
+                "離脱",
+                "6月 W杯の初戦の前"
+              ],
+              [
+                "けが",
+                "2月に痛めた左足の甲"
+              ],
+              [
+                "代わり",
+                "町野修斗を追加招集"
+              ]
+            ],
+            "source_names": "サッカーキング・デイリー",
+            "sources": [
+              "https://www.soccer-king.jp/news/japan/national/20260612/2170405.html",
+              "https://www.daily.co.jp/soccer/wc2026/2026/06/13/0020470031.shtml"
+            ]
+          },
+          {
+            "ask": "また代表に戻ってくるのだ？",
+            "text": "離脱のあと、自分のXで代表引退を表明しました。これからは1人のファンとして応援する、と書いています。",
+            "head": "代表引退",
+            "rows": [
+              [
+                "表明",
+                "6月 自分のXで"
+              ],
+              [
+                "区切り",
+                "W杯の活動まで"
+              ]
+            ],
+            "source_names": "サッカーキング・デイリー",
+            "sources": [
+              "https://www.soccer-king.jp/news/japan/national/20260612/2170405.html",
+              "https://www.daily.co.jp/soccer/wc2026/2026/06/13/0020470031.shtml"
+            ]
+          },
+          {
+            "ask": "リバプールでは、試合に出ているのだ？",
+            "text": "プレミアリーグの10試合で、まだ出番がありません。そのうち9試合はベンチに入っています。",
+            "head": "リバプール",
+            "big": {
+              "label": "プレミアリーグ（11月8日まで）",
+              "value": "10",
+              "unit": "試合で出番なし"
+            },
+            "rows": [
+              [
+                "ベンチ入り",
+                "10試合のうち9試合"
+              ],
+              [
+                "直近",
+                "11月8日も出番なし"
+              ],
+              [
+                "公式戦",
+                "欧州CLなども出場なし"
+              ]
+            ],
+            "source_names": "ESPN",
+            "sources": [
+              "https://www.espn.com/soccer/match/_/gameId/401879243",
+              "https://www.espn.com/soccer/match/_/gameId/401879246",
+              "https://www.espn.com/soccer/match/_/gameId/401878765",
+              "https://www.espn.com/soccer/match/_/gameId/401879262",
+              "https://www.espn.com/soccer/match/_/gameId/401879264",
+              "https://www.espn.com/soccer/match/_/gameId/401879276",
+              "https://www.espn.com/soccer/match/_/gameId/401879279",
+              "https://www.espn.com/soccer/match/_/gameId/401879288",
+              "https://www.espn.com/soccer/match/_/gameId/401879314",
+              "https://www.espn.com/soccer/match/_/gameId/401879319",
+              "https://www.soccerdigestweb.com/news/detail/id=199168",
+              "https://news.jkn.co.kr/editions/japanese/post/1030601"
+            ]
+          }
+        ]
       }
     }
   }
