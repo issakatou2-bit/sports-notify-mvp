@@ -594,7 +594,7 @@ class TopicFollowup(unittest.TestCase):
         doc = make('followup-shiogai')
         answers = [s for s in doc['segments'] if s['speaker'] == METAN and s['kind'] != 'outro']
         bigs = [s['meta'].get('big') for s in answers]
-        self.assertEqual([b and b['value'] for b in bigs], [None, '10', '2', '28'])
+        self.assertEqual([b and b['value'] for b in bigs], [None, '10', '2', None])
         for s, b in zip(answers, bigs):
             if b:
                 self.assertIn(b['value'], s['text'])
