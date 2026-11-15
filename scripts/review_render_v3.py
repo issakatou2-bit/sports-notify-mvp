@@ -1104,7 +1104,7 @@ def outro_rows(exclude=""):
 
 
 def outro(t, spec=None, exclude="", credit="音声: VOICEVOX:四国めたん　データ: MLB Stats API",
-          tagline="毎日のMLBを数字と現地の声で"):
+          tagline="毎日のMLBを数字と現地の声で", cta=None):
     t = min(max(0.0, float(t)), .7)
     import solo_host
     offseason = bool((spec or {}).get('offseason'))
@@ -1121,6 +1121,12 @@ def outro(t, spec=None, exclude="", credit="音声: VOICEVOX:四国めたん　�
     d = ImageDraw.Draw(im)
     _text(d, (LEFT, 440), "コレスポ", font=font(150), fill=GOLD)
     _text(d, (LEFT, 640), short_common.OUTRO_LINE, font=font(48), fill=INK)
+    if cta:
+        # 高評価・登録のお願い（11/11 見本 A、本人 11/15「すべて進めて」）。渡した番組だけ。
+        im.info['short_visible_texts'].append(cta)
+        d.rounded_rectangle((LEFT, 760, LEFT + 620, 844), radius=14, fill=(16, 28, 56), outline=(52, 66, 100), width=2)
+        d.rectangle((LEFT, 774, LEFT + 6, 830), fill=(214, 250, 70))
+        _text(d, (LEFT + 30, 802), cta, font=font(40), fill=(241, 245, 249), anchor="lm")
     source(d, credit, (196, 206, 212))
     presenter(im, t)
     return im

@@ -64,7 +64,7 @@ class Topics(unittest.TestCase):
         doc = make('team-numbers')
         text = '\n'.join(spoken(doc))
         jp, br = n.JAPAN, '205'
-        for key, unit in (('totalShots', '本'), ('shotsOnTarget', '本'), ('wonCorners', '本')):
+        for key, unit in (('totalShots', '本'), ('shotsOnTarget', '本')):
             self.assertIn(f'日本が{stat(raw, jp, key)}{unit}', text)
             self.assertIn(f'ブラジルが{stat(raw, br, key)}{unit}', text)
         self.assertIn(f"日本が{round(float(stat(raw, jp, 'possessionPct')))}パーセント", text)
@@ -72,7 +72,9 @@ class Topics(unittest.TestCase):
         self.assertIn('3対2', text)
         last = [s for s in doc['segments'] if s['kind'] != 'outro' and (s['meta'].get('compare'))][-1]
         self.assertEqual(last['meta']['compare']['rows'],
-                         [['ボール支配率', '42%', '58%'], ['シュート', '8本', '17本'], ['枠内シュート', '4本', '6本'], ['コーナーキック', '1本', '9本']])
+                         [['ボール支配率', '42%', '58%'], ['シュート', '8本', '17本'], ['枠内シュート', '4本', '6本'], ['得点', '3点', '2点']])
+        # 解説：数字で下回っても勝てた理由（本人 11/15「解説的な視点」）。枠内と得点の比は材料から計算した物だけ。
+        self.assertIn('日本は4本で3点、ブラジルは6本で2点', text)
         # 小数の支配率をそのまま出さない（整数で原稿と画面を揃える）
         self.assertNotIn('42.4', text)
 
@@ -81,6 +83,7 @@ class Topics(unittest.TestCase):
         self.assertIn('後半追加時間1分', late)
         self.assertIn('72分に堂安律と交代', late)
         self.assertIn('VARの確認を経て認められました', late)
+        self.assertIn('出場してから19分で決めた決勝点', late)
 
         star = '\n'.join(spoken(make('opponent-star')))
         self.assertIn('ヴィニシウス・ジュニオールが2得点', star)
@@ -89,11 +92,13 @@ class Topics(unittest.TestCase):
         self.assertIn('枠内シュートは2本', star)
         self.assertIn('ペナルティエリアの外', star)
         self.assertIn('ブルーノ・ギマランイスのアシスト', star)
+        self.assertIn('ブラジルの得点は、すべてヴィニシウスです', star)
+        self.assertIn('チーム全体のシュート17本のうち、4本を打っています', star)
 
         keeper = '\n'.join(spoken(make('keeper')))
         self.assertIn('鈴木彩艶のセーブ数は4', keeper)
         self.assertIn('ブラジルのシュートは17本', keeper)
-        self.assertIn('枠内シュートは6本', keeper)
+        self.assertIn('枠内は6本。鈴木彩艶はそのうち4本を止め、決められたのは2本', keeper)
         self.assertIn('ブラジルのゴールキーパーのセーブ数は1', keeper)
 
         early = '\n'.join(spoken(make('early-goals')))
@@ -393,6 +398,60 @@ class Reactions(unittest.TestCase):
                     topics.REACTIONS = REACTIONS_FIXTURE
                 self.assertNotIn('reactions', made)
                 self.assertIn('reactions', excluded)
+
+
+class TopicReactions(unittest.TestCase):
+    """事実→解説→反応（本人 11/15「二次情報・反応・解説的な視点も」）。"""
+    QUOTE = dict(who='テスト記者', ask='専門家は、どう見たのだ？', head='専門家の見方', lead='テスト記者',
+                 quote='少ない好機を確実に決めた', via=None, source='テスト新聞',
+                 source_url='https://example.com/analysis', where='試合の分析記事')
+
+    def with_material(self, change):
+        import tempfile
+        data = json.loads(REACTIONS_FIXTURE.read_text(encoding='utf-8'))
+        change(data['events']['401916337'])
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        path = Path(tmp.name) / 'reactions.json'
+        path.write_text(json.dumps(data, ensure_ascii=False), encoding='utf-8')
+        topics.REACTIONS = path
+        self.addCleanup(setattr, topics, 'REACTIONS', REACTIONS_FIXTURE)
+
+    def test_topic_reaction_is_added_as_the_last_answer_with_its_source(self):
+        self.with_material(lambda e: e.setdefault('topic_reactions', {}).update(
+            {'team-numbers': dict(checked_on='2026-11-15', quotes=[dict(self.QUOTE)])}))
+        doc = make('team-numbers')
+        answers = [s for s in doc['segments'] if s['speaker'] == METAN and s['kind'] != 'outro']
+        self.assertIn('テスト記者は、「少ない好機を確実に決めた」と話しました。', answers[-1]['text'])
+        self.assertIn(['出典', 'テスト新聞'], [list(r) for r in answers[-1]['meta']['rows']])
+        self.assertEqual(topics.check(doc), [])
+        self.assertLessEqual(topics.estimate(doc), topics.LIMIT)
+        description = topics.metadata(doc)['snippet']['description']
+        self.assertIn('反応:', description)
+        self.assertIn('https://example.com/analysis', description)
+        self.assertIn('https://example.com/analysis', [i['source'] for i in topics.information(doc)])
+        # 確認日の無い反応では作らない。
+        self.with_material(lambda e: e.setdefault('topic_reactions', {}).update(
+            {'team-numbers': dict(checked_on='', quotes=[dict(self.QUOTE)])}))
+        with self.assertRaises(topics.Unavailable):
+            make('team-numbers')
+
+    def test_reaction_sets_make_their_own_topic(self):
+        quote = dict(self.QUOTE, ask='ブラジルの記者は、どう見たのだ？', verb='書き')
+        self.with_material(lambda e: e.setdefault('sets', {}).update(
+            {'brazil': dict(checked_on='2026-11-15', checked_by='test', title='ブラジル側の反応',
+                            quotes=[quote], facts=[], held=[])}))
+        made, excluded = topics.available(summary(), meetings=MEETINGS)
+        self.assertIn('reactions-brazil', made)
+        doc = make('reactions-brazil')
+        # 相手国の組は相手の側から結果を言い、記事の文は「書きました」（話したとは言わない）。
+        self.assertIn('日本に2対3で敗れた試合の後、テスト記者は、「少ない好機を確実に決めた」と書きました。', ' '.join(spoken(doc)))
+        self.assertEqual(topics.check(doc), [])
+        self.assertIn('https://example.com/analysis', topics.metadata(doc)['snippet']['description'])
+
+    def test_metadata_asks_for_likes_and_subscription(self):
+        for topic in ALL:
+            self.assertIn('高評価・チャンネル登録', topics.metadata(make(topic))['snippet']['description'], topic)
 
 
 class RenderV2(unittest.TestCase):
