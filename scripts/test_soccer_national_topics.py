@@ -449,6 +449,18 @@ class TopicReactions(unittest.TestCase):
         self.assertEqual(topics.check(doc), [])
         self.assertIn('https://example.com/analysis', topics.metadata(doc)['snippet']['description'])
 
+    def test_credit_of_every_real_reaction_set_fits_on_one_line(self):
+        # 11/15 ブラジル側の組で画面下の出典が1行に入らず描画が止まった。本物の材料の組を全部測る。
+        import soccer_national_topics_render as render
+        import soccer_v5_cards as cards
+        topics.REACTIONS = _REACTIONS
+        self.addCleanup(setattr, topics, 'REACTIONS', REACTIONS_FIXTURE)
+        for topic in ['reactions'] + topics.reaction_topics('401916337'):
+            source = render.credit(make(topic)).replace('音声: ', '').replace('　出典: ', ' / ')
+            self.assertTrue(any(len(cards.lines(source, size, 1000)) == 1 for size in (30, 28, 26)), source)
+        description = topics.metadata(make('reactions-brazil'))['snippet']['description']
+        self.assertIn('www.terra.com.br', description)
+
     def test_metadata_asks_for_likes_and_subscription(self):
         for topic in ALL:
             self.assertIn('高評価・チャンネル登録', topics.metadata(make(topic))['snippet']['description'], topic)
