@@ -360,7 +360,8 @@ def quote_groups(quotes):
 def quote_panel(qs):
     # 記事・見出しの文は「書き」、会見・取材の言葉は「話し」（書いた物を「話した」と言わない）。
     said=''.join(f"{q['lead']}は、「{q['quote']}」と{q.get('verb') or '話し'}"+('、' if i<len(qs)-1 else 'ました。') for i,q in enumerate(qs))+''.join(f"{q['via']}の報道です。" for q in qs if q.get('via'))
-    panel=[(q['who']+'の発言','「'+q['quote']+'」') for q in qs]+[('出典','・'.join(dict.fromkeys(q['source'] for q in qs)))]
+    # 新聞・分析記事は「の発言」でなく label（Argon 11/15「見出しの発言」は不自然）
+    panel=[(q.get('label') or q['who']+'の発言','「'+q['quote']+'」') for q in qs]+[('出典','・'.join(dict.fromkeys(q['source'] for q in qs)))]
     return said,panel
 
 

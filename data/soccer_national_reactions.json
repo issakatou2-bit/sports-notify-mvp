@@ -87,22 +87,7 @@
           "quotes": [
             {
               "who": "アンチェロッティ監督",
-              "ask": "ブラジルの監督は、何と話したのだ？",
-              "head": "監督の会見（訳）",
-              "lead": "アンチェロッティ監督",
-              "quote": "負けるのは好きではないが、良かった点を見なければならない",
-              "via": null,
-              "source": "CBF",
-              "source_url": "https://www.cbf.com.br/selecao-brasileira/noticias/noticias/selecao-masculina/ancelotti-analisa-reves-do-brasil-para-o-japao",
-              "where": "試合後の会見（ポルトガル語の記事から訳）",
-              "also": [
-                "https://www.terra.com.br/esportes/ancelotti-ve-aspectos-positivos-mesmo-em-derrota-e-condiciona-resultado-ao-arbitro-nao-tem-nivel,9fe828a2ac8353516f49480f32731431uk3862tt.html"
-              ],
-              "original": "Não gosto de perder, mas temos que olhar o que fizemos de bom."
-            },
-            {
-              "who": "アンチェロッティ監督",
-              "ask": "決勝点の場面は、どう見ていたのだ？",
+              "ask": "ブラジルの監督は、判定に何と話したのだ？",
               "head": "監督の会見（訳）",
               "lead": "アンチェロッティ監督",
               "quote": "結果は、ファウルを取らなかった審判の判断に左右された",
@@ -116,6 +101,21 @@
               "original": "Depois, o resultado foi condicionado pela atitude do árbitro, que não marcou a falta."
             },
             {
+              "who": "アンチェロッティ監督",
+              "ask": "負けたことは、どう受け止めたのだ？",
+              "head": "監督の会見（訳）",
+              "lead": "アンチェロッティ監督",
+              "quote": "負けるのは好きではないが、良かった点を見なければならない",
+              "via": null,
+              "source": "CBF",
+              "source_url": "https://www.cbf.com.br/selecao-brasileira/noticias/noticias/selecao-masculina/ancelotti-analisa-reves-do-brasil-para-o-japao",
+              "where": "試合後の会見（ポルトガル語の記事から訳）",
+              "also": [
+                "https://www.terra.com.br/esportes/ancelotti-ve-aspectos-positivos-mesmo-em-derrota-e-condiciona-resultado-ao-arbitro-nao-tem-nivel,9fe828a2ac8353516f49480f32731431uk3862tt.html"
+              ],
+              "original": "Não gosto de perder, mas temos que olhar o que fizemos de bom."
+            },
+            {
               "who": "ガゼータ・エスポルチーバの記者",
               "ask": "ブラジルの記者は、どう見たのだ？",
               "head": "現地の分析記事（訳）",
@@ -126,7 +126,8 @@
               "source": "Gazeta Esportiva",
               "source_url": "https://www.gazetaesportiva.com/times/brasil/analise-selecao-ancelotti-sem-identidade-derrota-japao/",
               "where": "分析記事（ポルトガル語の記事から訳）",
-              "original": "O talento existe. O que ainda falta é transformá-lo em um funcionamento coletivo capaz de potencializar os jogadores."
+              "original": "O talento existe. O que ainda falta é transformá-lo em um funcionamento coletivo capaz de potencializar os jogadores.",
+              "label": "現地記者の分析"
             },
             {
               "who": "マルカ紙の見出し",
@@ -139,7 +140,8 @@
               "source": "Marca・Gazeta Esportiva",
               "source_url": "https://www.gazetaesportiva.com/times/brasil/imprensa-internacional-brasil-japao-vini-jr-derrota/",
               "where": "見出し（ガゼータ・エスポルチーバの紹介記事から訳）",
-              "original": "Vinicius volta a se reivindicar com dois golaços, mas o Brasil continua perdido"
+              "original": "Vinicius volta a se reivindicar com dois golaços, mas o Brasil continua perdido",
+              "label": "マルカ紙の見出し"
             }
           ],
           "facts": [],
