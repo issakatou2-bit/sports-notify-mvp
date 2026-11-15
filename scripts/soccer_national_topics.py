@@ -154,6 +154,13 @@ def team_numbers(m):
              'シュートと枠内シュート',rows(1,2),compare(3)),
             ('コーナーキックは、どうだったのだ？',f'コーナーキックは、日本が{pairs[3][1]}本、{m.other}が{pairs[3][2]}本でした。','コーナーキック',
              rows(3),compare(4))]
+    # 解説：数字で下回っても勝てた理由を、枠内シュートと得点の比で言う（本人 11/15「解説的な視点」）。
+    on_j,on_o=int(pairs[2][1]),int(pairs[2][2]);g,h=m.score
+    if 0<on_j and 0<on_o and g<=on_j and h<=on_o and g*on_o>h*on_j:
+        panels[-1]=('なぜ、シュートが少なくても勝てたのだ？',
+            f'枠内に飛んだシュートのうち、日本は{on_j}本で{g}点、{m.other}は{on_o}本で{h}点でした。少ない好機を、日本が確実に決めた試合です。',
+            '枠内シュートと得点',[('日本',f'枠内{on_j}本で{g}点'),(m.other,f'枠内{on_o}本で{h}点')],
+            dict(compare=dict(teams=['日本',m.other],rows=[list(r) for r in shown[:3]]+[['得点',f'{g}点',f'{h}点']])))
     # 題で結果を言うので、結果を先に言い、数字で上回られていたことへつなぐ（Argon 11/15）。
     opening=(f'{m.other}戦は、どうなったのだ？',f'日本が{m.score[0]}対{m.score[1]}で勝ちました。ただ、試合の数字では{m.other}が上回っていました。',
              '試合結果',[('日本 対 '+m.other,f'{m.score[0]}-{m.score[1]}')])
@@ -176,8 +183,10 @@ def late_winner(m):
         and str(e.get('team',{}).get('id'))==national.JAPAN and e.get('participants',[{}])[0].get('athlete',{}).get('id')==ident),None)
     if not sub or m.minute_number(sub)>m.minute_number(decisive):raise Unavailable('得点前の途中出場が未確認')
     name=m.who(decisive);minute=m.minute(decisive);entry=m.minute(sub);replaced=m.who(sub,1)
+    gap=m.minute_number(decisive)-m.minute_number(sub)
     rows=[('決勝点は、誰が決めたのだ？',f'日本の決勝点を決めたのは、{name}です。得点は{national.minute_words(minute)}でした。','決勝点',[(name,minute+'分')]),
-          ('どのように出場したのだ？',f'{name}は先発ではなく、{national.minute_words(entry)}に{replaced}と交代で出場しました。','途中出場',[(name,entry+'分'),('交代した選手',replaced)])]
+          ('どのように出場したのだ？',f'{name}は先発ではなく、{national.minute_words(entry)}に{replaced}と交代で出場しました。'+(f'出場してから{gap}分で決めた決勝点です。' if gap>0 else ''),
+           '途中出場',[(name,entry+'分'),('交代した選手',replaced)]+([('出場から得点まで',f'{gap}分')] if gap>0 else []))]
     confirmed=any('Goal confirmed following VAR Review' in c.get('text','') and
         (c.get('time',{}).get('displayValue')==decisive['clock']['displayValue']) and
         player['athlete']['displayName'] in c.get('text','') for c in m.raw.get('commentary',[]))
@@ -197,8 +206,11 @@ def opponent_star(m):
     name=m.who(goals[0]);short=m.short(athlete,m.oid);n=len(goals);minutes='・'.join(m.minute(e)+'分' for e in goals)
     spoken='・'.join(national.minute_words(m.minute(e)) for e in goals)
     shots=m.stat(m.oid,'totalShots',m.player(goals[0]));target=m.stat(m.oid,'shotsOnTarget',m.player(goals[0]))
-    rows=[(f'{m.other}の得点者は、誰なのだ？',f'{m.other}の{name}が{n}得点。得点した時間は{spoken}でした。','相手の得点者',[(name,f'{n}得点'),('得点の時間',minutes)]),
-          ('シュートは、何本だったのだ？',f'{name}のシュートは{shots}本。そのうち枠内シュートは{target}本でした。','シュートの数字',[('シュート',shots+'本'),('枠内シュート',target+'本')])]
+    team=m.stat(m.oid,'totalShots');alone=n==m.score[1]
+    rows=[(f'{m.other}の得点者は、誰なのだ？',f'{m.other}の{name}が{n}得点。得点した時間は{spoken}でした。'+(f'{m.other}の得点は、すべて{short}です。' if alone else ''),
+           '相手の得点者',[(name,f'{n}得点'),('得点の時間',minutes)]+([(f'{m.other}の得点',f'{n}点すべて')] if alone else [])),
+          ('シュートは、何本だったのだ？',f'{name}のシュートは{shots}本。そのうち枠内シュートは{target}本でした。'+(f'チーム全体のシュート{team}本のうち、{shots}本を打っています。' if int(team)>int(shots) else ''),
+           'シュートの数字',[('シュート',shots+'本'),('枠内シュート',target+'本')]+([('チームのシュート',team+'本')] if int(team)>int(shots) else []))]
     outside=all('outside the box' in e.get('text','') for e in goals)
     if outside:rows.append((f'{short}は、どこから決めたのだ？',f'{n}得点とも、ペナルティエリアの外からのシュートでした。','得点の位置',[('ペナルティエリアの外',f'{n}得点')]))
     assists=[m.who(e,1) for e in goals if 'Assisted by ' in e.get('text','') and len(e.get('participants',[]))>=2]
@@ -218,7 +230,10 @@ def keeper(m):
     other_saves=m.stat(m.oid,'saves',opponents[0])
     shots=m.stat(m.oid,'totalShots');target=m.stat(m.oid,'shotsOnTarget')
     rows=[('日本のゴールキーパーは、どうだったのだ？',f'日本のゴールキーパー、{name}のセーブ数は{saves}でした。','守護神の数字',[(name,saves+'セーブ')]),
-          (f'{m.other}のシュートは、どうだったのだ？',f'{m.other}のシュートは{shots}本。そのうち枠内シュートは{target}本でした。日本が受けたシュートの数字です。','日本の被シュート',[('被シュート',shots+'本'),('被枠内シュート',target+'本')]),
+          ((f'{m.other}のシュートを、どれだけ止めたのだ？',f'{m.other}のシュートは{shots}本、枠内は{target}本。{name}はそのうち{saves}本を止め、決められたのは{m.score[1]}本でした。',
+            '枠内シュートとセーブ',[('被シュート',shots+'本'),('被枠内シュート',target+'本'),('止めた数',f'{target}本中{saves}本')])
+           if int(saves)+m.score[1]==int(target) else
+           (f'{m.other}のシュートは、どうだったのだ？',f'{m.other}のシュートは{shots}本。そのうち枠内シュートは{target}本でした。日本が受けたシュートの数字です。','日本の被シュート',[('被シュート',shots+'本'),('被枠内シュート',target+'本')])),
           (f'{m.other}のゴールキーパーは、どうだったのだ？',f'{m.other}のゴールキーパーのセーブ数は{other_saves}。{name}は{saves}セーブでした。','両チームのGK',[('日本',saves+'セーブ'),(m.other,other_saves+'セーブ')])]
     win=m.score[0]>m.score[1]
     return f'{name} {saves}セーブ'+(f'で{m.other}に勝利' if win else f' {m.other}のシュート{shots}本'),rows+[m.result()]
@@ -302,26 +317,55 @@ def rematch(m):
     return f'W杯で敗れた{m.other}に{m.score[0]}-{m.score[1]}で勝利',rows
 
 
-def reaction_material(event):
-    return (national.read(REACTIONS).get('events') or {}).get(str(event))
+def is_reactions(topic):
+    """試合後の声の話題。'reactions' と、同じ試合の別の組 'reactions-<名前>'（例 相手国の報道）。"""
+    return topic=='reactions' or str(topic).startswith('reactions-')
 
 
-def reactions(m):
-    """試合後の声。記事の鍵括弧の中の言葉だけを、発言者と媒体つきで言う。"""
-    data=reaction_material(m.raw['header']['id'])
-    if not data or not data.get('checked_on') or not data.get('quotes'):raise Unavailable('試合後の声の確認済み材料がない')
+def reaction_material(event, topic='reactions'):
+    event=(national.read(REACTIONS).get('events') or {}).get(str(event))
+    if not event or topic=='reactions':return event
+    return (event.get('sets') or {}).get(topic[len('reactions-'):])
+
+
+def reaction_topics(event):
+    event=(national.read(REACTIONS).get('events') or {}).get(str(event)) or {}
+    return ['reactions-'+name for name in event.get('sets') or {}]
+
+
+def topic_reaction(event, topic):
+    """各話題の最後に足す反応（記事の発言）。本人 11/15「事実だけでなく反応・解説も」。"""
+    if is_reactions(topic):return None
+    event=(national.read(REACTIONS).get('events') or {}).get(str(event)) or {}
+    return (event.get('topic_reactions') or {}).get(topic)
+
+
+def quote_groups(quotes):
     groups=[]
-    for q in data['quotes']:
+    for q in quotes:
         if not q.get('source_url','').startswith('https://') or not q.get('quote') or '「' in q['quote'] or '」' in q['quote']:
             raise Unavailable('発言の出典・中身が未確認: '+q.get('who',''))
         # 続けて同じ問いの発言は1つの問いにまとめる（毎回「〇〇は何と話したのだ？」で単調。Argon 11/15）。
         if groups and groups[-1][0]['ask']==q['ask']:groups[-1].append(q)
         else:groups.append([q])
+    return groups
+
+
+def quote_panel(qs):
+    said='と話し、'.join(f"{q['lead']}は、「{q['quote']}」" for q in qs)+'と話しました。'+''.join(f"{q['via']}の報道です。" for q in qs if q.get('via'))
+    panel=[(q['who']+'の発言','「'+q['quote']+'」') for q in qs]+[('出典','・'.join(dict.fromkeys(q['source'] for q in qs)))]
+    return said,panel
+
+
+def reactions(m, topic='reactions'):
+    """試合後の声。記事の鍵括弧の中の言葉だけを、発言者と媒体つきで言う。"""
+    data=reaction_material(m.raw['header']['id'],topic)
+    if not data or not data.get('checked_on') or not data.get('quotes'):raise Unavailable('試合後の声の確認済み材料がない')
+    groups=quote_groups(data['quotes'])
     rows=[]
     a,b=m.score
     for i,qs in enumerate(groups):
-        said='と話し、'.join(f"{q['lead']}は、「{q['quote']}」" for q in qs)+'と話しました。'+''.join(f"{q['via']}の報道です。" for q in qs if q.get('via'))
-        panel=[(q['who']+'の発言','「'+q['quote']+'」') for q in qs]+[('出典','・'.join(dict.fromkeys(q['source'] for q in qs)))]
+        said,panel=quote_panel(qs)
         if i==0:
             # 最初に何の試合の声かを出す（Argon 11/15：結果が画面に無い）。
             said=f"{m.other}に{a}対{b}で"+('勝った' if a>b else '敗れた' if a<b else '引き分けた')+'試合の後、'+said
@@ -338,7 +382,16 @@ TOPICS={'team-numbers':team_numbers,'late-winner':late_winner,'opponent-star':op
 
 def narration(summary, topic, *, names=None, meetings=None):
     raw=compact(summary);m=Material(raw,names,meetings)
-    title,panels=TOPICS[topic](m)
+    if is_reactions(topic):title,panels=reactions(m,topic)
+    else:title,panels=TOPICS[topic](m)
+    added=topic_reaction(raw['header']['id'],topic)
+    if added:
+        if not added.get('checked_on') or not added.get('quotes'):raise Unavailable('話題の反応の確認済み材料がない')
+        # 結果は題で言っているので、反応を足すときは最後の「試合結果」の段と入れ替える（45秒に収める）。
+        if panels and panels[-1][2]=='試合結果':panels=list(panels)[:-1]
+        for qs in quote_groups(added['quotes']):
+            said,panel=quote_panel(qs)
+            panels=list(panels)+[(qs[0]['ask'],said,qs[0]['head'],panel,dict(quote=True,reaction_urls=[q['source_url'] for q in qs]))]
     segments=[]
     for i,(question,answer,head,rows,*extra) in enumerate(panels):
         meta=dict(duo=True,topic=topic,panel=i,head=head,rows=rows,**(extra[0] if extra else {}))
@@ -352,8 +405,11 @@ def narration(summary, topic, *, names=None, meetings=None):
     if topic=='rematch':
         doc['previous_meetings']=[copy.deepcopy(r) for r in m.meetings if r['date']<m.today]
         doc['meeting_sources']=national.read(RESULTS)['sources']
-    if topic=='reactions':
-        doc['reaction_material']=copy.deepcopy(reaction_material(raw['header']['id']))
+    if added:
+        doc['topic_reaction']=copy.deepcopy(added)
+        doc['sanity_materials'].append(dict(source='話題の反応（確認済み）',sport='soccer',facts=doc['topic_reaction']))
+    if is_reactions(topic):
+        doc['reaction_material']=copy.deepcopy(reaction_material(raw['header']['id'],topic))
         doc['sanity_materials'].append(dict(source='試合後の発言（確認済み）',sport='soccer',facts=doc['reaction_material']))
     return short_common.prepare(doc)
 
@@ -365,7 +421,7 @@ def estimate(doc):
 
 def available(summary, names=None, meetings=None):
     made={};excluded={}
-    for topic in TOPICS:
+    for topic in list(TOPICS)+reaction_topics(summary['header']['id']):
         try:made[topic]=narration(summary,topic,names=names,meetings=meetings)
         except (Unavailable,KeyError,ValueError,TypeError,StopIteration) as e:excluded[topic]=str(e) or '必要な欄がない'
     return made,excluded
@@ -408,11 +464,12 @@ def speech_readings(doc):
 def information(doc):
     if check(doc):raise ValueError('材料が不一致')
     answers=[(i,s) for i,s in enumerate(doc['segments']) if s['speaker']==METAN and s['kind']!='outro']
-    if doc['topic']=='reactions':
+    if is_reactions(doc['topic']):
         r=doc['reaction_material'];sources=[q['source_url'] for q in r['quotes']]+[' '.join(f['sources']) for f in r.get('facts',[])]
         return [dict(subject=s['meta']['head'],fact='試合後の発言・試合の最後の出来事',value=s['meta']['rows'],source=src,segments=[i])
                 for (i,s),src in zip(answers,sources)]
-    return [dict(subject=s['meta']['head'],fact='当該試合の数字・経過',value=s['meta']['rows'],source=doc['source_url'],segments=[i])
+    return [dict(subject=s['meta']['head'],fact='記事の発言' if s['meta'].get('reaction_urls') else '当該試合の数字・経過',value=s['meta']['rows'],
+                 source=' '.join(s['meta']['reaction_urls']) if s['meta'].get('reaction_urls') else doc['source_url'],segments=[i])
             for i,s in answers]
 
 
@@ -427,14 +484,16 @@ def metadata(doc):
     source='出典: ESPN 試合ページ\n'+doc['source_url']
     if doc['topic']=='rematch':
         source+='\n過去の対戦: 日本代表の試合の確認一覧\n'+'\n'.join(doc['meeting_sources'])
-    if doc['topic']=='reactions':
+    if doc.get('topic_reaction'):
+        source+='\n反応:\n'+'\n'.join(f"{q['who']}（{q['where']}）: {q['source']}\n{q['source_url']}" for q in doc['topic_reaction']['quotes'])
+    if is_reactions(doc['topic']):
         r=doc['reaction_material']
         source='出典:\n'+'\n'.join(f"{q['who']}（{q['where']}）: {q['source']}\n{q['source_url']}" for q in r['quotes'])
         urls=list(dict.fromkeys(u for f in r.get('facts',[]) for u in f['sources']))
         if urls:source+='\n試合の最後の退場:\n'+'\n'.join(urls)
         source+='\n試合の結果: ESPN 試合ページ\n'+doc['source_url']
     return dict(snippet=dict(title=doc['title'],description=said+('\n\n'+'\n'.join(terms) if terms else '')+'\n\n'+source+
-        '\n音声: VOICEVOX:ずんだもん・四国めたん\n#サッカー日本代表 #Shorts',tags=['サッカー','日本代表','コレスポ'],categoryId='17',defaultLanguage='ja',defaultAudioLanguage='ja'))
+        '\n\n役に立ったら高評価・チャンネル登録をお願いします。\n音声: VOICEVOX:ずんだもん・四国めたん\n#サッカー日本代表 #Shorts',tags=['サッカー','日本代表','コレスポ'],categoryId='17',defaultLanguage='ja',defaultAudioLanguage='ja'))
 
 
 def reservation(now, ledger):
@@ -452,8 +511,10 @@ def validate_upload(args, now=None):
     if __import__('os').getenv('COLLESPO_NATIONAL_TOPIC_PUBLISH')!='true':raise ValueError('話題の公開は手動指定が必要です')
     if doc['topic']=='rematch' and doc['previous_meetings']!=[r for r in meetings_for(Material(doc['topic_summary']).other) if r['date']<doc['date_jst']]:
         raise ValueError('過去の対戦が確認一覧と一致しません')
-    if doc['topic']=='reactions' and doc.get('reaction_material')!=reaction_material(doc['event_id']):
+    if is_reactions(doc['topic']) and doc.get('reaction_material')!=reaction_material(doc['event_id'],doc['topic']):
         raise ValueError('試合後の声が確認済みの材料と一致しません')
+    if doc.get('topic_reaction')!=topic_reaction(doc['event_id'],doc['topic']):
+        raise ValueError('話題の反応が確認済みの材料と一致しません')
     ledger=national.read(LEDGER)
     if doc['topic_key'] in ledger:raise ValueError('同じ試合の同じ話題は予約・投稿済みです')
     if not args.publish_at:raise ValueError('未来の予約時刻が必要です')
@@ -469,7 +530,7 @@ def validate_upload(args, now=None):
 
 def main(argv=None):
     ap=argparse.ArgumentParser(description=__doc__)
-    ap.add_argument('--summary',type=Path);ap.add_argument('--topic',choices=list(TOPICS));ap.add_argument('--list',action='store_true')
+    ap.add_argument('--summary',type=Path);ap.add_argument('--topic',help='話題（TOPICS の名前、または reactions-<組>）');ap.add_argument('--list',action='store_true')
     ap.add_argument('--event',help='ESPN の event id（本番は実行時に summary を取る。既定 401916337）')
     ap.add_argument('--out',type=Path,default=ROOT/'build/soccer_national_topics')
     ap.add_argument('--reservation',action='store_true')

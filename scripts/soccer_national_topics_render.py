@@ -22,14 +22,19 @@ ROOT = Path(__file__).resolve().parents[1]
 FPS = 30
 VIDEO = topics.VIDEO
 CREDIT = '音声: VOICEVOX:ずんだもん・四国めたん　出典: ESPN'
+CTA = '高評価・チャンネル登録で応援を'
 
 
 def credit(doc):
     """画面の出典。試合後の声は記事の媒体を先に出す（ESPN は試合結果だけ）。"""
-    if doc.get('topic') != 'reactions':
+    names = []
+    if topics.is_reactions(doc.get('topic')):
+        names += [q['source'].replace('／', '・') for q in doc['reaction_material']['quotes']]
+        names += [f['source_names'] for f in doc['reaction_material'].get('facts', []) if f.get('source_names')]
+    if doc.get('topic_reaction'):
+        names += [q['source'].replace('／', '・') for q in doc['topic_reaction']['quotes']]
+    if not names:
         return CREDIT
-    names = [q['source'].replace('／', '・') for q in doc['reaction_material']['quotes']]
-    names += [f['source_names'] for f in doc['reaction_material'].get('facts', []) if f.get('source_names')]
     media = '・'.join(dict.fromkeys(n for part in names for n in part.split('・')))
     return f'音声: VOICEVOX:ずんだもん・四国めたん　出典: {media}・ESPN'
 
@@ -47,7 +52,7 @@ def frame(t, seg, doc, clubs, index=0, count=1):
     """index 番目の区間の時刻 t の絵。問い（ずんだもん）と答え（めたん）の組は同じ画面。"""
     if seg['kind'] == 'outro':
         import review_render_v3 as r3
-        return r3.outro(t, credit=credit(doc))
+        return r3.outro(t, credit=credit(doc), cta=CTA)
     import soccer_readable as readable
     import soccer_v5_cards as cards
 
@@ -77,8 +82,9 @@ def frame(t, seg, doc, clubs, index=0, count=1):
     other = next(n for n in clubs if n != '日本')
     sub = f'日本対{other}' + ('' if meta.get('topic') == 'rematch' else '　親善試合')
     rows = [tuple(r) for r in meta['rows']]
-    if meta.get('topic') == 'reactions':
-        sub = f'日本対{other}　試合後'
+    if topics.is_reactions(meta.get('topic')) or meta.get('quote'):
+        if topics.is_reactions(meta.get('topic')):
+            sub = f'日本対{other}　試合後'
         size = 72 if len(rows) == 1 else 64
         rows = [(label, chr(10).join(balanced_lines(value, size, readable.R - readable.L - 56))) for label, value in rows]
 
