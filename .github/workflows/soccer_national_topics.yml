@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       topic:
-        description: '話題（team-numbers / late-winner / opponent-star / keeper / early-goals / rematch / reactions / reactions-<組>）'
+        description: '話題（team-numbers / late-winner / opponent-star / keeper / early-goals / rematch / reactions / reactions-<組> / followup-<名前>）'
         type: string
         required: true
       event:

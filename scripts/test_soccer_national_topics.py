@@ -23,15 +23,19 @@ MEETINGS = [
 ALL = ('team-numbers', 'late-winner', 'opponent-star', 'keeper', 'early-goals', 'rematch')
 REACTIONS_FIXTURE = ROOT / 'scripts/fixtures/soccer_national_reactions.json'
 _REACTIONS = topics.REACTIONS
+FOLLOWUPS_FIXTURE = ROOT / 'scripts/fixtures/soccer_national_followups.json'
+_FOLLOWUPS = topics.FOLLOWUPS
 
 
 def setUpModule():
     # 本物の data/ ではなく、試験用の写しの試合後の声を読む。
     topics.REACTIONS = REACTIONS_FIXTURE
+    topics.FOLLOWUPS = FOLLOWUPS_FIXTURE
 
 
 def tearDownModule():
     topics.REACTIONS = _REACTIONS
+    topics.FOLLOWUPS = _FOLLOWUPS
 DIGITS = '[0-9０-９〇一二三四五六七八九十百千万]'
 
 
@@ -293,7 +297,7 @@ meetings = json.loads(sys.argv[2])
 out = dict(style=c.STYLE_V2, errors=[], old=0, who=[], x=[], slide=[], frames=0)
 OLD = {(196, 244, 76)}
 # 試合後の声（相手国側の組も）は引用の行に数字が入る（11/15 行が重なって描画が止まった）。
-for topic in ('team-numbers', 'late-winner', 'opponent-star', 'keeper', 'early-goals', 'rematch', 'reactions') + tuple(topics.reaction_topics(summary['header']['id'])):
+for topic in ('team-numbers', 'late-winner', 'opponent-star', 'keeper', 'early-goals', 'rematch', 'reactions') + tuple(topics.reaction_topics(summary['header']['id'])) + tuple(topics.followup_topics(summary['header']['id'])):
     doc = topics.narration(summary, topic, meetings=meetings)
     clubs = render.clubs_for(doc)
     for i, seg in enumerate(doc['segments']):
@@ -547,6 +551,61 @@ class Workflow(unittest.TestCase):
         self.assertIn('soccer_national_topic', upload_youtube.DATED_KINDS)
         self.assertIn('"soccer_national_topic"', (ROOT / 'scripts/upload_youtube.py').read_text(encoding='utf-8').split('choices=[')[1].split(']')[0])
         self.assertIn('soccer_national_topics.check', (ROOT / 'scripts/sanity_material.py').read_text(encoding='utf-8'))
+
+
+
+class TopicFollowup(unittest.TestCase):
+    """「そういえば〇〇はどこに？」（本人 11/15）。確かめた事実の組だけで作る。"""
+
+    def with_material(self, change):
+        import tempfile
+        data = json.loads(FOLLOWUPS_FIXTURE.read_text(encoding='utf-8'))
+        change(data['events']['401916337']['shiogai'])
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        path = Path(tmp.name) / 'followups.json'
+        path.write_text(json.dumps(data, ensure_ascii=False), encoding='utf-8')
+        topics.FOLLOWUPS = path
+        self.addCleanup(setattr, topics, 'FOLLOWUPS', FOLLOWUPS_FIXTURE)
+
+    def test_followup_is_offered_and_passes_the_checks(self):
+        made, excluded = topics.available(summary(), meetings=MEETINGS)
+        self.assertIn('followup-shiogai', made, excluded)
+        doc = made['followup-shiogai']
+        self.assertEqual(topics.check(doc), [])
+        self.assertLessEqual(topics.estimate(doc), topics.LIMIT + 0.5)
+        self.assertEqual(spoken(doc)[0], 'そういえば、塩貝はどこに行ったのだ？')
+        self.assertEqual(doc['segments'][0]['meta']['hook']['result'], '招集外')
+        for s in doc['segments']:
+            if s['speaker'] == ZUNDA and s['kind'] != 'outro':
+                self.assertIsNone(re.search(DIGITS, s['text']), s['text'])
+
+    def test_every_answer_has_two_sources_and_a_source_row(self):
+        doc = make('followup-shiogai')
+        info = topics.information(doc)
+        self.assertEqual(len(info), 4)
+        for row in info:
+            self.assertGreaterEqual(len(row['source'].split()), 2)
+        answers = [s for s in doc['segments'] if s['speaker'] == METAN and s['kind'] != 'outro']
+        for s in answers:
+            self.assertEqual(s['meta']['rows'][-1][0], '出典')
+
+    def test_one_source_is_not_enough(self):
+        self.with_material(lambda d: d['items'][0].update(sources=d['items'][0]['sources'][:1]))
+        made, excluded = topics.available(summary(), meetings=MEETINGS)
+        self.assertNotIn('followup-shiogai', made)
+        self.assertIn('2つの出典', excluded['followup-shiogai'])
+
+    def test_readings_come_from_the_material_and_credit_has_no_espn(self):
+        import soccer_national_topics_render as render
+        doc = make('followup-shiogai')
+        readings = topics.speech_readings(doc)
+        self.assertEqual(readings['塩貝健人'], ('player', 'シオガイケント'))
+        self.assertEqual(readings['塩貝'], ('player', 'シオガイ'))
+        self.assertNotIn('ESPN', render.credit(doc))
+        description = topics.metadata(doc)['snippet']['description']
+        self.assertIn('https://jfa.jp/samuraiblue/20261117/member.html', description)
+        self.assertNotIn('espn.com', description)
 
 
 if __name__ == '__main__':
