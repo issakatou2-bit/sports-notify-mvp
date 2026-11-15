@@ -437,14 +437,15 @@ class TopicReactions(unittest.TestCase):
             make('team-numbers')
 
     def test_reaction_sets_make_their_own_topic(self):
-        quote = dict(self.QUOTE, ask='ブラジルの記者は、どう見たのだ？')
+        quote = dict(self.QUOTE, ask='ブラジルの記者は、どう見たのだ？', verb='書き')
         self.with_material(lambda e: e.setdefault('sets', {}).update(
             {'brazil': dict(checked_on='2026-11-15', checked_by='test', title='ブラジル側の反応',
                             quotes=[quote], facts=[], held=[])}))
         made, excluded = topics.available(summary(), meetings=MEETINGS)
         self.assertIn('reactions-brazil', made)
         doc = make('reactions-brazil')
-        self.assertIn('「少ない好機を確実に決めた」', ' '.join(spoken(doc)))
+        # 相手国の組は相手の側から結果を言い、記事の文は「書きました」（話したとは言わない）。
+        self.assertIn('日本に2対3で敗れた試合の後、テスト記者は、「少ない好機を確実に決めた」と書きました。', ' '.join(spoken(doc)))
         self.assertEqual(topics.check(doc), [])
         self.assertIn('https://example.com/analysis', topics.metadata(doc)['snippet']['description'])
 

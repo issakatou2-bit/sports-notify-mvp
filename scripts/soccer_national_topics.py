@@ -352,7 +352,8 @@ def quote_groups(quotes):
 
 
 def quote_panel(qs):
-    said='と話し、'.join(f"{q['lead']}は、「{q['quote']}」" for q in qs)+'と話しました。'+''.join(f"{q['via']}の報道です。" for q in qs if q.get('via'))
+    # 記事・見出しの文は「書き」、会見・取材の言葉は「話し」（書いた物を「話した」と言わない）。
+    said=''.join(f"{q['lead']}は、「{q['quote']}」と{q.get('verb') or '話し'}"+('、' if i<len(qs)-1 else 'ました。') for i,q in enumerate(qs))+''.join(f"{q['via']}の報道です。" for q in qs if q.get('via'))
     panel=[(q['who']+'の発言','「'+q['quote']+'」') for q in qs]+[('出典','・'.join(dict.fromkeys(q['source'] for q in qs)))]
     return said,panel
 
@@ -368,7 +369,9 @@ def reactions(m, topic='reactions'):
         said,panel=quote_panel(qs)
         if i==0:
             # 最初に何の試合の声かを出す（Argon 11/15：結果が画面に無い）。
-            said=f"{m.other}に{a}対{b}で"+('勝った' if a>b else '敗れた' if a<b else '引き分けた')+'試合の後、'+said
+            # 相手国の反応の組は相手の側から言う（「日本に2対3で敗れた試合の後」）。
+            if topic=='reactions':said=f"{m.other}に{a}対{b}で"+('勝った' if a>b else '敗れた' if a<b else '引き分けた')+'試合の後、'+said
+            else:said=f"日本に{b}対{a}で"+('勝った' if b>a else '敗れた' if b<a else '引き分けた')+'試合の後、'+said
             panel=[('試合結果',f'日本 {a}-{b} {m.other}')]+panel
         rows.append((qs[0]['ask'],said,qs[0]['head'],panel))
     for f in data.get('facts',[]):
