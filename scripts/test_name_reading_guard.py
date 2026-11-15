@@ -21,6 +21,14 @@ def query(kana):
 
 
 class Readings(unittest.TestCase):
+    def test_person_readings_have_no_pause_inside_name(self):
+        # 11/15 Argon「森保、一監督」：氏名の読みに読点を入れると名前の途中で間が空く。
+        for name,reading in guard.managers().items():
+            self.assertNotIn('、',reading,name)
+        for name,reading in guard.player_readings().items():
+            self.assertNotIn('、',reading,name)
+        self.assertEqual(guard.apply('森保一監督は話しました。'),'モリヤスハジメ監督は話しました。')
+
     def test_all_roster_players_and_96_clubs_registered(self):
         for p in ne.JP_PLAYERS_SOCCER+ne.JP_PLAYERS_MLB:
             self.assertTrue(guard.player_reading(p['name_jp']),p['name_jp'])
