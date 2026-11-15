@@ -33,6 +33,10 @@ def credit(doc):
         names += [f['source_names'] for f in doc['reaction_material'].get('facts', []) if f.get('source_names')]
     if doc.get('topic_reaction'):
         names += [q['source'].replace('／', '・') for q in doc['topic_reaction']['quotes']]
+    if topics.is_followup(doc.get('topic')):
+        # その後の話題は試合の数字を使わないので ESPN を出さない。
+        names = [f['source_names'] for f in doc['followup_material']['items']]
+        return '音声: VOICEVOX:ずんだもん・四国めたん　出典: ' + '・'.join(dict.fromkeys(n for part in names for n in part.split('・')))
     if not names:
         return CREDIT
     media = '・'.join(dict.fromkeys(n for part in names for n in part.split('・')))
@@ -94,6 +98,8 @@ def frame(t, seg, doc, clubs, index=0, count=1):
     if topics.is_reactions(meta.get('topic')) or meta.get('quote'):
         if topics.is_reactions(meta.get('topic')):
             sub = f'日本対{other}　試合後'
+    if topics.is_followup(meta.get('topic')):
+        sub = '日本代表　その後'
         size = 72 if len(rows) == 1 else 64
         rows = [(label, chr(10).join(balanced_lines(value, size, readable.R - readable.L - 56))) for label, value in rows]
 

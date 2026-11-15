@@ -1,0 +1,91 @@
+{
+  "about": "「そういえば〇〇はどこに？」の話題（followup-<名前>）。本人 11/15。各段の事実は2つ以上の出典で確かめた物だけ。題・冒頭の大きな字・読みもここから。",
+  "events": {
+    "401916337": {
+      "shiogai": {
+        "checked_on": "2026-11-15",
+        "title": "塩貝健人は今どこに？ W杯メンバーがドイツ2部で10試合目の初ゴール",
+        "readings": {
+          "塩貝健人": "シオガイケント",
+          "塩貝": "シオガイ"
+        },
+        "reading_sources": [
+          "https://ja.wikipedia.org/wiki/%E5%A1%A9%E8%B2%9D%E5%81%A5%E4%BA%BA"
+        ],
+        "hook": {
+          "score": "11月の日本代表",
+          "result": "招集外",
+          "subject": "W杯メンバーの塩貝健人",
+          "big": "2",
+          "unit": "部でプレー",
+          "note": "リーグ戦の初ゴールは出場10試合目"
+        },
+        "items": [
+          {
+            "ask": "そういえば、塩貝はどこに行ったのだ？",
+            "text": "塩貝健人は、今年1月にNECからヴォルフスブルクへ移りました。チームは5月に2部へ降格し、今季は2部でプレーしています。",
+            "head": "いまの所属",
+            "rows": [
+              ["クラブ", "ヴォルフスブルク（ドイツ2部）"],
+              ["移籍", "2026年1月 NECから"],
+              ["降格", "2026年5月 入れ替え戦で敗れる"]
+            ],
+            "source_names": "ブンデスリーガ公式",
+            "sources": [
+              "https://www.soccer-king.jp/news/world/ger/20260120/2116938.html",
+              "https://www.bundesliga.com/en/player/kento-shiogai",
+              "https://www.bundesliga.com/en/bundesliga/news/wolfsburg-relegated-second-division-de-bruyne-dzeko-grafite-37361"
+            ]
+          },
+          {
+            "ask": "今のリーグでは、点を取れているのだ？",
+            "text": "リーグ戦の初ゴールは、11月7日のヘルタ戦です。出場10試合目で、後半から入ってすぐに決めました。",
+            "head": "ドイツ2部 第11節",
+            "rows": [
+              ["試合", "11月7日 ヘルタ 2-1 ヴォルフスブルク"],
+              ["塩貝", "後半から出場し47分にゴール"],
+              ["今季のリーグ戦", "10試合目で初ゴール"]
+            ],
+            "source_names": "ブンデスリーガ公式",
+            "sources": [
+              "https://www.bundesliga.com/de/2bundesliga/news/hertha-bsc-vfl-wolfsburg-spieltag-11-spielbericht-highlights-39931",
+              "https://www.soccer-king.jp/news/world/ger/20261108/2225517.html",
+              "https://www.bundesliga.com/en/player/kento-shiogai"
+            ]
+          },
+          {
+            "ask": "ほかの試合では、どうだったのだ？",
+            "text": "10月28日のドイツ杯では、フライブルク相手に2点を決めました。ただ、途中出場の後藤啓介に2点を決められ、2対3で逆転負けしました。",
+            "head": "ドイツ杯 2回戦",
+            "rows": [
+              ["試合", "フライブルク 3-2 ヴォルフスブルク"],
+              ["塩貝", "2得点（8分・43分）"],
+              ["後藤啓介", "途中出場で2得点（75分・90+2分）"]
+            ],
+            "source_names": "Bulinews",
+            "sources": [
+              "https://bulinews.com/dfb-pokal-supersub-goto-saves-the-day-for-freiburg-send-wolfsburg-packing",
+              "https://www.footballchannel.jp/2026/10/29/post1042152/"
+            ]
+          },
+          {
+            "ask": "日本代表には、呼ばれているのだ？",
+            "text": "W杯の26人に入り、9月のウルグアイ戦で代表初ゴールを決めました。ただ、11月の28人には入っていません。",
+            "head": "日本代表",
+            "rows": [
+              ["W杯", "26人に選ばれる"],
+              ["代表初ゴール", "9月24日 ウルグアイ戦"],
+              ["11月の招集", "28人に入らず"]
+            ],
+            "source_names": "JFA",
+            "sources": [
+              "https://jfa.jp/national_team_2026/news/00036341/",
+              "https://www.jfa.jp/national_team_2026/news/00036813/",
+              "https://jfa.jp/samuraiblue/20261117/member.html"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

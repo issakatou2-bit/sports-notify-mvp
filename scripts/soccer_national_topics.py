@@ -15,6 +15,7 @@ LEDGER = ROOT / 'data/soccer_national_topics_published.json'
 NAMES = ROOT / 'data/soccer_national_opponent_names.json'
 RESULTS = ROOT / 'data/soccer_national_results.json'
 REACTIONS = ROOT / 'data/soccer_national_reactions.json'
+FOLLOWUPS = ROOT / 'data/soccer_national_followups.json'
 PROGRAM = 'soccer_national_topic'
 VIDEO = 'collespo_national_topic.mp4'
 LIMIT = 45
@@ -339,9 +340,37 @@ def reaction_topics(event):
     return ['reactions-'+name for name in event.get('sets') or {}]
 
 
+def is_followup(topic):
+    """「そういえば〇〇はどこに？」の話題 'followup-<名前>'。本人 11/15。試合の材料ではなく確認済みの事実の組から作る。"""
+    return str(topic).startswith('followup-')
+
+
+def followup_material(event, topic):
+    return ((national.read(FOLLOWUPS).get('events') or {}).get(str(event)) or {}).get(topic[len('followup-'):])
+
+
+def followup_topics(event):
+    return ['followup-'+name for name in (national.read(FOLLOWUPS).get('events') or {}).get(str(event)) or {}]
+
+
+HOOK_KEYS=('score','result','subject','big','unit','note')
+
+
+def followup(topic, event):
+    """その後の話題。各段は2つ以上の出典（https）で確かめた事実だけ。冒頭の大きな字も材料から。"""
+    data=followup_material(event,topic)
+    if not data or not data.get('checked_on') or not data.get('items'):raise Unavailable('その後の話題の確認済み材料がない')
+    if set(data.get('hook') or {})!=set(HOOK_KEYS):raise Unavailable('その後の話題の冒頭の材料が足りない')
+    rows=[]
+    for f in data['items']:
+        if len([u for u in f.get('sources',[]) if u.startswith('https://')])<2:raise Unavailable('2つの出典で確かめていない事実がある: '+f.get('head',''))
+        rows.append((f['ask'],f['text'],f['head'],[tuple(r) for r in f['rows']]+[('出典',f['source_names'])],dict(followup_sources=f['sources'])))
+    return data['title'],rows,dict(data['hook'])
+
+
 def topic_reaction(event, topic):
     """各話題の最後に足す反応（記事の発言）。本人 11/15「事実だけでなく反応・解説も」。"""
-    if is_reactions(topic):return None
+    if is_reactions(topic) or is_followup(topic):return None
     event=(national.read(REACTIONS).get('events') or {}).get(str(event)) or {}
     return (event.get('topic_reactions') or {}).get(topic)
 
@@ -392,7 +421,9 @@ TOPICS={'team-numbers':team_numbers,'late-winner':late_winner,'opponent-star':op
 
 def narration(summary, topic, *, names=None, meetings=None):
     raw=compact(summary);m=Material(raw,names,meetings)
+    hook=None
     if is_reactions(topic):title,panels=reactions(m,topic)
+    elif is_followup(topic):title,panels,hook=followup(topic,raw['header']['id'])
     else:title,panels=TOPICS[topic](m)
     added=topic_reaction(raw['header']['id'],topic)
     if added:
@@ -403,9 +434,8 @@ def narration(summary, topic, *, names=None, meetings=None):
             said,panel=quote_panel(qs)
             panels=list(panels)+[(qs[0]['ask'],said,qs[0]['head'],panel,dict(quote=True,reaction_urls=[q['source_url'] for q in qs]))]
     segments=[]
-    hook=getattr(m,'hook',None)
-    if hook:
-        a,b=m.score
+    if not hook and getattr(m,'hook',None):
+        hook=m.hook;a,b=m.score
         hook=dict(hook,result=('勝利' if a>b else '敗戦' if a<b else '引き分け'),score=f'日本 {a}-{b} {m.other}')
     for i,(question,answer,head,rows,*extra) in enumerate(panels):
         meta=dict(duo=True,topic=topic,panel=i,head=head,rows=rows,**(extra[0] if extra else {}))
@@ -425,6 +455,9 @@ def narration(summary, topic, *, names=None, meetings=None):
     if added:
         doc['topic_reaction']=copy.deepcopy(added)
         doc['sanity_materials'].append(dict(source='話題の反応（確認済み）',sport='soccer',facts=doc['topic_reaction']))
+    if is_followup(topic):
+        doc['followup_material']=copy.deepcopy(followup_material(raw['header']['id'],topic))
+        doc['sanity_materials'].append(dict(source='その後の事実（確認済み）',sport='soccer',facts=doc['followup_material']))
     if is_reactions(topic):
         doc['reaction_material']=copy.deepcopy(reaction_material(raw['header']['id'],topic))
         doc['sanity_materials'].append(dict(source='試合後の発言（確認済み）',sport='soccer',facts=doc['reaction_material']))
@@ -438,7 +471,7 @@ def estimate(doc):
 
 def available(summary, names=None, meetings=None):
     made={};excluded={}
-    for topic in list(TOPICS)+reaction_topics(summary['header']['id']):
+    for topic in list(TOPICS)+reaction_topics(summary['header']['id'])+followup_topics(summary['header']['id']):
         try:made[topic]=narration(summary,topic,names=names,meetings=meetings)
         except (Unavailable,KeyError,ValueError,TypeError,StopIteration) as e:excluded[topic]=str(e) or '必要な欄がない'
     return made,excluded
@@ -472,6 +505,10 @@ def speech_readings(doc):
                 p=opponent_names()[english]
                 if p['name'] in text:readings[p['name']]=('player',p['reading'])
                 if p.get('short') and p['short'] in text:readings[p['short']]=('player',p['short_reading'])
+    if is_followup(doc['topic']):
+        # 試合に出ていない選手の読みは材料に書く（例 塩貝健人＝シオガイケント、JFA の名簿の表記）。
+        for name,reading in (doc['followup_material'].get('readings') or {}).items():
+            if name in text:readings[name]=('player',reading)
     for name,(_,reading) in readings.items():
         existing=guard.player_data().get('readings',{}).get(name)
         if existing and existing!=reading:raise ValueError('既存の読みと不一致: '+name)
@@ -481,6 +518,9 @@ def speech_readings(doc):
 def information(doc):
     if check(doc):raise ValueError('材料が不一致')
     answers=[(i,s) for i,s in enumerate(doc['segments']) if s['speaker']==METAN and s['kind']!='outro']
+    if is_followup(doc['topic']):
+        return [dict(subject=s['meta']['head'],fact='確認済みの事実（その後）',value=s['meta']['rows'],source=' '.join(s['meta']['followup_sources']),segments=[i])
+                for i,s in answers]
     if is_reactions(doc['topic']):
         r=doc['reaction_material'];sources=[q['source_url'] for q in r['quotes']]+[' '.join(f['sources']) for f in r.get('facts',[])]
         return [dict(subject=s['meta']['head'],fact='試合後の発言・試合の最後の出来事',value=s['meta']['rows'],source=src,segments=[i])
@@ -510,6 +550,8 @@ def metadata(doc):
         urls=list(dict.fromkeys(u for f in r.get('facts',[]) for u in f['sources']))
         if urls:source+='\n試合の最後の退場:\n'+'\n'.join(urls)
         source+='\n試合の結果: ESPN 試合ページ\n'+doc['source_url']
+    if is_followup(doc['topic']):
+        source='出典:\n'+'\n'.join(f"{f['head']}: {f['source_names']}\n"+'\n'.join(f['sources']) for f in doc['followup_material']['items'])
     return dict(snippet=dict(title=doc['title'],description=said+('\n\n'+'\n'.join(terms) if terms else '')+'\n\n'+source+
         '\n\n役に立ったら高評価・チャンネル登録をお願いします。\n音声: VOICEVOX:ずんだもん・四国めたん\n#サッカー日本代表 #Shorts',tags=['サッカー','日本代表','コレスポ'],categoryId='17',defaultLanguage='ja',defaultAudioLanguage='ja'))
 
@@ -548,7 +590,7 @@ def validate_upload(args, now=None):
 
 def main(argv=None):
     ap=argparse.ArgumentParser(description=__doc__)
-    ap.add_argument('--summary',type=Path);ap.add_argument('--topic',help='話題（TOPICS の名前、または reactions-<組>）');ap.add_argument('--list',action='store_true')
+    ap.add_argument('--summary',type=Path);ap.add_argument('--topic',help='話題（TOPICS の名前、reactions-<組>、followup-<名前>）');ap.add_argument('--list',action='store_true')
     ap.add_argument('--event',help='ESPN の event id（本番は実行時に summary を取る。既定 401916337）')
     ap.add_argument('--out',type=Path,default=ROOT/'build/soccer_national_topics')
     ap.add_argument('--reservation',action='store_true')
