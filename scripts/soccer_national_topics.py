@@ -491,7 +491,8 @@ def metadata(doc):
         source+='\n反応:\n'+'\n'.join(f"{q['who']}（{q['where']}）: {q['source']}\n{q['source_url']}" for q in doc['topic_reaction']['quotes'])
     if is_reactions(doc['topic']):
         r=doc['reaction_material']
-        source='出典:\n'+'\n'.join(f"{q['who']}（{q['where']}）: {q['source']}\n{q['source_url']}" for q in r['quotes'])
+        # 同じ発言を載せた別の記事（also）も説明欄に並べる（画面の出典は1行に収めるため主な媒体だけ）。
+        source='出典:\n'+'\n'.join(f"{q['who']}（{q['where']}）: {q['source']}\n"+'\n'.join([q['source_url']]+q.get('also',[])) for q in r['quotes'])
         urls=list(dict.fromkeys(u for f in r.get('facts',[]) for u in f['sources']))
         if urls:source+='\n試合の最後の退場:\n'+'\n'.join(urls)
         source+='\n試合の結果: ESPN 試合ページ\n'+doc['source_url']
