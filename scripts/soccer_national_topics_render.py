@@ -95,7 +95,8 @@ def frame(t, seg, doc, clubs, index=0, count=1):
     other = next(n for n in clubs if n != '日本')
     sub = f'日本対{other}' + ('' if meta.get('topic') == 'rematch' else '　親善試合')
     rows = [tuple(r) for r in meta['rows']]
-    if topics.is_reactions(meta.get('topic')) or meta.get('quote'):
+    # その後の話題も値を釣り合いよく折る（Argon 11/15「ヴォルフスブル／ク」の1字だけの改行）。
+    if topics.is_reactions(meta.get('topic')) or meta.get('quote') or topics.is_followup(meta.get('topic')):
         if topics.is_reactions(meta.get('topic')):
             sub = f'日本対{other}　試合後'
     if topics.is_followup(meta.get('topic')):
