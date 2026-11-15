@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-14T17:40:46.601194+00:00",
+  "updated_at": "2026-11-15T06:01:46.383968+00:00",
   "sources": [
     {
       "name": "MLB公式",
@@ -9,52 +9,44 @@
   "titles_count": 25,
   "teams": [
     {
+      "team_id": "119",
+      "name": "ドジャース",
+      "name_en": "Los Angeles Dodgers",
+      "mentions": 2,
+      "tone": "話題",
+      "gist": "大谷の二刀流と健康管理、パドレスとのトレード話"
+    },
+    {
+      "team_id": "120",
+      "name": "ナショナルズ",
+      "name_en": "Washington Nationals",
+      "mentions": 1,
+      "tone": "話題",
+      "gist": "ナショナルズ、救援陣の強化が最優先課題"
+    },
+    {
+      "team_id": "141",
+      "name": "ブルージェイズ",
+      "name_en": "Toronto Blue Jays",
+      "mentions": 1,
+      "tone": "話題",
+      "gist": "ブルージェイズ、長打力補強先が乏しい市場"
+    },
+    {
+      "team_id": "109",
+      "name": "ダイヤモンドバックス",
+      "name_en": "Arizona Diamondbacks",
+      "mentions": 1,
+      "tone": "好調",
+      "gist": "ジャベリナス、AFL8度目の優勝"
+    },
+    {
       "team_id": "111",
       "name": "レッドソックス",
       "name_en": "Boston Red Sox",
       "mentions": 1,
       "tone": "好調",
-      "gist": "ボーアーズ、レッドソックスと4年契約"
-    },
-    {
-      "team_id": "119",
-      "name": "ドジャース",
-      "name_en": "Los Angeles Dodgers",
-      "mentions": 1,
-      "tone": "話題",
-      "gist": "大谷、二刀流と健康の両立が焦点"
-    },
-    {
-      "team_id": "147",
-      "name": "ヤンキース",
-      "name_en": "New York Yankees",
-      "mentions": 1,
-      "tone": "話題",
-      "gist": "GM会議後、ヤンキースが補強を検討"
-    },
-    {
-      "team_id": "158",
-      "name": "ブリュワーズ",
-      "name_en": "Milwaukee Brewers",
-      "mentions": 1,
-      "tone": "話題",
-      "gist": "ボーアーズ退団でドラフト指名権獲得"
-    },
-    {
-      "team_id": "108",
-      "name": "エンゼルス",
-      "name_en": "Los Angeles Angels",
-      "mentions": 1,
-      "tone": "話題",
-      "gist": "ハイネマン捕手、エンゼルスと1年契約"
-    },
-    {
-      "team_id": "117",
-      "name": "アストロズ",
-      "name_en": "Houston Astros",
-      "mentions": 1,
-      "tone": "話題",
-      "gist": "アストロズ、オースマス監督起用を検証"
+      "gist": "ポストシーズン躍進のバウアーズ、レッドソックスと4年契約"
     },
     {
       "team_id": "118",
@@ -62,15 +54,23 @@
       "name_en": "Kansas City Royals",
       "mentions": 1,
       "tone": "話題",
-      "gist": "サルバドール、ジェンセンの捕手分担"
+      "gist": "ロイヤルズ、27年の捕手起用はサルビーとイェンセン"
     },
     {
-      "team_id": "112",
-      "name": "カブス",
-      "name_en": "Chicago Cubs",
+      "team_id": "135",
+      "name": "パドレス",
+      "name_en": "San Diego Padres",
       "mentions": 1,
       "tone": "話題",
-      "gist": "カブスなど、ホットストーブ情報を紹介"
+      "gist": "パドレスとドジャース、マルテや若手打者のトレード話"
+    },
+    {
+      "team_id": "146",
+      "name": "マーリンズ",
+      "name_en": "Miami Marlins",
+      "mentions": 1,
+      "tone": "話題",
+      "gist": "マーリンズ、オフに狙うロスター補強は"
     }
   ],
   "players": [
