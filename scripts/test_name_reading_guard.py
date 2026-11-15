@@ -105,6 +105,13 @@ class Readings(unittest.TestCase):
         guard.validate_query('大谷翔平です。',query('オータニショーヘーデス'))
         guard.validate_query('グアルディオラ監督です。',query('グアルディオラカントクデス'))
 
+    def test_vu_and_bo_are_the_same_sound(self):
+        # VOICEVOX は「ヴォルフスブルク」を「ボルフスブルク」と返す（11/15 その後の話題で止まった）。
+        guard.validate_query('ヴォルフスブルクへ移りました。',query('ボルフスブルクエウツリマシタ'),check_phrases=False)
+        guard.validate_query('ヴォルフスブルクへ移りました。',query('ヴォルフスブルクエウツリマシタ'),check_phrases=False)
+        with self.assertRaises(guard.NameReadingError):
+            guard.validate_query('ヴォルフスブルクへ移りました。',query('ドルフスブルクエウツリマシタ'),check_phrases=False)
+
     def test_previous_sentence_yo_does_not_change_ueda_to_oeda(self):
         original='リールは3位で、勝点は15よ。上田綺世所属のチームね。'
         q=query('リイルワサンイデカチテンワジュウゴヨウエダアヤセショゾクノチイムネ')

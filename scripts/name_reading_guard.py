@@ -175,9 +175,19 @@ def apply(text):
     return text
 
 
+VU=(('ヴァ','バ'),('ヴィ','ビ'),('ヴェ','ベ'),('ヴォ','ボ'),('ヴ','ブ'))
+
+
+def plain_vu(value):
+    """VOICEVOX は「ヴォ」を「ボ」と返す（11/15 ヴォルフスブルクで止まった）。同じ音として照合する。"""
+    for a,b in VU:value=value.replace(a,b)
+    return value
+
+
 def normalized_kana(value):
     value=unicodedata.normalize('NFKC',value or '')
     value=''.join(chr(ord(c)+0x60) if 'ぁ'<=c<='ゖ' else c for c in value)
+    value=plain_vu(value)
     value=re.sub(r'[^ァ-ヶー]','',value)
     groups=[('アカサタナハマヤラワガザダバパァャ','ア'),('イキシチニヒミリギジヂビピィ','イ'),
             ('ウクスツヌフムユルグズヅブプゥュヴ','ウ'),('エケセテネヘメレゲゼデベペェ','エ'),('オコソトノホモヨロヲゴゾドボポォョ','オ')]
@@ -207,7 +217,7 @@ def query_name_locations(original,query):
         for mi,mora in enumerate(phrase.get('moras',[])):
             text=unicodedata.normalize('NFKC',mora['text'])
             text=''.join(chr(ord(c)+0x60) if 'ぁ'<=c<='ゖ' else c for c in text)
-            text=re.sub(r'[^ァ-ヶー]','',text)
+            text=re.sub(r'[^ァ-ヶー]','',plain_vu(text))
             raw+=text;owners.extend([(pi,mi)]*len(text));boundaries.add(len(raw))
     used={};out=[]
     for row in assert_known(original):
@@ -247,7 +257,7 @@ def particle_repairs(original, query):
         for mi,mora in enumerate(phrase.get('moras',[])):
             text=unicodedata.normalize('NFKC',mora['text'])
             text=''.join(chr(ord(c)+0x60) if 'ぁ'<=c<='ゖ' else c for c in text)
-            text=re.sub(r'[^ァ-ヶー]','',text)
+            text=re.sub(r'[^ァ-ヶー]','',plain_vu(text))
             raw+=text;owners.extend([(pi,mi)]*len(text));boundaries.add(len(raw))
     out=[]
     for row in assert_known(original):
