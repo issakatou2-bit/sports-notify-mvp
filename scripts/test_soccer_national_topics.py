@@ -292,7 +292,8 @@ summary = json.load(open(sys.argv[1] + '/scripts/fixtures/soccer_national_topics
 meetings = json.loads(sys.argv[2])
 out = dict(style=c.STYLE_V2, errors=[], old=0, who=[], x=[], slide=[], frames=0)
 OLD = {(196, 244, 76)}
-for topic in ('team-numbers', 'late-winner', 'opponent-star', 'keeper', 'early-goals', 'rematch'):
+# 試合後の声（相手国側の組も）は引用の行に数字が入る（11/15 行が重なって描画が止まった）。
+for topic in ('team-numbers', 'late-winner', 'opponent-star', 'keeper', 'early-goals', 'rematch', 'reactions') + tuple(topics.reaction_topics(summary['header']['id'])):
     doc = topics.narration(summary, topic, meetings=meetings)
     clubs = render.clubs_for(doc)
     for i, seg in enumerate(doc['segments']):

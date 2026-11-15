@@ -65,6 +65,15 @@ def frame(t, seg, doc, clubs, index=0, count=1):
             # （進めた分だけ早く消えていた。Argon 11/15「話し終わる約1秒前に枠が消える」）。
             return super()._slide_v2(body_only, duration + self.shift if duration else duration, enter, leave)
 
+        def lines(self, x, y, value, size=44, width=800, color=None, role='text'):
+            # 数字は日本語より1.12倍の字で背が高い。数字を含む複数行は行の間を広げる
+            # （11/15 引用「見事な2点で」の行が次の行に2px重なり描画が止まった）。
+            rows = cards.lines(value, size, width)
+            step = size + (20 if len(rows) > 1 and any(ch.isdigit() for ch in str(value)) else 12)
+            for i, row in enumerate(rows):
+                self.text(x, y + i * step, row, size, width, color, role=role)
+            return y + len(rows) * step
+
         def text(self, x, y, value, size=44, width=800, color=None, number=False, role='text'):
             # 国名「日本」をクラブの言及と取り違えない（代表番組と同じ）。
             if role == 'text' and (value == '日本時間' or any(name in value for name in clubs)):
