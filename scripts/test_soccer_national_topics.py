@@ -60,7 +60,7 @@ def stat(raw, team, key):
 class Topics(unittest.TestCase):
     def test_all_six_topics_are_made_from_the_fixture(self):
         made, excluded = topics.available(summary(), meetings=MEETINGS)
-        self.assertEqual(sorted(made), sorted(ALL + ('reactions', 'followup-shiogai', 'followup-ueda', 'followup-endo', 'followup-tomiyasu')))
+        self.assertEqual(sorted(made), sorted(ALL + ('reactions', 'followup-shiogai', 'followup-ueda', 'followup-endo', 'followup-tomiyasu', 'followup-nagatomo')))
         self.assertEqual(excluded, {})
 
     def test_numbers_match_the_material(self):

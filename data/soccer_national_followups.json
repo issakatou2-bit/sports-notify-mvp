@@ -1,5 +1,5 @@
 {
-  "about": "「そういえば〇〇はどこに？」の話題（followup-<名前>）。本人 11/15。各段の事実は2つ以上の出典で確かめた物だけ。題・冒頭の大きな字・読みもここから。",
+  "about": "「そういえば〇〇はどこに？」の話題（followup-<名前>）。本人 11/15。各段の事実は2つ以上の出典で確かめた物だけ。題・冒頭の大きな字・読みもここから。次の回から冒頭の score は選手名にする（Argon 11/16「誰の動画か冒頭で分かりにくい」）。答えの大きな数字は声の最初の文で言う。画面の出典名は字幕下の1行に収まる短さに。",
   "events": {
     "401916337": {
       "shiogai": {
@@ -437,7 +437,10 @@
               "unit": "試合出場なし"
             },
             "rows": [
-              ["内訳", "プレミア5・EL3・リーグ杯1"],
+              [
+                "内訳",
+                "プレミア5・EL3・リーグ杯1"
+              ],
               [
                 "直近",
                 "11月8日も出場なし"
@@ -475,6 +478,128 @@
             "sources": [
               "https://jfa.jp/national_team_2026/news/00036341/",
               "https://jfa.jp/samuraiblue/20261117/member.html"
+            ]
+          }
+        ]
+      },
+      "nagatomo": {
+        "checked_on": "2026-11-16",
+        "title": "長友佑都は今どこに？ W杯のあと現役続行、40歳で右ひざを負傷して離脱",
+        "readings": {
+          "長友佑都": "ナガトモユウト",
+          "長友": "ナガトモ",
+          "G大阪": "ガンバオオサカ",
+          "前十字じん帯": "ゼンジュウジジンタイ"
+        },
+        "reading_sources": [
+          "https://ja.wikipedia.org/wiki/%E9%95%B7%E5%8F%8B%E4%BD%91%E9%83%BD"
+        ],
+        "hook": {
+          "score": "長友佑都",
+          "result": "離脱中",
+          "subject": "W杯のあとも現役",
+          "big": "40",
+          "unit": "歳で右ひざを負傷",
+          "note": "G大阪戦のあと、J1に出ていない"
+        },
+        "items": [
+          {
+            "ask": "そういえば、長友佑都はどこに行ったのだ？",
+            "text": "長友佑都は、今もFC東京にいます。W杯のあと、8月に契約を更新しました。",
+            "head": "いまの所属",
+            "rows": [
+              [
+                "クラブ",
+                "FC東京"
+              ],
+              [
+                "契約",
+                "8月8日に更新を発表"
+              ]
+            ],
+            "source_names": "サッカーキング",
+            "sources": [
+              "https://www.soccer-king.jp/news/japan/jl/20260808/2190709.html",
+              "https://www.footballchannel.jp/?p=973557"
+            ]
+          },
+          {
+            "ask": "W杯には、出ていたのだ？",
+            "text": "北中米のW杯にも出て、5大会続けてW杯に出場しました。アジアの選手では初めてです。",
+            "head": "W杯",
+            "big": {
+              "label": "W杯の出場",
+              "value": "5",
+              "unit": "大会連続"
+            },
+            "rows": [
+              [
+                "記録",
+                "アジアの選手で初めて"
+              ],
+              [
+                "大会のあと",
+                "一度は引退に傾く"
+              ]
+            ],
+            "source_names": "サッカーキング",
+            "sources": [
+              "https://www.soccer-king.jp/news/japan/jl/20260808/2190709.html",
+              "https://www.footballchannel.jp/?p=973557"
+            ]
+          },
+          {
+            "ask": "今シーズンは、試合に出ているのだ？",
+            "text": "9月12日のG大阪戦のあと、J1の7試合に出ていません。右ひざの前十字じん帯の損傷が分かりました。",
+            "head": "その後",
+            "big": {
+              "label": "G大阪戦のあとのJ1",
+              "value": "7",
+              "unit": "試合出場なし"
+            },
+            "rows": [
+              [
+                "けが",
+                "右ひざ前十字じん帯の損傷"
+              ],
+              [
+                "直近",
+                "11月7日も出場なし"
+              ]
+            ],
+            "source_names": "NHK・ESPN",
+            "sources": [
+              "https://news.web.nhk/newsweb/na/nd-20260921de51641",
+              "https://www.soccer-king.jp/news/japan/jl/20260921/2207294.html",
+              "https://www.espn.com/soccer/match/_/gameId/401877624",
+              "https://www.espn.com/soccer/match/_/gameId/401877616",
+              "https://www.espn.com/soccer/match/_/gameId/401877575",
+              "https://www.espn.com/soccer/match/_/gameId/401877572",
+              "https://www.espn.com/soccer/match/_/gameId/401877595",
+              "https://www.espn.com/soccer/match/_/gameId/401877585",
+              "https://www.espn.com/soccer/match/_/gameId/401877579",
+              "https://www.espn.com/soccer/match/_/gameId/401877556"
+            ]
+          },
+          {
+            "ask": "日本代表には、呼ばれているのだ？",
+            "text": "11月の28人には入っていません。本人は、代表を目指し続けると話しています。",
+            "head": "日本代表",
+            "rows": [
+              [
+                "11月の招集",
+                "28人に入らず"
+              ],
+              [
+                "本人",
+                "代表を目指し続ける"
+              ]
+            ],
+            "source_names": "JFA・サッカーキング",
+            "sources": [
+              "https://jfa.jp/samuraiblue/20261117/member.html",
+              "https://www.soccer-king.jp/news/japan/jl/20260808/2190709.html",
+              "https://www.footballchannel.jp/?p=973557"
             ]
           }
         ]
