@@ -357,6 +357,130 @@
             ]
           }
         ]
+      },
+      "tomiyasu": {
+        "checked_on": "2026-11-16",
+        "title": "冨安健洋は今どこに？ パレス加入も9月にけが、公式戦9試合出場なし",
+        "readings": {
+          "冨安健洋": "トミヤスタケヒロ",
+          "冨安": "トミヤス"
+        },
+        "reading_sources": [
+          "https://ja.wikipedia.org/wiki/%E5%86%A8%E5%AE%89%E5%81%A5%E6%B4%8B"
+        ],
+        "hook": {
+          "score": "11月の日本代表",
+          "result": "招集外",
+          "subject": "クリスタル・パレスで",
+          "big": "9",
+          "unit": "試合続けて出場なし",
+          "note": "W杯メンバーの冨安健洋"
+        },
+        "items": [
+          {
+            "ask": "そういえば、冨安健洋はどこに行ったのだ？",
+            "text": "冨安健洋は、アヤックスとの契約を終えたあと、8月にイングランドのクリスタル・パレスへ入りました。",
+            "head": "いまの所属",
+            "rows": [
+              [
+                "クラブ",
+                "クリスタル・パレス（イングランド1部）"
+              ],
+              [
+                "前のクラブ",
+                "アヤックス（半年）"
+              ],
+              [
+                "加入",
+                "8月7日に発表"
+              ]
+            ],
+            "source_names": "サッカーキング・ESPN",
+            "sources": [
+              "https://www.soccer-king.jp/news/world/eng/20260801/2188668.html",
+              "https://www.soccer-king.jp/news/world/eng/fixed/2195954.html",
+              "https://www.espn.com/soccer/match/_/gameId/401879273"
+            ]
+          },
+          {
+            "ask": "新しいチームでは、試合に出ていたのだ？",
+            "text": "出ていましたが、9月20日のリーズ戦でふくらはぎを痛めて、前半で交代しました。",
+            "head": "リーズ戦（9月20日）",
+            "rows": [
+              [
+                "けが",
+                "ふくらはぎ"
+              ],
+              [
+                "交代",
+                "先発して前半で退く"
+              ],
+              [
+                "監督の見方",
+                "当初は重くないと説明"
+              ]
+            ],
+            "source_names": "サッカーキング・ESPN",
+            "sources": [
+              "https://www.soccer-king.jp/news/world/eng/20261010/2215084.html",
+              "https://www.footballchannel.jp/?p=1038798",
+              "https://www.espn.com/soccer/match/_/gameId/401879273"
+            ]
+          },
+          {
+            "ask": "もう治ったのだ？",
+            "text": "リーズ戦のあと、パレスの公式戦9試合に出ていません。別のけがも見つかりました。",
+            "head": "その後",
+            "big": {
+              "label": "リーズ戦のあとのパレスの公式戦",
+              "value": "9",
+              "unit": "試合出場なし"
+            },
+            "rows": [
+              [
+                "別のけが",
+                "10月21日に監督が明かす"
+              ],
+              [
+                "直近",
+                "11月8日も出場なし"
+              ]
+            ],
+            "source_names": "ESPN",
+            "sources": [
+              "https://www.footballchannel.jp/?p=1038798",
+              "https://www.espn.com/soccer/match/_/gameId/401879266",
+              "https://www.espn.com/soccer/match/_/gameId/401915566",
+              "https://www.espn.com/soccer/match/_/gameId/401879261",
+              "https://www.espn.com/soccer/match/_/gameId/401915553",
+              "https://www.espn.com/soccer/match/_/gameId/401879254",
+              "https://www.espn.com/soccer/match/_/gameId/401921841",
+              "https://www.espn.com/soccer/match/_/gameId/401878761",
+              "https://www.espn.com/soccer/match/_/gameId/401915526",
+              "https://www.espn.com/soccer/match/_/gameId/401879243"
+            ]
+          },
+          {
+            "ask": "日本代表には、呼ばれているのだ？",
+            "text": "W杯の26人に入っていましたが、11月の28人には入っていません。",
+            "head": "日本代表",
+            "rows": [
+              [
+                "W杯",
+                "26人に選ばれる"
+              ],
+              [
+                "11月の招集",
+                "28人に入らず"
+              ]
+            ],
+            "source_names": "JFA",
+            "sources": [
+              "https://jfa.jp/national_team_2026/news/00036341/",
+              "https://jfa.jp/samuraiblue/20261117/member.html"
+            ]
+          }
+        ]
       }
     }
   }
