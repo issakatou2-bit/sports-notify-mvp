@@ -88,10 +88,56 @@ def frame(t, seg, doc, clubs, index=0, count=1):
         size = 72 if len(rows) == 1 else 64
         rows = [(label, chr(10).join(balanced_lines(value, size, readable.R - readable.L - 56))) for label, value in rows]
 
+    if asking and meta.get('hook'):
+        return hook_screen(s, meta['hook'], spec)
     if meta.get('compare'):
         cmp = meta['compare']
         return s.national_compare(meta['head'], cmp['rows'], cmp['teams'], spec, sub)
     return s.national_facts(meta['head'], rows, spec, sub)
+
+
+LOSS = (255, 112, 112)
+
+
+def hook_screen(s, hook, spec):
+    """最初の問いの区間＝サムネ（1.6秒目）。題の中心の数字を大きく、勝敗を色で（本人 11/15「ちゃんとひきこむものに」）。
+
+    数字は題と同じ材料から作った hook だけ。問いの字幕と同じ文はここに書かない。
+    """
+    import soccer_readable as readable
+    import soccer_v5_cards as cards
+    from PIL import ImageDraw
+    win = hook['result'] == '勝利'
+    accent = cards.LIME if win else LOSS if hook['result'] == '敗戦' else cards.CHALK
+    s.text(readable.L, 260, hook['score'], 52, 560, role='national_fact')
+    # 結果の札（勝ち＝黄、負け＝赤、引き分け＝白）
+    chip = cards.measure(hook['result'], 40)[1] + 48
+    d = ImageDraw.Draw(s.im)
+    d.rounded_rectangle((readable.R - chip, 254, readable.R, 322), radius=10, fill=accent)
+    cards.rec(s.im, 'card', (readable.R - chip, 254, readable.R, 322))
+    s.text(readable.R - chip + 24, 266, hook['result'], 40, chip, cards.DARK if win or hook['result'] != '敗戦' else (40, 8, 8), role='supplement')
+    big, unit = str(hook['big']), hook['unit']
+    for size in (300, 260, 220, 180, 150):
+        bw = cards.measure(big, size, True)[1]
+        uw = cards.measure(unit, 72)[1]
+        if bw + 24 + uw <= 800:
+            break
+    # 中身の高さに合わせた箱を、本文の領域の真ん中に置く（下が空いた箱にしない）。
+    subject_h = len(cards.lines(hook['subject'], 68, 800)) * 80
+    b = cards.measure(big, size, True)[2]
+    big_h = b[3] - b[1]
+    note_h = len(cards.lines(hook['note'], 48, 800)) * 60 + 48 if hook.get('note') else 0
+    height = 56 + subject_h + 40 + big_h + note_h + 56
+    top = readable.BODY_TOP + (readable.BODY_BOTTOM - readable.BODY_TOP - height) // 2
+    s.panel(top, top + height)
+    y = s.lines(100, top + 56, hook['subject'], 68, 800, role='national_fact')
+    box = s.text(100, y + 40, big, size, 800, accent, True, role='national_fact')
+    s.text(box[2] + 24, box[3] - 84, unit, 72, 800 - (box[2] - 100) - 24, accent, role='national_fact')
+    if hook.get('note'):
+        s.lines(100, box[3] + 48, hook['note'], 48, 800, cards.MUTED, 'supplement')
+    s.im.info['preview_body'] = [readable.L, top, readable.R, top + height]
+    s.im.info['opening_hook'] = hook
+    return s.finish(spec)
 
 
 NO_START = '、。，．」』）】!?！？ーぁぃぅぇぉっゃゅょ'

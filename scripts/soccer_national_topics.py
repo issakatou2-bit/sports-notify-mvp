@@ -164,6 +164,7 @@ def team_numbers(m):
     # 題で結果を言うので、結果を先に言い、数字で上回られていたことへつなぐ（Argon 11/15）。
     opening=(f'{m.other}戦は、どうなったのだ？',f'日本が{m.score[0]}対{m.score[1]}で勝ちました。ただ、試合の数字では{m.other}が上回っていました。',
              '試合結果',[('日本 対 '+m.other,f'{m.score[0]}-{m.score[1]}')])
+    m.hook=dict(subject=f'シュート{pairs[1][1]}本で',big=str(g),unit='得点',note=f'{m.other}は{pairs[1][2]}本で{h}得点')
     return f'日本{m.score[0]}-{m.score[1]}{m.other} 支配率{ja}% シュート{pairs[1][1]}本で勝利',[opening]+panels
 
 
@@ -191,6 +192,7 @@ def late_winner(m):
         (c.get('time',{}).get('displayValue')==decisive['clock']['displayValue']) and
         player['athlete']['displayName'] in c.get('text','') for c in m.raw.get('commentary',[]))
     if confirmed:rows.append(('得点の確認は、どうなったのだ？','この決勝点は、VARの確認を経て認められました。','得点の確認',[('VARの確認','得点を認定')]))
+    m.hook=dict(subject=f'{name} 途中出場から',big=minute,unit='分',note='決勝点'+(f'（出場から{gap}分）' if gap>0 else ''))
     return f'{name} 途中出場から{minute}分の決勝点',rows+[m.result()]
 
 
@@ -216,6 +218,7 @@ def opponent_star(m):
     assists=[m.who(e,1) for e in goals if 'Assisted by ' in e.get('text','') and len(e.get('participants',[]))>=2]
     if len(assists)==n and len(set(assists))==1:
         rows.append(('アシストしたのは、誰なのだ？',f'{n}点とも、{assists[0]}のアシストでした。','アシスト',[('全得点のアシスト',assists[0])]))
+    m.hook=dict(subject=f'{m.other}の{short}',big=str(n),unit='得点',note=('すべてペナルティエリアの外から' if outside else f'{m.other}の得点はすべて{short}' if alone else ''))
     return f'{short} {n}得点'+('とも箱の外から' if outside else ''),rows+[m.result()]
 
 
@@ -236,6 +239,7 @@ def keeper(m):
            (f'{m.other}のシュートは、どうだったのだ？',f'{m.other}のシュートは{shots}本。そのうち枠内シュートは{target}本でした。日本が受けたシュートの数字です。','日本の被シュート',[('被シュート',shots+'本'),('被枠内シュート',target+'本')])),
           (f'{m.other}のゴールキーパーは、どうだったのだ？',f'{m.other}のゴールキーパーのセーブ数は{other_saves}。{name}は{saves}セーブでした。','両チームのGK',[('日本',saves+'セーブ'),(m.other,other_saves+'セーブ')])]
     win=m.score[0]>m.score[1]
+    m.hook=dict(subject=f'GK {name}',big=saves,unit='セーブ',note=f'枠内{target}本のうち{saves}本を止めた' if int(saves)+m.score[1]==int(target) else f'{m.other}のシュート{shots}本')
     return f'{name} {saves}セーブ'+(f'で{m.other}に勝利' if win else f' {m.other}のシュート{shots}本'),rows+[m.result()]
 
 
@@ -286,6 +290,7 @@ def early_goals(m):
         parts.append(f"{team}{m.who(es[0])}が{'と'.join(national.minute_words(m.minute(e)) for e in es)}に決めて{tally[national.JAPAN]}対{tally[m.oid]}")
     said='その後、'+'。'.join(parts)+'。日本が勝ちました。'
     rows.append(('試合は、そのあとどうなったのだ？',said,'全得点の流れ',flow))
+    m.hook=dict(subject=f'{m.who(a)}と{m.who(b)}',big=str(gap),unit='分間で2得点',note=f'前半{m.minute(a)}分から')
     return f'{m.who(a)}と{m.who(b)} {gap}分間で2得点',rows
 
 
@@ -314,6 +319,7 @@ def rematch(m):
     won=next((r for r in before if r['result']=='win' and r['gf']>r['ga'] and r['date']<lost['date']),None)
     if won:rows.append(('その前の対戦は、どうだったのだ？',f"{won['date'][:4]}年{int(won['date'][5:7])}月の{won['competition']}では、日本が{won['gf']}対{won['ga']}で勝っています。",
             '対戦の記録',[board(now,m.other),board(lost,m.other),board(won,m.other)]))
+    m.hook=dict(subject=f'W杯で敗れた{m.other}に',big=f'{m.score[0]}-{m.score[1]}',unit='で勝利',note=f"{day_words(lost)}のW杯{stage}は{lost['gf']}-{lost['ga']}で敗戦")
     return f'W杯で敗れた{m.other}に{m.score[0]}-{m.score[1]}で勝利',rows
 
 
@@ -396,9 +402,16 @@ def narration(summary, topic, *, names=None, meetings=None):
             said,panel=quote_panel(qs)
             panels=list(panels)+[(qs[0]['ask'],said,qs[0]['head'],panel,dict(quote=True,reaction_urls=[q['source_url'] for q in qs]))]
     segments=[]
+    hook=getattr(m,'hook',None)
+    if hook:
+        a,b=m.score
+        hook=dict(hook,result=('勝利' if a>b else '敗戦' if a<b else '引き分け'),score=f'日本 {a}-{b} {m.other}')
     for i,(question,answer,head,rows,*extra) in enumerate(panels):
         meta=dict(duo=True,topic=topic,panel=i,head=head,rows=rows,**(extra[0] if extra else {}))
-        segments += [dict(kind='list',text=question,speaker=ZUNDA,meta=dict(meta,duo_ask=True,who='ずんだもん')),
+        ask=dict(meta,duo_ask=True,who='ずんだもん')
+        # 最初の問いの区間は、題の中心の数字を大きく出す（サムネ＝1.6秒目。本人 11/15「ちゃんとひきこむものに」）。
+        if i==0 and hook:ask['hook']=hook
+        segments += [dict(kind='list',text=question,speaker=ZUNDA,meta=ask),
                      dict(kind='list',text=answer,speaker=METAN,meta=dict(meta,who='四国めたん'))]
     doc=dict(program=PROGRAM,date_jst=m.today,
         title=title+' #Shorts',topic=topic,event_id=str(raw['header']['id']),
