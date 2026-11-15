@@ -106,7 +106,7 @@ def frame(t, seg, doc, clubs, index=0, count=1):
 
     if asking and meta.get('hook'):
         return hook_screen(s, meta['hook'], spec)
-    if topics.is_followup(meta.get('topic')) and not asking and meta.get('big'):
+    if topics.is_followup(meta.get('topic')) and meta.get('big'):
         return big_fact_screen(s, meta['head'], meta['big'], [tuple(r) for r in meta['rows']], spec, sub)
     if meta.get('compare'):
         cmp = meta['compare']

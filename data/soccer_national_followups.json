@@ -128,6 +128,128 @@
             }
           }
         ]
+      },
+      "ueda": {
+        "checked_on": "2026-11-15",
+        "title": "上田綺世は今どこに？ リールで4試合3得点のあと負傷、6試合出場なし",
+        "readings": {
+          "上田綺世": "ウエダアヤセ",
+          "上田": "ウエダ"
+        },
+        "reading_sources": [
+          "https://ja.wikipedia.org/wiki/%E4%B8%8A%E7%94%B0%E7%B6%BA%E4%B8%96"
+        ],
+        "hook": {
+          "score": "11月の日本代表",
+          "result": "招集外",
+          "subject": "W杯メンバーの上田綺世",
+          "big": "6",
+          "unit": "試合出場なし",
+          "note": "10月13日のアーセナル戦で負傷"
+        },
+        "items": [
+          {
+            "ask": "そういえば、上田綺世はどこに行ったのだ？",
+            "text": "上田綺世は、8月末にフェイエノールトからフランスのリールへ移りました。",
+            "head": "いまの所属",
+            "rows": [
+              [
+                "クラブ",
+                "リール（フランス1部）"
+              ],
+              [
+                "移籍",
+                "2026年8月末 フェイエノールトから"
+              ],
+              [
+                "契約",
+                "2030年まで"
+              ]
+            ],
+            "source_names": "Flashscore",
+            "sources": [
+              "https://supersport.com/football/news/673f6d43-d1e2-4c81-b8a2-ec0eba412089/lille-sign-japan-striker-ueda-from-feyenoord",
+              "https://www.flashscore.com/news/soccer-eredivisie-eredivisie-top-scorer-ayase-ueda-completes-lille-move-from-feyenoord/G2m02iOF/"
+            ]
+          },
+          {
+            "ask": "新しいチームでは、点を取れたのだ？",
+            "text": "加入してすぐの公式戦4試合で3点を決めました。デビュー戦は途中から出て、決勝点です。",
+            "head": "リーグ・アン 第3節",
+            "big": {
+              "label": "加入直後の公式戦4試合",
+              "value": "3",
+              "unit": "得点"
+            },
+            "rows": [
+              [
+                "デビュー戦",
+                "9月3日 トゥールーズに1-0で勝利"
+              ],
+              [
+                "決勝点",
+                "途中出場し73分にヘディング"
+              ]
+            ],
+            "source_names": "サッカーキング・ESPN",
+            "sources": [
+              "https://www.soccer-king.jp/news/world/fra/20261015/2217143.html",
+              "https://www.espn.com/soccer/match/_/gameId/401876468"
+            ]
+          },
+          {
+            "ask": "最近は、試合に出ているのだ？",
+            "text": "10月13日のアーセナル戦で、けがのため78分に交代しました。その後のリールの6試合には出ていません。",
+            "head": "欧州CL アーセナル戦",
+            "big": {
+              "label": "負傷の後のリールの試合",
+              "value": "6",
+              "unit": "試合出場なし"
+            },
+            "rows": [
+              [
+                "負傷",
+                "10月13日 78分に交代"
+              ],
+              [
+                "けが",
+                "足底筋膜の断裂と報道"
+              ],
+              [
+                "直近",
+                "11月8日も出場なし"
+              ]
+            ],
+            "source_names": "サッカーキング・ESPN",
+            "sources": [
+              "https://www.soccer-king.jp/news/world/fra/20261016/2217460.html",
+              "https://www.footballchannel.jp/?p=1033953",
+              "https://www.espn.com/soccer/match/_/gameId/401915417",
+              "https://www.espn.com/soccer/match/_/gameId/401876406"
+            ]
+          },
+          {
+            "ask": "日本代表には、呼ばれているのだ？",
+            "text": "W杯の26人に入っていましたが、11月の28人には入っていません。",
+            "head": "日本代表",
+            "big": {
+              "label": "11月の日本代表",
+              "value": "28",
+              "unit": "人に入らず"
+            },
+            "rows": [
+              [
+                "W杯",
+                "26人に選ばれる"
+              ]
+            ],
+            "source_names": "JFA",
+            "sources": [
+              "https://jfa.jp/national_team_2026/news/00036341/",
+              "https://jfa.jp/samuraiblue/20261117/member.html"
+            ]
+          }
+        ]
       }
     }
   }
