@@ -590,6 +590,19 @@ class TopicFollowup(unittest.TestCase):
         for s in answers:
             self.assertEqual(s['meta']['rows'][-1][0], '出典')
 
+    def test_big_number_comes_from_the_answer_and_is_drawn_large(self):
+        doc = make('followup-shiogai')
+        answers = [s for s in doc['segments'] if s['speaker'] == METAN and s['kind'] != 'outro']
+        bigs = [s['meta'].get('big') for s in answers]
+        self.assertEqual([b and b['value'] for b in bigs], [None, '10', '2', '28'])
+        for s, b in zip(answers, bigs):
+            if b:
+                self.assertIn(b['value'], s['text'])
+        self.with_material(lambda d: d['items'][1]['big'].update(value='99'))
+        made, excluded = topics.available(summary(), meetings=MEETINGS)
+        self.assertNotIn('followup-shiogai', made)
+        self.assertIn('要の数字', excluded['followup-shiogai'])
+
     def test_one_source_is_not_enough(self):
         self.with_material(lambda d: d['items'][0].update(sources=d['items'][0]['sources'][:1]))
         made, excluded = topics.available(summary(), meetings=MEETINGS)

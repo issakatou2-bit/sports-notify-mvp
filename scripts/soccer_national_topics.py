@@ -364,7 +364,14 @@ def followup(topic, event):
     rows=[]
     for f in data['items']:
         if len([u for u in f.get('sources',[]) if u.startswith('https://')])<2:raise Unavailable('2つの出典で確かめていない事実がある: '+f.get('head',''))
-        rows.append((f['ask'],f['text'],f['head'],[tuple(r) for r in f['rows']]+[('出典',f['source_names'])],dict(followup_sources=f['sources'])))
+        extra=dict(followup_sources=f['sources'])
+        # 答えの画面の要の数字（Argon 11/15「どの数字が主役か分かりにくい」）。数字は本文と同じ材料から。
+        if f.get('big'):
+            big=f['big']
+            if set(big)!={'label','value','unit'} or not str(big['value']).isdigit() or str(big['value']) not in f['text']:
+                raise Unavailable('要の数字が本文に無い: '+f.get('head',''))
+            extra['big']=dict(big)
+        rows.append((f['ask'],f['text'],f['head'],[tuple(r) for r in f['rows']]+[('出典',f['source_names'])],extra))
     return data['title'],rows,dict(data['hook'])
 
 
@@ -519,7 +526,7 @@ def information(doc):
     if check(doc):raise ValueError('材料が不一致')
     answers=[(i,s) for i,s in enumerate(doc['segments']) if s['speaker']==METAN and s['kind']!='outro']
     if is_followup(doc['topic']):
-        return [dict(subject=s['meta']['head'],fact='確認済みの事実（その後）',value=s['meta']['rows'],source=' '.join(s['meta']['followup_sources']),segments=[i])
+        return [dict(subject=s['meta']['head'],fact='確認済みの事実（その後）',value=s['meta']['rows']+([('要の数字',s['meta']['big']['label']+' '+str(s['meta']['big']['value'])+s['meta']['big']['unit'])] if s['meta'].get('big') else []),source=' '.join(s['meta']['followup_sources']),segments=[i])
                 for i,s in answers]
     if is_reactions(doc['topic']):
         r=doc['reaction_material'];sources=[q['source_url'] for q in r['quotes']]+[' '.join(f['sources']) for f in r.get('facts',[])]
