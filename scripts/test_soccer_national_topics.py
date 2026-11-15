@@ -121,6 +121,19 @@ class Topics(unittest.TestCase):
         board = [list(r) for r in make('rematch')['segments'][-2]['meta']['rows']]
         self.assertEqual([v for _, v in board], ['日本 3-2 ブラジル', '日本 1-2 ブラジル', '日本 3-2 ブラジル'])
 
+    def test_opening_hook_shows_the_title_fact_with_the_result(self):
+        # 最初の問いの区間＝サムネ（1.6秒目）に題の中心の数字（本人 11/15「事実は抑えたうえで、ちゃんとひきこむものに」）。
+        for topic in ALL:
+            doc = make(topic)
+            hook = doc['segments'][0]['meta']['hook']
+            self.assertEqual(hook['result'], '勝利', topic)
+            self.assertEqual(hook['score'], '日本 3-2 ブラジル', topic)
+            said = doc['title'] + ' '.join(s['text'] for s in doc['segments'])
+            for value in re.findall(r'\d+', hook['big'] + hook['unit'] + hook.get('note', '')):
+                self.assertIn(value, said, (topic, hook))
+            self.assertNotIn('hook', doc['segments'][1]['meta'], topic)
+        self.assertNotIn('hook', make('reactions')['segments'][0]['meta'])
+
     def test_names_come_from_the_roster_not_by_hand(self):
         self.assertEqual(n.player_name('Tatsuhiro Sakamoto', True), '坂元達裕')
         self.assertIn('坂元達裕', make('late-winner')['title'])
