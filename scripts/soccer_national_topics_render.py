@@ -106,6 +106,8 @@ def frame(t, seg, doc, clubs, index=0, count=1):
 
     if asking and meta.get('hook'):
         return hook_screen(s, meta['hook'], spec)
+    if topics.is_followup(meta.get('topic')) and not asking and meta.get('big'):
+        return big_fact_screen(s, meta['head'], meta['big'], [tuple(r) for r in meta['rows']], spec, sub)
     if meta.get('compare'):
         cmp = meta['compare']
         return s.national_compare(meta['head'], cmp['rows'], cmp['teams'], spec, sub)
@@ -153,6 +155,39 @@ def hook_screen(s, hook, spec):
         s.lines(100, box[3] + 48, hook['note'], 48, 800, cards.MUTED, 'supplement')
     s.im.info['preview_body'] = [readable.L, top, readable.R, top + height]
     s.im.info['opening_hook'] = hook
+    return s.finish(spec)
+
+
+def big_fact_screen(s, head, big, rows, spec, sub):
+    """その後の話題の答え。要の数字1つを大きく、残りの行は小さく（Argon 11/15「字が均一で主役の数字が分からない」）。"""
+    import soccer_readable as readable
+    import soccer_v5_cards as cards
+    s.title(head, sub)
+    value, unit = str(big['value']), big['unit']
+    for size in (240, 210, 180, 150, 120):
+        if cards.measure(value, size, True)[1] + 24 + cards.measure(unit, 64)[1] <= 800:
+            break
+    b = cards.measure(value, size, True)[2]
+    big_height = 18 + 30 + 32 + (b[3] - b[1]) + 44
+    rsize, width = 48, readable.R - readable.L - 56
+    rows = [(label, chr(10).join(balanced_lines(v, rsize, width))) for label, v in rows]
+    heights = [80 + len(cards.lines(v, rsize, width)) * (rsize + 12) for _, v in rows]
+    height = big_height + sum(h + 24 for h in heights)
+    if height > readable.BODY_BOTTOM - readable.BODY_TOP:
+        raise ValueError('要の数字の画面に行が入りません')
+    top = readable.BODY_TOP + (readable.BODY_BOTTOM - readable.BODY_TOP - height) // 2
+    s.panel(top, top + big_height)
+    s.text(100, top + 18, big['label'], 30, 800, cards.MUTED, role='supplement')
+    box = s.text(100, top + 80, value, size, 800, cards.LIME, True, role='national_fact')
+    ub = cards.measure(unit, 64)[2]
+    s.text(box[2] + 24, box[3] - (ub[3] - ub[1]), unit, 64, 800 - (box[2] - 100) - 24, cards.LIME, role='national_fact')
+    y = top + big_height + 24
+    for (label, v), h in zip(rows, heights):
+        s.panel(y, y + h)
+        s.text(100, y + 18, label, 30, 800, cards.MUTED, role='supplement')
+        s.lines(100, y + 70, v, rsize, 800, role='national_fact')
+        y += h + 24
+    s.im.info['preview_body'] = [readable.L, top, readable.R, y - 24]
     return s.finish(spec)
 
 

@@ -58,10 +58,6 @@
               [
                 "塩貝",
                 "後半から出場し47分にゴール"
-              ],
-              [
-                "今季のリーグ戦",
-                "10試合目で初ゴール"
               ]
             ],
             "source_names": "ブンデスリーガ公式",
@@ -69,7 +65,12 @@
               "https://www.bundesliga.com/de/2bundesliga/news/hertha-bsc-vfl-wolfsburg-spieltag-11-spielbericht-highlights-39931",
               "https://www.soccer-king.jp/news/world/ger/20261108/2225517.html",
               "https://www.bundesliga.com/en/player/kento-shiogai"
-            ]
+            ],
+            "big": {
+              "label": "ドイツ2部 リーグ戦",
+              "value": "10",
+              "unit": "試合目で初ゴール"
+            }
           },
           {
             "ask": "ほかの試合では、どうだったのだ？",
@@ -81,11 +82,11 @@
                 "フライブルクに2-3で敗戦"
               ],
               [
-                "塩貝",
-                "2得点（8分・43分）"
+                "得点した時間",
+                "8分・43分"
               ],
               [
-                "後藤啓介",
+                "フライブルクの後藤啓介",
                 "途中出場で2得点"
               ]
             ],
@@ -93,7 +94,12 @@
             "sources": [
               "https://bulinews.com/dfb-pokal-supersub-goto-saves-the-day-for-freiburg-send-wolfsburg-packing",
               "https://www.footballchannel.jp/2026/10/29/post1042152/"
-            ]
+            ],
+            "big": {
+              "label": "ドイツ杯 フライブルク戦",
+              "value": "2",
+              "unit": "得点"
+            }
           },
           {
             "ask": "日本代表には、呼ばれているのだ？",
@@ -107,10 +113,6 @@
               [
                 "代表初ゴール",
                 "9月24日 ウルグアイ戦"
-              ],
-              [
-                "11月の招集",
-                "28人に入らず"
               ]
             ],
             "source_names": "JFA",
@@ -118,7 +120,12 @@
               "https://jfa.jp/national_team_2026/news/00036341/",
               "https://www.jfa.jp/national_team_2026/news/00036813/",
               "https://jfa.jp/samuraiblue/20261117/member.html"
-            ]
+            ],
+            "big": {
+              "label": "11月の日本代表",
+              "value": "28",
+              "unit": "人に入らず"
+            }
           }
         ]
       }
