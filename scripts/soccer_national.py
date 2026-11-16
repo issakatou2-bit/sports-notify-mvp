@@ -26,7 +26,7 @@ TEAM_NAMES.update({'Netherlands':'オランダ','Tunisia':'チュニジア','Swe
     'Ecuador':'エクアドル','New Zealand':'ニュージーランド','Argentina':'アルゼンチン',
     'Bahrain':'バーレーン','China':'中国','Germany':'ドイツ','Haiti':'ハイチ','Indonesia':'インドネシア',
     'Norway':'ノルウェー','Peru':'ペルー','Saudi Arabia':'サウジアラビア','Senegal':'セネガル',
-    'South Korea':'韓国','Türkiye':'トルコ','TÃ¼rkiye':'トルコ'})
+    'South Korea':'韓国','Singapore':'シンガポール','Türkiye':'トルコ','TÃ¼rkiye':'トルコ'})
 
 
 def enabled():
