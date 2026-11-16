@@ -766,11 +766,11 @@ def choose(games, schedules, previous, now, ledger, summary_loader, squad_data=N
         kick=instant(g['start_utc']).astimezone(JST)
         entries=ledger.get('soccer_national',{}).values()
         result_done=any(e.get('national_mode')=='result' and e.get('national_event_id')==g['id'] for e in entries)
-        target=kick.replace(hour=22,minute=0) if kick.hour<20 else (kick+timedelta(days=1)).replace(hour=8,minute=0)
+        # 結果は定時の回ではない（11/14 本人「0時超えても普通に投稿していい」、11/16 本人「結果出たら
+        # すぐ出せるように」）。22時台開始の試合も翌朝8時を待たず、終わりしだい出す（開始の110分後から）。
+        target=kick.replace(hour=22,minute=0) if kick.hour<20 else kick+timedelta(minutes=110)
         target=target.replace(second=0,microsecond=0)
-        # 結果は定時の回ではない（11/14 本人「0時超えても普通に投稿していい」）。22時の回は翌日12時まで
-        # 途切れずに出す。0時〜7時はすぐ、7時〜12時は8:00（これまでの朝の枠）に予約する。
-        end=target.replace(hour=12) if target.hour==8 else (target+timedelta(days=1)).replace(hour=12)
+        end=(kick+timedelta(days=1)).replace(hour=12,minute=0,second=0,microsecond=0)
         due=target-timedelta(minutes=45)<=local<end
         fallback=kick.hour<20 and local.date()==target.date()+timedelta(days=1) and 7<=local.hour<12
         if not result_done and (due or fallback):

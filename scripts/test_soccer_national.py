@@ -160,7 +160,11 @@ class National(unittest.TestCase):
         now=n.instant('2026-11-17T22:20Z')
         s=summary();s['header']['competitions'][0]['date']='2026-11-17T13:10Z'
         d=n.choose([self.future],{'627':self.schedule},dict(events=[]),now,{},lambda ident:s)
-        self.assertEqual(d['mode'],'result');self.assertEqual(d['publish_at'],'2026-11-18T08:00:00+09:00')
+        # 22時台開始でも翌朝8時を待たない（11/16 本人「結果出たらすぐ」）。
+        self.assertEqual(d['mode'],'result');self.assertEqual(d['publish_at'],'2026-11-18T07:41:00+09:00')
+        night=n.choose([self.future],{'627':self.schedule},dict(events=[]),n.instant('2026-11-17T15:12Z'),{},lambda ident:s)
+        self.assertEqual((night['mode'],night['publish_at']),('result','2026-11-18T00:33:00+09:00'))
+        self.assertIsNone(n.choose([self.future],{'627':self.schedule},dict(events=[]),n.instant('2026-11-18T03:30Z'),{},lambda ident:s))
 
     def test_late_kickoff_day_does_not_show_remaining_squad(self):
         now=n.instant('2026-11-17T01:15Z')
