@@ -1121,10 +1121,15 @@ def outro(t, spec=None, exclude="", credit="音声: VOICEVOX:四国めたん　�
     d = ImageDraw.Draw(im)
     _text(d, (LEFT, 440), "コレスポ", font=font(150), fill=GOLD)
     _text(d, (LEFT, 640), short_common.OUTRO_LINE, font=font(48), fill=INK)
+    if cta is None:
+        # 11/16 本人「ショートの最後に高評価とか登録よびかけ、ほしいよね」：全番組の締めに出す。
+        cta = short_common.OUTRO_CTA
     if cta:
-        # 高評価・登録のお願い（11/11 見本 A、本人 11/15「すべて進めて」）。渡した番組だけ。
+        # 高評価・登録のお願い（11/11 見本 A、本人 11/15「すべて進めて」）。
         im.info['short_visible_texts'].append(cta)
-        d.rounded_rectangle((LEFT, 760, LEFT + 620, 844), radius=14, fill=(16, 28, 56), outline=(52, 66, 100), width=2)
+        # 字の幅に合わせて札を伸ばす（11/16 字体によって右端が枠に触れた）。
+        box = max(620, int(d.textlength(cta, font=font(40))) + 64)
+        d.rounded_rectangle((LEFT, 760, LEFT + box, 844), radius=14, fill=(16, 28, 56), outline=(52, 66, 100), width=2)
         d.rectangle((LEFT, 774, LEFT + 6, 830), fill=(214, 250, 70))
         _text(d, (LEFT + 30, 802), cta, font=font(40), fill=(241, 245, 249), anchor="lm")
     source(d, credit, (196, 206, 212))

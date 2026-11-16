@@ -537,6 +537,11 @@ def outro(t,spec,exclude,credit,tagline):
     im.info['v3_outro'] = True
     text(im, L+20, 440, 'コレスポ', 100, CHALK, width=R-L-40, weight=900)
     text(im, L+20, 640, short_common.OUTRO_LINE, 42, MUTED, width=R-L-40)
+    # 高評価・登録のお願い（11/16 本人）。review_render_v3.outro と同じ札。
+    d = ImageDraw.Draw(im)
+    d.rounded_rectangle((L+20, 760, L+640, 844), radius=14, fill=(16, 28, 56), outline=(52, 66, 100), width=2)
+    d.rectangle((L+20, 774, L+26, 830), fill=(214, 250, 70))
+    text(im, L+50, 780, short_common.OUTRO_CTA, 40, CHALK, width=580, role='supplement')
     return finish(im, t, dict(spec, source=credit))
 
 

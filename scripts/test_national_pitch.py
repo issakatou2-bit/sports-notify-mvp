@@ -4,6 +4,7 @@ import os
 from pathlib import Path
 import sys
 import unittest
+import short_common
 from unittest.mock import patch
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -59,7 +60,7 @@ class Pitch(unittest.TestCase):
             data=n.squad(roster,{},'2026-11-09T10:15:00+09:00',page)
             doc=n.narration(data)
             self.assertEqual(n.check(doc),[])
-            self.assertEqual(doc['segments'][-1]['text'],'毎日更新しています。')
+            self.assertEqual(doc['segments'][-1]['text'],short_common.OUTRO_TEXT)
             texts=[s['text'] for s in doc['segments'] if 'player' in s['meta']]
             self.assertTrue(all('発表されたポジションは' not in text for text in texts))
             self.assertEqual(len(texts),len(data['players']))
