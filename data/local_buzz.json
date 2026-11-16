@@ -1,12 +1,12 @@
 {
-  "updated_at": "2026-11-15T18:29:53.238175+00:00",
+  "updated_at": "2026-11-16T06:01:47.545546+00:00",
   "sources": [
     {
       "name": "MLB公式",
-      "items": 25
+      "items": 24
     }
   ],
-  "titles_count": 25,
+  "titles_count": 24,
   "teams": [
     {
       "team_id": "141",
@@ -14,23 +14,23 @@
       "name_en": "Toronto Blue Jays",
       "mentions": 2,
       "tone": "話題",
-      "gist": "長打力補強の市場薄、2027年は内部改善策も"
+      "gist": "ブルージェイズ、長打力補強の道を模索"
+    },
+    {
+      "team_id": "109",
+      "name": "ダイヤモンドバックス",
+      "name_en": "Arizona Diamondbacks",
+      "mentions": 2,
+      "tone": "好調",
+      "gist": "ジャベリナス、史上最多8度目のAFL優勝"
     },
     {
       "team_id": "147",
       "name": "ヤンキース",
       "name_en": "New York Yankees",
       "mentions": 2,
-      "tone": "好調",
-      "gist": "Hillが1年契約でヤンキース復帰、二塁手候補も"
-    },
-    {
-      "team_id": "109",
-      "name": "ダイヤモンドバックス",
-      "name_en": "Arizona Diamondbacks",
-      "mentions": 1,
-      "tone": "好調",
-      "gist": "Javelinasが秋季リーグ史上最多8度目の優勝"
+      "tone": "話題",
+      "gist": "ヤンキース、ヒル1年契約で復帰合意"
     },
     {
       "team_id": "119",
@@ -38,7 +38,15 @@
       "name_en": "Los Angeles Dodgers",
       "mentions": 1,
       "tone": "話題",
-      "gist": "Marteと若手野手を巡りパドレス・ドジャース交渉"
+      "gist": "パドレス、マルテらの若手打者トレード協議"
+    },
+    {
+      "team_id": "158",
+      "name": "ブリュワーズ",
+      "name_en": "Milwaukee Brewers",
+      "mentions": 1,
+      "tone": "話題",
+      "gist": "ブリュワーズ、ジャイアンツからウォーカー獲得"
     },
     {
       "team_id": "135",
@@ -46,7 +54,15 @@
       "name_en": "San Diego Padres",
       "mentions": 1,
       "tone": "話題",
-      "gist": "Marteと若手野手を巡りパドレス・ドジャース交渉"
+      "gist": "パドレス、マルテらの若手打者トレード協議"
+    },
+    {
+      "team_id": "137",
+      "name": "ジャイアンツ",
+      "name_en": "San Francisco Giants",
+      "mentions": 1,
+      "tone": "話題",
+      "gist": "ウォーカーをブリュワーズへトレード放出"
     },
     {
       "team_id": "146",
@@ -54,15 +70,7 @@
       "name_en": "Miami Marlins",
       "mentions": 1,
       "tone": "話題",
-      "gist": "マーリンズはオフにどの戦力補強を狙うか"
-    },
-    {
-      "team_id": "112",
-      "name": "カブス",
-      "name_en": "Chicago Cubs",
-      "mentions": 1,
-      "tone": "不振",
-      "gist": "先発7人がFAに、今後の対応が焦点"
+      "gist": "ロハス、マイアミで最終戦に惜別の拍手"
     }
   ],
   "players": [

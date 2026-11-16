@@ -1,22 +1,35 @@
 {
-  "updated_at": "2026-11-15T18:30:50.726736+00:00",
+  "short_content_version": "1108",
+  "updated_at": "2026-11-16T06:02:51.398232+00:00",
   "hours": 30,
   "reporters": 38,
-  "collected": 6,
+  "collected": 5,
   "posts": [
     {
-      "handle": "afkostka.bsky.social",
-      "author": "Andy Kostka",
-      "team": "オリオールズ",
-      "outlet": "Baltimore Banner",
-      "text": "The message from one American League front office executive as he departed the GM meetings in Nevada this week was clear. “Keep your phone handy at Thanksgiving,” he said. On a fast-moving market ahead of a lockout, from me and Kyle Williams: www.thebanner.com/sports/oriol...",
-      "likes": 17,
-      "reposts": 3,
-      "replies": 0,
-      "at": "2026-11-14T14:17:12.899Z",
-      "uri": "at://did:plc:licyksm72ljqiq4oxbwxu2mi/app.bsky.feed.post/3n2botrfwes2g",
+      "handle": "miguardado.bsky.social",
+      "author": "Maria I. Guardado",
+      "team": "ジャイアンツ",
+      "outlet": "MLB.com",
+      "text": "The Giants traded RHP Ryan Walker to the Brewers in exchange for Minor League RHPs Blake Holub and Gavin Perry.",
+      "likes": 32,
+      "reposts": 4,
+      "replies": 2,
+      "at": "2026-11-15T23:21:17.337Z",
+      "uri": "at://did:plc:hw5bzwi2n7nnrvosauyqwkg3/app.bsky.feed.post/3n2f5pkzrgk26",
       "jp_players": [],
-      "jp": "今週ネバダでのGMミーティングを後にしたア・リーグ球団フロント幹部の一言は明快だった。「感謝祭の間は電話を手元に」。ロックアウト前の動きの速い市場について、カイル・ウィリアムズと私が書いた。"
+      "reply_texts": [
+        {
+          "text": "The Brewers will turn Walker back into ‘24 Walker.",
+          "likes": 2,
+          "author": "nukelaloosh82.bsky.social"
+        },
+        {
+          "text": "Huzzah",
+          "likes": 0,
+          "author": "thejcchef.bsky.social"
+        }
+      ],
+      "jp": "ジャイアンツがライアン・ウォーカー右腕をブルワーズにトレード。見返りはマイナーの右腕ブレイク・ホルブとギャビン・ペリー。"
     },
     {
       "handle": "samdykstramilb.bsky.social",
@@ -33,11 +46,11 @@
       "reply_texts": [
         {
           "text": "Tough night for the Royals prospects. Lamkin had three errors behind him and threw a wild pitch to get roughed up for five in two innings, and Rose (who did walk twice) grounded into a rally-ending double play. Still, fun season!",
-          "likes": 0,
+          "likes": 1,
           "author": "novacarmina.bsky.social"
         }
       ],
-      "jp": "パドレス、マリナーズ、オリオールズ、レッズ、カージナルスの有望株で組んだピオリアが、今夜AFLの優勝を決めた。"
+      "jp": "パドレス、マリナーズ、オリオールズ、レッズ、カージナルスの有望株で構成されたピオリアが、今夜AFLの王者に輝いた。"
     },
     {
       "handle": "garyhphillips.bsky.social",
@@ -51,49 +64,21 @@
       "at": "2026-11-15T16:11:06.136Z",
       "uri": "at://did:plc:k6souhooieuhazcostyw342c/app.bsky.feed.post/3n2efodkghc2k",
       "jp_players": [],
-      "jp": "#ヤンキース がブルペン補強の第一弾として、ティム・ヒルと1年225万ドルで合意。2028年は250万ドルの球団オプション付きと複数の関係者が認めた。ヒルは昨季不調だったが、ブルペンは戦力が足りていない。"
-    },
-    {
-      "handle": "garyhphillips.bsky.social",
-      "author": "Gary Phillips",
-      "team": "ヤンキース",
-      "outlet": "New York Daily News",
-      "text": "A few leftover notes from the GM Meetings: ⚾️ Omar Minaya & Brian Sabean weren't retained as \"costs continue to stretch.\" Really? ⚾️ Jasson Domínguez took it upon himself to play winter ball with his #Yankees future uncertain ⚾️ Tim Hill is getting lots of interest ⚾️ Carlos Lagrange's outlook",
-      "likes": 3,
-      "reposts": 0,
-      "replies": 0,
-      "at": "2026-11-14T14:54:16.883Z",
-      "uri": "at://did:plc:k6souhooieuhazcostyw342c/app.bsky.feed.post/3n2bqw2ezes2k",
-      "jp_players": [],
-      "jp": "GMミーティングのこぼれ話。⚾️オマー・ミナヤとブライアン・サビーンは「コストが膨らみ続けるなか」で残留せず。本当に? ⚾️ヤンキースでの将来が不透明なハッソン・ドミンゲスは自らウインターリーグ参戦を決断 ⚾️ティム・ヒルに多くの関心 ⚾️カルロス・ラグランジュの見通し"
+      "jp": "#ヤンキース がブルペン補強の第一弾として、ティム・ヒルと1年225万ドルで合意。2028年は250万ドルの球団オプション付きと複数の関係者が認めた。昨季は不調だったが、ブルペンは人手が必要だ。"
     },
     {
       "handle": "samdykstramilb.bsky.social",
       "author": "Sam Dykstra",
       "team": "全国",
       "outlet": "MLB Pipeline",
-      "text": "Mets relief prospect Ryan Lambert got back on track in the Fall League, in part because he started incorporating a sweeper that he believes could trigger some control improvements. www.mlb.com/news/mets-pr...",
+      "text": "What, no high five?",
       "likes": 2,
       "reposts": 0,
       "replies": 0,
-      "at": "2026-11-15T17:25:56.382Z",
-      "uri": "at://did:plc:bdxjovzqrf4q66ptu3dplmeb/app.bsky.feed.post/3n2eju5rvc224",
+      "at": "2026-11-15T18:54:28.681Z",
+      "uri": "at://did:plc:bdxjovzqrf4q66ptu3dplmeb/app.bsky.feed.post/3n2eoshygb22c",
       "jp_players": [],
-      "jp": "メッツのリリーフ有望株ライアン・ランバートがフォールリーグで調子を取り戻した。スイーパーを取り入れたのが一因で、制球の改善にもつながると本人は見ている。"
-    },
-    {
-      "handle": "nightengalejr.bsky.social",
-      "author": "Bobby Nightengale",
-      "team": "ツインズ",
-      "outlet": "Star Tribune",
-      "text": "Trevor Larnach underwent left wrist surgery Friday, which included a debridement of his TFCC and open excision of a ganglion cyst. Larnach is expected to return to full swings in January and game activity in spring training.",
-      "likes": 2,
-      "reposts": 0,
-      "replies": 0,
-      "at": "2026-11-14T22:59:40.889Z",
-      "uri": "at://did:plc:gtt6sqfv2lck4wxdxymmhrxk/app.bsky.feed.post/3n2clzz6mv22v",
-      "jp_players": [],
-      "jp": "トレバー・ラーナックが金曜に左手首の手術を受けた。TFCCのデブリドマンとガングリオン嚢腫の切除を実施。1月にフルスイング、春季キャンプで試合復帰の見込み。"
+      "jp": "え、ハイタッチはなし？"
     }
   ],
   "headlines": [
@@ -114,7 +99,7 @@
         }
       ],
       "published_date": "2026-11-15",
-      "jp": "ドジャース注目ニュース：ジョナサン・ロアイシガ、ティム・ヒル、大谷翔平"
+      "jp": "ドジャース関連ノート:ジョナサン・ロアイシガ、ティム・ヒル、大谷翔平"
     },
     {
       "query": "Shohei Ohtani",
@@ -133,14 +118,14 @@
         }
       ],
       "published_date": "2026-11-15",
-      "jp": "ドジャースにも奪えない、大谷翔平を特別にしているもの"
+      "jp": "ドジャースにも奪えない、大谷翔平の特別さ"
     },
     {
       "query": "Shohei Ohtani",
       "title": "Shohei Ohtani ‘Frustrated’ By Difficult 2026 Season",
       "source": "DodgerBlue.com",
       "at": "Sun, 15 Nov 2026 16:15:12 GMT",
-      "url": "https://news.google.com/rss/articles/CBMijAFBVV95cUxQbW1qdkh0MFlndFBrUjZvd0VYSU1qMHRod3BNTENja0REdXpQeFpSU1dzTWJJdmtxVGxTRGtMdVdiaDBSSDNqZ2xENVZWeHV2RGVMVzczWi1fZ3lsVnY0RGlGazlBSWkxZEVtZG5vaUFfYi1vanBXb1FzTDZXMkR3V2JpTHQ0SGt0WkZIV9IBkgFBVV95cUxNODhBdThRM2xJcEs3YU5MT3ptdDNmZktHd2hKczNROHE3R1dpV1JnbzNkdVAwS0hSa1p6Qi1uS3RnUnprZDdhT18xVnRPQWluQVdWUVdRWlI3TXNWTzJ0eFA2blpVaHNYTnFjSV9RdGJ3cFA2S0hIdXdiSFhtZlc5N2NwNXY0b3hadUhPaDRSeENQQQ?oc=5",
+      "url": "https://news.google.com/rss/articles/CBMikgFBVV95cUxNODhBdThRM2xJcEs3YU5MT3ptdDNmZktHd2hKczNROHE3R1dpV1JnbzNkdVAwS0hSa1p6Qi1uS3RnUnprZDdhT18xVnRPQWluQVdWUVdRWlI3TXNWTzJ0eFA2blpVaHNYTnFjSV9RdGJ3cFA2S0hIdXdiSFhtZlc5N2NwNXY0b3hadUhPaDRSeENQQdIBkgFBVV95cUxNODhBdThRM2xJcEs3YU5MT3ptdDNmZktHd2hKczNROHE3R1dpV1JnbzNkdVAwS0hSa1p6Qi1uS3RnUnprZDdhT18xVnRPQWluQVdWUVdRWlI3TXNWTzJ0eFA2blpVaHNYTnFjSV9RdGJ3cFA2S0hIdXdiSFhtZlc5N2NwNXY0b3hadUhPaDRSeENQQQ?oc=5",
       "publication_evidence": [
         {
           "source": "at",
@@ -156,10 +141,10 @@
     },
     {
       "query": "Shohei Ohtani",
-      "title": "Dodgers Silver Slugger Finalists: Ohtani, Muncy",
-      "source": "DodgersBeat",
-      "at": "Sun, 15 Nov 2026 13:44:46 GMT",
-      "url": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxQVHYxdHF4NDRVSllqZVR3SlBoTENOQWMyVGU0YzQwVDZ6UU5yNTREUWpzcW9ja2pGNzJIOWpKU2lub0RmcXdFSFB4X09hbW16a3dhZC15dkJhMGVoT2hfa1Q4MS0wODNxZDh5MDR0cnZHTmRhMkt6Q1UtS3VMRm0ydUhKcTJpMFlP?oc=5",
+      "title": "Shohei Ohtani Fantasy Outlook & Stats",
+      "source": "FantasySP",
+      "at": "Sun, 15 Nov 2026 09:19:07 GMT",
+      "url": "https://news.google.com/rss/articles/CBMiZ0FVX3lxTE5Cb0t2WlpOa09OOGlDWWdQMU92UXJianJlNHBPMU9KcHRrUVZOanpjQUhwRlhtelNmYVBMdlJoVTMteDUzaUx6VWdBaUpCNlRlX01BWXRHZFpfbVZDSEx3U1ZZcUlOVEU?oc=5",
       "publication_evidence": [
         {
           "source": "at",
@@ -171,52 +156,14 @@
         }
       ],
       "published_date": "2026-11-15",
-      "jp": "ドジャースのシルバースラッガー賞ファイナリストは大谷とマンシー"
+      "jp": "大谷翔平のファンタジー展望と成績"
     },
     {
       "query": "Yu Darvish",
-      "title": "Padres Join Race for Japanese Pitcher Coming Off Dominant Season",
-      "source": "Yahoo Sports",
-      "at": "Sat, 14 Nov 2026 22:05:05 GMT",
-      "url": "https://news.google.com/rss/articles/CBMiigFBVV95cUxONjdHdjBTaUp4V3N4NDdKSEVxN0ZaMTJjLVFIZWNuQ0MwbWlGTmFHMGRTVWI4RnZzR21NMWFzWGwzM0FUMnczV2ppT1NXX3FnR2VILWFGV3VIMkRhaTNBSEJpc2dyNTd5YzVVTnZSdG1BekU2NjN4Nm92UjZaa25Ha0xSWElranJCVFE?oc=5",
-      "publication_evidence": [
-        {
-          "source": "at",
-          "date": "2026-11-14"
-        },
-        {
-          "source": "published_date",
-          "date": "2026-11-14"
-        }
-      ],
-      "published_date": "2026-11-14",
-      "jp": "圧倒的なシーズンを終えた日本人投手の獲得レースにパドレスも参戦"
-    },
-    {
-      "query": "Roki Sasaki",
-      "title": "Roki Sasaki Reveals Ambitious Dodgers Goal for 2027",
-      "source": "DodgersBeat",
-      "at": "Sat, 14 Nov 2026 23:43:30 GMT",
-      "url": "https://news.google.com/rss/articles/CBMifEFVX3lxTE0zckNVYjBZTEh2T0xxM0tqNFM3RS1haTdtMGVEeTctXzF2WTJoSXI0b044Rmc1dUtURlp2VkRxalNMU1Z0Z0hPZTFvODlCN051M1dMOE9FellHVEozOWFhSTRFeWRzRG1WZG56LTNnd1NNQlRZZGxZZTlSSzM?oc=5",
-      "publication_evidence": [
-        {
-          "source": "at",
-          "date": "2026-11-14"
-        },
-        {
-          "source": "published_date",
-          "date": "2026-11-14"
-        }
-      ],
-      "published_date": "2026-11-14",
-      "jp": "佐々木朗希、2027年に向けたドジャースでの大きな目標を明かす"
-    },
-    {
-      "query": "Roki Sasaki",
-      "title": "Dodgers Visit Shoki Oda in Japan and Lay Out Their Pitching Development Plan",
-      "source": "DodgersBeat",
-      "at": "Sun, 15 Nov 2026 01:47:45 GMT",
-      "url": "https://news.google.com/rss/articles/CBMieEFVX3lxTE9GNGkzUGtHM3R3RTlTcnFjd09CSzVieVFpT0EzTjJTdk1PZTBTUHJDd3BLeFl6bHNuck94a1lXMGdVZS1IRmZOY2lib1AxU3VsZWxZaVRoc3paNzFLUF9MX2FpaV9EeS1sTzBlZnpLY1RjUktPX2tZcg?oc=5",
+      "title": "White Sox Interested In Japanese Pitcher Hiromi Itoh: Romero",
+      "source": "Heavy.com",
+      "at": "Sun, 15 Nov 2026 20:39:49 GMT",
+      "url": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxPZzllbmFuZUdYRFpxd1Z1cDljeDRKZ1BtTkgza25idExSVGtWbzNUeE9NWDd6SHNGd1hiaDdBOWVpUWZBbnhVNjdPaFQzcEozeDRpUkJUMUVTX0liOVBxQmVJVV80NGJneVotUU9VbmJPbXpNRXhHYmI5QXlCWlJ4V1pLX25QQ2tiRXRaSTBVdlFQUXFDVGZRV2hYSTZYR3FGenRKaVJEcjhtazQ?oc=5",
       "publication_evidence": [
         {
           "source": "at",
@@ -228,14 +175,33 @@
         }
       ],
       "published_date": "2026-11-15",
-      "jp": "ドジャース、日本でShoki Odaを訪問し投手育成プランを提示"
+      "jp": "ホワイトソックス、日本人投手の伊藤大海に関心か:ロメロ記者"
     },
     {
       "query": "Yoshinobu Yamamoto",
-      "title": "Ohtani MVP Finalist; Yamamoto Misses Cy Young Cut",
+      "title": "Yamamoto’s Agent Joel Wolfe Blasts MLB Lockout Approach",
       "source": "DodgersBeat",
-      "at": "Sun, 15 Nov 2026 03:44:54 GMT",
-      "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxQQWVqclRjZGU4UUdBbzZGWi1FckduWVNkZHdSdVdxdWtkd2tiOXNvbE1id1lDaHR0UUtBMGY4cmY3STREd3NydXFfbVRhU0Z5US12Nld6MnozSnE2Mi1pOTk2VlNiTlJNdlhSdG9ZcEQxUXZyM3FnblNETVlaZFRyM0dhemFEVmFTYWlpTmJZOEZ2NjQwaU5jdW1IOEQxU1E?oc=5",
+      "at": "Mon, 16 Nov 2026 01:17:37 GMT",
+      "url": "https://news.google.com/rss/articles/CBMidkFVX3lxTE9PNmZ2aG5kRmZlOWNoQU9GRk1keGEwNGI4Q0wxNmFfcHBtNmszUHNxdDcxY01vdlRYWnZoUExZS2hzMmR6WjhXcTd3WDdJSVlKckpzUU5uZ1VzMVA0T0R5cWVoRnFRMGlTZmtWSTdSZVphOXc0NXc?oc=5",
+      "publication_evidence": [
+        {
+          "source": "at",
+          "date": "2026-11-16"
+        },
+        {
+          "source": "published_date",
+          "date": "2026-11-16"
+        }
+      ],
+      "published_date": "2026-11-16",
+      "jp": "山本由伸の代理人ジョエル・ウルフ氏、MLBのロックアウト対応を痛烈批判"
+    },
+    {
+      "query": "Yoshinobu Yamamoto",
+      "title": "MLB owners want a ceiling on player contracts | Follow the Money",
+      "source": "BVM Sports",
+      "at": "Sun, 15 Nov 2026 17:27:08 GMT",
+      "url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxPYkU3QkE0R1pBeXRJSDJoeHllQVp0YjhCdWdaUGtKa0RLcHVUS1J6ajBLZ0cxQUd2dEtuODdCWlpOUnc5UE9uRzVvQ3JaZXNfelduTUx0R3kzRXVyUDl0RGhXdXVuYm1ISkpOeHRzc3JoOWJjYWNGLWlERWozWXpPc21iRWVNUUE0SE5JaG9CZ21kUnpsOGJDMXg0eVc?oc=5",
       "publication_evidence": [
         {
           "source": "at",
@@ -247,7 +213,26 @@
         }
       ],
       "published_date": "2026-11-15",
-      "jp": "大谷がMVPファイナリストに、山本由伸はサイ・ヤング賞の最終候補から漏れる"
+      "jp": "MLBオーナー陣、選手契約に上限設定を要望|Follow the Money"
+    },
+    {
+      "query": "Yusei Kikuchi",
+      "title": "Lotte Developmental Draft Pick 2, Toma Sasaki: \"I am most confident in my splitter that can get a struck out.\" Goal for the future is to be the strike out king | Pacific League.com | Professional baseball",
+      "source": "パ・リーグ.com",
+      "at": "Sun, 15 Nov 2026 22:51:04 GMT",
+      "url": "https://news.google.com/rss/articles/CBMiX0FVX3lxTE00Y2RLNUR0SnA3czdSR2FBVUVQbklabnB5OUVTR2lNYjdUY3hGVWJCUDZoTkctRTNkWkVqVTRCUHk0T2FyLUlUVXRGSnRHQTAwX0JvUXNoNHlyS0J2VHhV?oc=5",
+      "publication_evidence": [
+        {
+          "source": "at",
+          "date": "2026-11-15"
+        },
+        {
+          "source": "published_date",
+          "date": "2026-11-15"
+        }
+      ],
+      "published_date": "2026-11-15",
+      "jp": "ロッテ育成2位の佐々木斗真「一番自信があるのは三振が取れるスプリット」 将来の目標は奪三振王|パ・リーグ.com|プロ野球"
     }
   ],
   "headline_pool": [
@@ -291,7 +276,7 @@
       "query": "Shohei Ohtani",
       "title": "Shohei Ohtani ‘Frustrated’ By Difficult 2026 Season",
       "source": "DodgerBlue.com",
-      "url": "https://news.google.com/rss/articles/CBMijAFBVV95cUxQbW1qdkh0MFlndFBrUjZvd0VYSU1qMHRod3BNTENja0REdXpQeFpSU1dzTWJJdmtxVGxTRGtMdVdiaDBSSDNqZ2xENVZWeHV2RGVMVzczWi1fZ3lsVnY0RGlGazlBSWkxZEVtZG5vaUFfYi1vanBXb1FzTDZXMkR3V2JpTHQ0SGt0WkZIV9IBkgFBVV95cUxNODhBdThRM2xJcEs3YU5MT3ptdDNmZktHd2hKczNROHE3R1dpV1JnbzNkdVAwS0hSa1p6Qi1uS3RnUnprZDdhT18xVnRPQWluQVdWUVdRWlI3TXNWTzJ0eFA2blpVaHNYTnFjSV9RdGJ3cFA2S0hIdXdiSFhtZlc5N2NwNXY0b3hadUhPaDRSeENQQQ?oc=5",
+      "url": "https://news.google.com/rss/articles/CBMikgFBVV95cUxNODhBdThRM2xJcEs3YU5MT3ptdDNmZktHd2hKczNROHE3R1dpV1JnbzNkdVAwS0hSa1p6Qi1uS3RnUnprZDdhT18xVnRPQWluQVdWUVdRWlI3TXNWTzJ0eFA2blpVaHNYTnFjSV9RdGJ3cFA2S0hIdXdiSFhtZlc5N2NwNXY0b3hadUhPaDRSeENQQdIBkgFBVV95cUxNODhBdThRM2xJcEs3YU5MT3ptdDNmZktHd2hKczNROHE3R1dpV1JnbzNkdVAwS0hSa1p6Qi1uS3RnUnprZDdhT18xVnRPQWluQVdWUVdRWlI3TXNWTzJ0eFA2blpVaHNYTnFjSV9RdGJ3cFA2S0hIdXdiSFhtZlc5N2NwNXY0b3hadUhPaDRSeENQQQ?oc=5",
       "at": "Sun, 15 Nov 2026 16:15:12 GMT",
       "publication_evidence": [
         {
@@ -307,10 +292,10 @@
     },
     {
       "query": "Shohei Ohtani",
-      "title": "Dodgers Silver Slugger Finalists: Ohtani, Muncy",
-      "source": "DodgersBeat",
-      "url": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxQVHYxdHF4NDRVSllqZVR3SlBoTENOQWMyVGU0YzQwVDZ6UU5yNTREUWpzcW9ja2pGNzJIOWpKU2lub0RmcXdFSFB4X09hbW16a3dhZC15dkJhMGVoT2hfa1Q4MS0wODNxZDh5MDR0cnZHTmRhMkt6Q1UtS3VMRm0ydUhKcTJpMFlP?oc=5",
-      "at": "Sun, 15 Nov 2026 13:44:46 GMT",
+      "title": "Shohei Ohtani Fantasy Outlook & Stats",
+      "source": "FantasySP",
+      "url": "https://news.google.com/rss/articles/CBMiZ0FVX3lxTE5Cb0t2WlpOa09OOGlDWWdQMU92UXJianJlNHBPMU9KcHRrUVZOanpjQUhwRlhtelNmYVBMdlJoVTMteDUzaUx6VWdBaUpCNlRlX01BWXRHZFpfbVZDSEx3U1ZZcUlOVEU?oc=5",
+      "at": "Sun, 15 Nov 2026 09:19:07 GMT",
       "publication_evidence": [
         {
           "source": "at",
@@ -325,46 +310,10 @@
     },
     {
       "query": "Yu Darvish",
-      "title": "Padres Join Race for Japanese Pitcher Coming Off Dominant Season",
-      "source": "Yahoo Sports",
-      "url": "https://news.google.com/rss/articles/CBMiigFBVV95cUxONjdHdjBTaUp4V3N4NDdKSEVxN0ZaMTJjLVFIZWNuQ0MwbWlGTmFHMGRTVWI4RnZzR21NMWFzWGwzM0FUMnczV2ppT1NXX3FnR2VILWFGV3VIMkRhaTNBSEJpc2dyNTd5YzVVTnZSdG1BekU2NjN4Nm92UjZaa25Ha0xSWElranJCVFE?oc=5",
-      "at": "Sat, 14 Nov 2026 22:05:05 GMT",
-      "publication_evidence": [
-        {
-          "source": "at",
-          "date": "2026-11-14"
-        },
-        {
-          "source": "published_date",
-          "date": "2026-11-14"
-        }
-      ],
-      "corroborated_by": []
-    },
-    {
-      "query": "Roki Sasaki",
-      "title": "Roki Sasaki Reveals Ambitious Dodgers Goal for 2027",
-      "source": "DodgersBeat",
-      "url": "https://news.google.com/rss/articles/CBMifEFVX3lxTE0zckNVYjBZTEh2T0xxM0tqNFM3RS1haTdtMGVEeTctXzF2WTJoSXI0b044Rmc1dUtURlp2VkRxalNMU1Z0Z0hPZTFvODlCN051M1dMOE9FellHVEozOWFhSTRFeWRzRG1WZG56LTNnd1NNQlRZZGxZZTlSSzM?oc=5",
-      "at": "Sat, 14 Nov 2026 23:43:30 GMT",
-      "publication_evidence": [
-        {
-          "source": "at",
-          "date": "2026-11-14"
-        },
-        {
-          "source": "published_date",
-          "date": "2026-11-14"
-        }
-      ],
-      "corroborated_by": []
-    },
-    {
-      "query": "Roki Sasaki",
-      "title": "Dodgers Visit Shoki Oda in Japan and Lay Out Their Pitching Development Plan",
-      "source": "DodgersBeat",
-      "url": "https://news.google.com/rss/articles/CBMieEFVX3lxTE9GNGkzUGtHM3R3RTlTcnFjd09CSzVieVFpT0EzTjJTdk1PZTBTUHJDd3BLeFl6bHNuck94a1lXMGdVZS1IRmZOY2lib1AxU3VsZWxZaVRoc3paNzFLUF9MX2FpaV9EeS1sTzBlZnpLY1RjUktPX2tZcg?oc=5",
-      "at": "Sun, 15 Nov 2026 01:47:45 GMT",
+      "title": "White Sox Interested In Japanese Pitcher Hiromi Itoh: Romero",
+      "source": "Heavy.com",
+      "url": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxPZzllbmFuZUdYRFpxd1Z1cDljeDRKZ1BtTkgza25idExSVGtWbzNUeE9NWDd6SHNGd1hiaDdBOWVpUWZBbnhVNjdPaFQzcEozeDRpUkJUMUVTX0liOVBxQmVJVV80NGJneVotUU9VbmJPbXpNRXhHYmI5QXlCWlJ4V1pLX25QQ2tiRXRaSTBVdlFQUXFDVGZRV2hYSTZYR3FGenRKaVJEcjhtazQ?oc=5",
+      "at": "Sun, 15 Nov 2026 20:39:49 GMT",
       "publication_evidence": [
         {
           "source": "at",
@@ -373,42 +322,6 @@
         {
           "source": "published_date",
           "date": "2026-11-15"
-        }
-      ],
-      "corroborated_by": []
-    },
-    {
-      "query": "Yoshinobu Yamamoto",
-      "title": "Ohtani MVP Finalist; Yamamoto Misses Cy Young Cut",
-      "source": "DodgersBeat",
-      "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxQQWVqclRjZGU4UUdBbzZGWi1FckduWVNkZHdSdVdxdWtkd2tiOXNvbE1id1lDaHR0UUtBMGY4cmY3STREd3NydXFfbVRhU0Z5US12Nld6MnozSnE2Mi1pOTk2VlNiTlJNdlhSdG9ZcEQxUXZyM3FnblNETVlaZFRyM0dhemFEVmFTYWlpTmJZOEZ2NjQwaU5jdW1IOEQxU1E?oc=5",
-      "at": "Sun, 15 Nov 2026 03:44:54 GMT",
-      "publication_evidence": [
-        {
-          "source": "at",
-          "date": "2026-11-15"
-        },
-        {
-          "source": "published_date",
-          "date": "2026-11-15"
-        }
-      ],
-      "corroborated_by": []
-    },
-    {
-      "query": "Yoshinobu Yamamoto",
-      "title": "Dodgers turn to Tarik Skubal for NLCS Game 1 opener vs Brewers; Yoshinobu Yamamoto set for",
-      "source": "WLUK",
-      "url": "https://news.google.com/rss/articles/CBMi6gFBVV95cUxOYi1qZm9zQTVLbE9zTEswVzJDVjRhaDJiQ2xVMUMtTU51QVBwVk8wTmZsTjFxVFBDTGFaU2ExR0ItM0hPcWJwNU0yejNwZVhxOXVVSUhUYUJKTGlIM0VtemRjem8xUnhsOFpxUU1iRC01dGJIaG9GSGp2VVNCVk5SNmxCU0REM3lMOGZ6bHZZdkg4ZTRGUERWUm1LZUs1YkFScHBtM3hFU0drZU9RWTlzZ0FfWHZxZGZ6dnpRREs2Y1QxUXFjSXE4allvc3V0RFRYOWV3MU5YcDFSa0g5SWQ3Z1o4UktYR0VfNUE?oc=5",
-      "at": "Sat, 14 Nov 2026 21:47:30 GMT",
-      "publication_evidence": [
-        {
-          "source": "at",
-          "date": "2026-11-14"
-        },
-        {
-          "source": "published_date",
-          "date": "2026-11-14"
         }
       ],
       "corroborated_by": []
@@ -418,7 +331,43 @@
       "title": "Yamamoto’s Agent Joel Wolfe Blasts MLB Lockout Approach",
       "source": "DodgersBeat",
       "url": "https://news.google.com/rss/articles/CBMidkFVX3lxTE9PNmZ2aG5kRmZlOWNoQU9GRk1keGEwNGI4Q0wxNmFfcHBtNmszUHNxdDcxY01vdlRYWnZoUExZS2hzMmR6WjhXcTd3WDdJSVlKckpzUU5uZ1VzMVA0T0R5cWVoRnFRMGlTZmtWSTdSZVphOXc0NXc?oc=5",
-      "at": "Sun, 15 Nov 2026 03:27:47 GMT",
+      "at": "Mon, 16 Nov 2026 01:17:37 GMT",
+      "publication_evidence": [
+        {
+          "source": "at",
+          "date": "2026-11-16"
+        },
+        {
+          "source": "published_date",
+          "date": "2026-11-16"
+        }
+      ],
+      "corroborated_by": []
+    },
+    {
+      "query": "Yoshinobu Yamamoto",
+      "title": "MLB owners want a ceiling on player contracts | Follow the Money",
+      "source": "BVM Sports",
+      "url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxPYkU3QkE0R1pBeXRJSDJoeHllQVp0YjhCdWdaUGtKa0RLcHVUS1J6ajBLZ0cxQUd2dEtuODdCWlpOUnc5UE9uRzVvQ3JaZXNfelduTUx0R3kzRXVyUDl0RGhXdXVuYm1ISkpOeHRzc3JoOWJjYWNGLWlERWozWXpPc21iRWVNUUE0SE5JaG9CZ21kUnpsOGJDMXg0eVc?oc=5",
+      "at": "Sun, 15 Nov 2026 17:27:08 GMT",
+      "publication_evidence": [
+        {
+          "source": "at",
+          "date": "2026-11-15"
+        },
+        {
+          "source": "published_date",
+          "date": "2026-11-15"
+        }
+      ],
+      "corroborated_by": []
+    },
+    {
+      "query": "Yusei Kikuchi",
+      "title": "Lotte Developmental Draft Pick 2, Toma Sasaki: \"I am most confident in my splitter that can get a struck out.\" Goal for the future is to be the strike out king | Pacific League.com | Professional baseball",
+      "source": "パ・リーグ.com",
+      "url": "https://news.google.com/rss/articles/CBMiX0FVX3lxTE00Y2RLNUR0SnA3czdSR2FBVUVQbklabnB5OUVTR2lNYjdUY3hGVWJCUDZoTkctRTNkWkVqVTRCUHk0T2FyLUlUVXRGSnRHQTAwX0JvUXNoNHlyS0J2VHhV?oc=5",
+      "at": "Sun, 15 Nov 2026 22:51:04 GMT",
       "publication_evidence": [
         {
           "source": "at",
@@ -433,100 +382,154 @@
     },
     {
       "query": "Shota Imanaga",
-      "title": "Cubs Rotation Outlook: 7 Starters Become Free Agents for 2027",
-      "source": "BVM Sports",
-      "url": "https://news.google.com/rss/articles/CBMimgFBVV95cUxOVWtqOXk1UXo1V0VsdHE3aGVSZ1FqZmZkWWMzbEttS2ZiZEZWd0NyYnc4dGpLYlNMM1RqaWpiaEZ5VjlRMWhoWUFvRlJlbW1KeEFjTWFLc19OYm1MamtuakkxbUdubVIzNjhlVGQ1d2dkdWRmNzdyUEtBT2ZfbW8wVjZWUl9iZnZyZGlfTW83UlBseGVQNkN6OW5R?oc=5",
-      "at": "Sun, 15 Nov 2026 14:39:42 GMT",
+      "title": "IMPACT: Detroit Tigers Eye Raisel Iglesias and OTHERS—Could These Moves Bolster 2027?",
+      "source": "fox61.com",
+      "url": "https://news.google.com/rss/articles/CBMinAJBVV95cUxNOWtPT090b2h4anBVc2JkV1FKcWgtcnRxN0M3eHBJdmJrTWQtVWpYNkZncWlxZm4yYzl2ZG5GVGU3Y0tVanRNRVlBZGlkVmxsa3ZuWU9HV2tDLU9VRldfcUVHWUdBWm5WTEpuaHRMUVltOGRXOXY5UDVRelVONExuYjNITlpJNkJOUjE1WE5HeWdSbDVWYjA1djJ3ZTNaLUpfeTFua1BzdE15TXk1UElyZDJ2S1VuUkpuMmFTbElraHlJd0VHNTlfaEUyVy1uaE84WDh5TUU1UmVsRWFBUk1ObXg0b0tmTjJCTl9hNTNfZjdsM2VqSnpPTm9jN3RIeXBIcjJzRUxNdDJlQk1qVzBmVGQ3RnpVaGhNX1lhaw?oc=5",
+      "at": "Mon, 16 Nov 2026 03:00:00 GMT",
       "publication_evidence": [
         {
           "source": "at",
-          "date": "2026-11-15"
+          "date": "2026-11-16"
         },
         {
           "source": "published_date",
-          "date": "2026-11-15"
+          "date": "2026-11-16"
         }
       ],
       "corroborated_by": []
     },
     {
       "query": "Seiya Suzuki",
-      "title": "Reasons Why Blue Jays Top Free Agent Acquisition Has to Be Seiya Suzuki",
-      "source": "Sports Illustrated",
-      "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxPcEYwSUlUYnFPNUNzNXlQWnFob1czc01NUnZxSy1nU3hvb1RhcXlELWttWlFFT1BpV0tIMldrYzZKMTZ2azJFd29iZ3FVUGhCSWV1MnEwQ2NDT2l2bFBTREZGMTRCLTU3bVd2UWNTdUpBelpIdld3dnlSVVVMb3VJY1MzQ2hQQ2JHUnp2YzZnMmVlOWZ5Z2MzRnpNZGh5dGs?oc=5",
-      "at": "Sat, 14 Nov 2026 21:00:00 GMT",
-      "publication_evidence": [
-        {
-          "source": "at",
-          "date": "2026-11-14"
-        },
-        {
-          "source": "published_date",
-          "date": "2026-11-14"
-        }
-      ],
-      "corroborated_by": []
-    },
-    {
-      "query": "Seiya Suzuki",
-      "title": "Kelly, Suzuki Reunions Seem Unlikely as Cubs Could Save Money with 'Unproven Guys' -",
-      "source": "Cubs Insider",
-      "url": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxNUUMxQmtGQ0RpRFlzUGlqMWZSbVB3bGc0NnZDVmNLQ0o2UDdVWmJRcE5HNE04dHBDMUE3U1QyYjk3dVpkaVpYaG5RbUJnaUxKbi1YX182RUpnMHp5aGRlRERnazZ2MXNZY0k0UTY4Q21lZlFOeVB5cHBXMUl4UUdVblQ0cHRNZTdqSHNJVVpMM25YNFMwb0xqemo2VlQ2VWNRQS1ZWENONGEzQUtiR0x1QlV3M0ZMVlNKdFdF?oc=5",
-      "at": "Sun, 15 Nov 2026 05:16:26 GMT",
-      "publication_evidence": [
-        {
-          "source": "at",
-          "date": "2026-11-15"
-        },
-        {
-          "source": "published_date",
-          "date": "2026-11-15"
-        }
-      ],
-      "corroborated_by": []
-    },
-    {
-      "query": "Seiya Suzuki",
-      "title": "Chicago Cubs Get Expected News About Seiya Suzuki",
+      "title": "Blue Jays Given New Connection to Seiya Suzuki",
       "source": "Yahoo Sports",
-      "url": "https://news.google.com/rss/articles/CBMilwFBVV95cUxORENSMVktSEpXR21nbUl4WkE1RkE2WnY3NFhZY3B5S3hEbGVmTF9YQ3pDTXY5WnB3anNkemNaVUJnSXlhLVlqUDZIMWhzeVJaV2VWaXpIUWx2cEd1MEdrWjBZUkRGam9MazdDaGJhNkhjbkFrX1lqeDY2MElrZEtYS0pIUFhCXzhFUXRiSEhwckFzTzdzR3U0?oc=5",
-      "at": "Sat, 14 Nov 2026 19:06:37 GMT",
+      "url": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxQQ0JkcjBIVm5IcWZlaWdPX2thVHhHMlV5VVBkQ0Nwc0lMSVhjTTkzME5HMVE3MV9qelpwczJUVzVELXRsb0QyMEllMTdkZnBWa1R2R2RQMGRWcW5iZDBZWktsQmJTaXRfb09EZFA2bE0zaEZJWjN1eUFBaFlSNlJPZzNnOWMwdHNL?oc=5",
+      "at": "Sun, 15 Nov 2026 18:55:13 GMT",
       "publication_evidence": [
         {
           "source": "at",
-          "date": "2026-11-14"
+          "date": "2026-11-15"
         },
         {
           "source": "published_date",
-          "date": "2026-11-14"
+          "date": "2026-11-15"
+        }
+      ],
+      "corroborated_by": []
+    },
+    {
+      "query": "Yuki Matsui",
+      "title": "2026 MLB Season Recap: San Diego Padres",
+      "source": "New Baseball Media",
+      "url": "https://news.google.com/rss/articles/CBMid0FVX3lxTE1obWVIYjQ1eDMxQmpNZjlwRXc2SEo5cFpmLWJjYmxaRUstU0RvbDc2dWYwRUJZT1NTQW13aE4tdzFDM1R4bXk5eHRaRUk4d2hzT3U3WU5MNUtOTlRmYklENlNvdmF5ZkJEMUdRR1FFWmVlNy1heG9N?oc=5",
+      "at": "Mon, 16 Nov 2026 05:01:17 GMT",
+      "publication_evidence": [
+        {
+          "source": "at",
+          "date": "2026-11-16"
+        },
+        {
+          "source": "published_date",
+          "date": "2026-11-16"
+        }
+      ],
+      "corroborated_by": []
+    },
+    {
+      "query": "Kazuma Okamoto",
+      "title": "Max Scherzer makes big decision regarding his future in the MLB",
+      "source": "Blue Jays Insider",
+      "url": "https://news.google.com/rss/articles/CBMivwFBVV95cUxQU24yQ194WGdnbkZPX1VXeVNsb2Zqc3pCRmxSbGxiRlRlRU1zWWVFZTB1TmlJc1FXVkpzd3hibWR5eGdrRmJrZXBqLS1RTDF0cEVaWnEtSU5ORzBuMTBteW5kOVBBaHpkdkpxckxFSnFFLUlMdXRPcGhNOEhaZnFmMmR4Nnp1NU1tQ012MktPcGVoZXB1eEg3a0FoMnBFUFJDR19mU0VZNm1DWEZmcXh5LVZhME4ySXRpNjRzT3Foaw?oc=5",
+      "at": "Sun, 15 Nov 2026 23:46:10 GMT",
+      "publication_evidence": [
+        {
+          "source": "at",
+          "date": "2026-11-15"
+        },
+        {
+          "source": "published_date",
+          "date": "2026-11-15"
+        }
+      ],
+      "corroborated_by": []
+    },
+    {
+      "query": "Munetaka Murakami",
+      "title": "HIGHLIGHTS: Tristan Peters Homers In FOURTH Straight Game To Secure White Sox Win (8.25.26) Cami Kepke (aCa0NeWSBG)",
+      "source": "Unisba Media",
+      "url": "https://news.google.com/rss/articles/CBMigAFBVV95cUxNWHl5UTd3aVQxR1E3LXdUS2lkc2wxTnYzN1RmdTZxUmhUNHJiY19sbzZidGl2NDFwWC1kQlExTElpTGZMcHQ3RU92b2d3aFFqSVdZV2VvU3l2Q2tqeVJCS0c4WG9FMVdTUjFjaHlNdkZsSUdhR1NRQzJrSVNhYld3Zg?oc=5",
+      "at": "Sun, 15 Nov 2026 14:13:13 GMT",
+      "publication_evidence": [
+        {
+          "source": "at",
+          "date": "2026-11-15"
+        },
+        {
+          "source": "published_date",
+          "date": "2026-11-15"
+        }
+      ],
+      "corroborated_by": []
+    },
+    {
+      "query": "Munetaka Murakami",
+      "title": "White Sox Could Follow Murakami Signing With More Japanese Stars",
+      "source": "roundtable.io",
+      "url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxPVTk1MUVDZ2tXNDVlSEluaTFvTEdZOWg2RG03WFZoUGhJUk5RblFnRnE0TWs1amtGM0dRaHU0YUhWYU4ta3ltTVZ5S2hfUElVQUpWeUkxcDBXbmstSmQ3VGxObnNmYjU2QzFReW5TVTAtWXFXeGRUNTVCVGZna1oxTGlCSXJ4OFhXZFVVdWZXRHVDOElDMFlnUmhLS0dUUFhlWWpGZ19mR1o1b0FVQmF6b1dB?oc=5",
+      "at": "Sun, 15 Nov 2026 23:34:23 GMT",
+      "publication_evidence": [
+        {
+          "source": "at",
+          "date": "2026-11-15"
+        },
+        {
+          "source": "published_date",
+          "date": "2026-11-15"
         }
       ],
       "corroborated_by": []
     },
     {
       "query": "Tatsuya Imai",
-      "title": "Corbin Burnes Fantasy Outlook & Stats",
-      "source": "FantasySP",
-      "url": "https://news.google.com/rss/articles/CBMiZ0FVX3lxTFBycjUzWm9HX1Q1eTM1M2ZPTk9EeFpmUHp5VEJDSEgtdkgyNlJ2MnVRM2NuSUJmd1k1cHhqcDZ4d3Rrb21VWUlHWVNLTVc0Nnd3U3dlcE5mdzVRYy1ra0tZTjVtM0FJMzQ?oc=5",
-      "at": "Sat, 14 Nov 2026 20:21:49 GMT",
+      "title": "Riding Tokyo’s LARGEST Roller Coaster?! Yomiuriland - Inagi, Japan | VLOG [2025] Tatsuya Imai (pAkSppqeyG)",
+      "source": "Unisba Media",
+      "url": "https://news.google.com/rss/articles/CBMiggFBVV95cUxQdEZJWkx4dVR1S1hZajFkaDdQWTRHT0ZWSlRqeWNXb1Uwc0xzTTQ5Vkd5WlpORF93Rmo4VVk5amszNmlxYlg3MXRVZUYtcDJfYnNwTnZLUWp4SVRwOVJVa2FoYVNYOVZkV1NldnJ1MG9sbVpSOVVvdXhSaDBOM3JMSzNB?oc=5",
+      "at": "Sun, 15 Nov 2026 15:33:24 GMT",
       "publication_evidence": [
         {
           "source": "at",
-          "date": "2026-11-14"
+          "date": "2026-11-15"
         },
         {
           "source": "published_date",
-          "date": "2026-11-14"
+          "date": "2026-11-15"
+        }
+      ],
+      "corroborated_by": []
+    },
+    {
+      "query": "Lars Nootbaar",
+      "title": "Video - Slower Swing Might Put Blossoming Cardinals Prospect on MLB Fast Track",
+      "source": "roundtable.io",
+      "url": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxQRmk0MEFyeVNwbGU3QS1GUmFfSmNFMlA3LV9USU1yZk1XcUdqUjNXU3JnNGxpQ2ZEMElheFRQOTQ5R29YZUwzcEYwYlJlS3RiRThxdW02NC1fZFBDV25kWUtfQzdtVWtEUlRNV2ZmX3p2R3pqcWZVUUYyX1JJNlNuQi1HMEE3b0d1VHhpbjN2V0VVT1dnRTRhbnZrOHkxMHRiWV8yRDQyTndGelNMRzdEOVVHX2w5SnRFMVRv?oc=5",
+      "at": "Sun, 15 Nov 2026 18:47:09 GMT",
+      "publication_evidence": [
+        {
+          "source": "at",
+          "date": "2026-11-15"
+        },
+        {
+          "source": "published_date",
+          "date": "2026-11-15"
         }
       ],
       "corroborated_by": []
     },
     {
       "query": "MLB playoff race",
-      "title": "SEC elimination day? South Carolina, Kentucky, Missouri and LSU exit Playoff race",
+      "title": "Oklahoma takes out frustration on Ole Miss, knocks Rebels from Playoff race",
       "source": "The New York Times",
-      "url": "https://news.google.com/rss/articles/CBMijwFBVV95cUxNZlA4d3h3ZjlQYnBHcEFpLVh5UG9lYWg1RERaRFJTLUxvX0UzOEpxM0pTZ0lRekExWTVHSldSejN0d2JvRkxzRVc1dlZfQ1IxYjJFY2s4bF9iUEVTbk5PbUdxYVVMWFZKQzk1N0tWY0xTN0xoa09FamdfZUJXZWZIUXBqWkttV3VITU9WQnJKdw?oc=5",
-      "at": "Sun, 15 Nov 2026 14:30:00 GMT",
+      "url": "https://news.google.com/rss/articles/CBMikwFBVV95cUxPQjdaT3BFeXpQZFJwZk9RQXFUT25VVTd4d3dBdFBJQndsYkxZazJJMnhsdl9ZR0J2RTF6VVo5SlVyYnJqTUprUW83cmljdnpHMVJ2aWJxTHhtZG1zRnhmYmdUUkFidk9kVDlFSlZOSkxJWGdiazR2RnFJdkEyejBVdFZ1OU5OTUNQU2djcDVmZDFYTkk?oc=5",
+      "at": "Sun, 15 Nov 2026 22:01:51 GMT",
       "publication_evidence": [
         {
           "source": "at",
@@ -562,7 +565,25 @@
       "title": "The Athletic’s NFL Simulator 2026: Live forecast of playoff picture and outcomes for every team",
       "source": "The New York Times",
       "url": "https://news.google.com/rss/articles/CBMihwFBVV95cUxNdDZ1bXc2WHpRS0tsb25VdjhNWFRJQ3IzUmtHNTQtLVh4cFdkWTlGeE9MZlZaMWlzaURNQnNESHA2d1dCelV4eU1UVm1ObVpFbUVNNEFiOXE0dVNwYUtzTXlRbE5ncnN4eDBVYlJLckpRb0JLYUx5OEZNM2xHZWo4VFgxSnp6dFE?oc=5",
-      "at": "Sun, 15 Nov 2026 14:34:05 GMT",
+      "at": "Mon, 16 Nov 2026 04:27:24 GMT",
+      "publication_evidence": [
+        {
+          "source": "at",
+          "date": "2026-11-16"
+        },
+        {
+          "source": "published_date",
+          "date": "2026-11-16"
+        }
+      ],
+      "corroborated_by": []
+    },
+    {
+      "query": "MLB playoff race",
+      "title": "SEC elimination day? South Carolina, Kentucky, Missouri and LSU exit Playoff race - The Athletic",
+      "source": "The New York Times",
+      "url": "https://news.google.com/rss/articles/CBMijwFBVV95cUxNZlA4d3h3ZjlQYnBHcEFpLVh5UG9lYWg1RERaRFJTLUxvX0UzOEpxM0pTZ0lRekExWTVHSldSejN0d2JvRkxzRVc1dlZfQ1IxYjJFY2s4bF9iUEVTbk5PbUdxYVVMWFZKQzk1N0tWY0xTN0xoa09FamdfZUJXZWZIUXBqWkttV3VITU9WQnJKdw?oc=5",
+      "at": "Sun, 15 Nov 2026 14:30:00 GMT",
       "publication_evidence": [
         {
           "source": "at",
@@ -577,10 +598,46 @@
     },
     {
       "query": "MLB playoff race",
-      "title": "New England Patriots 2026 NFL Playoff Simulator",
+      "title": "'Time is running out.' How Texans fumbled a golden opportunity to get back into the playoff race.",
+      "source": "Yahoo Sports",
+      "url": "https://news.google.com/rss/articles/CBMiiwFBVV95cUxOajl6V3BfMU9mbFVDTTlvQlNvcnNzSUQ0V1ZnRlJCb2d5c1phRERxLXRGUDZERkpHaVhtMjNVTFd3QUVzN2Fka0tleFNmZTBDWjRtNzRVYTczM2hpa2dHN3UxTFVKRjV5SXIzQjlUVVZjQ05nSDFaZ2JUbzNDN3UzNmhCRTFqWWM5elVB?oc=5",
+      "at": "Mon, 16 Nov 2026 02:20:00 GMT",
+      "publication_evidence": [
+        {
+          "source": "at",
+          "date": "2026-11-16"
+        },
+        {
+          "source": "published_date",
+          "date": "2026-11-16"
+        }
+      ],
+      "corroborated_by": []
+    },
+    {
+      "query": "MLB playoff race",
+      "title": "Cleveland Browns 2026 NFL Playoff Simulator",
       "source": "The New York Times",
-      "url": "https://news.google.com/rss/articles/CBMivAFBVV95cUxQOWw4LVBqUzEyWkc1YkJBYWRudHZxTGQ3bXdBS2gwTmtRYnBHVC1EY0xzZEx3cm1nNHlqbUx0RDZkN1BLUV9aRUpLU2pjWkd0TG1pRUNYZEtZc3FIQjc0TnktRldCYTh5UUtGUXl3MXZGYzM1cjRWamVWMF94TjQyeUtCZHhSMGlaYlhib2luNmpCTGE2VkJrOHZsck9IbVFIblgtVE9fYTAtYjFDNlNIS2dIMzlaZXVKUE1XTw?oc=5",
-      "at": "Sun, 15 Nov 2026 14:34:05 GMT",
+      "url": "https://news.google.com/rss/articles/CBMitwFBVV95cUxQNjkxb25mbFVxUHhPMXhuOGh6cDA2T2pWbE1LS1dJR3RCZWxIVXhVaXQtR2VSaHBfUVV3U1JPMFlCRkZfLXhZQnd4Z2JFLXhXN2JwdG01Y3NsTGppMWhfaWZvaUNFckJIU25ST0xMbU8zUzBYWGN6NEZIamNSLTEzY1JMLWR6NXlxLWxtaUEtMWpGRVdPTWpKenJtVXFBeEJVQU0zNFhFcUw1MVNuV0VkbTZiVl9DWU0?oc=5",
+      "at": "Mon, 16 Nov 2026 01:23:26 GMT",
+      "publication_evidence": [
+        {
+          "source": "at",
+          "date": "2026-11-16"
+        },
+        {
+          "source": "published_date",
+          "date": "2026-11-16"
+        }
+      ],
+      "corroborated_by": []
+    },
+    {
+      "query": "MLB wild card",
+      "title": "Phillies’ latest minor-league signing is another pitching wild card as rotation hunt continues",
+      "source": "That Balls Outta Here",
+      "url": "https://news.google.com/rss/articles/CBMisgJBVV95cUxPbWtwVWFTZE1CcFZTaDByejJka1AzdFozX0VTWnE3YlF0UjVzMmVHSlF2bjVNR1U5aGdQRjBlUVBqTDFxQzAxTGRQQVRJWVlqMUxzNFNISzdEd2ZYdmtqQm95eGJCMGRhZnItc3JpeFc2U3Bral9BajRJQWRXWDB1QmJzTE9mY09QN1BabEZtYzZnNV90eTBsU1A2dW90dHU0a2VkdFBrRXdkZG5BWGxQSGxYMFZrd0xyV1U4UEVxb1VIdmQxWGhHNTlvSVhXSExvRkJZX1dQZTZ4NzdWWE1JYS1LSEh3TGFJMjY3N2RERnBhVndaaXFUbDVfTnBoZEVlQ2gyZUdMWU80R3phamZRa2R6Sko5XzhlajJnYXFGTVdNUWlqNkJwODdXQk9XVGFOQXc?oc=5",
+      "at": "Sun, 15 Nov 2026 18:30:00 GMT",
       "publication_evidence": [
         {
           "source": "at",
@@ -594,11 +651,11 @@
       "corroborated_by": []
     },
     {
-      "query": "MLB wild card",
-      "title": "Two moments that truly ended the golden age of Cardinals Baseball",
-      "source": "Redbird Rants",
-      "url": "https://news.google.com/rss/articles/CBMilAFBVV95cUxNSDlOTzFqVzBuYTd5cUU1ekFQcXQ3aDhUY3FCN2VKbXhPdDJMYWh2TEFwSDZibjBzbnk5M0dycmNmRWdxZzZtYkNoN3E1WmhyRjctT19Pd2VPWDRIdjdhSWwyRWh3aDZmZ2ZzWGIwWjkzcnNkbzNwd0o3dEw4ODl4cFphYXBLZWxsaDVxTS1WSU51TnYy?oc=5",
-      "at": "Sun, 15 Nov 2026 14:02:00 GMT",
+      "query": "MLB injury",
+      "title": "Kansas City Chiefs Consulted with MLB Doctors on Patrick Mahomes Injury",
+      "source": "Yahoo Sports",
+      "url": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxPb1NncFJLNHJBWDB1ZnVzbl9LZktQWUZOdG1pMHc1bVdZdS1OYmlpLUkzd0dMLTZHSjRWci1TdGx4YkR6d2xaODhySVd0XzQxS2JMTVc3cWpVNkUybkRORGxYakV3R3B2X01oSzVORVo0UHVVdVFaNWVxcWV1dHlqM3QzVUNEdUM4?oc=5",
+      "at": "Sun, 15 Nov 2026 18:37:41 GMT",
       "publication_evidence": [
         {
           "source": "at",
@@ -607,42 +664,6 @@
         {
           "source": "published_date",
           "date": "2026-11-15"
-        }
-      ],
-      "corroborated_by": []
-    },
-    {
-      "query": "MLB wild card",
-      "title": "MLB Postseason viewership hurt by World Series, but still on the high side",
-      "source": "Sports Media Watch",
-      "url": "https://news.google.com/rss/articles/CBMijgFBVV95cUxQSkY3WjVNTGFMcWNLNlE1eDQwbWlHZWZJN2lWU0RnQ1FuMDdXQ2F1cTA5X0Y2SVRIbXItemtmRnI1NlA1WWhEUlNfOTc2UmxoSVFXNU9jR3B4ckRZTVp3ajJjZ3BUZkhZU0dLRzhWM28wY2l4WFI4VFVfMUhlNFc1UzhlR25kVHZTdFdFTmpn?oc=5",
-      "at": "Sun, 15 Nov 2026 07:47:41 GMT",
-      "publication_evidence": [
-        {
-          "source": "at",
-          "date": "2026-11-15"
-        },
-        {
-          "source": "published_date",
-          "date": "2026-11-15"
-        }
-      ],
-      "corroborated_by": []
-    },
-    {
-      "query": "MLB wild card",
-      "title": "MLB Standings ; MLB Playoffs Picture 2026 ; MLB Standings Today ; MLB Wild Card Standings ; MLB 2026 Kelowna Weather (1LCb54guPX)",
-      "source": "Unisba Media",
-      "url": "https://news.google.com/rss/articles/CBMiZkFVX3lxTFBtUkVlZGpHaFpsUWppNXUxTFpyQzlkY3lGZWxZRE5tM0VCWEN1RjlFZmp5c0pKM0QtRG1PTU1DXzRITUQyZFVhWmc3ZTFjRm94anJZZGx1M0ZXcGp3X1dnN3BFVG8yQQ?oc=5",
-      "at": "Sat, 14 Nov 2026 20:08:59 GMT",
-      "publication_evidence": [
-        {
-          "source": "at",
-          "date": "2026-11-14"
-        },
-        {
-          "source": "published_date",
-          "date": "2026-11-14"
         }
       ],
       "corroborated_by": []
@@ -666,11 +687,11 @@
       "corroborated_by": []
     },
     {
-      "query": "MLB injury",
-      "title": "Chiefs consulted baseball doctors after Patrick Mahomes’ elbow injury scare: ‘Got away with one’",
-      "source": "New York Post",
-      "url": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxPQ0FYNHh0d19vazNTWFZvY3phRzI4TV9ZUEVleXJWM1o4SmhQa2szMjlBd0FqSTdnSXVYQjVqaXQyVnBfb1hsWEJJV3FjemxmaFlNZWt4Y3ZMdmFWdEVqVVROT2pNZVFYZDJXME1HakJfd3ZEMmtxYjdvQ1ZkSlJYNWVnVjk4SVJ6enBNV2k5MFZaT3NHLTlPN1dOVFdHcmlhREZFeE01VE1rZw?oc=5",
-      "at": "Sun, 15 Nov 2026 16:25:00 GMT",
+      "query": "MLB trade",
+      "title": "MLB Trade Rumors: Yankees’ Stance on Ketel Marte, Alec Bohm & More",
+      "source": "Yahoo Sports",
+      "url": "https://news.google.com/rss/articles/CBMihwFBVV95cUxNNTZpcjh3T19hd1dkM2tyOUFIaU9WS3BaTWZlRmt4bFFyWkFLR3lFdXVtVWRpRS1tcDg4V0xzdDNyQ0lPUXFEQkNEMUV6cklkbWthemJLd25Tc0ljR1BhQkM4dXA3bFpzaGRVcEdDVWVadHlLckhNekVLbzFGUjZ3dy1JTFJzNXc?oc=5",
+      "at": "Sun, 15 Nov 2026 23:35:09 GMT",
       "publication_evidence": [
         {
           "source": "at",
@@ -685,46 +706,28 @@
     },
     {
       "query": "MLB trade",
-      "title": "What an MLB lockout shuts down on Dec. 1 | Follow the Money",
+      "title": "Where Brewers' bullpen stands after trade for Ryan Walker",
+      "source": "MLB.com",
+      "url": "https://news.google.com/rss/articles/CBMidEFVX3lxTE9oSXNhMm1MRWh3dkNjXzFZSUN0eDF5ZUdnWVI1NGdEeTFzRml6QWR0elIzSy1XbVpvaldEMl8zdXpyMUVCZTNIdVg0NjY3RG5NeEFVT2ozczRXbDF0a1hfSWxtYmVYMGtUaURBYVlIYTZSWWpJ?oc=5",
+      "at": "Mon, 16 Nov 2026 01:42:00 GMT",
+      "publication_evidence": [
+        {
+          "source": "at",
+          "date": "2026-11-16"
+        },
+        {
+          "source": "published_date",
+          "date": "2026-11-16"
+        }
+      ],
+      "corroborated_by": []
+    },
+    {
+      "query": "MLB trade",
+      "title": "MLB Free-Agent Rankings: Where DiamondCentric Disagrees With MLBTR",
       "source": "BVM Sports",
-      "url": "https://news.google.com/rss/articles/CBMilAFBVV95cUxPTVl4b2RoN1NCZ2s3cnZ6eldoTEUyUGhCWHJSMERtUGNkQllQS2Q0aWY0T3ZFVENIc3pXeVBLcnBhUlJLR1I3cmJMUUd4MkdlM3BacUtlQWhVN1NnUXRQdVNmRnBKVEQzZ1gtNVNQdmZWYXkwemNKSi1oSlZ5bEYwMXpmYktpaEVUVGYxcnhzYWZOT0Yt?oc=5",
-      "at": "Sun, 15 Nov 2026 17:28:51 GMT",
-      "publication_evidence": [
-        {
-          "source": "at",
-          "date": "2026-11-15"
-        },
-        {
-          "source": "published_date",
-          "date": "2026-11-15"
-        }
-      ],
-      "corroborated_by": []
-    },
-    {
-      "query": "MLB trade",
-      "title": "MLB rumors: Mets targeting first-base help; Padres look wide for pitching; new Ketel Marte suitor emerges",
-      "source": "CBS Sports",
-      "url": "https://news.google.com/rss/articles/CBMi2wFBVV95cUxPd3V1UW9KaHlQQjdwVFJvX2pDUUhUYTktckR2dWZjN2ZvMTZWdGZ3N0pCUThJaXRiWkJtQTZXbVUzOHJ1cDlGQ1NxT2xqbHdVRmRna1gwX1ZSM2Fka1FaZ1BlSlFlc1luX0JnQV82WG1mQzh6dEhva0pTQmdpQTZFdlBVYWNzbzhkVXMxekFPZDhHSzBLb3EyTlp4MG1SeVdldS1EV2M5U0FsLTNXOXFpVjJRV0c1YTQzZWV2eTc5UjlhWGhTV3lxdnE0Y2FpNUFzaUlSaFVQNXV3THM?oc=5",
-      "at": "Sun, 15 Nov 2026 16:08:00 GMT",
-      "publication_evidence": [
-        {
-          "source": "at",
-          "date": "2026-11-15"
-        },
-        {
-          "source": "published_date",
-          "date": "2026-11-15"
-        }
-      ],
-      "corroborated_by": []
-    },
-    {
-      "query": "MLB trade",
-      "title": "With non-tender deadline approaching, here’s how much each arbitration-eligible Phillie is projected to make in 2027",
-      "source": "Phillies Nation",
-      "url": "https://news.google.com/rss/articles/CBMijAJBVV95cUxPbWNzcmVpVnM3bWFRcmZ6WlcydDZPUkExSEYwQUlST3hieVhFRi05dzJrb1Z5d09rYU9Ga2FSbGczQjY0SHFUQ01xb1VNZDMwRTNxOEV2a0tTWmZSMVF4d2dEZXhzc3lnV0lGMnJVWU9QbFFLUmNtaUFvak0tbWlCUFBSakdUZ3BkeHNCcklGS0NscWZhQkNGOHhwVlRNODZoVHFrTmNYNFpnQ1BtbS1iZFdtQzlremRPUThsLVg3bS1KSm8xWDIzR1ZSdnBRYTh1Szc1bDU1NHJtTjNmbGJrV2pYU0ctR2tObVpWbldiTWlFRVE0NHhQeUt5c0ZreWVzNVJZZFVPMDQzd3Fm?oc=5",
-      "at": "Sun, 15 Nov 2026 17:28:10 GMT",
+      "url": "https://news.google.com/rss/articles/CBMioAFBVV95cUxOcnVOeWUxXzZEVER2X21oLWZRZnRUUFA4YlJ0RTFXRjhqdklzRzRSZkI2a1dLNHl5enZyeWJaR0UzeEJ0a2F0YmtMTGtaN3RBUGpxZmpfRTJlbUJMSkRWSWNMMmNMV2xGWExvZ1RYald6WGtmZTRhTi1ZMjBqMjVELU94NEtEVVQzZXhjaHA2R3ZxclFqMVl5ZmlrSkR5N0NK?oc=5",
+      "at": "Sun, 15 Nov 2026 23:48:23 GMT",
       "publication_evidence": [
         {
           "source": "at",
@@ -739,36 +742,72 @@
     },
     {
       "query": "MLB home run record",
-      "title": "What I’m hearing off the GM meetings: Padres aggressive, Yankees make bullpen priority",
-      "source": "The New York Times",
-      "url": "https://news.google.com/rss/articles/CBMimwFBVV95cUxQdm1XRS0xaEhXeXhnb3F6ejdZVVdsME1KXzdJY29IQzc1MFNxVjFNbXdrNWQwS1dpajFSZmVOc0NLbGE3UEo1VkFMVDl4Z3lRaWVfaXVZZlZwRHFvT3JQdDE0aXRKdjJxUWdzV09BZTFiSjJQSjBhdTUyR2hJYW5tdEZOLUxBQ1plZW5qMklqOUdITUFNWmJXbVhFZw?oc=5",
-      "at": "Sun, 15 Nov 2026 11:00:29 GMT",
+      "title": "Sadaharu Oh Recommends Ohtani End Pitching",
+      "source": "조선일보",
+      "url": "https://news.google.com/rss/articles/CBMihgFBVV95cUxOSGM1Z1kzY0lla3lwZTJSOXQwdjJ2LWV0c01CZE5mRUd4YnM1a082dnVkZVVUbE0yc0V2ZGM1MXhrZ1RJcTdOcnhYWVdXdDY0WUZKRjJHRkVuelVwT0FYR1N2bk9lS0U0VlRBOXRKUFpwZWRMLWRFVV9xQWpuZjY3M0kzWU9xUQ?oc=5",
+      "at": "Mon, 16 Nov 2026 02:17:11 GMT",
       "publication_evidence": [
         {
           "source": "at",
-          "date": "2026-11-15"
+          "date": "2026-11-16"
         },
         {
           "source": "published_date",
-          "date": "2026-11-15"
+          "date": "2026-11-16"
         }
       ],
       "corroborated_by": []
     },
     {
       "query": "MLB home run record",
-      "title": "Korea loses to Japan for 3rd straight runner-up finish at regional baseball tournament",
-      "source": "The Korea Times",
-      "url": "https://news.google.com/rss/articles/CBMiywFBVV95cUxOcEpqSml1LWlIYTdDV0tQelcwR1JrMG9iQ0M1X1V6d3hxR2J1LXRNOWVGOEJOWTQ3ejdtZTJ3N1lRNXdETUxOTkI2cmJqZXR3X1VVTjE1blJCWHc1amFncExSRFlzekxvam1SSHFheWNZVTIwTThzYW1wQW11Q1pVQVVNS1hFWE9qMWxOeHExczZDNUs1S0U1N1FVZHZRRHdiV1VVMHE2SVMzUXRPWFN0SGZLb3NWNGI3bmt5ZDk0TWVQd0RLU1RWeTdkY9IB0AFBVV95cUxOam9YbG1uZDFIc3JkamtJRmUxQ0F5a0wzMkFtS3pmUG1aYWZxa3BWXzVIek11ekhscG9ESjdENWpoQ1dqUWMtTVI5WWhSelRlQ2hrX3VIcGFNUDRrcExjc1Ixb0NwVWhfNHB6bDFVZDZ1TUxEX1VBMFNLLURfdlJTbXYyYUpFVVVHanluWlJjRGhWVE9EczhwQW5FX2tSZjRsdEtTbGRVbUxrMnBKa1ZGTjdiR1poclVZbFlmdnpBVXJ4TXVDN3JhWXlIaFhsOGRi?oc=5",
-      "at": "Sun, 15 Nov 2026 13:34:03 GMT",
+      "title": "A way-too-early forecast of the 2027 MLB season",
+      "source": "South Side Sox",
+      "url": "https://news.google.com/rss/articles/CBMirwFBVV95cUxNQ2FPVm5qZFJyR3ItakpCWVRZZmpVQzdycXJxUkxoYi1TREw0bUNLQ0xoNTBySDRKaUZocWxWLXhBMWdvX0pNVm5PbDlWbkVMLUoyRmNtSGRnMEpXV1NoakJzQzZFU0s4MDN6UzJvVUpOS21ZRnNLdU1WVFpkaVUwSHVsa2Q1OVJlRVp0R2xyUWxDeWV4VW9fbWhVZllmanFjRkNyOWk2b3RrQlpjTkNB?oc=5",
+      "at": "Mon, 16 Nov 2026 01:06:00 GMT",
       "publication_evidence": [
         {
           "source": "at",
-          "date": "2026-11-15"
+          "date": "2026-11-16"
         },
         {
           "source": "published_date",
-          "date": "2026-11-15"
+          "date": "2026-11-16"
+        }
+      ],
+      "corroborated_by": []
+    },
+    {
+      "query": "MLB home run record",
+      "title": "Baseball Wiretap",
+      "source": "RealGM",
+      "url": "https://news.google.com/rss/articles/CBMiSEFVX3lxTFAxeTNRckFBbnlxZFZNMXNqNlpxV0N1Y0k4dHU4NGplTGxwZjVreTRLX2FRVjFHc3lPYkRfU2ZseUotNy1pVG1NaQ?oc=5",
+      "at": "Mon, 16 Nov 2026 03:48:52 GMT",
+      "publication_evidence": [
+        {
+          "source": "at",
+          "date": "2026-11-16"
+        },
+        {
+          "source": "published_date",
+          "date": "2026-11-16"
+        }
+      ],
+      "corroborated_by": []
+    },
+    {
+      "query": "MLB manager",
+      "title": "Purple Row After Dark: Tony Cougoule joins Albuquerque Isotopes as a pitching coach",
+      "source": "Yahoo Sports",
+      "url": "https://news.google.com/rss/articles/CBMihAFBVV95cUxNT3o1ai14V1NOQ0k4TDBNOHFJTjhzTXhnSWx2VzBTSDQ4bXg0UldhYkVPdF9mUy1PLVlrRFBhbjBhRTFKVWRyYU5hSDhQUF9GcWVLR0hjVXNqeWxnWkRQZm9mS2FQeUxKN3NPX1AydGVOWkw4TVd5aGtZRUlUZENQY1pid2M?oc=5",
+      "at": "Mon, 16 Nov 2026 02:00:00 GMT",
+      "publication_evidence": [
+        {
+          "source": "at",
+          "date": "2026-11-16"
+        },
+        {
+          "source": "published_date",
+          "date": "2026-11-16"
         }
       ],
       "corroborated_by": []
@@ -790,43 +829,6 @@
         }
       ],
       "corroborated_by": []
-    },
-    {
-      "query": "MLB manager",
-      "title": "MLB’s Manfred says A’s ballpark ‘looks fantastic’ following tour of $2.1B facility",
-      "source": "Las Vegas Review-Journal",
-      "url": "https://news.google.com/rss/articles/CBMizgFBVV95cUxNcEN6UlR0bUdDRk9YMFdjSEE4dmx0LVJlTV85eHBwUDJ2dU5FX2FuQ2FwbnY4bWF4TXJYQ2pfbGk3c0VlNEtrbm5Ccko4QzB1NDZaRjdERlozSnZOR1RQMUlEQkJ5akR6TDJOMVk1RURCaWlISU1uTGhSSU9VTDhZY1Fmd3N2UENmeUNNaS1qTW9lc2RseVBWR1g1OWlRMzJJQ1k0bkpXRWlRdXY4U01oSUdwY3hhaW5xX0hheHdPYVktN3EzcGFIbzVfU1BSUQ?oc=5",
-      "at": "Sun, 15 Nov 2026 16:19:46 GMT",
-      "publication_evidence": [
-        {
-          "source": "at",
-          "date": "2026-11-15"
-        },
-        {
-          "source": "published_date",
-          "date": "2026-11-15"
-        }
-      ],
-      "corroborated_by": []
-    },
-    {
-      "query": "MLB manager",
-      "title": "Brad Ausmus named Houston Astros’ next manager, aims to win World Series",
-      "source": "JNS.org",
-      "url": "https://news.google.com/rss/articles/CBMipwFBVV95cUxPX1F5MXdLSWhmZWNhYUdqN2J2Q3BaVl9YdXVtUUlYMm8tNk5FVDBWcWJ1SDhBSzgwMUtOOG5JN2piUm1ZVVJDNXFmRGlFaHBKMW13UUtMeEVZNmc5VTJKY2c0NlVyVThfRC1LNl8zVE1hZW1mckZpdTY2NEFlQU1INnVKNWFicGNyczBnZmJyY2x1RXNRc3lYQzFmS01UNTAwSXdZN1NSaw?oc=5",
-      "at": "Sun, 15 Nov 2026 09:47:47 GMT",
-      "publication_evidence": [
-        {
-          "source": "at",
-          "date": "2026-11-15"
-        },
-        {
-          "source": "published_date",
-          "date": "2026-11-15"
-        }
-      ],
-      "corroborated_by": []
     }
-  ],
-  "short_content_version": "1108"
+  ]
 }
