@@ -49,6 +49,8 @@ def frame(t,seg,data,clubs):
         def text(self,x,y,value,size=44,width=800,color=None,number=False,role='text'):
             # 国名「日本」と時刻の単位「日本時間」をクラブの言及と取り違えない。
             if value=='日本時間':role='supplement'
+            # 開催地の国名（シンガポール）は会場の話で、相手やクラブの言及ではない（11/16 パラグアイの直近の相手と重なった）。
+            if getattr(self,'venue_panel',False):role='supplement'
             return super().text(x,y,value,size,width,color,number,role)
     s=NationalScreen(clubs,t)
     # 背景上部の番組札も代表番組へ。canvasの既存部品から作る。
@@ -78,6 +80,7 @@ def frame(t,seg,data,clubs):
         g=g or data['next_game']
         venue=g['venue'].replace('・ナショナル','・\nナショナル').replace('エディオンピース','エディオン\nピース')
         heading='シンガポールで対戦' if panel=='venue' and g['venue_raw']=='Singapore National Stadium' else '開催会場'
+        s.venue_panel=True
         return s.national_facts(heading,[('会場',venue)],spec)
     if panel in ('recent','opponent-recent'):
         side='japan' if panel=='recent' else 'opponent'
