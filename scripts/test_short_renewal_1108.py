@@ -82,7 +82,8 @@ class Renewal(unittest.TestCase):
         import soccer_v5_cards as cards
         self.assertGreater(sum(count for count,color in im.crop((100,850,750,1100)).getcolors(162500) if color==cards.LIME),100)
         self.assertEqual(material,original)
-        self.assertNotIn('登録',doc['segments'][-1]['text'])
+        # 締めは短いまま、高評価・登録だけをお願いする（11/16 本人「最後に高評価とか登録よびかけ、ほしいよね」）。
+        self.assertIn('高評価',doc['segments'][-1]['text'])
         self.assertLessEqual(len(doc['segments'][-1]['text']),16)
 
     def test_only_confirmed_goal_changes_are_described(self):
