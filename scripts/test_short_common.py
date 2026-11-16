@@ -44,17 +44,18 @@ class ShortCommonTests(unittest.TestCase):
             voice = dict(segment, duration=2.0, file=str(path))
             for planner in (morning.plan_durations, asset.plan_durations, duo.durations, verdict.plan_durations):
                 with self.subTest(planner=planner.__module__):
-                    self.assertLessEqual(planner([voice])[0], 2.5)
+                    self.assertLessEqual(planner([voice])[0], common.OUTRO_MAX_SECONDS)
             with patch.object(synth, 'audio_duration', return_value=2.0):
                 for planner in (results.durations, slots.durations):
                     with self.subTest(planner=planner.__module__):
-                        self.assertLessEqual(planner([segment], [voice])[0], 2.5)
+                        self.assertLessEqual(planner([segment], [voice])[0], common.OUTRO_MAX_SECONDS)
             with patch.object(synth,'audio_duration',return_value=2.45), patch.object(slots.motion,'enabled',return_value=True):
                 measured=dict(voice,duration=2.45)
-                self.assertLessEqual(slots.video_times([segment],[measured])[0],2.5)
-        self.assertEqual(common.duration(dict(kind='outro', duration=2.45), 10), 2.5)
-        with self.assertRaisesRegex(ValueError, '2.5秒'):
-            common.duration(dict(kind='outro', duration=3), 10)
+                self.assertLessEqual(slots.video_times([segment],[measured])[0],common.OUTRO_MAX_SECONDS)
+        self.assertAlmostEqual(common.duration(dict(kind='outro', duration=2.45), 10), 2.57)
+        self.assertEqual(common.duration(dict(kind='outro', duration=3.15), 10), common.OUTRO_MAX_SECONDS)
+        with self.assertRaisesRegex(ValueError, '3.2秒'):
+            common.duration(dict(kind='outro', duration=3.3), 10)
 
     def test_duplicate_caption_keeps_extra_explanation(self):
         from PIL import Image

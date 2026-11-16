@@ -6,10 +6,12 @@ import math
 import unicodedata
 from pathlib import Path
 
-OUTRO_TEXT = '毎日更新しています。'
+# 締めで高評価・登録をお願いする（11/16 本人「ショートの最後に高評価とか登録よびかけ、ほしいよね」）。
+OUTRO_TEXT = '高評価と登録、お願いします。'
 OUTRO_LINE = '毎日 MLB・欧州サッカー'
+OUTRO_CTA = '高評価・チャンネル登録で応援を'
 OUTRO_SECONDS = 2.0
-OUTRO_MAX_SECONDS = 2.5
+OUTRO_MAX_SECONDS = 3.2
 
 
 def prepare(document):
@@ -48,7 +50,7 @@ def duration(segment, normal):
         raise ValueError('ショートの締めの実音声の長さが不正です')
     seconds = max(OUTRO_SECONDS, min(OUTRO_MAX_SECONDS, speech + .12))
     if speech > OUTRO_MAX_SECONDS:
-        raise ValueError(f'ショートの締めが2.5秒を超えます: {speech:.3f}秒。短い締めの声を作り直してください')
+        raise ValueError(f'ショートの締めが{OUTRO_MAX_SECONDS}秒を超えます: {speech:.3f}秒。短い締めの声を作り直してください')
     return seconds
 
 
