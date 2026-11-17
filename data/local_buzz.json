@@ -1,36 +1,36 @@
 {
-  "updated_at": "2026-11-16T06:01:47.545546+00:00",
+  "updated_at": "2026-11-17T06:01:44.706574+00:00",
   "sources": [
     {
       "name": "MLB公式",
-      "items": 24
+      "items": 23
     }
   ],
-  "titles_count": 24,
+  "titles_count": 23,
   "teams": [
-    {
-      "team_id": "141",
-      "name": "ブルージェイズ",
-      "name_en": "Toronto Blue Jays",
-      "mentions": 2,
-      "tone": "話題",
-      "gist": "ブルージェイズ、長打力補強の道を模索"
-    },
-    {
-      "team_id": "109",
-      "name": "ダイヤモンドバックス",
-      "name_en": "Arizona Diamondbacks",
-      "mentions": 2,
-      "tone": "好調",
-      "gist": "ジャベリナス、史上最多8度目のAFL優勝"
-    },
     {
       "team_id": "147",
       "name": "ヤンキース",
       "name_en": "New York Yankees",
       "mentions": 2,
       "tone": "話題",
-      "gist": "ヤンキース、ヒル1年契約で復帰合意"
+      "gist": "ヒルがヤンキースと1年契約で復帰、2塁手の補強も話題"
+    },
+    {
+      "team_id": "121",
+      "name": "メッツ",
+      "name_en": "New York Mets",
+      "mentions": 2,
+      "tone": "話題",
+      "gist": "メッツがスクーバルに直接売り込み"
+    },
+    {
+      "team_id": "120",
+      "name": "ナショナルズ",
+      "name_en": "Washington Nationals",
+      "mentions": 1,
+      "tone": "好調",
+      "gist": "ヤングとナショナルズが4年の契約延長で合意"
     },
     {
       "team_id": "119",
@@ -38,23 +38,15 @@
       "name_en": "Los Angeles Dodgers",
       "mentions": 1,
       "tone": "話題",
-      "gist": "パドレス、マルテらの若手打者トレード協議"
+      "gist": "大谷がドジャースの戦力編成を複雑化"
     },
     {
       "team_id": "158",
       "name": "ブリュワーズ",
       "name_en": "Milwaukee Brewers",
       "mentions": 1,
-      "tone": "話題",
-      "gist": "ブリュワーズ、ジャイアンツからウォーカー獲得"
-    },
-    {
-      "team_id": "135",
-      "name": "パドレス",
-      "name_en": "San Diego Padres",
-      "mentions": 1,
-      "tone": "話題",
-      "gist": "パドレス、マルテらの若手打者トレード協議"
+      "tone": "好調",
+      "gist": "ブリュワーズがジャイアンツからウォーカー獲得"
     },
     {
       "team_id": "137",
@@ -62,15 +54,15 @@
       "name_en": "San Francisco Giants",
       "mentions": 1,
       "tone": "話題",
-      "gist": "ウォーカーをブリュワーズへトレード放出"
+      "gist": "ジャイアンツがリリーフのウォーカーを放出"
     },
     {
-      "team_id": "146",
-      "name": "マーリンズ",
-      "name_en": "Miami Marlins",
+      "team_id": "112",
+      "name": "カブス",
+      "name_en": "Chicago Cubs",
       "mentions": 1,
-      "tone": "話題",
-      "gist": "ロハス、マイアミで最終戦に惜別の拍手"
+      "tone": "不振",
+      "gist": "カブス先発7人がFAに、今後は?"
     }
   ],
   "players": [
