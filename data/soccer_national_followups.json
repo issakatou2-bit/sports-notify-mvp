@@ -603,6 +603,130 @@
             ]
           }
         ]
+      },
+      "shiogai-u21": {
+        "checked_on": "2026-11-17",
+        "title": "W杯メンバーの塩貝健人は11月、U21日本代表に 18日1時からエジプト戦",
+        "readings": {
+          "塩貝健人": "シオガイケント",
+          "塩貝": "シオガイ",
+          "大岩剛": "オオイワゴウ",
+          "U21": "アンダーニジューイチ"
+        },
+        "reading_sources": [
+          "https://ja.wikipedia.org/wiki/%E5%A1%A9%E8%B2%9D%E5%81%A5%E4%BA%BA"
+        ],
+        "hook": {
+          "score": "11月の塩貝健人",
+          "result": "U21へ",
+          "subject": "W杯メンバーの塩貝健人が",
+          "big": "U21",
+          "unit": "日本代表に",
+          "note": "18日1時からエジプト戦（日本時間）"
+        },
+        "items": [
+          {
+            "ask": "そういえば、塩貝はA代表にいないのだ？",
+            "text": "W杯の26人に入った塩貝健人は、11月のA代表の28人には入っていません。",
+            "head": "A代表",
+            "rows": [
+              [
+                "W杯",
+                "26人に選ばれる"
+              ],
+              [
+                "11月のA代表",
+                "28人に入らず"
+              ]
+            ],
+            "source_names": "JFA",
+            "sources": [
+              "https://jfa.jp/national_team_2026/news/00036341/",
+              "https://jfa.jp/samuraiblue/20261117/member.html"
+            ]
+          },
+          {
+            "ask": "じゃあ、今はどこにいるのだ？",
+            "text": "11月6日に発表された、U21日本代表に選ばれています。大岩剛監督のチームで、スペインとエジプトへの遠征です。",
+            "head": "U21日本代表",
+            "rows": [
+              [
+                "発表",
+                "11月6日"
+              ],
+              [
+                "監督",
+                "大岩剛"
+              ],
+              [
+                "遠征",
+                "スペイン・エジプト"
+              ]
+            ],
+            "source_names": "デイリー",
+            "sources": [
+              "https://www.footballchannel.jp/?p=1056084",
+              "https://www.daily.co.jp/soccer/2026/11/15/0021036038.shtml",
+              "https://jfa.jp/national_team_2026/news/00036900/"
+            ]
+          },
+          {
+            "ask": "スペイン戦は、どうだったのだ？",
+            "text": "11月13日にスペインで、U21スペイン代表に0対2で敗れました。塩貝も好機を作りましたが、点は取れませんでした。",
+            "head": "U21スペイン戦",
+            "rows": [
+              [
+                "場所",
+                "スペイン"
+              ],
+              [
+                "塩貝",
+                "好機を作るも無得点"
+              ]
+            ],
+            "source_names": "デイリー",
+            "sources": [
+              "https://www.daily.co.jp/soccer/2026/11/15/0021036038.shtml",
+              "https://kumanichi.com/articles/2057667",
+              "https://www.footballchannel.jp/?p=1057252"
+            ],
+            "big": {
+              "label": "U21スペイン戦（11月13日）",
+              "value": "0",
+              "unit": "対2で敗戦"
+            }
+          },
+          {
+            "ask": "次の試合は、いつなのだ？",
+            "text": "日本時間の18日1時から、エジプトのカイロでU21エジプト代表と戦います。",
+            "head": "次の試合",
+            "big": {
+              "label": "U21エジプト戦（日本時間 18日）",
+              "value": "1",
+              "unit": "時から"
+            },
+            "rows": [
+              [
+                "相手",
+                "U21エジプト代表"
+              ],
+              [
+                "日時",
+                "11月18日 1時（日本時間）"
+              ],
+              [
+                "場所",
+                "エジプト・カイロ"
+              ]
+            ],
+            "source_names": "ESPN・デイリー",
+            "sources": [
+              "https://www.espn.com/soccer/match/_/gameId/401934336",
+              "https://www.daily.co.jp/soccer/2026/11/15/0021036038.shtml",
+              "https://kumanichi.com/articles/2057667"
+            ]
+          }
+        ]
       }
     }
   }
