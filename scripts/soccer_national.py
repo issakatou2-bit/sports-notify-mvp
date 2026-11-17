@@ -191,6 +191,7 @@ def result(summary, upcoming, japan_schedule, as_of):
         if len(values)==2 and sum(values)==game['score'][side]:halves[side]=values
     if len(halves)!=2:halves=None
     known={g['id']:g for g in upcoming}
+    stats=team_stats(summary,game)
     for e in japan_schedule.get('events') or []:
         if instant(e['date'])>instant(game['start_utc']):
             known[str(e['id'])]=match(e)
@@ -206,7 +207,26 @@ def result(summary, upcoming, japan_schedule, as_of):
     return dict(version=1,story_version=3,length_policy=3,mode='result',game=game,as_of=as_of,goals_complete=complete,
         japan_observed=observed,current_result=current,**context,
         goal_counts=counts, goals=goals if complete else [],halves=halves,
-        next_game=next_game)
+        next_game=next_game,team_stats=stats)
+
+
+def team_stats(summary, game):
+    """ESPNの試合記録からボール保持・シュート・CK。両チームが揃い、数字が読めた時だけ。"""
+    keys=dict(possession='possessionPct',shots='totalShots',corners='wonCorners')
+    out={}
+    for t in (summary.get('boxscore') or {}).get('teams') or []:
+        side='japan' if str((t.get('team') or {}).get('id'))==JAPAN else 'opponent' if str((t.get('team') or {}).get('id'))==game['opponent_id'] else None
+        if not side:continue
+        raw={x.get('name'):x.get('displayValue') for x in t.get('statistics') or []}
+        try:
+            row={k:float(raw[v]) for k,v in keys.items()}
+        except (KeyError,TypeError,ValueError):
+            return None
+        row['possession']=round(row['possession']);row['shots']=int(row['shots']);row['corners']=int(row['corners'])
+        out[side]=row
+    if set(out)!={'japan','opponent'}:return None
+    if abs(out['japan']['possession']+out['opponent']['possession']-100)>1:return None
+    return out
 
 
 def season_rows(material, club, english, as_of, season, *, name_jp=None):
@@ -488,7 +508,9 @@ def segments_for(data):
             text=scorer_sentence(data)
             if story['comeback']:text+=('先に失点してからの逆転勝ちです。' if story['conceded_first'] else '一度リードを許してからの逆転勝ちです。')
             if story['decisive']:
-                text+='決勝点は'+minute_words(story['decisive']['minute'])+('のオウンゴールです。' if story['decisive']['own_goal'] else 'のゴールです。')
+                # 敗れた試合の決勝点は相手の得点。誰の得点か分かるよう相手の名前を付ける。
+                side='' if story['decisive']['team_id']==JAPAN else g['opponent']+'の'
+                text+='決勝点は'+side+minute_words(story['decisive']['minute'])+('のオウンゴールです。' if story['decisive']['own_goal'] else 'のゴールです。')
             add('goals',text)
         elif data.get('halves') and s['japan']>s['opponent']:
             h=data['halves']
@@ -539,6 +561,12 @@ def segments_for(data):
     if mode=='result' and level>=4 and data.get('japan_recent'):
         rows.insert(-1 if has_next else len(rows),dict(kind='national',
             text=result_sentence(data['japan_recent'],'ひとつ前の試合で日本'),speaker=2,meta=dict(panel='recent-single')))
+    if mode=='result' and level>=5 and data.get('team_stats'):
+        a,b=data['team_stats']['japan'],data['team_stats']['opponent']
+        # 試合の数字はスコアの直後に置き、得点の流れと並べて読めるようにする。
+        rows.insert(1,dict(kind='national',
+            text=f"ボール保持は日本が{a['possession']}%、シュートは日本{a['shots']}本、{g['opponent']}{b['shots']}本でした。"
+                 f"コーナーキックは日本{a['corners']}本、{g['opponent']}{b['corners']}本です。",speaker=2,meta=dict(panel='match-stats')))
     return rows
 
 
@@ -676,6 +704,7 @@ def information(document):
             add(g['id'],'得点経過',d['goals'],g['source_url'])
         if d.get('halves') and 'halves' in panels:add(g['id'],'前半終了と試合終了',d['halves'],g['source_url'])
         if 'match-venue' in panels:add(g['id'],'会場',g['venue'],g['source_url'])
+        if 'match-stats' in panels:add(g['id'],'ボール保持・シュート・コーナーキック',d['team_stats'],g['source_url'])
         if 'year-record' in panels:
             record=history_record(d.get('japan_history') or [],instant(g['kickoff_jst']).year)
             add('日本','確認済み当年全大会成績',record,d['history_sources'])
