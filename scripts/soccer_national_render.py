@@ -90,6 +90,10 @@ def frame(t,seg,data,clubs):
         else:
             rows=[result_board(data['opponent_recent'])];title='相手の対戦結果'
         return s.national_facts(title,rows,spec,sub=data['japan_recent'].get('competition','対戦結果') if side=='japan' else '日付つきの対戦結果')
+    if panel=='match-stats':
+        a,b=data['team_stats']['japan'],data['team_stats']['opponent']
+        return s.national_facts('試合の数字',[('ボール保持',f"日本{a['possession']}% - {b['possession']}%"),
+            ('シュート',f"日本{a['shots']} - {b['shots']}"),('コーナーキック',f"日本{a['corners']} - {b['corners']}")],spec,sub='ESPNの試合記録')
     if panel=='recent-single':
         return s.national_facts('ひとつ前の試合',[result_board(data['japan_recent'])],spec,sub=data['japan_recent'].get('competition','対戦結果'))
     if panel=='previous':
@@ -222,7 +226,7 @@ def render(data,narr,audio,out):
 
 
 def fit_to_audio(out):
-    """27秒未満だけ当年成績→得失点→当該会場→直前結果。声設定は不変。"""
+    """27秒未満だけ当年成績→得失点→当該会場→直前結果→試合の数字（ESPN）。声設定は不変。"""
     import soccer_results_render as common
     import synthesize_narration as synth
     out=Path(out)
@@ -257,10 +261,12 @@ def fit_to_audio(out):
             continue
         if data['mode']=='preview' and level==1:level=2
         if level==3 and data['mode']=='result' and not data['game'].get('venue'):level=4
-        if level>4 or data['mode'] not in ('preview','result') or not national.record_sentence(data) or (data['mode']=='preview' and (level>3 or level==3 and not national.cup_route(data))) or (level==4 and not data.get('japan_recent')):
+        if level==4 and data['mode']=='result' and not data.get('japan_recent'):level=5
+        if level==5 and (data['mode']!='result' or not data.get('team_stats')):level=6
+        if level>5 or data['mode'] not in ('preview','result') or not national.record_sentence(data) or (data['mode']=='preview' and (level>3 or level==3 and not national.cup_route(data))) or (level==4 and not data.get('japan_recent')):
             raise ValueError('尺不足。追加できる未使用の事実がありません')
         data['length_level']=level
-        added='キリンカップのPK勝利' if data['mode']=='preview' and level==3 else ('当年全大会成績','同じ試合の得失点','当該試合の会場','直前の試合結果')[level-1]
+        added='キリンカップのPK勝利' if data['mode']=='preview' and level==3 else ('当年全大会成績','同じ試合の得失点','当該試合の会場','直前の試合結果','試合の数字')[level-1]
         repairs.append(dict(before_seconds=seconds,level=level,added=added))
         national.save(out/'duration_repair.json',dict(reason='27秒未満',steps=repairs,voice_settings='unchanged'))
         national.save(out/'material.json',data);national.save(out/'narration.json',national.narration(data))

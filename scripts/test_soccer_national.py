@@ -342,6 +342,32 @@ class Narrative(unittest.TestCase):
             self.assertEqual(n.read(out/'material.json')['length_level'],4)
 
 
+class MatchStats(unittest.TestCase):
+    def setUp(self):
+        self.base=National();self.base.setUp()
+
+    def box(self,poss=('66.3','33.7')):
+        def team(ident,p,shots,corners):
+            return dict(team=dict(id=ident),statistics=[dict(name='possessionPct',displayValue=p),
+                dict(name='totalShots',displayValue=shots),dict(name='wonCorners',displayValue=corners)])
+        return dict(boxscore=dict(teams=[team('627',poss[0],'17','8'),team('205',poss[1],'5','2')]))
+
+    def test_stats_need_both_teams_and_consistent_possession(self):
+        g=dict(opponent_id='205')
+        self.assertEqual(n.team_stats(self.box(),g),dict(japan=dict(possession=66,shots=17,corners=8),opponent=dict(possession=34,shots=5,corners=2)))
+        self.assertIsNone(n.team_stats(self.box(poss=('66.3','50')),g))
+        self.assertIsNone(n.team_stats({},g))
+
+    def test_stats_sentence_after_score_and_matches_check(self):
+        d=self.base.result();d['team_stats']=n.team_stats(self.box(),d['game']);d['length_level']=5
+        doc=n.narration(d)
+        self.assertEqual(doc['segments'][1]['meta']['panel'],'match-stats')
+        self.assertIn('シュートは日本17本',doc['segments'][1]['text'])
+        self.assertEqual(n.check(doc),[])
+        d['length_level']=4
+        self.assertNotIn('match-stats',[s['meta'].get('panel') for s in n.narration(d)['segments']])
+
+
 class VerifiedHistory(unittest.TestCase):
     def preview(self,at='2026-11-02T00:35Z',observed=None,opp='205'):
         return n.preview(n.match(event(complete=False,opp=opp)),observed or {'events':[]},
