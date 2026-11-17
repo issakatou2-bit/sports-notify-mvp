@@ -611,7 +611,7 @@
           "塩貝健人": "シオガイケント",
           "塩貝": "シオガイ",
           "大岩剛": "オオイワゴウ",
-          "U21": "ユーニジューイチ"
+          "U21": "アンダーニジューイチ"
         },
         "reading_sources": [
           "https://ja.wikipedia.org/wiki/%E5%A1%A9%E8%B2%9D%E5%81%A5%E4%BA%BA"
@@ -681,7 +681,7 @@
               ],
               [
                 "場所",
-                "スペイン・アルメンドラレホ"
+                "スペイン"
               ],
               [
                 "塩貝",
@@ -693,7 +693,12 @@
               "https://www.daily.co.jp/soccer/2026/11/15/0021036038.shtml",
               "https://kumanichi.com/articles/2057667",
               "https://www.footballchannel.jp/?p=1057252"
-            ]
+            ],
+            "big": {
+              "label": "U21スペイン戦（11月13日）",
+              "value": "0",
+              "unit": "対2で敗戦"
+            }
           },
           {
             "ask": "次の試合は、いつなのだ？",
