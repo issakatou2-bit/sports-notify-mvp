@@ -880,6 +880,129 @@
             ]
           }
         ]
+      },
+      "shiogai-u21-egypt": {
+        "checked_on": "2026-11-18",
+        "title": "U21主将の塩貝健人 エジプト戦はPK戦5人目で決めて勝利 遠征2試合は無得点",
+        "readings": {
+          "塩貝健人": "シオガイケント",
+          "塩貝": "シオガイ",
+          "小林将天": "コバヤシマサタカ",
+          "U21": "アンダーニジューイチ"
+        },
+        "reading_sources": [
+          "https://ja.wikipedia.org/wiki/%E5%A1%A9%E8%B2%9D%E5%81%A5%E4%BA%BA",
+          "https://www.fctokyo.co.jp/team/players/2024/298004/"
+        ],
+        "hook": {
+          "score": "U21エジプト戦",
+          "result": "PK戦で勝利",
+          "subject": "主将の塩貝健人が",
+          "big": "5",
+          "unit": "人目で決めた",
+          "note": "0対0 PK戦4対2（日本時間18日）"
+        },
+        "items": [
+          {
+            "ask": "エジプト戦は、どうなったのだ？",
+            "text": "U21日本代表はエジプトと0対0でした。PK戦を4対2で制して勝ちました。",
+            "head": "U21エジプト戦",
+            "rows": [
+              [
+                "90分",
+                "0対0"
+              ],
+              [
+                "場所",
+                "エジプト"
+              ]
+            ],
+            "big": {
+              "label": "U21エジプト戦のPK戦",
+              "value": "4",
+              "unit": "対2で勝利"
+            },
+            "source_names": "ゲキサカ・サッカーキング",
+            "sources": [
+              "https://web.gekisaka.jp/news/japan/detail/?463394-463394-fl=",
+              "https://www.soccer-king.jp/news/japan/national/20261118/2229321.html",
+              "https://www.espn.com/soccer/match/_/gameId/401934336"
+            ]
+          },
+          {
+            "ask": "塩貝は、何をしたのだ？",
+            "text": "塩貝は主将として先発しました。PK戦では5人目のキッカーで、決めて勝負を決めました。",
+            "head": "塩貝健人",
+            "rows": [
+              [
+                "役割",
+                "主将・先発"
+              ],
+              [
+                "PK戦",
+                "5人目で成功"
+              ]
+            ],
+            "big": {
+              "label": "塩貝健人のPK",
+              "value": "5",
+              "unit": "人目で成功"
+            },
+            "source_names": "ゲキサカ・サッカーキング",
+            "sources": [
+              "https://web.gekisaka.jp/news/japan/detail/?463394-463394-fl=",
+              "https://www.soccer-king.jp/news/japan/national/20261118/2229321.html",
+              "https://www.footballchannel.jp/2026/11/18/post1058112/"
+            ]
+          },
+          {
+            "ask": "キーパーは、どうだったのだ？",
+            "text": "キーパーの小林将天が、エジプトの1人目と2人目のキックを続けて止めました。",
+            "head": "キーパーの小林将天",
+            "rows": [
+              [
+                "止めた",
+                "1人目・2人目"
+              ]
+            ],
+            "big": {
+              "label": "小林将天のPK戦",
+              "value": "2",
+              "unit": "本続けて止めた"
+            },
+            "source_names": "ゲキサカ・サッカーキング",
+            "sources": [
+              "https://web.gekisaka.jp/news/japan/detail/?463394-463394-fl=",
+              "https://www.footballchannel.jp/2026/11/18/post1058112/",
+              "https://www.soccer-king.jp/news/japan/national/20261118/2229321.html"
+            ]
+          },
+          {
+            "ask": "点は、取れたのだ？",
+            "text": "90分では点が取れませんでした。スペイン戦の0対2と合わせて、遠征の2試合は無得点です。",
+            "head": "遠征の2試合",
+            "rows": [
+              [
+                "スペイン戦",
+                "0対2"
+              ],
+              [
+                "エジプト戦",
+                "0対0"
+              ]
+            ],
+            "big": {
+              "label": "U21の遠征2試合の得点",
+              "value": "0",
+              "unit": "点"
+            },
+            "source_names": "ゲキサカ・サッカーキング",
+            "sources": [
+              "https://www.soccer-king.jp/news/japan/national/20261118/2229321.html",
+              "https://www.footballchannel.jp/2026/11/18/post1058112/"
+            ]
+          }
+        ]
       }
     }
   }
