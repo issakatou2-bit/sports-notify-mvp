@@ -80,6 +80,15 @@ class Topics(unittest.TestCase):
         self.assertIsNone(topics.core_panel(segments))
         self.assertEqual(render.topic_transition_cues(segments, frames, 90), [])
 
+    def test_core_sound_prefers_the_answer_with_the_same_unit(self):
+        def answer(panel, value, unit):
+            return dict(kind='list', speaker=METAN, meta=dict(panel=panel, big=dict(value=value, unit=unit)))
+        hook = dict(kind='list', speaker=ZUNDA, meta=dict(panel=0, hook=dict(big='2', unit='本で2点')))
+        segments = [hook, answer(0, '8', '年'), answer(1, '2', '点'), answer(2, '2', '本で2点')]
+        self.assertEqual(topics.core_panel(segments), 2)
+        segments[3]['meta']['big']['unit'] = '本'
+        self.assertEqual(topics.core_panel(segments), 1)
+
     def test_all_six_topics_are_made_from_the_fixture(self):
         made, excluded = topics.available(summary(), meetings=MEETINGS)
         self.assertEqual(sorted(made), sorted(ALL + ('reactions', 'followup-shiogai', 'followup-ueda', 'followup-endo', 'followup-tomiyasu', 'followup-nagatomo')))

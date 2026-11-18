@@ -430,7 +430,7 @@ TOPICS={'team-numbers':team_numbers,'late-winner':late_winner,'opponent-star':op
 def core_panel(segments):
     """冒頭と同じ大きな数字の答えを優先し、なければ最初の大きな数字を選ぶ。"""
     hook = segments[0]['meta'].get('hook')
-    fallback = None
+    fallback = same_value = None
     for seg in segments:
         meta = seg['meta']
         big = meta.get('big')
@@ -439,8 +439,12 @@ def core_panel(segments):
         if fallback is None:
             fallback = meta['panel']
         if hook and str(big['value']) == str(hook['big']):
-            return meta['panel']
-    return fallback
+            # 「2点」と「2本で2点」のように数字だけ同じ札があるので、単位まで合う札を先に選ぶ。
+            if str(big.get('unit', '')) == str(hook.get('unit', '')):
+                return meta['panel']
+            if same_value is None:
+                same_value = meta['panel']
+    return fallback if same_value is None else same_value
 
 
 def narration(summary, topic, *, names=None, meetings=None):
