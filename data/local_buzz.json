@@ -1,76 +1,80 @@
 {
-  "updated_at": "2026-11-18T06:01:53.015710+00:00",
+  "updated_at": "2026-11-18T20:08:43.647667+00:00",
   "sources": [
     {
       "name": "MLB公式",
       "items": 24
+    },
+    {
+      "name": "ESPN",
+      "items": 13
     }
   ],
-  "titles_count": 24,
+  "titles_count": 37,
   "teams": [
+    {
+      "team_id": "145",
+      "name": "ホワイトソックス",
+      "name_en": "Chicago White Sox",
+      "mentions": 4,
+      "tone": "話題",
+      "gist": "メイと3年5250万ドルで合意"
+    },
+    {
+      "team_id": "136",
+      "name": "マリナーズ",
+      "name_en": "Seattle Mariners",
+      "mentions": 4,
+      "tone": "話題",
+      "gist": "ガルシアとミラー含む6人大型トレード"
+    },
+    {
+      "team_id": "111",
+      "name": "レッドソックス",
+      "name_en": "Boston Red Sox",
+      "mentions": 4,
+      "tone": "話題",
+      "gist": "フォーツ獲得、バウアーズも加入"
+    },
     {
       "team_id": "147",
       "name": "ヤンキース",
       "name_en": "New York Yankees",
       "mentions": 3,
       "tone": "話題",
-      "gist": "ヤンキース、ベドナー残留とラグランジュ追加"
+      "gist": "ベドナーがQO受諾、残留"
     },
     {
-      "team_id": "121",
-      "name": "メッツ",
-      "name_en": "New York Mets",
+      "team_id": "118",
+      "name": "ロイヤルズ",
+      "name_en": "Kansas City Royals",
       "mentions": 3,
       "tone": "話題",
-      "gist": "メッツ、ロハス昇格とスクバル面談"
-    },
-    {
-      "team_id": "111",
-      "name": "レッドソックス",
-      "name_en": "Boston Red Sox",
-      "mentions": 2,
-      "tone": "好調",
-      "gist": "レッドソックス、FA目玉バウアーズを紹介"
-    },
-    {
-      "team_id": "145",
-      "name": "ホワイトソックス",
-      "name_en": "Chicago White Sox",
-      "mentions": 1,
-      "tone": "好調",
-      "gist": "ホワイトソックス、メイと3年契約で合意"
-    },
-    {
-      "team_id": "143",
-      "name": "フィリーズ",
-      "name_en": "Philadelphia Phillies",
-      "mentions": 1,
-      "tone": "話題",
-      "gist": "フィリーズ、外野手と左腕救援を補強候補に"
-    },
-    {
-      "team_id": "109",
-      "name": "ダイヤモンドバックス",
-      "name_en": "Arizona Diamondbacks",
-      "mentions": 1,
-      "tone": "話題",
-      "gist": "2026年秋季リーグ選抜チームが発表"
-    },
-    {
-      "team_id": "116",
-      "name": "タイガース",
-      "name_en": "Detroit Tigers",
-      "mentions": 1,
-      "tone": "好調",
-      "gist": "タイガース、パガンが多方面で戦力向上と期待"
+      "gist": "ガルシアとミラー含む6人大型トレード"
     },
     {
       "team_id": "142",
       "name": "ツインズ",
       "name_en": "Minnesota Twins",
-      "mentions": 1,
-      "tone": "好調",
-      "gist": "ツインズ、FA捕手が資格オファー受諾し残留"
+      "mentions": 3,
+      "tone": "話題",
+      "gist": "ジェファーズがQO受諾、残留"
+    },
+    {
+      "team_id": "141",
+      "name": "ブルージェイズ",
+      "name_en": "Toronto Blue Jays",
+      "mentions": 2,
+      "tone": "話題",
+      "gist": "スクーバルと面談、争奪戦に参戦"
+    },
+    {
+      "team_id": "121",
+      "name": "メッツ",
+      "name_en": "New York Mets",
+      "mentions": 2,
+      "tone": "話題",
+      "gist": "スクーバルの本命と目される"
     }
   ],
   "players": []

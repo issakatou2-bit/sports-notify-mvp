@@ -1,107 +1,94 @@
 {
-  "generated_at": "2026-11-18T06:01:11.100387+00:00",
-  "date_jst": "2026-11-18",
-  "name": "今井達也",
-  "player_id": "837227",
-  "team": "アストロズ",
-  "group": "pitching",
+  "generated_at": "2026-11-18T19:58:53.849375+00:00",
+  "date_jst": "2026-11-19",
+  "name": "ヌートバー",
+  "player_id": "663457",
+  "team": "ダイヤモンドバックス",
+  "group": "hitting",
   "why": "順番",
   "headline": "",
   "score": null,
   "bio": {
-    "name_en": "Tatsuya Imai",
-    "age": 28,
-    "birth_city": "Kanuma",
-    "birth_state": null,
-    "birth_country": "Japan",
-    "birth_date": "1998-05-09",
-    "debut": "2026-03-29",
-    "draft_year": null,
-    "bats": "Right",
+    "name_en": "Lars Nootbaar",
+    "age": 29,
+    "birth_city": "El Segundo",
+    "birth_state": "CA",
+    "birth_country": "USA",
+    "birth_date": "1997-09-08",
+    "debut": "2021-06-22",
+    "draft_year": 2018,
+    "bats": "Left",
     "throws": "Right",
-    "number": "45",
-    "position": "Pitcher",
+    "number": "21",
+    "position": "Outfielder",
     "nickname": null,
-    "height": "5' 11\"",
-    "weight": 176
+    "height": "6' 1\"",
+    "weight": 205
   },
   "teams": [
     {
-      "team": "アストロズ",
+      "team": "カージナルス",
+      "from": 2021,
+      "to": 2026
+    },
+    {
+      "team": "ダイヤモンドバックス",
       "from": 2026,
       "to": 2026
     }
   ],
   "career": {
-    "games": 23,
-    "avg": ".281",
-    "hr": 310,
-    "rbi": 750,
-    "ops": ".949",
-    "sb": 176,
-    "hits": 1194,
-    "wins": 6,
-    "losses": 4,
-    "era": "4.93",
-    "so": 97,
-    "ip": "76.2",
-    "whip": "1.42"
+    "games": 617,
+    "avg": ".241",
+    "hr": 66,
+    "rbi": 227,
+    "ops": ".743",
+    "sb": 30,
+    "hits": 475
   },
   "this_season": {
-    "games": 23,
-    "avg": ".275",
-    "hr": 30,
-    "rbi": 81,
-    "ops": ".889",
-    "sb": 11,
-    "hits": 144,
-    "wins": 6,
-    "losses": 4,
-    "era": "4.93",
-    "so": 97,
-    "ip": "76.2",
-    "whip": "1.42"
+    "games": 90,
+    "avg": ".239",
+    "hr": 8,
+    "rbi": 33,
+    "ops": ".721",
+    "sb": 2,
+    "hits": 68
   },
   "last_season": {
-    "games": 30,
-    "avg": ".282",
-    "hr": 55,
-    "rbi": 102,
-    "ops": "1.014",
-    "sb": 20,
-    "hits": 172,
-    "wins": 12,
-    "losses": 8,
-    "era": "2.49",
-    "so": 201,
-    "ip": "173.2",
-    "whip": "0.99"
+    "games": 135,
+    "avg": ".234",
+    "hr": 13,
+    "rbi": 48,
+    "ops": ".686",
+    "sb": 4,
+    "hits": 119
   },
   "recent": [
     {
       "date": "2026-09-27",
-      "line": "1.0回 自責0 1奪三振",
-      "opponent": "Athletics"
+      "line": "4打数1安打 1打点",
+      "opponent": "San Diego Padres"
     },
     {
-      "date": "2026-09-20",
-      "line": "2.0回 自責0 4奪三振",
-      "opponent": "Atlanta Braves"
+      "date": "2026-09-26",
+      "line": "3打数0安打",
+      "opponent": "San Diego Padres"
     },
     {
-      "date": "2026-09-16",
-      "line": "1.0回 自責0 1奪三振",
-      "opponent": "Kansas City Royals"
+      "date": "2026-09-25",
+      "line": "3打数1安打 1本塁打 1打点",
+      "opponent": "San Diego Padres"
     },
     {
-      "date": "2026-09-09",
-      "line": "2.0回 自責0 3奪三振",
-      "opponent": "Philadelphia Phillies"
+      "date": "2026-09-24",
+      "line": "6打数3安打",
+      "opponent": "Colorado Rockies"
     },
     {
-      "date": "2026-09-01",
-      "line": "3.0回 自責2 5奪三振",
-      "opponent": "Chicago White Sox"
+      "date": "2026-09-23",
+      "line": "3打数0安打",
+      "opponent": "Colorado Rockies"
     }
   ],
   "awards": [],
