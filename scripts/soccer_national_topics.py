@@ -19,6 +19,7 @@ FOLLOWUPS = ROOT / 'data/soccer_national_followups.json'
 PROGRAM = 'soccer_national_topic'
 VIDEO = 'collespo_national_topic.mp4'
 LIMIT = 45
+OPENING_SECONDS = 3.0
 DEFAULT_EVENT = '401916337'
 
 
@@ -447,7 +448,7 @@ def narration(summary, topic, *, names=None, meetings=None):
     for i,(question,answer,head,rows,*extra) in enumerate(panels):
         meta=dict(duo=True,topic=topic,panel=i,head=head,rows=rows,**(extra[0] if extra else {}))
         ask=dict(meta,duo_ask=True,who='ずんだもん')
-        # 最初の問いの区間は、題の中心の数字を大きく出す（サムネ＝1.6秒目。本人 11/15「ちゃんとひきこむものに」）。
+        # 冒頭の札の材料はここにまとめ、表示の終わりは実音声に合わせて描画側で決める。
         if i==0 and hook:ask['hook']=hook
         segments += [dict(kind='list',text=question,speaker=ZUNDA,meta=ask),
                      dict(kind='list',text=answer,speaker=METAN,meta=dict(meta,who='四国めたん'))]

@@ -315,6 +315,29 @@ for topic in ('team-numbers', 'late-winner', 'opponent-star', 'keeper', 'early-g
                 layer = im.info['duo_layer'][0]
                 out['who'].append([seg['speaker'], layer['who']]); out['x'].append(layer['at'][0])
             out['slide'].append([seg['speaker'], t, (im.info.get('v2_slide') or {}).get('phase')])
+doc = topics.narration(summary, 'team-numbers')
+segments = doc['segments']
+clubs = render.clubs_for(doc)
+first = 2 * render.FPS
+end = render.opening_frames(segments, first)
+hook = segments[0]['meta']['hook']
+opening = []
+for k in (0, first, end - 1, end):
+    i = int(k >= first)
+    start = first / render.FPS if i else 0
+    seg = segments[i]
+    r3.set_program_clock(start)
+    r3.set_caption(seg['text'], 2.0, 20, speaker=seg['speaker'])
+    r3.set_program_clock(k / render.FPS)
+    im = render.frame(k / render.FPS - start, seg, doc, clubs, i, len(segments),
+                      opening_hook=hook if k < end else None)
+    body = im.crop((72, 236, 904, 1150)).tobytes()
+    opening.append((body, 'opening_hook' in im.info, im.info['duo_layer'][0]['who']))
+    out['errors'] += [['opening', k, str(e)[:160]] for e in render.validate_frame(im, clubs, doc)]
+out['opening'] = dict(end=end, long=render.opening_frames(segments, 102),
+    missing=render.opening_frames(topics.narration(summary, 'reactions')['segments'], first),
+    shown=[frame[1] for frame in opening], who=[frame[2] for frame in opening],
+    same=opening[0][0] == opening[1][0] == opening[2][0] != opening[3][0])
 r3.set_program_clock(None)
 print(json.dumps(out))
 '''
@@ -496,6 +519,10 @@ class RenderV2(unittest.TestCase):
 
     def test_no_old_colour_appears_in_the_new_look(self):
         self.assertEqual(self.v2['old'], 0)
+
+    def test_opening_is_static_for_three_seconds_without_delaying_the_answer(self):
+        self.assertEqual(self.v2['opening'], dict(end=90, long=102, missing=0,
+            shown=[True, True, True, False], who=['zundamon', 'metan', 'metan', 'metan'], same=True))
 
     def test_zundamon_is_lower_left_and_metan_lower_right(self):
         for speaker, who in self.v2['who']:
