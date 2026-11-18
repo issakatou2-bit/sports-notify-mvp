@@ -58,6 +58,37 @@ def stat(raw, team, key):
 
 
 class Topics(unittest.TestCase):
+    def test_core_sound_prefers_the_matching_answer_and_falls_back_to_the_first_number(self):
+        import soccer_national_topics_render as render
+
+        def ask(panel, **meta):
+            return dict(kind='list', speaker=ZUNDA, meta=dict(panel=panel, **meta))
+
+        def answer(panel, value):
+            return dict(kind='list', speaker=METAN, meta=dict(panel=panel, big=dict(value=value)))
+
+        segments = [ask(0, hook=dict(big='5')), answer(0, 2), ask(1), answer(1, 5),
+                    dict(kind='outro', speaker=METAN, meta={})]
+        frames = [60, 90, 60, 90, 60]
+        self.assertEqual(topics.core_panel(segments), 1)
+        self.assertEqual(render.topic_transition_cues(segments, frames, 90), [(5, 'transition', 'b', -12)])
+        segments[0]['meta']['hook']['big'] = '7'
+        self.assertEqual(topics.core_panel(segments), 0)
+        self.assertEqual(render.topic_transition_cues(segments, frames, 90), [(3, 'transition', 'b', -12)])
+        for seg in segments:
+            seg['meta'].pop('big', None)
+        self.assertIsNone(topics.core_panel(segments))
+        self.assertEqual(render.topic_transition_cues(segments, frames, 90), [])
+
+    def test_core_sound_prefers_the_answer_with_the_same_unit(self):
+        def answer(panel, value, unit):
+            return dict(kind='list', speaker=METAN, meta=dict(panel=panel, big=dict(value=value, unit=unit)))
+        hook = dict(kind='list', speaker=ZUNDA, meta=dict(panel=0, hook=dict(big='2', unit='本で2点')))
+        segments = [hook, answer(0, '8', '年'), answer(1, '2', '点'), answer(2, '2', '本で2点')]
+        self.assertEqual(topics.core_panel(segments), 2)
+        segments[3]['meta']['big']['unit'] = '本'
+        self.assertEqual(topics.core_panel(segments), 1)
+
     def test_all_six_topics_are_made_from_the_fixture(self):
         made, excluded = topics.available(summary(), meetings=MEETINGS)
         self.assertEqual(sorted(made), sorted(ALL + ('reactions', 'followup-shiogai', 'followup-ueda', 'followup-endo', 'followup-tomiyasu', 'followup-nagatomo')))
@@ -315,6 +346,29 @@ for topic in ('team-numbers', 'late-winner', 'opponent-star', 'keeper', 'early-g
                 layer = im.info['duo_layer'][0]
                 out['who'].append([seg['speaker'], layer['who']]); out['x'].append(layer['at'][0])
             out['slide'].append([seg['speaker'], t, (im.info.get('v2_slide') or {}).get('phase')])
+doc = topics.narration(summary, 'team-numbers')
+segments = doc['segments']
+clubs = render.clubs_for(doc)
+first = 2 * render.FPS
+end = render.opening_frames(segments, first)
+hook = segments[0]['meta']['hook']
+opening = []
+for k in (0, first, end - 1, end):
+    i = int(k >= first)
+    start = first / render.FPS if i else 0
+    seg = segments[i]
+    r3.set_program_clock(start)
+    r3.set_caption(seg['text'], 2.0, 20, speaker=seg['speaker'])
+    r3.set_program_clock(k / render.FPS)
+    im = render.frame(k / render.FPS - start, seg, doc, clubs, i, len(segments),
+                      opening_hook=hook if k < end else None)
+    body = im.crop((72, 236, 904, 1150)).tobytes()
+    opening.append((body, 'opening_hook' in im.info, im.info['duo_layer'][0]['who']))
+    out['errors'] += [['opening', k, str(e)[:160]] for e in render.validate_frame(im, clubs, doc)]
+out['opening'] = dict(end=end, long=render.opening_frames(segments, 102),
+    missing=render.opening_frames(topics.narration(summary, 'reactions')['segments'], first),
+    shown=[frame[1] for frame in opening], who=[frame[2] for frame in opening],
+    same=opening[0][0] == opening[1][0] == opening[2][0] != opening[3][0])
 r3.set_program_clock(None)
 print(json.dumps(out))
 '''
@@ -496,6 +550,10 @@ class RenderV2(unittest.TestCase):
 
     def test_no_old_colour_appears_in_the_new_look(self):
         self.assertEqual(self.v2['old'], 0)
+
+    def test_opening_is_static_for_three_seconds_without_delaying_the_answer(self):
+        self.assertEqual(self.v2['opening'], dict(end=90, long=102, missing=0,
+            shown=[True, True, True, False], who=['zundamon', 'metan', 'metan', 'metan'], same=True))
 
     def test_zundamon_is_lower_left_and_metan_lower_right(self):
         for speaker, who in self.v2['who']:

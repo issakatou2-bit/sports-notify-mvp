@@ -19,6 +19,7 @@ FOLLOWUPS = ROOT / 'data/soccer_national_followups.json'
 PROGRAM = 'soccer_national_topic'
 VIDEO = 'collespo_national_topic.mp4'
 LIMIT = 45
+OPENING_SECONDS = 3.0
 DEFAULT_EVENT = '401916337'
 
 
@@ -426,6 +427,26 @@ def reactions(m, topic='reactions'):
 TOPICS={'team-numbers':team_numbers,'late-winner':late_winner,'opponent-star':opponent_star,'keeper':keeper,'early-goals':early_goals,'rematch':rematch,'reactions':reactions}
 
 
+def core_panel(segments):
+    """冒頭と同じ大きな数字の答えを優先し、なければ最初の大きな数字を選ぶ。"""
+    hook = segments[0]['meta'].get('hook')
+    fallback = same_value = None
+    for seg in segments:
+        meta = seg['meta']
+        big = meta.get('big')
+        if seg['speaker'] != METAN or not big:
+            continue
+        if fallback is None:
+            fallback = meta['panel']
+        if hook and str(big['value']) == str(hook['big']):
+            # 「2点」と「2本で2点」のように数字だけ同じ札があるので、単位まで合う札を先に選ぶ。
+            if str(big.get('unit', '')) == str(hook.get('unit', '')):
+                return meta['panel']
+            if same_value is None:
+                same_value = meta['panel']
+    return fallback if same_value is None else same_value
+
+
 def narration(summary, topic, *, names=None, meetings=None):
     raw=compact(summary);m=Material(raw,names,meetings)
     hook=None
@@ -447,7 +468,7 @@ def narration(summary, topic, *, names=None, meetings=None):
     for i,(question,answer,head,rows,*extra) in enumerate(panels):
         meta=dict(duo=True,topic=topic,panel=i,head=head,rows=rows,**(extra[0] if extra else {}))
         ask=dict(meta,duo_ask=True,who='ずんだもん')
-        # 最初の問いの区間は、題の中心の数字を大きく出す（サムネ＝1.6秒目。本人 11/15「ちゃんとひきこむものに」）。
+        # 冒頭の札の材料はここにまとめ、表示の終わりは実音声に合わせて描画側で決める。
         if i==0 and hook:ask['hook']=hook
         segments += [dict(kind='list',text=question,speaker=ZUNDA,meta=ask),
                      dict(kind='list',text=answer,speaker=METAN,meta=dict(meta,who='四国めたん'))]

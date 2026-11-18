@@ -52,7 +52,32 @@ def clubs_for(doc):
     return {n: dict(team_en=n, name_jp=n, abbr=a, primary=None, secondary=None, league='親善試合') for n, a in names.items()}
 
 
-def frame(t, seg, doc, clubs, index=0, count=1):
+def opening_frames(segments, first_frames):
+    if not segments[0]['meta'].get('hook'):
+        return 0
+    return max(first_frames, math.ceil(topics.OPENING_SECONDS * FPS))
+
+
+def topic_transition_cues(segments, frame_counts, hook_end):
+    """話者の区間から、実際に表示する札の区間を作る。"""
+    core = topics.core_panel(segments)
+    screens = [dict(meta=dict(screen='hook'))] if hook_end else []
+    lengths = [hook_end / FPS] if hook_end else []
+    start = 0
+    for seg, count in zip(segments, frame_counts):
+        end = start + count
+        visible = end - max(start, hook_end)
+        start = end
+        if visible <= 0:
+            continue
+        panel = seg['meta'].get('panel')
+        screen = seg['kind'] if panel is None else panel
+        screens.append(dict(meta=dict(screen=screen, core=core is not None and panel == core)))
+        lengths.append(visible / FPS)
+    return short_common.transition_cues(screens, lengths, core_only=True)
+
+
+def frame(t, seg, doc, clubs, index=0, count=1, *, opening_hook=None):
     """index 番目の区間の時刻 t の絵。問い（ずんだもん）と答え（めたん）の組は同じ画面。"""
     if seg['kind'] == 'outro':
         import review_render_v3 as r3
@@ -88,10 +113,14 @@ def frame(t, seg, doc, clubs, index=0, count=1):
     asking = seg['speaker'] == ZUNDA
     # 答えの区間は同じ画面の続き。入場の動きを繰り返さない。
     s = TopicScreen(clubs, t, 0.0 if asking else 1.0)
-    s.im = cards.canvas(s.t, clubs, '日本代表')
+    hook = opening_hook or meta.get('hook')
+    s.im = cards.canvas(0 if hook else s.t, clubs, '日本代表')
     s.im.info.update(soccer_readable=True, semantic_items=[], readable_motion='v2 右から0.28秒・説明中停止・左へ0.14秒')
     spec = dict(source=credit(doc), title='日本代表', presenter='zundamon' if asking else 'metan',
                 slide_in=asking, slide_out=not asking)
+    if hook:
+        spec.update(slide_in=False, slide_out=False)
+        return hook_screen(s, hook, spec)
     other = next(n for n in clubs if n != '日本')
     sub = f'日本対{other}' + ('' if meta.get('topic') == 'rematch' else '　親善試合')
     rows = [tuple(r) for r in meta['rows']]
@@ -104,8 +133,6 @@ def frame(t, seg, doc, clubs, index=0, count=1):
         size = 72 if len(rows) == 1 else 64
         rows = [(label, chr(10).join(balanced_lines(value, size, readable.R - readable.L - 56))) for label, value in rows]
 
-    if asking and meta.get('hook'):
-        return hook_screen(s, meta['hook'], spec)
     if topics.is_followup(meta.get('topic')) and meta.get('big'):
         return big_fact_screen(s, meta['head'], meta['big'], [tuple(r) for r in meta['rows']], spec, sub)
     if meta.get('compare'):
@@ -118,10 +145,7 @@ LOSS = (255, 112, 112)
 
 
 def hook_screen(s, hook, spec):
-    """最初の問いの区間＝サムネ（1.6秒目）。題の中心の数字を大きく、勝敗を色で（本人 11/15「ちゃんとひきこむものに」）。
-
-    数字は題と同じ材料から作った hook だけ。問いの字幕と同じ文はここに書かない。
-    """
+    """題の中心の数字と結果を、最初のコマから静止した札で見せる。"""
     import soccer_readable as readable
     import soccer_v5_cards as cards
     from PIL import ImageDraw
@@ -155,6 +179,7 @@ def hook_screen(s, hook, spec):
         s.lines(100, box[3] + 48, hook['note'], 48, 800, cards.MUTED, 'supplement')
     s.im.info['preview_body'] = [readable.L, top, readable.R, top + height]
     s.im.info['opening_hook'] = hook
+    s.im.info['timeline_scene'] = '冒頭の札'
     return s.finish(spec)
 
 
@@ -273,32 +298,40 @@ def render(narr, audio, out, *, sample=False):
     if os.environ.get('COLLESPO_STYLE') != 'v2':
         raise ValueError('話題ショートは新しい見た目 COLLESPO_STYLE=v2 だけを使います')
     out = Path(out); out.mkdir(parents=True, exist_ok=True); common.ensure_ffmpeg(out)
-    times = common.durations(narr['segments'], audio)
-    times = [math.ceil(t * FPS) / FPS for t in times]
+    segments = narr['segments']
+    frame_counts = [math.ceil(t * FPS) for t in common.durations(segments, audio)]
+    times = [count / FPS for count in frame_counts]
     if sum(times) > topics.LIMIT:
         raise ValueError(f'{topics.LIMIT}秒を超えます: {sum(times):.2f}秒')
     short_content.require(narr, times, out, None, maximum=topics.LIMIT, video_name=VIDEO)
     track = vc.build_narration_track(audio, times, out)
     if not track:
         raise ValueError('実音声なし')
-    track = short_common.add_audio(track, audio, times, out)
+    hook_end = opening_frames(segments, frame_counts[0])
+    cues = topic_transition_cues(segments, frame_counts, hook_end)
+    track = short_common.add_audio(track, audio, times, out, cues=cues)
     clubs = clubs_for(narr); video = out / VIDEO; clock = 0; layouts = []
     timeline = render_timeline.Recorder(FPS, audio, narr)
+    hook = segments[0]['meta'].get('hook')
     command = ['ffmpeg', '-y', '-f', 'rawvideo', '-vcodec', 'rawvideo', '-pix_fmt', 'rgb24', '-s', '1080x1920', '-r', str(FPS), '-i', '-',
                '-i', str(track), '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '23', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-b:a', '160k',
                '-t', str(sum(times)), '-movflags', '+faststart', str(video)]
     with (out / 'ffmpeg.log').open('w', encoding='utf8') as log:
         proc = subprocess.Popen(command, stdin=subprocess.PIPE, stderr=log)
         try:
-            for i, (seg, duration) in enumerate(zip(narr['segments'], times)):
+            for i, (seg, duration, count) in enumerate(zip(segments, times, frame_counts)):
                 timeline.select(audio[i], i)
                 r3.set_program_clock(clock)
                 r3.set_caption(seg['text'], duration, sum(times), speaker=seg['speaker'], duo=False, hide_caption=seg['kind'] == 'outro')
                 seen = set()
-                for k in range(round(duration * FPS)):
-                    t = k / FPS; r3.set_program_clock(clock + t); im = frame(t, seg, narr, clubs, i, len(times))
-                    signature = json.dumps([im.info.get('bubble_style', {}).get('lines'), (im.info.get('v2_slide') or {}).get('phase')], ensure_ascii=False)
-                    if t >= .35 and signature not in seen:
+                for k in range(count):
+                    t = k / FPS
+                    r3.set_program_clock(clock + t)
+                    showing_hook = round(clock * FPS) + k < hook_end
+                    im = frame(t, seg, narr, clubs, i, len(times), opening_hook=hook if showing_hook else None)
+                    signature = json.dumps([showing_hook, im.info.get('bubble_style', {}).get('lines'),
+                                            (im.info.get('v2_slide') or {}).get('phase')], ensure_ascii=False)
+                    if (showing_hook or t >= .35) and signature not in seen:
                         seen.add(signature)
                         if seg['kind'] != 'outro':
                             errors = validate_frame(im, clubs, narr)
@@ -306,7 +339,7 @@ def render(narr, audio, out, *, sample=False):
                             national.save(out / 'layout_checks.json', layouts)
                             if errors:
                                 raise ValueError(f'画面{i}: {errors}')
-                    if k == min(42, round(duration * FPS) - 1):
+                    if k == min(42, count - 1):
                         im.save(out / f'{i + 1:02d}.png')
                     timeline.write(proc.stdin, im.tobytes(), im)
                 clock += duration

@@ -30,3 +30,8 @@ mark,.ai-summary mark{background:linear-gradient(transparent 60%,var(--highlight
 @media(max-width:640px){.edition-note{display:none}.edition-hero{padding:22px 0}.edition-hero p{margin-top:12px}.edition-hero .kicker{font-size:10px}.browse-nav{padding:13px 0}}
 .yt-channel .ch-list{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px 24px}.yt-channel .ch-list li{border-top:1px solid var(--border);padding-top:10px}
 @media(max-width:640px){.yt-channel .ch-list{grid-template-columns:1fr 1fr}}
+.mobile-today-link{display:none}
+@media(max-width:640px){.mobile-today-link{display:inline-block;margin-top:12px;padding:8px 0;color:var(--accent);font-weight:700}}
+.home-retry{margin:0 0 8px;padding:6px 12px;background:var(--surface);border:1px solid var(--border);border-radius:2px;color:var(--text);font:inherit;cursor:pointer}
+.home-retry:disabled{cursor:wait;opacity:.6}
+.notify-results p:empty,#notifyLoadStatus:empty,#gamesStatus:empty{display:none}
