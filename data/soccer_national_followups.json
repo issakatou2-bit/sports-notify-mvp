@@ -728,6 +728,159 @@
           }
         ]
       }
+    },
+    "401916336": {
+      "moriyasu-last": {
+        "checked_on": "2026-11-18",
+        "title": "森保監督の最後の試合 パラグアイはCK2本で2点 日本は1対2で敗戦",
+        "readings": {
+          "森保一": "モリヤスハジメ",
+          "森保": "モリヤス",
+          "福田師王": "フクダシオウ",
+          "久保建英": "クボタケフサ",
+          "大岩剛": "オオイワゴウ",
+          "U21": "アンダーニジューイチ"
+        },
+        "reading_sources": [
+          "https://ja.wikipedia.org/wiki/%E7%A6%8F%E7%94%B0%E5%B8%AB%E7%8E%8B"
+        ],
+        "hook": {
+          "score": "森保監督の最後の試合",
+          "result": "1対2で敗戦",
+          "subject": "パラグアイはコーナーキック",
+          "big": "2",
+          "unit": "本で2点",
+          "note": "11月17日 シンガポール"
+        },
+        "items": [
+          {
+            "ask": "パラグアイ戦が、森保監督の最後の試合だったのだ？",
+            "text": "はい。2018年から約8年、日本代表を率いた森保一監督は、このパラグアイ戦で退任しました。",
+            "head": "森保監督の最後の試合",
+            "rows": [
+              [
+                "就任",
+                "2018年"
+              ],
+              [
+                "最後の試合",
+                "11月17日 パラグアイ戦"
+              ]
+            ],
+            "big": {
+              "label": "森保監督が日本代表を率いた期間",
+              "value": "8",
+              "unit": "年（約）"
+            },
+            "source_names": "サッカーキング・TBS",
+            "sources": [
+              "https://soccer-king.jp/news/japan/national/20261118/2229078.html",
+              "https://news.yahoo.co.jp/articles/19949eada0efd5c2a6ad0680c8ed8f015c190557",
+              "https://web.gekisaka.jp/news/japan/detail/?463101-463101-fl="
+            ]
+          },
+          {
+            "ask": "試合は、どう決まったのだ？",
+            "text": "パラグアイに1対2で敗れました。パラグアイの2点は、どちらもコーナーキックからです。",
+            "head": "パラグアイの2点",
+            "rows": [
+              [
+                "前半2分",
+                "コーナーキックから"
+              ],
+              [
+                "前半40分",
+                "コーナーキックから"
+              ]
+            ],
+            "big": {
+              "label": "パラグアイのコーナーキックからの得点",
+              "value": "2",
+              "unit": "点"
+            },
+            "source_names": "サッカーキング・TBS",
+            "sources": [
+              "https://soccer-king.jp/news/japan/national/20261118/2229078.html",
+              "https://news.yahoo.co.jp/articles/19949eada0efd5c2a6ad0680c8ed8f015c190557",
+              "https://www.espn.com/soccer/match/_/gameId/401916336"
+            ]
+          },
+          {
+            "ask": "コーナーキックの数は、どうだったのだ？",
+            "text": "コーナーキックは日本が8本、パラグアイは2本でした。パラグアイは2本で2点を取りました。",
+            "head": "コーナーキックの数",
+            "rows": [
+              [
+                "日本",
+                "8本"
+              ],
+              [
+                "パラグアイ",
+                "2本"
+              ]
+            ],
+            "big": {
+              "label": "パラグアイのコーナーキック",
+              "value": "2",
+              "unit": "本で2点"
+            },
+            "source_names": "ESPN・スポーツナビ",
+            "sources": [
+              "https://www.espn.com/soccer/match/_/gameId/401916336",
+              "https://soccer.yahoo.co.jp/japan/category/men/game/2026111701/stats"
+            ]
+          },
+          {
+            "ask": "日本の1点は、だれが取ったのだ？",
+            "text": "後半40分、久保建英のフリーキックをキーパーがはじいたところを、福田師王が頭で押し込みました。代表デビュー戦での初ゴールです。",
+            "head": "福田師王の初ゴール",
+            "rows": [
+              [
+                "時間",
+                "後半40分"
+              ],
+              [
+                "形",
+                "こぼれ球を頭で"
+              ],
+              [
+                "出場",
+                "代表デビュー戦"
+              ]
+            ],
+            "big": {
+              "label": "福田師王の代表初ゴール",
+              "value": "40",
+              "unit": "分（後半）"
+            },
+            "source_names": "サッカーキング・TBS",
+            "sources": [
+              "https://soccer-king.jp/news/japan/national/20261118/2229078.html",
+              "https://news.yahoo.co.jp/articles/19949eada0efd5c2a6ad0680c8ed8f015c190557"
+            ]
+          },
+          {
+            "ask": "次の監督は、だれなのだ？",
+            "text": "次は、U21日本代表の監督でもある大岩剛監督が率います。",
+            "head": "次の監督",
+            "rows": [
+              [
+                "次の監督",
+                "大岩剛"
+              ],
+              [
+                "今の担当",
+                "U21日本代表"
+              ]
+            ],
+            "source_names": "TBS・デイリー",
+            "sources": [
+              "https://news.yahoo.co.jp/articles/19949eada0efd5c2a6ad0680c8ed8f015c190557",
+              "https://www.daily.co.jp/soccer/2026/08/01/0020655744.shtml"
+            ]
+          }
+        ]
+      }
     }
   }
 }
