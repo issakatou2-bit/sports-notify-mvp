@@ -1,5 +1,6 @@
 {
-  "day": "2026-11-17",
+  "day": "2026-11-18",
+  "state": "ready",
   "topics": [
     {
       "key": "offseason_schedule_2026_4814184ba9eb",
@@ -24,7 +25,7 @@
       ],
       "offseason": {
         "kind": "schedule",
-        "day": "2026-11-17",
+        "day": "2026-11-18",
         "season": 2026,
         "events": [
           {
@@ -40,7 +41,836 @@
           }
         ]
       }
+    },
+    {
+      "key": "offseason_awards_2026_3a5f5e5af947",
+      "label": "2026年のア・リーグのシルバースラッガー（1/3）",
+      "heading": "2026年のア・リーグのシルバースラッガー（1/3）",
+      "kind_label": "MLB",
+      "data_credit": "MLB Stats API",
+      "v3": {
+        "source": "出典: MLB公式 / 受賞・取引記録"
+      },
+      "hook": "2026年のア・リーグのシルバースラッガー（1/3）",
+      "intro": "2026年のMLBの表彰です。MLB公式の受賞記録からお伝えします。",
+      "intro_as_is": true,
+      "style": "v3",
+      "source": "MLB公式 / 受賞・取引記録",
+      "source_url": "https://statsapi.mlb.com/api/v1/awards/ALSS/recipients?season=2026",
+      "items": [
+        [
+          "ディロン・ディングラー｜ア・リーグのシルバースラッガー・捕手",
+          "ディロン・ディングラーは2026年のア・リーグのシルバースラッガーを受賞しました"
+        ],
+        [
+          "ピーター・アロンソ｜ア・リーグのシルバースラッガー・一塁手",
+          "ピーター・アロンソは2026年のア・リーグのシルバースラッガーを受賞しました"
+        ],
+        [
+          "チェイス・マイドロス｜ア・リーグのシルバースラッガー・二塁手",
+          "チェイス・マイドロスは2026年のア・リーグのシルバースラッガーを受賞しました"
+        ],
+        [
+          "ジュニオール・カミネロ｜ア・リーグのシルバースラッガー・三塁手",
+          "ジュニオール・カミネロは2026年のア・リーグのシルバースラッガーを受賞しました"
+        ]
+      ],
+      "offseason": {
+        "kind": "awards",
+        "day": "2026-11-18",
+        "season": 2026,
+        "events": [
+          {
+            "event_id": "award:2026:ALSS:693307:winner",
+            "head": "ディロン・ディングラー｜ア・リーグのシルバースラッガー・捕手",
+            "body": "ディロン・ディングラーは2026年のア・リーグのシルバースラッガーを受賞しました",
+            "name": "ディロン・ディングラー",
+            "japanese": false,
+            "source": "https://statsapi.mlb.com/api/v1/awards/ALSS/recipients?season=2026",
+            "raw": {
+              "id": "ALSS",
+              "name": "AL Silver Slugger",
+              "date": "2026-11-17",
+              "season": "2026",
+              "team": {
+                "id": 116,
+                "link": "/api/v1/teams/116"
+              },
+              "player": {
+                "id": 693307,
+                "link": "/api/v1/people/693307",
+                "primaryPosition": {
+                  "code": "2",
+                  "name": "Catcher",
+                  "type": "Catcher",
+                  "abbreviation": "C"
+                },
+                "nameFirstLast": "Dillon Dingler",
+                "nameSlug": "dillon-dingler-693307"
+              }
+            }
+          },
+          {
+            "event_id": "award:2026:ALSS:624413:winner",
+            "head": "ピーター・アロンソ｜ア・リーグのシルバースラッガー・一塁手",
+            "body": "ピーター・アロンソは2026年のア・リーグのシルバースラッガーを受賞しました",
+            "name": "ピーター・アロンソ",
+            "japanese": false,
+            "source": "https://statsapi.mlb.com/api/v1/awards/ALSS/recipients?season=2026",
+            "raw": {
+              "id": "ALSS",
+              "name": "AL Silver Slugger",
+              "date": "2026-11-17",
+              "season": "2026",
+              "team": {
+                "id": 110,
+                "link": "/api/v1/teams/110"
+              },
+              "player": {
+                "id": 624413,
+                "link": "/api/v1/people/624413",
+                "primaryPosition": {
+                  "code": "3",
+                  "name": "First Base",
+                  "type": "Infielder",
+                  "abbreviation": "1B"
+                },
+                "nameFirstLast": "Pete Alonso",
+                "nameSlug": "pete-alonso-624413"
+              }
+            }
+          },
+          {
+            "event_id": "award:2026:ALSS:805367:winner",
+            "head": "チェイス・マイドロス｜ア・リーグのシルバースラッガー・二塁手",
+            "body": "チェイス・マイドロスは2026年のア・リーグのシルバースラッガーを受賞しました",
+            "name": "チェイス・マイドロス",
+            "japanese": false,
+            "source": "https://statsapi.mlb.com/api/v1/awards/ALSS/recipients?season=2026",
+            "raw": {
+              "id": "ALSS",
+              "name": "AL Silver Slugger",
+              "date": "2026-11-17",
+              "season": "2026",
+              "team": {
+                "id": 145,
+                "link": "/api/v1/teams/145"
+              },
+              "player": {
+                "id": 805367,
+                "link": "/api/v1/people/805367",
+                "primaryPosition": {
+                  "code": "4",
+                  "name": "Second Base",
+                  "type": "Infielder",
+                  "abbreviation": "2B"
+                },
+                "nameFirstLast": "Chase Meidroth",
+                "nameSlug": "chase-meidroth-805367"
+              }
+            }
+          },
+          {
+            "event_id": "award:2026:ALSS:691406:winner",
+            "head": "ジュニオール・カミネロ｜ア・リーグのシルバースラッガー・三塁手",
+            "body": "ジュニオール・カミネロは2026年のア・リーグのシルバースラッガーを受賞しました",
+            "name": "ジュニオール・カミネロ",
+            "japanese": false,
+            "source": "https://statsapi.mlb.com/api/v1/awards/ALSS/recipients?season=2026",
+            "raw": {
+              "id": "ALSS",
+              "name": "AL Silver Slugger",
+              "date": "2026-11-17",
+              "season": "2026",
+              "team": {
+                "id": 139,
+                "link": "/api/v1/teams/139"
+              },
+              "player": {
+                "id": 691406,
+                "link": "/api/v1/people/691406",
+                "primaryPosition": {
+                  "code": "5",
+                  "name": "Third Base",
+                  "type": "Infielder",
+                  "abbreviation": "3B"
+                },
+                "nameFirstLast": "Junior Caminero",
+                "nameSlug": "junior-caminero-691406"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "offseason_awards_2026_6457d1bd7398",
+      "label": "2026年のア・リーグのシルバースラッガー（2/3）",
+      "heading": "2026年のア・リーグのシルバースラッガー（2/3）",
+      "kind_label": "MLB",
+      "data_credit": "MLB Stats API",
+      "v3": {
+        "source": "出典: MLB公式 / 受賞・取引記録"
+      },
+      "hook": "2026年のア・リーグのシルバースラッガー（2/3）",
+      "intro": "2026年のMLBの表彰です。MLB公式の受賞記録からお伝えします。",
+      "intro_as_is": true,
+      "style": "v3",
+      "source": "MLB公式 / 受賞・取引記録",
+      "source_url": "https://statsapi.mlb.com/api/v1/awards/ALSS/recipients?season=2026",
+      "items": [
+        [
+          "ボビー・ウィット・ジュニア｜ア・リーグのシルバースラッガー・遊撃手",
+          "ボビー・ウィット・ジュニアは2026年のア・リーグのシルバースラッガーを受賞しました"
+        ],
+        [
+          "チェイス・デローター｜ア・リーグのシルバースラッガー・外野手",
+          "チェイス・デローターは2026年のア・リーグのシルバースラッガーを受賞しました"
+        ],
+        [
+          "ランディ・アロサレーナ｜ア・リーグのシルバースラッガー・外野手",
+          "ランディ・アロサレーナは2026年のア・リーグのシルバースラッガーを受賞しました"
+        ]
+      ],
+      "offseason": {
+        "kind": "awards",
+        "day": "2026-11-18",
+        "season": 2026,
+        "events": [
+          {
+            "event_id": "award:2026:ALSS:677951:winner",
+            "head": "ボビー・ウィット・ジュニア｜ア・リーグのシルバースラッガー・遊撃手",
+            "body": "ボビー・ウィット・ジュニアは2026年のア・リーグのシルバースラッガーを受賞しました",
+            "name": "ボビー・ウィット・ジュニア",
+            "japanese": false,
+            "source": "https://statsapi.mlb.com/api/v1/awards/ALSS/recipients?season=2026",
+            "raw": {
+              "id": "ALSS",
+              "name": "AL Silver Slugger",
+              "date": "2026-11-17",
+              "season": "2026",
+              "team": {
+                "id": 118,
+                "link": "/api/v1/teams/118"
+              },
+              "player": {
+                "id": 677951,
+                "link": "/api/v1/people/677951",
+                "primaryPosition": {
+                  "code": "6",
+                  "name": "Shortstop",
+                  "type": "Infielder",
+                  "abbreviation": "SS"
+                },
+                "nameFirstLast": "Bobby Witt Jr.",
+                "nameSlug": "bobby-witt-jr-677951"
+              }
+            }
+          },
+          {
+            "event_id": "award:2026:ALSS:800050:winner",
+            "head": "チェイス・デローター｜ア・リーグのシルバースラッガー・外野手",
+            "body": "チェイス・デローターは2026年のア・リーグのシルバースラッガーを受賞しました",
+            "name": "チェイス・デローター",
+            "japanese": false,
+            "source": "https://statsapi.mlb.com/api/v1/awards/ALSS/recipients?season=2026",
+            "raw": {
+              "id": "ALSS",
+              "name": "AL Silver Slugger",
+              "date": "2026-11-17",
+              "season": "2026",
+              "team": {
+                "id": 114,
+                "link": "/api/v1/teams/114"
+              },
+              "player": {
+                "id": 800050,
+                "link": "/api/v1/people/800050",
+                "primaryPosition": {
+                  "code": "O",
+                  "name": "Outfield",
+                  "type": "Outfielder",
+                  "abbreviation": "OF"
+                },
+                "nameFirstLast": "Chase DeLauter",
+                "nameSlug": "chase-delauter-800050"
+              }
+            }
+          },
+          {
+            "event_id": "award:2026:ALSS:668227:winner",
+            "head": "ランディ・アロサレーナ｜ア・リーグのシルバースラッガー・外野手",
+            "body": "ランディ・アロサレーナは2026年のア・リーグのシルバースラッガーを受賞しました",
+            "name": "ランディ・アロサレーナ",
+            "japanese": false,
+            "source": "https://statsapi.mlb.com/api/v1/awards/ALSS/recipients?season=2026",
+            "raw": {
+              "id": "ALSS",
+              "name": "AL Silver Slugger",
+              "date": "2026-11-17",
+              "season": "2026",
+              "team": {
+                "id": 136,
+                "link": "/api/v1/teams/136"
+              },
+              "player": {
+                "id": 668227,
+                "link": "/api/v1/people/668227",
+                "primaryPosition": {
+                  "code": "O",
+                  "name": "Outfield",
+                  "type": "Outfielder",
+                  "abbreviation": "OF"
+                },
+                "nameFirstLast": "Randy Arozarena",
+                "nameSlug": "randy-arozarena-668227"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "offseason_awards_2026_2cf2e3992270",
+      "label": "2026年のア・リーグのシルバースラッガー（3/3）",
+      "heading": "2026年のア・リーグのシルバースラッガー（3/3）",
+      "kind_label": "MLB",
+      "data_credit": "MLB Stats API",
+      "v3": {
+        "source": "出典: MLB公式 / 受賞・取引記録"
+      },
+      "hook": "2026年のア・リーグのシルバースラッガー（3/3）",
+      "intro": "2026年のMLBの表彰です。MLB公式の受賞記録からお伝えします。",
+      "intro_as_is": true,
+      "style": "v3",
+      "source": "MLB公式 / 受賞・取引記録",
+      "source_url": "https://statsapi.mlb.com/api/v1/awards/ALSS/recipients?season=2026",
+      "items": [
+        [
+          "ライリー・グリーン｜ア・リーグのシルバースラッガー・外野手",
+          "ライリー・グリーンは2026年のア・リーグのシルバースラッガーを受賞しました"
+        ],
+        [
+          "ヨルダン・アルバレス｜ア・リーグのシルバースラッガー・指名打者",
+          "ヨルダン・アルバレスは2026年のア・リーグのシルバースラッガーを受賞しました"
+        ],
+        [
+          "ケビン・マクゴニグル｜ア・リーグのシルバースラッガー・ユーティリティ",
+          "ケビン・マクゴニグルは2026年のア・リーグのシルバースラッガーを受賞しました"
+        ]
+      ],
+      "offseason": {
+        "kind": "awards",
+        "day": "2026-11-18",
+        "season": 2026,
+        "events": [
+          {
+            "event_id": "award:2026:ALSS:682985:winner",
+            "head": "ライリー・グリーン｜ア・リーグのシルバースラッガー・外野手",
+            "body": "ライリー・グリーンは2026年のア・リーグのシルバースラッガーを受賞しました",
+            "name": "ライリー・グリーン",
+            "japanese": false,
+            "source": "https://statsapi.mlb.com/api/v1/awards/ALSS/recipients?season=2026",
+            "raw": {
+              "id": "ALSS",
+              "name": "AL Silver Slugger",
+              "date": "2026-11-17",
+              "season": "2026",
+              "team": {
+                "id": 116,
+                "link": "/api/v1/teams/116"
+              },
+              "player": {
+                "id": 682985,
+                "link": "/api/v1/people/682985",
+                "primaryPosition": {
+                  "code": "O",
+                  "name": "Outfield",
+                  "type": "Outfielder",
+                  "abbreviation": "OF"
+                },
+                "nameFirstLast": "Riley Greene",
+                "nameSlug": "riley-greene-682985"
+              }
+            }
+          },
+          {
+            "event_id": "award:2026:ALSS:670541:winner",
+            "head": "ヨルダン・アルバレス｜ア・リーグのシルバースラッガー・指名打者",
+            "body": "ヨルダン・アルバレスは2026年のア・リーグのシルバースラッガーを受賞しました",
+            "name": "ヨルダン・アルバレス",
+            "japanese": false,
+            "source": "https://statsapi.mlb.com/api/v1/awards/ALSS/recipients?season=2026",
+            "raw": {
+              "id": "ALSS",
+              "name": "AL Silver Slugger",
+              "date": "2026-11-17",
+              "season": "2026",
+              "team": {
+                "id": 117,
+                "link": "/api/v1/teams/117"
+              },
+              "player": {
+                "id": 670541,
+                "link": "/api/v1/people/670541",
+                "primaryPosition": {
+                  "code": "10",
+                  "name": "Designated Hitter",
+                  "type": "Hitter",
+                  "abbreviation": "DH"
+                },
+                "nameFirstLast": "Yordan Alvarez",
+                "nameSlug": "yordan-alvarez-670541"
+              }
+            }
+          },
+          {
+            "event_id": "award:2026:ALSS:805808:winner",
+            "head": "ケビン・マクゴニグル｜ア・リーグのシルバースラッガー・ユーティリティ",
+            "body": "ケビン・マクゴニグルは2026年のア・リーグのシルバースラッガーを受賞しました",
+            "name": "ケビン・マクゴニグル",
+            "japanese": false,
+            "source": "https://statsapi.mlb.com/api/v1/awards/ALSS/recipients?season=2026",
+            "raw": {
+              "id": "ALSS",
+              "name": "AL Silver Slugger",
+              "date": "2026-11-17",
+              "season": "2026",
+              "team": {
+                "id": 116,
+                "link": "/api/v1/teams/116"
+              },
+              "player": {
+                "id": 805808,
+                "link": "/api/v1/people/805808",
+                "primaryPosition": {
+                  "code": "U",
+                  "name": "Utility",
+                  "type": "Infielder",
+                  "abbreviation": "UT"
+                },
+                "nameFirstLast": "Kevin McGonigle",
+                "nameSlug": "kevin-mcgonigle-805808"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "offseason_awards_2026_006ede8a2cd7",
+      "label": "2026年のナ・リーグのシルバースラッガー（1/3）",
+      "heading": "2026年のナ・リーグのシルバースラッガー（1/3）",
+      "kind_label": "MLB",
+      "data_credit": "MLB Stats API",
+      "v3": {
+        "source": "出典: MLB公式 / 受賞・取引記録"
+      },
+      "hook": "2026年のナ・リーグのシルバースラッガー（1/3）",
+      "intro": "2026年のMLBの表彰です。MLB公式の受賞記録からお伝えします。",
+      "intro_as_is": true,
+      "style": "v3",
+      "source": "MLB公式 / 受賞・取引記録",
+      "source_url": "https://statsapi.mlb.com/api/v1/awards/NLSS/recipients?season=2026",
+      "items": [
+        [
+          "ガブリエル・モレノ｜ナ・リーグのシルバースラッガー・捕手",
+          "ガブリエル・モレノは2026年のナ・リーグのシルバースラッガーを受賞しました"
+        ],
+        [
+          "マット・オルソン｜ナ・リーグのシルバースラッガー・一塁手",
+          "マット・オルソンは2026年のナ・リーグのシルバースラッガーを受賞しました"
+        ],
+        [
+          "ブランドン・ロウ｜ナ・リーグのシルバースラッガー・二塁手",
+          "ブランドン・ロウは2026年のナ・リーグのシルバースラッガーを受賞しました"
+        ],
+        [
+          "アレックス・ブレグマン｜ナ・リーグのシルバースラッガー・三塁手",
+          "アレックス・ブレグマンは2026年のナ・リーグのシルバースラッガーを受賞しました"
+        ]
+      ],
+      "offseason": {
+        "kind": "awards",
+        "day": "2026-11-18",
+        "season": 2026,
+        "events": [
+          {
+            "event_id": "award:2026:NLSS:672515:winner",
+            "head": "ガブリエル・モレノ｜ナ・リーグのシルバースラッガー・捕手",
+            "body": "ガブリエル・モレノは2026年のナ・リーグのシルバースラッガーを受賞しました",
+            "name": "ガブリエル・モレノ",
+            "japanese": false,
+            "source": "https://statsapi.mlb.com/api/v1/awards/NLSS/recipients?season=2026",
+            "raw": {
+              "id": "NLSS",
+              "name": "NL Silver Slugger",
+              "date": "2026-11-17",
+              "season": "2026",
+              "team": {
+                "id": 109,
+                "link": "/api/v1/teams/109"
+              },
+              "player": {
+                "id": 672515,
+                "link": "/api/v1/people/672515",
+                "primaryPosition": {
+                  "code": "2",
+                  "name": "Catcher",
+                  "type": "Catcher",
+                  "abbreviation": "C"
+                },
+                "nameFirstLast": "Gabriel Moreno",
+                "nameSlug": "gabriel-moreno-672515"
+              }
+            }
+          },
+          {
+            "event_id": "award:2026:NLSS:621566:winner",
+            "head": "マット・オルソン｜ナ・リーグのシルバースラッガー・一塁手",
+            "body": "マット・オルソンは2026年のナ・リーグのシルバースラッガーを受賞しました",
+            "name": "マット・オルソン",
+            "japanese": false,
+            "source": "https://statsapi.mlb.com/api/v1/awards/NLSS/recipients?season=2026",
+            "raw": {
+              "id": "NLSS",
+              "name": "NL Silver Slugger",
+              "date": "2026-11-17",
+              "season": "2026",
+              "team": {
+                "id": 144,
+                "link": "/api/v1/teams/144"
+              },
+              "player": {
+                "id": 621566,
+                "link": "/api/v1/people/621566",
+                "primaryPosition": {
+                  "code": "3",
+                  "name": "First Base",
+                  "type": "Infielder",
+                  "abbreviation": "1B"
+                },
+                "nameFirstLast": "Matt Olson",
+                "nameSlug": "matt-olson-621566"
+              }
+            }
+          },
+          {
+            "event_id": "award:2026:NLSS:664040:winner",
+            "head": "ブランドン・ロウ｜ナ・リーグのシルバースラッガー・二塁手",
+            "body": "ブランドン・ロウは2026年のナ・リーグのシルバースラッガーを受賞しました",
+            "name": "ブランドン・ロウ",
+            "japanese": false,
+            "source": "https://statsapi.mlb.com/api/v1/awards/NLSS/recipients?season=2026",
+            "raw": {
+              "id": "NLSS",
+              "name": "NL Silver Slugger",
+              "date": "2026-11-17",
+              "season": "2026",
+              "team": {
+                "id": 134,
+                "link": "/api/v1/teams/134"
+              },
+              "player": {
+                "id": 664040,
+                "link": "/api/v1/people/664040",
+                "primaryPosition": {
+                  "code": "4",
+                  "name": "Second Base",
+                  "type": "Infielder",
+                  "abbreviation": "2B"
+                },
+                "nameFirstLast": "Brandon Lowe",
+                "nameSlug": "brandon-lowe-664040"
+              }
+            }
+          },
+          {
+            "event_id": "award:2026:NLSS:608324:winner",
+            "head": "アレックス・ブレグマン｜ナ・リーグのシルバースラッガー・三塁手",
+            "body": "アレックス・ブレグマンは2026年のナ・リーグのシルバースラッガーを受賞しました",
+            "name": "アレックス・ブレグマン",
+            "japanese": false,
+            "source": "https://statsapi.mlb.com/api/v1/awards/NLSS/recipients?season=2026",
+            "raw": {
+              "id": "NLSS",
+              "name": "NL Silver Slugger",
+              "date": "2026-11-17",
+              "season": "2026",
+              "team": {
+                "id": 112,
+                "link": "/api/v1/teams/112"
+              },
+              "player": {
+                "id": 608324,
+                "link": "/api/v1/people/608324",
+                "primaryPosition": {
+                  "code": "5",
+                  "name": "Third Base",
+                  "type": "Infielder",
+                  "abbreviation": "3B"
+                },
+                "nameFirstLast": "Alex Bregman",
+                "nameSlug": "alex-bregman-608324"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "offseason_awards_2026_e6296c74a5be",
+      "label": "2026年のナ・リーグのシルバースラッガー（2/3）",
+      "heading": "2026年のナ・リーグのシルバースラッガー（2/3）",
+      "kind_label": "MLB",
+      "data_credit": "MLB Stats API",
+      "v3": {
+        "source": "出典: MLB公式 / 受賞・取引記録"
+      },
+      "hook": "2026年のナ・リーグのシルバースラッガー（2/3）",
+      "intro": "2026年のMLBの表彰です。MLB公式の受賞記録からお伝えします。",
+      "intro_as_is": true,
+      "style": "v3",
+      "source": "MLB公式 / 受賞・取引記録",
+      "source_url": "https://statsapi.mlb.com/api/v1/awards/NLSS/recipients?season=2026",
+      "items": [
+        [
+          "エリー・デラクルーズ｜ナ・リーグのシルバースラッガー・遊撃手",
+          "エリー・デラクルーズは2026年のナ・リーグのシルバースラッガーを受賞しました"
+        ],
+        [
+          "ジャクソン・チョーリオ｜ナ・リーグのシルバースラッガー・外野手",
+          "ジャクソン・チョーリオは2026年のナ・リーグのシルバースラッガーを受賞しました"
+        ],
+        [
+          "ジェームズ・ウッド｜ナ・リーグのシルバースラッガー・外野手",
+          "ジェームズ・ウッドは2026年のナ・リーグのシルバースラッガーを受賞しました"
+        ]
+      ],
+      "offseason": {
+        "kind": "awards",
+        "day": "2026-11-18",
+        "season": 2026,
+        "events": [
+          {
+            "event_id": "award:2026:NLSS:682829:winner",
+            "head": "エリー・デラクルーズ｜ナ・リーグのシルバースラッガー・遊撃手",
+            "body": "エリー・デラクルーズは2026年のナ・リーグのシルバースラッガーを受賞しました",
+            "name": "エリー・デラクルーズ",
+            "japanese": false,
+            "source": "https://statsapi.mlb.com/api/v1/awards/NLSS/recipients?season=2026",
+            "raw": {
+              "id": "NLSS",
+              "name": "NL Silver Slugger",
+              "date": "2026-11-17",
+              "season": "2026",
+              "team": {
+                "id": 113,
+                "link": "/api/v1/teams/113"
+              },
+              "player": {
+                "id": 682829,
+                "link": "/api/v1/people/682829",
+                "primaryPosition": {
+                  "code": "6",
+                  "name": "Shortstop",
+                  "type": "Infielder",
+                  "abbreviation": "SS"
+                },
+                "nameFirstLast": "Elly De La Cruz",
+                "nameSlug": "elly-de-la-cruz-682829"
+              }
+            }
+          },
+          {
+            "event_id": "award:2026:NLSS:694192:winner",
+            "head": "ジャクソン・チョーリオ｜ナ・リーグのシルバースラッガー・外野手",
+            "body": "ジャクソン・チョーリオは2026年のナ・リーグのシルバースラッガーを受賞しました",
+            "name": "ジャクソン・チョーリオ",
+            "japanese": false,
+            "source": "https://statsapi.mlb.com/api/v1/awards/NLSS/recipients?season=2026",
+            "raw": {
+              "id": "NLSS",
+              "name": "NL Silver Slugger",
+              "date": "2026-11-17",
+              "season": "2026",
+              "team": {
+                "id": 158,
+                "link": "/api/v1/teams/158"
+              },
+              "player": {
+                "id": 694192,
+                "link": "/api/v1/people/694192",
+                "primaryPosition": {
+                  "code": "O",
+                  "name": "Outfield",
+                  "type": "Outfielder",
+                  "abbreviation": "OF"
+                },
+                "nameFirstLast": "Jackson Chourio",
+                "nameSlug": "jackson-chourio-694192"
+              }
+            }
+          },
+          {
+            "event_id": "award:2026:NLSS:695578:winner",
+            "head": "ジェームズ・ウッド｜ナ・リーグのシルバースラッガー・外野手",
+            "body": "ジェームズ・ウッドは2026年のナ・リーグのシルバースラッガーを受賞しました",
+            "name": "ジェームズ・ウッド",
+            "japanese": false,
+            "source": "https://statsapi.mlb.com/api/v1/awards/NLSS/recipients?season=2026",
+            "raw": {
+              "id": "NLSS",
+              "name": "NL Silver Slugger",
+              "date": "2026-11-17",
+              "season": "2026",
+              "team": {
+                "id": 120,
+                "link": "/api/v1/teams/120"
+              },
+              "player": {
+                "id": 695578,
+                "link": "/api/v1/people/695578",
+                "primaryPosition": {
+                  "code": "O",
+                  "name": "Outfield",
+                  "type": "Outfielder",
+                  "abbreviation": "OF"
+                },
+                "nameFirstLast": "James Wood",
+                "nameSlug": "james-wood-695578"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "offseason_awards_2026_76c3300d9c8d",
+      "label": "2026年のナ・リーグのシルバースラッガー（3/3）",
+      "heading": "2026年のナ・リーグのシルバースラッガー（3/3）",
+      "kind_label": "MLB",
+      "data_credit": "MLB Stats API",
+      "v3": {
+        "source": "出典: MLB公式 / 受賞・取引記録"
+      },
+      "hook": "2026年のナ・リーグのシルバースラッガー（3/3）",
+      "intro": "2026年のMLBの表彰です。MLB公式の受賞記録からお伝えします。",
+      "intro_as_is": true,
+      "style": "v3",
+      "source": "MLB公式 / 受賞・取引記録",
+      "source_url": "https://statsapi.mlb.com/api/v1/awards/NLSS/recipients?season=2026",
+      "items": [
+        [
+          "ピート・クロウ＝アームストロング｜ナ・リーグのシルバースラッガー・外野手",
+          "ピート・クロウ＝アームストロングは2026年のナ・リーグのシルバースラッガーを受賞しました"
+        ],
+        [
+          "カイル・シュワーバー｜ナ・リーグのシルバースラッガー・指名打者",
+          "カイル・シュワーバーは2026年のナ・リーグのシルバースラッガーを受賞しました"
+        ],
+        [
+          "ジェイク・バウアーズ｜ナ・リーグのシルバースラッガー・ユーティリティ",
+          "ジェイク・バウアーズは2026年のナ・リーグのシルバースラッガーを受賞しました"
+        ]
+      ],
+      "offseason": {
+        "kind": "awards",
+        "day": "2026-11-18",
+        "season": 2026,
+        "events": [
+          {
+            "event_id": "award:2026:NLSS:691718:winner",
+            "head": "ピート・クロウ＝アームストロング｜ナ・リーグのシルバースラッガー・外野手",
+            "body": "ピート・クロウ＝アームストロングは2026年のナ・リーグのシルバースラッガーを受賞しました",
+            "name": "ピート・クロウ＝アームストロング",
+            "japanese": false,
+            "source": "https://statsapi.mlb.com/api/v1/awards/NLSS/recipients?season=2026",
+            "raw": {
+              "id": "NLSS",
+              "name": "NL Silver Slugger",
+              "date": "2026-11-17",
+              "season": "2026",
+              "team": {
+                "id": 112,
+                "link": "/api/v1/teams/112"
+              },
+              "player": {
+                "id": 691718,
+                "link": "/api/v1/people/691718",
+                "primaryPosition": {
+                  "code": "O",
+                  "name": "Outfield",
+                  "type": "Outfielder",
+                  "abbreviation": "OF"
+                },
+                "nameFirstLast": "Pete Crow-Armstrong",
+                "nameSlug": "pete-crow-armstrong-691718"
+              }
+            }
+          },
+          {
+            "event_id": "award:2026:NLSS:656941:winner",
+            "head": "カイル・シュワーバー｜ナ・リーグのシルバースラッガー・指名打者",
+            "body": "カイル・シュワーバーは2026年のナ・リーグのシルバースラッガーを受賞しました",
+            "name": "カイル・シュワーバー",
+            "japanese": false,
+            "source": "https://statsapi.mlb.com/api/v1/awards/NLSS/recipients?season=2026",
+            "raw": {
+              "id": "NLSS",
+              "name": "NL Silver Slugger",
+              "date": "2026-11-17",
+              "season": "2026",
+              "team": {
+                "id": 143,
+                "link": "/api/v1/teams/143"
+              },
+              "player": {
+                "id": 656941,
+                "link": "/api/v1/people/656941",
+                "primaryPosition": {
+                  "code": "10",
+                  "name": "Designated Hitter",
+                  "type": "Hitter",
+                  "abbreviation": "DH"
+                },
+                "nameFirstLast": "Kyle Schwarber",
+                "nameSlug": "kyle-schwarber-656941"
+              }
+            }
+          },
+          {
+            "event_id": "award:2026:NLSS:641343:winner",
+            "head": "ジェイク・バウアーズ｜ナ・リーグのシルバースラッガー・ユーティリティ",
+            "body": "ジェイク・バウアーズは2026年のナ・リーグのシルバースラッガーを受賞しました",
+            "name": "ジェイク・バウアーズ",
+            "japanese": false,
+            "source": "https://statsapi.mlb.com/api/v1/awards/NLSS/recipients?season=2026",
+            "raw": {
+              "id": "NLSS",
+              "name": "NL Silver Slugger",
+              "date": "2026-11-17",
+              "season": "2026",
+              "team": {
+                "id": 158,
+                "link": "/api/v1/teams/158"
+              },
+              "player": {
+                "id": 641343,
+                "link": "/api/v1/people/641343",
+                "primaryPosition": {
+                  "code": "U",
+                  "name": "Utility",
+                  "type": "Infielder",
+                  "abbreviation": "UT"
+                },
+                "nameFirstLast": "Jake Bauers",
+                "nameSlug": "jake-bauers-641343"
+              }
+            }
+          }
+        ]
+      }
     }
-  ],
-  "state": "ready"
+  ]
 }
