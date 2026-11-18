@@ -58,6 +58,28 @@ def stat(raw, team, key):
 
 
 class Topics(unittest.TestCase):
+    def test_core_sound_prefers_the_matching_answer_and_falls_back_to_the_first_number(self):
+        import soccer_national_topics_render as render
+
+        def ask(panel, **meta):
+            return dict(kind='list', speaker=ZUNDA, meta=dict(panel=panel, **meta))
+
+        def answer(panel, value):
+            return dict(kind='list', speaker=METAN, meta=dict(panel=panel, big=dict(value=value)))
+
+        segments = [ask(0, hook=dict(big='5')), answer(0, 2), ask(1), answer(1, 5),
+                    dict(kind='outro', speaker=METAN, meta={})]
+        frames = [60, 90, 60, 90, 60]
+        self.assertEqual(topics.core_panel(segments), 1)
+        self.assertEqual(render.topic_transition_cues(segments, frames, 90), [(5, 'transition', 'b', -12)])
+        segments[0]['meta']['hook']['big'] = '7'
+        self.assertEqual(topics.core_panel(segments), 0)
+        self.assertEqual(render.topic_transition_cues(segments, frames, 90), [(3, 'transition', 'b', -12)])
+        for seg in segments:
+            seg['meta'].pop('big', None)
+        self.assertIsNone(topics.core_panel(segments))
+        self.assertEqual(render.topic_transition_cues(segments, frames, 90), [])
+
     def test_all_six_topics_are_made_from_the_fixture(self):
         made, excluded = topics.available(summary(), meetings=MEETINGS)
         self.assertEqual(sorted(made), sorted(ALL + ('reactions', 'followup-shiogai', 'followup-ueda', 'followup-endo', 'followup-tomiyasu', 'followup-nagatomo')))

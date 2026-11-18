@@ -54,17 +54,17 @@ def duration(segment, normal):
     return seconds
 
 
-def transition_cues(segments, durations):
-    """同じ札での話者交代は鳴らさず、札が変わる瞬間だけ鳴らす。"""
+def transition_cues(segments, durations, *, core_only=False):
+    """札が変わる瞬間に鳴らす。core_only では入る札に core=True が必要。"""
     cues, clock, previous = [], 0.0, None
     for segment, seconds in zip(segments, durations):
         meta = segment.get('meta') or {}
         screen = meta.get('screen')
         identity = ('screen', screen) if screen is not None else (
             segment.get('kind'), json.dumps({k: v for k, v in meta.items()
-                if k not in ('who', 'duo', 'answer_text', 'duo_ask', 'short_outro')},
+                if k not in ('who', 'duo', 'answer_text', 'duo_ask', 'short_outro', 'core')},
                 ensure_ascii=False, sort_keys=True, default=str))
-        if previous is not None and identity != previous:
+        if previous is not None and identity != previous and (not core_only or meta.get('core') is True):
             cues.append((clock, 'transition', 'b', -12))
         previous = identity
         clock += seconds

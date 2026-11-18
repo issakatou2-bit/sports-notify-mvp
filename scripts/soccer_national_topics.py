@@ -427,6 +427,22 @@ def reactions(m, topic='reactions'):
 TOPICS={'team-numbers':team_numbers,'late-winner':late_winner,'opponent-star':opponent_star,'keeper':keeper,'early-goals':early_goals,'rematch':rematch,'reactions':reactions}
 
 
+def core_panel(segments):
+    """冒頭と同じ大きな数字の答えを優先し、なければ最初の大きな数字を選ぶ。"""
+    hook = segments[0]['meta'].get('hook')
+    fallback = None
+    for seg in segments:
+        meta = seg['meta']
+        big = meta.get('big')
+        if seg['speaker'] != METAN or not big:
+            continue
+        if fallback is None:
+            fallback = meta['panel']
+        if hook and str(big['value']) == str(hook['big']):
+            return meta['panel']
+    return fallback
+
+
 def narration(summary, topic, *, names=None, meetings=None):
     raw=compact(summary);m=Material(raw,names,meetings)
     hook=None

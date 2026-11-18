@@ -17,6 +17,19 @@ import sound_mix as sound
 
 
 class ShortCommonTests(unittest.TestCase):
+    def test_transition_cues_can_use_only_core_screens(self):
+        segments = [dict(kind='list', meta=dict(screen=screen, core=core)) for screen, core in
+                    [(0, False), (1, False), (2, True), (2, False), (3, False)]]
+        times = [1, 2, 3, 4, 5]
+        self.assertEqual([cue[0] for cue in common.transition_cues(segments, times)], [1, 3, 10])
+        self.assertEqual(common.transition_cues(segments, times, core_only=True), [(3, 'transition', 'b', -12)])
+        self.assertEqual(common.transition_cues(segments[:2], times[:2], core_only=True), [])
+
+    def test_core_flag_does_not_make_a_new_screen(self):
+        first = dict(kind='list', meta=dict(panel=0, who='ずんだもん'))
+        answer = dict(kind='list', meta=dict(panel=0, who='四国めたん', core=True))
+        self.assertEqual(common.transition_cues([first, answer], [1, 2], core_only=True), [])
+
     def test_only_promotion_changes(self):
         body = dict(kind='list', text='本編の事実です。', speaker=3, meta=dict(start=1))
         original = dict(segments=[body, dict(kind='next_program', text='番組案内です。', meta={}),

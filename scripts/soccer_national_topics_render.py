@@ -58,6 +58,25 @@ def opening_frames(segments, first_frames):
     return max(first_frames, math.ceil(topics.OPENING_SECONDS * FPS))
 
 
+def topic_transition_cues(segments, frame_counts, hook_end):
+    """話者の区間から、実際に表示する札の区間を作る。"""
+    core = topics.core_panel(segments)
+    screens = [dict(meta=dict(screen='hook'))] if hook_end else []
+    lengths = [hook_end / FPS] if hook_end else []
+    start = 0
+    for seg, count in zip(segments, frame_counts):
+        end = start + count
+        visible = end - max(start, hook_end)
+        start = end
+        if visible <= 0:
+            continue
+        panel = seg['meta'].get('panel')
+        screen = seg['kind'] if panel is None else panel
+        screens.append(dict(meta=dict(screen=screen, core=core is not None and panel == core)))
+        lengths.append(visible / FPS)
+    return short_common.transition_cues(screens, lengths, core_only=True)
+
+
 def frame(t, seg, doc, clubs, index=0, count=1, *, opening_hook=None):
     """index 番目の区間の時刻 t の絵。問い（ずんだもん）と答え（めたん）の組は同じ画面。"""
     if seg['kind'] == 'outro':
@@ -288,10 +307,11 @@ def render(narr, audio, out, *, sample=False):
     track = vc.build_narration_track(audio, times, out)
     if not track:
         raise ValueError('実音声なし')
-    track = short_common.add_audio(track, audio, times, out)
+    hook_end = opening_frames(segments, frame_counts[0])
+    cues = topic_transition_cues(segments, frame_counts, hook_end)
+    track = short_common.add_audio(track, audio, times, out, cues=cues)
     clubs = clubs_for(narr); video = out / VIDEO; clock = 0; layouts = []
     timeline = render_timeline.Recorder(FPS, audio, narr)
-    hook_end = opening_frames(segments, frame_counts[0])
     hook = segments[0]['meta'].get('hook')
     command = ['ffmpeg', '-y', '-f', 'rawvideo', '-vcodec', 'rawvideo', '-pix_fmt', 'rgb24', '-s', '1080x1920', '-r', str(FPS), '-i', '-',
                '-i', str(track), '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '23', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-b:a', '160k',
