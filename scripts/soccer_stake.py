@@ -110,7 +110,7 @@ def line_relation(table, code, row):
                 if not other:
                     continue
                 gap = row['points'] - other['points']
-                words = f"{label}の{at}位以内にいて、{at + 1}位との差は勝点{gap}"
+                words = f"{label}の{at}位以内にいて、" + (f"{at + 1}位と勝点が同じ" if gap == 0 else f"{at + 1}位との差は勝点{gap}")
                 short = f"{label}を守れるか {at + 1}位と勝点{gap}差"
             else:
                 other = by_pos[at]
@@ -131,7 +131,8 @@ def line_relation(table, code, row):
                 words = f"{label}にいて、{at}位まで勝点{gap}"
                 short = f"残留圏まで勝点{gap}"
         if gap <= NEAR and (best is None or gap < best['gap']):
-            best = dict(gap=gap, label=label, words=words, short=short, at=at, inside=inside, upper=upper)
+            best = dict(gap=gap, label=label, words=words, short=short, at=at, inside=inside, upper=upper,
+                        vs=other['position'])
     return best
 
 
@@ -256,7 +257,8 @@ def build(game, comp, *, as_of):
         ask0 = f"{hn}対{an}は、何が懸かっているのだ？"
     first = f"{league}で{H['position']}位の{hn}と、{A['position']}位の{an}の{kind_word if s['kind'] != '境目' else '対戦'}です。"
     upper, lower = (H, A) if H['position'] < A['position'] else (A, H)
-    un, ln = club_jp(upper['team']), club_jp(lower['team'])
+    # 2回目からは短い名前（パレス・ソシエダ）。45秒に収め、聞き取りやすくする。
+    un, ln = club_short(upper['team']), club_short(lower['team'])
     if gap == 0:
         first += f"勝点は{H['points']}で並び、勝った方が勝点で上に立ちます。"
     elif gap <= 2:
@@ -265,10 +267,14 @@ def build(game, comp, *, as_of):
         first += f"勝点の差は{gap}で、{ln}が勝てば勝点で並びます。"
     else:
         first += f"勝点の差は{gap}です。"
-    for side, name in (('home', hn), ('away', an)):
+    said = {}
+    for side, name, other in (('home', hs, A), ('away', as_, H)):
         r = s['relation'][side]
-        if r:
-            first += f"{name}は{r['words']}です。"
+        # 境目が相手の順位そのもので差も同じなら、いま言った勝点差の言い直しなので省く。
+        if r and not (r['vs'] == other['position'] and r['gap'] == gap):
+            said.setdefault(r['words'], []).append(name)
+    for words, names in said.items():
+        first += f"{'2クラブとも' if len(names) == 2 else names[0]}は{words}です。".replace('2クラブともは', '2クラブとも、')
     compare = [['順位', f"{H['position']}位", f"{A['position']}位"], ['勝点', str(H['points']), str(A['points'])],
                ['得点', str(H['gf']), str(A['gf'])], ['失点', str(H['ga']), str(A['ga'])]]
     panels.append((ask0, first, '順位と勝点',
@@ -282,20 +288,20 @@ def build(game, comp, *, as_of):
             st = p['stats']
             if st:
                 parts = [f"{st['goals']}得点"] + ([f"{st['assists']}アシスト"] if st['assists'] else [])
-                said.append(f"{club}の{p['name']}は、今季のリーグ戦で{st['minutes']}分に出て{''.join(parts)}です。")
+                said.append(f"{club_short_from_jp(club, H, A)}の{p['name']}は、今季のリーグ戦で{st['minutes']}分に出て{''.join(parts)}です。")
                 rows.append((p['name'], f"{club_short_from_jp(club, H, A)}　{'・'.join(parts)}　{st['minutes']}分出場"))
             else:
-                said.append(f"{club}には{p['name']}がいます。")
+                said.append(f"{club_short_from_jp(club, H, A)}には{p['name']}がいます。")
                 rows.append((p['name'], club_short_from_jp(club, H, A)))
         panels.append(('日本人選手は、どうなのだ？', ''.join(said), '日本人選手', rows, {}))
     # 3. 直近の調子（連勝・連敗と、失点の多さまで言う）
     fh, fa = form(comp, H['team']), form(comp, A['team'])
     if len(fh) == FORM and len(fa) == FORM:
-        text = f"リーグ戦の直近{FORM}試合は、{hn}が{record(fh)}、{an}が{record(fa)}です。"
-        text += streak_words(hn, fh) + streak_words(an, fa)
+        text = f"リーグ戦の直近{FORM}試合は、{hs}が{record(fh)}、{as_}が{record(fa)}です。"
+        text += streak_words(hs, fh) + streak_words(as_, fa)
         gh, ga_ = sum(r['ga'] for r in fh), sum(r['ga'] for r in fa)
         if max(gh, ga_) >= 2 * FORM and max(gh, ga_) - min(gh, ga_) >= 3:
-            worse = hn if gh > ga_ else an
+            worse = hs if gh > ga_ else as_
             text += f"この{FORM}試合で{worse}は{max(gh, ga_)}失点しています。"
         rows = [[f'直近{FORM}試合', record(fh), record(fa)],
                 ['得点', str(sum(r['gf'] for r in fh)), str(sum(r['gf'] for r in fa))],
