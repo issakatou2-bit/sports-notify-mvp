@@ -26,7 +26,7 @@ NEAR = 3          # 線や相手との勝点差がこの数以下なら「懸か
 FORM = 5          # 直近の試合数
 SEC_PER_CHAR = 51.33 / 345
 BUDGET = 42       # 描画は45秒で止まるので、見込みで余裕を持たせる
-CREDIT_MEDIA = {'football-data': 'football-data.org', 'espn': 'ESPN', 'fpl': 'プレミアリーグ公式'}
+CREDIT_MEDIA = {'football-data': 'football-data.org', 'espn': 'ESPN', 'fpl': 'プレミア公式'}
 
 
 def club_jp(team_en):
