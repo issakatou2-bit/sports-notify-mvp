@@ -34,6 +34,8 @@ def information(document, material=None):
         return importlib.import_module('soccer_national_topics').information(document)
     if document.get('program') == 'soccer_national':
         return importlib.import_module('soccer_national').information(document)
+    if document.get('program') == 'soccer_stake':
+        return importlib.import_module('soccer_stake').information(document)
     material = material or {}
     found = {}
     segments = document.get('segments') or []

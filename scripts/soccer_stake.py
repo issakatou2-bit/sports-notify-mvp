@@ -348,6 +348,32 @@ def build(game, comp, *, as_of):
     return doc
 
 
+def information(doc):
+    """公開前の関門（short_content）用。読んで画面にも出す事実だけを、出どころつきで数える。"""
+    found = []
+    said = ''.join(seg['text'] for seg in doc['segments'])
+    stake = doc['stake']
+    for side in ('home', 'away'):
+        row = stake[side]
+        if f"{row['position']}位" in said:
+            found.append(dict(subject=row['team'], fact='順位と勝点', value=[row['position'], row['points']],
+                              source='football-data.org 順位表', segments=[1]))
+        rows = (doc.get('form') or {}).get(side) or []
+        if len(rows) == FORM and record(rows) in said:
+            found.append(dict(subject=row['team'], fact=f'直近{FORM}試合', value=record(rows),
+                              source='football-data.org 試合結果', segments=[]))
+    for seg in doc['segments']:
+        for name, line in (seg.get('meta') or {}).get('rows') or []:
+            if seg['speaker'] == METAN and name in seg['text'] and '出場' in line:
+                found.append(dict(subject=name, fact='今季のリーグ戦成績', value=line,
+                                  source='プレミアリーグ公式', segments=[]))
+    game = doc.get('game') or {}
+    if game.get('start_time_utc'):
+        found.append(dict(subject=doc['event_id'], fact='開始予定', value=game['start_time_utc'],
+                          source='ESPN 日程', segments=[]))
+    return found
+
+
 def estimate_seconds(doc):
     """11/19 の見本（345字・9区間で51.3秒）から、1字0.149秒で見積もる。描画は45秒で止まる。"""
     return round(sum(len(seg['text']) for seg in doc['segments']) * SEC_PER_CHAR, 1)
