@@ -2530,6 +2530,11 @@ def main():
         quality = short_content.validate_upload(video_path)
         experiment = dict(experiment or {}, **short_content.publication_fields(quality))
 
+    import opening_alignment
+    audit_narration = args.dialogue if args.kind == 'longform' and args.dialogue else args.narration
+    opening_alignment.before_upload(body['snippet']['title'], audit_narration, video_path, rec_kind,
+        prefer_adjacent=audit_narration == parser.get_default('narration'),
+        asset_topic=(args.asset_topic or 'mlb_abbr') if args.kind == 'asset' else None)
     try:
         youtube = build("youtube", "v3", credentials=creds, cache_discovery=False)
         response = insert_with_retry(youtube, body, video_path)
