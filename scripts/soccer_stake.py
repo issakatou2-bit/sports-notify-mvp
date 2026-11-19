@@ -238,18 +238,18 @@ def build(game, comp, *, as_of):
     else:
         score = f"{hs} 対 {as_}"
     hook = dict(score=score, result=kind_word if s['kind'] != '境目' else rel['label'],
-                subject=f"{H['position']}位{hs}と{A['position']}位{as_}の勝点", big=str(gap), unit='差')
+                subject=f"{hs}と{as_}の勝点", big=str(gap), unit='差')
     if gap == 0:
-        hook.update(subject=f"{H['position']}位{hs}と{A['position']}位{as_}は勝点", big=str(H['points']), unit='で並ぶ')
+        hook.update(subject=f"{hs}と{as_}は勝点", big=str(H['points']), unit='で並ぶ')
     if s['kind'] == '境目':
         hook.update(subject=f"{mine['position']}位{club_short(mine['team'])}は{rel['short'].rsplit('勝点', 1)[0]}勝点",
                     big=str(rel['gap']), unit='')
     if s['kind'] == '残留争い':
-        hook['note'] = f"{s['relegation'] + 1}位から下が降格圏"
+        hook['note'] = f"{pair}　{s['relegation'] + 1}位から下が降格圏"
     elif s['kind'] == '上位争い':
-        hook['note'] = f"{s['europe']}位までが欧州の大会の出場圏"
+        hook['note'] = f"{pair}　{s['europe']}位までが欧州の大会の出場圏"
     else:
-        hook['note'] = league
+        hook['note'] = pair if s['kind'] != '境目' else league
     panels = []
     # 1. 何が懸かっているか。勝点の差は1回だけ言い、「勝てばどうなるか」を2クラブの間だけで言う。
     if hp and ap:
@@ -290,9 +290,12 @@ def build(game, comp, *, as_of):
         for p, club in people:
             st = p['stats']
             if st:
-                parts = [f"{st['goals']}得点"] + ([f"{st['assists']}アシスト"] if st['assists'] else [])
-                said.append(f"{p['name']}は今季{st['minutes']}分の出場で{''.join(parts)}です。")
-                rows.append((p['name'], f"{club_short_from_jp(club, H, A)}　{'・'.join(parts)}　{st['minutes']}分出場"))
+                # 「0得点2アシスト」と言わない。どちらも0なら出場時間だけ。
+                parts = ([f"{st['goals']}得点"] if st['goals'] else []) + ([f"{st['assists']}アシスト"] if st['assists'] else [])
+                said.append(f"{p['name']}は今季{st['minutes']}分の出場で{''.join(parts)}です。" if parts
+                            else f"{p['name']}は今季{st['minutes']}分に出場しています。")
+                rows.append((f"{p['name']}　{club_short_from_jp(club, H, A)}",
+                             f"{''.join(parts)}　{st['minutes']}分" if parts else f"{st['minutes']}分出場"))
             else:
                 said.append(f"{club_short_from_jp(club, H, A)}には{p['name']}がいます。")
                 rows.append((p['name'], club_short_from_jp(club, H, A)))
@@ -365,8 +368,9 @@ def information(doc):
             found.append(dict(subject=row['team'], fact=f'直近{FORM}試合', value=record(rows),
                               source='football-data.org 試合結果', segments=[]))
     for seg in doc['segments']:
-        for name, line in (seg.get('meta') or {}).get('rows') or []:
-            if seg['speaker'] == METAN and name in seg['text'] and '出場' in line:
+        for label, line in (seg.get('meta') or {}).get('rows') or []:
+            name = label.split('　')[0]
+            if seg['speaker'] == METAN and name in seg['text'] and re.search(r'\d+分$', line):
                 found.append(dict(subject=name, fact='今季のリーグ戦成績', value=line,
                                   source='プレミアリーグ公式', segments=[]))
     game = doc.get('game') or {}
