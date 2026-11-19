@@ -1,48 +1,40 @@
 {
-  "updated_at": "2026-11-18T20:08:43.647667+00:00",
+  "updated_at": "2026-11-19T06:02:17.343516+00:00",
   "sources": [
     {
       "name": "MLB公式",
-      "items": 24
+      "items": 25
     },
     {
       "name": "ESPN",
-      "items": 13
+      "items": 12
     }
   ],
   "titles_count": 37,
   "teams": [
     {
-      "team_id": "145",
-      "name": "ホワイトソックス",
-      "name_en": "Chicago White Sox",
-      "mentions": 4,
-      "tone": "話題",
-      "gist": "メイと3年5250万ドルで合意"
-    },
-    {
       "team_id": "136",
       "name": "マリナーズ",
       "name_en": "Seattle Mariners",
-      "mentions": 4,
+      "mentions": 5,
       "tone": "話題",
-      "gist": "ガルシアとミラー含む6人大型トレード"
+      "gist": "ガルシア獲得、マイラー軸6選手トレード"
+    },
+    {
+      "team_id": "141",
+      "name": "ブルージェイズ",
+      "name_en": "Toronto Blue Jays",
+      "mentions": 3,
+      "tone": "話題",
+      "gist": "スクバルと面談、ブルージェイズも参戦"
     },
     {
       "team_id": "111",
       "name": "レッドソックス",
       "name_en": "Boston Red Sox",
-      "mentions": 4,
-      "tone": "話題",
-      "gist": "フォーツ獲得、バウアーズも加入"
-    },
-    {
-      "team_id": "147",
-      "name": "ヤンキース",
-      "name_en": "New York Yankees",
       "mentions": 3,
       "tone": "話題",
-      "gist": "ベドナーがQO受諾、残留"
+      "gist": "フォルテス獲得で捕手層を強化"
     },
     {
       "team_id": "118",
@@ -50,31 +42,39 @@
       "name_en": "Kansas City Royals",
       "mentions": 3,
       "tone": "話題",
-      "gist": "ガルシアとミラー含む6人大型トレード"
+      "gist": "ガルシア放出、マイラー軸の6選手交換"
     },
     {
       "team_id": "142",
       "name": "ツインズ",
       "name_en": "Minnesota Twins",
       "mentions": 3,
-      "tone": "話題",
-      "gist": "ジェファーズがQO受諾、残留"
+      "tone": "好調",
+      "gist": "サニー・グレイが2年契約で復帰"
     },
     {
-      "team_id": "141",
-      "name": "ブルージェイズ",
-      "name_en": "Toronto Blue Jays",
-      "mentions": 2,
+      "team_id": "139",
+      "name": "レイズ",
+      "name_en": "Tampa Bay Rays",
+      "mentions": 3,
       "tone": "話題",
-      "gist": "スクーバルと面談、争奪戦に参戦"
+      "gist": "フォルテス放出、捕手事情に注目"
     },
     {
-      "team_id": "121",
-      "name": "メッツ",
-      "name_en": "New York Mets",
+      "team_id": "145",
+      "name": "ホワイトソックス",
+      "name_en": "Chicago White Sox",
       "mentions": 2,
       "tone": "話題",
-      "gist": "スクーバルの本命と目される"
+      "gist": "テイラー先発入り、メイ獲得で補強"
+    },
+    {
+      "team_id": "108",
+      "name": "エンゼルス",
+      "name_en": "Los Angeles Angels",
+      "mentions": 2,
+      "tone": "話題",
+      "gist": "クローンキー氏へ40億ドル売却、1月完了見込み"
     }
   ],
   "players": []

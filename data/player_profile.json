@@ -1,114 +1,88 @@
 {
-  "generated_at": "2026-11-18T19:58:53.849375+00:00",
+  "generated_at": "2026-11-19T06:01:08.850811+00:00",
   "date_jst": "2026-11-19",
-  "name": "ヌートバー",
-  "player_id": "663457",
-  "team": "ダイヤモンドバックス",
+  "name": "西田陸浮",
+  "player_id": "807747",
+  "team": "ホワイトソックス",
   "group": "hitting",
   "why": "順番",
   "headline": "",
   "score": null,
   "bio": {
-    "name_en": "Lars Nootbaar",
-    "age": 29,
-    "birth_city": "El Segundo",
-    "birth_state": "CA",
-    "birth_country": "USA",
-    "birth_date": "1997-09-08",
-    "debut": "2021-06-22",
-    "draft_year": 2018,
+    "name_en": "Rikuu Nishida",
+    "age": 25,
+    "birth_city": "Osaka",
+    "birth_state": null,
+    "birth_country": "Japan",
+    "birth_date": "2001-05-06",
+    "debut": "2026-05-25",
+    "draft_year": 2023,
     "bats": "Left",
     "throws": "Right",
-    "number": "21",
+    "number": "51",
     "position": "Outfielder",
     "nickname": null,
-    "height": "6' 1\"",
-    "weight": 205
+    "height": "5' 6\"",
+    "weight": 150
   },
   "teams": [
     {
-      "team": "カージナルス",
-      "from": 2021,
-      "to": 2026
-    },
-    {
-      "team": "ダイヤモンドバックス",
+      "team": "ホワイトソックス",
       "from": 2026,
       "to": 2026
     }
   ],
   "career": {
-    "games": 617,
+    "games": 12,
     "avg": ".241",
-    "hr": 66,
-    "rbi": 227,
-    "ops": ".743",
-    "sb": 30,
-    "hits": 475,
-    "wins": 6,
-    "losses": 4,
-    "era": "4.93",
-    "so": 97,
-    "ip": "76.2",
-    "whip": "1.42"
+    "hr": 0,
+    "rbi": 2,
+    "ops": ".482",
+    "sb": 0,
+    "hits": 7
   },
   "this_season": {
-    "games": 90,
-    "avg": ".239",
-    "hr": 8,
-    "rbi": 33,
-    "ops": ".721",
-    "sb": 2,
-    "hits": 68,
-    "wins": 6,
-    "losses": 4,
-    "era": "4.93",
-    "so": 97,
-    "ip": "76.2",
-    "whip": "1.42"
+    "games": 12,
+    "avg": ".241",
+    "hr": 0,
+    "rbi": 2,
+    "ops": ".482",
+    "sb": 0,
+    "hits": 7
   },
-  "last_season": {
-    "games": 135,
-    "avg": ".234",
-    "hr": 13,
-    "rbi": 48,
-    "ops": ".686",
-    "sb": 4,
-    "hits": 119,
-    "wins": 12,
-    "losses": 8,
-    "era": "2.49",
-    "so": 201,
-    "ip": "173.2",
-    "whip": "0.99"
-  },
+  "last_season": {},
   "recent": [
     {
-      "date": "2026-09-27",
-      "line": "4打数1安打 1打点",
-      "opponent": "San Diego Padres"
+      "date": "2026-06-07",
+      "line": "2打数1安打",
+      "opponent": "Philadelphia Phillies"
     },
     {
-      "date": "2026-09-26",
+      "date": "2026-06-06",
+      "line": "2打数1安打",
+      "opponent": "Philadelphia Phillies"
+    },
+    {
+      "date": "2026-06-05",
+      "line": "1打数0安打",
+      "opponent": "Philadelphia Phillies"
+    },
+    {
+      "date": "2026-06-03",
       "line": "3打数0安打",
-      "opponent": "San Diego Padres"
+      "opponent": "Minnesota Twins"
     },
     {
-      "date": "2026-09-25",
-      "line": "3打数1安打 1本塁打 1打点",
-      "opponent": "San Diego Padres"
-    },
-    {
-      "date": "2026-09-24",
-      "line": "6打数3安打",
-      "opponent": "Colorado Rockies"
-    },
-    {
-      "date": "2026-09-23",
-      "line": "3打数0安打",
-      "opponent": "Colorado Rockies"
+      "date": "2026-06-01",
+      "line": "4打数1安打",
+      "opponent": "Minnesota Twins"
     }
   ],
-  "awards": [],
+  "awards": [
+    {
+      "season": "2024",
+      "name": "CAR Post-Season All-Star"
+    }
+  ],
   "quotes": []
 }
