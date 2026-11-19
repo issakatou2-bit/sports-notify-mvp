@@ -15,6 +15,11 @@ def scene(image, key):
     image.info['timeline_scene'] = key
 
 
+def opening_card_lines(layout):
+    return [str(row['text']) for row in layout if row.get('text')
+            and row.get('role') not in ('header', 'caption', 'source', 'ticker')]
+
+
 def _append(rows, signature, frame, fields):
     if rows and rows[-1]['_key'] == signature and rows[-1]['end_frame'] == frame:
         rows[-1]['end_frame'] = frame + 1
@@ -37,6 +42,8 @@ class Recorder:
         self.last_image = None
         self.current = None
         self.broken = None
+        self.first_source = None
+        self.opening_card = []
 
     def select(self, segment, index, page=None):
         self.previous_subtitle = self.last_subtitle
@@ -64,6 +71,10 @@ class Recorder:
         self.last_image = image
         current = self.current
         ids = current['source_line_ids']
+        if self.first_source is None:
+            self.first_source = tuple(ids)
+        if not self.opening_card and tuple(ids) == self.first_source:
+            self.opening_card = opening_card_lines(info.get('v3_layout', []))
         _append(self.lines, tuple(ids), self.frames, dict(source_line_ids=ids, text=current['text']))
         card = (info.get('timeline_scene') or info.get('press_hook') or info.get('asset_v4')
                 or info.get('v4_quote') or {})
@@ -169,6 +180,7 @@ class Recorder:
         used = {n for r in lines for n in r['source_line_ids']}
         payload = dict(version=1, fps=self.fps, frame_count=frames, written_frame_count=self.frames,
                        video_sha256=sha256(video), lines=lines, cuts=cuts, subtitles=subtitles,
+                       opening_card=self.opening_card,
                        source_lines=[dict(line_id=n, **r, rendered=n in used) for n, r in self.sources.items()],
                        voice_manifest_sha256=sha256(record_dir / 'voice_manifest.json'),
                        provenance_review='未実施。素材の送信許可を意味しない',
