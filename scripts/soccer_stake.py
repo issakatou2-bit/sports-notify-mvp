@@ -309,8 +309,10 @@ def build(game, comp, *, as_of):
             # 「パレスは4連敗中です。パレスはこの5試合で…」を1文につなぐ。
             text = re.sub(re.escape(worse) + r"は(\d+連[勝敗]中)です。" + re.escape(worse) + "は",
                           lambda m: f"{worse}は{m.group(1)}で、", text)
-        rows = [[f'直近{FORM}試合', record(fh), record(fa)],
-                ['得点', str(sum(r['gf'] for r in fh)), str(sum(r['gf'] for r in fa))],
+        # 比べる表は数字の字で描くので、1つの欄に数字は1つ（「2勝0分3敗」は欠字で止まる）。
+        count = lambda rows, mark: sum(r['result'] == mark for r in rows)
+        rows = [['勝ち', f"{count(fh, 'W')}勝", f"{count(fa, 'W')}勝"],
+                ['負け', f"{count(fh, 'L')}敗", f"{count(fa, 'L')}敗"],
                 ['失点', str(gh), str(ga_)]]
         panels.append(('最近の調子は、どうなのだ？', text, f'直近{FORM}試合', [], dict(compare=dict(teams=[hs, as_], rows=rows))))
     # 4. 開始時刻（締めは淡々と。結果は試合後にまとめる）
