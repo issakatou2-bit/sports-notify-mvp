@@ -22793,6 +22793,54 @@
       },
       "host_fallback_reason": null,
       "privacy": "public"
+    },
+    "season_win_2026_808959_hitting": {
+      "video_id": "OVtFjyK_JDQ",
+      "url": "https://youtu.be/OVtFjyK_JDQ",
+      "title": "【本塁打と勝敗】村上宗隆 本塁打を打った試合でチームは20勝12敗 #Shorts",
+      "published_at": "2026-11-19T06:20:41.521383+00:00",
+      "publish_at": "2026-11-19T07:30:00Z",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-19",
+        "enabled": true,
+        "assigned": "generic",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false,
+        "source": "post_common.lineup:daily_soccer",
+        "next_date": "2026-11-20",
+        "next_time": "19:30",
+        "next_name": "欧州サッカー"
+      },
+      "player_ids": [
+        "808959"
+      ],
+      "duration_seconds": 28.63,
+      "short_information_count": 3,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-11-19",
+        "kind": "asset:season_win",
+        "phase": 1,
+        "planned_host": "ui",
+        "rule": "half-jst-week-v1",
+        "week": 45,
+        "weekday": 3
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-11-19T06:17:13.278704+00:00",
+        "comparison_eligible": false,
+        "label": "予定めたん（雨衣不可のため）",
+        "mode": "live",
+        "planned_host": "metan",
+        "reason": "ui_worker_stale",
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
     }
   },
   "soccer_results": {

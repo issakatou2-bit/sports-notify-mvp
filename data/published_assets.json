@@ -2292,6 +2292,32 @@
       "duration_seconds": 27.29,
       "short_information_count": 3,
       "short_content_policy": "short-content-20261027-v1"
+    },
+    "season_win_2026_808959_hitting": {
+      "video_id": "OVtFjyK_JDQ",
+      "url": "https://youtu.be/OVtFjyK_JDQ",
+      "privacy": "public",
+      "published_at": "2026-11-19T06:20:41.498611+00:00",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-19",
+        "enabled": true,
+        "assigned": "generic",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false,
+        "source": "post_common.lineup:daily_soccer",
+        "next_date": "2026-11-20",
+        "next_time": "19:30",
+        "next_name": "欧州サッカー"
+      },
+      "player_ids": [
+        "808959"
+      ],
+      "publish_at": "2026-11-19T07:30:00Z",
+      "duration_seconds": 28.63,
+      "short_information_count": 3,
+      "short_content_policy": "short-content-20261027-v1"
     }
   }
 }
