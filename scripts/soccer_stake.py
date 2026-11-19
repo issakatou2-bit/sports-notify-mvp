@@ -209,30 +209,36 @@ def build(game, comp, *, as_of):
     at = kickoff(game)
     league = comp.get('name_jp') or game.get('league')
     gap = s['gap']
-    # 題：先頭は日本人とクラブ、続けて懸かっている物（題は内容を直接示す）。
+    # 題：先頭は懸かっている物（Neon 11/19「スマホでは後ろが切れる」）、続けて日本人とクラブ。
     who = f"{jp_title(s['jp']['home'], hs)}対{jp_title(s['jp']['away'], as_)}"
+    pair = f"{H['position']}位と{A['position']}位"
+    kind_word = '直接対決' if s['kind'] == '順位の近い直接対決' else s['kind']
     if gap == 0:
-        stake_head = f"勝点{H['points']}で並ぶ{s['kind'] if s['kind'] != '順位の近い直接対決' else '直接対決'}"
+        title = f"{pair}が勝点{H['points']}で並ぶ{kind_word} {who}"
     else:
-        stake_head = f"勝点{gap}差の{'直接対決' if s['kind'] == '順位の近い直接対決' else s['kind']}"
-    title = f"{who} {stake_head}"
+        title = f"{kind_word}は{pair}で勝点{gap}差 {who}" if s['kind'] in ('残留争い', '上位争い') else             f"{pair}が勝点{gap}差の{kind_word} {who}"
+    mine = rel = None
     if s['kind'] == '境目':
         # 相手との差ではなく、境目との差が懸かっている物。日本人のいる側を先に見る。
         side = next((x for x in ('home', 'away') if s['jp'][x] and s['relation'][x]), None) or             next(x for x in ('home', 'away') if s['relation'][x])
-        other = 'away' if side == 'home' else 'home'
         mine = H if side == 'home' else A
         rel = s['relation'][side]
         own = jp_title(s['jp'][side], club_short(mine['team']))
-        title = f"{own} {rel['short']} {club_short((A if side == 'home' else H)['team'])}戦"
-    # 冒頭の札：両クラブの順位と勝点の差。
-    if gap == 0:
-        hook = dict(score=f"{hs} 対 {as_}", result=screen_time(at), subject=f"{H['position']}位{hs}と{A['position']}位{as_}は勝点",
-                    big=str(H['points']), unit='で並ぶ')
+        title = f"{rel['short']} {own}が{club_short((A if side == 'home' else H)['team'])}戦"
+    # 冒頭の札：日本人どうしなら選手名、続けて勝点の差（Neon 11/19「日本人対決が札に無い」）。
+    hp, ap = s['jp']['home'], s['jp']['away']
+    if hp and ap:
+        score = f"{hp[0]['name']} 対 {ap[0]['name']}"
+    elif hp or ap:
+        score = f"{(hp or ap)[0]['name']}の{hs if hp else as_}"
     else:
-        hook = dict(score=f"{hs} 対 {as_}", result=screen_time(at), subject=f"{H['position']}位{hs}と{A['position']}位{as_}の勝点",
-                    big=str(gap), unit='差')
+        score = f"{hs} 対 {as_}"
+    hook = dict(score=score, result=kind_word if s['kind'] != '境目' else rel['label'],
+                subject=f"{H['position']}位{hs}と{A['position']}位{as_}の勝点", big=str(gap), unit='差')
+    if gap == 0:
+        hook.update(subject=f"{H['position']}位{hs}と{A['position']}位{as_}は勝点", big=str(H['points']), unit='で並ぶ')
     if s['kind'] == '境目':
-        hook.update(subject=f"{mine['position']}位{club_short(mine['team'])}　{rel['label'] if rel['upper'] or not rel['inside'] else '降格圏'}まで勝点",
+        hook.update(subject=f"{mine['position']}位{club_short(mine['team'])}は{rel['short'].rsplit('勝点', 1)[0]}勝点",
                     big=str(rel['gap']), unit='')
     if s['kind'] == '残留争い':
         hook['note'] = f"{s['relegation'] + 1}位から下が降格圏"
@@ -241,28 +247,34 @@ def build(game, comp, *, as_of):
     else:
         hook['note'] = league
     panels = []
-    # 1. 何が懸かっているか
-    first = f"{league}で{H['position']}位の{hn}と、{A['position']}位の{an}の対戦です。"
-    first += (f"勝点は{H['points']}で並んでいます。" if gap == 0 else f"勝点の差は{gap}です。")
-    for side, row, name in (('home', H, hn), ('away', A, an)):
-        rel = s['relation'][side]
-        if rel:
-            first += f"{name}は{rel['words']}です。"
+    # 1. 何が懸かっているか。勝点の差は1回だけ言い、「勝てばどうなるか」を2クラブの間だけで言う。
+    if hp and ap:
+        ask0 = f"{hp[0]['name']}と{ap[0]['name']}の対戦は、何が懸かっているのだ？"
+    elif hp or ap:
+        ask0 = f"{(hp or ap)[0]['name']}の{hn if hp else an}の試合は、何が懸かっているのだ？"
+    else:
+        ask0 = f"{hn}対{an}は、何が懸かっているのだ？"
+    first = f"{league}で{H['position']}位の{hn}と、{A['position']}位の{an}の{kind_word if s['kind'] != '境目' else '対戦'}です。"
+    upper, lower = (H, A) if H['position'] < A['position'] else (A, H)
+    un, ln = club_jp(upper['team']), club_jp(lower['team'])
+    if gap == 0:
+        first += f"勝点は{H['points']}で並び、勝った方が勝点で上に立ちます。"
+    elif gap <= 2:
+        first += f"勝点の差は{gap}で、{ln}が勝てば勝点で{un}を上回ります。"
+    elif gap == 3:
+        first += f"勝点の差は{gap}で、{ln}が勝てば勝点で並びます。"
+    else:
+        first += f"勝点の差は{gap}です。"
+    for side, name in (('home', hn), ('away', an)):
+        r = s['relation'][side]
+        if r:
+            first += f"{name}は{r['words']}です。"
     compare = [['順位', f"{H['position']}位", f"{A['position']}位"], ['勝点', str(H['points']), str(A['points'])],
                ['得点', str(H['gf']), str(A['gf'])], ['失点', str(H['ga']), str(A['ga'])]]
-    panels.append((f"{hn}対{an}は、何が懸かっているのだ？", first, '順位と勝点',
+    panels.append((ask0, first, '順位と勝点',
                    [], dict(compare=dict(teams=[hs, as_], rows=compare),
-                            big=dict(label='勝点差', value=str(gap if gap else H['points']), unit=''))))
-    # 2. 直近の調子
-    fh, fa = form(comp, H['team']), form(comp, A['team'])
-    if len(fh) == FORM and len(fa) == FORM:
-        text = f"リーグ戦の直近{FORM}試合は、{hn}が{record(fh)}、{an}が{record(fa)}です。"
-        text += streak_words(hn, fh) + streak_words(an, fa)
-        rows = [[f'直近{FORM}試合', record(fh), record(fa)],
-                ['得点', str(sum(r['gf'] for r in fh)), str(sum(r['gf'] for r in fa))],
-                ['失点', str(sum(r['ga'] for r in fh)), str(sum(r['ga'] for r in fa))]]
-        panels.append(('最近の調子は、どうなのだ？', text, f'直近{FORM}試合', [], dict(compare=dict(teams=[hs, as_], rows=rows))))
-    # 3. 日本人選手
+                            big=dict(label='勝点差', value=hook['big'], unit=''))))
+    # 2. 日本人選手（Neon 11/19「一番の注目点が3番目では遅い」）
     people = [(p, name) for side, name in (('home', hn), ('away', an)) for p in s['jp'][side]]
     if people:
         said, rows = [], []
@@ -270,12 +282,25 @@ def build(game, comp, *, as_of):
             st = p['stats']
             if st:
                 parts = [f"{st['goals']}得点"] + ([f"{st['assists']}アシスト"] if st['assists'] else [])
-                said.append(f"{club}の{p['name']}は、今季のリーグ戦で{''.join(parts)}です。")
+                said.append(f"{club}の{p['name']}は、今季のリーグ戦で{st['minutes']}分に出て{''.join(parts)}です。")
                 rows.append((p['name'], f"{club_short_from_jp(club, H, A)}　{'・'.join(parts)}　{st['minutes']}分出場"))
             else:
                 said.append(f"{club}には{p['name']}がいます。")
                 rows.append((p['name'], club_short_from_jp(club, H, A)))
         panels.append(('日本人選手は、どうなのだ？', ''.join(said), '日本人選手', rows, {}))
+    # 3. 直近の調子（連勝・連敗と、失点の多さまで言う）
+    fh, fa = form(comp, H['team']), form(comp, A['team'])
+    if len(fh) == FORM and len(fa) == FORM:
+        text = f"リーグ戦の直近{FORM}試合は、{hn}が{record(fh)}、{an}が{record(fa)}です。"
+        text += streak_words(hn, fh) + streak_words(an, fa)
+        gh, ga_ = sum(r['ga'] for r in fh), sum(r['ga'] for r in fa)
+        if max(gh, ga_) >= 2 * FORM and max(gh, ga_) - min(gh, ga_) >= 3:
+            worse = hn if gh > ga_ else an
+            text += f"この{FORM}試合で{worse}は{max(gh, ga_)}失点しています。"
+        rows = [[f'直近{FORM}試合', record(fh), record(fa)],
+                ['得点', str(sum(r['gf'] for r in fh)), str(sum(r['gf'] for r in fa))],
+                ['失点', str(gh), str(ga_)]]
+        panels.append(('最近の調子は、どうなのだ？', text, f'直近{FORM}試合', [], dict(compare=dict(teams=[hs, as_], rows=rows))))
     # 4. 開始時刻（締めは淡々と。結果は試合後にまとめる）
     panels.append(('試合は、いつなのだ？', f"{speech_time(at)}に始まります。結果は試合後にまとめます。", '試合開始',
                    [('日本時間', screen_time(at)), ('大会', league)], {}))
