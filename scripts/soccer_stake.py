@@ -8,6 +8,7 @@
 import argparse
 import copy
 import json
+import re
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
@@ -23,6 +24,8 @@ JST = timezone(timedelta(hours=9))
 LEAGUES = ('PL', 'PD', 'SA', 'BL1', 'FL1')
 NEAR = 3          # 線や相手との勝点差がこの数以下なら「懸かっている」と言う
 FORM = 5          # 直近の試合数
+SEC_PER_CHAR = 51.33 / 345
+BUDGET = 42       # 描画は45秒で止まるので、見込みで余裕を持たせる
 CREDIT_MEDIA = {'football-data': 'football-data.org', 'espn': 'ESPN', 'fpl': 'プレミアリーグ公式'}
 
 
@@ -255,7 +258,7 @@ def build(game, comp, *, as_of):
         ask0 = f"{(hp or ap)[0]['name']}の{hn if hp else an}の試合は、何が懸かっているのだ？"
     else:
         ask0 = f"{hn}対{an}は、何が懸かっているのだ？"
-    first = f"{league}で{H['position']}位の{hn}と、{A['position']}位の{an}の{kind_word if s['kind'] != '境目' else '対戦'}です。"
+    first = f"{H['position']}位の{hn}と、{A['position']}位の{an}の{kind_word if s['kind'] != '境目' else '対戦'}です。"
     upper, lower = (H, A) if H['position'] < A['position'] else (A, H)
     # 2回目からは短い名前（パレス・ソシエダ）。45秒に収め、聞き取りやすくする。
     un, ln = club_short(upper['team']), club_short(lower['team'])
@@ -288,7 +291,7 @@ def build(game, comp, *, as_of):
             st = p['stats']
             if st:
                 parts = [f"{st['goals']}得点"] + ([f"{st['assists']}アシスト"] if st['assists'] else [])
-                said.append(f"{club_short_from_jp(club, H, A)}の{p['name']}は、今季のリーグ戦で{st['minutes']}分に出て{''.join(parts)}です。")
+                said.append(f"{p['name']}は今季{st['minutes']}分の出場で{''.join(parts)}です。")
                 rows.append((p['name'], f"{club_short_from_jp(club, H, A)}　{'・'.join(parts)}　{st['minutes']}分出場"))
             else:
                 said.append(f"{club_short_from_jp(club, H, A)}には{p['name']}がいます。")
@@ -297,19 +300,26 @@ def build(game, comp, *, as_of):
     # 3. 直近の調子（連勝・連敗と、失点の多さまで言う）
     fh, fa = form(comp, H['team']), form(comp, A['team'])
     if len(fh) == FORM and len(fa) == FORM:
-        text = f"リーグ戦の直近{FORM}試合は、{hs}が{record(fh)}、{as_}が{record(fa)}です。"
+        text = f"直近{FORM}試合は、{hs}が{record(fh)}、{as_}が{record(fa)}です。"
         text += streak_words(hs, fh) + streak_words(as_, fa)
         gh, ga_ = sum(r['ga'] for r in fh), sum(r['ga'] for r in fa)
         if max(gh, ga_) >= 2 * FORM and max(gh, ga_) - min(gh, ga_) >= 3:
             worse = hs if gh > ga_ else as_
-            text += f"この{FORM}試合で{worse}は{max(gh, ga_)}失点しています。"
+            text += f"{worse}はこの{FORM}試合で{max(gh, ga_)}失点です。"
+            # 「パレスは4連敗中です。パレスはこの5試合で…」を1文につなぐ。
+            text = re.sub(re.escape(worse) + r"は(\d+連[勝敗]中)です。" + re.escape(worse) + "は",
+                          lambda m: f"{worse}は{m.group(1)}で、", text)
         rows = [[f'直近{FORM}試合', record(fh), record(fa)],
                 ['得点', str(sum(r['gf'] for r in fh)), str(sum(r['gf'] for r in fa))],
                 ['失点', str(gh), str(ga_)]]
         panels.append(('最近の調子は、どうなのだ？', text, f'直近{FORM}試合', [], dict(compare=dict(teams=[hs, as_], rows=rows))))
     # 4. 開始時刻（締めは淡々と。結果は試合後にまとめる）
-    panels.append(('試合は、いつなのだ？', f"{speech_time(at)}に始まります。結果は試合後にまとめます。", '試合開始',
+    panels.append(('試合は、いつなのだ？', f"{speech_time(at)}に始まります。", '試合開始',
                    [('日本時間', screen_time(at)), ('大会', league)], {}))
+    # 長いときは、上の帯に出ている開始時刻の区間から省く（帯は全編に「大会　月/日 時:分」が出る）。
+    outro = 14  # 「高評価と登録、お願いします。」
+    while sum(len(q) + len(a_) for q, a_, *_ in panels) + outro > BUDGET / SEC_PER_CHAR and len(panels) > 2:
+        panels.pop()
     segments = []
     sub = f"{league}　{screen_time(at)}"
     for i, (question, answer, head, rows, extra) in enumerate(panels):
@@ -331,7 +341,16 @@ def build(game, comp, *, as_of):
                form=dict(home=fh, away=fa), game=copy.deepcopy(game), duration_budget=dict(limit=45, grace=0),
                sanity_materials=[dict(source='football-data 順位表・試合結果 / ESPN 日程', sport='soccer',
                                       facts=dict(table=comp.get('table'), game=game))])
-    return short_common.prepare(doc)
+    doc = short_common.prepare(doc)
+    seconds = estimate_seconds(doc)
+    if seconds > BUDGET:
+        raise ValueError(f'原稿が長すぎます（見込み{seconds:.1f}秒、上限{BUDGET}秒）')
+    return doc
+
+
+def estimate_seconds(doc):
+    """11/19 の見本（345字・9区間で51.3秒）から、1字0.149秒で見積もる。描画は45秒で止まる。"""
+    return round(sum(len(seg['text']) for seg in doc['segments']) * SEC_PER_CHAR, 1)
 
 
 def club_short_from_jp(club_jp_name, H, A):
