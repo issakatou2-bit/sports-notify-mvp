@@ -1,0 +1,98 @@
+name: 欧州 注目試合（懸かっている物）見本
+
+# 本人 11/19「注目試合は根本なので形を変えて残す」。1本1試合で、題と冒頭は勝点の差・順位の線。
+# 今は見本だけ（公開・台帳・コミットなし）。公開の手順は見本を確かめてから足す。
+on:
+  # 見本を作る間だけ、この枝への push でも回す（main へ入れる前に外す）。
+  push:
+    branches: [preview-stake]
+  workflow_dispatch:
+    inputs:
+      event:
+        description: 'ESPN の event id（空なら候補の1位）'
+        type: string
+        required: false
+        default: ''
+      hours:
+        description: '今から何時間以内に始まる試合から選ぶか'
+        type: string
+        required: false
+        default: '72'
+
+permissions:
+  contents: read
+concurrency:
+  group: soccer-stake
+  cancel-in-progress: false
+
+env:
+  PYTHONUTF8: '1'
+  COLLESPO_SAMPLE_ONLY: 'true'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      COLLESPO_SOCCER_LOOK: v6
+      COLLESPO_SOCCER_FOCUS: 'on'
+      COLLESPO_SHORT_LOOK: v4
+      COLLESPO_SOCCER_TITLE_V2: 'on'
+      COLLESPO_SOLO_HOST: metan
+      COLLESPO_HOST_SPLIT: 'off'
+      COLLESPO_DUO: 'off'
+      COLLESPO_MOTION: ${{ vars.COLLESPO_MOTION || '' }}
+      COLLESPO_BUBBLE: ${{ vars.COLLESPO_BUBBLE || '' }}
+      COLLESPO_STYLE: ${{ vars.COLLESPO_STYLE || '' }}
+      COLLESPO_CAPTION_BREAKS: ${{ vars.COLLESPO_CAPTION_BREAKS || '' }}
+      COLLESPO_SLANT_VARIANT: ${{ vars.COLLESPO_SLANT_VARIANT || 'cream' }}
+      COLLESPO_GLASS_BACKGROUND: ${{ vars.COLLESPO_GLASS_BACKGROUND || 'stripes' }}
+      ANTHROPIC_API_KEY: ''
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          pip install -r scripts/requirements.txt
+          pip install imageio_ffmpeg pyyaml
+      - name: Pick the match and build the script
+        env:
+          EVENT: ${{ inputs.event || '401879235' }}  # push の見本はコベントリー対パレス
+          HOURS: ${{ inputs.hours || '72' }}
+        run: |
+          python scripts/soccer_stake.py --list --hours "$HOURS" | tee build_candidates.json
+          python scripts/soccer_stake.py ${EVENT:+--event "$EVENT"} --hours "$HOURS" --out build/soccer_stake | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: Install video tools
+        run: bash scripts/install_video_tools.sh
+      - name: Start VOICEVOX
+        run: |
+          docker run -d --rm -p 50021:50021 --name voicevox voicevox/voicevox_engine:cpu-latest
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:50021/version > /dev/null; then break; fi
+            sleep 2
+          done
+          curl -fsS http://127.0.0.1:50021/version
+      - name: Synthesize narration
+        run: python scripts/synthesize_narration.py --narration build/soccer_stake/narration.json --out-dir build/soccer_stake/audio
+      - name: Render with layout, number and duration gates
+        run: python scripts/soccer_national_topics_render.py --out build/soccer_stake
+      - name: Mark sample-only execution
+        if: always()
+        run: python scripts/sample_only.py --mark build/sample_only.json --require-video
+      - name: Save sample video
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sample-soccer_stake
+          path: |
+            build/sample_only.json
+            build_candidates.json
+            build/soccer_stake/*.mp4
+            build/soccer_stake/*.png
+            build/soccer_stake/narration.json
+            build/soccer_stake/audio_mix.json
+            build/soccer_stake/layout_checks.json
+          retention-days: 14
+          if-no-files-found: warn
