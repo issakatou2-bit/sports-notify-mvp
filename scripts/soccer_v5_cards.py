@@ -19,7 +19,7 @@ import review_render_v3 as r3
 import soccer_v4_cards as original
 import club_display_names
 
-L,R=72,940
+L,R=72,r3.SAFE_RIGHT
 TOP,BOTTOM=236,1150
 SLANT=.21
 PITCH=(8,27,21)
@@ -355,15 +355,14 @@ def finish(im,t,spec):
     source=spec.get('source','');body=lines(source,22,860 if im.info.get('v3_outro') and soccer_look.focus() else 610)
     if len(body)>2:raise ValueError('出典が2行に入りません')
     for i,line in enumerate(body):text(im,L,1166+i*28,line,22,MUTED,width=860 if im.info.get('v3_outro') and soccer_look.focus() else 610,role='source')
-    d=ImageDraw.Draw(im);d.rectangle((0,1486,1080,1574),fill=PITCH)
+    d=ImageDraw.Draw(im);d.rectangle((L,1400,R,1440),fill=PITCH)
     if STYLE_V2:
         # 新しい見た目：下の帯は縞と黄の二重線をやめ、上だけ細い線
-        d.line((0,1486,1080,1486),fill=(46,58,86),width=2)
+        d.line((L,1400,R,1400),fill=(46,58,86),width=2)
     else:
-        d.line((0,1488,1080,1488),fill=LIME,width=2);d.line((0,1572,1080,1572),fill=LIME,width=2)
-        for yy in range(1495,1570,8):d.line((0,yy,1080,yy),fill=GRASS,width=1)
+        d.line((L,1402,R,1402),fill=LIME,width=2);d.line((L,1438,R,1438),fill=LIME,width=2)
     if spec.get('ticker'):
-        value=spec['ticker'];text(im,L,1512,value,30,CHALK,width=R-L,role='ticker')
+        value=spec['ticker'];text(im,L,1405,value,28,CHALK,width=R-L,role='ticker')
     _presenter(im,t)
     return im
 

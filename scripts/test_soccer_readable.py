@@ -141,7 +141,7 @@ class Readable(unittest.TestCase):
     def test_rejects_small_support_text_and_empty_bottom_band(self):
         case=self.cases[0];im=self.draw(case,case['narration']['segments'][0])
         layout.c.text(im,100,1560,'試合',26,role='supplement')
-        im.info['duo_caption']['box'][3]=1460
+        im.info['duo_caption']['box'][3]=1330
         errors=layout.check_frame(im,case['clubs'])
         self.assertTrue(any('small_text' in e for e in errors))
         self.assertTrue(any('empty_below_caption' in e for e in errors))

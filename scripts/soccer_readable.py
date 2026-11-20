@@ -2,6 +2,7 @@
 
 import short_common
 import copy
+from functools import lru_cache
 import math
 
 from PIL import ImageDraw
@@ -9,14 +10,20 @@ import soccer_v5_cards as c
 import review_render_v3 as r3
 import shorts_safe_area as safe
 
-L, R = 72, 940
-BODY_TOP, BODY_BOTTOM = 390, 1220
-CAPTION = (64, 1325, safe.SAFE_RIGHT, 1525)
+L, R = 72, safe.SAFE_RIGHT
+BODY_TOP, BODY_BOTTOM = 390, 1206
+CAPTION = (64, 1278, safe.SAFE_RIGHT, 1440)
 PORTRAIT = (L, BODY_BOTTOM, R, CAPTION[1] + 12)
 
 
 def intersects(a, b):
     return min(a[2], b[2]) > max(a[0], b[0]) and min(a[3], b[3]) > max(a[1], b[1])
+
+
+@lru_cache(maxsize=256)
+def subtitle_pages(chunks):
+    import bubble_styles
+    return tuple(''.join(rows) for chunk in chunks for rows in bubble_styles.page_lines(chunk, CAPTION, size=48))
 
 
 def page_at(t, count, duration=None):
@@ -101,16 +108,29 @@ class Screen:
             active = who == speaker
             face = (r3.face_for(line, elapsed, ctx['duration'] or 1) if who == 'ui'
                     else characters.expression(who, speaker, line, elapsed, clock))
-            height = 228
+            height = 160
             art = characters.bust(who, face, height, not active)
             if art is None:
                 raise ValueError('胸上の既存素材がありません')
             x = L if who == 'zundamon' else PORTRAIT[2] - art.width
-            y = PORTRAIT[3] - art.height
+            dy = characters.speaking_offset(elapsed, active and bool(line) and elapsed < ctx['duration'])
+            y = PORTRAIT[3] - art.height + dy
             self.im.paste(art, (x, y), art)
-            self.im.info['duo_layer'].append(dict(who=who, face=face, height=height, dim=not active, active=active,
+            side = 'left' if who == 'zundamon' else 'right'
+            self.im.info['duo_layer'].append(dict(who=who, face=face, height=height, dim=False, active=active, dy=dy,
+                                                  side=side, facing=characters.inward_facing(who, side) if who != 'ui' else None,
                                                   at=[x, y], cut=max(1, CAPTION[1] - y)))
-            r3.record_box(self.im, 'face', (x, y, x + art.width, y + 100))
+            r3.record_box(self.im, 'face', (x, y, x + art.width, y + round(height * .35)))
+        if line and not ctx.get('hide_caption'):
+            chunks = ctx.get('caption_units') or r3.caption_chunks(ctx['text'])
+            pages = subtitle_pages(tuple(chunks))
+            cursor = max(0, elapsed) / max(.1, ctx['duration']) * sum(map(len, pages))
+            line = pages[-1]
+            for page in pages:
+                cursor -= len(page)
+                if cursor < 0:
+                    line = page
+                    break
         if line and not ctx.get('hide_caption') and not short_common.duplicate_caption(self.im, line):
             import bubble_styles
             alpha=max(0.,min(1.,float(spec.get('caption_alpha',1.))))
@@ -134,12 +154,12 @@ class Screen:
         source = source.replace('　出典: ', ' / ')
         if speaker != 'ui':
             source += '　立ち絵: 坂本アヒル'
-        size = 22
-        rows = c.lines(source, size, R - L)
+        size = 20
+        rows = c.lines(source, size, 620)
         if len(rows) > 2:
             raise ValueError('出典は説明欄と分けて短く指定してください')
         for index, row in enumerate(rows):
-            self.text(L, 1527 + index * 23, row, size, R - L, c.MUTED, role='source')
+            self.text(205, 1219 + index * 22, row, size, 620, c.MUTED, role='source')
         self.im.info['readable_zones'] = dict(body=[L,BODY_TOP,R,BODY_BOTTOM], caption=CAPTION, portrait=PORTRAIT)
         if c.STYLE_V2:
             return self._slide_v2(body_only, ctx.get('duration') or 0, spec.get('slide_in', True), spec.get('slide_out', True))
@@ -449,7 +469,7 @@ class Screen:
         self.im.info['preview_body']=[L,top,R,top+card+(18+mini-14 if rest else 0)]
         self.im.info['focus_game']=hero['game_id']
         if self.im.info.get('unknown_club_badge'):
-            self.text(235,1274,'灰色の ? はクラブ色・略称が未確認',30,500,c.MUTED,role='supplement')
+            self.text(235,1257,'灰色の ? はクラブ色・略称が未確認',20,500,c.MUTED,role='source')
         return self.finish(spec)
 
     def preview(self, specs, spec):
@@ -476,7 +496,7 @@ class Screen:
             self.text(720,y+109,'日本時間',30,180,role='supplement')
             self.im.info['semantic_items'].append(s['time'])
         if self.im.info.get('unknown_club_badge'):
-            self.text(235,1274,'灰色の ? はクラブ色・略称が未確認',30,500,c.MUTED,role='supplement')
+            self.text(235,1257,'灰色の ? はクラブ色・略称が未確認',20,500,c.MUTED,role='source')
         return self.finish(spec)
 
     def standings(self, spec):

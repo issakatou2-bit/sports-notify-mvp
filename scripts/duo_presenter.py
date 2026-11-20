@@ -11,8 +11,8 @@ GAP = 0
 def geometry():
     mx = r3.SAFE_RIGHT - WIDTH
     zx = mx - WIDTH - GAP
-    return dict(metan=(mx, 1260, r3.SAFE_RIGHT, 1480),
-                zundamon=(zx, 1260, zx+WIDTH, 1480),
+    return dict(metan=(mx, 1220, r3.SAFE_RIGHT, 1438),
+                zundamon=(zx, 1220, zx+WIDTH, 1438),
                 caption=(r3.LEFT-8, r3.CAPTION_TOP, zx-16, r3.CAPTION_BOTTOM))
 
 
@@ -33,16 +33,24 @@ def presenter(im, t):
     who = 'zundamon' if ctx.get('speaker') == 3 else 'metan'
     boxes = geometry()
     records=[]
+    layers=[]
     for person in ('zundamon','metan'):
         active = person == who
         face = characters.expression(person, who, line, elapsed, t if clock is None else clock)
         art = portrait(person,face,not active)
         left,_,right,bottom=boxes[person]
-        x=right-art.width;y=bottom-art.height-3
+        x=right-art.width
+        dy=characters.speaking_offset(elapsed, active and bool(line) and elapsed < ctx['duration'])
+        y=bottom-art.height-3+dy
         im.paste(art,(x,y),art)
         r3.record_box(im,'face',(x,y,x+art.width,y+min(100,art.height)))
         records.append(dict(who=person,active=active,face=face,box=[x,y,x+art.width,y+art.height]))
+        side = 'left' if person == 'zundamon' else 'right'
+        layers.append(dict(who=person, face=face, active=active, height=280, dim=False,
+                           at=[x,y], cut=art.height, side=side, dy=dy,
+                           facing=characters.inward_facing(person, side)))
     im.info['duo_portraits']=records
+    im.info['duo_layer']=layers
     caption(im,t)
     r3.progress(ImageDraw.Draw(im))
 

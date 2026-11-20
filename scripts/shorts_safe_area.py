@@ -1,8 +1,8 @@
 """1080×1920 のショートに使う文字・顔の安全域。"""
 
 SAFE_TOP = 160
-SAFE_RIGHT = 940
-SAFE_BOTTOM = 1574
+SAFE_RIGHT = 930
+SAFE_BOTTOM = 1440
 
 
 def outside(box):

@@ -95,8 +95,10 @@ def check_layout(image):
                 errors.append(e)
             continue
         x,y,right,bottom=e['box']
-        top,end={'header':(160,r3.CONTENT_TOP),'source':(r3.SOURCE_BOTTOM-80,r3.SOURCE_BOTTOM+8),'ticker':(1486,1574),
+        top,end={'header':(160,r3.CONTENT_TOP),'source':(r3.SOURCE_BOTTOM-80,r3.SOURCE_BOTTOM+8),'ticker':(safe.SAFE_BOTTOM-r3.TICKER_HEIGHT,safe.SAFE_BOTTOM),
                   'caption':(r3.CAPTION_TOP-30,r3.CAPTION_BOTTOM)}.get(e['role'],(r3.CONTENT_TOP,r3.CONTENT_BOTTOM))
+        if e['role']=='source' and image.info.get('v3_outro'):
+            top = safe.SAFE_TOP
         left=r3.LEFT-8 if e['role']=='caption' else r3.LEFT
         edge=(image.info.get('duo_caption',{}).get('box',(0,0,r3.CAPTION_RIGHT,0))[2]
               if e['role']=='caption' else r3.SAFE_RIGHT)

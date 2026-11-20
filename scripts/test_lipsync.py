@@ -56,10 +56,12 @@ class LipsyncTest(unittest.TestCase):
             b = a.copy()
             before = c.place_busts(a, 'metan', '自己最多よ。', .7, 4)
             after = c.place_busts(b, 'metan', '自己最多よ。', 1.5, 4)
-        self.assertEqual(before, after)
+        self.assertEqual(before[1], after[1])
+        self.assertEqual(before[0]['box'][0::2], after[0]['box'][0::2])
+        self.assertTrue(0 < abs(before[0]['box'][1] - after[0]['box'][1]) <= 6)
         a_faces = {r['who']: r['face'] for r in a.info['duo_layer']}
         b_faces = {r['who']: r['face'] for r in b.info['duo_layer']}
-        self.assertEqual(a_faces, {'zundamon': 'surprise:mouth0', 'metan': 'surprise:mouth2'})
+        self.assertEqual(a_faces, {'zundamon': 'listen:mouth0', 'metan': 'surprise:mouth2'})
         self.assertEqual(b_faces['zundamon'], 'base:mouth0')
         self.assertEqual(c.expression('metan', 'zundamon', '', 0, 3.41), 'base:mouth0:blink')
 
@@ -69,6 +71,8 @@ class LipsyncTest(unittest.TestCase):
             self.assertTrue(all(k in parts['口'] for k in ('閉','開','大')))
             self.assertEqual(c.source_facing(c.figure(who, side='left')), 'right')
             self.assertEqual(c.source_facing(c.figure(who, side='right')), 'left')
+            self.assertEqual(c.bust(who, 'base', 192).tobytes(),
+                             c.bust(who, 'base', 192, dim=True).tobytes())
         self.assertEqual(c.vc.FACES['v4_surprise:mouth0'][:2], c.FACE_PARTS['surprise'][:2])
 
     def test_swapped_cast_uses_actual_side(self):

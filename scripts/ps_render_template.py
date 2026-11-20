@@ -14,11 +14,16 @@ sys.path.insert(0,str(ROOT))
 LAYOUTS={'schedule':4,'facts':3,'bracket':2,'quote':1}
 
 @lru_cache(maxsize=8)
-def _prepared_presenter(data,crop,max_size):
+def _prepared_presenter(data,crop,max_size,side='right'):
     # Content bytes invalidate even same-size/same-timestamp replacements.
     # Reading remains; repeated decode/crop/resize is avoided. Never mutate it.
     with Image.open(BytesIO(data)) as source:
+        from portrait_facing import source_facing
+        facing = source_facing(source) or 'left'
         sprite=source.convert('RGBA').crop(crop)
+    inward = 'right' if side == 'left' else 'left'
+    if facing != inward:
+        sprite = sprite.transpose(Image.Transpose.FLIP_LEFT_RIGHT)
     sprite.thumbnail(max_size,Image.Resampling.LANCZOS)
     return sprite
 def paginate(card):
@@ -60,9 +65,9 @@ def render(card,presenters=None,style='stadium',layers=False):
     if presenters not in ('none','left','right','both'):raise ValueError('Unsupported presenter placement')
     t=TOKENS['stadium' if style=='v3' else style];im=Image.new('RGBA',(1080,1920),(0,0,0,0));d=ImageDraw.Draw(im);trace=[]
     def put(x,y,value,size=48,width=864,role='important',color=None,latin=False):
-        box=text(d,(x,y),str(value),size,color or t['ink'],width=width,latin=latin,minimum=40 if role=='important' else 24)
+        box=text(d,(x,y),str(value),size,color or t['ink'],width=min(width, SAFE_RIGHT-x),latin=latin,minimum=40 if role=='important' else 24)
         trace.append({'text':str(value),'box':list(box),'role':role})
-        if role=='important' and (box[0]<72 or box[2]>936 or box[1]<210 or box[3]>1280):
+        if role=='important' and (box[0]<72 or box[2]>SAFE_RIGHT or box[1]<210 or box[3]>1280):
             raise ValueError('Important text outside the reserved area: '+str(value))
     put(72,166,'コレスポ',40,role='brand')
     round_game = card.get('round_game')
@@ -76,7 +81,7 @@ def render(card,presenters=None,style='stadium',layers=False):
         index,total=card['card_index'],card.get('card_total')
         if type(index) is not int or type(total) is not int or not 1<=index<=total:
             raise ValueError('Invalid card progress')
-        put(865,166,f'{index}/{total}',40,width=70,role='utility',color=t['accent'],latin=True)
+        put(860,166,f'{index}/{total}',40,width=70,role='utility',color=t['accent'],latin=True)
     if card.get('round_game'):
         put(608,175,card['round_game'],28,width=235,role='utility',color=t['accent'])
     board=card.get('scoreboard')
@@ -93,9 +98,9 @@ def render(card,presenters=None,style='stadium',layers=False):
             put(142-abbr_w//2,y+18,row['abbr'],42,width=130,role='brand',color='#ffffff',latin=True)
             put(236,y,row['name'],68,width=520)
             wins=str(row['wins'])
-            put(936-round(d.textlength(wins,font=font(92,True))),y-6,wins,92,width=140,latin=True)
+            put(SAFE_RIGHT-round(d.textlength(wins,font=font(92,True))),y-6,wins,92,width=140,latin=True)
             for k in range(board['need']):
-                cx=936-(board['need']-1-k)*34-12
+                cx=SAFE_RIGHT-(board['need']-1-k)*34-12
                 box=(cx-12,y+96,cx+12,y+120)
                 if k<row['wins']:d.ellipse(box,fill=c1)
                 else:d.ellipse(box,outline=t['muted'],width=3)
@@ -159,13 +164,13 @@ def render(card,presenters=None,style='stadium',layers=False):
     for i,value in enumerate(card.get('affiliations',[])):
         put(72,1165+i*55,value,42,color=t['accent'])
     suffix=' / 日本時間' if card.get('production') else ' / 日本時間・デザイン確認用'
-    put(72,1320,card['date']+suffix,28,role='utility',color=t['muted'])
+    put(72,1295,card['date']+suffix,28,role='utility',color=t['muted'])
     # **下18%と右端はShortsの題・ボタンが重なる**（10/3、実画面で確認）。
     # 注記と出典はその上に置き、用語メモは最初の画面（表紙）だけ。
     if card.get('card_index') is None and card.get('glossary'):
-        put(300,1380,'用語メモ',26,width=420,role='utility',color=t['accent'])
-        put(300,1420,card.get('glossary',''),29,width=420,role='utility',color=t['muted'])
-    put(300,1510,'出典：'+card.get('source_label','説明欄'),26,width=420,role='utility',color=t['muted'])
+        put(300,1330,'用語メモ',24,width=420,role='utility',color=t['accent'])
+        put(300,1357,card.get('glossary',''),26,width=420,role='utility',color=t['muted'])
+    put(300,1400,'出典：'+card.get('source_label','説明欄'),26,width=420,role='utility',color=t['muted'])
     avatars=[]
     framing=THEME['presenter']
     config=[('left','zundamon/C-cheer/base-black-brow-candidate.png'),('right','metan/3-black/base.png')]
@@ -177,7 +182,7 @@ def render(card,presenters=None,style='stadium',layers=False):
             sprite=r3._portrait('metan')
         else:
             data=(ROOT/'assets/portraits/collespo-20260923'/path).read_bytes()
-            sprite=_prepared_presenter(data,tuple(framing['crop']),tuple(framing['max_size']))
+            sprite=_prepared_presenter(data,tuple(framing['crop']),tuple(framing['max_size']),side)
         # 立ち絵もShortsの操作部品（下の題・右のボタン列）の外へ。
         x=framing['edge_px'] if side=='left' else SAFE_RIGHT-sprite.width
         y=SAFE_BOTTOM-sprite.height;box=(x,y,x+sprite.width,y+sprite.height)
