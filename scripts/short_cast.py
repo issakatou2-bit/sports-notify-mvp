@@ -9,7 +9,7 @@ import review_render_v3 as r3
 CAPTION = (64, 990, 930, 1135)
 BODY_BOTTOM = CAPTION[1] - 12
 SOURCE_X, SOURCE_RIGHT = 350, 645
-SOURCE_TOP, TICKER_Y = 1215, 1345
+SOURCE_TOP, SOURCE_BOTTOM = 1215, 1345
 DEFERRED = ContextVar('short_cast_footer', default=None)
 BODY_ROLES = {'header', 'source', 'caption', 'ticker', 'face'}
 
@@ -105,10 +105,6 @@ def source(im, text, color):
                  font=r3.font(size), fill=color, role='source')
 
 
-def ticker(im, t, text, once):
-    r3.ticker(im, t, text, y=TICKER_Y, once=once, left=SOURCE_X, right=SOURCE_RIGHT)
-
-
 def finish_mlb(im, t, footer):
     import characters
     compact_body(im, lambda: r3.background(t, None))
@@ -118,8 +114,8 @@ def finish_mlb(im, t, footer):
     characters.corner_busts(im, speaker, line, elapsed, clock, ctx['duration'])
     if footer.get('source'):
         source(im, *footer['source'])
-    if footer.get('ticker'):
-        ticker(im, t, *footer['ticker'])
+    # この配置では流れる帯を使わない。切替で前の帯が復活するのも防ぐ。
+    r3.LAST_TICKER[0] = None
     if not im.info.get('v3_outro'):
         caption(im, speaker, elapsed)
     r3.progress(ImageDraw.Draw(im))

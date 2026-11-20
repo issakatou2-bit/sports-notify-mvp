@@ -27,7 +27,8 @@ class CheckSampleTest(unittest.TestCase):
     def test_chest_overlap_includes_source_number_and_subtitle_band(self):
         face = [120, 1250, 240, 1420]
         portrait = dict(who='zundamon', face=face, side='left', facing='right',
-                        corner=True, ink=[32, 1142, 340, 1573])
+                        corner=True, ink=[32, 1142, 340, 1573],
+                        box=[0, 1142, 390, 1920], floor=[110, 240])
         frame = dict(portraits=[portrait], layout=[
             dict(role='face', box=face),
             dict(role='source', text='出典：MLB公式（Stats API）', box=[325, 1215, 550, 1240]),
@@ -37,6 +38,20 @@ class CheckSampleTest(unittest.TestCase):
         issues = check_sample.geometry_issues(frame, [1080, 1920])
         self.assertEqual(len(issues), 3)
         self.assertTrue(all('重なる' in item for item in issues))
+
+    def test_corner_rejects_floating_art_and_cropped_ticker(self):
+        face = [120, 1250, 240, 1420]
+        portrait = dict(who='zundamon', face=face, side='left', facing='right',
+                        corner=True, ink=[32, 1142, 340, 1573],
+                        box=[32, 1142, 340, 1573])
+        frame = dict(portraits=[portrait], layout=[
+            dict(role='face', box=face),
+            dict(role='ticker', text='日本人選手 1位 村上宗隆', box=[350, 1345, 645, 1433]),
+        ])
+        issues = check_sample.geometry_issues(frame, [1080, 1920])
+        self.assertEqual(len(issues), 2)
+        self.assertTrue(any('下端' in issue for issue in issues))
+        self.assertTrue(any('途中で切れる帯' in issue for issue in issues))
 
     def test_fixed_regions_reject_coherent_shake_but_allow_lighting_change(self):
         rng = np.random.default_rng(1)

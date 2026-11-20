@@ -36,6 +36,8 @@ def portraits(info):
                            side=layer.get('side'), facing=layer.get('facing'),
                            dy=layer.get('dy', 0), ink=row.get('ink'), expression=layer.get('face'),
                            corner=bool(layer.get('corner')), origin=layer.get('at')))
+        if 'floor' in row:
+            result[-1]['floor'] = row['floor']
     return result
 
 

@@ -96,21 +96,6 @@ CORNERS = {
 }
 
 
-@functools.lru_cache(maxsize=64)
-def corner_art(who, face, side):
-    art = bust(who, face, CORNER_HEIGHT, side=side).copy()
-    # Soften the open edge at the chest without moving or hiding facial parts.
-    alpha = art.getchannel('A')
-    fade = 30
-    for offset in range(fade):
-        y = art.height - fade + offset
-        factor = (fade - 1 - offset) / (fade - 1)
-        mask = alpha.crop((0, y, art.width, y + 1)).point(lambda value: round(value * factor))
-        alpha.paste(mask, (0, y))
-    art.putalpha(alpha)
-    return art
-
-
 def corner_busts(im, speaker, line, elapsed, clock, duration):
     portraits, layers = [], []
     for who, (side, x, base_y, facial) in CORNERS.items():
@@ -119,16 +104,26 @@ def corner_busts(im, speaker, line, elapsed, clock, duration):
         face = expression(who, speaker, line, elapsed, clock, volume=True)
         dy = speaking_offset(elapsed, speaking)
         y = base_y + dy
-        art = corner_art(who, face, side)
+        # 顔の位置は保ち、同じ部品付き立ち絵の下半分までキャンバスに描く。
+        art = bust(who, face, CORNER_HEIGHT, side=side, full=True)
         im.paste(art, (x, y), art)
-        a, b, c, d = art.getchannel('A').getbbox()
+        alpha = art.getchannel('A')
+        a, b, c, d = alpha.crop((0, 0, art.width, CORNER_HEIGHT // 2)).getbbox()
+        lo, hi = max(0, -x), min(art.width, im.width - x)
+        cut = min(art.height, im.height - y)
+        shown = alpha.crop((lo, 0, hi, cut)).getbbox()
+        bottom_y = im.height - y - 1
+        edge = alpha.crop((lo, bottom_y, hi, bottom_y + 1)).point(lambda value: 255 if value >= 128 else 0)
+        contact = edge.getbbox()
+        floor = [x + lo + contact[0], x + lo + contact[2]] if contact else []
         left, top, right, bottom = facial
         face_box = [x + round(art.width * left), y + round(CORNER_HEIGHT * top),
                     x + round(art.width * right), y + round(CORNER_HEIGHT * bottom)]
         ink = [max(0, x + a), y + b, min(im.width, x + c), y + d]
-        portraits.append(dict(who=who, box=ink, face=face_box, ink=ink, active=active))
+        visible = [x + lo + shown[0], y + shown[1], x + lo + shown[2], y + shown[3]]
+        portraits.append(dict(who=who, box=visible, face=face_box, ink=ink, floor=floor, active=active))
         layers.append(dict(who=who, face=face, height=CORNER_HEIGHT, dim=False, side=side,
-                           active=active, dy=dy, at=[x, y], cut=art.height, corner=True,
+                           active=active, dy=dy, at=[x, y], cut=cut, corner=True, full=True,
                            facing=inward_facing(who, side), ink=ink))
         r3.record_box(im, 'face', face_box)
     im.info.update(duo_portraits=portraits, duo_layer=layers)
@@ -137,10 +132,7 @@ def corner_busts(im, speaker, line, elapsed, clock, duration):
 def redraw(im, layer):
     """place_busts が記録した立ち絵を描き直す（札の演出で消えた分を戻す）。"""
     for r in layer or ():
-        if r.get("corner"):
-            art = corner_art(r["who"], r["face"], r["side"])
-        else:
-            art = bust(r["who"], r["face"], r["height"], r["dim"], r.get("side"), r.get("full", False))
+        art = bust(r["who"], r["face"], r["height"], r["dim"], r.get("side"), r.get("full", False))
         if art is not None:
             art = art.crop((0, 0, art.width, min(art.height, r["cut"])))
             im.paste(art, tuple(r["at"]), art)

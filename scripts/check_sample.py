@@ -56,7 +56,12 @@ def geometry_issues(frame, size):
     problems = [f"安全域外 {row['role']} {row.get('text', '')} {row['box']}"
                 for issue in shorts_safe_area.problems(layout)
                 for row in [issue['outside_shorts_safe_area']]]
-    for row in frame.get('portraits', []):
+    portraits = frame.get('portraits', [])
+    if any(row.get('corner') for row in portraits):
+        for entry in layout:
+            if entry['role'] == 'ticker':
+                problems.append(f"立ち絵の配置に字が途中で切れる帯が残っています {entry.get('text', '')}")
+    for row in portraits:
         who = row['who']
         face = row.get('face')
         if not face:
@@ -75,6 +80,10 @@ def geometry_issues(frame, size):
         if row.get('corner'):
             if ink is None or not .22 * size[1] <= ink[3] - ink[1] <= .28 * size[1]:
                 problems.append(f'{who} の胸上が画面高の22〜28%に収まらない {ink}')
+            floor = row.get('floor', [])
+            if (len(floor) != 2 or not 0 <= floor[0] < floor[1] <= size[0]
+                    or floor[1] - floor[0] < 16 or row['box'][3] != size[1]):
+                problems.append(f'{who} の体が画面の下端に接していません')
             if row.get('side') != {'zundamon': 'left', 'metan': 'right'}.get(who):
                 problems.append(f'{who} の立ち位置が左右逆')
         if ink:
@@ -156,8 +165,14 @@ def video_issues(path, evidence):
                 problems.append(f'コマ{index} {problem}')
             arr = np.frombuffer(raw, dtype=np.uint8).reshape(height, width).astype('float32')
             ref = np.frombuffer(zlib.decompress(base64.b64decode(row['reference'])), dtype=np.uint8)
-            if float(np.mean(np.abs(arr.ravel() - ref))) > 8:
+            delta = np.abs(arr - ref.reshape(height, width))
+            if float(delta.mean()) > 8:
                 problems.append(f'コマ{index} 完成画素が書き出し記録と違う')
+            for portrait in row.get('portraits', []):
+                if len(portrait.get('floor', [])) == 2:
+                    a, b = (round(x * width / size[0]) for x in portrait['floor'])
+                    if b - a >= 4 and float(delta[-3:, a:b].mean()) > 14:
+                        problems.append(f"コマ{index} {portrait['who']} の下端の画素が記録と違う")
             layout = [item for item in row['layout'] if item['role'] != 'face']
             stable = previous is not None and last == layout and not row['transition']
             if stable and translation(previous, arr):

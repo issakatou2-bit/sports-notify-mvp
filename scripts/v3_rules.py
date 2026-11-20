@@ -100,9 +100,8 @@ def check_layout(image):
         if image.info.get('short_cast'):
             import short_cast
             top, end = {
-                'source': (short_cast.SOURCE_TOP, short_cast.TICKER_Y),
+                'source': (short_cast.SOURCE_TOP, short_cast.SOURCE_BOTTOM),
                 'caption': short_cast.CAPTION[1::2],
-                'ticker': (short_cast.TICKER_Y, short_cast.TICKER_Y + r3.TICKER_HEIGHT),
             }.get(e['role'], (top, end))
         if e['role']=='source' and image.info.get('v3_outro'):
             top = safe.SAFE_TOP

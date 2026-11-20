@@ -259,26 +259,24 @@ def redraw_ticker(raw, size=(1080, 1920)):
     if not last or _PROGRAM_CLOCK[0] is None:
         return raw
     im = Image.frombytes("RGB", size, raw)
-    text, y, once, left, right = last
-    ticker(im, _PROGRAM_CLOCK[0], text, y=y, once=once, left=left, right=right)
+    text, y, once = last
+    ticker(im, _PROGRAM_CLOCK[0], text, y=y, once=once)
     return im.tobytes()
 
 
-def ticker(im, t, text, y=SAFE_BOTTOM-TICKER_HEIGHT, once=False, *, left=LEFT, right=SAFE_RIGHT):
+def ticker(im, t, text, y=SAFE_BOTTOM-TICKER_HEIGHT, once=False):
     if not text:
         return
     import short_cast
-    deferred = short_cast.DEFERRED.get()
-    if deferred is not None:
-        deferred['ticker'] = (text, once)
+    if short_cast.DEFERRED.get() is not None:
         return
     # クラブ名は表示名の表（notability_engine.club_display_text）を通す。古い書き方を帯に出さない
     import notability_engine as ne
     text = ne.club_display_text(text)
     if _PROGRAM_CLOCK[0] is not None:
         t = _PROGRAM_CLOCK[0]
-    LAST_TICKER[0] = (text, y, once, left, right)
-    width = right - left
+    LAST_TICKER[0] = (text, y, once)
+    width = SAFE_RIGHT - LEFT
     y = min(y, SAFE_BOTTOM - TICKER_HEIGHT)
     if once:
         strip = _single_ticker(text)
@@ -289,8 +287,8 @@ def ticker(im, t, text, y=SAFE_BOTTOM-TICKER_HEIGHT, once=False, *, left=LEFT, r
         strip, w = _ticker_strip(text)
         off = round(t * 80) % w
         band = strip.crop((off, 0, off + width, TICKER_HEIGHT))
-    im.paste(band, (left, y))
-    record_box(im, "ticker", (left, y, right, y + TICKER_HEIGHT), text)
+    im.paste(band, (LEFT, y))
+    record_box(im, "ticker", (LEFT, y, SAFE_RIGHT, y + TICKER_HEIGHT), text)
 
 
 @functools.lru_cache(maxsize=4)
