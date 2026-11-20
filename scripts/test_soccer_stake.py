@@ -1,3 +1,4 @@
+import sys
 """欧州の注目試合（懸かっている物）の選び方と言い方。"""
 import json
 import os
@@ -197,4 +198,4 @@ class MetadataTest(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main(argv=[sys.argv[0]])

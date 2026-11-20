@@ -121,7 +121,7 @@ class StakeFollowupTest(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main(argv=[sys.argv[0]])
 
 class WordingAndStoryTest(unittest.TestCase):
     def test_close_match_kind_is_not_doubled(self):

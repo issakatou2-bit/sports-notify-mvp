@@ -148,7 +148,7 @@ jobs:
         if: steps.pick.outputs.found == 'true'
         run: bash scripts/shorts_thumbnail.sh build/soccer_stake/collespo_national_topic.mp4 build/soccer_stake/short.png
       - name: Upload to YouTube
-        if: steps.pick.outputs.found == 'true' && env.PUBLISH == 'true'
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && steps.pick.outputs.found == 'true' && env.PUBLISH == 'true'
         env:
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
@@ -158,11 +158,11 @@ jobs:
           VIDEO_DAY=$(python -c "import json; print(json.load(open('build/soccer_stake/narration.json'))['date_jst'])")
           python scripts/upload_youtube.py --video build/soccer_stake/collespo_national_topic.mp4 --kind soccer_stake --sport soccer --games build/soccer_stake/material.json --narration build/soccer_stake/narration.json --thumbnail build/soccer_stake/short.png --video-date "$VIDEO_DAY" --publish-at "$PUBLISH_AT" --privacy public
       - name: Commit publication record
-        if: steps.pick.outputs.found == 'true' && env.PUBLISH == 'true' && always()
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && steps.pick.outputs.found == 'true' && env.PUBLISH == 'true' && always()
         run: |
           bash scripts/commit_data.sh "soccer stake: ${{ github.run_id }}" data/published_videos.json data/soccer_stake_published.json data/soccer_stake_history.json
       - name: Confirm publication reservation
-        if: steps.pick.outputs.found == 'true' && env.PUBLISH == 'true'
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && steps.pick.outputs.found == 'true' && env.PUBLISH == 'true'
         run: |
           TOPIC_KEY=$(python -c "import json; print(json.load(open('build/soccer_stake/narration.json'))['topic_key'])")
           python scripts/verify_published.py --kind soccer_stake --video-date "$TOPIC_KEY"
@@ -180,6 +180,28 @@ jobs:
             !build/**/portrait/**
           retention-days: 14
           if-no-files-found: ignore
+      - name: Save voice and render records
+        if: always() && steps.pick.outputs.found == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: voice-render-records-${{ github.job }}-${{ github.run_attempt }}
+          path: |
+            build/**/voice_manifest.json
+            build/**/minimum_result.json
+            build/**/render_timeline.json
+            !build/**/portrait/**
+          retention-days: 14
+          if-no-files-found: ignore
+      - name: Keep pending thumbnails
+        if: always() && env.PUBLISH == 'true' && hashFiles('build/thumbnail_pending/**') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: thumbnail-pending
+          path: |
+            build/thumbnail_pending/
+            !build/**/portrait/**
+          retention-days: 3
+          if-no-files-found: ignore
       - name: Keep unsaved data records
         if: env.PUBLISH == 'true' && always() && hashFiles('build/data-save-recovery/**/FAILED') != ''
         uses: actions/upload-artifact@v4
@@ -195,8 +217,10 @@ jobs:
         if: always() && steps.sample_source.outputs.allowed == 'false'
         uses: actions/upload-artifact@v4
         with:
-          name: sample-soccer_stake-inherited
-          path: build/sample_only.json
+          name: sample-inherited-soccer_stake
+          path: |
+            build/sample_only.json
+            !build/**/portrait/**
           retention-days: 3
       - name: Mark sample-only execution
         if: always() && github.event_name == 'workflow_dispatch' && inputs.sample_only && steps.pick.outputs.found == 'true'
@@ -209,6 +233,7 @@ jobs:
           path: |
             build/sample_only.json
             build_candidates.json
+            !build/**/portrait/**
             build/soccer_stake/*.mp4
             build/soccer_stake/*.png
             build/soccer_stake/narration.json

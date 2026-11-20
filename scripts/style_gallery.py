@@ -595,7 +595,7 @@ KINDS = {
         "why": "",
     },
     "soccer_national_topics": {
-        "workflows": ["soccer_national_topics"],
+        "workflows": ["soccer_national_topics", "soccer_stake"],
         "render": render_soccer_national_topics,
         "why": "",
     },
