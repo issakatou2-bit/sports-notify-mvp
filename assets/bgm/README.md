@@ -28,3 +28,8 @@ Lyria 3 Pro は「評価目的に限る・第三者に出さない」の制限�
 
 声が入っていないことは Demucs（声を分けて伴奏比 -20dB 超の秒を数える）と Gemini で確かめた。
 作り直すときは「stadium」など歓声を呼ぶ語を使わず、「no vocals, no crowd, no sound effects」と書く。
+| morning_tea.mp3 | Morning_Tea（約125 BPM・澄んだアルペジオと柔らかいシンセ、声なし） | **11/20〜 全部の既定**。本人が Google Gemini で作った曲（共有の曲置き場 `T/shared-music/given/Morning_Tea.mp3`）の、声の無い 0:15〜0:46 を16小節30.72秒で1周にした物 |
+
+11/20 本人「BGMはGemini生成のやつを使って」。明るい候補の聞き比べで Morning_Tea を選び「Morning_Tea基本でいい」。
+同じ雰囲気を Lyria で作り直した3曲は「Morning_Teaっぽさがない」で不採用。声が無いことは Demucs と Gemini で確かめた。
+置き場は公開のままでよい（本人 11/20「どっちでもいいし任せる」）。投稿時に説明欄へ「BGM：Google Gemini（Lyria）で作成」を足す（`sound_mix.with_bgm_credit`）。

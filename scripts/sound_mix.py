@@ -63,8 +63,20 @@ BGM_DB, DUCK_DB = -15.0, -5.0
 TAPESTOP_BGM = {"slide808"}
 # 既定のBGM（assets/bgm/<名前>.mp3）。全部の枠がここを見る（COLLESPO_BGM で上書き）。
 # 10/7深夜 本人「808・演出もり 第2版（ピアノ入り）これいいね。…ペダル踏んで終わるやつでいこう」。
-DEFAULT_BGM = "fx_more2"
+# 11/20 本人「BGMはGemini生成のやつを使って」→ 聞き比べで「Morning_Teaがしっくり」「Morning_Tea基本でいい」。
+# 本人が Google Gemini で作った Morning_Tea の声の無い 0:15〜0:46（125BPM・16小節＝30.72秒）を1周にした物。
+DEFAULT_BGM = "morning_tea"
+# Gemini（Lyria）で作った曲は説明欄に表記する（APSC と同じ書き方）。
+LYRIA_BGM = {"morning_tea", "briefing"}
+BGM_CREDIT = "BGM：Google Gemini（Lyria）で作成"
 BGM_DIR = pathlib.Path(__file__).resolve().parents[1] / "assets" / "bgm"
+
+
+def with_bgm_credit(text: str, name: str = None, limit: int = 5000) -> str:
+    """使う曲が Gemini（Lyria）製なら、説明欄の最後に表記を1行足す（二重には足さない）。"""
+    if bgm_path(name).stem not in LYRIA_BGM or BGM_CREDIT in text:
+        return text
+    return text.rstrip()[:limit - len(BGM_CREDIT) - 1] + chr(10) + BGM_CREDIT
 
 
 def bgm_path(name: str = None) -> pathlib.Path:

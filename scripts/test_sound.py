@@ -111,5 +111,17 @@ class Wrapping(unittest.TestCase):
             self.assertFalse(ln.endswith("ブレーブ"), ln)
 
 
+class BgmCredit(unittest.TestCase):
+    def test_lyria_bgm_adds_credit_once(self):
+        import sound_mix
+        self.assertEqual(sound_mix.DEFAULT_BGM, "morning_tea")
+        self.assertTrue(sound_mix.bgm_path("morning_tea").is_file())
+        once = sound_mix.with_bgm_credit("本文", "morning_tea")
+        self.assertTrue(once.endswith(sound_mix.BGM_CREDIT))
+        self.assertEqual(sound_mix.with_bgm_credit(once, "morning_tea"), once)
+        self.assertEqual(sound_mix.with_bgm_credit("本文", "fx_more2"), "本文")
+        self.assertLessEqual(len(sound_mix.with_bgm_credit("あ" * 5000, "morning_tea")), 5000)
+
+
 if __name__ == "__main__":
     unittest.main(argv=["test_sound"])
