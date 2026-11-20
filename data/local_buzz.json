@@ -1,64 +1,28 @@
 {
-  "updated_at": "2026-11-19T06:02:17.343516+00:00",
+  "updated_at": "2026-11-20T06:01:41.712110+00:00",
   "sources": [
     {
       "name": "MLB公式",
-      "items": 25
-    },
-    {
-      "name": "ESPN",
-      "items": 12
+      "items": 24
     }
   ],
-  "titles_count": 37,
+  "titles_count": 24,
   "teams": [
     {
-      "team_id": "136",
-      "name": "マリナーズ",
-      "name_en": "Seattle Mariners",
-      "mentions": 5,
-      "tone": "話題",
-      "gist": "ガルシア獲得、マイラー軸6選手トレード"
-    },
-    {
-      "team_id": "141",
-      "name": "ブルージェイズ",
-      "name_en": "Toronto Blue Jays",
+      "team_id": "112",
+      "name": "カブス",
+      "name_en": "Chicago Cubs",
       "mentions": 3,
       "tone": "話題",
-      "gist": "スクバルと面談、ブルージェイズも参戦"
+      "gist": "カブスがマクダーモット獲得、投手層を厚く"
     },
     {
-      "team_id": "111",
-      "name": "レッドソックス",
-      "name_en": "Boston Red Sox",
+      "team_id": "121",
+      "name": "メッツ",
+      "name_en": "New York Mets",
       "mentions": 3,
       "tone": "話題",
-      "gist": "フォルテス獲得で捕手層を強化"
-    },
-    {
-      "team_id": "118",
-      "name": "ロイヤルズ",
-      "name_en": "Kansas City Royals",
-      "mentions": 3,
-      "tone": "話題",
-      "gist": "ガルシア放出、マイラー軸の6選手交換"
-    },
-    {
-      "team_id": "142",
-      "name": "ツインズ",
-      "name_en": "Minnesota Twins",
-      "mentions": 3,
-      "tone": "好調",
-      "gist": "サニー・グレイが2年契約で復帰"
-    },
-    {
-      "team_id": "139",
-      "name": "レイズ",
-      "name_en": "Tampa Bay Rays",
-      "mentions": 3,
-      "tone": "話題",
-      "gist": "フォルテス放出、捕手事情に注目"
+      "gist": "メッツ、NPB防御率1.48のヘルナンデス復帰"
     },
     {
       "team_id": "145",
@@ -66,15 +30,47 @@
       "name_en": "Chicago White Sox",
       "mentions": 2,
       "tone": "話題",
-      "gist": "テイラー先発入り、メイ獲得で補強"
+      "gist": "ホワイトソックス、ロッキーズと交換でメイ獲得"
     },
     {
-      "team_id": "108",
-      "name": "エンゼルス",
-      "name_en": "Los Angeles Angels",
-      "mentions": 2,
+      "team_id": "141",
+      "name": "ブルージェイズ",
+      "name_en": "Toronto Blue Jays",
+      "mentions": 1,
       "tone": "話題",
-      "gist": "クローンキー氏へ40億ドル売却、1月完了見込み"
+      "gist": "ブルージェイズとペラルタの相性を検証"
+    },
+    {
+      "team_id": "136",
+      "name": "マリナーズ",
+      "name_en": "Seattle Mariners",
+      "mentions": 1,
+      "tone": "話題",
+      "gist": "ホットストーブ噂にマリナーズが登場"
+    },
+    {
+      "team_id": "143",
+      "name": "フィリーズ",
+      "name_en": "Philadelphia Phillies",
+      "mentions": 1,
+      "tone": "不振",
+      "gist": "フィリーズは右打者が必要、数字で示す"
+    },
+    {
+      "team_id": "115",
+      "name": "ロッキーズ",
+      "name_en": "Colorado Rockies",
+      "mentions": 1,
+      "tone": "話題",
+      "gist": "ロッキーズ、マーティンとカスティーヨ獲得"
+    },
+    {
+      "team_id": "147",
+      "name": "ヤンキース",
+      "name_en": "New York Yankees",
+      "mentions": 1,
+      "tone": "話題",
+      "gist": "ヤンキース、2027年の三塁手の選択肢を検討"
     }
   ],
   "players": []

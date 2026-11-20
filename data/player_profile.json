@@ -1,113 +1,103 @@
 {
-  "generated_at": "2026-11-19T06:01:08.850811+00:00",
-  "date_jst": "2026-11-19",
-  "name": "西田陸浮",
-  "player_id": "807747",
-  "team": "ホワイトソックス",
+  "generated_at": "2026-11-20T06:01:03.829445+00:00",
+  "date_jst": "2026-11-20",
+  "name": "鈴木誠也",
+  "player_id": "673548",
+  "team": "カブス",
   "group": "hitting",
   "why": "順番",
   "headline": "",
   "score": null,
   "bio": {
-    "name_en": "Rikuu Nishida",
-    "age": 25,
-    "birth_city": "Osaka",
+    "name_en": "Seiya Suzuki",
+    "age": 32,
+    "birth_city": "Arakawa",
     "birth_state": null,
     "birth_country": "Japan",
-    "birth_date": "2001-05-06",
-    "debut": "2026-05-25",
-    "draft_year": 2023,
-    "bats": "Left",
+    "birth_date": "1994-08-18",
+    "debut": "2022-04-07",
+    "draft_year": null,
+    "bats": "Right",
     "throws": "Right",
-    "number": "51",
+    "number": "27",
     "position": "Outfielder",
     "nickname": null,
-    "height": "5' 6\"",
-    "weight": 150
+    "height": "5' 11\"",
+    "weight": 182
   },
   "teams": [
     {
-      "team": "ホワイトソックス",
-      "from": 2026,
+      "team": "カブス",
+      "from": 2022,
       "to": 2026
     }
   ],
   "career": {
-    "games": 12,
-    "avg": ".241",
-    "hr": 0,
-    "rbi": 2,
-    "ops": ".482",
-    "sb": 0,
-    "hits": 7,
-    "wins": 6,
-    "losses": 4,
-    "era": "4.93",
-    "so": 97,
-    "ip": "76.2",
-    "whip": "1.42"
+    "games": 675,
+    "avg": ".269",
+    "hr": 113,
+    "rbi": 382,
+    "ops": ".823",
+    "sb": 39,
+    "hits": 683
   },
   "this_season": {
-    "games": 12,
-    "avg": ".241",
-    "hr": 0,
-    "rbi": 2,
-    "ops": ".482",
-    "sb": 0,
-    "hits": 7,
-    "wins": 6,
-    "losses": 4,
-    "era": "4.93",
-    "so": 97,
-    "ip": "76.2",
-    "whip": "1.42"
+    "games": 143,
+    "avg": ".270",
+    "hr": 26,
+    "rbi": 86,
+    "ops": ".841",
+    "sb": 3,
+    "hits": 147
   },
   "last_season": {
-    "games": 135,
-    "avg": ".234",
-    "hr": 13,
-    "rbi": 48,
-    "ops": ".686",
-    "sb": 4,
-    "hits": 119,
-    "wins": 12,
-    "losses": 8,
-    "era": "2.49",
-    "so": 201,
-    "ip": "173.2",
-    "whip": "0.99"
+    "games": 151,
+    "avg": ".245",
+    "hr": 32,
+    "rbi": 103,
+    "ops": ".804",
+    "sb": 5,
+    "hits": 140
   },
   "recent": [
     {
-      "date": "2026-06-07",
-      "line": "2打数1安打",
-      "opponent": "Philadelphia Phillies"
+      "date": "2026-09-25",
+      "line": "3打数2安打",
+      "opponent": "Boston Red Sox"
     },
     {
-      "date": "2026-06-06",
-      "line": "2打数1安打",
-      "opponent": "Philadelphia Phillies"
+      "date": "2026-09-25",
+      "line": "4打数0安打",
+      "opponent": "Boston Red Sox"
     },
     {
-      "date": "2026-06-05",
-      "line": "1打数0安打",
-      "opponent": "Philadelphia Phillies"
+      "date": "2026-09-24",
+      "line": "3打数2安打 1本塁打 1打点",
+      "opponent": "Miami Marlins"
     },
     {
-      "date": "2026-06-03",
-      "line": "3打数0安打",
-      "opponent": "Minnesota Twins"
-    },
-    {
-      "date": "2026-06-01",
+      "date": "2026-09-23",
       "line": "4打数1安打",
-      "opponent": "Minnesota Twins"
+      "opponent": "Miami Marlins"
+    },
+    {
+      "date": "2026-09-22",
+      "line": "6打数2安打",
+      "opponent": "Miami Marlins"
     }
   ],
   "awards": [
     {
-      "season": "2024",
-      "name": "CAR Post-Season All-Star"
+      "season": "2025",
+      "name": "NL Player of the Week"
+    },
+    {
+      "season": "2022",
+      "name": "NL Rookie of the Month"
+    },
+    {
+      "season": "2022",
+      "name": "NL Player of the Week"
     }
   ],
   "quotes": []
