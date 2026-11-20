@@ -290,6 +290,7 @@ def validate_data(data):
     if sorted(flattened,key=rank_key)!=data['players']:raise ValueError('一覧の順位/数字が試合の材料と違う')
     import soccer_result_followup
     soccer_result_followup.validate(data)
+    __import__('soccer_stake_followup').validate(data)
     expected=any(p['status']!='none' for p in flattened) or bool((data.get('preview_followup') or {}).get('games'))
     if data.get('short_content_version') == '1108' or data.get('selection_policy') == 'japanese_goal_or_assist':
         from short_renewal import positive
@@ -378,6 +379,9 @@ def main():
         import soccer_result_context
         before,after,next_games=soccer_result_context.after_context(data,preview)
         data=soccer_result_followup.attach(data,preview,data.get('preview_expectation_results'),before,after,next_games)
+    import soccer_stake_followup
+    # 前の晩の「懸かっている物」の回と同じ試合なら、前提を結果へ渡す。
+    data=soccer_stake_followup.attach(data,soccer_stake_followup.load())
     import soccer_look
     if soccer_look.readable():
         from short_renewal import positive

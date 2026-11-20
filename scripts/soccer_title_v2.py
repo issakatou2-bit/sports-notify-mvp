@@ -163,7 +163,9 @@ def preview_plan(plan):
 def result_focus(data):
     import soccer_results as results
     played = [p for p in data.get('players', []) if p['status']!='none']
-    lead = min(played, key=results.rank_key) if played else None
+    staked = [p for p in played if str(p['event_id']) in (data.get('stake_followup') or {})]
+    # 前の晩に懸かっている物を伝えた試合に日本人の出場があれば、その試合を主役にする。
+    lead = min(staked or played, key=results.rank_key) if played else None
     ident = lead['event_id'] if lead else next(iter((data.get('preview_followup') or {}).get('games', [])), {}).get('event_id')
     game = next((g for g in data['games'] if str(g['id'])==str(ident)), None)
     if game is None:
@@ -178,13 +180,23 @@ def result_focus(data):
                 if a==b else club_name(game[winner]['name_en'])+'が勝利')
         subject = club_name(game['home']['name_en'])+'対'+club_name(game['away']['name_en'])
     score = '対'.join(club_name(game[s]['name_en']) for s in ('home','away'))+f" {game['score']['home']}-{game['score']['away']}"
+    premise = ((data.get('stake_followup') or {}).get(str(game['id'])) or {}).get('premise')
     return dict(head=head, subject=subject, score=score, game_id=str(game['id']),
-                name=lead['name'] if lead else '', lead=lead, game=game)
+                name=lead['name'] if lead else '', lead=lead, game=game, premise=premise)
+
+
+def stake_label(data, game):
+    record = ((data.get('stake_followup') or {}).get(str(game['id'])) or {}).get('record') or {}
+    kind = record.get('kind')
+    return '' if not kind or kind == '境目' else '直接対決' if kind.endswith('直接対決') else kind
 
 
 def results_title(data):
     focus = result_focus(data)
-    return title(focus['head']+'｜'+focus['score']) if focus else ''
+    if not focus:
+        return ''
+    label = stake_label(data, focus['game'])
+    return title(focus['head']+'｜'+(label+' ' if label else '')+focus['score'])
 
 
 def result_narration(data):
@@ -201,6 +213,9 @@ def result_narration(data):
         if text:
             segs.append(dict(kind=kind, text=text, speaker=2, meta=dict(event_id=g['id'], title_focus_v2=True, **meta)))
     first = (p['name']+__import__('soccer_results').action(p)+'。' if p else '')+g['home']['name_jp']+'対'+g['away']['name_jp']+f"は{g['score']['home']}対{g['score']['away']}。"
+    if focus.get('premise'):
+        # 得点とスコアのあとに、前の晩の前提と勝点の動きを言う。
+        first = first+focus['premise']['lead']+focus['premise']['after']
     add('intro' if p else 'followup', first, **(dict(player_detail=p['name']) if p else dict(score_only=True)))
     goals = sorted(g['goals'], key=lambda x: tuple(int(v) for v in (x['minute'].split('+')+['0'])[:2]))
     pages = math.ceil(len(goals)/3)
