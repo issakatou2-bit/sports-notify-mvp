@@ -27,6 +27,8 @@ CTA = '高評価・チャンネル登録で応援を'
 
 def credit(doc):
     """画面の出典。試合後の声は記事の媒体を先に出す（ESPN は試合結果だけ）。"""
+    if doc.get('credit'):
+        return doc['credit']  # 欧州の注目試合（soccer_stake）は台本が出典を持つ。
     names = []
     if topics.is_reactions(doc.get('topic')):
         names += [q['source'].replace('／', '・') for q in doc['reaction_material']['quotes']]
@@ -44,6 +46,8 @@ def credit(doc):
 
 
 def clubs_for(doc):
+    if doc.get('clubs'):
+        return doc['clubs']
     c = doc['topic_summary']['header']['competitions'][0]
     names = {}
     for t in c['competitors']:
@@ -114,15 +118,19 @@ def frame(t, seg, doc, clubs, index=0, count=1, *, opening_hook=None):
     # 答えの区間は同じ画面の続き。入場の動きを繰り返さない。
     s = TopicScreen(clubs, t, 0.0 if asking else 1.0)
     hook = opening_hook or meta.get('hook')
-    s.im = cards.canvas(0 if hook else s.t, clubs, '日本代表')
+    label = doc.get('screen_title') or '日本代表'
+    s.im = cards.canvas(0 if hook else s.t, clubs, label)
     s.im.info.update(soccer_readable=True, semantic_items=[], readable_motion='v2 右から0.28秒・説明中停止・左へ0.14秒')
-    spec = dict(source=credit(doc), title='日本代表', presenter='zundamon' if asking else 'metan',
+    spec = dict(source=credit(doc), title=label, presenter='zundamon' if asking else 'metan',
                 slide_in=asking, slide_out=not asking)
     if hook:
         spec.update(slide_in=False, slide_out=False)
         return hook_screen(s, hook, spec)
-    other = next(n for n in clubs if n != '日本')
-    sub = f'日本対{other}' + ('' if meta.get('topic') == 'rematch' else '　親善試合')
+    if meta.get('sub'):
+        sub = meta['sub']
+    else:
+        other = next(n for n in clubs if n != '日本')
+        sub = f'日本対{other}' + ('' if meta.get('topic') == 'rematch' else '　親善試合')
     rows = [tuple(r) for r in meta['rows']]
     # その後の話題も値を釣り合いよく折る（Argon 11/15「ヴォルフスブル／ク」の1字だけの改行）。
     if topics.is_reactions(meta.get('topic')) or meta.get('quote') or topics.is_followup(meta.get('topic')):
