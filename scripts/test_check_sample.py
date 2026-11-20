@@ -24,6 +24,20 @@ class CheckSampleTest(unittest.TestCase):
                      portraits=[dict(who='zundamon', face=face, side='left', facing='left', dy=1)])
         self.assertEqual(len(check_sample.geometry_issues(frame, [1080, 1920])), 4)
 
+    def test_chest_overlap_includes_source_number_and_subtitle_band(self):
+        face = [120, 1250, 240, 1420]
+        portrait = dict(who='zundamon', face=face, side='left', facing='right',
+                        corner=True, ink=[32, 1142, 340, 1573])
+        frame = dict(portraits=[portrait], layout=[
+            dict(role='face', box=face),
+            dict(role='source', text='出典：MLB公式（Stats API）', box=[325, 1215, 550, 1240]),
+            dict(role='number', text='9', box=[310, 1160, 350, 1210]),
+            dict(role='caption', text='', box=[64, 1100, 930, 1160]),
+        ])
+        issues = check_sample.geometry_issues(frame, [1080, 1920])
+        self.assertEqual(len(issues), 3)
+        self.assertTrue(all('重なる' in item for item in issues))
+
     def test_fixed_regions_reject_coherent_shake_but_allow_lighting_change(self):
         rng = np.random.default_rng(1)
         frame = rng.integers(0, 200, (480, 270)).astype('float32')

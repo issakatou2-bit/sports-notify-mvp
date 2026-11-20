@@ -47,8 +47,11 @@ class LipsyncTest(unittest.TestCase):
             with self.assertRaises(ValueError):ls.audio_frames(p)
             p.with_suffix('.lipsync.json').write_text(json.dumps(dict(
                 wav_sha256=hashlib.sha256(p.read_bytes()).hexdigest(),
-                query=dict(accent_phrases=[dict(moras=[dict(vowel='a',vowel_length=.4)])]))))
+                query=dict(accent_phrases=[dict(moras=[dict(vowel='i',vowel_length=.4)])]))))
             self.assertEqual(ls.audio_frames(p)[1],'voicevox-query')
+            ls.prepare([dict(file=str(p), speaker=2)], [1], td)
+            self.assertEqual(ls.at(.2, 2), 1)
+            self.assertEqual(ls.at(.2, 2, volume=True), 2)
 
     def test_portrait_stays_in_place_and_uses_audio_only_for_speaker(self):
         with patch.object(ls, 'at', return_value=2):

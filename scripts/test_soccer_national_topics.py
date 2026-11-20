@@ -363,7 +363,8 @@ for k in (0, first, end - 1, end):
     r3.set_program_clock(k / render.FPS)
     im = render.frame(k / render.FPS - start, seg, doc, clubs, i, len(segments),
                       opening_hook=hook if k < end else None)
-    body = im.crop((72, 236, 904, 1150)).tobytes()
+    bottom = min(1150, im.info['readable_zones']['body'][3])
+    body = im.crop((72, 236, 904, bottom)).tobytes()
     opening.append((body, 'opening_hook' in im.info, next(part['who'] for part in im.info['duo_layer'] if part['active'])))
     out['errors'] += [['opening', k, str(e)[:160]] for e in render.validate_frame(im, clubs, doc)]
 out['opening'] = dict(end=end, long=render.opening_frames(segments, 102),

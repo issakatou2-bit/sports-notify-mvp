@@ -14,6 +14,7 @@ L, R = 72, safe.SAFE_RIGHT
 BODY_TOP, BODY_BOTTOM = 390, 1206
 CAPTION = (64, 1278, safe.SAFE_RIGHT, 1440)
 PORTRAIT = (L, BODY_BOTTOM, R, CAPTION[1] + 12)
+UNKNOWN_CLUB_LEGEND = '灰色の ? はクラブ色・略称が未確認'
 
 
 def intersects(a, b):
@@ -95,14 +96,18 @@ class Screen:
         import solo_host
         # 下部も情報・字幕・胸上で使う。旧v5の1150px下端やtickerは持ち込まない。
         ctx = r3._CAPTION
-        # 新しい見た目の動き用：キャラ・字幕・出典を描く前の絵（上の札＋真ん中の情報）
-        body_only = self.im.copy() if c.STYLE_V2 else None
         elapsed = self.t if r3._PROGRAM_CLOCK[0] is None else r3._PROGRAM_CLOCK[0]-ctx['start']
         clock = r3._PROGRAM_CLOCK[0] if r3._PROGRAM_CLOCK[0] is not None else elapsed
         line = r3.current_sentence(elapsed, ctx['text'], ctx['duration']) if ctx['text'] else ''
         speaker, _ = solo_host.presentation('metan', ('metan',))
         speaker = spec.get('presenter', speaker)
         if speaker not in ('metan', 'zundamon', 'ui'):raise ValueError('未知の画面話者')
+        if c.STYLE_V2 and speaker != 'ui':
+            return self._finish_cast(spec, speaker, line, elapsed, clock)
+        # 切替用にキャラ・字幕・出典を描く前の情報だけを保存する。
+        body_only = self.im.copy() if c.STYLE_V2 else None
+        if self.im.info.get('unknown_club_badge'):
+            self.text(235, 1257, UNKNOWN_CLUB_LEGEND, 20, 500, c.MUTED, role='source')
         self.im.info['duo_layer'] = []
         for who in spec.get('cast', (speaker,)):
             active = who == speaker
@@ -172,11 +177,35 @@ class Screen:
             self.im.info = info
         return self.im
 
+    def _finish_cast(self, spec, speaker, line, elapsed, clock):
+        import characters
+        import short_cast
+        ctx = r3._CAPTION
+        short_cast.compact_body(self.im, lambda: c._background(tuple(self.im.info.get('v5_tints', ()))),
+                                reserve_bottom=BODY_BOTTOM if spec.get('progressive_rows') else 0)
+        body_only = self.im.copy()
+        self.im.info['short_cast'] = True
+        characters.corner_busts(self.im, speaker, line, elapsed, clock, ctx['duration'])
+        alpha = max(0., min(1., float(spec.get('caption_alpha', 1.))))
+        visible = short_cast.caption(self.im, speaker, elapsed, alpha)
+        if 'caption_alpha' in spec:
+            self.im.info.update(caption_alpha=alpha, timeline_subtitle_visible=visible)
+        source = spec.get('source', '').removeprefix('音声: ').replace('　出典: ', ' / ')
+        source += '　立ち絵: 坂本アヒル'
+        if self.im.info.get('unknown_club_badge'):
+            source += '\n' + UNKNOWN_CLUB_LEGEND
+        short_cast.source(self.im, source, c.MUTED)
+        self.im.info['readable_zones'] = dict(body=[L, BODY_TOP, R, short_cast.BODY_BOTTOM],
+                                              caption=short_cast.CAPTION,
+                                              portrait=[0, short_cast.CAPTION[3], self.im.width, self.im.height])
+        return self._slide_v2(body_only, ctx.get('duration') or 0, spec.get('slide_in', True),
+                              spec.get('slide_out', True))
+
     def _slide_v2(self, body_only, duration, enter=True, leave=True):
         """新しい見た目の動き（Argon 11/10 の見本と同じ）。真ん中の情報だけが右から0.28秒で入り、
         区間の終わりに左へ0.14秒で抜ける。上の札・キャラ・字幕・出典は動かさない。説明中は完全に止まる。"""
         import style_v2
-        from PIL import Image, ImageChops
+        from PIL import ImageChops
         t, out_len = self.t, style_v2.TR / 2
         if enter and t < style_v2.TR:
             u = style_v2.ease_sharp(t / style_v2.TR); dx, alpha = (1-u)*540, u
@@ -189,7 +218,8 @@ class Screen:
             return self.im
         final = self.im
         info = final.info
-        top, bottom = 236, BODY_BOTTOM
+        top = 236
+        bottom = info.get("readable_zones", {}).get("body", [L, BODY_TOP, R, BODY_BOTTOM])[3]
         # 後から重ねたキャラ・字幕・出典の画素は動かさない（描く前との差がある所）
         overlay = ImageChops.difference(final.convert('RGB'), body_only.convert('RGB')).convert('L').point(lambda v: 255 if v else 0)
         frame = final.copy().convert('RGBA')
@@ -468,8 +498,6 @@ class Screen:
             y+=91
         self.im.info['preview_body']=[L,top,R,top+card+(18+mini-14 if rest else 0)]
         self.im.info['focus_game']=hero['game_id']
-        if self.im.info.get('unknown_club_badge'):
-            self.text(235,1257,'灰色の ? はクラブ色・略称が未確認',20,500,c.MUTED,role='source')
         return self.finish(spec)
 
     def preview(self, specs, spec):
@@ -495,8 +523,6 @@ class Screen:
             self.text(706,y+31,s['time'],68,210,c.LIME,True)
             self.text(720,y+109,'日本時間',30,180,role='supplement')
             self.im.info['semantic_items'].append(s['time'])
-        if self.im.info.get('unknown_club_badge'):
-            self.text(235,1257,'灰色の ? はクラブ色・略称が未確認',20,500,c.MUTED,role='source')
         return self.finish(spec)
 
     def standings(self, spec):
@@ -847,14 +873,21 @@ def check_frame(im,clubs):
         if not children or bottom-max(e['box'][3] for e in children)>200:
             errors.append(dict(empty_card_bottom=card['box']))
     for item in im.info.get('duo_layer',[]):
-        art=characters.bust(item['who'],item['face'],item['height'],item['dim'])
-        x,y=item['at'];box=[x,y,x+art.width,y+min(art.height,item['cut'])]
-        for e in cards+body:
+        if item.get('corner'):
+            box = item['ink']
+            protected = cards + body + [e for e in entries if e['role'] in ('source', 'caption')]
+        else:
+            art = characters.bust(item['who'], item['face'], item['height'], item['dim'])
+            x, y = item['at']
+            box = [x, y, x + art.width, y + min(art.height, item['cut'])]
+            protected = cards + body
+        for e in protected:
             if intersects(e['box'],box):errors.append(dict(presenter_overlap=e))
     caption=im.info.get('duo_caption',{}).get('box')
     if caption:
         import bubble_styles
-        legacy=bubble_styles.geometry()
+        import short_cast
+        legacy = short_cast.CAPTION if im.info.get('short_cast') else bubble_styles.geometry()
         if caption[2]-caption[0]<legacy[2]-legacy[0]:errors.append(dict(narrow_caption=caption))
         text=next(e['text'] for e in entries if e['role']=='caption')
         _,minimum,_=bubble_styles._runs(ImageDraw.Draw(im.copy()),text,legacy,'slant',
@@ -862,10 +895,16 @@ def check_frame(im,clubs):
         if im.info['duo_caption']['font_size']<minimum:errors.append(dict(small_caption=caption,minimum=minimum))
         for e in cards+body:
             if intersects(e['box'],caption):errors.append(dict(caption_overlap=e))
-        if safe.SAFE_BOTTOM-caption[3]>100:errors.append(dict(empty_below_caption=safe.SAFE_BOTTOM-caption[3]))
+        if im.info.get('short_cast'):
+            if caption[1::2] != list(short_cast.CAPTION[1::2]):
+                errors.append(dict(caption_zone=caption))
+        elif safe.SAFE_BOTTOM-caption[3]>100:
+            errors.append(dict(empty_below_caption=safe.SAFE_BOTTOM-caption[3]))
     # 予告は内容量に合わせた中央配置。札の中の余白は上の200px検査で
     # 従来どおり検査し、外側は描画が宣言した情報領域の下端へ照合する。
     body_bottom=im.info.get('preview_body',[L,BODY_TOP,R,BODY_BOTTOM])[3]
+    if im.info.get('short_cast_body_scale'):
+        body_bottom = im.info.get('preview_body', im.info['readable_zones']['body'])[3]
     if cards and not any(im.info.get(k) for k in ('compact_player_statistics','compact_results','compact_score')) and body_bottom-max(e['box'][3] for e in cards)>80:
         errors.append(dict(empty_body_bottom=body_bottom-max(e['box'][3] for e in cards)))
     return errors

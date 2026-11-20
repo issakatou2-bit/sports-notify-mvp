@@ -88,10 +88,59 @@ def reserved_width(duo=False):
     return sum(widths) - 30 * (len(widths) - 1) + 20
 
 
+CORNER_HEIGHT = 864
+# x, y and the visible face within the full-height rig. Hair and clothing may extend out.
+CORNERS = {
+    'zundamon': ('left', -85, 1142, (.40, .15, .73, .34)),
+    'metan': ('right', 620, 1178, (.28, .07, .70, .26)),
+}
+
+
+@functools.lru_cache(maxsize=64)
+def corner_art(who, face, side):
+    art = bust(who, face, CORNER_HEIGHT, side=side).copy()
+    # Soften the open edge at the chest without moving or hiding facial parts.
+    alpha = art.getchannel('A')
+    fade = 30
+    for offset in range(fade):
+        y = art.height - fade + offset
+        factor = (fade - 1 - offset) / (fade - 1)
+        mask = alpha.crop((0, y, art.width, y + 1)).point(lambda value: round(value * factor))
+        alpha.paste(mask, (0, y))
+    art.putalpha(alpha)
+    return art
+
+
+def corner_busts(im, speaker, line, elapsed, clock, duration):
+    portraits, layers = [], []
+    for who, (side, x, base_y, facial) in CORNERS.items():
+        active = who == speaker
+        speaking = active and bool(line) and 0 <= elapsed < duration
+        face = expression(who, speaker, line, elapsed, clock, volume=True)
+        dy = speaking_offset(elapsed, speaking)
+        y = base_y + dy
+        art = corner_art(who, face, side)
+        im.paste(art, (x, y), art)
+        a, b, c, d = art.getchannel('A').getbbox()
+        left, top, right, bottom = facial
+        face_box = [x + round(art.width * left), y + round(CORNER_HEIGHT * top),
+                    x + round(art.width * right), y + round(CORNER_HEIGHT * bottom)]
+        ink = [max(0, x + a), y + b, min(im.width, x + c), y + d]
+        portraits.append(dict(who=who, box=ink, face=face_box, ink=ink, active=active))
+        layers.append(dict(who=who, face=face, height=CORNER_HEIGHT, dim=False, side=side,
+                           active=active, dy=dy, at=[x, y], cut=art.height, corner=True,
+                           facing=inward_facing(who, side), ink=ink))
+        r3.record_box(im, 'face', face_box)
+    im.info.update(duo_portraits=portraits, duo_layer=layers)
+
+
 def redraw(im, layer):
     """place_busts が記録した立ち絵を描き直す（札の演出で消えた分を戻す）。"""
     for r in layer or ():
-        art = bust(r["who"], r["face"], r["height"], r["dim"], r.get("side"), r.get("full", False))
+        if r.get("corner"):
+            art = corner_art(r["who"], r["face"], r["side"])
+        else:
+            art = bust(r["who"], r["face"], r["height"], r["dim"], r.get("side"), r.get("full", False))
         if art is not None:
             art = art.crop((0, 0, art.width, min(art.height, r["cut"])))
             im.paste(art, tuple(r["at"]), art)
@@ -120,7 +169,7 @@ def zunda_face(line):
     return "base"
 
 
-def expression(who, speaker, line, elapsed, clock):
+def expression(who, speaker, line, elapsed, clock, *, volume=False):
     """散歩と同様、話し始めだけ聞き手が反応する。体の位置は固定。"""
     import lipsync
     active = who == speaker
@@ -130,7 +179,7 @@ def expression(who, speaker, line, elapsed, clock):
             mood = "listen"
         else:
             mood = "base"
-    level = lipsync.at(clock, 3 if who == "zundamon" else 2) if active and line else 0
+    level = lipsync.at(clock, 3 if who == "zundamon" else 2, volume=volume) if active and line else 0
     blink = (clock + (0.5 if who == "metan" else 1.1)) % 3.9 < .13
     return f"{mood}:mouth{level}" + (":blink" if blink else "")
 
@@ -385,6 +434,11 @@ def presenter(im, t, cast=("metan",)):
     speaker, cast = solo_host.presentation(speaker, cast)
     if speaker not in cast:
         cast = tuple(cast) + (speaker,)
+    import short_cast
+    deferred = short_cast.DEFERRED.get()
+    if deferred is not None and speaker in PORTRAIT_CAST:
+        deferred['presenter'] = (speaker, elapsed, line, clock if clock is not None else elapsed)
+        return
     place_busts(im, speaker, line, elapsed, ctx["duration"] or 1, cast)
     if line and not ctx.get("hide_caption") and not im.info.get('v3_outro') and not short_common.duplicate_caption(im, line):
         bubble(im, speaker, line)

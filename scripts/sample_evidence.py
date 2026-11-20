@@ -30,11 +30,12 @@ def portraits(info):
     for row in drawn:
         layer = layers.get(row['who'], {})
         x, y = row['box'][:2]
-        face = next((box for box in faces if box[:2] == [x, y]), None)
+        face = row.get('face') or next((box for box in faces if box[:2] == [x, y]), None)
         result.append(dict(who=row['who'], box=row['box'], face=face,
                            active=row.get('active', layer.get('active', False)),
                            side=layer.get('side'), facing=layer.get('facing'),
-                           dy=layer.get('dy', 0)))
+                           dy=layer.get('dy', 0), ink=row.get('ink'), expression=layer.get('face'),
+                           corner=bool(layer.get('corner')), origin=layer.get('at')))
     return result
 
 

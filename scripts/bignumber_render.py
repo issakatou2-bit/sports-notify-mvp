@@ -692,6 +692,23 @@ def _chrome(im, tg, t, spec, base, second):
 
 @motion.slot('mlb')
 def scene(t, scene_spec, team_id=None):
+    if r3.LOOK != 'v4' or not r3.STYLE_V2 or scene_spec.get('kind') == 'outro' or scene_spec.get('next_line'):
+        return _scene(t, scene_spec, team_id)
+    import short_cast
+    import solo_host
+    speaker, _ = solo_host.presentation('metan', ('metan',))
+    if speaker == 'ui':
+        return _scene(t, scene_spec, team_id)
+    footer = {}
+    token = short_cast.DEFERRED.set(footer)
+    try:
+        im = _scene(t, scene_spec, team_id)
+    finally:
+        short_cast.DEFERRED.reset(token)
+    return short_cast.finish_mlb(im, t, footer) if 'presenter' in footer else im
+
+
+def _scene(t, scene_spec, team_id=None):
     """1場面の t 秒目の絵（1080×1920、RGB）。
 
     scene_spec の例: {"big": "3", "unit": "安打", "head": "大谷翔平", "sub": "4打数3安打", "team_id": 119}

@@ -349,8 +349,12 @@ def short_transition(prev_bytes, im, k, fps=30, v4=False):
     ImageDraw.Draw(out).ellipse((cx-radius,cy-radius,cx+radius,cy+radius),outline=r3.GOLD,width=10)
     # Stable shared chrome: no ghosted subtitles, ticker dates or double portraits.
     out.paste(im.crop((0,0,im.width,r3.CONTENT_TOP)),(0,0))
-    out.paste(im.crop((0,r3.CONTENT_BOTTOM,im.width,im.height)),(0,r3.CONTENT_BOTTOM))
-    if 'duo_portraits' in im.info:
+    footer_top = r3.CONTENT_BOTTOM
+    if im.info.get('short_cast'):
+        import short_cast
+        footer_top = short_cast.BODY_BOTTOM
+    out.paste(im.crop((0,footer_top,im.width,im.height)),(0,footer_top))
+    if 'duo_portraits' in im.info and not im.info.get('short_cast'):
         # 立ち絵は CONTENT_BOTTOM より上にもかかる。前の画面の立ち絵が上半分だけ残らないように
         import characters
         box=characters.portrait_strip();out.paste(im.crop(box),box[:2])

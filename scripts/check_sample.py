@@ -71,6 +71,17 @@ def geometry_issues(frame, size):
             problems.append(f'{who} の上下移動 {dy}px')
         if row.get('rotation') or row.get('dx') or row.get('blink_effect'):
             problems.append(f'{who} に回転・横移動・点滅の指定')
+        ink = row.get('ink')
+        if row.get('corner'):
+            if ink is None or not .22 * size[1] <= ink[3] - ink[1] <= .28 * size[1]:
+                problems.append(f'{who} の胸上が画面高の22〜28%に収まらない {ink}')
+            if row.get('side') != {'zundamon': 'left', 'metan': 'right'}.get(who):
+                problems.append(f'{who} の立ち位置が左右逆')
+        if ink:
+            for entry in layout:
+                if (entry['role'] != 'face' and (entry.get('text') or entry['role'] == 'caption')
+                        and intersects(ink, entry['box'])):
+                    problems.append(f"{who} が {entry['role']} {entry.get('text', '')} に重なる")
         if face:
             for decoration in layout:
                 if decoration['role'] in ('symbol', 'decoration') and intersects(face, decoration['box']):
@@ -157,7 +168,9 @@ def video_issues(path, evidence):
                     q = old.get(p['who'])
                     if not q:
                         continue
-                    if p['box'][0] != q['box'][0] or p['box'][1] - p['dy'] != q['box'][1] - q['dy']:
+                    x, y = p.get('origin') or p['box'][:2]
+                    old_x, old_y = q.get('origin') or q['box'][:2]
+                    if x != old_x or y - p['dy'] != old_y - q['dy']:
                         problems.append(f"コマ{index} {p['who']} のメタデータに位置の揺れ")
             previous, last, last_row = arr, None if row['transition'] else layout, row
         if process.wait():

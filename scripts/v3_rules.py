@@ -97,6 +97,13 @@ def check_layout(image):
         x,y,right,bottom=e['box']
         top,end={'header':(160,r3.CONTENT_TOP),'source':(r3.SOURCE_BOTTOM-80,r3.SOURCE_BOTTOM+8),'ticker':(safe.SAFE_BOTTOM-r3.TICKER_HEIGHT,safe.SAFE_BOTTOM),
                   'caption':(r3.CAPTION_TOP-30,r3.CAPTION_BOTTOM)}.get(e['role'],(r3.CONTENT_TOP,r3.CONTENT_BOTTOM))
+        if image.info.get('short_cast'):
+            import short_cast
+            top, end = {
+                'source': (short_cast.SOURCE_TOP, short_cast.TICKER_Y),
+                'caption': short_cast.CAPTION[1::2],
+                'ticker': (short_cast.TICKER_Y, short_cast.TICKER_Y + r3.TICKER_HEIGHT),
+            }.get(e['role'], (top, end))
         if e['role']=='source' and image.info.get('v3_outro'):
             top = safe.SAFE_TOP
         left=r3.LEFT-8 if e['role']=='caption' else r3.LEFT
