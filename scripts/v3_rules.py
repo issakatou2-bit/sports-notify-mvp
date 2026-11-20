@@ -6,6 +6,7 @@ from pathlib import Path
 import sys
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
 import review_render_v3 as r3
+import shorts_safe_area as safe
 
 
 SLACK = 3
@@ -49,7 +50,7 @@ def check_club_mentions(segments,teams):
 
 def content_group(image):
     """固定見出し・出典・字幕を除いた札と本文。入れ子の札は一群として扱う。"""
-    entries=[e for e in image.info.get('v3_layout',[]) if e['role'] not in ('header','source','caption','ticker')]
+    entries=[e for e in image.info.get('v3_layout',[]) if e['role'] not in ('header','source','caption','ticker','face')]
     cards=[e for e in entries if e['role']=='card']
     def inside(a,b):
         return b[0]<=a[0] and b[1]<=a[1] and a[2]<=b[2] and a[3]<=b[3]
@@ -68,7 +69,7 @@ def check_spacing(image):
     errors=[];entries=image.info.get('v3_layout',[])
     for card in (e for e in entries if e['role']=='card'):
         x,y,right,bottom=card['box']
-        children=[e for e in entries if e is not card and e['role'] not in ('header','source','caption','ticker')
+        children=[e for e in entries if e is not card and e['role'] not in ('header','source','caption','ticker','face')
                   and x<=e['box'][0] and y<=e['box'][1] and e['box'][2]<=right and e['box'][3]<=bottom]
         if bottom-y>=200 and (not children or bottom-max(e['box'][3] for e in children)>=200):
             errors.append({'empty_card_bottom':card['box']})
@@ -89,6 +90,10 @@ def check_layout(image):
     if not entries:
         return ['描画位置の記録がありません']
     for e in entries:
+        if e['role']=='face':
+            if safe.outside(e['box']):
+                errors.append(e)
+            continue
         x,y,right,bottom=e['box']
         top,end={'header':(160,r3.CONTENT_TOP),'source':(r3.SOURCE_BOTTOM-80,r3.SOURCE_BOTTOM+8),'ticker':(1486,1574),
                   'caption':(r3.CAPTION_TOP-30,r3.CAPTION_BOTTOM)}.get(e['role'],(r3.CONTENT_TOP,r3.CONTENT_BOTTOM))
@@ -96,7 +101,7 @@ def check_layout(image):
         edge=(image.info.get('duo_caption',{}).get('box',(0,0,r3.CAPTION_RIGHT,0))[2]
               if e['role']=='caption' else r3.SAFE_RIGHT)
         # 字の張り出し（Linux の Noto で「A」が1px左へ出る等）は許す。はみ出しの検査なので数px は問題にしない。
-        if not (left-SLACK<=x<=right<=edge+SLACK and top-SLACK<=y<=bottom<=end+SLACK):
+        if safe.outside(e['box']) or not (left-SLACK<=x<=right<=edge+SLACK and top-SLACK<=y<=bottom<=end+SLACK):
             errors.append(e)
     for card in image.info.get('v3_card_contents',[]):
         w,h=card['size']

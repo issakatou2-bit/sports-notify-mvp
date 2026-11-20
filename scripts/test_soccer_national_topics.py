@@ -117,7 +117,7 @@ class Topics(unittest.TestCase):
         self.assertIn('坂元達裕', late)
         self.assertIn('後半追加時間1分', late)
         self.assertIn('72分に堂安律と交代', late)
-        self.assertIn('VARの確認を経て認められました', late)
+        self.assertIn('VARの確認を経て認められたわ', late)
         self.assertIn('出場してから19分で決めた決勝点', late)
 
         star = '\n'.join(spoken(make('opponent-star')))
@@ -127,8 +127,8 @@ class Topics(unittest.TestCase):
         self.assertIn('枠内シュートは2本', star)
         self.assertIn('ペナルティエリアの外', star)
         self.assertIn('ブルーノ・ギマランイスのアシスト', star)
-        self.assertIn('ブラジルの得点は、すべてヴィニシウスです', star)
-        self.assertIn('チーム全体のシュート17本のうち、4本を打っています', star)
+        self.assertIn('ブラジルの得点は、すべてヴィニシウスよ', star)
+        self.assertIn('チーム全体のシュート17本のうち、4本を打っているわ', star)
 
         keeper = '\n'.join(spoken(make('keeper')))
         self.assertIn('鈴木彩艶のセーブ数は4', keeper)
@@ -137,8 +137,8 @@ class Topics(unittest.TestCase):
         self.assertIn('ブラジルのゴールキーパーのセーブ数は1', keeper)
 
         early = '\n'.join(spoken(make('early-goals')))
-        self.assertIn('前半15分、堂安律のスルーパスから、久保建英が左足で決めました', early)
-        self.assertIn('4分後の前半19分、中野就斗のクロスから、中村敬斗が右足で決めました', early)
+        self.assertIn('前半15分、堂安律のスルーパスから、久保建英が左足で決めたわ', early)
+        self.assertIn('4分後の前半19分、中野就斗のクロスから、中村敬斗が右足で決めたわ', early)
         # 2点のあとの流れも言う（Argon 11/15：3-2 に飛ばない）。
         self.assertIn('ヴィニシウス・ジュニオールが33分と75分に決めて2対2', early)
         self.assertIn('坂元達裕が後半追加時間1分に決めて3対2', early)
@@ -147,10 +147,10 @@ class Topics(unittest.TestCase):
                                                   ['75分 ブラジル', 'ヴィニシウス'], ['90+1分 日本', '坂元達裕']])
 
         rematch = '\n'.join(spoken(make('rematch')))
-        self.assertTrue(rematch.split('\n')[1].startswith('日本が3対2で勝ちました'), rematch)
+        self.assertTrue(rematch.split('\n')[1].startswith('日本が3対2で勝ったわ'), rematch)
         self.assertIn('6月30日のワールドカップのラウンド32', rematch)
-        self.assertIn('1対2で敗れました', rematch)
-        self.assertIn('2025年10月の親善試合では、日本が3対2で勝っています', rematch)
+        self.assertIn('1対2で敗れたわ', rematch)
+        self.assertIn('2025年10月の親善試合では、日本が3対2で勝っているわ', rematch)
         self.assertNotIn('通算', rematch)
         # 画面の対戦は両国名つきで新しい順に積む（「1-2 ブラジル」だけにしない）。
         board = [list(r) for r in make('rematch')['segments'][-2]['meta']['rows']]
@@ -343,7 +343,8 @@ for topic in ('team-numbers', 'late-winner', 'opponent-star', 'keeper', 'early-g
             out['old'] += len(colors & OLD)
             out['frames'] += 1
             if t == 1.5:
-                layer = im.info['duo_layer'][0]
+                assert {part['who'] for part in im.info['duo_layer']} == {'zundamon', 'metan'}
+                layer = next(part for part in im.info['duo_layer'] if part['active'])
                 out['who'].append([seg['speaker'], layer['who']]); out['x'].append(layer['at'][0])
             out['slide'].append([seg['speaker'], t, (im.info.get('v2_slide') or {}).get('phase')])
 doc = topics.narration(summary, 'team-numbers')
@@ -363,7 +364,7 @@ for k in (0, first, end - 1, end):
     im = render.frame(k / render.FPS - start, seg, doc, clubs, i, len(segments),
                       opening_hook=hook if k < end else None)
     body = im.crop((72, 236, 904, 1150)).tobytes()
-    opening.append((body, 'opening_hook' in im.info, im.info['duo_layer'][0]['who']))
+    opening.append((body, 'opening_hook' in im.info, next(part['who'] for part in im.info['duo_layer'] if part['active'])))
     out['errors'] += [['opening', k, str(e)[:160]] for e in render.validate_frame(im, clubs, doc)]
 out['opening'] = dict(end=end, long=render.opening_frames(segments, 102),
     missing=render.opening_frames(topics.narration(summary, 'reactions')['segments'], first),
@@ -409,9 +410,9 @@ class Reactions(unittest.TestCase):
         asks = [s['text'] for s in doc['segments'] if s['speaker'] == ZUNDA]
         self.assertEqual(len(asks), 4)
         self.assertIn('得点した久保建英と中村敬斗は、何と話したのだ？', asks)
-        self.assertIn('分があると思っていた」と話し、中村敬斗は、「本当に僕は決めるだけだった」と話しました。', answers[1]['text'])
-        self.assertIn('グローボの報道です。', answers[2]['text'])
-        self.assertIn('レッドカードで退場しました。', answers[3]['text'])
+        self.assertIn('分があると思っていた」と話し、中村敬斗は、「本当に僕は決めるだけだった」と話したわ。', answers[1]['text'])
+        self.assertIn('グローボの報道よ。', answers[2]['text'])
+        self.assertIn('レッドカードで退場したわ。', answers[3]['text'])
         self.assertEqual(list(answers[3]['meta']['rows'][-1]), ['出典', 'サッカーキング・GOAL'])
         for s in doc['segments']:
             if s['speaker'] == ZUNDA:
@@ -494,7 +495,7 @@ class TopicReactions(unittest.TestCase):
             {'team-numbers': dict(checked_on='2026-11-15', quotes=[dict(self.QUOTE)])}))
         doc = make('team-numbers')
         answers = [s for s in doc['segments'] if s['speaker'] == METAN and s['kind'] != 'outro']
-        self.assertIn('テスト記者は、「少ない好機を確実に決めた」と話しました。', answers[-1]['text'])
+        self.assertIn('テスト記者は、「少ない好機を確実に決めた」と話したわ。', answers[-1]['text'])
         self.assertIn(['出典', 'テスト新聞'], [list(r) for r in answers[-1]['meta']['rows']])
         self.assertEqual(topics.check(doc), [])
         self.assertLessEqual(topics.estimate(doc), topics.LIMIT)

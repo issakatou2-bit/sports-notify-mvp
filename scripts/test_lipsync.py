@@ -2,9 +2,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
-import subprocess
 import tempfile
-import types
 import unittest
 from unittest.mock import patch
 import wave
@@ -52,22 +50,32 @@ class LipsyncTest(unittest.TestCase):
                 query=dict(accent_phrases=[dict(moras=[dict(vowel='a',vowel_length=.4)])]))))
             self.assertEqual(ls.audio_frames(p)[1],'voicevox-query')
 
-    def test_unset_pixels_and_existing_parts(self):
-        root = Path(__file__).resolve().parents[1]
-        original = subprocess.check_output(['git','show','11035100:scripts/characters.py'],cwd=root).decode('utf-8')
-        old = types.ModuleType('characters_baseline')
-        exec(compile(original,'characters_baseline','exec'), old.__dict__)
-        with patch.dict(os.environ, COLLESPO_LIPSYNC=''):
-            for line in ('山本由伸が先発します。','村上が本塁打。','大谷は無安打。','今日の成績です。'):
-                for t in (0,.2,.5,1.3,3.9):
-                    a=Image.new('RGB',(1080,1920));b=a.copy()
-                    old.place_busts(a,'metan',line,t,4)
-                    c.place_busts(b,'metan',line,t,4)
-                    self.assertEqual(a.tobytes(),b.tobytes())
+    def test_portrait_stays_in_place_and_uses_audio_only_for_speaker(self):
+        with patch.object(ls, 'at', return_value=2):
+            a = Image.new('RGB', (1080, 1920))
+            b = a.copy()
+            before = c.place_busts(a, 'metan', '自己最多よ。', .7, 4)
+            after = c.place_busts(b, 'metan', '自己最多よ。', 1.5, 4)
+        self.assertEqual(before, after)
+        a_faces = {r['who']: r['face'] for r in a.info['duo_layer']}
+        b_faces = {r['who']: r['face'] for r in b.info['duo_layer']}
+        self.assertEqual(a_faces, {'zundamon': 'surprise:mouth0', 'metan': 'surprise:mouth2'})
+        self.assertEqual(b_faces['zundamon'], 'base:mouth0')
+        self.assertEqual(c.expression('metan', 'zundamon', '', 0, 3.41), 'base:mouth0:blink')
+
+    def test_original_parts_and_both_directions(self):
         for who in c.PORTRAIT_CAST:
             parts=c.vc._parts(c.NAMES[who], c.PORTRAIT_DIR)
             self.assertTrue(all(k in parts['口'] for k in ('閉','開','大')))
+            self.assertEqual(c.source_facing(c.figure(who, side='left')), 'right')
+            self.assertEqual(c.source_facing(c.figure(who, side='right')), 'left')
         self.assertEqual(c.vc.FACES['v4_surprise:mouth0'][:2], c.FACE_PARTS['surprise'][:2])
+
+    def test_swapped_cast_uses_actual_side(self):
+        im = Image.new('RGB', (1080, 1920))
+        c.place_busts(im, 'metan', '', 0, 1, ('metan', 'zundamon'))
+        self.assertEqual({r['who']: r['side'] for r in im.info['duo_layer']},
+                         {'metan': 'left', 'zundamon': 'right'})
 
 
 if __name__ == '__main__':unittest.main(argv=[__file__])

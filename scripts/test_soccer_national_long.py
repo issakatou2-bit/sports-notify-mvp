@@ -36,8 +36,8 @@ class NationalLong(unittest.TestCase):
         self.assertNotIn('鎌田大地',[p['name'] for p in data['numbers']['players']])
         talk=[(s['speaker'],s['text']) for s in doc['segments'] if s['kind']=='talk']
         i=talk.index((3,'離脱したのは、誰なのだ？'))
-        self.assertEqual(talk[i+1],(2,'鎌田大地です。11月14日のJFAの発表で、理由は所属クラブの都合です。'))
-        self.assertIn('招集28人のうち、離脱を除く27人です。',talk[i-1][1])
+        self.assertEqual(talk[i+1],(2,'鎌田大地よ。11月14日のJFAの発表で、理由は所属クラブの都合よ。'))
+        self.assertIn('招集28人のうち、離脱を除く27人よ。',talk[i-1][1])
         text=long.description(doc)
         self.assertIn('離脱：鎌田大地（所属クラブの都合、11月14日 JFA発表）',text)
         self.assertIn('https://www.jfa.jp/samuraiblue/news/00037030/',text)

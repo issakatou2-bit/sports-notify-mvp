@@ -7,13 +7,11 @@ from pathlib import Path
 from PIL import Image, ImageDraw
 from ps_brand_components import TOKENS, THEME, text, font
 from video_common import lift_color
+from shorts_safe_area import SAFE_BOTTOM, SAFE_RIGHT, problems as safety_problems
 
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT))
 LAYOUTS={'schedule':4,'facts':3,'bracket':2,'quote':1}
-# Shortsの題・チャンネル名（下の約18%）とボタン列（右の約13%）を避ける線。
-SAFE_BOTTOM=1574
-SAFE_RIGHT=940
 
 @lru_cache(maxsize=8)
 def _prepared_presenter(data,crop,max_size):
@@ -66,16 +64,21 @@ def render(card,presenters=None,style='stadium',layers=False):
         trace.append({'text':str(value),'box':list(box),'role':role})
         if role=='important' and (box[0]<72 or box[2]>936 or box[1]<210 or box[3]>1280):
             raise ValueError('Important text outside the reserved area: '+str(value))
-    put(72,65,'コレスポ',44,role='brand')
-    badge=card.get('sport','MLB')+' / '+card.get('label','')
-    put(354,90,badge,26,role='brand',color=t['muted'],latin=badge.isascii())
+    put(72,166,'コレスポ',40,role='brand')
+    round_game = card.get('round_game')
+    label = card.get('label', '')
+    prefix, sep, tail = label.rpartition(' / ')
+    if round_game and sep and tail.replace(' ', '') == round_game.replace(' ', ''):
+        label = prefix
+    badge=card.get('sport','MLB')+' / '+label
+    put(270,175,badge,26,width=323 if round_game else 560,role='brand',color=t['muted'],latin=badge.isascii())
     if card.get('card_index') is not None:
         index,total=card['card_index'],card.get('card_total')
         if type(index) is not int or type(total) is not int or not 1<=index<=total:
             raise ValueError('Invalid card progress')
-        put(865,145,f'{index}/{total}',40,width=125,role='utility',color=t['accent'],latin=True)
+        put(865,166,f'{index}/{total}',40,width=70,role='utility',color=t['accent'],latin=True)
     if card.get('round_game'):
-        put(72,151,card['round_game'],36,width=620,role='utility',color=t['accent'])
+        put(608,175,card['round_game'],28,width=235,role='utility',color=t['accent'])
     board=card.get('scoreboard')
     if board:
         # スコアボード（10/3 改善案B）。見出しの2行の代わりに、略称バッジ・
@@ -182,6 +185,8 @@ def render(card,presenters=None,style='stadium',layers=False):
             if row['role']=='important' and overlaps(box,row['box']):raise ValueError('Presenter covers content')
         im.alpha_composite(sprite,(x,y));avatars.append({'side':side,'box':box,'asset':path})
     result=background(style,team_id=background_team(card));result.paste(im,(0,0),im)
+    if errors := safety_problems(trace + [dict(role='face', box=p['box']) for p in avatars]):
+        raise ValueError(f'Shortsの安全域外: {errors}')
     manifest={'theme_version':THEME['version'],'card':card,'text':trace,'presenters':avatars,'public':False}
     return (result,manifest,im) if layers else (result,manifest)
 

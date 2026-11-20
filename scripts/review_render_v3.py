@@ -273,16 +273,19 @@ def ticker(im, t, text, y=1486, once=False):
     if _PROGRAM_CLOCK[0] is not None:
         t = _PROGRAM_CLOCK[0]
     LAST_TICKER[0] = (text, y, once)
+    width = SAFE_RIGHT - LEFT
+    y = min(y, SAFE_BOTTOM - 88)
     if once:
         strip = _single_ticker(text)
-        band = Image.new('RGB',(W,88),GOLD)
-        x = W-((W+round(t*80)) % (W+strip.width))
+        band = Image.new('RGB',(width,88),GOLD)
+        x = width-((width+round(t*80)) % (width+strip.width))
         band.paste(strip,(x,0))
-        im.paste(band,(0,y))
-        return
-    strip, w = _ticker_strip(text)
-    off = round(t * 80) % w
-    im.paste(strip.crop((off, 0, off + W, 88)), (0, y))
+    else:
+        strip, w = _ticker_strip(text)
+        off = round(t * 80) % w
+        band = strip.crop((off, 0, off + width, 88))
+    im.paste(band, (LEFT, y))
+    record_box(im, "ticker", (LEFT, y, SAFE_RIGHT, y + 88), text)
 
 
 @functools.lru_cache(maxsize=4)
@@ -1080,10 +1083,10 @@ def cues(kind, spec, items=(), start=0, count=0):
 # 10/7 本人「最後のコレスポの紹介、ちょっと雑すぎ。もっと突き詰めて各ショートの最後に付けられる？」。
 # どの枠の最後にも付ける。毎日の番組表（post_common.lineup、時刻つき）を時刻の順に並べ、
 # いま見ている枠は外す。地はコレスポの色（球団色にしない）。
-INSEASON_OUTRO_TEXT = ("コレスポでは毎日、日本人選手の成績や、明日の試合の見どころを届けています。"
-              "チャンネル登録して、また見に来てくださいね。")
-OFFSEASON_OUTRO_TEXT = ("コレスポでは毎日、MLBの話題と欧州サッカーの見どころを届けています。"
-                        "チャンネル登録して、また見に来てくださいね。")
+INSEASON_OUTRO_TEXT = ("コレスポでは毎日、日本人選手の成績や、明日の試合の見どころを届けているわ。"
+              "チャンネル登録して、また見に来てね。")
+OFFSEASON_OUTRO_TEXT = ("コレスポでは毎日、MLBの話題と欧州サッカーの見どころを届けているわ。"
+                        "チャンネル登録して、また見に来てね。")
 
 
 def outro_text(ps=None, today=None):

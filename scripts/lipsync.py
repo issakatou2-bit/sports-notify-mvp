@@ -85,14 +85,16 @@ def audio_frames(path, fps=FPS):
 
 def prepare(segs, durations, out_dir, fps=FPS):
     TRACK.clear()
-    if not enabled():
+    voice_mode = enabled()
+    if not voice_mode and not any(s.get('file') and s.get('speaker', 2) in (2, 3) for s in segs):
         return
     import video_common
     frame0 = 0
     for seg, duration, n in zip(segs, durations, video_common.segment_frame_counts(durations, fps)):
         start = frame0 / fps
         path = seg.get('file')
-        levels, source = audio_frames(path, fps) if path else ([], 'silence')
+        speaker = seg.get('speaker', 2)
+        levels, source = audio_frames(path, fps) if path and (voice_mode or speaker in (2, 3)) else ([], 'silence')
         TRACK.append(dict(start=start, end=(frame0+n)/fps, speaker=seg.get('speaker', 2),
                           frames=(levels+[0]*n)[:n], source=source, file=path))
         frame0 += n

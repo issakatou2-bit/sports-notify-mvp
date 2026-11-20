@@ -141,6 +141,9 @@ def dialogue(data):
         if v2:panels[key]['v2']=dict(v2,fixture=fixture)
         return key,chapter
     def say(speaker,text,ref):
+        from metan_tone import fix
+        if speaker == 2:
+            text = fix(text)
         segments.append(dict(kind='talk',speaker=speaker,text=text,panel=ref[0],chapter=ref[1],
             meta=dict(who='めたん' if speaker==2 else 'ずんだもん')))
     count=len(data['players']);known=len(data['numbers']['players'])

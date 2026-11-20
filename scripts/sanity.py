@@ -282,11 +282,17 @@ def check_narration(paths):
         loose[unit] = (lo, hi)
 
     bad = []
+    import metan_tone
+    from solo_host import for_segments
     for p in paths:
         try:
             d = json.loads(pathlib.Path(p).read_text(encoding="utf-8"))
         except (OSError, json.JSONDecodeError):
             continue
+        segments = d.get("segments") or []
+        if for_segments(segments) != 'ui':
+            for i, ending in metan_tone.check(segments):
+                bad.append(f"{pathlib.Path(p).name} の{i}番目: めたんの語尾「{ending}」")
         for i, s in enumerate(d.get("segments") or []):
             text = (s.get("text") or "").strip()
             if not text:

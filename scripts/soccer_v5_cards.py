@@ -570,7 +570,7 @@ def scarf_transition(previous,image,t):
     import characters
     # 元画面の半透明の縁もそのまま保持する。立ち絵の二重合成はしない。
     for item in image.info.get('duo_layer',[]):
-        art=characters.bust(item['who'],item['face'],item['height'],item['dim'])
+        art=characters.bust(item['who'],item['face'],item['height'],item['dim'],item.get('side'),item.get('full',False))
         if art is None:continue
         art=art.crop((0,0,art.width,min(art.height,item['cut'])))
         x,y=item['at'];region=(x,y,x+art.width,y+art.height)
@@ -590,7 +590,7 @@ def check_frame(im,clubs):
     for item in im.info.get('v5_contrasts',[]):
         if item['text_ratio']<4.5 or item['edge_ratio']<3:errors.append(dict(contrast=item))
     for e in im.info.get('v3_layout',[]):
-        if e['role'] in ('header','caption','ticker','source','card','team_badge','badge','decoration'):continue
+        if e['role'] in ('header','caption','ticker','source','card','team_badge','badge','decoration','face'):continue
         if e['box'][2]>R+1 or e['box'][3]>BOTTOM+1:errors.append(dict(overflow=e))
     for panel_ in im.info.get('v5_quote_panels',[]):
         x,y,right,bottom=panel_['box']
@@ -600,7 +600,7 @@ def check_frame(im,clubs):
                 errors.append(dict(outside_quote_panel=e))
     # 安全域内でも右下の立ち絵に数字/字が隠れる配置は止める。実際のアルファで判定。
     for item in im.info.get('duo_layer',[]):
-        art=characters.bust(item['who'],item['face'],item['height'],item['dim'])
+        art=characters.bust(item['who'],item['face'],item['height'],item['dim'],item.get('side'),item.get('full',False))
         if art is None:continue
         alpha=art.getchannel('A').crop((0,0,art.width,min(art.height,item['cut'])))
         px,py=item['at']
