@@ -22841,6 +22841,56 @@
       },
       "host_fallback_reason": null,
       "privacy": "public"
+    },
+    "season_best_2026_672960_hitting": {
+      "video_id": "PCv_FZj3_8I",
+      "url": "https://youtu.be/PCv_FZj3_8I",
+      "title": "【今季最高】岡本和真 5/1のツインズ戦で2本塁打 #Shorts",
+      "published_at": "2026-11-20T06:14:07.941753+00:00",
+      "publish_at": "2026-11-20T07:30:00Z",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-20",
+        "enabled": true,
+        "assigned": "next",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false,
+        "source": "post_common.lineup:daily_soccer",
+        "next_date": "2026-11-21",
+        "next_time": "19:30",
+        "next_name": "欧州サッカー",
+        "speech": "次は11月21日19時30分の欧州サッカーです。また見に来てくださいね。",
+        "card": "次は11/21 19:30の欧州サッカー"
+      },
+      "player_ids": [
+        "672960"
+      ],
+      "duration_seconds": 27.63,
+      "short_information_count": 3,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-11-20",
+        "kind": "asset:season_best",
+        "phase": 0,
+        "planned_host": "ui",
+        "rule": "half-jst-week-v1",
+        "week": 45,
+        "weekday": 4
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-11-20T06:11:04.552267+00:00",
+        "comparison_eligible": false,
+        "label": "予定めたん（雨衣不可のため）",
+        "mode": "live",
+        "planned_host": "metan",
+        "reason": "ui_worker_stale",
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
     }
   },
   "soccer_results": {
