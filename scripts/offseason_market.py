@@ -195,13 +195,12 @@ def check(document):
                     for i in range(0, len(spec['items']), 2)]
         segments = document.get('segments', [])
         import metan_tone
-        import ui_tone
         body = [('intro', spec['intro']), *[('list', line) for line in expected]]
         revised = [(kind, metan_tone.fix(line)) for kind, line in body]
         variants = (
             [*body, ('outro', OUTRO_TEXT)],
             [*revised, ('outro', OUTRO_TEXT)],
-            [*body, ('outro', ui_tone.text(OUTRO_TEXT))],
+            [*body, ('outro', metan_tone.POLITE_SHORT_OUTRO)],
         )
         if any('_sanity_original_line' in s for s in segments):
             allowed = {line for version in variants for _, line in version}

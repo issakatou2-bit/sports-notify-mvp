@@ -1,4 +1,5 @@
 """四国めたんの台詞の語尾。散歩 sanpo/gobi.py の BAD / FIX 方式を参照。"""
+import os
 import re
 
 
@@ -7,6 +8,8 @@ GUIDANCE = (
     "「です」「ます」「でした」「ました」「でしょう」「ください」「だよ」「だね」「しよう」は使わない。"
     "ずんだもんは「のだ」口調で、質問に加えて驚きや感想も返す。直前の答えを繰り返さない。"
 )
+SHORT_OUTRO = '高評価と登録、よろしくね。'
+POLITE_SHORT_OUTRO = '高評価と登録、お願いします。'
 END = r"(?=[ \t]*(?:[。！？!?…\n]|$))"
 BAD = re.compile(
     r"(?:です(?:ね|よ|か)?|ます(?:ね|よ|か)?|でした(?:ね|よ|か)?|ました(?:ね|よ|か)?"
@@ -119,6 +122,12 @@ def _literal_quote(segment):
     return any(row.get("read") and not row.get("fact")
                and body == (row.get("said") or "").strip().rstrip(marks)
                for row in (segment.get("meta") or {}).get("quote_rows", []))
+
+
+def metan_enabled(segments):
+    """ソロの雨衣では進行役キーの2を使うため、口調を変えない。"""
+    return os.getenv('COLLESPO_SOLO_HOST') != 'ui' or any(
+        s.get('speaker') not in (2, '2') or (s.get('meta') or {}).get('duo') for s in segments)
 
 
 def check(segments):

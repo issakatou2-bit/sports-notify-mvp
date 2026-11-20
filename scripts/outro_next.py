@@ -87,6 +87,6 @@ def publication(video, day=None, narration=None):
 
 
 def _matches_speech(expected, texts):
-    import ui_tone
     legacy = expected.replace('よ。また見に来てね。', 'です。また見に来てくださいね。')
-    return any(spoken in text for text in texts for spoken in (expected, legacy, ui_tone.text(expected)))
+    polite = legacy.replace('また見に来てくださいね。', 'また見に来てください。')
+    return any(spoken in text for text in texts for spoken in (expected, legacy, polite))

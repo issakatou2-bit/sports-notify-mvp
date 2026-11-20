@@ -9,7 +9,7 @@ from pathlib import Path
 import metan_tone
 
 # 締めで高評価・登録をお願いする（11/16 本人「ショートの最後に高評価とか登録よびかけ、ほしいよね」）。
-OUTRO_TEXT = '高評価と登録、よろしくね。'
+OUTRO_TEXT = metan_tone.SHORT_OUTRO
 OUTRO_LINE = '毎日 MLB・欧州サッカー'
 OUTRO_CTA = '高評価・チャンネル登録で応援を'
 OUTRO_SECONDS = 2.0
@@ -33,8 +33,7 @@ def prepare(document):
             if 'who' in segment.get('meta', {}):
                 segment['meta']['who'] = '四国めたん'
             segment.setdefault('meta', {})['short_outro'] = True
-    from solo_host import for_segments
-    if for_segments(segments) != 'ui':
+    if metan_tone.metan_enabled(segments):
         metan_tone.revise(segments)
     result['segments'] = segments
     return result
