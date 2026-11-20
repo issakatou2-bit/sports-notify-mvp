@@ -27,6 +27,9 @@ FORM = 5          # 直近の試合数
 SEC_PER_CHAR = 51.33 / 345
 BUDGET = 42       # 描画は45秒で止まるので、見込みで余裕を持たせる
 CREDIT_MEDIA = {'football-data': 'football-data.org', 'espn': 'ESPN', 'fpl': 'プレミア公式'}
+ESPN_SLUG = {'PL': 'eng.1', 'PD': 'esp.1', 'BL1': 'ger.1', 'SA': 'ita.1', 'FL1': 'fra.1'}
+ESPN_STANDINGS = 'https://site.api.espn.com/apis/v2/sports/soccer/{slug}/standings'
+LEDGER = ROOT / 'data/soccer_stake_published.json'
 
 
 def club_jp(team_en):
@@ -353,6 +356,100 @@ def build(game, comp, *, as_of):
     return doc
 
 
+def espn_table(code, fetch=None):
+    """ESPN の順位表（2つ目の出どころ）。[(英語名, 順位, 勝点)]。"""
+    if fetch is None:
+        import urllib.request
+        def fetch(url):
+            with urllib.request.urlopen(url, timeout=30) as response:
+                return json.loads(response.read().decode('utf8'))
+    data = fetch(ESPN_STANDINGS.format(slug=ESPN_SLUG[code]))
+    standings = ((data.get('children') or [data])[0]).get('standings') or {}
+    rows = []
+    for entry in standings.get('entries') or []:
+        stats = {x['name']: x.get('value') for x in entry.get('stats') or []}
+        rows.append((entry['team']['displayName'], int(stats['rank']), int(stats['points'])))
+    return rows
+
+
+def crosscheck(doc, fetch=None):
+    """題と冒頭に出す2クラブの順位・勝点を ESPN の順位表と照らす。違えば止める。"""
+    import club_display_names as names
+    code = doc['game']['competition_code']
+    rows = espn_table(code, fetch)
+    ident = lambda name: (names.lookup(name) or {}).get('id')
+    checked = {}
+    for side in ('home', 'away'):
+        mine = doc['stake'][side]
+        found = [r for r in rows if ident(r[0]) and ident(r[0]) == ident(mine['team'])]
+        if len(found) != 1:
+            raise ValueError(f"ESPN の順位表で {mine['team']} を1つに決められません")
+        team, rank, points = found[0]
+        if (rank, points) != (mine['position'], mine['points']):
+            raise ValueError(f"順位表が出どころで違います: {mine['team']} football-data {mine['position']}位{mine['points']} / ESPN {rank}位{points}")
+        checked[side] = dict(team=team, position=rank, points=points)
+    return dict(source='ESPN 順位表', url=ESPN_STANDINGS.format(slug=ESPN_SLUG[code]), clubs=checked)
+
+
+def metadata(doc):
+    said = '\n'.join(s['text'] for s in doc['segments'] if s['speaker'] == METAN and s['kind'] != 'outro')
+    sources = ['出典:', '順位・勝点・直近の結果: football-data.org', '順位・勝点の照合: ESPN 順位表',
+               '試合の日程: ESPN 試合ページ', doc['source_url']]
+    if 'プレミア公式' in doc.get('credit', ''):
+        sources.append('日本人選手の今季成績: Premier League 公式')
+    league = doc.get('screen_title') or ''
+    description = (said + '\n\n' + '\n'.join(sources) + '\n\n役に立ったら高評価・チャンネル登録をお願いします。'
+                   '\n音声: VOICEVOX:ずんだもん・四国めたん\n#欧州サッカー #' + league + ' #Shorts')
+    return dict(snippet=dict(title=doc['title'], description=description,
+                             tags=['サッカー', '欧州サッカー', league, '日本人選手', 'コレスポ'], categoryId='17',
+                             defaultLanguage='ja', defaultAudioLanguage='ja'))
+
+
+def validate_upload(args, now=None):
+    import os
+    doc = national.read(args.narration)
+    if doc.get('program') != PROGRAM:
+        raise ValueError('注目試合の原稿ではありません')
+    if os.getenv('COLLESPO_STAKE_PUBLISH') != 'true':
+        raise ValueError('注目試合（懸かっている物）の公開は COLLESPO_STAKE_PUBLISH=true の時だけです')
+    if national.read(args.games).get('game') != doc['game']:
+        raise ValueError('原稿と材料が不一致')
+    check = doc.get('crosscheck') or {}
+    if check.get('source') != 'ESPN 順位表' or any(check['clubs'][s]['position'] != doc['stake'][s]['position'] or
+                                                 check['clubs'][s]['points'] != doc['stake'][s]['points'] for s in ('home', 'away')):
+        raise ValueError('順位表を2つ目の出どころで照らしていません')
+    if doc['event_id'] in national.read(LEDGER):
+        raise ValueError('同じ試合の注目試合は予約・投稿済みです')
+    if not args.publish_at:
+        raise ValueError('未来の予約時刻が必要です')
+    at = national.instant(args.publish_at)
+    now = now or datetime.now(timezone.utc)
+    if not (now < at < datetime.fromisoformat(doc['game']['start_time_utc'].replace('Z', '+00:00')) - timedelta(minutes=45)):
+        raise ValueError('予約は今より後、試合開始45分前より前にしてください')
+    import short_content
+    report = short_content.validate_upload(args.video)
+    if report['actual_seconds'] > 45:
+        raise ValueError('注目試合は45秒までです')
+    if not (Path(args.narration).parent / 'audio/voice_manifest.json').exists() and not (Path(args.video).parent / 'voice_manifest.json').exists():
+        raise ValueError('実音声の記録がありません')
+
+
+def record_published(doc, video_id, publish_at):
+    """公開台帳と、翌朝の結果ショートへ渡す前提の記録。"""
+    import soccer_stake_followup
+    ledger = national.read(LEDGER)
+    ledger[doc['event_id']] = dict(video_id=video_id, publish_at=national.instant(publish_at).astimezone(JST).isoformat(),
+                                   title=doc['title'], date_jst=national.instant(publish_at).astimezone(JST).date().isoformat())
+    national.save(LEDGER, ledger)
+    soccer_stake_followup.save(doc, video_id, doc['as_of'])
+
+
+def published_today(day, path=LEDGER):
+    """この日（JST）に注目試合を予約・公開したか。今の「今夜の注目試合」を出さない合図。"""
+    path = Path(path)
+    return path.exists() and any(v.get('date_jst') == day for v in json.loads(path.read_text(encoding='utf8')).values())
+
+
 def information(doc):
     """公開前の関門（short_content）用。読んで画面にも出す事実だけを、出どころつきで数える。"""
     found = []
@@ -415,11 +512,21 @@ def main(argv=None):
     ap.add_argument('--event', help='ESPN の event id。無ければ候補の1位')
     ap.add_argument('--hours', type=float, default=72, help='今からこの時間内に始まる試合')
     ap.add_argument('--list', action='store_true')
+    ap.add_argument('--no-crosscheck', action='store_true', help='通信なしの試し用（公開の検査で止まる）')
+    ap.add_argument('--min-lead', type=float, default=0, help='開始まで最低この分数ある試合だけ（予約が開始45分前までに収まるように）')
+    ap.add_argument('--require-jp', action='store_true', help='日本人選手のいる試合だけ（定時の公開用）')
+    ap.add_argument('--github-output', type=Path, help='found=true/false を書く。対象が無い日は止めずに false')
     ap.add_argument('--out', type=Path, default=ROOT / 'build/soccer_stake')
+    ap.add_argument('--published-today', action='store_true', help='今日（JST）注目試合を予約・公開済みなら終了コード0')
     args = ap.parse_args(argv)
     now = datetime.now(timezone.utc)
+    if args.published_today:
+        raise SystemExit(0 if published_today(now.astimezone(JST).date().isoformat()) else 1)
     games, preview = national.read(args.games), national.read(args.preview)
-    rows = candidates(games, preview, start=now.astimezone(JST), end=(now + timedelta(hours=args.hours)).astimezone(JST))
+    rows = candidates(games, preview, start=(now + timedelta(minutes=args.min_lead)).astimezone(JST),
+                      end=(now + timedelta(hours=args.hours)).astimezone(JST))
+    if args.require_jp:
+        rows = [r for r in rows if r[3]['jp']['home'] or r[3]['jp']['away']]
     listing = [dict(score=sc, event=g.get('espn_event_id'), kickoff=g['start_time_jst'], league=g.get('league'),
                     match=f"{club_jp(s['home']['team'])} 対 {club_jp(s['away']['team'])}", kind=s['kind'], gap=s['gap'])
                for sc, g, comp, s in rows]
@@ -428,12 +535,24 @@ def main(argv=None):
         return
     pick = next(((g, comp) for _, g, comp, _ in rows if not args.event or str(g.get('espn_event_id')) == str(args.event)), None)
     if not pick:
+        if args.github_output:
+            # 懸かっている物のある試合が無い日は、今の「今夜の注目試合」に任せる。
+            with args.github_output.open('a', encoding='utf8') as out:
+                out.write('found=false\n')
+            print('対象の試合がありません')
+            return
         raise Unavailable('対象の試合がありません')
     doc = build(*pick, as_of=now)
+    doc['as_of'] = now.isoformat()
+    if not args.no_crosscheck:
+        doc['crosscheck'] = crosscheck(doc)
     args.out.mkdir(parents=True, exist_ok=True)
     national.save(args.out / 'narration.json', doc)
     national.save(args.out / 'material.json', dict(game=pick[0], candidates=listing))
     print(doc['title'])
+    if args.github_output:
+        with args.github_output.open('a', encoding='utf8') as out:
+            out.write('found=true\n')
 
 
 if __name__ == '__main__':

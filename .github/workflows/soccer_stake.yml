@@ -1,11 +1,17 @@
-name: 欧州 注目試合（懸かっている物）見本
+name: 欧州 注目試合（懸かっている物）
 
-# 本人 11/19「注目試合は根本なので形を変えて残す」。1本1試合で、題と冒頭は勝点の差・順位の線。
-# 今は見本だけ（公開・台帳・コミットなし）。公開の手順は見本を確かめてから足す。
+# 本人 11/19「注目試合は根本なので形を変えて残す」「任せます がっつり」。
+# 1本1試合で、題と冒頭は勝点の差・順位の線。今の「今夜の注目試合｜A vs B ほか」の枠を置き換える。
+#
+# 流れ: 19時の「明日の注目試合」が終わる → この流れ → 終わったら「毎日 19:00　欧州サッカー」。
+#   この日に公開したら、欧州サッカーの側は今夜の注目試合を出さない（本数は変えない）。
+#   懸かっている物のある試合が無い日・止まった日は、今までどおり今夜の注目試合が出る。
+# 公開は変数 COLLESPO_STAKE_PUBLISH=true の時だけ（切替は本人の判断）。それ以外は何も作らずに次へ渡す。
+# 順位・勝点は football-data と ESPN の2つの順位表で照らし、違えば止める。
 on:
-  # 見本を作る間だけ、この枝への push でも回す（main へ入れる前に外す）。
-  push:
-    branches: [preview-stake]
+  workflow_run:
+    workflows: ["毎日 19:00頃　明日の注目試合"]
+    types: [completed]
   workflow_dispatch:
     inputs:
       event:
@@ -18,21 +24,35 @@ on:
         type: string
         required: false
         default: '72'
+      publish:
+        description: '予約投稿する（COLLESPO_STAKE_PUBLISH=true の時だけ効く）'
+        type: boolean
+        required: false
+        default: false
+      sample_only:
+        description: '見本のmp4だけを保存する（公開・台帳・コミットなし）'
+        type: boolean
+        required: false
+        default: true
 
 permissions:
-  contents: read
+  actions: read
+  contents: write
 concurrency:
   group: soccer-stake
   cancel-in-progress: false
 
 env:
   PYTHONUTF8: '1'
-  COLLESPO_SAMPLE_ONLY: 'true'
+  COLLESPO_SAMPLE_ONLY: ${{ (github.event_name == 'workflow_dispatch' && inputs.sample_only) && 'true' || 'false' }}
 
 jobs:
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 45
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      github.event.workflow_run.conclusion != 'cancelled'
     env:
       COLLESPO_SOCCER_LOOK: v6
       COLLESPO_SOCCER_FOCUS: 'on'
@@ -47,26 +67,61 @@ jobs:
       COLLESPO_CAPTION_BREAKS: ${{ vars.COLLESPO_CAPTION_BREAKS || '' }}
       COLLESPO_SLANT_VARIANT: ${{ vars.COLLESPO_SLANT_VARIANT || 'cream' }}
       COLLESPO_GLASS_BACKGROUND: ${{ vars.COLLESPO_GLASS_BACKGROUND || 'stripes' }}
-      ANTHROPIC_API_KEY: ''
+      ANTHROPIC_API_KEY: ''  # この種類は機械照合だけ。有料の二段目は呼ばない。
     steps:
       - uses: actions/checkout@v4
+      - name: Ignore a sample-only source run
+        id: sample_source
+        if: github.event_name == 'workflow_run'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_RUN: ${{ github.event.workflow_run.id }}
+        run: python3 scripts/sample_source.py --source-run "$SOURCE_RUN" --github-output "$GITHUB_OUTPUT"
+      - name: Decide whether to build and publish
+        id: mode
+        env:
+          STAKE_PUBLISH: ${{ vars.COLLESPO_STAKE_PUBLISH || '' }}
+          ALLOWED: ${{ steps.sample_source.outputs.allowed }}
+          DISPATCH_PUBLISH: ${{ inputs.publish }}
+          SAMPLE: ${{ inputs.sample_only }}
+        run: |
+          if [ "$GITHUB_EVENT_NAME" = workflow_run ]; then
+            if [ "$STAKE_PUBLISH" = true ] && [ "$ALLOWED" = true ]; then run=true; publish=true; else run=false; publish=false; fi
+          else
+            run=true
+            if [ "$DISPATCH_PUBLISH" = true ] && [ "$SAMPLE" != true ] && [ "$STAKE_PUBLISH" = true ]; then publish=true; else publish=false; fi
+          fi
+          echo "run=$run" >> "$GITHUB_OUTPUT"
+          echo "PUBLISH=$publish" >> "$GITHUB_ENV"
+          echo "制作: $run / 公開: $publish"
       - uses: actions/setup-python@v5
+        if: steps.mode.outputs.run == 'true'
         with:
           python-version: '3.11'
       - name: Install dependencies
+        if: steps.mode.outputs.run == 'true'
         run: |
           pip install -r scripts/requirements.txt
-          pip install imageio_ffmpeg pyyaml
+          pip install imageio_ffmpeg pyyaml google-api-python-client google-auth
       - name: Pick the match and build the script
+        id: pick
+        if: steps.mode.outputs.run == 'true'
         env:
-          EVENT: ${{ inputs.event || '401879235' }}  # push の見本はコベントリー対パレス
-          HOURS: ${{ inputs.hours || '72' }}
+          EVENT: ${{ inputs.event }}
+          HOURS: ${{ inputs.hours || '13' }}
         run: |
           python scripts/soccer_stake.py --list --hours "$HOURS" | tee build_candidates.json
-          python scripts/soccer_stake.py ${EVENT:+--event "$EVENT"} --hours "$HOURS" --out build/soccer_stake | tee -a "$GITHUB_STEP_SUMMARY"
+          if [ "$GITHUB_EVENT_NAME" = workflow_run ]; then
+            # 定時: 今夜〜明朝の試合で、日本人選手がいて、予約が開始45分前までに収まる物。
+            python scripts/soccer_stake.py --hours 13 --min-lead 90 --require-jp --github-output "$GITHUB_OUTPUT" --out build/soccer_stake | tee -a "$GITHUB_STEP_SUMMARY"
+          else
+            python scripts/soccer_stake.py ${EVENT:+--event "$EVENT"} --hours "$HOURS" --github-output "$GITHUB_OUTPUT" --out build/soccer_stake | tee -a "$GITHUB_STEP_SUMMARY"
+          fi
       - name: Install video tools
+        if: steps.pick.outputs.found == 'true'
         run: bash scripts/install_video_tools.sh
       - name: Start VOICEVOX
+        if: steps.pick.outputs.found == 'true'
         run: |
           docker run -d --rm -p 50021:50021 --name voicevox voicevox/voicevox_engine:cpu-latest
           for i in $(seq 1 30); do
@@ -75,14 +130,79 @@ jobs:
           done
           curl -fsS http://127.0.0.1:50021/version
       - name: Synthesize narration
+        if: steps.pick.outputs.found == 'true'
         run: python scripts/synthesize_narration.py --narration build/soccer_stake/narration.json --out-dir build/soccer_stake/audio
       - name: Render with layout, number and duration gates
+        if: steps.pick.outputs.found == 'true'
         run: python scripts/soccer_national_topics_render.py --out build/soccer_stake
-      - name: Mark sample-only execution
+      - name: Sanity gate
+        if: steps.pick.outputs.found == 'true'
+        run: python scripts/sanity.py --general --strict --narration build/soccer_stake/narration.json --out build/soccer_stake/sanity.json --hold-record build/soccer_stake/sanity_hold.json --kind soccer_stake
+      - name: Resolve the reservation time
+        if: steps.pick.outputs.found == 'true' && env.PUBLISH == 'true'
+        run: |
+          PUBLISH_AT=$(python -c "from datetime import datetime, timedelta, timezone; print((datetime.now(timezone(timedelta(hours=9)))+timedelta(minutes=21)).replace(microsecond=0).isoformat())")
+          echo "PUBLISH_AT=$PUBLISH_AT" >> "$GITHUB_ENV"
+          echo "予約時刻: $PUBLISH_AT"
+      - name: Vertical thumbnail
+        if: steps.pick.outputs.found == 'true'
+        run: bash scripts/shorts_thumbnail.sh build/soccer_stake/collespo_national_topic.mp4 build/soccer_stake/short.png
+      - name: Upload to YouTube
+        if: steps.pick.outputs.found == 'true' && env.PUBLISH == 'true'
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+          COLLESPO_STAKE_PUBLISH: ${{ vars.COLLESPO_STAKE_PUBLISH || '' }}
+        run: |
+          VIDEO_DAY=$(python -c "import json; print(json.load(open('build/soccer_stake/narration.json'))['date_jst'])")
+          python scripts/upload_youtube.py --video build/soccer_stake/collespo_national_topic.mp4 --kind soccer_stake --sport soccer --games build/soccer_stake/material.json --narration build/soccer_stake/narration.json --thumbnail build/soccer_stake/short.png --video-date "$VIDEO_DAY" --publish-at "$PUBLISH_AT" --privacy public
+      - name: Commit publication record
+        if: steps.pick.outputs.found == 'true' && env.PUBLISH == 'true' && always()
+        run: |
+          bash scripts/commit_data.sh "soccer stake: ${{ github.run_id }}" data/published_videos.json data/soccer_stake_published.json data/soccer_stake_history.json
+      - name: Confirm publication reservation
+        if: steps.pick.outputs.found == 'true' && env.PUBLISH == 'true'
+        run: |
+          TOPIC_KEY=$(python -c "import json; print(json.load(open('build/soccer_stake/narration.json'))['topic_key'])")
+          python scripts/verify_published.py --kind soccer_stake --video-date "$TOPIC_KEY"
+      - name: Stop own VOICEVOX
         if: always()
+        run: docker stop voicevox || true
+      - name: Save sanity gate records
+        if: always() && steps.pick.outputs.found == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: stake-verification
+          path: |
+            build_candidates.json
+            build/soccer_stake/
+            !build/**/portrait/**
+          retention-days: 14
+          if-no-files-found: ignore
+      - name: Keep unsaved data records
+        if: env.PUBLISH == 'true' && always() && hashFiles('build/data-save-recovery/**/FAILED') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: unsaved-data-${{ github.job }}-${{ github.run_attempt }}
+          path: |
+            build/data-save-recovery/
+            !build/**/portrait/**
+          retention-days: 14
+          if-no-files-found: error
+      # 元の「明日の注目試合」が見本なら、その印を次の「欧州サッカー」へ渡す（名前が sample- の成果物）。
+      - name: Pass on an inherited sample marker
+        if: always() && steps.sample_source.outputs.allowed == 'false'
+        uses: actions/upload-artifact@v4
+        with:
+          name: sample-soccer_stake-inherited
+          path: build/sample_only.json
+          retention-days: 3
+      - name: Mark sample-only execution
+        if: always() && github.event_name == 'workflow_dispatch' && inputs.sample_only && steps.pick.outputs.found == 'true'
         run: python scripts/sample_only.py --mark build/sample_only.json --require-video
       - name: Save sample video
-        if: always()
+        if: always() && github.event_name == 'workflow_dispatch' && inputs.sample_only
         uses: actions/upload-artifact@v4
         with:
           name: sample-soccer_stake

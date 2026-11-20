@@ -31,8 +31,10 @@ on:
         type: boolean
         required: false
         default: false
+  # 11/20〜 19時の「明日の注目試合」→「欧州 注目試合（懸かっている物）」→ここ、の順につなぐ。
+  # 懸かっている物の回を出した日は、下の Select で今夜の注目試合を出さない（本数は変えない）。
   workflow_run:
-    workflows: ["毎日 19:00頃　明日の注目試合"]
+    workflows: ["欧州 注目試合（懸かっている物）"]
     types: [completed]
 
 permissions:
@@ -74,9 +76,12 @@ jobs:
     # サッカーまで一緒に止まった。この下の Fetch soccer fixtures は
     # 手元のデータが古ければ自分で取り直すので、MLB側の不調は理由にならない。
     # 中止(cancelled)のときだけ、意図的に止めたものとして従う。
+    # 懸かっている物の流れを手で回した時（見本・手動公開）は、ここを動かさない。
     if: >-
       github.event_name == 'workflow_dispatch' ||
-      github.event.workflow_run.conclusion != 'cancelled'
+      (github.event.workflow_run.event == 'workflow_run' &&
+       github.event.workflow_run.conclusion != 'cancelled' &&
+       github.event.workflow_run.conclusion != 'skipped')
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -160,7 +165,13 @@ jobs:
         id: gate
         env:
           FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
-        run: python scripts/soccer_selection.py --github-output "$GITHUB_OUTPUT" | tee -a "$GITHUB_STEP_SUMMARY"
+        run: |
+          if python scripts/soccer_stake.py --published-today; then
+            echo "count=0" >> "$GITHUB_OUTPUT"
+            echo "今日は注目試合（懸かっている物）を予約したので、今夜の注目試合は出しません" | tee -a "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          python scripts/soccer_selection.py --github-output "$GITHUB_OUTPUT" | tee -a "$GITHUB_STEP_SUMMARY"
 
       - name: Install video tools
         if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (steps.gate.outputs.count != '0')
