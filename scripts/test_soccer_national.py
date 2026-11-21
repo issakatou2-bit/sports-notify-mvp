@@ -248,7 +248,7 @@ class Narrative(unittest.TestCase):
         self.assertTrue(text.startswith('11月14日19時15分、日本がシンガポールでブラジルと戦います。'))
         self.assertNotIn('中立地での対戦です',text)
         self.assertNotIn('その前の親善試合で日本は',text)
-        self.assertIn('6月のワールドカップで敗れた相手との再戦です',text)
+        self.assertIn('6月のワールドカップで敗れた相手との再戦よ',text)
 
     def test_recent_one_sentence_and_counted_streak(self):
         data=self.preview();text=n.recent_sentence(data,'japan')
@@ -321,7 +321,7 @@ class Narrative(unittest.TestCase):
         d=self.base.result();d['goals_complete']=False;d['goals']=[];d['goal_counts']={'627':1,'205':1}
         d['halves']=dict(japan=[1,1],opponent=[1,0])
         text=''.join(s['text'] for s in n.narration(d)['segments'])
-        self.assertIn('前半を1対1で折り返し、後半に1点を加えました',text)
+        self.assertIn('前半を1対1で折り返し、後半に1点を加えたわ',text)
         self.assertNotIn('前半のスコアは',text);self.assertNotIn('後半のスコアは',text)
 
     def test_concise_titles(self):
@@ -391,10 +391,10 @@ class VerifiedHistory(unittest.TestCase):
 
     def test_correct_openings_and_paraguay(self):
         doc=n.narration(self.preview());text=''.join(s['text'] for s in doc['segments'])
-        self.assertIn('ワールドカップのラウンド32では1対2でした。その前の2025年10月の親善試合では3対2で勝っています。',text)
+        self.assertIn('ワールドカップのラウンド32では1対2だったわ。その前の2025年10月の親善試合では3対2で勝っているわ。',text)
         self.assertEqual(n.check(doc),[])
         text=''.join(s['text'] for s in n.narration(self.preview(opp='210'))['segments'])
-        self.assertIn('前回は2025年10月の親善試合で2対2でした。',text)
+        self.assertIn('前回は2025年10月の親善試合で2対2だったわ。',text)
 
     def test_old_2025_previous_claim_is_rejected(self):
         doc=n.narration(self.preview())
@@ -496,7 +496,7 @@ class VerifiedHistory(unittest.TestCase):
     def test_cup_route_fact_is_verified_and_no_pk_score(self):
         d=self.preview();d['length_level']=3;doc=n.narration(d)
         text=next(s['text'] for s in doc['segments'] if s['meta'].get('panel')=='cup-route')
-        self.assertEqual(text,'キリンカップの1回戦はエクアドルと0対0からPK戦で勝ちました。')
+        self.assertEqual(text,'キリンカップの1回戦はエクアドルと0対0からPK戦で勝ったわ。')
         self.assertEqual(n.check(doc),[])
         self.assertEqual(n.history_record(d['japan_history'],2026)['gf'],18)
 
