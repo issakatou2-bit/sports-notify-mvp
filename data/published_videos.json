@@ -22891,6 +22891,54 @@
       },
       "host_fallback_reason": null,
       "privacy": "public"
+    },
+    "season_win_2026_808967_pitching": {
+      "video_id": "8_gujMpRDPs",
+      "url": "https://youtu.be/8_gujMpRDPs",
+      "title": "【先発と勝敗】山本由伸 先発した試合でチームは18勝10敗 #Shorts",
+      "published_at": "2026-11-21T06:13:40.450233+00:00",
+      "publish_at": "2026-11-21T07:30:00Z",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-21",
+        "enabled": true,
+        "assigned": "generic",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false,
+        "source": "post_common.lineup:daily_soccer",
+        "next_date": "2026-11-22",
+        "next_time": "19:30",
+        "next_name": "欧州サッカー"
+      },
+      "player_ids": [
+        "808967"
+      ],
+      "duration_seconds": 30.19,
+      "short_information_count": 3,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-11-21",
+        "kind": "asset:season_win",
+        "phase": 1,
+        "planned_host": "ui",
+        "rule": "half-jst-week-v1",
+        "week": 45,
+        "weekday": 5
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-11-21T06:10:38.240284+00:00",
+        "comparison_eligible": false,
+        "label": "予定めたん（雨衣不可のため）",
+        "mode": "live",
+        "planned_host": "metan",
+        "reason": "ui_worker_stale",
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
     }
   },
   "soccer_results": {
