@@ -1,46 +1,5 @@
 {
-  "day": "2026-11-20",
-  "topics": [
-    {
-      "key": "offseason_schedule_2026_4814184ba9eb",
-      "label": "MLBオフの主な予定",
-      "heading": "MLBオフの主な予定",
-      "kind_label": "MLB",
-      "data_credit": "MLB.com",
-      "v3": {
-        "source": "出典: MLB.com / 日付は米東部"
-      },
-      "hook": "MLBオフの主な予定",
-      "intro": "この先のMLBオフの主な予定です。日付はすべてアメリカ東部の日付でお伝えします。",
-      "intro_as_is": true,
-      "style": "v3",
-      "source": "MLB公式｜日付は米東部",
-      "source_url": "https://www.mlb.com/news/vladimir-guerrero-jr-and-other-blue-jays-could-win-2026-mlb-awards",
-      "items": [
-        [
-          "11月20日｜契約提示の期限",
-          "11月20日、契約提示の期限、ノンテンダーの判断を確認する日になります"
-        ]
-      ],
-      "offseason": {
-        "kind": "schedule",
-        "day": "2026-11-20",
-        "season": 2026,
-        "events": [
-          {
-            "id": "tender",
-            "date_et": "2026-11-20",
-            "label": "契約提示の期限",
-            "text": "契約提示の期限、ノンテンダーの判断を確認する日になります",
-            "source": "https://www.mlb.com/news/vladimir-guerrero-jr-and-other-blue-jays-could-win-2026-mlb-awards",
-            "event_id": "calendar:tender",
-            "head": "11月20日｜契約提示の期限",
-            "body": "11月20日、契約提示の期限、ノンテンダーの判断を確認する日になります",
-            "japanese": false
-          }
-        ]
-      }
-    }
-  ],
-  "state": "ready"
+  "day": "2026-11-21",
+  "state": "ready",
+  "topics": []
 }
