@@ -1,7 +1,7 @@
 {
-  "updated_at": "2026-11-20T10:04:39.452268+00:00",
-  "date_jst": "2026-11-20",
-  "source_at": "2026-11-20T06:08:25.499609+00:00",
+  "updated_at": "2026-11-21T10:12:56.825135+00:00",
+  "date_jst": "2026-11-21",
+  "source_at": "2026-11-21T06:07:17.983290+00:00",
   "competitions": [
     {
       "code": "PL",
@@ -18,7 +18,7 @@
           "position": 2,
           "points": 22,
           "out": true,
-          "out_note": "Hamstring injury - Expected back 22 Nov",
+          "out_note": "Hamstring injury - Expected back 2 Dec",
           "lines": [
             {
               "line": 4,
@@ -332,7 +332,7 @@
       "round": 11,
       "round_complete": false,
       "name_jp": "ラ・リーガ",
-      "played": 12,
+      "played": 13,
       "clubs": 20,
       "ready": true,
       "jp": [
@@ -474,10 +474,10 @@
               "position": 7,
               "team": "アスレティック・ビルバオ",
               "team_en": "Athletic Club",
-              "played": 11,
+              "played": 12,
               "points": 16,
               "gf": 15,
-              "ga": 11,
+              "ga": 12,
               "jp": []
             }
           ],
@@ -628,9 +628,9 @@
     {
       "code": "BL1",
       "round": 9,
-      "round_complete": true,
+      "round_complete": false,
       "name_jp": "ブンデスリーガ",
-      "played": 9,
+      "played": 10,
       "clubs": 18,
       "ready": true,
       "jp": [
@@ -638,7 +638,7 @@
           "name": "伊藤洋輝",
           "club_jp": "バイエルン",
           "position": 1,
-          "points": 21,
+          "points": 22,
           "out": false,
           "out_note": "",
           "lines": [
@@ -646,9 +646,9 @@
               "line": 4,
               "position": 1,
               "side": "inside",
-              "diff": 5,
+              "diff": 6,
               "label": "CL圏内",
-              "text": "CL圏内。落ちるまで勝点5"
+              "text": "CL圏内。落ちるまで勝点6"
             }
           ]
         },
@@ -969,9 +969,9 @@
     {
       "code": "FL1",
       "round": 10,
-      "round_complete": true,
+      "round_complete": false,
       "name_jp": "リーグ・アン",
-      "played": 10,
+      "played": 11,
       "clubs": 18,
       "ready": true,
       "jp": [
