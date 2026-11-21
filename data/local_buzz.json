@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-20T19:38:34.251800+00:00",
+  "updated_at": "2026-11-21T06:01:42.153145+00:00",
   "sources": [
     {
       "name": "MLB公式",
@@ -12,49 +12,41 @@
       "team_id": "121",
       "name": "メッツ",
       "name_en": "New York Mets",
-      "mentions": 4,
-      "tone": "話題",
-      "gist": "スクバルにメッツ関心、ヘルナンデス復帰"
-    },
-    {
-      "team_id": "112",
-      "name": "カブス",
-      "name_en": "Chicago Cubs",
       "mentions": 3,
       "tone": "話題",
-      "gist": "カブスがバート獲得、カブレラに期待"
+      "gist": "スクーバルへメッツが9年契約提示と報道"
     },
     {
-      "team_id": "145",
-      "name": "ホワイトソックス",
-      "name_en": "Chicago White Sox",
+      "team_id": "141",
+      "name": "ブルージェイズ",
+      "name_en": "Toronto Blue Jays",
       "mentions": 2,
       "tone": "話題",
-      "gist": "ロッキーズと取引、ホワイトソックス投手補強"
+      "gist": "ブルージェイズがシュナイダーを契約見送り"
+    },
+    {
+      "team_id": "119",
+      "name": "ドジャース",
+      "name_en": "Los Angeles Dodgers",
+      "mentions": 2,
+      "tone": "話題",
+      "gist": "ドジャースがスクーバル変化、ルイスを獲得"
     },
     {
       "team_id": "147",
       "name": "ヤンキース",
       "name_en": "New York Yankees",
       "mentions": 2,
-      "tone": "好調",
-      "gist": "ロアイシガがヤンキースと2年契約"
+      "tone": "話題",
+      "gist": "ヤンキースがギルら見送り、ロアイシガ復帰"
     },
     {
-      "team_id": "136",
-      "name": "マリナーズ",
-      "name_en": "Seattle Mariners",
+      "team_id": "138",
+      "name": "カージナルス",
+      "name_en": "St. Louis Cardinals",
       "mentions": 1,
-      "tone": "話題",
-      "gist": "スクバル、佐藤らの噂にマリナーズ名"
-    },
-    {
-      "team_id": "110",
-      "name": "オリオールズ",
-      "name_en": "Baltimore Orioles",
-      "mentions": 1,
-      "tone": "話題",
-      "gist": "オリオールズの有望株を紹介"
+      "tone": "不振",
+      "gist": "カージナルスがゴーマンを契約見送り"
     },
     {
       "team_id": "111",
@@ -62,16 +54,29 @@
       "name_en": "Boston Red Sox",
       "mentions": 1,
       "tone": "話題",
-      "gist": "ミードとバウアーズの継続性を語る"
+      "gist": "ダイヤモンドバックスがオビエドをレッドソックスから獲得"
     },
     {
       "team_id": "115",
       "name": "ロッキーズ",
       "name_en": "Colorado Rockies",
       "mentions": 1,
+      "tone": "話題",
+      "gist": "ロッキーズがリーを獲得、ハーゲットをDFA"
+    },
+    {
+      "team_id": "116",
+      "name": "タイガース",
+      "name_en": "Detroit Tigers",
+      "mentions": 1,
       "tone": "好調",
-      "gist": "ホワイトソックスと取引、投手陣を補強"
+      "gist": "タイガースがメルトンと6年延長契約で合意"
     }
   ],
-  "players": []
+  "players": [
+    {
+      "name": "大谷翔平",
+      "mentions": 1
+    }
+  ]
 }
