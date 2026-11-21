@@ -23605,6 +23605,35 @@
       "short_information_count": 7,
       "short_content_policy": "short-content-20261027-v1",
       "privacy": "public"
+    },
+    "2026-11-22:401879235": {
+      "video_id": "x_WXiUSV9Cw",
+      "url": "https://youtu.be/x_WXiUSV9Cw",
+      "title": "【欧州サッカー】坂元達裕がゴール｜コベントリー 3-2 クリスタルパレス 日本人選手の結果 #Shorts",
+      "published_at": "2026-11-21T17:04:33.306544+00:00",
+      "host_assignment": {
+        "day": "2026-11-22",
+        "kind": "soccer_results",
+        "phase": 1,
+        "planned_host": "metan",
+        "rule": "half-jst-week-v1",
+        "week": 45,
+        "weekday": 6
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-11-22T01:59:03.543479+09:00",
+        "comparison_eligible": true,
+        "planned_host": "metan",
+        "reason": null,
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "duration_seconds": 30.6,
+      "short_information_count": 11,
+      "short_content_policy": "short-content-20261027-v1",
+      "privacy": "public"
     }
   },
   "soccer_national": {
