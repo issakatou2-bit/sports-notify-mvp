@@ -282,10 +282,13 @@ def build_jsonld(games: list, archive_date: str) -> str:
     """
     試合ごとの SportsEvent 構造化データを組み立てる。
     データとして確実に持っている項目(名称・開始日時・対戦チーム)だけを書き、
-    会場など保持していない情報は捏造せず省略する。
+    会場など保持していない情報は捏造しない。Googleはイベントに会場（location）を
+    必須としているため、会場を持たない試合は書かない（11/21 Search Consoleの指摘）。
     """
     events = []
     for g in games:
+        if not g.get("venue"):
+            continue
         iso = game_datetime_iso(archive_date, g.get("start_time_jst"))
         event = {
             "@context": "https://schema.org",
@@ -299,6 +302,7 @@ def build_jsonld(games: list, archive_date: str) -> str:
         }
         if iso:
             event["startDate"] = iso
+        event["location"] = {"@type": "Place", "name": g["venue"]}
         events.append(event)
     if not events:
         return ""

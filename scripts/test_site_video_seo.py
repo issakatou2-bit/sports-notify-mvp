@@ -42,7 +42,7 @@ class SiteVideoSEO(unittest.TestCase):
             data = objects(page)
             self.assertEqual(len(data), 2)
             self.assertEqual(data[0]['uploadDate'], '2000-01-01T00:00:00+00:00')
-            full = next(x for x in data if 'description' in x)
+            full = next(x for x in data if 'contentUrl' in x)
             self.assertEqual(full['description'], '説明</script>')
             self.assertEqual(full['thumbnailUrl'], 'https://example.com/thumb.jpg')
             self.assertEqual(full['contentUrl'], 'https://example.com/video.mp4')
@@ -64,7 +64,19 @@ class SiteVideoSEO(unittest.TestCase):
     def test_absent_metadata_is_not_invented_or_confused_with_watch_url(self):
         data = json.loads(re.search(r'>(.*?)</script>', videos.video_jsonld([
             {'video_id': 'id', 'url': 'https://youtu.be/id'}])).group(1))[0]
-        self.assertEqual(set(data), {'@context', '@type', 'embedUrl'})
+        self.assertEqual(set(data), {'@context', '@type', 'embedUrl', 'thumbnailUrl'})
+        self.assertEqual(data['thumbnailUrl'], 'https://i.ytimg.com/vi/id/hqdefault.jpg')
+
+    def test_title_fills_missing_description_and_events_need_a_venue(self):
+        data = json.loads(re.search(r'>(.*?)</script>', videos.video_jsonld([
+            {'video_id': 'id', 'title': '題'}])).group(1))[0]
+        self.assertEqual(data['description'], '題')
+        game = {'matchup': 'A vs B', 'league': 'MLB', 'home_team_name': 'A',
+                'away_team_name': 'B', 'start_time_jst': '09:10'}
+        self.assertEqual(archive.build_jsonld([game], '2000-01-01'), '')
+        event = json.loads(re.search(r'>(.*?)</script>', archive.build_jsonld(
+            [dict(game, venue='球場')], '2000-01-01')).group(1))[0]
+        self.assertEqual(event['location'], {'@type': 'Place', 'name': '球場'})
 
     def test_player_link_requires_explicit_name_not_team_membership(self):
         ledger = {'daily': {'2000-01-01': entry()}}
