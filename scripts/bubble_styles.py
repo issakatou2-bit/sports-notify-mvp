@@ -149,12 +149,12 @@ def longform_box(legacy=False):
     return (lf.SUB_X0, lf.SUB_Y0+10, lf.SUB_X1+8, lf.SUB_Y1-10)
 
 
-def page_lines(text, box, size=36):
+def page_lines(text, box, size=36, vertical_inset=54):
     """Measured phrase pages shared by landscape pagination and drawing."""
     import caption_breaks as cb
     d=ImageDraw.Draw(Image.new('RGB',(1,1)))
     width=box[2]-box[0]-146
-    per=min(3,max(1,(box[3]-box[1]-54)//round(size*1.36)))
+    per=min(3,max(1,(box[3]-box[1]-vertical_inset)//round(size*1.36)))
     def fits(value):
         try:return len(r3._caption_lines(d,value,size,width))<=per
         except ValueError:return False

@@ -8,6 +8,7 @@ import re
 
 JST = timezone(timedelta(hours=9))
 LEGACY = 'チャンネル登録して、また見に来てくださいね。'
+METAN_GENERIC = 'チャンネル登録して、また見に来てね。'
 
 
 def choice(day=None, lineup=None):
@@ -40,7 +41,7 @@ def choice(day=None, lineup=None):
                   next_date=str(tomorrow), next_time=at, next_name=name)
     if result['assigned'] == 'next':
         result.update(variant='next',
-            speech=f'次は{tomorrow.month}月{tomorrow.day}日{spoken_time}の{name}です。また見に来てくださいね。',
+            speech=f'次は{tomorrow.month}月{tomorrow.day}日{spoken_time}の{name}よ。また見に来てね。',
             card=f'次は{tomorrow.month}/{tomorrow.day} {at}の{name}')
     return result
 
@@ -49,12 +50,12 @@ def speech(original, day=None):
     if os.getenv('COLLESPO_OUTRO_NEXT', 'off') != 'on':
         return original
     plan = choice(day)
-    return original.replace(LEGACY, plan['speech']) if plan['variant'] == 'next' else original
+    return original.replace(METAN_GENERIC, plan['speech']).replace(LEGACY, plan['speech']) if plan['variant'] == 'next' else original
 
 
 def card(text, default):
     # 描画時の日付で再割付しない。音声と同じ原稿から表示する。
-    found = re.search(r'次は(\d+)月(\d+)日(\d+)時(?:(\d+)分)?の(欧州サッカー)です。', text)
+    found = re.search(r'次は(\d+)月(\d+)日(\d+)時(?:(\d+)分)?の(欧州サッカー)(?:です|よ)。', text)
     if not found:
         return default
     month, day, hour, minute, name = found.groups()
@@ -75,10 +76,17 @@ def publication(video, day=None, narration=None):
     if timeline.get('video_sha256') != hashlib.sha256(video.read_bytes()).hexdigest():
         raise ValueError('締め比較の完成動画と記録が不一致')
     texts = [r.get('text','') for r in timeline.get('lines', []) if r.get('kind') == 'outro']
-    variant = 'next' if any(card(t, '') for t in texts) else 'generic' if any(t.startswith('コレスポでは毎日、') and LEGACY in t for t in texts) else 'other'
+    variant = 'next' if any(card(t, '') for t in texts) else 'generic' if any(
+        t.startswith('コレスポでは毎日、') and (METAN_GENERIC in t or LEGACY in t) for t in texts) else 'other'
     plan = choice(day)
     if plan.get('enabled') and plan.get('eligible') and variant != 'other':
-        if variant != plan['variant'] or (variant == 'next' and not any(plan['speech'] in t for t in texts)):
+        if variant != plan['variant'] or (variant == 'next' and not _matches_speech(plan['speech'], texts)):
             raise ValueError('締め比較の公開日と録音済みの案内が不一致。再制作が必要です')
     plan.update(variant=variant, eligible=bool(plan.get('eligible')) and variant != 'other')
     return {'outro_next': plan}
+
+
+def _matches_speech(expected, texts):
+    legacy = expected.replace('よ。また見に来てね。', 'です。また見に来てくださいね。')
+    polite = legacy.replace('また見に来てくださいね。', 'また見に来てください。')
+    return any(spoken in text for text in texts for spoken in (expected, legacy, polite))

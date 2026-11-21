@@ -3,7 +3,7 @@
 10/9 本人「一旦デフォルトのずんだもんとめたんに差し替えましょう。今後の動画全部。
 デフォルトってのは、よく見るやつで、前使ってたやつです」→ assets/portraits/ の
 坂本アヒルさんの立ち絵（部品つき。目・口・眉を組み合わせて表情を作る。video_common.face）。
-掛け合いの配置は本人が選んだ案1：横いっぱいの吹き出し＋その上に2人の上半身（話す方を大きく明るく）。
+掛け合いの配置は本人が選んだ案1：横いっぱいの吹き出し＋その上に2人の上半身。
 絵を差し替えるときは、この1ファイルだけを変える。
 """
 
@@ -12,10 +12,11 @@ import functools
 import math
 import os
 
-from PIL import Image, ImageDraw, ImageEnhance, ImageFilter
+from PIL import Image, ImageDraw, ImageFilter
 
 import review_render_v3 as r3
 import video_common as vc
+from portrait_facing import source_facing
 
 PORTRAIT_DIR = str(r3.ROOT / "assets/portraits")
 NAMES = {"metan": "四国めたん", "zundamon": "ずんだもん", "kiritan": "東北きりたん", "ui": "雨衣"}
@@ -29,6 +30,7 @@ FACE_PARTS = {
     "smile": ("基本", "開", "笑"),
     "surprise": ("上げ", "見開", "大"),
     "question": ("上げ", "開", "開"),
+    "listen": ("上げ", "開", "閉"),
     "jitome": ("困り", "開", "閉"),
     "sad": ("困り", "開", "閉"),        # 不調・負け。汗は苦笑いに見えるので付けない（10/14 本人）     # ジト目は本人NG（10/8）。負けの日は困り眉
     "pose-smile": ("基本", "笑", "笑"),
@@ -37,30 +39,45 @@ for _k, _v in FACE_PARTS.items():
     vc.FACES.setdefault("v4_" + _k, _v)
     for _level, _mouth in enumerate(('閉', '開', '大')):
         vc.FACES.setdefault(f'v4_{_k}:mouth{_level}', (_v[0], _v[1], _mouth))
+        vc.FACES.setdefault(f'v4_{_k}:mouth{_level}:blink', (_v[0], '閉', _mouth))
 
 # 配置（案1）。吹き出しは横いっぱい、2人の上半身は吹き出しの右上に立つ。
-BUBBLE = (r3.LEFT, 1262, r3.SAFE_RIGHT, 1468)
-BUST_ACTIVE, BUST_IDLE = 500, 430        # 全身の高さ（上半身はその上半分を使う）
+BUBBLE = (r3.LEFT, 1230, r3.SAFE_RIGHT, 1396)
+BUST_ACTIVE, BUST_IDLE = 192, 192        # 交代しても位置を固定し、本文の下に収める
 BUST_BOTTOM = BUBBLE[1] + 22             # 上半身の下端（吹き出しに少しかかる）
 
 
-def figure(who, face="base", height=1000):
+@functools.lru_cache(maxsize=2)
+def _source_facing(who):
+    art = vc.face(NAMES[who], 1000, "v4_base", PORTRAIT_DIR)
+    return source_facing(art) if art is not None else None
+
+
+def figure(who, face="base", height=1000, side=None):
     """全身（長編の立ち絵）。"""
-    return vc.face(NAMES[who], height, "v4_" + face, PORTRAIT_DIR)
+    side = side or ("left" if who == "zundamon" else "right")
+    inward = "right" if side == "left" else "left"
+    measured = _source_facing(who)
+    return vc.face(NAMES[who], height, "v4_" + face, PORTRAIT_DIR,
+                   flip=measured is not None and measured != inward)
+
+
+@functools.lru_cache(maxsize=4)
+def inward_facing(who, side):
+    art = figure(who, height=1000, side=side)
+    return source_facing(art) if art is not None else None
 
 
 @functools.lru_cache(maxsize=64)
-def bust(who, face, height, dim=False):
+def bust(who, face, height, dim=False, side=None, full=False):
     if who == 'ui':
         import solo_host
         return solo_host.portrait(face, height)
-    art = vc.face(NAMES[who], height, "v4_" + face, PORTRAIT_DIR)
+    art = figure(who, face, height, side)
     if art is None:
         return None
-    art = art.crop((0, 0, art.width, int(art.height * 0.5)))
-    if dim:
-        rgb = ImageEnhance.Brightness(art.convert("RGB")).enhance(0.6)
-        out = rgb.convert("RGBA"); out.putalpha(art.getchannel("A")); art = out
+    if not full:
+        art = art.crop((0, 0, art.width, int(art.height * 0.5)))
     return art
 
 
@@ -71,10 +88,51 @@ def reserved_width(duo=False):
     return sum(widths) - 30 * (len(widths) - 1) + 20
 
 
+CORNER_HEIGHT = 864
+# x, y and the visible face within the full-height rig. Hair and clothing may extend out.
+CORNERS = {
+    'zundamon': ('left', -85, 1142, (.40, .15, .73, .34)),
+    'metan': ('right', 620, 1178, (.28, .07, .70, .26)),
+}
+
+
+def corner_busts(im, speaker, line, elapsed, clock, duration):
+    portraits, layers = [], []
+    for who, (side, x, base_y, facial) in CORNERS.items():
+        active = who == speaker
+        speaking = active and bool(line) and 0 <= elapsed < duration
+        face = expression(who, speaker, line, elapsed, clock, volume=True)
+        dy = speaking_offset(elapsed, speaking)
+        y = base_y + dy
+        # 顔の位置は保ち、同じ部品付き立ち絵の下半分までキャンバスに描く。
+        art = bust(who, face, CORNER_HEIGHT, side=side, full=True)
+        im.paste(art, (x, y), art)
+        alpha = art.getchannel('A')
+        a, b, c, d = alpha.crop((0, 0, art.width, CORNER_HEIGHT // 2)).getbbox()
+        lo, hi = max(0, -x), min(art.width, im.width - x)
+        cut = min(art.height, im.height - y)
+        shown = alpha.crop((lo, 0, hi, cut)).getbbox()
+        bottom_y = im.height - y - 1
+        edge = alpha.crop((lo, bottom_y, hi, bottom_y + 1)).point(lambda value: 255 if value >= 128 else 0)
+        contact = edge.getbbox()
+        floor = [x + lo + contact[0], x + lo + contact[2]] if contact else []
+        left, top, right, bottom = facial
+        face_box = [x + round(art.width * left), y + round(CORNER_HEIGHT * top),
+                    x + round(art.width * right), y + round(CORNER_HEIGHT * bottom)]
+        ink = [max(0, x + a), y + b, min(im.width, x + c), y + d]
+        visible = [x + lo + shown[0], y + shown[1], x + lo + shown[2], y + shown[3]]
+        portraits.append(dict(who=who, box=visible, face=face_box, ink=ink, floor=floor, active=active))
+        layers.append(dict(who=who, face=face, height=CORNER_HEIGHT, dim=False, side=side,
+                           active=active, dy=dy, at=[x, y], cut=cut, corner=True, full=True,
+                           facing=inward_facing(who, side), ink=ink))
+        r3.record_box(im, 'face', face_box)
+    im.info.update(duo_portraits=portraits, duo_layer=layers)
+
+
 def redraw(im, layer):
     """place_busts が記録した立ち絵を描き直す（札の演出で消えた分を戻す）。"""
     for r in layer or ():
-        art = bust(r["who"], r["face"], r["height"], r["dim"])
+        art = bust(r["who"], r["face"], r["height"], r["dim"], r.get("side"), r.get("full", False))
         if art is not None:
             art = art.crop((0, 0, art.width, min(art.height, r["cut"])))
             im.paste(art, tuple(r["at"]), art)
@@ -98,15 +156,33 @@ def zunda_face(line):
         return "question"
     if any(w in line for w in ("記録", "初めて", "自己最多", "！")):
         return "surprise"
-    if any(w in line for w in ("勝", "本塁打", "好投")):
+    if any(w in line for w in ("勝った", "勝利", "本塁打", "好投")):
         return "smile"
     return "base"
 
 
+def expression(who, speaker, line, elapsed, clock, *, volume=False):
+    """散歩と同様、話し始めだけ聞き手が反応する。体の位置は固定。"""
+    import lipsync
+    active = who == speaker
+    mood = zunda_face(line) if line else "base"
+    if not active:
+        if line and 0 <= elapsed < 1.4:
+            mood = "listen"
+        else:
+            mood = "base"
+    level = lipsync.at(clock, 3 if who == "zundamon" else 2, volume=volume) if active and line else 0
+    blink = (clock + (0.5 if who == "metan" else 1.1)) % 3.9 < .13
+    return f"{mood}:mouth{level}" + (":blink" if blink else "")
+
+
+def speaking_offset(elapsed, speaking):
+    """APSCの話者だけの穏やかな上下。発話頭は基準位置。"""
+    return round(3 * math.sin(max(0, elapsed) * math.tau / 2.6)) if speaking else 0
+
+
 def place_busts(im, speaker, line, elapsed, duration, cast=("zundamon", "metan")):
-    """右下に上半身を並べる（cast の順に左から）。話す方を大きく明るく、口と表情を動かす。"""
-    speaking = bool(line) and elapsed < max(0.1, duration - 0.25)
-    mouth = speaking and int(elapsed * r3.MOUTH_RATE) % 2 == 1
+    """右下に上半身を並べ、話者の口と位置、聞き手の表情を更新する。"""
     import lipsync
     voice_mode = lipsync.enabled()
     clock = r3._PROGRAM_CLOCK[0]
@@ -114,7 +190,8 @@ def place_busts(im, speaker, line, elapsed, duration, cast=("zundamon", "metan")
                        3 if speaker == 'zundamon' else 2) if voice_mode else None
     arts = []
     ui_fan = None
-    for who in cast:
+    closing = bool(im.info.get('v3_outro') and (not line or r3._CAPTION.get('hide_caption')))
+    for index, who in enumerate(cast):
         active = who == speaker
         mood = zunda_face(line) if who == "zundamon" else r3.face_for(line, elapsed, duration)
         fan = fan_mood(line) if active else None
@@ -128,46 +205,51 @@ def place_busts(im, speaker, line, elapsed, duration, cast=("zundamon", "metan")
             mood = fan[0]
         if mood == "talk":
             mood = "base"
-        face = ("talk" if (mouth and mood == "base") else mood) if active else "base"
-        if voice_mode:
-            face = f'{mood if active else "base"}:mouth{level if active else 0}'
+        face = expression(who, speaker, line, elapsed, clock if clock is not None else elapsed)
+        if fan and who != 'ui':
+            face = face.replace(face.split(':', 1)[0], fan[0], 1)
         if who == 'ui':
             ui_fan = fan
             import ui_puppet
             face = ui_puppet.state(mood, line, elapsed, clock if clock is not None else elapsed,
                                    duration, level, fan)
-        arts.append((who, active, bust(who, face, BUST_ACTIVE if active else BUST_IDLE, not active), face))
-    x = r3.SAFE_RIGHT + 4
+        side = "right" if index == len(cast) - 1 else "left"
+        full = closing and who != 'ui'
+        height = 748 if full else BUST_ACTIVE if active else BUST_IDLE
+        art = bust(who, face, height, not active, side, full)
+        arts.append((who, active, art, face, side, height, full))
+    x = r3.SAFE_RIGHT - 30 if len(arts) > 1 else r3.SAFE_RIGHT
     # 吹き出しの無い画面（締め）は、吹き出しの場所まで下げて、上の札・ボタンにかけない
     bottom = BUST_BOTTOM if line and not r3._CAPTION.get("hide_caption") else BUBBLE[3]
-    # 字幕のない締めは胸上の切れ目を画面の下端に隠す。v4/v6共通。
-    if im.info.get('v3_outro') and (not line or r3._CAPTION.get('hide_caption')):
+    # 締めは顔を安全域へ置き、体の途中で切らずに画面下まで描く。
+    if closing:
         bottom = im.height
     records, layer = [], []
-    for who, active, art, face in reversed(arts):
+    for who, active, art, face, side, height, full in reversed(arts):
         if art is None:
             continue
         x -= art.width - (30 if len(arts) > 1 else 0)
-        import calm_motion
-        bob = round(4 * calm_motion.value('presenter_bob',1) * math.sin(elapsed * math.pi * 2 / (1.2 * calm_motion.value('presenter_period',1)))) if active and speaking else 0
-        if bottom == im.height:
-            bob = 0
-        y = bottom - art.height + (0 if who == 'ui' else bob)
+        dy = speaking_offset(elapsed, active and bool(line) and elapsed < duration and not closing)
+        y = bottom - art.height + dy
         im.paste(art, (x, y), art)
         records.append(dict(who=who, active=active, box=[x, y, x + art.width, y + art.height]))
+        if who != 'ui' or not closing:
+            r3.record_box(im, "face", (x, y, x + art.width, y + min(round(height * .35), art.height)))
         # 吹き出しの枠に重なる下の端は描き直さない（吹き出しが上に来るように）
         cut = art.height if bottom != BUST_BOTTOM else max(1, BUBBLE[1] - y)
-        layer.append(dict(who=who, face=face, height=BUST_ACTIVE if active else BUST_IDLE, dim=not active, at=[x, y], cut=cut))
+        layer.append(dict(who=who, face=face, height=height, full=full,
+                          dim=not active, side=side, at=[x, y], cut=cut, active=active,
+                          dy=dy, facing=inward_facing(who, side) if who in PORTRAIT_CAST else None))
     active_box = next((r["box"] for r in records if r["active"]), None)
     fan = ui_fan if speaker == 'ui' else fan_mood(line)
-    if fan and active_box:
+    if fan and active_box and speaker == 'ui' and fan[1] == 'sad':
         if speaker == 'ui':
             for record in layer:
                 if record['who'] == 'ui':
                     record.update(effect=fan[1], elapsed=elapsed)
             import ui_puppet
             active_box = ui_puppet.head_box(active_box)
-        fan_effect(im, fan[1], active_box, elapsed)
+        fan_effect(im, fan[1], active_box, 0)
         im.info["fan_expr"] = dict(face=fan[0], effect=fan[1], reason=fan[2], line=line)
     im.info["duo_portraits"] = records
     im.info["duo_layer"] = layer      # 札の演出（video_common.short_effects）のあとに描き直す
@@ -344,6 +426,11 @@ def presenter(im, t, cast=("metan",)):
     speaker, cast = solo_host.presentation(speaker, cast)
     if speaker not in cast:
         cast = tuple(cast) + (speaker,)
+    import short_cast
+    deferred = short_cast.DEFERRED.get()
+    if deferred is not None and speaker in PORTRAIT_CAST:
+        deferred['presenter'] = (speaker, elapsed, line, clock if clock is not None else elapsed)
+        return
     place_busts(im, speaker, line, elapsed, ctx["duration"] or 1, cast)
     if line and not ctx.get("hide_caption") and not im.info.get('v3_outro') and not short_common.duplicate_caption(im, line):
         bubble(im, speaker, line)

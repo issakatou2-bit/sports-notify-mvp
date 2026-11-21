@@ -134,16 +134,19 @@ class Readable(unittest.TestCase):
 
     def test_rejects_card_overlap_even_when_text_avoids_portrait(self):
         case=self.cases[0];im=self.draw(case,case['narration']['segments'][0])
-        layout.c.rec(im,'card',(700,1620,940,1850))
+        portrait = im.info['duo_layer'][0]
+        x, y = portrait['ink'][:2] if portrait.get('corner') else portrait['at']
+        layout.c.rec(im,'card',(x, y, x+20, y+20))
         self.assertTrue(any('presenter_overlap' in e for e in layout.check_frame(im,case['clubs'])))
 
     def test_rejects_small_support_text_and_empty_bottom_band(self):
         case=self.cases[0];im=self.draw(case,case['narration']['segments'][0])
         layout.c.text(im,100,1560,'試合',26,role='supplement')
-        im.info['duo_caption']['box'][3]=1456
+        im.info['duo_caption']['box'][3]=1330
         errors=layout.check_frame(im,case['clubs'])
         self.assertTrue(any('small_text' in e for e in errors))
-        self.assertTrue(any('empty_below_caption' in e for e in errors))
+        key = 'caption_zone' if im.info.get('short_cast') else 'empty_below_caption'
+        self.assertTrue(any(key in e for e in errors))
 
     def test_eight_standings_rows_are_paginated_and_keep_points(self):
         case=next(c for c in self.cases if c['key']=='race')

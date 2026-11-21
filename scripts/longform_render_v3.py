@@ -107,7 +107,7 @@ T_CHIPS = 0.9                 # 引用の下の札（賛否・高評価）
 T_CHAPTER = (0.4, 0.8)        # 章の札が明るくなる（e-chip 4%→8%）
 BEAM_CYCLE, BEAM_PASS = 10.0, 4.5   # 照明の光（e-beam: 10秒で1回、45%で横切り終わる）
 STRIPE_SPEED = 16.0           # ストライプ（e-stripes: 96px を6秒）
-BOB_PERIOD, BOB_AMP = 2.6, 8  # 話している方が上下に揺れる（e-bob）
+BOB_PERIOD, BOB_AMP = 2.6, 3  # 話している方だけの穏やかな上下
 # 字幕。モックは 1秒待って5秒かけて出す（e-type 10%→60%）が、本番は声と同時に
 # 始まるので待たない。1秒に TYPE_CPS 文字の速さで出し、尺がわかるときは
 # 尺の TYPE_SHARE までに出し切る（声より遅れて字が出ないように）。
@@ -140,7 +140,6 @@ PORTRAIT_PLACE = {
     "四国めたん": (1000, 1669, 300),
 }
 PORTRAIT_ORDER = ("ずんだもん", "四国めたん")   # 奥から
-DIM_BRIGHT, DIM_SAT = 0.72, 0.85                # 話していない方（明るさ・色の濃さ。0.5/0.6 は濁って見えた 10/8）
 
 BOTH = gl.BOTH
 
@@ -157,7 +156,7 @@ def num_font(size, weight="Bold"):
 
 _mix = r3._mix
 ease_out = r3.ease_out
-back_out = r3.back_out
+ease_in_out = r3.ease_in_out
 
 
 def _clamp(x, a=0.0, b=1.0):
@@ -739,7 +738,7 @@ def _panel_group(layer, d, p, pt, ctx):
     rh = 92 if len(rows) <= 3 else 84
     for i, row in enumerate(rows):
         name, val = str(row.get("name", "")), str(row.get("value", ""))
-        k = back_out((pt - T_ROW0 - i * T_ROW_GAP) / ROW_IN)
+        k = ease_in_out((pt - T_ROW0 - i * T_ROW_GAP) / ROW_IN)
         if k > 0:
             lay = Image.new("RGBA", (CARD_W, rh), (0, 0, 0, 0))
             ld = ImageDraw.Draw(lay)
@@ -803,7 +802,7 @@ def _panel_score(layer, d, p, pt, ctx):
         y += 104
     if win:
         wn = p.get("away") if win == "away" else p.get("home")
-        k = back_out((pt - T_WIN) / 0.3, 2.4)
+        k = ease_in_out((pt - T_WIN) / 0.3)
         if k > 0:
             s = f"{wn}の勝ち"
             w, hh = _chip_size(d, s, 34)
@@ -894,20 +893,12 @@ def paste_card(im, kind, panel, pt, base_rgb):
 # ---------------------------------------------------------------------------
 @functools.lru_cache(maxsize=8)
 def standing(who, dim=False):
-    """立ち絵（余白を落として縮めたもの）。dim=True は話していない方（暗く・色を薄く）。"""
+    """立ち絵。余白を落として等比で縮める。"""
     import characters
     h = PORTRAIT_PLACE[who][0]
     art = characters.figure(WHO_KEY[who], "base", h * 2)
     art = art.crop(art.getbbox())
     art = art.resize((max(1, round(art.width * h / art.height)), h), Image.LANCZOS)
-    if dim:
-        rgb = art.convert("RGB")
-        gray = rgb.convert("L").convert("RGB")
-        rgb = Image.blend(gray, rgb, DIM_SAT)
-        rgb = rgb.point(lambda v: round(v * DIM_BRIGHT))
-        out = rgb.convert("RGBA")
-        out.putalpha(art.split()[3])
-        art = out
     return art
 
 

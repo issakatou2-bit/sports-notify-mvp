@@ -218,8 +218,9 @@ class Morning(unittest.TestCase):
 
     def test_presenter_below_content(self):
         # 立ち絵（左下、上下に揺れても）が文字の下端より下にある
+        import characters
         for who in ("metan", "zundamon"):
-            top = bn.SAFE_BOTTOM - 4 - bn.r3._portrait(who).height - bn.BOB_PX
+            top = bn.SAFE_BOTTOM - 4 - characters.bust(who, 'base', 192, side='left').height - bn.BOB_PX
             self.assertGreater(top, bn.CONTENT_BOTTOM)
 
     def test_skipped_players_still_on_screen(self):

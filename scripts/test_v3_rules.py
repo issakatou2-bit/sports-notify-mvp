@@ -302,9 +302,10 @@ class V3Rules(unittest.TestCase):
         # 外札を縮めた後、元の右辺/下辺の線が余白に残らない。
         import short_v4_cards as c
         compact=c.canvas(3,'検査')
-        c.panel(compact,(72,340,940,1138));c.text(compact,100,378,'短い札',54)
+        c.panel(compact,(72,340,r3.SAFE_RIGHT,1138));c.text(compact,100,378,'短い札',54)
         c.balance_content(compact,3)
-        self.assertEqual(compact.getpixel((940,1100)),r3.background(3,None).getpixel((940,1100)))
+        edge = (r3.SAFE_RIGHT,1100)
+        self.assertEqual(compact.getpixel(edge),r3.background(3,None).getpixel(edge))
 
     def test_all_pages_keep_complete_cards_and_text(self):
         rows=[('長い引用','「'+'全文を残して安全域でページを分ける。'*18+'」')]+[(f'DS 第{i}戦','2勝　大谷翔平・佐々木朗希・山本由伸') for i in range(1,6)]
@@ -463,7 +464,7 @@ class V3Rules(unittest.TestCase):
                 r3.ticker(im,local,'きょうの日本人選手　1位 村上宗隆　2位 ヌートバー')
             finally:
                 r3.set_program_clock(None)
-            return im.crop((0,1486,1080,1574)).tobytes()
+            return im.crop((r3.LEFT, r3.SAFE_BOTTOM-r3.TICKER_HEIGHT, r3.SAFE_RIGHT, r3.SAFE_BOTTOM)).tobytes()
         self.assertEqual(band(0.0,12.5),band(7.0,12.5))
         self.assertNotEqual(band(0.0,12.5),band(0.0,0.0))
         for path in ('scripts/generate_morning_short.py','scripts/generate_asset_video.py'):

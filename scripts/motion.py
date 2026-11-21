@@ -271,11 +271,8 @@ def caption_cues(rows, duration):
 
 
 def background(im,t):
-    if not enabled():return im
-    # Background only, called before text/chrome/portraits are drawn.
-    sx,sy=SETTINGS['drift_speed']
-    dx=SETTINGS['drift']*math.sin(t*sx);dy=SETTINGS['drift']*math.sin(t*sy)
-    return im.transform(im.size,Image.Transform.AFFINE,(1,0,dx,0,1,dy),Image.Resampling.BICUBIC)
+    """地の照明演出は描画側に任せ、画面を往復させない。"""
+    return im
 
 
 def transition(previous, im, k, fps=30, style=None):

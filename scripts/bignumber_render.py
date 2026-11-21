@@ -120,7 +120,7 @@ T_CHIP0, T_CHIP_GAP = 1.5, 0.12   # 小さな札の1枚目と間隔（数字が�
 T_CARD0, T_CARD_GAP = 0.3, 0.25   # 札の画面（数字の無い場面）の札
 SLIDE = r3.SLIDE          # 札が右から飛び込む秒（review_render_v3 と同じ）
 DRIFT_SECONDS, DRIFT_PX = 14.0, 520   # 透かし文字: 14秒で 520px 左へ、行って戻る（b-drift）
-BOB_SECONDS, BOB_PX = 2.4, 12         # 立ち絵が上下する（b-bob）
+BOB_PX = 3
 
 # ------------------------------------------------------------------ 配置（モックの2倍）
 HEAD_BASE = 336           # 名前の行の基準線
@@ -132,7 +132,7 @@ PLAIN_NUM_MAX = 440       # 塊の無い場面の数字（モック 220px）
 UNIT_MAX = 184            # 縦に積む単位（モック 92px）
 CONTENT_BOTTOM = 1330     # 文字の下端。これより下は立ち絵（左下）と出典
 PRESENTER_X = 36
-SOURCE_X, SOURCE_BOTTOM = 300, 1552
+SOURCE_X, SOURCE_BOTTOM = 300, 1434
 WATERMARK_SIZE, WATERMARK_ALPHA = 760, 0x24 / 255   # Oswald 380px・線 2px・色 #c4ced424（モック）
 WATERMARK_XY = (-80, 600)
 
@@ -645,7 +645,7 @@ def _draw_content(target, t, L, dur):
         k = ease_out((t - c["appear"]) / 0.3)
         _put(target, c["img"], c["x"], c["y"] + round(24 * (1 - k)), k)
     for c in L["cards"]:
-        k = r3.back_out((t - c["appear"]) / SLIDE)
+        k = r3.ease_in_out((t - c["appear"]) / SLIDE)
         if k > 0:
             _put(target, c["img"], c["x"] + round(140 * (1 - k)), c["y"], min(1.0, k * 1.6))
 
@@ -680,13 +680,35 @@ def _chrome(im, tg, t, spec, base, second):
             im.paste(sp, (SOURCE_X + dx, yb + dy), sp)
     who = spec.get("who") or "metan"
     if who != "none":
-        sp = r3._portrait(who)
-        bob = round(BOB_PX * (0.5 - 0.5 * math.cos(2 * math.pi * tg / BOB_SECONDS)))
+        import characters
+        context = r3._CAPTION
+        elapsed = tg - context['start']
+        line = r3.current_sentence(elapsed, context['text'], context['duration'])
+        face = characters.expression(who, who, line, elapsed, tg)
+        sp = characters.bust(who, face, 192, side='left')
+        bob = characters.speaking_offset(elapsed, bool(line) and elapsed < context['duration'])
         im.paste(sp, (PRESENTER_X, SAFE_BOTTOM - 4 - sp.height - bob), sp)
 
 
 @motion.slot('mlb')
 def scene(t, scene_spec, team_id=None):
+    if r3.LOOK != 'v4' or not r3.STYLE_V2 or scene_spec.get('kind') == 'outro' or scene_spec.get('next_line'):
+        return _scene(t, scene_spec, team_id)
+    import short_cast
+    import solo_host
+    speaker, _ = solo_host.presentation('metan', ('metan',))
+    if speaker == 'ui':
+        return _scene(t, scene_spec, team_id)
+    footer = {}
+    token = short_cast.DEFERRED.set(footer)
+    try:
+        im = _scene(t, scene_spec, team_id)
+    finally:
+        short_cast.DEFERRED.reset(token)
+    return short_cast.finish_mlb(im, t, footer) if 'presenter' in footer else im
+
+
+def _scene(t, scene_spec, team_id=None):
     """1場面の t 秒目の絵（1080×1920、RGB）。
 
     scene_spec の例: {"big": "3", "unit": "安打", "head": "大谷翔平", "sub": "4打数3安打", "team_id": 119}

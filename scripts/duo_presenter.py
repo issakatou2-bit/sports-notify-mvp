@@ -1,11 +1,8 @@
 """右下の聞き手/解説者と、話者色の3行字幕。素材の差し替え先は一か所。"""
 import functools
-import math
-from PIL import Image, ImageDraw, ImageEnhance
+from PIL import Image, ImageDraw
 import review_render_v3 as r3
 
-# New approved design can replace this one directory, including local expression files.
-ZUNDAMON_DIR = r3.ROOT / r3.PORTRAITS / 'zundamon/C-black'
 GREEN = (166, 212, 120)
 WIDTH, HEIGHT = 170, 220
 GAP = 0
@@ -14,55 +11,46 @@ GAP = 0
 def geometry():
     mx = r3.SAFE_RIGHT - WIDTH
     zx = mx - WIDTH - GAP
-    return dict(metan=(mx, 1260, r3.SAFE_RIGHT, 1480),
-                zundamon=(zx, 1260, zx+WIDTH, 1480),
+    return dict(metan=(mx, 1220, r3.SAFE_RIGHT, 1438),
+                zundamon=(zx, 1220, zx+WIDTH, 1438),
                 caption=(r3.LEFT-8, r3.CAPTION_TOP, zx-16, r3.CAPTION_BOTTOM))
 
 
 @functools.lru_cache(maxsize=32)
 def portrait(who, face, dark=False):
-    directory = ZUNDAMON_DIR if who == 'zundamon' else r3.ROOT / r3.PORTRAITS / 'metan/3-black'
-    path = directory / (face+'.png')
-    if not path.exists():
-        path = directory / 'base.png'
-    art = Image.open(path).convert('RGBA').crop((185,0,805,800))
-    art.thumbnail((WIDTH,HEIGHT))
-    if dark:
-        rgb = ImageEnhance.Brightness(art.convert('RGB')).enhance(.70)
-        rgb.putalpha(art.getchannel('A'))
-        art = rgb
+    import characters
+    art = characters.bust(who, face, 280, dark).copy()
+    art.thumbnail((WIDTH, HEIGHT))
     return art
 
 
-def zunda_face(line):
-    if '？' in line or '?' in line:return 'question'
-    if any(w in line for w in ('記録','初めて','自己最多','！')):return 'surprise'
-    if any(w in line for w in ('勝','本塁打','好投')):return 'smile'
-    return 'base'
-
-
 def presenter(im, t):
+    import characters
     ctx = r3._CAPTION
     clock = r3._PROGRAM_CLOCK[0]
     elapsed = clock-ctx['start'] if clock is not None else t
     line = r3.current_sentence(elapsed,ctx['text'],ctx['duration'])
     who = 'zundamon' if ctx.get('speaker') == 3 else 'metan'
-    speaking = bool(line) and elapsed < max(.1,ctx['duration']-.25)
-    mouth = speaking and int(elapsed*r3.MOUTH_RATE)%2 == 1
     boxes = geometry()
     records=[]
+    layers=[]
     for person in ('zundamon','metan'):
         active = person == who
-        mood = zunda_face(line) if person=='zundamon' else r3.face_for(line,elapsed,ctx['duration'])
-        if mood=='talk':mood='base'
-        face = ('talk' if mouth else mood) if active else 'base'
+        face = characters.expression(person, who, line, elapsed, t if clock is None else clock)
         art = portrait(person,face,not active)
         left,_,right,bottom=boxes[person]
-        bob=round(3*math.sin(elapsed*math.pi*2/1.2)) if active and speaking else 0
-        x=right-art.width;y=bottom-art.height-3+bob
+        x=right-art.width
+        dy=characters.speaking_offset(elapsed, active and bool(line) and elapsed < ctx['duration'])
+        y=bottom-art.height-3+dy
         im.paste(art,(x,y),art)
+        r3.record_box(im,'face',(x,y,x+art.width,y+min(100,art.height)))
         records.append(dict(who=person,active=active,face=face,box=[x,y,x+art.width,y+art.height]))
+        side = 'left' if person == 'zundamon' else 'right'
+        layers.append(dict(who=person, face=face, active=active, height=280, dim=False,
+                           at=[x,y], cut=art.height, side=side, dy=dy,
+                           facing=characters.inward_facing(person, side)))
     im.info['duo_portraits']=records
+    im.info['duo_layer']=layers
     caption(im,t)
     r3.progress(ImageDraw.Draw(im))
 

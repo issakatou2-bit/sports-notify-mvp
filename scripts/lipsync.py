@@ -59,7 +59,7 @@ def query_frames(query, duration, fps=FPS):
             for i in range(math.ceil(duration*fps))]
 
 
-def audio_frames(path, fps=FPS):
+def _audio_tracks(path, fps):
     with wave.open(str(path), 'rb') as w:
         sr, channels, width = w.getframerate(), w.getnchannels(), w.getsampwidth()
         raw = w.readframes(w.getnframes())
@@ -69,6 +69,7 @@ def audio_frames(path, fps=FPS):
     x = (x-128)/128 if width == 1 else x/2**(8*width-1)
     x = x.reshape(-1, channels).mean(axis=1)
     levels = envelope(x, sr, fps)
+    volume = smooth(levels)
     sidecar = Path(path).with_suffix('.lipsync.json')
     source = 'audio-envelope'
     if sidecar.exists():
@@ -80,29 +81,41 @@ def audio_frames(path, fps=FPS):
         phonemes = query_frames(data['query'], len(x)/sr, fps)
         levels = [v if levels[i] else 0 for i,v in enumerate(phonemes)]
         source = 'voicevox-query'
-    return smooth(levels), source
+    return (smooth(levels) if source == 'voicevox-query' else volume), source, volume
+
+
+def audio_frames(path, fps=FPS):
+    frames, source, _ = _audio_tracks(path, fps)
+    return frames, source
 
 
 def prepare(segs, durations, out_dir, fps=FPS):
     TRACK.clear()
-    if not enabled():
+    voice_mode = enabled()
+    if not voice_mode and not any(s.get('file') and s.get('speaker', 2) in (2, 3) for s in segs):
         return
     import video_common
     frame0 = 0
     for seg, duration, n in zip(segs, durations, video_common.segment_frame_counts(durations, fps)):
         start = frame0 / fps
         path = seg.get('file')
-        levels, source = audio_frames(path, fps) if path else ([], 'silence')
-        TRACK.append(dict(start=start, end=(frame0+n)/fps, speaker=seg.get('speaker', 2),
-                          frames=(levels+[0]*n)[:n], source=source, file=path))
+        speaker = seg.get('speaker', 2)
+        if path and (voice_mode or speaker in (2, 3)):
+            levels, source, volume = _audio_tracks(path, fps)
+        else:
+            levels, source, volume = [], 'silence', []
+        TRACK.append(dict(start=start, end=(frame0+n)/fps, speaker=speaker,
+                          frames=(levels+[0]*n)[:n], volume=(volume+[0]*n)[:n],
+                          source=source, file=path))
         frame0 += n
     Path(out_dir, 'lipsync-confirmation.json').write_text(
         json.dumps(dict(fps=fps,segments=TRACK), ensure_ascii=False, indent=2), encoding='utf-8')
 
 
-def at(clock, speaker, fps=FPS):
+def at(clock, speaker, fps=FPS, *, volume=False):
     for seg in TRACK:
         if seg['start'] <= clock < seg['end'] and seg['speaker'] == speaker:
             i = int((clock-seg['start'])*fps+1e-6)
-            return seg['frames'][i] if i < len(seg['frames']) else 0
+            frames = seg.get('volume', seg['frames']) if volume else seg['frames']
+            return frames[i] if i < len(frames) else 0
     return 0
