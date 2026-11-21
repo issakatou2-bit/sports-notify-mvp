@@ -9828,6 +9828,55 @@
       },
       "host_fallback_reason": null,
       "privacy": "public"
+    },
+    "2026-11-21": {
+      "video_id": "pOHI6Cwc4GU",
+      "url": "https://youtu.be/pOHI6Cwc4GU",
+      "title": "【欧州サッカー】トッテナムが勝点1差のイプスウィッチと対戦 #Shorts",
+      "published_at": "2026-11-21T10:11:39.115015+00:00",
+      "publish_at": "2026-11-21T10:30:00Z",
+      "preview_binding": {
+        "material_sha256": "4b016fdd8a9775eda8d37790edb45b4fd01b22e8b9c8326007539dad70ae0f52",
+        "narration_sha256": "3502cf754877324698166bede9faf15cb7ca22eb182ab3d85e0e6a2b14448066"
+      },
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-21",
+        "enabled": true,
+        "assigned": "generic",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false,
+        "source": "post_common.lineup:daily_soccer",
+        "next_date": "2026-11-22",
+        "next_time": "19:30",
+        "next_name": "欧州サッカー"
+      },
+      "duration_seconds": 50.5,
+      "short_information_count": 6,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-11-21",
+        "kind": "daily_soccer",
+        "phase": 1,
+        "planned_host": "ui",
+        "rule": "half-jst-week-v1",
+        "week": 45,
+        "weekday": 5
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-11-21T10:03:22.442319+00:00",
+        "comparison_eligible": false,
+        "label": "予定めたん（雨衣不可のため）",
+        "mode": "live",
+        "planned_host": "metan",
+        "reason": "ui_deadline_crosses_live",
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
     }
   },
   "weekly": {
