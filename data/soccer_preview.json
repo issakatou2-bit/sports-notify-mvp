@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-21T06:07:17.983290+00:00",
+  "generated_at": "2026-11-21T13:04:35.346078+00:00",
   "competitions": [
     {
       "code": "PL",
@@ -14,7 +14,7 @@
       "preview_angle_context": {
         "finished": {
           "source": "https://api.football-data.org/v4/competitions/PL/matches",
-          "retrieved_at": "2026-11-21T06:04:58.123600+00:00",
+          "retrieved_at": "2026-11-21T13:02:17.049866+00:00",
           "payload": {
             "matches": [
               {
@@ -6622,7 +6622,7 @@
         },
         "standings": {
           "source": "https://api.football-data.org/v4/competitions/PL/standings",
-          "retrieved_at": "2026-11-21T06:04:58.594934+00:00",
+          "retrieved_at": "2026-11-21T13:02:17.812802+00:00",
           "payload": {
             "filters": {
               "season": "2026"
@@ -6700,15 +6700,15 @@
                       "tla": "MCI",
                       "crest": "https://crests.football-data.org/65.png"
                     },
-                    "playedGames": 10,
+                    "playedGames": 11,
                     "form": null,
                     "won": 7,
                     "draw": 0,
-                    "lost": 3,
+                    "lost": 4,
                     "points": 21,
                     "goalsFor": 21,
-                    "goalsAgainst": 13,
-                    "goalDifference": 8
+                    "goalsAgainst": 14,
+                    "goalDifference": 7
                   },
                   {
                     "position": 4,
@@ -6827,6 +6827,25 @@
                   {
                     "position": 10,
                     "team": {
+                      "id": 63,
+                      "name": "Fulham FC",
+                      "shortName": "Fulham",
+                      "tla": "FUL",
+                      "crest": "https://crests.football-data.org/63.png"
+                    },
+                    "playedGames": 11,
+                    "form": null,
+                    "won": 3,
+                    "draw": 4,
+                    "lost": 4,
+                    "points": 13,
+                    "goalsFor": 11,
+                    "goalsAgainst": 12,
+                    "goalDifference": -1
+                  },
+                  {
+                    "position": 11,
+                    "team": {
                       "id": 58,
                       "name": "Aston Villa FC",
                       "shortName": "Aston Villa",
@@ -6844,7 +6863,7 @@
                     "goalDifference": -3
                   },
                   {
-                    "position": 11,
+                    "position": 12,
                     "team": {
                       "id": 73,
                       "name": "Tottenham Hotspur FC",
@@ -6863,7 +6882,7 @@
                     "goalDifference": -1
                   },
                   {
-                    "position": 12,
+                    "position": 13,
                     "team": {
                       "id": 67,
                       "name": "Newcastle United FC",
@@ -6882,7 +6901,7 @@
                     "goalDifference": -3
                   },
                   {
-                    "position": 13,
+                    "position": 14,
                     "team": {
                       "id": 322,
                       "name": "Hull City AFC",
@@ -6901,7 +6920,7 @@
                     "goalDifference": 0
                   },
                   {
-                    "position": 14,
+                    "position": 15,
                     "team": {
                       "id": 349,
                       "name": "Ipswich Town FC",
@@ -6918,25 +6937,6 @@
                     "goalsFor": 15,
                     "goalsAgainst": 20,
                     "goalDifference": -5
-                  },
-                  {
-                    "position": 15,
-                    "team": {
-                      "id": 63,
-                      "name": "Fulham FC",
-                      "shortName": "Fulham",
-                      "tla": "FUL",
-                      "crest": "https://crests.football-data.org/63.png"
-                    },
-                    "playedGames": 10,
-                    "form": null,
-                    "won": 2,
-                    "draw": 4,
-                    "lost": 4,
-                    "points": 10,
-                    "goalsFor": 10,
-                    "goalsAgainst": 12,
-                    "goalDifference": -2
                   },
                   {
                     "position": 16,
@@ -7389,13 +7389,13 @@
         {
           "position": 3,
           "team": "Manchester City FC",
-          "played": 10,
+          "played": 11,
           "won": 7,
           "draw": 0,
-          "lost": 3,
+          "lost": 4,
           "points": 21,
           "gf": 21,
-          "ga": 13
+          "ga": 14
         },
         {
           "position": 4,
@@ -7465,6 +7465,17 @@
         },
         {
           "position": 10,
+          "team": "Fulham FC",
+          "played": 11,
+          "won": 3,
+          "draw": 4,
+          "lost": 4,
+          "points": 13,
+          "gf": 11,
+          "ga": 12
+        },
+        {
+          "position": 11,
           "team": "Aston Villa FC",
           "played": 10,
           "won": 3,
@@ -7475,7 +7486,7 @@
           "ga": 17
         },
         {
-          "position": 11,
+          "position": 12,
           "team": "Tottenham Hotspur FC",
           "played": 10,
           "won": 3,
@@ -7486,7 +7497,7 @@
           "ga": 11
         },
         {
-          "position": 12,
+          "position": 13,
           "team": "Newcastle United FC",
           "played": 10,
           "won": 3,
@@ -7497,7 +7508,7 @@
           "ga": 16
         },
         {
-          "position": 13,
+          "position": 14,
           "team": "Hull City AFC",
           "played": 10,
           "won": 2,
@@ -7508,7 +7519,7 @@
           "ga": 11
         },
         {
-          "position": 14,
+          "position": 15,
           "team": "Ipswich Town FC",
           "played": 10,
           "won": 3,
@@ -7517,17 +7528,6 @@
           "points": 11,
           "gf": 15,
           "ga": 20
-        },
-        {
-          "position": 15,
-          "team": "Fulham FC",
-          "played": 10,
-          "won": 2,
-          "draw": 4,
-          "lost": 4,
-          "points": 10,
-          "gf": 10,
-          "ga": 12
         },
         {
           "position": 16,
@@ -7887,7 +7887,7 @@
       "preview_angle_context": {
         "finished": {
           "source": "https://api.football-data.org/v4/competitions/PD/matches",
-          "retrieved_at": "2026-11-21T06:05:00.744723+00:00",
+          "retrieved_at": "2026-11-21T13:02:19.796944+00:00",
           "payload": {
             "matches": [
               {
@@ -15696,7 +15696,7 @@
         },
         "standings": {
           "source": "https://api.football-data.org/v4/competitions/PD/standings",
-          "retrieved_at": "2026-11-21T06:05:01.255363+00:00",
+          "retrieved_at": "2026-11-21T13:02:20.240946+00:00",
           "payload": {
             "filters": {
               "season": "2026"
@@ -15863,6 +15863,25 @@
                   {
                     "position": 8,
                     "team": {
+                      "id": 560,
+                      "name": "RC Deportivo La Coruña",
+                      "shortName": "Deportivo",
+                      "tla": "DEP",
+                      "crest": "https://crests.football-data.org/560.png"
+                    },
+                    "playedGames": 13,
+                    "form": null,
+                    "won": 3,
+                    "draw": 7,
+                    "lost": 3,
+                    "points": 16,
+                    "goalsFor": 15,
+                    "goalsAgainst": 14,
+                    "goalDifference": 1
+                  },
+                  {
+                    "position": 9,
+                    "team": {
                       "id": 94,
                       "name": "Villarreal CF",
                       "shortName": "Villarreal",
@@ -15878,25 +15897,6 @@
                     "goalsFor": 17,
                     "goalsAgainst": 15,
                     "goalDifference": 2
-                  },
-                  {
-                    "position": 9,
-                    "team": {
-                      "id": 560,
-                      "name": "RC Deportivo La Coruña",
-                      "shortName": "Deportivo",
-                      "tla": "DEP",
-                      "crest": "https://crests.football-data.org/560.png"
-                    },
-                    "playedGames": 12,
-                    "form": null,
-                    "won": 3,
-                    "draw": 6,
-                    "lost": 3,
-                    "points": 15,
-                    "goalsFor": 15,
-                    "goalsAgainst": 14,
-                    "goalDifference": 1
                   },
                   {
                     "position": 10,
@@ -15920,6 +15920,25 @@
                   {
                     "position": 11,
                     "team": {
+                      "id": 263,
+                      "name": "Deportivo Alavés",
+                      "shortName": "Alavés",
+                      "tla": "ALA",
+                      "crest": "https://crests.football-data.org/263.png"
+                    },
+                    "playedGames": 13,
+                    "form": null,
+                    "won": 3,
+                    "draw": 5,
+                    "lost": 5,
+                    "points": 14,
+                    "goalsFor": 15,
+                    "goalsAgainst": 17,
+                    "goalDifference": -2
+                  },
+                  {
+                    "position": 12,
+                    "team": {
                       "id": 5335,
                       "name": "Real Racing Club de Santander",
                       "shortName": "Santander",
@@ -15937,7 +15956,7 @@
                     "goalDifference": -13
                   },
                   {
-                    "position": 12,
+                    "position": 13,
                     "team": {
                       "id": 558,
                       "name": "RC Celta de Vigo",
@@ -15954,25 +15973,6 @@
                     "goalsFor": 10,
                     "goalsAgainst": 10,
                     "goalDifference": 0
-                  },
-                  {
-                    "position": 13,
-                    "team": {
-                      "id": 263,
-                      "name": "Deportivo Alavés",
-                      "shortName": "Alavés",
-                      "tla": "ALA",
-                      "crest": "https://crests.football-data.org/263.png"
-                    },
-                    "playedGames": 12,
-                    "form": null,
-                    "won": 3,
-                    "draw": 4,
-                    "lost": 5,
-                    "points": 13,
-                    "goalsFor": 15,
-                    "goalsAgainst": 17,
-                    "goalDifference": -2
                   },
                   {
                     "position": 14,
@@ -16517,6 +16517,17 @@
         },
         {
           "position": 8,
+          "team": "RC Deportivo La Coruña",
+          "played": 13,
+          "won": 3,
+          "draw": 7,
+          "lost": 3,
+          "points": 16,
+          "gf": 15,
+          "ga": 14
+        },
+        {
+          "position": 9,
           "team": "Villarreal CF",
           "played": 12,
           "won": 4,
@@ -16525,17 +16536,6 @@
           "points": 15,
           "gf": 17,
           "ga": 15
-        },
-        {
-          "position": 9,
-          "team": "RC Deportivo La Coruña",
-          "played": 12,
-          "won": 3,
-          "draw": 6,
-          "lost": 3,
-          "points": 15,
-          "gf": 15,
-          "ga": 14
         },
         {
           "position": 10,
@@ -16550,6 +16550,17 @@
         },
         {
           "position": 11,
+          "team": "Deportivo Alavés",
+          "played": 13,
+          "won": 3,
+          "draw": 5,
+          "lost": 5,
+          "points": 14,
+          "gf": 15,
+          "ga": 17
+        },
+        {
+          "position": 12,
           "team": "Real Racing Club de Santander",
           "played": 12,
           "won": 4,
@@ -16560,7 +16571,7 @@
           "ga": 30
         },
         {
-          "position": 12,
+          "position": 13,
           "team": "RC Celta de Vigo",
           "played": 12,
           "won": 2,
@@ -16569,17 +16580,6 @@
           "points": 13,
           "gf": 10,
           "ga": 10
-        },
-        {
-          "position": 13,
-          "team": "Deportivo Alavés",
-          "played": 12,
-          "won": 3,
-          "draw": 4,
-          "lost": 5,
-          "points": 13,
-          "gf": 15,
-          "ga": 17
         },
         {
           "position": 14,
@@ -16962,7 +16962,7 @@
       "preview_angle_context": {
         "finished": {
           "source": "https://api.football-data.org/v4/competitions/SA/matches",
-          "retrieved_at": "2026-11-21T06:05:05.274279+00:00",
+          "retrieved_at": "2026-11-21T13:02:23.187321+00:00",
           "payload": {
             "matches": [
               {
@@ -24230,7 +24230,7 @@
         },
         "standings": {
           "source": "https://api.football-data.org/v4/competitions/SA/standings",
-          "retrieved_at": "2026-11-21T06:05:06.850390+00:00",
+          "retrieved_at": "2026-11-21T13:02:24.611859+00:00",
           "payload": {
             "filters": {
               "season": "2026"
@@ -25492,7 +25492,7 @@
       "preview_angle_context": {
         "finished": {
           "source": "https://api.football-data.org/v4/competitions/BL1/matches",
-          "retrieved_at": "2026-11-21T06:06:09.412178+00:00",
+          "retrieved_at": "2026-11-21T13:03:27.517503+00:00",
           "payload": {
             "matches": [
               {
@@ -30924,7 +30924,7 @@
         },
         "standings": {
           "source": "https://api.football-data.org/v4/competitions/BL1/standings",
-          "retrieved_at": "2026-11-21T06:06:09.963173+00:00",
+          "retrieved_at": "2026-11-21T13:03:27.994476+00:00",
           "payload": {
             "filters": {
               "season": "2026"
@@ -32077,7 +32077,7 @@
       "preview_angle_context": {
         "finished": {
           "source": "https://api.football-data.org/v4/competitions/FL1/matches",
-          "retrieved_at": "2026-11-21T06:06:12.027079+00:00",
+          "retrieved_at": "2026-11-21T13:03:29.652724+00:00",
           "payload": {
             "matches": [
               {
@@ -38091,7 +38091,7 @@
         },
         "standings": {
           "source": "https://api.football-data.org/v4/competitions/FL1/standings",
-          "retrieved_at": "2026-11-21T06:06:12.527188+00:00",
+          "retrieved_at": "2026-11-21T13:03:30.101419+00:00",
           "payload": {
             "filters": {
               "season": "2026"
@@ -39243,7 +39243,7 @@
       "preview_angle_context": {
         "finished": {
           "source": "https://api.football-data.org/v4/competitions/CL/matches",
-          "retrieved_at": "2026-11-21T06:06:16.400864+00:00",
+          "retrieved_at": "2026-11-21T13:03:33.883634+00:00",
           "payload": {
             "matches": [
               {
@@ -44003,7 +44003,7 @@
         },
         "standings": {
           "source": "https://api.football-data.org/v4/competitions/CL/standings",
-          "retrieved_at": "2026-11-21T06:07:17.331214+00:00",
+          "retrieved_at": "2026-11-21T13:04:34.842498+00:00",
           "payload": {
             "filters": {
               "season": "2026"
