@@ -1,82 +1,86 @@
 {
-  "updated_at": "2026-11-21T06:01:42.153145+00:00",
+  "updated_at": "2026-11-22T06:01:44.332617+00:00",
   "sources": [
     {
       "name": "MLB公式",
       "items": 25
+    },
+    {
+      "name": "ESPN",
+      "items": 11
     }
   ],
-  "titles_count": 25,
+  "titles_count": 36,
   "teams": [
     {
       "team_id": "121",
       "name": "メッツ",
       "name_en": "New York Mets",
-      "mentions": 3,
+      "mentions": 4,
       "tone": "話題",
-      "gist": "スクーバルへメッツが9年契約提示と報道"
-    },
-    {
-      "team_id": "141",
-      "name": "ブルージェイズ",
-      "name_en": "Toronto Blue Jays",
-      "mentions": 2,
-      "tone": "話題",
-      "gist": "ブルージェイズがシュナイダーを契約見送り"
+      "gist": "Ewing 8年9500万ドル延長、Skubal獲りにも9年"
     },
     {
       "team_id": "119",
       "name": "ドジャース",
       "name_en": "Los Angeles Dodgers",
-      "mentions": 2,
+      "mentions": 3,
       "tone": "話題",
-      "gist": "ドジャースがスクーバル変化、ルイスを獲得"
+      "gist": "ロイス・ルイスをツインズから獲得"
     },
     {
       "team_id": "147",
       "name": "ヤンキース",
       "name_en": "New York Yankees",
+      "mentions": 3,
+      "tone": "話題",
+      "gist": "ブルペン補強、ギルはテンダー期限で放出"
+    },
+    {
+      "team_id": "135",
+      "name": "パドレス",
+      "name_en": "San Diego Padres",
+      "mentions": 3,
+      "tone": "好調",
+      "gist": "シーツと3年延長で再契約"
+    },
+    {
+      "team_id": "145",
+      "name": "ホワイトソックス",
+      "name_en": "Chicago White Sox",
       "mentions": 2,
-      "tone": "話題",
-      "gist": "ヤンキースがギルら見送り、ロアイシガ復帰"
-    },
-    {
-      "team_id": "138",
-      "name": "カージナルス",
-      "name_en": "St. Louis Cardinals",
-      "mentions": 1,
-      "tone": "不振",
-      "gist": "カージナルスがゴーマンを契約見送り"
-    },
-    {
-      "team_id": "111",
-      "name": "レッドソックス",
-      "name_en": "Boston Red Sox",
-      "mentions": 1,
-      "tone": "話題",
-      "gist": "ダイヤモンドバックスがオビエドをレッドソックスから獲得"
+      "tone": "好調",
+      "gist": "'26年は打線が大きく前進"
     },
     {
       "team_id": "115",
       "name": "ロッキーズ",
       "name_en": "Colorado Rockies",
-      "mentions": 1,
+      "mentions": 2,
       "tone": "話題",
-      "gist": "ロッキーズがリーを獲得、ハーゲットをDFA"
+      "gist": "グッドマン肩手術後、春に復帰見込み"
     },
     {
       "team_id": "116",
       "name": "タイガース",
       "name_en": "Detroit Tigers",
-      "mentions": 1,
+      "mentions": 2,
       "tone": "好調",
-      "gist": "タイガースがメルトンと6年延長契約で合意"
+      "gist": "メルトンと6年4650万ドルで延長合意"
+    },
+    {
+      "team_id": "142",
+      "name": "ツインズ",
+      "name_en": "Minnesota Twins",
+      "mentions": 2,
+      "tone": "話題",
+      "gist": "ロイス・ルイスをドジャースへ放出"
     }
   ],
   "players": [
     {
       "name": "大谷翔平",
-      "mentions": 1
+      "mentions": 2
     }
   ]
 }
