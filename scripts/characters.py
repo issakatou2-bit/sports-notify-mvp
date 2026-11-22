@@ -88,11 +88,12 @@ def reserved_width(duo=False):
     return sum(widths) - 30 * (len(widths) - 1) + 20
 
 
-CORNER_HEIGHT = 864
+# 11/22 本人「キャラの大きさ8割くらい」：864→691。顔が安全域（下1440・右930）に入る所まで上げた。
+CORNER_HEIGHT = 691
 # x, y and the visible face within the full-height rig. Hair and clothing may extend out.
 CORNERS = {
-    'zundamon': ('left', -85, 1142, (.40, .15, .73, .34)),
-    'metan': ('right', 620, 1178, (.28, .07, .70, .26)),
+    'zundamon': ('left', -68, 1200, (.40, .15, .73, .34)),
+    'metan': ('right', 692, 1240, (.28, .07, .70, .26)),
 }
 
 

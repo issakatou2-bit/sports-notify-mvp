@@ -1009,7 +1009,9 @@ def face(who: str, height: int, expr: str = "基本",
         return art
     br, ey, mo = FACES.get(expr) or FACES["基本"]
     art = parts["体"]
-    for g, tag in (("眉", br), ("目", ey), ("口", mo)):
+    # 腕は体と別の部品。重ねないと腕の無い立ち絵になる（11/22 本人の指摘）。
+    for g, tag in (("右腕", "基本"), ("左腕", "基本"),
+                   ("眉", br), ("目", ey), ("口", mo)):
         part = (parts.get(g) or {}).get(tag)
         if part is not None:
             art = Image.alpha_composite(art, part)
