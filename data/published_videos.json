@@ -23452,6 +23452,51 @@
       },
       "host_fallback_reason": null,
       "privacy": "public"
+    },
+    "2026-11-21": {
+      "video_id": "8RfwyU-uOcc",
+      "url": "https://youtu.be/8RfwyU-uOcc",
+      "title": "坂元達裕がゴール｜コベントリー対パレス 3-2 #Shorts",
+      "published_at": "2026-11-22T02:23:00.294021+00:00",
+      "publish_at": "2026-11-22T02:37:00Z",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-22",
+        "enabled": true,
+        "assigned": "next",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false,
+        "source": "post_common.lineup:daily_soccer",
+        "next_date": "2026-11-23",
+        "next_time": "19:30",
+        "next_name": "欧州サッカー",
+        "speech": "次は11月23日19時30分の欧州サッカーです。また見に来てくださいね。",
+        "card": "次は11/23 19:30の欧州サッカー"
+      },
+      "duration_seconds": 23.87,
+      "short_information_count": 4,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-11-22",
+        "kind": "soccer_results",
+        "phase": 1,
+        "planned_host": "metan",
+        "rule": "half-jst-week-v1",
+        "week": 45,
+        "weekday": 6
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-11-22T11:18:38.615889+09:00",
+        "comparison_eligible": true,
+        "planned_host": "metan",
+        "reason": null,
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
     }
   },
   "soccer_goal_short": {
