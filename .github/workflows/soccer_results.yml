@@ -91,6 +91,10 @@ jobs:
         id: gate
         run: |
           COUNT=$(python -c "import json; d=json.load(open('data/soccer_results.json',encoding='utf-8')); print(int(d['can_make']))")
+          # 前の晩のゴール速報と同じ試合だけなら、朝の結果の回は作らない（11/22 同じゴールが2本出た）。
+          if [ "$COUNT" -ne 0 ] && python -c "import json,sys; sys.path.insert(0,'scripts'); import soccer_publications as s; d=json.load(open('data/soccer_results.json',encoding='utf-8')); sys.exit(0 if s.results_all_flashed(d, s.load()) else 1)"; then
+            echo "::notice::ゴール速報で出した試合だけなので、結果の回は作りません"; COUNT=0
+          fi
           echo "count=$COUNT" >> "$GITHUB_OUTPUT"
           if [ "$COUNT" -eq 0 ]; then echo "::notice::終了した注目試合/日本人選手の結果がありません。動画を作りません"; fi
       - name: Install video tools

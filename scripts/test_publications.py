@@ -160,5 +160,22 @@ class PublicationsTest(unittest.TestCase):
                 documents(root/'absent')
 
 
+class ResultsAfterGoalFlash(__import__('unittest').TestCase):
+    """11/22：坂元のゴールが速報と朝の結果で2本出た。"""
+    def test_same_game_as_goal_flash_is_skipped_unless_followup(self):
+        import soccer_publications as s
+        ledger = {'401879235': {'status': 'uploaded', 'kind': 'soccer_goal_short'}}
+        data = {'players': [{'event_id': '401879235', 'goals': 1, 'assists': 0},
+                            {'event_id': '999', 'goals': 0, 'assists': 0}]}
+        self.assertTrue(s.results_all_flashed(data, ledger))
+        self.assertFalse(s.results_all_flashed(dict(data, stake_followup={'401879235': {}}), ledger))
+        self.assertFalse(s.results_all_flashed(dict(data, preview_followup={'games': [1]}), ledger))
+        other = {'players': data['players'] + [{'event_id': '555', 'goals': 0, 'assists': 1}]}
+        self.assertFalse(s.results_all_flashed(other, ledger))
+        self.assertFalse(s.results_all_flashed(data, {'401879235': {'status': 'uploaded', 'kind': 'soccer_now'}}))
+        self.assertFalse(s.results_all_flashed({'players': []}, ledger))
+
+
 if __name__ == '__main__':
     unittest.main(argv=[__file__])
+

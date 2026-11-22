@@ -276,6 +276,10 @@ def award_topics(rows, day, season):
     if singles:
         result.append(topic('awards', singles, day, season))
     for ident, events in sorted(groups.items()):
+        # 11/22 本人「ガッツリ進めて」：部門ごとに3本へ分けた賞の回は1本60〜190回と
+        # ほとんど見られなかった。日本人選手がいない複数部門の賞は出さない。
+        if not any(r.get('japanese') for r in events):
+            continue
         events.sort(key=lambda r: (POSITION_ORDER.get((r['raw']['player'].get('primaryPosition') or {}).get('abbreviation'), 99),
                                    r['raw']['player'].get('nameFirstLast', ''), r['event_id']))
         count = (len(events) + 3) // 4
