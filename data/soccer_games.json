@@ -967,10 +967,165 @@
       "reasons": []
     }
   ],
-  "schedule_date": "2026-11-22",
   "ai_status": {
     "targets": 3,
     "succeeded": 3,
     "cost_usd": 0.01524
-  }
+  },
+  "source_errors": [],
+  "fixture_coverage": [
+    {
+      "competition": "PL",
+      "status": "success",
+      "events": 14,
+      "label": "取得成功"
+    },
+    {
+      "competition": "PD",
+      "status": "success",
+      "events": 14,
+      "label": "取得成功"
+    },
+    {
+      "competition": "BL1",
+      "status": "success",
+      "events": 14,
+      "label": "取得成功"
+    },
+    {
+      "competition": "SA",
+      "status": "success",
+      "events": 14,
+      "label": "取得成功"
+    },
+    {
+      "competition": "FL1",
+      "status": "success",
+      "events": 14,
+      "label": "取得成功"
+    },
+    {
+      "competition": "CL",
+      "status": "success",
+      "events": 18,
+      "label": "取得成功"
+    },
+    {
+      "competition": "EL",
+      "status": "success",
+      "events": 18,
+      "label": "取得成功"
+    },
+    {
+      "competition": "UECL",
+      "status": "success",
+      "events": 18,
+      "label": "取得成功"
+    },
+    {
+      "competition": "FAC",
+      "status": "no_games",
+      "events": 0,
+      "label": "試合なし"
+    },
+    {
+      "competition": "EFL",
+      "status": "no_games",
+      "events": 0,
+      "label": "試合なし"
+    },
+    {
+      "competition": "CDR",
+      "status": "no_games",
+      "events": 0,
+      "label": "試合なし"
+    },
+    {
+      "competition": "DFB",
+      "status": "no_games",
+      "events": 0,
+      "label": "試合なし"
+    },
+    {
+      "competition": "CI",
+      "status": "no_games",
+      "events": 0,
+      "label": "試合なし"
+    },
+    {
+      "competition": "CDF",
+      "status": "success",
+      "events": 36,
+      "label": "取得成功"
+    }
+  ],
+  "club_registration_check": {
+    "days": 7,
+    "checked_at": "2026-11-21T19:01:34.254372+09:00",
+    "missing": [
+      {
+        "club": "AS Cannes",
+        "game_ids": [
+          "espn-401934489"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Caen",
+        "game_ids": [
+          "espn-401934495"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Le Pays Du Valois",
+        "game_ids": [
+          "espn-401934500"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Le Puy",
+        "game_ids": [
+          "espn-401934489"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Pays de Saint-Omer",
+        "game_ids": [
+          "espn-401934495"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Valenciennes",
+        "game_ids": [
+          "espn-401934500"
+        ],
+        "candidates": []
+      }
+    ],
+    "source_errors": []
+  },
+  "source": "ESPN・football-data.org・FPL",
+  "preview_selection": {
+    "day": "2026-11-21",
+    "threshold": 30,
+    "max_games": 4,
+    "policy_sha256": "585b6eb07dd181762e53d0d10718ce0f8109e330863ca80770cf4a8e305d9faf",
+    "selected_ids": [
+      "560648",
+      "560650",
+      "559628",
+      "560651"
+    ],
+    "count": 4,
+    "reason": "",
+    "rejected": [],
+    "source_errors": [],
+    "rescued": []
+  },
+  "schedule_date": "2026-11-22",
+  "preview_angles_version": 1
 }
