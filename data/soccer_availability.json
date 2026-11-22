@@ -1,7 +1,18 @@
 {
-  "updated_at": "2026-11-21T10:01:23.706012+00:00",
+  "updated_at": "2026-11-22T10:01:18.397815+00:00",
   "source": "https://fantasy.premierleague.com/api/bootstrap-static/",
   "players": {
+    "鈴木彩艶": {
+      "name_en": "Zion Suzuki",
+      "club_jp": "アストンヴィラ",
+      "minutes": 900,
+      "goals": 0,
+      "assists": 0,
+      "chance_next": null,
+      "news": "",
+      "out": false,
+      "reason": ""
+    },
     "遠藤航": {
       "name_en": "Wataru Endo",
       "club_jp": "リバプール",
@@ -27,7 +38,7 @@
     "鎌田大地": {
       "name_en": "Daichi Kamada",
       "club_jp": "クリスタル・パレス",
-      "minutes": 877,
+      "minutes": 967,
       "goals": 1,
       "assists": 3,
       "chance_next": null,
@@ -38,7 +49,7 @@
     "田中碧": {
       "name_en": "Ao Tanaka",
       "club_jp": "リーズ",
-      "minutes": 633,
+      "minutes": 718,
       "goals": 0,
       "assists": 2,
       "chance_next": null,
@@ -49,8 +60,8 @@
     "坂元達裕": {
       "name_en": "Tatsuhiro Sakamoto",
       "club_jp": "コベントリー",
-      "minutes": 398,
-      "goals": 1,
+      "minutes": 488,
+      "goals": 2,
       "assists": 0,
       "chance_next": null,
       "news": "",
@@ -60,7 +71,7 @@
     "前田大然": {
       "name_en": "Daizen Maeda",
       "club_jp": "イプスウィッチ",
-      "minutes": 510,
+      "minutes": 565,
       "goals": 1,
       "assists": 0,
       "chance_next": null,
@@ -89,17 +100,6 @@
       "news": "Calf injury - Expected back 29 Nov",
       "out": true,
       "reason": "Calf injury - Expected back 29 Nov"
-    },
-    "鈴木彩艶": {
-      "name_en": "Zion Suzuki",
-      "club_jp": "アストンヴィラ",
-      "minutes": 810,
-      "goals": 0,
-      "assists": 0,
-      "chance_next": null,
-      "news": "",
-      "out": false,
-      "reason": ""
     }
   }
 }

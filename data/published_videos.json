@@ -9877,6 +9877,55 @@
       },
       "host_fallback_reason": null,
       "privacy": "public"
+    },
+    "2026-11-22": {
+      "video_id": "EXjF5TNRubo",
+      "url": "https://youtu.be/EXjF5TNRubo",
+      "title": "【欧州サッカー】バルセロナが勝点18差のビジャレアルと対戦 #Shorts",
+      "published_at": "2026-11-22T10:11:42.077926+00:00",
+      "publish_at": "2026-11-22T10:30:00Z",
+      "preview_binding": {
+        "material_sha256": "78ffa43769be42eb3209bc272faf83d0aa5e9458e24a513ed4a27230108e3d33",
+        "narration_sha256": "35669a0decec6c3095be9738aed6ff9658b93932541f922832db9c248ee851ca"
+      },
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-22",
+        "enabled": true,
+        "assigned": "next",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false,
+        "source": "post_common.lineup:daily_soccer",
+        "next_date": "2026-11-23",
+        "next_time": "19:30",
+        "next_name": "欧州サッカー",
+        "speech": "次は11月23日19時30分の欧州サッカーです。また見に来てくださいね。",
+        "card": "次は11/23 19:30の欧州サッカー"
+      },
+      "duration_seconds": 52.87,
+      "short_information_count": 8,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-11-22",
+        "kind": "daily_soccer",
+        "phase": 1,
+        "planned_host": "metan",
+        "rule": "half-jst-week-v1",
+        "week": 45,
+        "weekday": 6
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-11-22T19:03:38.551713+09:00",
+        "comparison_eligible": true,
+        "planned_host": "metan",
+        "reason": null,
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
     }
   },
   "weekly": {
