@@ -58,3 +58,18 @@ if __name__ == '__main__':
         (ROOT/PATH).write_text(json.dumps(load(refresh=True), ensure_ascii=False, indent=2)+'\n', encoding='utf8')
         from publication_writer import mirror_file
         mirror_file(ROOT/PATH, root=ROOT)
+
+
+def results_all_flashed(data, ledger):
+    """朝の結果の回が、前の晩のゴール速報と同じ試合だけなら True（11/22 同じゴールが2本出た）。
+
+    予告の続き（懸かっていた物・見どころの答え合わせ）がある日は、結果の回に別の中身があるので出す。
+    """
+    if (data.get('preview_followup') or {}).get('games') or data.get('stake_followup'):
+        return False
+    scored = {str(p.get('event_id')) for p in data.get('players') or []
+              if (p.get('goals') or p.get('assists'))}
+    flashed = {str(k) for k, e in ledger.items()
+               if isinstance(e, dict) and e.get('kind') == 'soccer_goal_short'
+               and e.get('status') in ('uploaded', 'pending')}
+    return bool(scored) and scored <= flashed

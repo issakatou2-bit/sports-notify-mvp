@@ -152,7 +152,8 @@ def select(data,now=None,availability=None,cfg=None):
                     game['preview_out_names'].append(name)
         row=score(game,availability,cfg);game['preview_rating']=row
         if row['score']>=cfg['threshold']:eligible.append((game,at))
-    eligible.sort(key=lambda pair:(-pair[0]['preview_rating']['score'],-int(pair[0]['preview_rating']['japanese']),pair[1],str(pair[0]['game_id'])))
+    # 11/22：日本人選手のいない予告（トッテナム対イプスウィッチ）は146回。しきい値を越えた中では日本人選手のいる試合を先に選ぶ。
+    eligible.sort(key=lambda pair:(-int(pair[0]['preview_rating']['japanese']),-pair[0]['preview_rating']['score'],pair[1],str(pair[0]['game_id'])))
     # 辞書追加前に別名のまま補われた保存材料にも、同一カードが二重にある。
     unique = []; seen = set()
     for game, at in eligible:
