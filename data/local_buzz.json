@@ -1,86 +1,73 @@
 {
-  "updated_at": "2026-11-22T06:01:44.332617+00:00",
+  "updated_at": "2026-11-23T06:02:22.048727+00:00",
   "sources": [
     {
       "name": "MLB公式",
-      "items": 25
+      "items": 24
     },
     {
       "name": "ESPN",
-      "items": 11
+      "items": 7
     }
   ],
-  "titles_count": 36,
+  "titles_count": 31,
   "teams": [
     {
       "team_id": "121",
       "name": "メッツ",
       "name_en": "New York Mets",
-      "mentions": 4,
+      "mentions": 9,
       "tone": "話題",
-      "gist": "Ewing 8年9500万ドル延長、Skubal獲りにも9年"
+      "gist": "スクーバルが9年4.5億ドルでメッツ入り"
     },
     {
       "team_id": "119",
       "name": "ドジャース",
       "name_en": "Los Angeles Dodgers",
-      "mentions": 3,
-      "tone": "話題",
-      "gist": "ロイス・ルイスをツインズから獲得"
-    },
-    {
-      "team_id": "147",
-      "name": "ヤンキース",
-      "name_en": "New York Yankees",
-      "mentions": 3,
-      "tone": "話題",
-      "gist": "ブルペン補強、ギルはテンダー期限で放出"
-    },
-    {
-      "team_id": "135",
-      "name": "パドレス",
-      "name_en": "San Diego Padres",
-      "mentions": 3,
-      "tone": "好調",
-      "gist": "シーツと3年延長で再契約"
-    },
-    {
-      "team_id": "145",
-      "name": "ホワイトソックス",
-      "name_en": "Chicago White Sox",
-      "mentions": 2,
-      "tone": "好調",
-      "gist": "'26年は打線が大きく前進"
-    },
-    {
-      "team_id": "115",
-      "name": "ロッキーズ",
-      "name_en": "Colorado Rockies",
       "mentions": 2,
       "tone": "話題",
-      "gist": "グッドマン肩手術後、春に復帰見込み"
+      "gist": "ドジャースがスクーバルと再契約せず"
     },
     {
       "team_id": "116",
       "name": "タイガース",
       "name_en": "Detroit Tigers",
       "mentions": 2,
-      "tone": "好調",
-      "gist": "メルトンと6年4650万ドルで延長合意"
+      "tone": "話題",
+      "gist": "元新人王ギルが1年契約でタイガース入り"
     },
     {
-      "team_id": "142",
-      "name": "ツインズ",
-      "name_en": "Minnesota Twins",
+      "team_id": "135",
+      "name": "パドレス",
+      "name_en": "San Diego Padres",
       "mentions": 2,
       "tone": "話題",
-      "gist": "ロイス・ルイスをドジャースへ放出"
+      "gist": "パドレスがシーツと3年契約で再契約"
+    },
+    {
+      "team_id": "141",
+      "name": "ブルージェイズ",
+      "name_en": "Toronto Blue Jays",
+      "mentions": 1,
+      "tone": "話題",
+      "gist": "ブルージェイズ最強打者の代名詞HR"
+    },
+    {
+      "team_id": "115",
+      "name": "ロッキーズ",
+      "name_en": "Colorado Rockies",
+      "mentions": 1,
+      "tone": "話題",
+      "gist": "サーベイスがロッキーズの要職に就任"
+    },
+    {
+      "team_id": "144",
+      "name": "ブレーブス",
+      "name_en": "Atlanta Braves",
+      "mentions": 1,
+      "tone": "話題",
+      "gist": "ブレーブスの大型契約延長7件を回顧"
     }
   ],
-  "players": [
-    {
-      "name": "大谷翔平",
-      "mentions": 2
-    }
-  ]
+  "players": []
 }
