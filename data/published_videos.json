@@ -24374,5 +24374,24 @@
       "short_content_policy": "short-content-20261027-v1",
       "privacy": "public"
     }
+  },
+  "soccer_weekly": {
+    "2026-11-23": {
+      "video_id": "N816WVuDAiY",
+      "url": "https://youtu.be/N816WVuDAiY",
+      "title": "【欧州サッカー】坂元達裕が1得点｜日本人選手の1週間（11/21〜11/23）",
+      "published_at": "2026-11-23T07:58:59.667028+00:00",
+      "publish_at": "2026-11-23T11:30:00Z",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-23",
+        "enabled": false,
+        "assigned": "generic",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false
+      },
+      "privacy": "public"
+    }
   }
 }
