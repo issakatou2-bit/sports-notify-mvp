@@ -9926,6 +9926,55 @@
       },
       "host_fallback_reason": null,
       "privacy": "public"
+    },
+    "2026-11-24": {
+      "video_id": "4UbaZ_WXDzU",
+      "url": "https://youtu.be/4UbaZ_WXDzU",
+      "title": "【欧州サッカー】佐野航大のPSVがチャンピオンズリーグで勝点8差のレアル・マドリードと対戦 #Shorts",
+      "published_at": "2026-11-24T10:13:41.225534+00:00",
+      "publish_at": "2026-11-24T10:30:00Z",
+      "preview_binding": {
+        "material_sha256": "042768b72063aeb4f87ca4e6f39e590547a3fe51249d5207f102caebe8995dfd",
+        "narration_sha256": "bdc34364e798194b9cbe31022c405054bfeb7ec7b6a39da60878e25a9a556ca6"
+      },
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-24",
+        "enabled": true,
+        "assigned": "next",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false,
+        "source": "post_common.lineup:daily_soccer",
+        "next_date": "2026-11-25",
+        "next_time": "19:30",
+        "next_name": "欧州サッカー",
+        "speech": "次は11月25日19時30分の欧州サッカーです。また見に来てくださいね。",
+        "card": "次は11/25 19:30の欧州サッカー"
+      },
+      "duration_seconds": 51.6,
+      "short_information_count": 10,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-11-24",
+        "kind": "daily_soccer",
+        "phase": 1,
+        "planned_host": "metan",
+        "rule": "half-jst-week-v1",
+        "week": 46,
+        "weekday": 1
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-11-24T19:04:15.382833+09:00",
+        "comparison_eligible": true,
+        "planned_host": "metan",
+        "reason": null,
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
     }
   },
   "weekly": {
