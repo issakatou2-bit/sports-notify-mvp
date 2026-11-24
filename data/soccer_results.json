@@ -20,5 +20,878 @@
       "reason": "日本人選手を当日の登録名簿で照合できず"
     }
   ],
+  "preview_expectation_results": {},
+  "preview_next_fixtures": [
+    {
+      "home": "Levante UD",
+      "away": "Elche CF",
+      "start_utc": "2026-11-23T20:00:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PD/matches",
+      "competition": "PD"
+    },
+    {
+      "home": "Levante UD",
+      "away": "Real Racing Club de Santander",
+      "start_utc": "2026-11-27T20:00:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PD/matches",
+      "competition": "PD"
+    },
+    {
+      "home": "Real Betis Balompié",
+      "away": "Rayo Vallecano de Madrid",
+      "start_utc": "2026-11-28T13:00:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PD/matches",
+      "competition": "PD"
+    },
+    {
+      "home": "Málaga CF",
+      "away": "Athletic Club",
+      "start_utc": "2026-11-28T15:15:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PD/matches",
+      "competition": "PD"
+    },
+    {
+      "home": "Elche CF",
+      "away": "Club Atlético de Madrid",
+      "start_utc": "2026-11-28T17:30:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PD/matches",
+      "competition": "PD"
+    },
+    {
+      "home": "Real Madrid CF",
+      "away": "Deportivo Alavés",
+      "start_utc": "2026-11-28T20:00:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PD/matches",
+      "competition": "PD"
+    },
+    {
+      "home": "Valencia CF",
+      "away": "CA Osasuna",
+      "start_utc": "2026-11-29T13:00:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PD/matches",
+      "competition": "PD"
+    },
+    {
+      "home": "RC Deportivo La Coruña",
+      "away": "FC Barcelona",
+      "start_utc": "2026-11-29T15:15:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PD/matches",
+      "competition": "PD"
+    },
+    {
+      "home": "RC Celta de Vigo",
+      "away": "Villarreal CF",
+      "start_utc": "2026-11-29T17:30:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PD/matches",
+      "competition": "PD"
+    },
+    {
+      "home": "Real Sociedad de Fútbol",
+      "away": "Sevilla FC",
+      "start_utc": "2026-11-29T20:00:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PD/matches",
+      "competition": "PD"
+    },
+    {
+      "home": "RCD Espanyol de Barcelona",
+      "away": "Getafe CF",
+      "start_utc": "2026-11-30T20:00:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PD/matches",
+      "competition": "PD"
+    },
+    {
+      "home": "Real Sociedad de Fútbol",
+      "away": "Real Madrid CF",
+      "start_utc": "2026-12-02T18:00:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PD/matches",
+      "competition": "PD"
+    },
+    {
+      "home": "FC Barcelona",
+      "away": "Club Atlético de Madrid",
+      "start_utc": "2026-12-02T20:30:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PD/matches",
+      "competition": "PD"
+    },
+    {
+      "home": "Deportivo Alavés",
+      "away": "RCD Espanyol de Barcelona",
+      "start_utc": "2026-12-04T20:00:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PD/matches",
+      "competition": "PD"
+    },
+    {
+      "home": "Real Racing Club de Santander",
+      "away": "RC Deportivo La Coruña",
+      "start_utc": "2026-12-05T13:00:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PD/matches",
+      "competition": "PD"
+    },
+    {
+      "home": "Rayo Vallecano de Madrid",
+      "away": "Levante UD",
+      "start_utc": "2026-12-05T15:15:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PD/matches",
+      "competition": "PD"
+    },
+    {
+      "home": "Villarreal CF",
+      "away": "Real Sociedad de Fútbol",
+      "start_utc": "2026-12-05T17:30:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PD/matches",
+      "competition": "PD"
+    },
+    {
+      "home": "FC Barcelona",
+      "away": "RC Celta de Vigo",
+      "start_utc": "2026-12-05T20:00:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PD/matches",
+      "competition": "PD"
+    },
+    {
+      "home": "CA Osasuna",
+      "away": "Elche CF",
+      "start_utc": "2026-12-06T13:00:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PD/matches",
+      "competition": "PD"
+    },
+    {
+      "home": "Athletic Club",
+      "away": "Real Madrid CF",
+      "start_utc": "2026-12-06T15:15:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PD/matches",
+      "competition": "PD"
+    },
+    {
+      "home": "Getafe CF",
+      "away": "Valencia CF",
+      "start_utc": "2026-12-06T17:30:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PD/matches",
+      "competition": "PD"
+    },
+    {
+      "home": "Club Atlético de Madrid",
+      "away": "Real Betis Balompié",
+      "start_utc": "2026-12-06T20:00:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PD/matches",
+      "competition": "PD"
+    },
+    {
+      "home": "Sevilla FC",
+      "away": "Málaga CF",
+      "start_utc": "2026-12-07T20:00:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PD/matches",
+      "competition": "PD"
+    },
+    {
+      "home": "Brentford FC",
+      "away": "Everton FC",
+      "start_utc": "2026-11-23T20:00:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PL/matches",
+      "competition": "PL"
+    },
+    {
+      "home": "Nottingham Forest FC",
+      "away": "Chelsea FC",
+      "start_utc": "2026-11-27T20:00:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PL/matches",
+      "competition": "PL"
+    },
+    {
+      "home": "Leeds United FC",
+      "away": "Coventry City FC",
+      "start_utc": "2026-11-28T15:00:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PL/matches",
+      "competition": "PL"
+    },
+    {
+      "home": "Manchester United FC",
+      "away": "Brentford FC",
+      "start_utc": "2026-11-28T15:00:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PL/matches",
+      "competition": "PL"
+    },
+    {
+      "home": "Ipswich Town FC",
+      "away": "Aston Villa FC",
+      "start_utc": "2026-11-28T17:30:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PL/matches",
+      "competition": "PL"
+    },
+    {
+      "home": "Everton FC",
+      "away": "Liverpool FC",
+      "start_utc": "2026-11-29T12:00:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PL/matches",
+      "competition": "PL"
+    },
+    {
+      "home": "Fulham FC",
+      "away": "AFC Bournemouth",
+      "start_utc": "2026-11-29T14:05:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PL/matches",
+      "competition": "PL"
+    },
+    {
+      "home": "Brighton & Hove Albion FC",
+      "away": "Newcastle United FC",
+      "start_utc": "2026-11-29T14:05:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PL/matches",
+      "competition": "PL"
+    },
+    {
+      "home": "Sunderland AFC",
+      "away": "Tottenham Hotspur FC",
+      "start_utc": "2026-11-29T14:05:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PL/matches",
+      "competition": "PL"
+    },
+    {
+      "home": "Crystal Palace FC",
+      "away": "Hull City AFC",
+      "start_utc": "2026-11-29T14:05:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PL/matches",
+      "competition": "PL"
+    },
+    {
+      "home": "Arsenal FC",
+      "away": "Manchester City FC",
+      "start_utc": "2026-11-29T16:30:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PL/matches",
+      "competition": "PL"
+    },
+    {
+      "home": "Coventry City FC",
+      "away": "Ipswich Town FC",
+      "start_utc": "2026-12-01T20:00:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PL/matches",
+      "competition": "PL"
+    },
+    {
+      "home": "Liverpool FC",
+      "away": "Sunderland AFC",
+      "start_utc": "2026-12-02T19:30:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PL/matches",
+      "competition": "PL"
+    },
+    {
+      "home": "Hull City AFC",
+      "away": "Nottingham Forest FC",
+      "start_utc": "2026-12-02T19:30:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PL/matches",
+      "competition": "PL"
+    },
+    {
+      "home": "Chelsea FC",
+      "away": "Crystal Palace FC",
+      "start_utc": "2026-12-02T19:30:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PL/matches",
+      "competition": "PL"
+    },
+    {
+      "home": "Manchester City FC",
+      "away": "Leeds United FC",
+      "start_utc": "2026-12-02T19:30:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PL/matches",
+      "competition": "PL"
+    },
+    {
+      "home": "Aston Villa FC",
+      "away": "Everton FC",
+      "start_utc": "2026-12-02T20:15:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PL/matches",
+      "competition": "PL"
+    },
+    {
+      "home": "Brentford FC",
+      "away": "Arsenal FC",
+      "start_utc": "2026-12-02T20:15:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PL/matches",
+      "competition": "PL"
+    },
+    {
+      "home": "Newcastle United FC",
+      "away": "Manchester United FC",
+      "start_utc": "2026-12-02T20:15:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PL/matches",
+      "competition": "PL"
+    },
+    {
+      "home": "AFC Bournemouth",
+      "away": "Brighton & Hove Albion FC",
+      "start_utc": "2026-12-02T20:15:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PL/matches",
+      "competition": "PL"
+    },
+    {
+      "home": "Tottenham Hotspur FC",
+      "away": "Fulham FC",
+      "start_utc": "2026-12-03T20:00:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PL/matches",
+      "competition": "PL"
+    },
+    {
+      "home": "Chelsea FC",
+      "away": "Liverpool FC",
+      "start_utc": "2026-12-05T12:30:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PL/matches",
+      "competition": "PL"
+    },
+    {
+      "home": "Manchester United FC",
+      "away": "Coventry City FC",
+      "start_utc": "2026-12-05T15:00:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PL/matches",
+      "competition": "PL"
+    },
+    {
+      "home": "Leeds United FC",
+      "away": "Ipswich Town FC",
+      "start_utc": "2026-12-05T15:00:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PL/matches",
+      "competition": "PL"
+    },
+    {
+      "home": "AFC Bournemouth",
+      "away": "Hull City AFC",
+      "start_utc": "2026-12-05T15:00:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PL/matches",
+      "competition": "PL"
+    },
+    {
+      "home": "Aston Villa FC",
+      "away": "Crystal Palace FC",
+      "start_utc": "2026-12-05T15:00:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PL/matches",
+      "competition": "PL"
+    },
+    {
+      "home": "Nottingham Forest FC",
+      "away": "Brighton & Hove Albion FC",
+      "start_utc": "2026-12-05T17:30:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PL/matches",
+      "competition": "PL"
+    },
+    {
+      "home": "Brentford FC",
+      "away": "Manchester City FC",
+      "start_utc": "2026-12-05T20:00:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PL/matches",
+      "competition": "PL"
+    },
+    {
+      "home": "Newcastle United FC",
+      "away": "Sunderland AFC",
+      "start_utc": "2026-12-06T14:00:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PL/matches",
+      "competition": "PL"
+    },
+    {
+      "home": "Everton FC",
+      "away": "Fulham FC",
+      "start_utc": "2026-12-06T14:00:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PL/matches",
+      "competition": "PL"
+    },
+    {
+      "home": "Tottenham Hotspur FC",
+      "away": "Arsenal FC",
+      "start_utc": "2026-12-06T16:30:00Z",
+      "source": "https://api.football-data.org/v4/competitions/PL/matches",
+      "competition": "PL"
+    },
+    {
+      "home": "AC Monza",
+      "away": "ACF Fiorentina",
+      "start_utc": "2026-11-23T19:45:00Z",
+      "source": "https://api.football-data.org/v4/competitions/SA/matches",
+      "competition": "SA"
+    },
+    {
+      "home": "Venezia FC",
+      "away": "Bologna FC 1909",
+      "start_utc": "2026-11-27T19:45:00Z",
+      "source": "https://api.football-data.org/v4/competitions/SA/matches",
+      "competition": "SA"
+    },
+    {
+      "home": "Frosinone Calcio",
+      "away": "Parma Calcio 1913",
+      "start_utc": "2026-11-28T14:00:00Z",
+      "source": "https://api.football-data.org/v4/competitions/SA/matches",
+      "competition": "SA"
+    },
+    {
+      "home": "Torino FC",
+      "away": "SS Lazio",
+      "start_utc": "2026-11-28T17:00:00Z",
+      "source": "https://api.football-data.org/v4/competitions/SA/matches",
+      "competition": "SA"
+    },
+    {
+      "home": "FC Internazionale Milano",
+      "away": "Genoa CFC",
+      "start_utc": "2026-11-28T19:45:00Z",
+      "source": "https://api.football-data.org/v4/competitions/SA/matches",
+      "competition": "SA"
+    },
+    {
+      "home": "Udinese Calcio",
+      "away": "ACF Fiorentina",
+      "start_utc": "2026-11-29T11:30:00Z",
+      "source": "https://api.football-data.org/v4/competitions/SA/matches",
+      "competition": "SA"
+    },
+    {
+      "home": "US Sassuolo Calcio",
+      "away": "SSC Napoli",
+      "start_utc": "2026-11-29T14:00:00Z",
+      "source": "https://api.football-data.org/v4/competitions/SA/matches",
+      "competition": "SA"
+    },
+    {
+      "home": "AS Roma",
+      "away": "AC Monza",
+      "start_utc": "2026-11-29T17:00:00Z",
+      "source": "https://api.football-data.org/v4/competitions/SA/matches",
+      "competition": "SA"
+    },
+    {
+      "home": "Como 1907",
+      "away": "Juventus FC",
+      "start_utc": "2026-11-29T19:45:00Z",
+      "source": "https://api.football-data.org/v4/competitions/SA/matches",
+      "competition": "SA"
+    },
+    {
+      "home": "US Lecce",
+      "away": "Atalanta BC",
+      "start_utc": "2026-11-30T17:30:00Z",
+      "source": "https://api.football-data.org/v4/competitions/SA/matches",
+      "competition": "SA"
+    },
+    {
+      "home": "Cagliari Calcio",
+      "away": "AC Milan",
+      "start_utc": "2026-11-30T19:45:00Z",
+      "source": "https://api.football-data.org/v4/competitions/SA/matches",
+      "competition": "SA"
+    },
+    {
+      "home": "Bologna FC 1909",
+      "away": "AS Roma",
+      "start_utc": "2026-12-04T19:45:00Z",
+      "source": "https://api.football-data.org/v4/competitions/SA/matches",
+      "competition": "SA"
+    },
+    {
+      "home": "AC Monza",
+      "away": "Como 1907",
+      "start_utc": "2026-12-05T14:00:00Z",
+      "source": "https://api.football-data.org/v4/competitions/SA/matches",
+      "competition": "SA"
+    },
+    {
+      "home": "Frosinone Calcio",
+      "away": "FC Internazionale Milano",
+      "start_utc": "2026-12-05T17:00:00Z",
+      "source": "https://api.football-data.org/v4/competitions/SA/matches",
+      "competition": "SA"
+    },
+    {
+      "home": "SSC Napoli",
+      "away": "US Lecce",
+      "start_utc": "2026-12-05T19:45:00Z",
+      "source": "https://api.football-data.org/v4/competitions/SA/matches",
+      "competition": "SA"
+    },
+    {
+      "home": "Genoa CFC",
+      "away": "Torino FC",
+      "start_utc": "2026-12-06T11:30:00Z",
+      "source": "https://api.football-data.org/v4/competitions/SA/matches",
+      "competition": "SA"
+    },
+    {
+      "home": "SS Lazio",
+      "away": "Atalanta BC",
+      "start_utc": "2026-12-06T14:00:00Z",
+      "source": "https://api.football-data.org/v4/competitions/SA/matches",
+      "competition": "SA"
+    },
+    {
+      "home": "Juventus FC",
+      "away": "Udinese Calcio",
+      "start_utc": "2026-12-06T17:00:00Z",
+      "source": "https://api.football-data.org/v4/competitions/SA/matches",
+      "competition": "SA"
+    },
+    {
+      "home": "AC Milan",
+      "away": "Parma Calcio 1913",
+      "start_utc": "2026-12-06T19:45:00Z",
+      "source": "https://api.football-data.org/v4/competitions/SA/matches",
+      "competition": "SA"
+    },
+    {
+      "home": "Venezia FC",
+      "away": "US Sassuolo Calcio",
+      "start_utc": "2026-12-07T17:30:00Z",
+      "source": "https://api.football-data.org/v4/competitions/SA/matches",
+      "competition": "SA"
+    },
+    {
+      "home": "ACF Fiorentina",
+      "away": "Cagliari Calcio",
+      "start_utc": "2026-12-07T19:45:00Z",
+      "source": "https://api.football-data.org/v4/competitions/SA/matches",
+      "competition": "SA"
+    }
+  ],
+  "preview_followup": {
+    "day": "2026-11-22",
+    "video_id": "EXjF5TNRubo",
+    "games": [
+      {
+        "event_id": "401882804",
+        "forecast": {
+          "game_id": "564749",
+          "espn_event_id": "401882804",
+          "league": "ラ・リーガ",
+          "competition_code": "PD",
+          "home": "バルセロナ",
+          "away": "ビジャレアル",
+          "start_utc": "2026-11-22T22:00:00+09:00",
+          "reasons": [
+            {
+              "kind": "points",
+              "score": 100,
+              "text": "ラ・リーガではバルセロナは勝点33、ビジャレアルは勝点15で、両チームの勝点差は18です。",
+              "source": "https://site.api.espn.com/apis/v2/sports/soccer/esp.1/standings",
+              "retrieved_at": "2026-11-22T10:02:33.580808+00:00",
+              "values": {
+                "competition": "PD",
+                "gap": 18,
+                "rows": {
+                  "home": {
+                    "team_id": "83",
+                    "rank": 1,
+                    "points": 33,
+                    "played": 12,
+                    "tied": true
+                  },
+                  "away": {
+                    "team_id": "102",
+                    "rank": 9,
+                    "points": 15,
+                    "played": 12,
+                    "tied": true
+                  }
+                },
+                "league": "ラ・リーガ"
+              }
+            },
+            {
+              "kind": "form",
+              "score": 85,
+              "text": "バルセロナはラ・リーガの直近5試合で4勝0分1敗です。",
+              "source": "https://api.football-data.org/v4/competitions/PD/matches",
+              "retrieved_at": "2026-11-22T10:01:47.081167+00:00",
+              "values": {
+                "side": "home",
+                "form": [
+                  "W",
+                  "W",
+                  "L",
+                  "W",
+                  "W"
+                ],
+                "match_ids": [
+                  564746,
+                  564732,
+                  564723,
+                  564713,
+                  564700
+                ]
+              }
+            },
+            {
+              "kind": "h2h",
+              "score": 80,
+              "text": "前回の対戦は2026年2月28日のバルセロナ対ビジャレアルで4対1でした。",
+              "source": "https://api.football-data.org/v4/matches/564749/head2head",
+              "retrieved_at": "2026-11-22T10:01:53.677769+00:00",
+              "values": {
+                "match_id": 544461,
+                "score": {
+                  "home": 4,
+                  "away": 1
+                }
+              }
+            }
+          ],
+          "expectation": null,
+          "spoken": "日本時間22時、バルセロナ対ビジャレアル。ラ・リーガではバルセロナは勝点33、ビジャレアルは勝点15で、両チームの勝点差は18です。バルセロナはラ・リーガの直近5試合で4勝0分1敗です。前回の対戦は2026年2月28日のバルセロナ対ビジャレアルで4対1でした。",
+          "standings": {
+            "home": {
+              "team_id": "83",
+              "rank": 1,
+              "points": 33,
+              "played": 12,
+              "tied": true,
+              "as_of": "2026-11-22T09:53:50.307760+00:00",
+              "competition": "PD",
+              "season": null
+            },
+            "away": {
+              "team_id": "102",
+              "rank": 9,
+              "points": 15,
+              "played": 12,
+              "tied": true,
+              "as_of": "2026-11-22T09:53:50.307760+00:00",
+              "competition": "PD",
+              "season": null
+            }
+          }
+        },
+        "answer": null,
+        "rank_changes": [],
+        "next_game": {
+          "home": "RC Deportivo La Coruña",
+          "away": "FC Barcelona",
+          "start_utc": "2026-11-29T15:15:00Z",
+          "source": "https://api.football-data.org/v4/competitions/PD/matches",
+          "competition": "PD"
+        }
+      },
+      {
+        "event_id": "401878755",
+        "forecast": {
+          "game_id": "560645",
+          "espn_event_id": "401878755",
+          "league": "プレミアリーグ",
+          "competition_code": "PL",
+          "home": "リバプール",
+          "away": "マンチェスター・ユナイテッド",
+          "start_utc": "2026-11-23T01:30:00+09:00",
+          "reasons": [
+            {
+              "kind": "points",
+              "score": 100,
+              "text": "プレミアリーグではリバプールは勝点18、マンチェスターUは19位で勝点8で、両チームの勝点差は10です。",
+              "source": "https://site.api.espn.com/apis/v2/sports/soccer/eng.1/standings",
+              "retrieved_at": "2026-11-22T10:02:33.726475+00:00",
+              "values": {
+                "competition": "PL",
+                "gap": 10,
+                "rows": {
+                  "home": {
+                    "team_id": "364",
+                    "rank": 5,
+                    "points": 18,
+                    "played": 10,
+                    "tied": true
+                  },
+                  "away": {
+                    "team_id": "360",
+                    "rank": 19,
+                    "points": 8,
+                    "played": 10,
+                    "tied": false
+                  }
+                },
+                "league": "プレミアリーグ"
+              }
+            },
+            {
+              "kind": "form",
+              "score": 85,
+              "text": "マンチェスターUはプレミアリーグの直近5試合で0勝3分2敗です。",
+              "source": "https://api.football-data.org/v4/competitions/PL/matches",
+              "retrieved_at": "2026-11-22T10:02:07.018971+00:00",
+              "values": {
+                "side": "away",
+                "form": [
+                  "D",
+                  "L",
+                  "L",
+                  "D",
+                  "D"
+                ],
+                "match_ids": [
+                  560639,
+                  560626,
+                  560615,
+                  560605,
+                  560600
+                ]
+              }
+            },
+            {
+              "kind": "h2h",
+              "score": 80,
+              "text": "前回の対戦は2026年5月3日のマンチェスターU対リバプールで3対2でした。",
+              "source": "https://api.football-data.org/v4/matches/560645/head2head",
+              "retrieved_at": "2026-11-22T10:02:13.618007+00:00",
+              "values": {
+                "match_id": 538132,
+                "score": {
+                  "home": 3,
+                  "away": 2
+                }
+              }
+            }
+          ],
+          "expectation": null,
+          "spoken": "日本時間11月23日1時30分、リバプール対マンチェスターU。プレミアリーグではリバプールは勝点18、マンチェスターUは19位で勝点8で、両チームの勝点差は10です。マンチェスターUはプレミアリーグの直近5試合で0勝3分2敗です。",
+          "standings": {
+            "home": {
+              "team_id": "364",
+              "rank": 5,
+              "points": 18,
+              "played": 10,
+              "tied": true,
+              "as_of": "2026-11-22T09:53:50.307760+00:00",
+              "competition": "PL",
+              "season": null
+            },
+            "away": {
+              "team_id": "360",
+              "rank": 19,
+              "points": 8,
+              "played": 10,
+              "tied": false,
+              "as_of": "2026-11-22T09:53:50.307760+00:00",
+              "competition": "PL",
+              "season": null
+            }
+          }
+        },
+        "answer": null,
+        "rank_changes": [],
+        "next_game": {
+          "home": "Manchester United FC",
+          "away": "Brentford FC",
+          "start_utc": "2026-11-28T15:00:00Z",
+          "source": "https://api.football-data.org/v4/competitions/PL/matches",
+          "competition": "PL"
+        }
+      },
+      {
+        "event_id": "401874989",
+        "forecast": {
+          "game_id": "558523",
+          "espn_event_id": "401874989",
+          "league": "セリエA",
+          "competition_code": "SA",
+          "home": "ACミラン",
+          "away": "フロジノーネ",
+          "start_utc": "2026-11-23T02:00:00+09:00",
+          "reasons": [
+            {
+              "kind": "points",
+              "score": 100,
+              "text": "セリエAではACミランは5位で勝点24、フロジノーネは6位で勝点20で、両チームの勝点差は4です。",
+              "source": "https://site.api.espn.com/apis/v2/sports/soccer/ita.1/standings",
+              "retrieved_at": "2026-11-22T10:02:33.896640+00:00",
+              "values": {
+                "competition": "SA",
+                "gap": 4,
+                "rows": {
+                  "home": {
+                    "team_id": "103",
+                    "rank": 5,
+                    "points": 24,
+                    "played": 11,
+                    "tied": false
+                  },
+                  "away": {
+                    "team_id": "4057",
+                    "rank": 6,
+                    "points": 20,
+                    "played": 11,
+                    "tied": false
+                  }
+                },
+                "league": "セリエA"
+              }
+            },
+            {
+              "kind": "form",
+              "score": 85,
+              "text": "ACミランはセリエAの直近5試合で4勝0分1敗です。",
+              "source": "https://api.football-data.org/v4/competitions/SA/matches",
+              "retrieved_at": "2026-11-22T10:02:26.831173+00:00",
+              "values": {
+                "side": "home",
+                "form": [
+                  "W",
+                  "W",
+                  "L",
+                  "W",
+                  "W"
+                ],
+                "match_ids": [
+                  558536,
+                  558548,
+                  558549,
+                  558559,
+                  558569
+                ]
+              }
+            },
+            {
+              "kind": "h2h",
+              "score": 80,
+              "text": "前回の対戦は2024年2月3日のフロジノーネ対ACミランで2対3でした。",
+              "source": "https://api.football-data.org/v4/matches/558523/head2head",
+              "retrieved_at": "2026-11-22T10:02:33.323231+00:00",
+              "values": {
+                "match_id": 444477,
+                "score": {
+                  "home": 2,
+                  "away": 3
+                }
+              }
+            }
+          ],
+          "expectation": null,
+          "spoken": "日本時間11月23日2時、ACミラン対フロジノーネ。",
+          "standings": {
+            "home": {
+              "team_id": "103",
+              "rank": 5,
+              "points": 24,
+              "played": 11,
+              "tied": false,
+              "as_of": "2026-11-22T09:53:50.307760+00:00",
+              "competition": "SA",
+              "season": null
+            },
+            "away": {
+              "team_id": "4057",
+              "rank": 6,
+              "points": 20,
+              "played": 11,
+              "tied": false,
+              "as_of": "2026-11-22T09:53:50.307760+00:00",
+              "competition": "SA",
+              "season": null
+            }
+          }
+        },
+        "answer": null,
+        "rank_changes": [],
+        "next_game": {
+          "home": "Frosinone Calcio",
+          "away": "Parma Calcio 1913",
+          "start_utc": "2026-11-28T14:00:00Z",
+          "source": "https://api.football-data.org/v4/competitions/SA/matches",
+          "competition": "SA"
+        }
+      }
+    ]
+  },
   "short_content_version": "1108"
 }
