@@ -1,72 +1,76 @@
 {
-  "updated_at": "2026-11-23T06:02:22.048727+00:00",
+  "updated_at": "2026-11-24T06:03:03.027612+00:00",
   "sources": [
     {
       "name": "MLB公式",
-      "items": 24
-    },
-    {
-      "name": "ESPN",
-      "items": 7
+      "items": 25
     }
   ],
-  "titles_count": 31,
+  "titles_count": 25,
   "teams": [
     {
       "team_id": "121",
       "name": "メッツ",
       "name_en": "New York Mets",
-      "mentions": 9,
-      "tone": "話題",
-      "gist": "スクーバルが9年4.5億ドルでメッツ入り"
+      "mentions": 4,
+      "tone": "好調",
+      "gist": "スクーバルと9年450Mで合意、ゴールドシュミットも"
+    },
+    {
+      "team_id": "112",
+      "name": "カブス",
+      "name_en": "Chicago Cubs",
+      "mentions": 2,
+      "tone": "好調",
+      "gist": "ロジャースと複数年契約、先発陣再編が始動"
     },
     {
       "team_id": "119",
       "name": "ドジャース",
       "name_en": "Los Angeles Dodgers",
-      "mentions": 2,
+      "mentions": 1,
       "tone": "話題",
-      "gist": "ドジャースがスクーバルと再契約せず"
+      "gist": "救援ステファンソンと契約、ブルペン補強"
+    },
+    {
+      "team_id": "147",
+      "name": "ヤンキース",
+      "name_en": "New York Yankees",
+      "mentions": 1,
+      "tone": "話題",
+      "gist": "左腕救援スーターと1年契約で合意"
+    },
+    {
+      "team_id": "158",
+      "name": "ブリュワーズ",
+      "name_en": "Milwaukee Brewers",
+      "mentions": 1,
+      "tone": "好調",
+      "gist": "ポストシーズン分配金が4100万ドル超"
     },
     {
       "team_id": "116",
       "name": "タイガース",
       "name_en": "Detroit Tigers",
-      "mentions": 2,
-      "tone": "話題",
-      "gist": "元新人王ギルが1年契約でタイガース入り"
-    },
-    {
-      "team_id": "135",
-      "name": "パドレス",
-      "name_en": "San Diego Padres",
-      "mentions": 2,
-      "tone": "話題",
-      "gist": "パドレスがシーツと3年契約で再契約"
-    },
-    {
-      "team_id": "141",
-      "name": "ブルージェイズ",
-      "name_en": "Toronto Blue Jays",
       "mentions": 1,
       "tone": "話題",
-      "gist": "ブルージェイズ最強打者の代名詞HR"
+      "gist": "元新人王ギルがタイガースと1年契約"
     },
     {
-      "team_id": "115",
-      "name": "ロッキーズ",
-      "name_en": "Colorado Rockies",
+      "team_id": "117",
+      "name": "アストロズ",
+      "name_en": "Houston Astros",
       "mentions": 1,
       "tone": "話題",
-      "gist": "サーベイスがロッキーズの要職に就任"
+      "gist": "新監督マルティネス、打撃コーチにベイツ"
     },
     {
-      "team_id": "144",
-      "name": "ブレーブス",
-      "name_en": "Atlanta Braves",
+      "team_id": "118",
+      "name": "ロイヤルズ",
+      "name_en": "Kansas City Royals",
       "mentions": 1,
       "tone": "話題",
-      "gist": "ブレーブスの大型契約延長7件を回顧"
+      "gist": "左腕シールバーと1年契約を締結"
     }
   ],
   "players": []
