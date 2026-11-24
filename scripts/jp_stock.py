@@ -747,10 +747,15 @@ def rotation_available(topic, spec, ledgers, as_of=None):
     return True
 
 
+# 11/23 本人「勧めていこう」（分析：公開約48時間で、同じ「勝敗」の型でも佐々木・村上・山本は約900回、
+# 菊池・鈴木・千賀は56〜85回。名前で10倍ほど差がある）。週3本の枠は、この4人の回から先に使う。
+STAR_IDS = frozenset({'660271', '808967', '808963', '808959'})  # 大谷翔平・山本由伸・佐々木朗希・村上宗隆
+
+
 def rotation_priority(topic, spec, ledgers, as_of=None):
-    """既存の当日・前日禁止を保ち、最後の登場が古い選手を先にする。"""
+    """既存の当日・前日禁止を保ち、よく見られる選手の回を先に、その中で最後の登場が古い選手を先にする。"""
     if not spec.get('jp_stock'):
-        return (0, 0)
+        return (0, 0, 0, 0)
     import jp_assets
     import asset_policy
     now = as_of or datetime.now(JST)
@@ -768,7 +773,8 @@ def rotation_priority(topic, spec, ledgers, as_of=None):
             continue
         last = max(last, stamp.astimezone(JST).date().toordinal())
         count += 1
-    return (last, count)
+    # 同じ段の中では「勝敗」の回を先に（約48時間：勝敗は中央値262、今季最高は約150、月別は167）。
+    return (0 if ids & STAR_IDS else 1, 0 if spec.get('stock_kind') == 'win' else 1, last, count)
 
 
 def validate_spec(spec, root=ROOT):
