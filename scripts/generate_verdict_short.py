@@ -37,7 +37,9 @@ import video_common
 # **数字の連なりを切らない直し(0.05 → 0.0/5)が届いていなかった。**
 build_narration_track = video_common.build_narration_track
 
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageFont
+import render_timeline
+from sample_evidence import LayoutDraw
 
 import weekly_stats as ws
 
@@ -128,7 +130,7 @@ def draw_steps(d, color=None) -> None:
 
 def base(progress):
     im = Image.new("RGB", (W, H), BG)
-    d = ImageDraw.Draw(im)
+    d = LayoutDraw(im)
     off = int(min(progress, ANIM_END) * 240)
     for i in range(-2, 6):
         x = i * 340 + off
@@ -523,8 +525,10 @@ def main():
     proc = subprocess.Popen(cmd, stdin=subprocess.PIPE,
                             stdout=subprocess.DEVNULL, stderr=err_file)
     total = 0
+    timeline = render_timeline.Recorder(FPS, segs, narration)
     try:
         for seg_i, (seg, dur, n) in enumerate(zip(segs, durations, video_common.segment_frame_counts(durations, FPS))):
+            timeline.select(seg, seg_i)
             set_step(seg_i, len(segs))
             kind, meta = seg.get("kind"), seg.get("meta") or {}
             cached = None
@@ -532,7 +536,7 @@ def main():
             for k in range(n):
                 pp, settled = video_common.anim_step(k, n)
                 if settled and still is not None and not __import__('bubble_styles').selected():
-                    proc.stdin.write(still)
+                    timeline.repeat(proc.stdin, still)
                     total += 1
                     continue
                 if kind == "intro":
@@ -550,7 +554,7 @@ def main():
                 if kind != 'outro':
                     im=__import__('bubble_styles').narration_frame(im,seg,k/FPS,dur)
                 cached = im.tobytes()
-                proc.stdin.write(cached)
+                timeline.write(proc.stdin, cached, im)
                 # 動きが終わった最初の1枚。これを残りに使い回す。
                 if settled:
                     still = cached
@@ -571,6 +575,7 @@ def main():
     secs = total / FPS
     if audio_path:
         __import__('sound_mix').verify_short_video(video_path)
+    timeline.save_sample(video_path)
     size_mb = video_path.stat().st_size / 1024 / 1024
     print(f"[info] 答え合わせショートを生成しました: {video_path} "
           f"({size_mb:.1f}MB, {secs:.0f}秒)")

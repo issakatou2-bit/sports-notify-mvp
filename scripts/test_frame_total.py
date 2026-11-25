@@ -216,7 +216,12 @@ class FrameTotalTest(unittest.TestCase):
         for index in (-1, 2, None, 'missing'):
             for previous in (b'previous', None):
                 stream = io.BytesIO()
+                timeline = SimpleNamespace(
+                    write=lambda target, raw, image: target.write(raw),
+                    repeat=lambda target, raw: target.write(raw),
+                )
                 env = dict(kind='game', gi=index, games=[{}, {}], proc=SimpleNamespace(stdin=stream),
+                           timeline=timeline,
                            last_frame=previous, n=31, frame_no=17, _hold_missing_game=video._hold_missing_game)
                 with patch.object(video.Image, 'new') as background, patch('builtins.print') as warning:
                     background.return_value.tobytes.return_value = b'background'

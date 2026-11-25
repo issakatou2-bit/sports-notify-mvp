@@ -204,7 +204,8 @@ class MediaRecords(unittest.TestCase):
         self.assertEqual(stream.getvalue(), b'xxyy')
         self.assertIn('::warning::', str(log.call_args_list))
         fresh = render_timeline.Recorder(30, [dict(index=0, text='台詞')])
-        with patch('builtins.print') as log, patch.object(fresh, '_save', side_effect=ValueError('不一致')):
+        with patch('builtins.print') as log, patch.object(fresh, '_video_frames', return_value=1), \
+                patch.object(fresh, '_save', side_effect=ValueError('不一致')):
             self.assertIsNone(fresh.save(self.folder / 'none.mp4', self.folder))
         self.assertIn('不一致', str(log.call_args_list))
         broken = self.folder / 'broken'

@@ -180,6 +180,9 @@ def transition(previous, image, index, fade_frames, elapsed, ticker_line):
     result = r3.Image.frombytes('RGB',(1080,1920),raw)
     if not image.info.get('v3_outro'):
         r3.ticker(result,elapsed,ticker_line,once=True)
+    if 'v3_layout' in result.info:
+        image.info['v3_layout'] = [row for row in image.info.get('v3_layout', []) if row['role'] != 'ticker']
+        image.info['v3_layout'].extend(result.info['v3_layout'])
     return result.tobytes()
 
 

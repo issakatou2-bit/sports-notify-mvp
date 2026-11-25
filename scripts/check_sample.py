@@ -24,11 +24,12 @@ def _words(value):
     return re.sub(r'[\W_は]+', '', value)
 
 
-def script_issues(segments):
+def script_issues(segments, *, respect_solo_host=True):
     aliases = {'metan': 2, '四国めたん': 2, 'めたん': 2, 'zundamon': 3, 'ずんだもん': 3}
     segments = [dict(row, speaker=aliases.get(_speaker(row), row.get('speaker'))) for row in segments]
+    check_tone = not respect_solo_host or metan_tone.metan_enabled(segments)
     problems = [f'台詞{i} めたんの語尾 {ending}'
-                for i, ending in metan_tone.check(segments)] if metan_tone.metan_enabled(segments) else []
+                for i, ending in metan_tone.check(segments)] if check_tone else []
     previous = ''
     for i, row in enumerate(segments, 1):
         text = row.get('text') or ''

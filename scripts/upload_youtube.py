@@ -26,6 +26,7 @@ from datetime import datetime, timedelta, timezone
 from email.utils import parsedate_to_datetime
 import post_common  # noqa: E402
 import solo_host
+import upload_gate
 from longform_links import replace_longform_link  # noqa: E402
 import race_words as _rw  # noqa: E402
 from morning_recap import jst_label as _jst_label  # noqa: E402
@@ -2242,6 +2243,27 @@ def workflow_upload_result(uploaded):
             output.write('uploaded='+('true' if uploaded else 'false')+'\n')
 
 
+def require_upload_gate(video, narration, description, kind):
+    from voice_manifest import write_json
+
+    status, reasons = upload_gate.check(video, narration, description, kind)
+    hold = video.with_suffix('.upload-hold.json')
+    if status or hold.is_file():
+        try:
+            write_json(hold, dict(
+                status='held' if status else 'passed', kind=kind,
+                checked_at=datetime.now(timezone.utc).isoformat(),
+                run_id=os.getenv('GITHUB_RUN_ID', ''),
+                run_attempt=os.getenv('GITHUB_RUN_ATTEMPT', ''),
+                reason='投稿前検査による保留・アップロード未実行' if status else '',
+                reasons=reasons,
+            ))
+        except OSError:
+            print(f'[warn] 投稿前検査の保留記録を保存できません（{hold}）', file=sys.stderr)
+    if status:
+        for reason in reasons:
+            print(f'[error] 投稿前検査 [{kind}] {reason}', file=sys.stderr)
+        raise SystemExit(1)
 
 TOPIC_KINDS = ('soccer_national_topic', 'mlb_market_topic', 'soccer_stake')
 
@@ -2289,7 +2311,8 @@ def main():
                              "voices=コメント欄 / press=現地の声")
     parser.add_argument("--asset-topic", default=None,
                         help="--kind asset のときのトピック名")
-    parser.add_argument("--narration", default="public/narration.json",
+    default_narration = "public/narration.json"
+    parser.add_argument("--narration",
                         help="タイトルの先頭に使うフックの取得元")
     parser.add_argument("--archive-dir", default="archive",
                         help="週次のタイトルに入れる期間の算出元")
@@ -2307,6 +2330,9 @@ def main():
                         help="JSTの公開時刻 HH:MM またはタイムゾーン付きISO日時。指定すると予約投稿になる。"
                              "過ぎている場合はそのまま公開する")
     args = parser.parse_args()
+    narration_defaulted = args.narration is None
+    if narration_defaulted:
+        args.narration = default_narration
     import ui_voice_queue
     ui_voice_queue.configure(args)
     if args.kind == 'soccer_weekly':
@@ -2605,8 +2631,14 @@ def main():
     import opening_alignment
     audit_narration = args.dialogue if args.kind == 'longform' and args.dialogue else args.narration
     opening_alignment.before_upload(body['snippet']['title'], audit_narration, video_path, rec_kind,
-        prefer_adjacent=audit_narration == parser.get_default('narration'),
+        prefer_adjacent=audit_narration == default_narration,
         asset_topic=(args.asset_topic or 'mlb_abbr') if args.kind == 'asset' else None)
+    gate_narration = pathlib.Path(audit_narration)
+    if narration_defaulted and audit_narration == default_narration:
+        adjacent = video_path.parent / 'narration.json'
+        if adjacent.is_file() or args.kind != 'daily':
+            gate_narration = adjacent
+    require_upload_gate(video_path, gate_narration, body['snippet']['description'], rec_kind)
     try:
         youtube = build("youtube", "v3", credentials=creds, cache_discovery=False)
         response = insert_with_retry(youtube, body, video_path)

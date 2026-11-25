@@ -27,6 +27,8 @@ import subprocess
 import sys
 
 import post_common  # noqa: E402
+import render_timeline
+from sample_evidence import LayoutDraw
 import video_common  # noqa: E402
 
 # フォントと ease_out は video_common に1つだけ置いてある。
@@ -39,7 +41,7 @@ ease_out = video_common.ease_out
 FONT_CANDIDATES = video_common.FONT_CANDIDATES
 
 
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageFont
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
 try:
@@ -207,7 +209,7 @@ def draw_spoken(d) -> None:
     d.rounded_rectangle([60, y, W - 60, y + h], 18, fill=(8, 14, 30) if STYLE_V2 else (16, 20, 28))
     d.rounded_rectangle([60, y, 68, y + h], 4, fill=ACCENT)
     for i, ln in enumerate(lines):
-        d.text((92, y + 18 + i * 46), ln, font=font(34), fill=DIM)
+        d.text((92, y + 18 + i * 46), ln, font=font(34), fill=DIM, role='caption')
 
 
 def base_frame(progress: float):
@@ -215,13 +217,13 @@ def base_frame(progress: float):
     if STYLE_V2:
         # 濃紺の地。斜線・野球場の線・下端の帯は置かない（背景はANIM_ENDで止める）。
         im = style_v2.background(min(progress, ANIM_END) * 8, W, H).convert("RGB")
-        d = ImageDraw.Draw(im)
+        d = LayoutDraw(im)
         d.rectangle([0, H - 10, W, H], fill=ACCENT)
         _draw_steps(d)
         draw_spoken(d)
         return im, d
     im = Image.new("RGB", (W, H), BG)
-    d = ImageDraw.Draw(im)
+    d = LayoutDraw(im)
     # ゆっくり流れる斜めのアクセント
     # 背景はANIM_ENDで動きを止める。ここが動き続けると全フレームが
     # 微妙に異なり、描画結果を使い回せなくなるため。
@@ -950,12 +952,20 @@ DATA_SOURCES = {
 DATA_SOURCE = DATA_SOURCES["mlb"]
 
 
-def _hold_missing_game(stream, previous, n, game_index):
+def _hold_missing_game(stream, previous, n, game_index, timeline):
     """無い試合は前のコマか背景で埋め、計画のコマ数を保つ。"""
     print(f"[warn] game_index={game_index!r}の試合がないため、{n}コマを前の画面または背景で埋めます")
-    frame = previous if previous is not None else Image.new("RGB", (W, H), BG).tobytes()
+    if not n:
+        return previous
+    if previous is None:
+        image = Image.new("RGB", (W, H), BG)
+        frame = image.tobytes()
+        timeline.write(stream, frame, image)
+        n -= 1
+    else:
+        frame = previous
     for _ in range(n):
-        stream.write(frame)
+        timeline.repeat(stream, frame)
     return frame
 
 
@@ -1080,10 +1090,12 @@ def main():
                             stderr=err_file)
 
     frame_no = 0
+    timeline = render_timeline.Recorder(FPS, segments)
     # 直前の画面の最後のフレーム。切り替わりの頭だけ、これと混ぜる。
     last_frame = None
     try:
         for seg_i, (seg, dur, n) in enumerate(zip(segments, durations, video_common.segment_frame_counts(durations, FPS))):
+            timeline.select(seg, seg_i)
             kind = seg.get("kind")
             # 何枚目かを画面上の目盛りに反映する
             set_step(seg_i, len(segments))
@@ -1096,14 +1108,14 @@ def main():
             fade = 0 if seg_i == 0 else int(video_common.FADE_SECONDS * FPS)
             gi = meta.get("game_index", 0)
             if kind == "game" and not (isinstance(gi, int) and 0 <= gi < len(games)):
-                last_frame = _hold_missing_game(proc.stdin, last_frame, n, gi)
+                last_frame = _hold_missing_game(proc.stdin, last_frame, n, gi, timeline)
                 frame_no += n
                 continue
             for k in range(n):
                 p_, settled = video_common.anim_step(k, n)
                 if settled and still is not None and not __import__('bubble_styles').selected():
                     # 動きが止まった区間は描き直さず、直前のフレームを使い回す
-                    proc.stdin.write(still)
+                    timeline.repeat(proc.stdin, still)
                     frame_no += 1
                     continue
                 if kind == "intro":
@@ -1124,7 +1136,7 @@ def main():
                     im = render_outro(p_)
                 im=__import__('bubble_styles').narration_frame(im,seg,k/FPS,dur)
                 cached = video_common.crossfade(last_frame, im, k, fade, (W, H))
-                proc.stdin.write(cached)
+                timeline.write(proc.stdin, cached, im, overlap=last_frame is not None and k < fade)
                 # 動きが終わった最初の1枚。これを残りに使い回す。
                 if settled:
                     still = cached
@@ -1144,6 +1156,7 @@ def main():
 
     if audio_path:
         __import__('sound_mix').verify_short_video(video_path)
+    timeline.save_sample(video_path)
     size_mb = video_path.stat().st_size / 1024 / 1024
     print(f"[info] 動画を生成しました: {video_path} ({size_mb:.1f}MB, "
           f"{frame_no / FPS:.1f}秒)")

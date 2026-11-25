@@ -190,8 +190,10 @@ def render(card,presenters=None,style='stadium',layers=False):
             if row['role']=='important' and overlaps(box,row['box']):raise ValueError('Presenter covers content')
         im.alpha_composite(sprite,(x,y));avatars.append({'side':side,'box':box,'asset':path})
     result=background(style,team_id=background_team(card));result.paste(im,(0,0),im)
-    if errors := safety_problems(trace + [dict(role='face', box=p['box']) for p in avatars]):
+    layout = trace + [dict(role='face', box=p['box']) for p in avatars]
+    if errors := safety_problems(layout):
         raise ValueError(f'Shortsの安全域外: {errors}')
+    im.info['v3_layout'] = result.info['v3_layout'] = layout
     manifest={'theme_version':THEME['version'],'card':card,'text':trace,'presenters':avatars,'public':False}
     return (result,manifest,im) if layers else (result,manifest)
 

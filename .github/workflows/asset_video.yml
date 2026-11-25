@@ -372,6 +372,7 @@ jobs:
             python scripts/upload_youtube.py \
               --video "build/asset_$t/collespo_asset_$t.mp4" \
               --kind asset --asset-topic "$t" \
+              --narration "build/narr_$t.json" \
               --thumbnail "build/asset_$t/short.png" \
               --privacy "${PRIVACY:-public}" $FORCE \
               "${ASSET_PUBLISH_ARGS[@]}"

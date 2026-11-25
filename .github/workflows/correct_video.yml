@@ -116,6 +116,7 @@ jobs:
           # 題・説明は直した材料から作る（材料のファイルは保存しない。台帳だけを保存する）
           python scripts/upload_youtube.py --video "build/corr/out/collespo_asset_$TOPIC.mp4" \
             --kind asset --asset-topic "$TOPIC" --thumbnail build/corr/out/short.png \
+            --narration build/corr/narr.json \
             --privacy public --force
           NEW=$(python -c "import json,os;print(json.load(open('data/published_assets.json'))['assets'][os.environ['TOPIC']]['video_id'])")
           if [ -z "$NEW" ] || [ "$NEW" = "$OLD_VIDEO" ]; then echo "::error::新しい動画のIDが取れません"; exit 1; fi

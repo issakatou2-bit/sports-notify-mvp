@@ -51,10 +51,16 @@ class PrivateResults(unittest.TestCase):
             record = Path(directory)/'private.json'
             material = Path(directory)/'results.json'
             material.write_text(json.dumps({'date_jst': '2026-10-09'}), encoding='utf-8')
+            narration = Path(directory)/'narration.json'
+            narration.write_text(json.dumps({'segments': [{'speaker': 2, 'text': '結果は1対0よ。'}]}),
+                                 encoding='utf-8')
+            (video.parent/'layout_checks.json').write_text(json.dumps([
+                {'layout': [{'role': 'caption', 'box': [64, 1000, 900, 1200]}]}
+            ]), encoding='utf-8')
             argv = ['upload', '--kind', 'soccer_results', '--sport', 'soccer',
                     '--video', str(video), '--video-date', '2026-10-09',
-                    '--games', str(material), '--privacy', 'private']
-            with patch.object(entry, 'PRIVATE_RECORD', record), patch.object(sys, 'argv', argv), patch.dict(os.environ, {'YOUTUBE_CLIENT_ID': 'test', 'YOUTUBE_CLIENT_SECRET': 'test', 'YOUTUBE_REFRESH_TOKEN': 'test'}), patch.object(entry.upload, 'Credentials'), patch.object(entry.upload, 'build'), patch.object(entry.upload, 'build_metadata', return_value={'snippet': {'title': '試験', 'description': ''}}), patch.object(entry.upload, 'insert_with_retry', return_value={'id': 'private-status-test'}) as send:
+                    '--games', str(material), '--narration', str(narration), '--privacy', 'private']
+            with patch.object(entry, 'PRIVATE_RECORD', record), patch.object(sys, 'argv', argv), patch.dict(os.environ, {'YOUTUBE_CLIENT_ID': 'test', 'YOUTUBE_CLIENT_SECRET': 'test', 'YOUTUBE_REFRESH_TOKEN': 'test'}), patch.object(entry.upload, 'Credentials'), patch.object(entry.upload, 'build'), patch('upload_gate.probe_size', return_value=(1080, 1920)), patch.object(entry.upload, 'build_metadata', return_value={'snippet': {'title': '試験', 'description': 'VOICEVOX:四国めたん'}}), patch.object(entry.upload, 'insert_with_retry', return_value={'id': 'private-status-test'}) as send:
                 entry.main()
             status = send.call_args.args[1]['status']
             self.assertEqual(status['privacyStatus'], 'private')

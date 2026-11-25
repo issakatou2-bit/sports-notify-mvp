@@ -266,6 +266,14 @@ def narration_frame(im, seg, seconds, duration):
     resized.thumbnail((w,content_h),Image.Resampling.LANCZOS)
     content_x=(w-resized.width)//2
     out.paste(resized,(content_x,0))
+    # 元の文字の箱も、実際に縮めて貼った範囲に移す。
+    sx, sy = resized.width / w, resized.height / h
+    out.info['v3_layout'] = [
+        dict(row, box=[content_x + round(x0 * sx), round(y0 * sy),
+                       content_x + round(x1 * sx), round(y1 * sy)])
+        for row in im.info.get('v3_layout', [])
+        for x0, y0, x1, y1 in [row['box']]
+    ]
     box=(round(w*.035),round(h*.78),round(w*.965),round(h*.95)) if landscape else tuple(round(v*(w/1080 if i%2==0 else h/1920)) for i,v in enumerate(geometry()))
     text=str(seg.get('text') or '')
     pages=[''.join(rows) for rows in page_lines(text,box)]
