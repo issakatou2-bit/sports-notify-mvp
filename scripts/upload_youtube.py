@@ -2146,7 +2146,10 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
         "",
         "―――",
         ("音声: VOICEVOX:ずんだもん / VOICEVOX:四国めたん"
-         if kind == "longform" else "音声: VOICEVOX:四国めたん" if kind in ("soccer_results", "soccer_voices") or (os.environ.get('COLLESPO_SHORT_LOOK') == 'v4' and _soccer_mode and _soccer_v4.get('soccer_v4_mode') == _soccer_mode) else "音声: VOICEVOX:ずんだもん"),
+         if kind == "longform"
+         # 得点王争いなど、v4 の枠でもずんだもんが話す回は2人とも載せる（11/25 見本で抜けていた）。
+         or any(seg.get("speaker") in (3, "3") for seg in (_soccer_v4.get("segments") or []))
+         else "音声: VOICEVOX:四国めたん" if kind in ("soccer_results", "soccer_voices") or (os.environ.get('COLLESPO_SHORT_LOOK') == 'v4' and _soccer_mode and _soccer_v4.get('soccer_v4_mode') == _soccer_mode) else "音声: VOICEVOX:ずんだもん"),
         # 出典は競技で変わる。サッカーの動画にMLBのAPI名が出ていては嘘になる。
         _voices_material['screen_source'] if kind == "soccer_voices" else "出典: ESPN・football-data.org（取得時にスコア照合）" if kind == "soccer_results" else SPORTS.get(sport, SPORTS["mlb"])["source"],
     ]
