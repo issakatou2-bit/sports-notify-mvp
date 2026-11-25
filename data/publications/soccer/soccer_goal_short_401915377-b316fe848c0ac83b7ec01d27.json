@@ -25,6 +25,44 @@
       "recorded_at": "2026-11-25T22:37:12.047838+00:00",
       "fingerprint": "4b6dca80e74a00059ee3ada679337bb512d9bea1a2f40bc0eb9190a017fb8fb1",
       "event_id": "e1993fd39c70d997b8bc0ac19eab2b71414987f2a9831ddabf1c3fa47a928f74"
+    },
+    {
+      "source": "published_videos/soccer_goal_short/2026-11-26:401915377",
+      "service": "youtube",
+      "video_id": "_vrMkLaqMws",
+      "state": "uploaded",
+      "scheduled_at": null,
+      "event_day": null,
+      "material_day": null,
+      "edition_day": null,
+      "run_at": "2026-11-25T22:37:32.566724+00:00",
+      "details": {
+        "privacy": "public"
+      },
+      "run_id": "45714252590",
+      "attempt": "1",
+      "recorded_at": "2026-11-25T22:37:32.584787+00:00",
+      "fingerprint": "8bc26f92389071078548e64c497245bd91d041b7bab1bfa9199fb4cef4a9bc07",
+      "event_id": "e0f9491321a1205381508d0280804c885ba277433ffb705f0c7569b58a290a77"
+    },
+    {
+      "source": "soccer_flash_receipts/401915377",
+      "service": "youtube",
+      "video_id": "_vrMkLaqMws",
+      "state": "uploaded",
+      "scheduled_at": null,
+      "event_day": null,
+      "material_day": null,
+      "edition_day": null,
+      "run_at": "2026-11-25T22:37:12.042677+00:00",
+      "details": {
+        "status": "uploaded"
+      },
+      "run_id": "45714252590",
+      "attempt": "1",
+      "recorded_at": "2026-11-25T22:37:32.586697+00:00",
+      "fingerprint": "dcf361a8ff7bc4dca18efb2a0c75655b81985ee7c096e29b3082876d1e878f44",
+      "event_id": "5e6ee6dcad8e775a242bc9682969e9f69c4569f0f6360df421a1de7ea3008db5"
     }
   ]
 }
