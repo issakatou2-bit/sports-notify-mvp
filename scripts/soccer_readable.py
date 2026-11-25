@@ -11,6 +11,23 @@ import review_render_v3 as r3
 import shorts_safe_area as safe
 
 L, R = 72, safe.SAFE_RIGHT
+
+
+# 「アトレティコ・マドリード」と順位の日は52でも入らず「マド／リード」と折れた（11/25 の毎日の回）。42まで下げて1行に収める。
+NAME_SIZES=(64,62,60,58,56,54,52,50,48,46,44,42)
+
+
+def fit_name_size(clubs, width):
+    """名前の末尾を次行へ送るより、両クラブを同じ読みやすい字級にそろえる。"""
+    def fits(club, size):
+        name=c.club_display_names.display(club)
+        bounds=c.measure(name,size)[2]
+        return c.measure(name,size)[1]+c.tag_width(club,bounds[3]-bounds[1])+16<=width
+    for size in NAME_SIZES:
+        if all(fits(club,size) for club in clubs):return size
+    return NAME_SIZES[-1]
+
+
 BODY_TOP, BODY_BOTTOM = 390, 1206
 CAPTION = (64, 1278, safe.SAFE_RIGHT, 1440)
 PORTRAIT = (L, BODY_BOTTOM, R, CAPTION[1] + 12)
@@ -455,14 +472,7 @@ class Screen:
         extra=[row for f in facts for row in c.lines(f['text'],40,R-L-56)] if not chips else []
         ranks=hero.get('ranks') or {}
         name_width=R-L-56-(170 if ranks else 0)
-        name_size=64
-        # 名前の末尾1文字を次行へ送るより、両クラブを同じ読みやすい字級にそろえる。
-        for size in (64,62,60,58,56,54,52):
-            name_size=size
-            if all(c.measure(c.club_display_names.display(self.clubs[hero[side]]),size)[1]
-                   +c.tag_width(self.clubs[hero[side]],c.measure(c.club_display_names.display(self.clubs[hero[side]]),size)[2][3]
-                               -c.measure(c.club_display_names.display(self.clubs[hero[side]]),size)[2][1])+16<=name_width
-                   for side in ('home','away')):break
+        name_size=fit_name_size([self.clubs[hero[side]] for side in ('home','away')],name_width)
         def name_rows(side):
             club=self.clubs[hero[side]]
             name=c.club_display_names.display(club)
