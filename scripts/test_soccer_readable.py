@@ -154,6 +154,22 @@ class Readable(unittest.TestCase):
         self.assertEqual([r['position'] for im in frames for r in im.info['readable_rows']],list(range(1,9)))
         for im in frames:self.assertFalse(layout.check_frame(im,case['clubs']))
 
+    def test_two_digit_points_fit_with_production_font(self):
+        """勝点の欄（幅106）に、本番の字体（COLLESPO_STYLE=v2）で2桁の勝点が全部入る（11/24「29」が入らず順位争いが止まった）。"""
+        import subprocess
+        env=dict(os.environ,COLLESPO_STYLE='v2',PYTHONUTF8='1')
+        code="import soccer_v5_cards as c;print(c.STYLE_V2,max(c.measure(str(n),80,True)[1] for n in range(10,100)))"
+        out=subprocess.run([sys.executable,'-c',code],cwd=Path(__file__).resolve().parent,env=env,
+                           capture_output=True,text=True,encoding='utf-8',timeout=60)
+        self.assertEqual(out.returncode,0,out.stderr)
+        style,widest=out.stdout.split()
+        self.assertEqual(style,'True');self.assertLessEqual(float(widest),106)
+        case=next(c for c in self.cases if c['key']=='race')
+        seg=copy.deepcopy(case['narration']['segments'][0]);spec=seg['meta']
+        spec['rows']=[dict(spec['rows'][0],position=i,points=p) for i,p in enumerate((99,88,29,20),1)]
+        spec['shown']=[(1,4)];spec['lines']=[]
+        self.assertFalse(layout.check_frame(self.draw(case,seg,3),case['clubs']))
+
     def test_v5_is_unchanged_until_explicit_v6_and_transition_does_not_overwrite(self):
         case=self.cases[0];seg=case['narration']['segments'][0]
         with patch.dict(os.environ,COLLESPO_SOCCER_LOOK='v5'):
