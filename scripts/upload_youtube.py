@@ -2242,6 +2242,20 @@ def workflow_upload_result(uploaded):
             output.write('uploaded='+('true' if uploaded else 'false')+'\n')
 
 
+
+TOPIC_KINDS = ('soccer_national_topic', 'mlb_market_topic', 'soccer_stake')
+
+
+def replacing_held(kind, already):
+    """誤りで非公開にした話題の回を作り直す時だけ、旧動画のIDが記録と一致すれば上げ直す。
+
+    11/25 サトテルの作り直しが「投稿済みのためスキップ」で成功扱いのまま終わった。
+    """
+    replaces = os.environ.get('COLLESPO_TOPIC_REPLACES', '').strip()
+    recorded = f"{already.get('url', '')} {already.get('video_id', '')}"
+    return kind in TOPIC_KINDS and bool(replaces) and replaces in recorded
+
+
 def main():
     workflow_upload_result(False)
     parser = argparse.ArgumentParser()
@@ -2388,7 +2402,7 @@ def main():
         args.publish_at = edition_publish_at(date_key, args.publish_at)
     if args.kind in DATED_KINDS and not args.force:
         already = published_video(rec_kind, date_key)
-        if already:
+        if already and not replacing_held(args.kind, already):
             print(f"[info] {rec_kind} の {date_key} は投稿済みのため"
                   f"スキップします ({already.get('url')})")
             print("       上げ直す場合は --force を付けてください")
