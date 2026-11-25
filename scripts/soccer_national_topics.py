@@ -694,7 +694,10 @@ def validate_upload(args, now=None):
         if doc.get('topic_reaction')!=topic_reaction(doc['event_id'],doc['topic']):
             raise ValueError('話題の反応が確認済みの材料と一致しません')
     ledger=national.read(MLB_LEDGER if mlb else LEDGER)
-    if doc['topic_key'] in ledger:raise ValueError('同じ試合の同じ話題は予約・投稿済みです')
+    # 誤りの回を hold_video で非公開にして作り直す時だけ、旧動画のIDを COLLESPO_TOPIC_REPLACES で渡せば通す（11/25 サトテル・平良の差し替えが止まった）。
+    replaces=__import__('os').getenv('COLLESPO_TOPIC_REPLACES','').strip()
+    if doc['topic_key'] in ledger and not (replaces and ledger[doc['topic_key']].get('video_id')==replaces):
+        raise ValueError('同じ試合の同じ話題は予約・投稿済みです（差し替えは旧動画のIDを replaces に）')
     if not args.publish_at:raise ValueError('未来の予約時刻が必要です')
     at=national.instant(args.publish_at);now=now or datetime.now(timezone.utc)
     if at<=now:raise ValueError('未来の予約時刻が必要です')
@@ -710,8 +713,10 @@ def validate_upload(args, now=None):
 def record_published(doc, vid, publish_at):
     path=MLB_LEDGER if doc['program']==MLB_PROGRAM else LEDGER
     ledger=national.read(path)
+    before=ledger.get(doc['topic_key'])
     ledger[doc['topic_key']]=dict(video_id=vid,
         publish_at=national.instant(publish_at).astimezone(national.JST).isoformat(),title=doc['title'])
+    if before:ledger[doc['topic_key']]['replaced']=before.get('replaced',[])+[before.get('video_id')]
     national.save(path,ledger)
 
 

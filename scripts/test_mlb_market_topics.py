@@ -7,6 +7,7 @@ from pathlib import Path
 import subprocess
 import sys
 import unittest
+from types import SimpleNamespace
 from unittest.mock import patch
 
 import short_content
@@ -101,6 +102,26 @@ class MarketTopics(unittest.TestCase):
         self.assertEqual(path, topics.MLB_LEDGER)
         self.assertEqual(ledger[doc['topic_key']]['publish_at'], '2026-11-25T09:00:00+09:00')
 
+
+    def test_replacing_held_video_needs_its_id(self):
+        doc = topics.mlb_narration('followup-sato-cubs')
+        ledger = {doc['topic_key']: dict(video_id='OLD', publish_at='x', title='t')}
+        args = SimpleNamespace(narration='n', games='g', sport='mlb', kind=topics.MLB_PROGRAM, publish_at='', video='v')
+        def run(replaces):
+            env = {'COLLESPO_MLB_MARKET_TOPIC_PUBLISH': 'true', 'COLLESPO_TOPIC_REPLACES': replaces}
+            def read(path):
+                return ledger if path == topics.MLB_LEDGER else (doc if path == 'n' else doc['followup_material'])
+            with patch.dict(os.environ, env), patch.object(topics.national, 'read', side_effect=read),                     patch.object(topics, 'check', return_value=[]):
+                return topics.validate_upload(args)
+        for wrong in ('', 'OTHER'):
+            with self.assertRaisesRegex(ValueError, '予約・投稿済み'):
+                run(wrong)
+        with self.assertRaisesRegex(ValueError, '未来の予約時刻'):
+            run('OLD')
+        with patch.object(topics.national, 'read', return_value=dict(ledger)), patch.object(topics.national, 'save') as save:
+            topics.record_published(doc, 'NEW', '2026-11-25T13:00:00+00:00')
+        entry = save.call_args.args[1][doc['topic_key']]
+        self.assertEqual((entry['video_id'], entry['replaced']), ('NEW', ['OLD']))
 
 FRAME_PROBE = """
 import review_render_v3 as r3
