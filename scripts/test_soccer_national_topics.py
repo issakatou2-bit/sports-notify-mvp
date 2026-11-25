@@ -590,7 +590,7 @@ class Workflow(unittest.TestCase):
         self.assertIn('sample_only', inputs)
         self.assertIn('publish_at', inputs)
         self.assertNotIn('schedule', text.split('jobs:')[0].replace('schedule なし', ''))
-        self.assertIn("COLLESPO_STYLE: ${{ vars.COLLESPO_STYLE || '' }}", text)
+        self.assertIn('COLLESPO_STYLE: v2', text)
         upload = next(s for s in workflow['jobs']['build']['steps'] if s.get('name') == 'Upload to YouTube')
         self.assertEqual(upload['if'], "env.PUBLISH == 'true'")
         self.assertIn('--kind soccer_national_topic', upload['run'])

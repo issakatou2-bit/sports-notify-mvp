@@ -51,7 +51,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       COLLESPO_BUBBLE: ${{ vars.COLLESPO_BUBBLE || '' }}
-      COLLESPO_STYLE: ${{ vars.COLLESPO_STYLE || '' }}
+      COLLESPO_STYLE: v2
       COLLESPO_MOTION: ${{ vars.COLLESPO_MOTION || '' }}
       COLLESPO_CAPTION_BREAKS: ${{ vars.COLLESPO_CAPTION_BREAKS || '' }}
       COLLESPO_SLANT_VARIANT: ${{ vars.COLLESPO_SLANT_VARIANT || 'cream' }}
@@ -59,8 +59,8 @@ jobs:
       COLLESPO_OUTRO_NEXT: ${{ vars.COLLESPO_OUTRO_NEXT == 'on' && 'on' || 'off' }}
       COLLESPO_SHORT_LOOK: v4
       COLLESPO_SOCCER_TITLE_V2: ${{ vars.COLLESPO_SOCCER_TITLE_V2 == 'on' && 'on' || 'off' }}
-      COLLESPO_SOCCER_LOOK: ${{ vars.COLLESPO_SOCCER_LOOK || 'v4' }}
-      COLLESPO_SOCCER_FOCUS: ${{ vars.COLLESPO_SOCCER_FOCUS == 'on' && 'on' || 'off' }}
+      COLLESPO_SOCCER_LOOK: v6
+      COLLESPO_SOCCER_FOCUS: 'on'
       COLLESPO_DUO: 'off'
       COLLESPO_EXPR: ${{ vars.COLLESPO_EXPR || '' }}
     steps:

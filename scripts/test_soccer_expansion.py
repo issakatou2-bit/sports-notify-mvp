@@ -276,7 +276,7 @@ class WorkflowTests(unittest.TestCase):
             self.assertIn(variable, data['jobs']['build']['if'])
             env = dict(data.get('env', {}), **data['jobs']['build'].get('env', {}))
             self.assertIn("'off'", env[variable])
-            self.assertIn("'v5'", env['COLLESPO_SOCCER_LOOK'])
+            self.assertEqual(env['COLLESPO_SOCCER_LOOK'], 'v6')
 
 
 if __name__ == '__main__':
