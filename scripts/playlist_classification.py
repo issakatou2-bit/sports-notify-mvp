@@ -1,6 +1,9 @@
 """公開記録の動画IDを優先し、題名だけで不明な動画を用語集に入れない。"""
 
-KIND_ALIASES = {"morning_postseason": "postseason", "verdict": "weekly"}
+KIND_ALIASES = {"morning_postseason": "postseason", "verdict": "weekly",
+                # 同じ試合・同じ話の別の型は、同じ再生リストへ（11/25）。
+                "soccer_national_topic": "soccer_national",
+                "soccer_goal_short": "soccer_results"}
 
 # 記録が残っていない動画だけに使う。競技・番組が明示された題に限定する。
 TITLE_RULES = [
