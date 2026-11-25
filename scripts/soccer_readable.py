@@ -102,7 +102,8 @@ class Screen:
         speaker, _ = solo_host.presentation('metan', ('metan',))
         speaker = spec.get('presenter', speaker)
         if speaker not in ('metan', 'zundamon', 'ui'):raise ValueError('未知の画面話者')
-        if c.STYLE_V2 and speaker != 'ui':
+        if speaker != 'ui':
+            # 立ち絵・字幕・出典の配置（安全域・8割・腕）は見た目の切替に関わらず同じ。
             return self._finish_cast(spec, speaker, line, elapsed, clock)
         # 切替用にキャラ・字幕・出典を描く前の情報だけを保存する。
         body_only = self.im.copy() if c.STYLE_V2 else None
@@ -198,8 +199,17 @@ class Screen:
         self.im.info['readable_zones'] = dict(body=[L, BODY_TOP, R, short_cast.BODY_BOTTOM],
                                               caption=short_cast.CAPTION,
                                               portrait=[0, short_cast.CAPTION[3], self.im.width, self.im.height])
-        return self._slide_v2(body_only, ctx.get('duration') or 0, spec.get('slide_in', True),
-                              spec.get('slide_out', True))
+        if c.STYLE_V2:
+            return self._slide_v2(body_only, ctx.get('duration') or 0, spec.get('slide_in', True),
+                                  spec.get('slide_out', True))
+        # 旧い見た目の出現は、これまで通りのフェード（出現演出は1つ・説明中は動かさない）。
+        if self.t < .35:
+            from PIL import Image
+            info = self.im.info
+            info['timeline_subtitle_visible'] = self.t > 0
+            self.im = Image.blend(c._background(), self.im, max(0, self.t/.35))
+            self.im.info = info
+        return self.im
 
     def _slide_v2(self, body_only, duration, enter=True, leave=True):
         """新しい見た目の動き（Argon 11/10 の見本と同じ）。真ん中の情報だけが右から0.28秒で入り、
