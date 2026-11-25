@@ -256,7 +256,29 @@ jobs:
           bash scripts/commit_data.sh \
             "soccer leaders: ${{ github.run_id }}" \
             data/soccer_leaders.json data/soccer_leaders_state.json \
-            data/published_videos.json data/token_usage.json
+            data/published_videos.json data/token_usage.json             data/morning_recap.json data/player_profile.json
+
+      - name: Keep unsaved data records
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && ((github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (always() && hashFiles('build/data-save-recovery/**/FAILED') != ''))
+        uses: actions/upload-artifact@v4
+        with:
+          name: unsaved-data-${{ github.job }}-${{ github.run_attempt }}
+          path: |
+            build/data-save-recovery/
+            !build/**/portrait/**
+          retention-days: 14
+          if-no-files-found: error
+
+      - name: Save quota-exceeded thumbnails
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && ((github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (always() && hashFiles('build/thumbnail_pending/**') != ''))
+        uses: actions/upload-artifact@v4
+        with:
+          name: thumbnail-pending
+          path: |
+            build/thumbnail_pending/
+            !build/**/portrait/**
+          retention-days: 3
+          if-no-files-found: ignore
 
       - name: Save sanity gate records
         if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (always())
