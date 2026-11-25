@@ -1,4 +1,4 @@
-name: 日本代表 話題ショート
+name: MLB 移籍 掛け合いショート
 
 # 手動だけ（schedule なし）。既定は予約投稿をしない。公開は publish=true のときだけで、
 # 事実の照合と講評のあとに Claude が手で流す。
@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       topic:
-        description: '?????'
+        description: '話題'
         type: choice
         required: true
         options:
