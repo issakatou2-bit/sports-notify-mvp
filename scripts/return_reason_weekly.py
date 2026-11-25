@@ -4,6 +4,8 @@ from datetime import date, timedelta
 import json
 from pathlib import Path
 
+from analytics_snapshots import video_snapshots
+
 
 def summarize(store):
     weeks = {}
@@ -27,7 +29,7 @@ def summarize(store):
 
 def by_outro(store, published):
     """最新の動画別取得期間を比較。日別の全体集計とは混ぜない。"""
-    days = store.get('days', {})
+    days = video_snapshots(store)
     if not days:
         return {}
     latest = days[max(days)]

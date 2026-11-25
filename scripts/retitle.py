@@ -41,6 +41,7 @@ except ImportError:
     sys.exit(0)
 
 import upload_youtube as uy  # noqa: E402
+from analytics_snapshots import video_snapshots  # noqa: E402
 import video_titles  # noqa: E402
 
 TOKEN_URI = "https://oauth2.googleapis.com/token"
@@ -98,7 +99,7 @@ def view_counts() -> dict:
         store = json.loads(pathlib.Path(ANALYTICS).read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError):
         return {}
-    days = store.get("days") or {}
+    days = video_snapshots(store)
     if not days:
         return {}
     latest = days[sorted(days)[-1]]
