@@ -5,13 +5,18 @@ ESPN の statistics は、リーグごとに goalsLeaders / assistsLeaders を
 上位50人ぶん返す。順位表（soccer_race）と同じで、毎日出す枠ではない。
 **前回から動いた日だけ**1本作る。
 
-動きの決まり:
+動きの決まり（前回の記録があるときだけ。無いときは動きを言わない）:
   ・首位が替わった／首位に並んだ
   ・首位と2位の差が2以上に開いた・1以内に詰まった
   ・日本人選手が上位10人に入った、または上位10人の中で順位を上げた
 
 同じリーグ・同じ部門は7日に1本まで。1日1本まで。日本人の動きを先に。
 動きが無い日は picked を空にして返す（呼ぶ側が止まれるように）。
+
+見た目は順位争い（soccer_race）と同じ新しい部品（soccer_readable の順位表・
+冒頭の大きな数字・隅の立ち絵）を使う。ここで画面は描かない。画面に渡す
+材料（race_view）と、掛け合いの台本（v4_program）だけを作る。
+  ずんだもんが問い、めたんが事実と数字で答える。
 """
 
 import argparse
@@ -48,8 +53,11 @@ SECTION_JP = {"goals": "得点王", "assists": "アシスト王"}
 UNIT = {"goals": "点", "assists": "アシスト"}
 
 TOP_N = 10
+MAX_NAME = 11              # 表の名前欄に入る字数
+SHOWN = 4                  # 画面に出す人数（順位表の1ページ）
 WINDOW_DAYS = 7
 JST = timezone(timedelta(hours=9))
+FRAME_LABEL = "欧州サッカー　得点王・アシスト王争い"
 
 
 def _key(name: str) -> str:
@@ -59,26 +67,50 @@ def _key(name: str) -> str:
     return re.sub(r"[^a-z]", "", text.lower())
 
 
+def _read(path: pathlib.Path):
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return {}
+
+
+# 日本語の名前。**この表に無い選手は画面にも声にも出さない**
+# （soccer_national_topics が「相手選手名が未登録」で止まるのと同じ決まり。
+# 読みを勝手に作らない）。
+#   1. 日本人選手の名簿（notability_engine.JP_PLAYERS_SOCCER）
+#   2. 代表の相手選手の表（data/soccer_national_opponent_names.json）
+#   3. この枠の表（data/soccer_leaders_names.json）
+#   4. 野球・サッカー共通の読みの表（data/player_kana.json）
 _NAME_JP = {_key(p.get("name_en")): p.get("name_jp")
             for p in JP_PLAYERS_SOCCER if p.get("name_en")}
 _JP_KEYS = set(_NAME_JP)
 
 
-def _load_kana() -> dict:
-    path = HERE.parent / "data" / "player_kana.json"
-    try:
-        names = json.loads(path.read_text(encoding="utf-8")).get("names") or {}
-    except (OSError, json.JSONDecodeError):
-        return {}
-    return {_key(en): jp for en, jp in names.items() if jp}
+def _load_names() -> dict:
+    data = HERE.parent / "data"
+    out = {}
+    for en, row in (_read(data / "soccer_national_opponent_names.json")
+                    or {}).items():
+        if isinstance(row, dict) and row.get("name") and row.get("reading"):
+            out[_key(en)] = row["name"]
+    for en, row in ((_read(data / "soccer_leaders_names.json") or {})
+                    .get("players") or {}).items():
+        if isinstance(row, dict) and row.get("name") and row.get("reading"):
+            out[_key(en)] = row["name"]
+    for en, jp in ((_read(data / "player_kana.json") or {})
+                   .get("names") or {}).items():
+        if jp and re.fullmatch(r"[ァ-ヶー・]+", jp):
+            out.setdefault(_key(en), jp)
+    return out
 
 
-_KANA = _load_kana()
+_NAMES = _load_names()
 
 
-def name_jp(name: str) -> str:
+def name_jp(name: str):
+    """日本語の名前。表に無ければ None（英字のまま出さない）。"""
     key = _key(name)
-    return _NAME_JP.get(key) or _KANA.get(key) or name
+    return _NAME_JP.get(key) or _NAMES.get(key) or None
 
 
 def is_japanese(name: str) -> bool:
@@ -165,74 +197,74 @@ def snapshot(entries: list) -> dict:
     }
 
 
-def _row_before(snapshot: dict, name: str) -> dict:
-    """前回のその選手の行。名字だけ差し替えた記録でも名前を取り直す。"""
-    for row in (snapshot or {}).get("top") or []:
-        if row.get("name") == name:
-            return row
-    return {}
-
-
-def _value_before(snapshot: dict, name: str):
-    """前回、その選手が何点（何アシスト）だったか。いなければ None。"""
-    return _row_before(snapshot, name).get("value")
-
+# ---- 前回との比べ -------------------------------------------------------
 
 def detect_movements(previous: dict, current: dict, section: str) -> list:
-    if not previous or not current:
+    """前回の記録があるときだけ動きを返す。無いときは空（作り話にしない）。"""
+    if not previous or not previous.get("leader") or not current:
         return []
-    unit = UNIT.get(section, "")
     out = []
     before_leader = previous.get("leader")
     now_leader = current.get("leader")
+    top = current.get("top") or []
     if before_leader and now_leader and before_leader != now_leader:
-        text = "%sが%s%sで首位に立った" % (
-            current.get("leader_jp"), current.get("leader_value"), unit)
-        old_value = _value_before(previous, now_leader)
-        if (old_value is not None and current.get("leader_value") is not None
-                and current["leader_value"] > old_value):
-            text += "。前回より%s%s" % (
-                current["leader_value"] - old_value, unit)
-        overtaken = _row_before(previous, before_leader).get("name_jp")
-        if overtaken:
-            text += "。%sを抜いた" % overtaken
-        out.append({"kind": "leader_changed", "text": text})
+        # 前の首位が今の上位10人にいれば、その人の名前を言える
+        beaten = next((r for r in top if r.get("name") == before_leader), {})
+        out.append({"kind": "leader_changed",
+                    "overtaken_jp": beaten.get("name_jp")})
     else:
         before_second = previous.get("second_value")
         now_second = current.get("second_value")
         if (now_second is not None and current.get("leader_value") is not None
                 and now_second == current.get("leader_value")
                 and before_second != previous.get("leader_value")):
-            top = current.get("top") or []
-            joined = top[1].get("name_jp") if len(top) > 1 else None
-            text = ("%sが%s%sで首位に並んだ" % (joined, now_second, unit)
-                    if joined else "2位が%s%sで首位に並んだ" % (now_second, unit))
-            out.append({"kind": "tied_lead", "text": text})
+            out.append({"kind": "tied_lead"})
         before_gap = previous.get("gap")
         now_gap = current.get("gap")
         if before_gap is not None and now_gap is not None:
             if now_gap >= 2 and before_gap < 2:
-                out.append({"kind": "gap_opened",
-                            "text": "首位と2位の差が%s%sに開いた"
-                                    % (now_gap, unit)})
+                out.append({"kind": "gap_opened", "gap": now_gap})
             elif now_gap <= 1 and before_gap > 1:
-                out.append({"kind": "gap_closed",
-                            "text": "首位と2位の差が%s%sに詰まった"
-                                    % (now_gap, unit)})
+                out.append({"kind": "gap_closed", "gap": now_gap})
 
     old_ranks = {x["name"]: x["rank"] for x in previous.get("jp") or []}
     for entry in current.get("jp") or []:
         old = old_ranks.get(entry["name"])
         if old is None:
-            out.append({"kind": "jp_entered",
-                        "text": "%sが%s位で上位10人に入った"
-                                % (entry["name_jp"], entry["rank"])})
+            out.append({"kind": "jp_entered", "name_jp": entry["name_jp"],
+                        "rank": entry["rank"]})
         elif entry["rank"] < old:
-            out.append({"kind": "jp_rose",
-                        "text": "%sが%s位から%s位に上がった"
-                                % (entry["name_jp"], old, entry["rank"])})
+            out.append({"kind": "jp_rose", "name_jp": entry["name_jp"],
+                        "old": old, "rank": entry["rank"]})
     return out
 
+
+def movement_say(move: dict, baseline: str) -> str:
+    """めたんの言い方。数字は画面の表に出ているので重ねない。"""
+    base = ""
+    if baseline:
+        d = date.fromisoformat(baseline)
+        base = "%d月%d日の前回から、" % (d.month, d.day)
+    kind = move["kind"]
+    if kind == "leader_changed":
+        who = move.get("overtaken_jp")
+        return base + ("首位が%sから替わったわ。" % who if who
+                       else "首位が替わったわ。")
+    if kind == "tied_lead":
+        return base + "首位に並んだ選手がいるわ。"
+    if kind == "gap_opened":
+        return base + "首位と2位の差が開いたわ。"
+    if kind == "gap_closed":
+        return base + "首位と2位の差が詰まったわ。"
+    if kind == "jp_entered":
+        return "日本人の%sが、上位10人に入ったわ。" % move["name_jp"]
+    if kind == "jp_rose":
+        return "日本人の%sが、%s位から%s位に上がったわ。" % (
+            move["name_jp"], move["old"], move["rank"])
+    return ""
+
+
+# ---- どの部門を出すか ---------------------------------------------------
 
 def within_window(last: str, today: date, days: int = WINDOW_DAYS) -> bool:
     try:
@@ -249,10 +281,30 @@ def can_publish(state: dict, key: str, today: date) -> bool:
     return not within_window(section.get("last_published"), today)
 
 
-def choose(movements: dict, state: dict, today: date):
+def shown_rows(top: list) -> list:
+    """画面に出す4人。上位4人。日本人が上位10人にいて4人の外なら4人目と入れ替える。"""
+    rows = list(top[:SHOWN])
+    extra = next((e for e in top[SHOWN:] if e.get("jp")), None)
+    if extra and not any(r.get("jp") for r in rows):
+        rows = rows[:SHOWN - 1] + [extra]
+    return rows
+
+
+def is_ready(snap: dict) -> bool:
+    """出す人が全員、日本語の名前を持っているか（表に無い人は出さない）。"""
+    rows = shown_rows(snap.get("top") or [])
+    # 表の名前欄は40pxで11字まで（入らない名前は短い呼び名を表に足すまで出さない）
+    return len(rows) >= 3 and all(
+        r.get("name_jp") and len(r["name_jp"]) <= MAX_NAME for r in rows)
+
+
+def choose(movements: dict, state: dict, today: date, sections: dict = None):
     candidates = []
     for key, moves in movements.items():
         if not moves or not can_publish(state, key, today):
+            continue
+        league, section = key.split(":", 1)
+        if sections is not None and not is_ready(sections[(league, section)]):
             continue
         jp = any(m["kind"].startswith("jp_") for m in moves)
         candidates.append((0 if jp else 1, -len(moves), key, moves))
@@ -262,6 +314,15 @@ def choose(movements: dict, state: dict, today: date):
 
 def league_jp(league: str, code: str) -> str:
     return SOCCER_LEAGUE_NAME_JP.get(code) or code
+
+
+# ---- 題・説明 -----------------------------------------------------------
+
+def gap_text(gap, unit: str) -> str:
+    """「2点差」「1アシスト差」。単位は数字のあと、「差」は最後。"""
+    if gap is None:
+        return ""
+    return "%s%s差" % (gap, unit)
 
 
 def title_of(story: dict) -> str:
@@ -275,188 +336,142 @@ def title_of(story: dict) -> str:
     if gap == 0:
         tail = "%sが%s%sで首位、2位と並ぶ" % (leader, value, unit)
     elif gap is not None:
-        tail = "%sが%s%s、2位と%s差" % (leader, value, unit, gap)
+        tail = "%sが%s%sで首位、2位と%s" % (
+            leader, value, unit, gap_text(gap, unit))
     else:
         tail = "%sが%s%sで首位" % (leader, value, unit)
     return "%s %s争い｜%s" % (comp, section, tail)
 
 
-def build_narration(story: dict, today: date) -> dict:
-    day = "%d月%d日" % (today.month, today.day)
-    snap = story["snap"]
-    comp = story["league_jp"]
-    section = SECTION_JP[story["section"]]
-    unit = UNIT[story["section"]]
-    top = snap.get("top") or []
-    leader = top[0] if top else {}
-    second = top[1] if len(top) > 1 else None
-
-    segments = [{
-        "kind": "race_intro",
-        "speaker": 3,
-        "text": "%s、欧州サッカーの%s争い。今日は順位が動いたのだ？"
-                % (day, section),
-        "meta": {"date": today.isoformat(), "mode": "soccer_race", "day": day},
-    }]
-
-    jp = snap.get("jp") or []
-    if jp:
-        parts = ["%sの%s、%sが%s%sで%s位"
-                 % (comp, section, x["name_jp"], x["value"], unit, x["rank"])
-                 for x in jp[:2]]
-        parts += [m["text"] for m in story["movements"]
-                  if m["kind"].startswith("jp_")][:2]
-        segments.append({"kind": "race_japanese", "speaker": 2,
-                         "text": "。".join(parts) + "。", "meta": {}})
-
-    say = "%sの%s争い、首位は%s、%s%s。" % (
-        comp, section, leader.get("name_jp", ""),
-        leader.get("value"), unit)
-    if leader.get("matches"):
-        say += "%s試合で%s%s。" % (leader["matches"], leader["value"], unit)
-    if leader.get("team_jp"):
-        say += "%sの選手よ。" % leader["team_jp"]
-    if second:
-        if snap.get("gap") == 0:
-            say += "2位の%sも%s%sで並んでいるわ。" % (
-                second["name_jp"], second["value"], unit)
-        else:
-            say += "2位の%sは%s%sで、差は%s%sよ。" % (
-                second["name_jp"], second["value"], unit,
-                snap.get("gap"), unit)
-        if second.get("matches"):
-            say += "%s試合で%s%s。" % (
-                second["matches"], second["value"], unit)
-        if second.get("team_jp"):
-            say += "%sの選手よ。" % second["team_jp"]
-    for move in story["movements"][:2]:
-        say += move["text"] + "。"
-    segments.append({"kind": "race_line", "speaker": 2, "text": say,
-                     "meta": {"code": story["code"], "at": 2,
-                              "rows": top[:2]}})
-
-    if len(top) > 2:
-        third = top[2]
-        more = "3位は%s、%s%s。" % (
-            third.get("name_jp"), third.get("value"), unit)
-        if third.get("matches"):
-            more += "%s試合で%s%s。" % (
-                third["matches"], third["value"], unit)
-        if third.get("team_jp"):
-            more += "%sの選手よ。" % third["team_jp"]
-        if len(top) > 3:
-            fourth = top[3]
-            more += "4位は%s、%s%s。" % (
-                fourth.get("name_jp"), fourth.get("value"), unit)
-        if len(top) >= TOP_N:
-            more += "上位10人まで、%s%sから%s%sの間に%s人がひしめいているわ。" % (
-                top[-1].get("value"), unit, leader.get("value"), unit,
-                len(top))
-        if jp:
-            more += "日本人では%sが%s位。" % (
-                jp[0]["name_jp"], jp[0]["rank"])
-        else:
-            more += "この部門の上位10人に日本人選手はいないわ。"
-        segments.append({"kind": "race_line", "speaker": 2, "text": more,
-                         "meta": {"code": story["code"], "at": TOP_N,
-                                  "rows": top}})
-
-    segments.append({"kind": "outro", "speaker": 2,
-                     "text": "得点王争いは、次の試合でまた動くわ。"
-                             "数字が変わったら、また伝えるわ。コレスポ。",
-                     "meta": {}})
-    return {"segments": segments, "title": title_of(story),
-            "date_jst": today.isoformat()}
-
+# ---- 画面と台本の材料 ---------------------------------------------------
 
 def race_view(story: dict, today: date) -> dict:
+    """画面・台本に渡す材料。v4_program はこれだけから台本を作る。"""
     snap = story["snap"]
     section = story["section"]
-    unit = UNIT[section]
-    label = SECTION_JP[section]
-    comp_jp = story["league_jp"]
-    rows = []
-    for entry in snap.get("top") or []:
-        matches = entry.get("matches")
-        rows.append({
-            "position": entry.get("rank"),
-            "team": entry.get("name_jp") or entry.get("name"),
-            "team_en": entry.get("name"),
-            "played": matches,
-            "points": entry.get("value"),
-            "gf": 0,
-            "ga": 0,
-            "jp": [entry["name_jp"]] if entry.get("jp") else [],
-            "unit": unit,
-            "sub": ("%d試合" % matches) if matches else "",
-        })
-
-    jp_rows = []
-    for entry in snap.get("jp") or []:
-        jp_rows.append({
-            "name": entry["name_jp"],
-            "club_jp": entry.get("team_jp") or "",
-            "position": entry["rank"],
-            "points": entry["value"],
-            "diff": entry["rank"],
-            "lines": [{"label": label, "diff": entry["rank"],
-                       "text": "%s%sで%s位" % (entry["value"], unit,
-                                              entry["rank"])}],
-            "out": False,
-        })
-
-    notes = ["ESPNの今季成績です。試合数は選手ごとに違います",
-             "同点の選手は同じ順位で並べています"]
-    lines = [{
-        "at": 2,
-        "label": "首位と2位",
-        "heading": "首位争い",
-        "inside": rows[:2],
-        "outside": rows[2:3],
-        "diff": snap.get("gap"),
-        "gap_label": "首位と2位の差",
-        "gap_unit": unit,
-        "notes": notes,
-        "moved": {
-            "in": [m["text"] for m in story["movements"]],
-            "out": [],
-        },
-        "jp": [x["name"] for x in jp_rows],
-    }]
-    if rows:
-        lines.append({
-            "at": TOP_N,
-            "label": "上位%d人" % TOP_N,
-            "heading": "%s争い" % label,
-            "inside": rows,
-            "outside": [],
-            "diff": None,
-            "notes": notes,
-            "moved": {},
-            "jp": [x["name"] for x in jp_rows],
-        })
-    comp = {
-        "code": story["code"],
-        "name_jp": comp_jp,
-        "played": max((r.get("played") or 0) for r in rows) if rows else 0,
-        "played_note": "各選手の試合数は行に出ています",
-        "clubs": len(rows),
-        "ready": True,
-        "jp": jp_rows,
-        "lines": lines,
-    }
+    top = snap.get("top") or []
     return {
         "date_jst": today.isoformat(),
-        "frame_label": "%s争い" % label,
-        "frame_note": "%sの%s上位" % (comp_jp, unit),
-        "jp_heading": "日本人選手の順位",
-        "competitions": [comp],
+        "frame_label": FRAME_LABEL,
+        "ticker_head": "%s %s争い" % (story["league_jp"],
+                                     SECTION_JP[section]),
         "picked": [story["code"]],
+        "leaders": {
+            "key": story["key"],
+            "code": story["code"],
+            "section": section,
+            "section_jp": SECTION_JP[section],
+            "unit": UNIT[section],
+            "league_jp": story["league_jp"],
+            "baseline_date": story.get("baseline_date"),
+            "movements": story["movements"],
+            "title": title_of(story),
+            "top": top,
+            "shown": [r["name"] for r in shown_rows(top)],
+        },
     }
 
 
+def v4_program(data: dict) -> dict:
+    """soccer_slots_v4.race_program から呼ぶ。順位争いと同じ package を通す。
+
+    1) ずんだもん（表紙）：誰が何点で首位かを問う。大きな数字の画面。
+    2) めたん（順位表）：事実と数字で答える。行は読むのに合わせて出る。
+    3) 締め（既存の締め）
+    """
+    import soccer_slots_v4 as slots
+    import short_renewal
+    import review_render_v3 as r3
+
+    info = data["leaders"]
+    top = info["top"]
+    unit = info["unit"]
+    league = info["league_jp"]
+    label = info["section_jp"] + "争い"
+    rows = [r for r in top if r["name"] in info["shown"]]
+    leader = top[0]
+    second = top[1] if len(top) > 1 else None
+    gap = leader["value"] - second["value"] if second else None
+
+    # 表紙：冒頭で「誰が何点で首位か」を言う。リーグ名と部門は画面の題。
+    if gap == 0 and second:
+        ask = "%sと%sが%s%sで並んで首位なのだ？" % (
+            leader["name_jp"], second["name_jp"], leader["value"], unit)
+    else:
+        ask = "%sが%s%sで首位って、本当なのだ？" % (
+            leader["name_jp"], leader["value"], unit)
+    hook = short_renewal.hook(leader["name_jp"], leader["value"], unit,
+                              context="%s　%s" % (league, label))
+    hook["text"] = ask
+    hook["display_unit"] = unit + "で首位"
+    cover = dict(kind="cover", text=ask, speaker=3,
+                 meta=dict(opening_hook=hook, presenter="zundamon"))
+
+    # 順位表：めたんの答え。首位の点数は表紙で言ったので重ねない。
+    scope = "ええ、%sの%sよ。" % (league, label)
+    for move in info.get("movements") or []:
+        scope += movement_say(move, info.get("baseline_date") or "")
+    texts = []
+    for i, row in enumerate(rows):
+        club = row.get("team_jp") or row.get("team")
+        who = "%sの%s" % (club, row["name_jp"])
+        place = row["rank"]
+        before = rows[i - 1] if i else None
+        if i == 0:
+            say = "%sは、%s試合の出場よ。" % (who, row["matches"])
+        elif before and before["rank"] == place:
+            say = "同じ%s位で、%sも並んでいるわ。" % (place, who)
+        else:
+            say = "%s位は%sで、%s%sよ。" % (place, who, row["value"], unit)
+            if i == 1 and gap is not None:
+                if gap == 0:
+                    say += "首位と並んでいるのね。"
+                else:
+                    say += "首位との差は%s%sね。" % (gap, unit)
+        texts.append(say)
+    # 時間が足りない時の補充用（画面に出さない5位以下を、読むだけ）
+    spare = []
+    for row in top[SHOWN:SHOWN + 3]:
+        if row["name"] in info["shown"] or not row.get("name_jp"):
+            continue
+        spare.append("%s位は%sの%sで、%s%sよ。" % (
+            row["rank"], row.get("team_jp") or row.get("team"),
+            row["name_jp"], row["value"], unit))
+    primary = leader["name_jp"]
+    table_title = "%s　%s" % (league, label)
+    if info.get("baseline_date"):
+        # 比べの基準の日付を画面に出す（前回の記録があるときだけ）
+        d = date.fromisoformat(info["baseline_date"])
+        table_title += "　前回は%d月%d日" % (d.month, d.day)
+    display = [dict(position=r["rank"], team=r["name_jp"], team_en=r["name"],
+                    club=r.get("team_jp") or r.get("team"), player=True,
+                    played=r.get("matches"), points=r["value"]) for r in rows]
+    table = dict(kind="standings", text=scope + "".join(texts), speaker=2,
+                 caption_units=[scope] + texts,
+                 meta=dict(title=table_title, rows=display,
+                           shown=[[1, TOP_N]], lines=[], focus=None,
+                           highlights=[], gap="", primary=primary,
+                           player_rows=True,
+                           columns=[(96, "順位", 100), (220, "選手", 420),
+                                    (710, "試合", 90),
+                                    (810 if unit != "点" else 830,
+                                     "アシスト" if unit != "点" else "得点",
+                                     130 if unit != "点" else 100)],
+                           progressive_rows=True, row_texts=texts,
+                           leading_text=scope, reserve_texts=spare))
+    segs = [cover, table]
+    package = slots.package("race", data, segs, [], info["title"], {})
+    package["narration"]["opening_check"] = short_renewal.opening_check(hook)
+    package["narration"]["short_content_version"] = "1108"
+    return package
+
+
+# ---- まとめ -------------------------------------------------------------
+
 def build(raw_by_code: dict, previous_state: dict = None,
-          today: date = None) -> dict:
+          today: date = None, only: str = "") -> dict:
+    """only は部門の鍵（例 eng.1:goals / PL:goals）。動きが無くても、その部門を
+    今の順位だけで作る（見本用。前回との比べは言わない）。"""
     today = today or datetime.now(JST).date()
     previous_state = previous_state or {}
     parsed = parse_all(raw_by_code)
@@ -471,40 +486,48 @@ def build(raw_by_code: dict, previous_state: dict = None,
         if moves:
             movements[key] = moves
 
-    chosen = choose(movements, previous_state, today)
+    story_key, moves = "", []
+    if only:
+        by_code = {code: league for league, code in LEAGUES}
+        league, _, section = only.partition(":")
+        league = by_code.get(league, league)
+        story_key = "%s:%s" % (league, section)
+        if (league, section) not in sections:
+            raise ValueError("知らない部門です: %s" % only)
+        if not is_ready(sections[(league, section)]):
+            raise ValueError("日本語の名前が未登録の選手がいます: %s" % only)
+        moves = movements.get(story_key, [])
+    else:
+        chosen = choose(movements, previous_state, today, sections)
+        if chosen:
+            _, _, story_key, moves = chosen
+
     story = None
-    if chosen:
-        _, _, key, moves = chosen
-        league, section = key.split(":", 1)
+    if story_key:
+        league, section = story_key.split(":", 1)
         code = dict(LEAGUES)[league]
+        before = (previous_state.get("sections") or {}).get(story_key) or {}
         story = {
-            "key": key,
+            "key": story_key,
             "league": league,
             "code": code,
             "section": section,
             "league_jp": league_jp(league, code),
             "snap": sections[(league, section)],
             "movements": moves,
+            # 前回の記録がある時だけ。画面・説明の「いつと比べたか」に出す
+            "baseline_date": (before.get("snapshot_date")
+                              if before.get("leader") else None),
         }
         story["title"] = title_of(story)
 
     updated_at = datetime.now(timezone.utc).isoformat()
     race = race_view(story, today) if story else {}
     if story:
-        # 共通の検査（sanity.py）が、原稿の数字を同じ材料で照合できるように。
         race["source"] = "ESPN / statistics"
         race["retrieved_at"] = updated_at
-    narration = (build_narration(story, today) if story
-                 else {"segments": [], "title": "",
-                       "date_jst": today.isoformat()})
-    if story:
-        try:
-            import soccer_sanity_material
-            narration["soccer_material"] = soccer_sanity_material.compact(race)
-        except Exception:                               # noqa: BLE001
-            pass
 
-    data = {
+    return {
         "date_jst": today.isoformat(),
         "updated_at": updated_at,
         "sections": {"%s:%s" % k: v for k, v in sections.items()},
@@ -512,10 +535,8 @@ def build(raw_by_code: dict, previous_state: dict = None,
         "picked": [story["key"]] if story else [],
         "story": story,
         "title": story["title"] if story else "",
-        "narration": narration,
         "race": race,
     }
-    return data
 
 
 def load_state(path: str = "data/soccer_leaders_state.json") -> dict:
@@ -581,11 +602,11 @@ def main() -> int:
                         help="保存した実応答のフォルダ（試験・見本用）")
     parser.add_argument("--out", default="data/soccer_leaders.json")
     parser.add_argument("--race-out", default="data/soccer_leaders_race.json")
-    parser.add_argument("--narration-out",
-                        default="build/leaders_narration.json")
     parser.add_argument("--state", default="data/soccer_leaders_state.json")
     parser.add_argument("--today", default="")
     parser.add_argument("--no-state", action="store_true")
+    parser.add_argument("--only", default="",
+                        help="部門を指定して作る（例 PL:goals）。動きが無くても今の順位だけで作る")
     parser.add_argument("--mark-published", default="",
                         help="公開した部門の鍵（例 PL:goals）")
     parser.add_argument("--github-output", default="",
@@ -609,7 +630,7 @@ def main() -> int:
         return 0
 
     previous = load_state(args.state)
-    data = build(raw, previous, today)
+    data = build(raw, previous, today, only=args.only)
 
     out = pathlib.Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
@@ -620,10 +641,6 @@ def main() -> int:
         race.parent.mkdir(parents=True, exist_ok=True)
         race.write_text(json.dumps(data["race"], ensure_ascii=False,
                                    indent=2), encoding="utf-8")
-        narration = pathlib.Path(args.narration_out)
-        narration.parent.mkdir(parents=True, exist_ok=True)
-        narration.write_text(json.dumps(data["narration"], ensure_ascii=False,
-                                        indent=2), encoding="utf-8")
     if not args.no_state:
         save_state(args.state, next_state(previous, data, today))
 
@@ -645,8 +662,6 @@ def main() -> int:
         print("[info] 動きがありません。今日は作りません。")
         return 0
     print(data["title"])
-    for segment in data["narration"]["segments"]:
-        print("[%s] %s" % (segment.get("speaker", ""), segment["text"]))
     print("[done] %s" % out)
     return 0
 

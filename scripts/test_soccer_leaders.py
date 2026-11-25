@@ -1,31 +1,39 @@
 #!/usr/bin/env python3
-"""得点王・アシスト王争いが、嘘にならないか。
+"""得点王・アシスト王争いが、嘘にならないか・今の見た目で出るか。
 
 保存した実応答（2026-11-25 取得）だけで検査する。ネットには出ない。
+動画は作らない（静止画を数枚描くだけ）。
 """
 
 import copy
+import json
+import os
 import pathlib
+import re
 import sys
-import tempfile
 import unittest
 from datetime import date, timedelta
+from unittest.mock import patch
 
 HERE = pathlib.Path(__file__).resolve().parent
+ROOT = HERE.parent
 sys.path.insert(0, str(HERE))
-sys.path.insert(0, str(HERE.parent))
+sys.path.insert(0, str(ROOT))
 
 import soccer_leaders as sl  # noqa: E402
 
 FIXTURES = HERE / "fixtures" / "leaders_1125"
 TODAY = date(2026, 11, 25)
+LATER = date(2026, 11, 28)
+LOOK = dict(COLLESPO_SOCCER_LOOK="v6", COLLESPO_SOCCER_FOCUS="on",
+            COLLESPO_STYLE="v2", COLLESPO_SHORT_LOOK="v4",
+            COLLESPO_HOST_SPLIT="", COLLESPO_SOLO_HOST="metan")
 
 
-def entries(*pairs):
-    return sl.rank([{"name": name, "value": value,
-                     "name_jp": name, "team": "", "team_jp": "",
-                     "matches": 10, "jp": False}
-                    for name, value in pairs])
+def state_from(snapshots, when="2026-11-25"):
+    return {"version": 1, "sections": {
+        key: dict(copy.deepcopy(snap), snapshot_date=when)
+        for key, snap in snapshots.items()}}
 
 
 class LeadersTest(unittest.TestCase):
@@ -36,161 +44,241 @@ class LeadersTest(unittest.TestCase):
         cls.snapshots = {"%s:%s" % key: sl.snapshot(value)
                          for key, value in cls.parsed.items()}
 
+    # ---- 実応答の読み ----------------------------------------------------
     def test_saved_response_values(self):
         goals = self.parsed[("eng.1", "goals")]
-        self.assertEqual(goals[0]["name"], "Erling Haaland")
-        self.assertEqual(goals[0]["value"], 9)
-        self.assertEqual(goals[0]["rank"], 1)
-        self.assertEqual(goals[1]["name"], "Alexander Isak")
-        self.assertEqual(goals[1]["value"], 7)
+        self.assertEqual((goals[0]["name"], goals[0]["value"],
+                          goals[0]["rank"]), ("Erling Haaland", 9, 1))
+        self.assertEqual((goals[1]["name"], goals[1]["value"]),
+                         ("Alexander Isak", 7))
         self.assertEqual(self.parsed[("esp.1", "goals")][0]["value"], 15)
 
-    def test_japanese_names_use_existing_table(self):
-        assists = self.parsed[("eng.1", "assists")]
-        kamada = [x for x in assists if x["name"] == "Daichi Kamada"]
-        self.assertTrue(kamada)
-        self.assertEqual(kamada[0]["name_jp"], "鎌田大地")
-        self.assertTrue(kamada[0]["jp"])
-
-        goals = self.parsed[("ger.1", "goals")]
-        suzuki = [x for x in goals if x["name"] == "Yuito Suzuki"]
-        self.assertTrue(suzuki)
-        self.assertEqual(suzuki[0]["name_jp"], "鈴木唯人")
-
     def test_ties_share_rank(self):
-        ranked = entries(("A", 9), ("B", 9), ("C", 7))
-        self.assertEqual([x["rank"] for x in ranked], [1, 1, 3])
+        goals = self.parsed[("eng.1", "goals")]
+        self.assertEqual([x["rank"] for x in goals[2:5]], [3, 3, 3])
+        self.assertEqual(goals[5]["rank"], 6)
 
-    def test_no_movement_when_same(self):
-        now = sl.snapshot(entries(("A", 9), ("B", 7)))
-        self.assertEqual(sl.detect_movements(now, now, "goals"), [])
+    def test_japanese_players_use_existing_table(self):
+        assists = self.parsed[("eng.1", "assists")]
+        kamada = next(x for x in assists if x["name"] == "Daichi Kamada")
+        self.assertEqual((kamada["name_jp"], kamada["jp"]), ("鎌田大地", True))
 
-    def test_leader_changed(self):
-        before = sl.snapshot(entries(("A", 9), ("B", 7)))
-        after = sl.snapshot(entries(("B", 9), ("A", 7)))
-        moves = sl.detect_movements(before, after, "goals")
-        kinds = [m["kind"] for m in moves]
-        self.assertIn("leader_changed", kinds)
-        # 抜いた相手と、前回からの増え方が言えるときだけ言う。
-        text = moves[0]["text"]
-        self.assertIn("Aを抜いた", text)
-        self.assertIn("前回より2点", text)
+    # ---- 4. 選手名は日本語。表に無い人は出さない -------------------------
+    def test_unregistered_player_has_no_japanese_name_and_is_never_shown(self):
+        esp = self.parsed[("esp.1", "goals")]
+        zabiri = next(x for x in esp if x["name"] == "Yassir Zabiri")
+        self.assertIsNone(zabiri["name_jp"])          # 英字で代用しない
+        self.assertFalse(sl.is_ready(self.snapshots["esp.1:goals"]))
+        with self.assertRaises(ValueError):
+            sl.build(self.raw, {}, TODAY, only="esp.1:goals")
+        # 自動選択でも、名前の無い人がいる部門は選ばれない
+        moves = {"esp.1:goals": [{"kind": "gap_opened", "gap": 2}]}
+        self.assertIsNone(sl.choose(moves, {}, TODAY, {
+            (k.split(":")[0], k.split(":")[1]): v
+            for k, v in self.snapshots.items()}))
 
-    def test_tied_lead(self):
-        before = sl.snapshot(entries(("A", 9), ("B", 7)))
-        after = sl.snapshot(entries(("A", 9), ("B", 9)))
-        kinds = [m["kind"] for m in sl.detect_movements(before, after, "goals")]
-        self.assertIn("tied_lead", kinds)
+    def test_registered_names_are_katakana_with_reading(self):
+        names = json.loads((ROOT / "data" / "soccer_leaders_names.json")
+                           .read_text(encoding="utf-8"))["players"]
+        for en, row in names.items():
+            with self.subTest(player=en):
+                self.assertRegex(row["name"], r"^[ァ-ヶー・]+$")
+                self.assertRegex(row["reading"], r"^[ァ-ヶー]+$")
+                self.assertLessEqual(len(row["name"]), sl.MAX_NAME)
 
-    def test_gap_opened_and_closed(self):
-        before = sl.snapshot(entries(("A", 9), ("B", 8)))
-        after = sl.snapshot(entries(("A", 10), ("B", 7)))
-        kinds = [m["kind"] for m in sl.detect_movements(before, after, "goals")]
-        self.assertIn("gap_opened", kinds)
+    # ---- 3. 前回の記録が無い時は動きを言わない ---------------------------
+    def test_first_run_has_no_movement_and_no_baseline(self):
+        data = sl.build(self.raw, {}, TODAY)
+        self.assertEqual(data["picked"], [])            # 動きなし→作らない
+        data = sl.build(self.raw, {}, TODAY, only="eng.1:goals")
+        story = data["story"]
+        self.assertEqual(story["movements"], [])
+        self.assertIsNone(story["baseline_date"])
+        program = self.program(data)
+        text = "".join(s["text"] for s in program["narration"]["segments"])
+        for word in ("昨日", "前回", "首位に立", "替わ", "抜い", "上がった"):
+            self.assertNotIn(word, text)
 
-        before = sl.snapshot(entries(("A", 9), ("B", 6)))
-        after = sl.snapshot(entries(("A", 10), ("B", 9)))
-        kinds = [m["kind"] for m in sl.detect_movements(before, after, "goals")]
-        self.assertIn("gap_closed", kinds)
-
-    def test_japanese_entered_or_rose(self):
-        before = sl.snapshot(entries(("A", 9), ("B", 8), ("C", 7)))
-        after = sl.snapshot(entries(("A", 9), ("J", 8), ("B", 7)))
-        after["jp"] = [{"name": "J", "name_jp": "日本人", "rank": 2,
-                        "value": 8}]
-        kinds = [m["kind"] for m in sl.detect_movements(before, after, "goals")]
-        self.assertIn("jp_entered", kinds)
-
-    def test_no_story_without_movement(self):
-        state = {"sections": self.snapshots}
-        data = sl.build(self.raw, state, TODAY)
+    def test_saved_state_is_a_dated_baseline_and_same_data_is_no_movement(self):
+        state = sl.load_state(str(ROOT / "data" / "soccer_leaders_state.json"))
+        self.assertEqual(state["sections"]["eng.1:goals"]["snapshot_date"],
+                         "2026-11-25")
+        data = sl.build(self.raw, state, LATER)
         self.assertEqual(data["picked"], [])
-        self.assertEqual(data["title"], "")
-        self.assertEqual(data["movements"], {})
-        self.assertEqual(data["narration"]["segments"], [])
+        data = sl.build(self.raw, state, LATER, only="eng.1:goals")
+        self.assertEqual(data["story"]["baseline_date"], "2026-11-25")
+        self.assertEqual(data["story"]["movements"], [])
 
-    def test_story_and_narration(self):
-        state = {"sections": copy.deepcopy(self.snapshots)}
-        state["sections"]["eng.1:goals"]["leader"] = "Someone Else"
-        data = sl.build(self.raw, state, TODAY)
+    def changed(self):
+        """前回は2位が首位だった、という記録（今回は首位が替わった形）。"""
+        old = copy.deepcopy(self.snapshots)
+        pl = old["eng.1:goals"]
+        pl["leader"], pl["leader_jp"] = "Alexander Isak", "イサク"
+        pl["leader_value"], pl["second_value"], pl["gap"] = 8, 8, 0
+        return state_from(old)
+
+    def test_movement_is_said_with_baseline_date_and_without_repeating_numbers(self):
+        data = sl.build(self.raw, self.changed(), LATER)
         self.assertEqual(data["picked"], ["eng.1:goals"])
-        self.assertIn("プレミアリーグ", data["title"])
-        self.assertIn("得点王", data["title"])
-        self.assertIn("ハーランド", data["title"])
-        speakers = [s.get("speaker") for s in data["narration"]["segments"]]
-        self.assertIn(3, speakers)
-        self.assertIn(2, speakers)
-        said = "".join(s["text"] for s in data["narration"]["segments"])
-        self.assertIn("ハーランド", said)
-        self.assertIn("9", said)
-        self.assertEqual(data["race"]["picked"], ["PL"])
-        self.assertEqual(data["race"]["frame_label"], "得点王争い")
-        # 原稿の数字を共通の検査が照合できる材料が付いている。
-        self.assertTrue(data["narration"].get("soccer_material"))
-        lines = data["race"]["competitions"][0]["lines"]
-        self.assertEqual(len(lines), 2)
-        self.assertEqual(lines[0]["at"], 2)
-        self.assertEqual(lines[0]["label"], "首位と2位")
-        self.assertEqual(lines[1]["at"], sl.TOP_N)
-        race_lines = [s for s in data["narration"]["segments"]
-                      if s["kind"] == "race_line"]
-        self.assertEqual(len(race_lines), 2)
-        self.assertTrue(race_lines[0]["meta"]["rows"])
-        self.assertTrue(race_lines[1]["meta"]["rows"])
-
-    def test_race_view_japanese_name_and_club(self):
-        snapshots = copy.deepcopy(self.snapshots)
-        snapshots["eng.1:assists"]["leader"] = "Someone Else"
-        data = sl.build(self.raw, {"sections": snapshots}, TODAY)
-        jp = data["race"]["competitions"][0]["jp"]
-        self.assertTrue(jp)
-        self.assertEqual(jp[0]["name"], "鎌田大地")
-        self.assertEqual(jp[0]["club_jp"], "クリスタル・パレス")
+        kinds = [m["kind"] for m in data["story"]["movements"]]
+        self.assertIn("leader_changed", kinds)
+        self.assertEqual(data["story"]["baseline_date"], "2026-11-25")
+        program = self.program(data)
+        table = program["narration"]["segments"][1]
+        self.assertIn("11月25日の前回から", table["text"])
+        self.assertIn("首位が", table["text"])
+        self.assertIn("前回は11月25日", table["meta"]["title"])  # 画面にも基準の日
 
     def test_japanese_movement_comes_first(self):
-        movements = {
-            "esp.1:goals": [{"kind": "leader_changed", "text": "首位交代"}],
-            "eng.1:assists": [{"kind": "jp_rose", "text": "鎌田が上がった"}],
-        }
-        chosen = sl.choose(movements, {}, TODAY)
-        self.assertIsNotNone(chosen)
-        self.assertEqual(chosen[2], "eng.1:assists")
+        old = copy.deepcopy(self.snapshots)
+        old["eng.1:assists"]["jp"] = []                 # 前回は上位10人にいなかった
+        data = sl.build(self.raw, state_from(old), LATER)
+        self.assertEqual(data["picked"], ["eng.1:assists"])
+        self.assertTrue(any(m["kind"] == "jp_entered"
+                            for m in data["story"]["movements"]))
 
-    def test_seven_day_window(self):
-        six = (TODAY - timedelta(days=6)).isoformat()
-        seven = (TODAY - timedelta(days=7)).isoformat()
-        state = {"sections": {"eng.1:goals": {"last_published": six}}}
-        self.assertFalse(sl.can_publish(state, "eng.1:goals", TODAY))
-        state["sections"]["eng.1:goals"]["last_published"] = seven
-        self.assertTrue(sl.can_publish(state, "eng.1:goals", TODAY))
+    def test_one_per_day_and_seven_days(self):
+        state = self.changed()
+        state["last_published_date"] = LATER.isoformat()
+        self.assertEqual(sl.build(self.raw, state, LATER)["picked"], [])
+        state = self.changed()
+        state["sections"]["eng.1:goals"]["last_published"] = "2026-11-24"
+        self.assertEqual(sl.build(self.raw, state, LATER)["picked"], [])
+        state["sections"]["eng.1:goals"]["last_published"] = "2026-11-20"
+        self.assertEqual(sl.build(self.raw, state, LATER)["picked"],
+                         ["eng.1:goals"])
 
-    def test_one_per_day(self):
-        state = {"last_published_date": TODAY.isoformat(), "sections": {}}
-        self.assertFalse(sl.can_publish(state, "eng.1:goals", TODAY))
+    def test_gap_and_tie_movements(self):
+        prev = {"leader": "A", "second_value": 7, "leader_value": 9,
+                "gap": 1, "jp": []}
+        now = {"leader": "A", "leader_value": 9, "second_value": 7, "gap": 2,
+               "top": [], "jp": []}
+        self.assertEqual([m["kind"] for m in sl.detect_movements(prev, now, "goals")],
+                         ["gap_opened"])
+        prev = dict(prev, gap=3, second_value=6)
+        now = dict(now, gap=1, second_value=8)
+        self.assertEqual([m["kind"] for m in sl.detect_movements(prev, now, "goals")],
+                         ["gap_closed"])
+        self.assertEqual(sl.detect_movements({}, now, "goals"), [])
 
-        snapshots = copy.deepcopy(self.snapshots)
-        snapshots["eng.1:goals"]["leader"] = "Someone Else"
-        data = sl.build(self.raw, {"sections": snapshots,
-                                   "last_published_date": TODAY.isoformat()},
-                        TODAY)
-        self.assertEqual(data["picked"], [])
+    # ---- 2. 題・言い方 ---------------------------------------------------
+    def test_title_says_gap_with_unit_in_front_of_diff(self):
+        data = sl.build(self.raw, {}, TODAY, only="eng.1:goals")
+        self.assertEqual(
+            data["title"],
+            "プレミアリーグ 得点王争い｜ハーランドが9点で首位、2位と2点差")
+        assists = sl.build(self.raw, {}, TODAY, only="eng.1:assists")
+        self.assertEqual(
+            assists["title"],
+            "プレミアリーグ アシスト王争い｜デクラン・ライスが5アシストで首位、2位と1アシスト差")
+        self.assertEqual(sl.gap_text(2, "点"), "2点差")
+        for title in (data["title"], assists["title"]):
+            self.assertNotIn("点2差", title)
+            self.assertNotIn("点上位", title)
+            self.assertNotRegex(title, r"[、，]\s*[^｜]*？")   # 語りかけ・宣伝文にしない
 
-    def test_state_read_write(self):
-        state = {"version": 1, "sections": {
-            "eng.1:goals": {"last_published": TODAY.isoformat()}}}
-        with tempfile.TemporaryDirectory() as folder:
-            path = str(pathlib.Path(folder) / "state.json")
-            sl.save_state(path, state)
-            self.assertEqual(sl.load_state(path), state)
-            updated = sl.next_state(sl.load_state(path),
-                                    {"sections": self.snapshots}, TODAY,
-                                    published_key="eng.1:goals")
-            self.assertEqual(updated["last_published_date"],
-                             TODAY.isoformat())
-            self.assertEqual(updated["sections"]["eng.1:goals"]
-                             ["last_published"], TODAY.isoformat())
-            self.assertEqual(updated["sections"]["eng.1:goals"]["leader"],
-                             "Erling Haaland")
+    # ---- 台本（掛け合い）と画面 ------------------------------------------
+    def program(self, data):
+        import soccer_slots_v4 as slots
+        with patch.dict(os.environ, LOOK):
+            import review_render_v3 as r3
+            with patch.object(r3, "LOOK", "v4"):
+                return slots.race_program(data["race"])
+
+    def test_dialogue_zundamon_asks_metan_answers_without_repeating_numbers(self):
+        data = sl.build(self.raw, {}, TODAY, only="eng.1:goals")
+        segs = self.program(data)["narration"]["segments"]
+        self.assertEqual([s["kind"] for s in segs],
+                         ["cover", "standings", "outro"])
+        self.assertEqual([s["speaker"] for s in segs], [3, 2, 2])
+        ask, answer = segs[0], segs[1]
+        self.assertTrue(ask["text"].rstrip().endswith("？"))
+        self.assertIn("ハーランド", ask["text"])
+        self.assertIn("9点", ask["text"])                # 冒頭で誰が何点か
+        self.assertNotIn("9点", answer["text"])          # 同じ数字を2回言わない
+        self.assertIn("2点", answer["text"])             # 差は答えのほうで
+        self.assertEqual(ask["meta"]["presenter"], "zundamon")
+        hook = ask["meta"]["opening_hook"]
+        self.assertEqual(hook["context"], "プレミアリーグ　得点王争い")
+        self.assertEqual((hook["subject"], hook["value"]), ("ハーランド", 9))
+        self.assertTrue(self.program(data)["narration"]["opening_check"]["passed"])
+        # 同じ数字を2回言わない（答えの中でも）
+        numbers = re.findall(r"\d+点", answer["text"])
+        self.assertEqual(len(numbers), len(set(numbers)))
+
+    def test_metan_uses_current_tone_and_zundamon_uses_noda(self):
+        import metan_tone
+        for key in ("eng.1:goals", "eng.1:assists", "ger.1:goals"):
+            data = sl.build(self.raw, {}, TODAY, only=key)
+            segs = self.program(data)["narration"]["segments"]
+            self.assertNotRegex(segs[1]["text"], metan_tone.BAD, key)
+            self.assertTrue(re.search(r"のだ", segs[0]["text"]), key)
+
+    def test_table_rows_keep_ties_and_show_only_known_names(self):
+        data = sl.build(self.raw, {}, TODAY, only="eng.1:goals")
+        rows = self.program(data)["narration"]["segments"][1]["meta"]["rows"]
+        self.assertEqual([r["position"] for r in rows], [1, 2, 3, 3])
+        self.assertTrue(all(re.search(r"[ァ-ヶー・一-龯]", r["team"])
+                            for r in rows))
+
+    def test_same_new_look_as_standings_race(self):
+        """順位争い（soccer_race）と同じ部品で描かれる。静止画を数枚だけ描く。"""
+        import review_render_v3 as r3
+        import soccer_slots_v4 as slots
+        data = sl.build(self.raw, {}, TODAY, only="eng.1:assists")
+        with patch.dict(os.environ, LOOK), patch.object(r3, "LOOK", "v4"):
+            plan = slots.race_program(data["race"])
+            segs = plan["narration"]["segments"]
+            for index, when in ((0, 1.4), (1, 21.5)):
+                seg = segs[index]
+                r3.set_program_clock(0)
+                r3.set_caption(seg["text"], 22, 24, speaker=2, duo=False,
+                               **({"caption_units": seg["caption_units"]}
+                                  if seg.get("caption_units") else {}))
+                r3.set_program_clock(when)
+                try:
+                    image = slots.frame(when, seg, plan)
+                    self.assertEqual(slots.check_frame(image, plan), [])
+                finally:
+                    r3.set_program_clock(None)
+                # 新しい見た目の印：隅の立ち絵・読みやすい画面
+                self.assertTrue(image.info.get("soccer_readable"))
+                self.assertTrue(image.info.get("short_cast"))
+                self.assertEqual(image.size, (1080, 1920))
+            texts = [e["text"] for e in image.info["v3_layout"]]
+            for word in ("鎌田大地", "クリスタル・パレス", "アシスト"):
+                self.assertIn(word, texts)
+
+    def test_race_without_leaders_is_untouched(self):
+        import soccer_slots_v4 as slots
+        src = (HERE / "soccer_slots_v4.py").read_text(encoding="utf-8")
+        self.assertIn("if data.get('leaders'):", src)
+        # 旧い順位争いの描き方（generate_morning_short の race_*）は書き換えない
+        old = (HERE / "generate_morning_short.py").read_text(encoding="utf-8")
+        self.assertNotIn("soccer_leaders", old)
+        self.assertNotIn("race_unit", old)
+        self.assertTrue(callable(slots.race_program))
+
+    # ---- 見た目の指定はworkflowで固定 ------------------------------------
+    def test_workflow_pins_the_new_look(self):
+        text = (ROOT / ".github" / "workflows" / "soccer_leaders.yml"
+                ).read_text(encoding="utf-8")
+        for line in ("COLLESPO_SOCCER_LOOK: v6", "COLLESPO_SOCCER_FOCUS: 'on'",
+                     "COLLESPO_STYLE: v2", "COLLESPO_SHORT_LOOK: v4"):
+            self.assertIn(line, text)
+        for name in ("COLLESPO_SOCCER_LOOK", "COLLESPO_SOCCER_FOCUS",
+                     "COLLESPO_STYLE", "COLLESPO_SHORT_LOOK"):
+            self.assertNotRegex(text, name + r":\s*\$\{\{\s*vars\.")
+
+    # ---- 状態 ------------------------------------------------------------
+    def test_state_records_publish_day(self):
+        data = {"sections": self.snapshots}
+        updated = sl.next_state({}, data, TODAY, published_key="eng.1:goals")
+        self.assertEqual(updated["last_published_date"], TODAY.isoformat())
+        self.assertEqual(updated["sections"]["eng.1:goals"]["leader"],
+                         "Erling Haaland")
+        self.assertEqual(updated["sections"]["eng.1:goals"]["snapshot_date"],
+                         TODAY.isoformat())
 
 
 if __name__ == "__main__":

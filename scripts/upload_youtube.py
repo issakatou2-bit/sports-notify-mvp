@@ -1435,18 +1435,29 @@ def _soccer_leaders_lines() -> list:
         unit, label = "点", "得点王"
     out = ["%sの%s争いです。" % (story.get("league_jp", ""), label), ""]
     for row in (snap.get("top") or [])[:10]:
+        # 日本語の名前が表にある選手だけ（英字のまま出さない）
+        if not row.get("name_jp"):
+            continue
         out.append("%d位 %s（%s） %s%s %s試合"
-                   % (row.get("rank"), row.get("name_jp") or row.get("name"),
+                   % (row.get("rank"), row.get("name_jp"),
                       row.get("team_jp") or "", row.get("value"), unit,
                       row.get("matches") or "-"))
-    jp = snap.get("jp") or []
+    jp = [r for r in (snap.get("jp") or []) if r.get("name_jp")]
     if jp:
         out += ["", "日本人選手"]
         for row in jp[:4]:
             out.append("%d位 %s %s%s"
                        % (row.get("rank"), row.get("name_jp"),
                           row.get("value"), unit))
-    out += ["", "数字はESPNの今季成績です。同点は同順位で並べています。", ""]
+    base = story.get("baseline_date")
+    out += [""]
+    if base:
+        try:
+            d = __import__("datetime").date.fromisoformat(base)
+            out.append("比べの基準は%d月%d日の前回の記録です。" % (d.month, d.day))
+        except ValueError:
+            pass
+    out += ["数字はESPNの今季成績です。同点は同順位で並べています。", ""]
     return out
 
 

@@ -31,6 +31,10 @@ on:
         type: boolean
         required: false
         default: true
+      only:
+        description: '部門を指定して作る（例 PL:goals / SA:assists）。動きが無くても今の順位だけで作る。空なら動きがある部門を自動で選ぶ'
+        required: false
+        default: ''
       privacy:
         description: '公開設定 (private / unlisted / public)'
         required: false
@@ -64,16 +68,18 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      COLLESPO_SOCCER_FOCUS: ${{ vars.COLLESPO_SOCCER_FOCUS == 'on' && 'on' || 'off' }}
+      # 見た目は順位争い（soccer_race）の本番と同じ新しい見た目に固定する。
+      # 変数からは読まない（変数が無い・古い時に旧い見た目で描かれた事故の再発防止。11/25 本人）。
+      COLLESPO_SOCCER_LOOK: v6
+      COLLESPO_SOCCER_FOCUS: 'on'
+      COLLESPO_STYLE: v2
+      COLLESPO_SHORT_LOOK: v4
       COLLESPO_BUBBLE: ${{ vars.COLLESPO_BUBBLE || '' }}
-      COLLESPO_STYLE: ${{ vars.COLLESPO_STYLE || '' }}
       COLLESPO_MOTION: ${{ vars.COLLESPO_MOTION || '' }}
       COLLESPO_CAPTION_BREAKS: ${{ vars.COLLESPO_CAPTION_BREAKS || '' }}
       COLLESPO_SLANT_VARIANT: ${{ vars.COLLESPO_SLANT_VARIANT || 'cream' }}
       COLLESPO_GLASS_BACKGROUND: ${{ vars.COLLESPO_GLASS_BACKGROUND || 'stripes' }}
       COLLESPO_OUTRO_NEXT: ${{ vars.COLLESPO_OUTRO_NEXT == 'on' && 'on' || 'off' }}
-      COLLESPO_SHORT_LOOK: ${{ vars.COLLESPO_SOCCER_LOOK || 'v3' }}
-      COLLESPO_SOCCER_LOOK: ${{ vars.COLLESPO_SOCCER_LOOK || 'v3' }}
     steps:
       - uses: actions/checkout@v4
       - name: Ignore a sample-only source run
@@ -114,7 +120,7 @@ jobs:
           python scripts/soccer_leaders.py \
             --out data/soccer_leaders.json \
             --race-out build/leaders_race.json \
-            --narration-out build/leaders_narration.json \
+            --only "${{ inputs.only }}" \
             --state "$STATE" \
             --github-output "$GITHUB_OUTPUT" | tee -a "$GITHUB_STEP_SUMMARY"
 
@@ -137,6 +143,15 @@ jobs:
             sleep 2
           done
 
+      # 台本は順位争いと同じ入口（generate_morning_short --mode soccer_race）から作る。
+      # 材料に leaders があると、ずんだもんが問い・めたんが数字で答える台本になる。
+      - name: Write the script
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && steps.leaders.outputs.count == '1'
+        run: |
+          python scripts/generate_morning_short.py \
+            --mode soccer_race --race build/leaders_race.json \
+            --narration-out build/leaders_narration.json
+
       - name: Synthesize narration
         if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && steps.leaders.outputs.count == '1'
         run: |
@@ -144,9 +159,14 @@ jobs:
             --narration build/leaders_narration.json \
             --out-dir build/leaders_audio
 
+      - name: Fill short narration from unused facts
+        id: length
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && steps.leaders.outputs.count == '1'
+        run: python scripts/soccer_minimum.py --mode race --data build/leaders_race.json --narration build/leaders_narration.json --audio-dir build/leaders_audio
+
       - name: Sanity check
         id: sanity
-        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && steps.leaders.outputs.count == '1'
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && steps.length.outputs.skip != 'true' && steps.leaders.outputs.count == '1'
         continue-on-error: true
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -158,7 +178,7 @@ jobs:
             --kind soccer_leaders
 
       - name: Build the video
-        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && steps.leaders.outputs.count == '1' && steps.sanity.outcome == 'success'
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && steps.length.outputs.skip != 'true' && steps.leaders.outputs.count == '1' && steps.sanity.outcome == 'success'
         run: |
           python scripts/generate_morning_short.py \
             --mode soccer_race --race build/leaders_race.json \
@@ -166,7 +186,7 @@ jobs:
             --audio-dir build/leaders_audio --out build/leaders --require-audio
 
       - name: Vertical thumbnail
-        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && steps.leaders.outputs.count == '1' && steps.sanity.outcome == 'success'
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && steps.length.outputs.skip != 'true' && steps.leaders.outputs.count == '1' && steps.sanity.outcome == 'success'
         continue-on-error: true
         run: |
           bash scripts/shorts_thumbnail.sh \
@@ -178,6 +198,7 @@ jobs:
         if: >-
           (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') &&
           env.COLLESPO_LEADERS_PUBLISH == 'true' &&
+          steps.length.outputs.skip != 'true' &&
           steps.leaders.outputs.count == '1' &&
           steps.sanity.outcome == 'success' &&
           (github.event_name != 'workflow_dispatch' ||
