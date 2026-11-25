@@ -90,9 +90,12 @@ def reserved_width(duo=False):
 
 # 11/22 本人「キャラの大きさ8割くらい」：864→691。顔が安全域（下1440・右930）に入る所まで上げた。
 CORNER_HEIGHT = 691
+# 11/25 ずんだもんは顔を安全域に入れると足が下端から29px浮いた（関門で検出）。
+# 顎を安全域の下端（1440）の内側に保ったまま足を下端へ届かせるため、ずんだもんだけ745（約86%）。話す時の上下3pxでも顎は1440の内側、足は下端に付く。
+CORNER_HEIGHTS = {'zundamon': 745, 'metan': CORNER_HEIGHT}
 # x, y and the visible face within the full-height rig. Hair and clothing may extend out.
 CORNERS = {
-    'zundamon': ('left', -68, 1200, (.40, .15, .73, .34)),
+    'zundamon': ('left', -68, 1182, (.40, .15, .73, .34)),
     'metan': ('right', 692, 1240, (.28, .07, .70, .26)),
 }
 
@@ -106,10 +109,11 @@ def corner_busts(im, speaker, line, elapsed, clock, duration):
         dy = speaking_offset(elapsed, speaking)
         y = base_y + dy
         # 顔の位置は保ち、同じ部品付き立ち絵の下半分までキャンバスに描く。
-        art = bust(who, face, CORNER_HEIGHT, side=side, full=True)
+        height = CORNER_HEIGHTS[who]
+        art = bust(who, face, height, side=side, full=True)
         im.paste(art, (x, y), art)
         alpha = art.getchannel('A')
-        a, b, c, d = alpha.crop((0, 0, art.width, CORNER_HEIGHT // 2)).getbbox()
+        a, b, c, d = alpha.crop((0, 0, art.width, height // 2)).getbbox()
         lo, hi = max(0, -x), min(art.width, im.width - x)
         cut = min(art.height, im.height - y)
         shown = alpha.crop((lo, 0, hi, cut)).getbbox()
@@ -118,12 +122,12 @@ def corner_busts(im, speaker, line, elapsed, clock, duration):
         contact = edge.getbbox()
         floor = [x + lo + contact[0], x + lo + contact[2]] if contact else []
         left, top, right, bottom = facial
-        face_box = [x + round(art.width * left), y + round(CORNER_HEIGHT * top),
-                    x + round(art.width * right), y + round(CORNER_HEIGHT * bottom)]
+        face_box = [x + round(art.width * left), y + round(height * top),
+                    x + round(art.width * right), y + round(height * bottom)]
         ink = [max(0, x + a), y + b, min(im.width, x + c), y + d]
         visible = [x + lo + shown[0], y + shown[1], x + lo + shown[2], y + shown[3]]
         portraits.append(dict(who=who, box=visible, face=face_box, ink=ink, floor=floor, active=active))
-        layers.append(dict(who=who, face=face, height=CORNER_HEIGHT, dim=False, side=side,
+        layers.append(dict(who=who, face=face, height=height, dim=False, side=side,
                            active=active, dy=dy, at=[x, y], cut=cut, corner=True, full=True,
                            facing=inward_facing(who, side), ink=ink))
         r3.record_box(im, 'face', face_box)
