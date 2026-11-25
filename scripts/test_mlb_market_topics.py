@@ -123,6 +123,16 @@ class MarketTopics(unittest.TestCase):
         entry = save.call_args.args[1][doc['topic_key']]
         self.assertEqual((entry['video_id'], entry['replaced']), ('NEW', ['OLD']))
 
+    def test_upload_registry_lets_only_the_held_id_through(self):
+        import upload_youtube
+        already = dict(url='https://youtu.be/OLD', video_id='OLD')
+        for env, kind, expected in [({'COLLESPO_TOPIC_REPLACES': 'OLD'}, 'mlb_market_topic', True),
+                                    ({'COLLESPO_TOPIC_REPLACES': 'OTHER'}, 'mlb_market_topic', False),
+                                    ({'COLLESPO_TOPIC_REPLACES': ''}, 'mlb_market_topic', False),
+                                    ({'COLLESPO_TOPIC_REPLACES': 'OLD'}, 'daily', False)]:
+            with patch.dict(os.environ, env):
+                self.assertIs(upload_youtube.replacing_held(kind, already), expected)
+
 FRAME_PROBE = """
 import review_render_v3 as r3
 import soccer_national_topics as topics
