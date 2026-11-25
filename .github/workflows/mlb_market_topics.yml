@@ -22,6 +22,11 @@ on:
         type: string
         required: false
         default: ''
+      replaces:
+        description: '差し替える旧動画のID（誤りで非公開にした回を作り直す時だけ）'
+        required: false
+        default: ''
+        type: string
       sample_only:
         description: '見本のmp4だけを保存する（公開・台帳・コミット・通知なし）'
         type: boolean
@@ -108,6 +113,7 @@ jobs:
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
           COLLESPO_MLB_MARKET_TOPIC_PUBLISH: 'true'
+          COLLESPO_TOPIC_REPLACES: ${{ inputs.replaces }}
         run: |
           VIDEO_DAY=$(python -c "import json; print(json.load(open('build/mlb_market_topics/narration.json'))['date_jst'])")
           python scripts/upload_youtube.py --video build/mlb_market_topics/collespo_national_topic.mp4 --kind mlb_market_topic --sport mlb --games build/mlb_market_topics/material.json --narration build/mlb_market_topics/narration.json --thumbnail build/mlb_market_topics/short.png --video-date "$VIDEO_DAY" --publish-at "$PUBLISH_AT" --privacy public
