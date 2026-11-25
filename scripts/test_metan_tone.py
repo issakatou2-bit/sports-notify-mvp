@@ -21,6 +21,13 @@ class MetanToneTest(unittest.TestCase):
         self.assertEqual(metan_tone.fix('そうだよ。'), 'そうよ。')
         self.assertEqual(metan_tone.fix('行くんだよ。'), '行くのよ。')
 
+    def test_iru_endings_and_mada_yo(self):
+        # 11/25 19:00 の回：「下にいます」が直らず sanity で止まった。直した「まだよ」を「だよ」と誤検出しない。
+        self.assertEqual(metan_tone.fix('サバフは24位より下にいます。'), 'サバフは24位より下にいるわ。')
+        self.assertEqual(metan_tone.fix('日本人が2人います。'), '日本人が2人いるわ。')
+        self.assertEqual(metan_tone.problems('球団の正式発表はまだよ。'), [])
+        self.assertEqual(metan_tone.problems('そう思います。'), ['ます'])
+
     def test_detects_each_bad_ending_and_allows_similar_words(self):
         line = '1点です。話します。昨日でした。勝ちました。どうでしょう？確認してください。そうだよ。そうだね。見直しよう。'
         self.assertEqual(len(metan_tone.problems(line)), 9)
