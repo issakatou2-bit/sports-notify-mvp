@@ -307,7 +307,7 @@ def ensure_team_badges(im):
     for entry in targets:
         x,y,right,bottom=entry['box'];value=entry['text']
         containers=[e['box'] for e in entries if e['role']=='card' and e['box'][0]<=x and e['box'][1]<=y and right<=e['box'][2] and bottom<=e['box'][3]]
-        edge=min((b[2]-12 for b in containers),default=R)
+        edge=min((b[2]-6 for b in containers),default=R)
         neighbors=[e['box'][0]-12 for e in entries if e is not entry and e['role']=='text' and e['box'][0]>right and abs(e['box'][1]-y)<8]
         if neighbors:edge=min(edge,min(neighbors))
         # 元の行の書体サイズと色を実画素から保つ。札の幅はこの行の中で予約する。

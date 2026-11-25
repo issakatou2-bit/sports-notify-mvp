@@ -101,7 +101,7 @@ class WeeklyTests(unittest.TestCase):
         # 順位と次戦はその試合の中で1文。最後の羅列にしない。「A 対 B」でホーム・アウェーを示唆しない。
         notes = [s['text'] for s in doc['segments'] if 'いまプレミアリーグ7位' in s['text']]
         self.assertEqual(len(notes), 1)
-        self.assertIn('リバプールと対戦します', notes[0])
+        self.assertIn('リバプールと対戦するわ', notes[0])
         self.assertFalse(any('の予定です' in s['text'] for s in doc['segments']))
 
     def test_cup_table_does_not_replace_domestic_rank(self):

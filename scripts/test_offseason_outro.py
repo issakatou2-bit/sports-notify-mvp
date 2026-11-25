@@ -34,7 +34,7 @@ class OffseasonOutro(unittest.TestCase):
             with patch.object(pc, 'mlb_offseason', return_value=False):
                 for exclude in ['', *[r[0] for r in pc.DAILY_LINEUP]]:
                     self.assertEqual(pc.lineup(exclude, ps), [tuple(r) for r in expected if r[0] != exclude])
-        self.assertEqual(r3.INSEASON_OUTRO_TEXT, 'コレスポでは毎日、日本人選手の成績や、明日の試合の見どころを届けています。チャンネル登録して、また見に来てくださいね。')
+        self.assertEqual(r3.INSEASON_OUTRO_TEXT, 'コレスポでは毎日、日本人選手の成績や、明日の試合の見どころを届けているわ。チャンネル登録して、また見に来てね。')
 
     def test_missing_invalid_and_next_year_keep_legacy_text(self):
         for ps in ({}, {'series': None}, {'series': [None]}, [], None):

@@ -80,7 +80,7 @@ class Renewal(unittest.TestCase):
         im=render.frame(0,first,material)
         self.assertEqual(im.info['opening_hook'],item)
         import soccer_v5_cards as cards
-        self.assertGreater(sum(count for count,color in im.crop((100,850,750,1100)).getcolors(162500) if color==cards.LIME),100)
+        self.assertGreater(sum(count for count,color in im.crop((100,600,750,800)).getcolors(162500) if color==cards.LIME),100)
         self.assertEqual(material,original)
         # 締めは短いまま、高評価・登録だけをお願いする（11/16 本人「最後に高評価とか登録よびかけ、ほしいよね」）。
         self.assertIn('高評価',doc['segments'][-1]['text'])

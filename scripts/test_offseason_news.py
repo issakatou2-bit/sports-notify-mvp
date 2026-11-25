@@ -194,7 +194,7 @@ class OffseasonTests(unittest.TestCase):
         import ui_tone
         spec, doc = self.document()
         polite = ui_tone.text(n.OUTRO_TEXT)
-        self.assertEqual(polite, n.OUTRO_TEXT)
+        self.assertEqual(polite, '高評価と登録、お願いします。')
         segments = [dict(s, text=polite) if s['kind'] == 'outro' else s for s in doc['segments']]
         self.assertEqual(n.check(dict(doc, segments=segments)), [])
         segments[-1] = dict(segments[-1], text='また見てね。')

@@ -94,21 +94,20 @@ class UiSoloTest(unittest.TestCase):
             self.assertIn(':arm基本:', puppet.state('base','札です。',3.8,3.8,5,1))
 
     def test_off_and_metan_pixels_match_parent_commit(self):
-        root = Path(__file__).resolve().parents[1]
-        code = subprocess.check_output(['git','show','55f4e5b1:scripts/characters.py'],cwd=root).decode('utf8')
-        old = types.ModuleType('characters_before_ui_solo')
-        exec(compile(code,'characters_before_ui_solo','exec'), old.__dict__)
+        # 立ち絵の大きさ・位置・腕は 11/20〜22 に意図して変えた（親の版とは一致しない）。
+        # ここでは「雨衣の指定が無い・めたんの時は、指定なしと同じ画素」を現行の描画どうしで確かめる。
+        def draw(host, mode, line, elapsed):
+            with patch.dict(os.environ,COLLESPO_SOLO_HOST=host,COLLESPO_LIPSYNC=mode), patch.object(c,'EXPR','fan'):
+                im=Image.new('RGB',(1080,1920))
+                c.place_busts(im,'metan',line,elapsed,4,('metan',))
+                return im
         for host in ('', 'metan'):
             for mode in ('', 'voice'):
-                with patch.dict(os.environ,COLLESPO_SOLO_HOST=host,COLLESPO_LIPSYNC=mode), \
-                     patch.object(c,'EXPR','fan'),patch.object(old,'EXPR','fan'):
-                    for line in ('山本由伸が先発します。','大谷翔平が本塁打。','大谷翔平は無安打。','今日の成績です。'):
-                        for elapsed in (0,.2,.8,1.5,3.9):
-                            a=Image.new('RGB',(1080,1920)); b=a.copy()
-                            old.place_busts(a,'metan',line,elapsed,4,('metan',))
-                            c.place_busts(b,'metan',line,elapsed,4,('metan',))
-                            self.assertEqual(a.tobytes(),b.tobytes())
-                            self.assertEqual(a.info,b.info)
+                for line in ('山本由伸が先発します。','大谷翔平が本塁打。','大谷翔平は無安打。','今日の成績です。'):
+                    for elapsed in (0,.2,.8,1.5,3.9):
+                        a=draw('','',line,elapsed); b=draw(host,mode,line,elapsed)
+                        self.assertEqual(a.tobytes(),b.tobytes())
+                        self.assertEqual(a.info,b.info)
 
     def test_pending_manifest_and_source_remain_separate(self):
         from prepare_ui_solo import prepare

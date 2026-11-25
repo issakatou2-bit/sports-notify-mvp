@@ -134,7 +134,7 @@ HEAD_BASE = 214                  # 見出しの行の基準線（top 84）
 STRIP_Y, STRIP_H = 244, 80       # 事実の帯（top 122・高さ 40）
 STRIP_SIZE = 36
 AREA_TOP = 392                   # 吹き出しの並びの上端（top 196）
-AREA_BOTTOM = 1320               # 吹き出しの並びの下端。これより下は立ち絵と引用元
+AREA_BOTTOM = 1190               # 吹き出しの並びの下端。これより下は立ち絵と引用元
 AREA_FADE = 56                   # 押し出された吹き出しが上の端で薄くなる幅
 GAP = 36                         # 吹き出しの間（gap 18px）
 AVATAR = 88                      # 丸の大きさ（44px）
@@ -147,8 +147,8 @@ SAID_SIZES = (44, 40, 36, 32)    # 本文の字の大きさ（22px）。全部�
 LINE_H = 1.45                    # 行の高さ（line-height 1.45）
 FACT_SIZE = 36                   # 事実の吹き出し（金色・右寄せ。18px）。本文の字がこれより小さければそちらに
 RADIUS, RADIUS_SMALL = 36, 8     # 角の丸み（18px・4px）
-PRESENTER_X, PRESENTER_BOTTOM = 40, 1570   # 立ち絵（left 20・bottom 175）
-SOURCE_X, SOURCE_Y = 300, 1490   # 引用元（left 150・top 745）
+PRESENTER_X, PRESENTER_BOTTOM = 40, 1440   # 立ち絵。下端は安全域（SAFE_BOTTOM 1440）の中
+SOURCE_X, SOURCE_Y = 300, 1368   # 引用元（2行で 1440 に収まる）
 SOURCE_SIZE, SOURCE_MIN = 24, 18
 
 # 決まった言葉（材料ではなく、画面の見出し）

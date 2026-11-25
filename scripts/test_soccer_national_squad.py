@@ -64,7 +64,7 @@ class OfficialSquad(unittest.TestCase):
         marked=[]
         for page in range(9):
             doc=self.document(page)
-            marked.extend(s['text'] for s in doc['segments'] if '初招集です' in s['text'])
+            marked.extend(s['text'] for s in doc['segments'] if '初招集よ' in s['text'])
         self.assertEqual(len(marked),1);self.assertIn('福田師王',marked[0])
         data=self.material(8);data['next_game']=None
         facts=n.information(n.narration(data))
@@ -210,8 +210,8 @@ class OfficialSquad(unittest.TestCase):
             fixed=n.read(out/'material.json');doc=n.read(out/'narration.json')
             texts=[s['text'] for s in doc['segments']]
             self.assertEqual(fixed['length_level'],2)
-            self.assertIn('次の試合の会場はシンガポール・ナショナル・スタジアムです。',texts)
-            self.assertIn('今回の招集メンバーは28人です。',texts)
+            self.assertIn('次の試合の会場はシンガポール・ナショナル・スタジアムよ。',texts)
+            self.assertIn('今回の招集メンバーは28人よ。',texts)
             self.assertEqual(n.check(doc),[])
             with patch.dict('os.environ',{'COLLESPO_SOCCER_LOOK':'v6','COLLESPO_SOCCER_FOCUS':'on','COLLESPO_SHORT_LOOK':'v4'}):
                 clubs=render.clubs_for(fixed);r3.set_caption('',0,0)

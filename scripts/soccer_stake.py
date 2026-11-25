@@ -261,6 +261,8 @@ def build(game, comp, *, as_of):
         ask0 = f"{(hp or ap)[0]['name']}の{hn if hp else an}の試合は、何が懸かっているのだ？"
     else:
         ask0 = f"{hn}対{an}は、何が懸かっているのだ？"
+    if s['kind'] == '残留争い':
+        ask0 = f"えっ、{hn}対{an}は、負けると残留が厳しくなるのだ？"
     first = f"{H['position']}位の{hn}と、{A['position']}位の{an}の{kind_word if s['kind'] != '境目' else '対戦'}です。"
     upper, lower = (H, A) if H['position'] < A['position'] else (A, H)
     # 2回目からは短い名前（パレス・ソシエダ）。45秒に収め、聞き取りやすくする。
@@ -302,7 +304,7 @@ def build(game, comp, *, as_of):
             else:
                 said.append(f"{club_short_from_jp(club, H, A)}には{p['name']}がいます。")
                 rows.append((p['name'], club_short_from_jp(club, H, A)))
-        panels.append(('日本人選手は、どうなのだ？', ''.join(said), '日本人選手', rows, {}))
+        panels.append(('勝負を動かせそうな日本人選手はいるのだ？', ''.join(said), '日本人選手', rows, {}))
     # 3. 直近の調子（連勝・連敗と、失点の多さまで言う）
     fh, fa = form(comp, H['team']), form(comp, A['team'])
     if len(fh) == FORM and len(fa) == FORM:
@@ -320,12 +322,14 @@ def build(game, comp, *, as_of):
         rows = [['勝ち', f"{count(fh, 'W')}勝", f"{count(fa, 'W')}勝"],
                 ['負け', f"{count(fh, 'L')}敗", f"{count(fa, 'L')}敗"],
                 ['失点', str(gh), str(ga_)]]
-        panels.append(('最近の調子は、どうなのだ？', text, f'直近{FORM}試合', [], dict(compare=dict(teams=[hs, as_], rows=rows))))
+        panels.append(('順位が近いなら、最近の調子で差が出そうなのだ？', text, f'直近{FORM}試合', [], dict(compare=dict(teams=[hs, as_], rows=rows))))
     # 4. 開始時刻（締めは淡々と。結果は試合後にまとめる）
-    panels.append(('試合は、いつなのだ？', f"{speech_time(at)}に始まります。", '試合開始',
+    panels.append(('日本から見るなら、何時に始まるのだ？', f"{speech_time(at)}に始まります。", '試合開始',
                    [('日本時間', screen_time(at)), ('大会', league)], {}))
     # 長いときは、上の帯に出ている開始時刻の区間から省く（帯は全編に「大会　月/日 時:分」が出る）。
-    outro = 14  # 「高評価と登録、お願いします。」
+    from metan_tone import fix
+    panels = [(question, fix(answer), *rest) for question, answer, *rest in panels]
+    outro = len(short_common.OUTRO_TEXT)
     while sum(len(q) + len(a_) for q, a_, *_ in panels) + outro > BUDGET / SEC_PER_CHAR and len(panels) > 2:
         panels.pop()
     segments = []

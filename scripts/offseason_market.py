@@ -194,10 +194,18 @@ def check(document):
         expected = [''.join(b for h, b in spec['items'][i:i+2])
                     for i in range(0, len(spec['items']), 2)]
         segments = document.get('segments', [])
+        import metan_tone
+        body = [('intro', spec['intro']), *[('list', line) for line in expected]]
+        revised = [(kind, metan_tone.fix(line)) for kind, line in body]
+        variants = (
+            [*body, ('outro', OUTRO_TEXT)],
+            [*revised, ('outro', OUTRO_TEXT)],
+            [*body, ('outro', metan_tone.POLITE_SHORT_OUTRO)],
+        )
         if any('_sanity_original_line' in s for s in segments):
-            return [] if all(s.get('text') in {spec['intro'], OUTRO_TEXT, *expected} for s in segments) else ['市場の再点検の行が材料と不一致']
-        if ([(s['kind'], s['text']) for s in segments] !=
-                [('intro', spec['intro']), *[('list', t) for t in expected], ('outro', OUTRO_TEXT)]):
+            allowed = {line for version in variants for _, line in version}
+            return [] if all(s.get('text') in allowed for s in segments) else ['市場の再点検の行が材料と不一致']
+        if [(s['kind'], s['text']) for s in segments] not in variants:
             return ['市場の本文・冒頭・締めが材料と完全一致しません']
     except (KeyError, TypeError, ValueError, AttributeError):
         return ['市場の材料の型・必要な欄が不正です']
