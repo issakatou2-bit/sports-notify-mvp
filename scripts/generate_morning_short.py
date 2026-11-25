@@ -2362,17 +2362,21 @@ def race_row(d, y, row: dict, dx: int, inside: bool, bh: int = 92):
 
     pts = "%d" % (row.get("points") or 0)
     fw = font(46)
+    unit = row.get("unit") or "勝点"
     d.text((x1 - 118 - d.textlength(pts, font=fw), y + 18), pts,
            font=fw, fill=TEXT if inside else DIM)
-    d.text((x1 - 104, y + 32), "勝点", font=font(24), fill=DIM)
-    gd = (row.get("gf") or 0) - (row.get("ga") or 0)
-    sub = "得失点 %+d  %d試合" % (gd, row.get("played") or 0)
+    d.text((x1 - 104, y + 32), unit, font=font(24), fill=DIM)
+    if row.get("sub") is not None:
+        sub = row["sub"]
+    else:
+        gd = (row.get("gf") or 0) - (row.get("ga") or 0)
+        sub = "得失点 %+d  %d試合" % (gd, row.get("played") or 0)
     fs = font(22)
     d.text((x1 - 34 - d.textlength(sub, font=fs), y + bh - 30), sub,
            font=fs, fill=DIM)
 
 
-def race_gap_text(diff) -> str:
+def race_gap_text(diff, unit="勝点") -> str:
     """線をまたぐ差の言い方。**画面と読み上げで1つに揃える。**
 
     差0を「0点差」と書くと意味が通らない。勝点では並んでいて
@@ -2381,8 +2385,8 @@ def race_gap_text(diff) -> str:
     if diff is None:
         return ""
     if diff == 0:
-        return "勝点で並んでいる"
-    return "勝点%d差" % abs(diff)
+        return "%sで並んでいる" % unit
+    return "%s%d差" % (unit, abs(diff))
 
 
 def race_lead(race: dict):
@@ -2489,8 +2493,10 @@ def render_race_intro(p, race: dict, day: str = ""):
         d.text((80, 380 + slide), head, font=font(hs), fill=ACCENT)
         y = 560
 
-    d.text((80, y), "順位争い", font=font(72), fill=TEXT)
-    d.text((80, y + 100), "CL圏内・EL圏内の境目を見ます",
+    d.text((80, y), race.get("frame_label") or "順位争い",
+           font=font(72), fill=TEXT)
+    d.text((80, y + 100),
+           race.get("frame_note") or "CL圏内・EL圏内の境目を見ます",
            font=font(38), fill=DIM)
     d.text((80, H - 170), "コレスポ　collespo.com", font=font(38), fill=DIM)
     return im
@@ -2504,7 +2510,8 @@ def render_race_japanese(p, race: dict):
     render_ps_japanese と同じ考え方。
     """
     im, d = base(p)
-    d.text((70, 150), "日本人選手のいるクラブ", font=font(56), fill=ACCENT)
+    d.text((70, 150), race.get("jp_heading") or "日本人選手のいるクラブ",
+           font=font(56), fill=ACCENT)
 
     rows = []
     by_code = {c["code"]: c for c in (race.get("competitions") or [])}
@@ -2567,13 +2574,16 @@ def render_race_line(p, comp: dict, line: dict):
     """
     im, d = base(p)
     d.text((70, 150), comp.get("name_jp", ""), font=font(44), fill=JP)
-    d.text((70, 216), "%sをめぐる争い" % line.get("label", ""),
+    d.text((70, 216),
+           line.get("heading") or "%sをめぐる争い" % line.get("label", ""),
            font=font(62), fill=TEXT)
     # **「◯節終了」とは書かない。**comp["played"] はいちばん多く
     # 消化したクラブの試合数で、節の数ではない。順延があると
     # クラブごとに違う（9/13のラ・リーガはセビージャ5試合・
     # レアル・マドリード4試合）。各クラブの試合数は行に出ている。
-    d.text((70, 300), "最大%d試合を消化" % (comp.get("played") or 0),
+    d.text((70, 300),
+           comp.get("played_note")
+           or "最大%d試合を消化" % (comp.get("played") or 0),
            font=font(30), fill=DIM)
 
     y, i = 366, 0
@@ -2600,11 +2610,12 @@ def render_race_line(p, comp: dict, line: dict):
             race_row(d, y, row, int((1 - e) * 80), False)
         y += 104
 
-    gap = race_gap_text(line.get("diff"))
+    gap = race_gap_text(line.get("diff"), line.get("gap_unit") or "勝点")
     if gap and p > 0.28:
         d.rounded_rectangle([70, y + 20, W - 70, y + 96], 14,
                             fill=(15, 18, 25))
-        d.text((96, y + 40), "線をまたぐ差　" + gap,
+        d.text((96, y + 40),
+               (line.get("gap_label") or "線をまたぐ差") + "　" + gap,
                font=font(34), fill=ACCENT)
         y += 108
 
@@ -2619,8 +2630,11 @@ def render_race_line(p, comp: dict, line: dict):
         d.text((96, y + 30), "昨日から　" + "　".join(parts),
                font=font(30), fill=JP)
     note_y = y + (100 if mv.get("in") or mv.get("out") else 40)
-    d.text((70, note_y), "現時点の順位です。出場決定ではありません", font=font(30), fill=DIM)
-    d.text((70, note_y + 46), "欧州出場枠は追加枠・カップ戦の結果等で変動", font=font(28), fill=DIM)
+    notes = line.get("notes") or ["現時点の順位です。出場決定ではありません",
+                                  "欧州出場枠は追加枠・カップ戦の結果等で変動"]
+    for offset, note in enumerate(notes[:2]):
+        d.text((70, note_y + offset * 46), note,
+               font=font(30 if offset == 0 else 28), fill=DIM)
     return im
 
 
@@ -4019,10 +4033,17 @@ def plan_durations(segs):
     if any((s.get('meta') or {}).get('duo') for s in segs):
         import duo
         return duo.durations(segs)
-    return [short_common.duration(s, max(float(.5 if (s.get('meta') or {}).get('quote_rows') else s.get("min_duration")
-                      or MIN_DURATION.get(s.get("kind") or "list", 5.0)),
-                float(s.get("duration") or 0) + video_common.SEGMENT_TAIL))
-            for s in segs]
+    out = []
+    for s in segs:
+        normal = max(float(.5 if (s.get('meta') or {}).get('quote_rows') else s.get("min_duration")
+                     or MIN_DURATION.get(s.get("kind") or "list", 5.0)),
+                     float(s.get("duration") or 0) + video_common.SEGMENT_TAIL)
+        # 音声が無い見本では、文字数から読む時間を見積もる。
+        # 固定の下限だけだと、長い原稿でも17秒になり、27秒の検査で落ちる。
+        if not s.get("file") and not s.get("duration") and s.get("text"):
+            normal = max(normal, len(s["text"]) / 7.5 + video_common.SEGMENT_TAIL)
+        out.append(short_common.duration(s, normal))
+    return out
 
 
 def build_player_video(args):
@@ -4063,7 +4084,8 @@ def build_player_video(args):
         segs = json.loads(manifest.read_text(encoding="utf-8"))["segments"]
     else:
         print(f"[warn] 音声manifestが見つかりません: {manifest.resolve()}")
-        segs = [{"kind": s["kind"], "file": None, "duration": 0.0,
+        segs = [{"kind": s["kind"], "text": s.get("text", ""),
+                 "file": None, "duration": 0.0,
                  "meta": s["meta"]} for s in narration["segments"]]
 
     import render_timeline
@@ -4492,7 +4514,8 @@ def main():
         segs = json.loads(manifest.read_text(encoding="utf-8"))["segments"]
     else:
         print(f"[warn] 音声manifestが見つかりません: {manifest.resolve()}")
-        segs = [{"kind": s["kind"], "file": None, "duration": 0.0,
+        segs = [{"kind": s["kind"], "text": s.get("text", ""),
+                 "file": None, "duration": 0.0,
                  "meta": s["meta"]} for s in narration["segments"]]
 
     import render_timeline

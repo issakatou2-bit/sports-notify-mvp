@@ -232,6 +232,14 @@ def information(document, material=None):
         if kind == 'jp_roster':
             for row in meta.get('rows', []):
                 add(row.get('name'), '当週の成績', row, '生成入力:公式試合と名簿', index)
+        if kind == 'race_line':
+            for row in meta.get('rows', []):
+                position = row.get('position', row.get('rank'))
+                value = row.get('points', row.get('value'))
+                if (type(position) is int and position > 0
+                        and value is not None and value != ''):
+                    add(row.get('team_en') or row.get('team'), '順位と数字',
+                        [position, value], 'ESPN / statistics', index)
     return list(found.values())
 
 
