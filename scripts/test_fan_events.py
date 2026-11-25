@@ -66,17 +66,19 @@ class FanTest(unittest.TestCase):
             self.assertAlmostEqual(f.TRACK[0]['end'],101/30)
 
     def test_disabled_pixels(self):
-        root=Path(__file__).resolve().parents[1]
-        original=subprocess.check_output(['git','show','11035100:scripts/characters.py'],cwd=root).decode('utf-8')
-        old=types.ModuleType('original');exec(compile(original,'original','exec'),old.__dict__)
+        # 立ち絵の大きさ・位置・腕は意図して変えた（旧い版とは一致しない）。
+        # 応援表情が切れている時は、効果を出さない描画（fan_mood が常に無し）と同じ画素で、記録も残さない。
         with patch.dict(os.environ,COLLESPO_EXPR=''):
-            c.EXPR='';old.EXPR=''
+            c.EXPR=''
             for text in ('山本由伸が10奪三振。','大谷翔平が2本塁打。','今日の成績です。'):
                 for t in (.1,.5,1.7):
                     a=Image.new('RGB',(1080,1920));b=a.copy()
-                    old.place_busts(a,'metan',text,t,4);old.bubble(a,'metan',text)
+                    with patch.object(c,'fan_mood',return_value=None),patch.object(c,'fan_effect') as effect:
+                        c.place_busts(a,'metan',text,t,4);c.bubble(a,'metan',text)
+                    effect.assert_not_called()
                     c.place_busts(b,'metan',text,t,4);c.bubble(b,'metan',text)
                     self.assertEqual(a.tobytes(),b.tobytes())
+                    self.assertNotIn('fan_expr',b.info)
 
 
 if __name__=='__main__':unittest.main(argv=[__file__])
