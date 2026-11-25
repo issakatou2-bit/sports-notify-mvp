@@ -7,6 +7,7 @@ from pathlib import Path
 import subprocess
 import sys
 import unittest
+from types import SimpleNamespace
 from unittest.mock import patch
 
 import short_content
@@ -101,6 +102,36 @@ class MarketTopics(unittest.TestCase):
         self.assertEqual(path, topics.MLB_LEDGER)
         self.assertEqual(ledger[doc['topic_key']]['publish_at'], '2026-11-25T09:00:00+09:00')
 
+
+    def test_replacing_held_video_needs_its_id(self):
+        doc = topics.mlb_narration('followup-sato-cubs')
+        ledger = {doc['topic_key']: dict(video_id='OLD', publish_at='x', title='t')}
+        args = SimpleNamespace(narration='n', games='g', sport='mlb', kind=topics.MLB_PROGRAM, publish_at='', video='v')
+        def run(replaces):
+            env = {'COLLESPO_MLB_MARKET_TOPIC_PUBLISH': 'true', 'COLLESPO_TOPIC_REPLACES': replaces}
+            def read(path):
+                return ledger if path == topics.MLB_LEDGER else (doc if path == 'n' else doc['followup_material'])
+            with patch.dict(os.environ, env), patch.object(topics.national, 'read', side_effect=read),                     patch.object(topics, 'check', return_value=[]):
+                return topics.validate_upload(args)
+        for wrong in ('', 'OTHER'):
+            with self.assertRaisesRegex(ValueError, '予約・投稿済み'):
+                run(wrong)
+        with self.assertRaisesRegex(ValueError, '未来の予約時刻'):
+            run('OLD')
+        with patch.object(topics.national, 'read', return_value=dict(ledger)), patch.object(topics.national, 'save') as save:
+            topics.record_published(doc, 'NEW', '2026-11-25T13:00:00+00:00')
+        entry = save.call_args.args[1][doc['topic_key']]
+        self.assertEqual((entry['video_id'], entry['replaced']), ('NEW', ['OLD']))
+
+    def test_upload_registry_lets_only_the_held_id_through(self):
+        import upload_youtube
+        already = dict(url='https://youtu.be/OLD', video_id='OLD')
+        for env, kind, expected in [({'COLLESPO_TOPIC_REPLACES': 'OLD'}, 'mlb_market_topic', True),
+                                    ({'COLLESPO_TOPIC_REPLACES': 'OTHER'}, 'mlb_market_topic', False),
+                                    ({'COLLESPO_TOPIC_REPLACES': ''}, 'mlb_market_topic', False),
+                                    ({'COLLESPO_TOPIC_REPLACES': 'OLD'}, 'daily', False)]:
+            with patch.dict(os.environ, env):
+                self.assertIs(upload_youtube.replacing_held(kind, already), expected)
 
 FRAME_PROBE = """
 import review_render_v3 as r3
