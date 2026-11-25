@@ -422,8 +422,9 @@ def v4_program(data: dict) -> dict:
             matches = row.get("matches")
             if isinstance(matches, int) and matches > 0:
                 pace = "%g" % round(row["value"] / matches, 2)
-                say = "%sは、%s試合で%s%s。1試合あたり%s%sのペースね。" % (
-                    who, matches, row["value"], unit, pace, unit)
+                # 首位の数字は表紙で言ったので重ねない（言い直しの禁止）。
+                say = "%sは、%s試合に出て、1試合あたり%s%sのペースね。" % (
+                    who, matches, pace, unit)
             else:
                 say = "首位は%sね。" % who
         elif before and before["rank"] == place:
