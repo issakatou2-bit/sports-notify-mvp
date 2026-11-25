@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-24T06:03:03.027612+00:00",
+  "updated_at": "2026-11-25T06:02:00.663976+00:00",
   "sources": [
     {
       "name": "MLB公式",
@@ -9,44 +9,52 @@
   "titles_count": 25,
   "teams": [
     {
-      "team_id": "121",
-      "name": "メッツ",
-      "name_en": "New York Mets",
-      "mentions": 4,
-      "tone": "好調",
-      "gist": "スクーバルと9年450Mで合意、ゴールドシュミットも"
-    },
-    {
       "team_id": "112",
       "name": "カブス",
       "name_en": "Chicago Cubs",
+      "mentions": 3,
+      "tone": "話題",
+      "gist": "カブスが佐藤と6年1.2億ドルで合意"
+    },
+    {
+      "team_id": "113",
+      "name": "レッズ",
+      "name_en": "Cincinnati Reds",
       "mentions": 2,
-      "tone": "好調",
-      "gist": "ロジャースと複数年契約、先発陣再編が始動"
+      "tone": "話題",
+      "gist": "レッズがステフェンソンと3年契約で合意"
     },
     {
-      "team_id": "119",
-      "name": "ドジャース",
-      "name_en": "Los Angeles Dodgers",
+      "team_id": "141",
+      "name": "ブルージェイズ",
+      "name_en": "Toronto Blue Jays",
+      "mentions": 2,
+      "tone": "話題",
+      "gist": "ブルージェイズが平良と5年契約"
+    },
+    {
+      "team_id": "114",
+      "name": "ガーディアンズ",
+      "name_en": "Cleveland Guardians",
       "mentions": 1,
       "tone": "話題",
-      "gist": "救援ステファンソンと契約、ブルペン補強"
+      "gist": "ガーディアンズがブービッチと1年1750万ドル"
     },
     {
-      "team_id": "147",
-      "name": "ヤンキース",
-      "name_en": "New York Yankees",
+      "team_id": "145",
+      "name": "ホワイトソックス",
+      "name_en": "Chicago White Sox",
       "mentions": 1,
       "tone": "話題",
-      "gist": "左腕救援スーターと1年契約で合意"
+      "gist": "ホワイトソックスがT・テイラーと契約合意"
     },
     {
-      "team_id": "158",
-      "name": "ブリュワーズ",
-      "name_en": "Milwaukee Brewers",
+      "team_id": "136",
+      "name": "マリナーズ",
+      "name_en": "Seattle Mariners",
       "mentions": 1,
-      "tone": "好調",
-      "gist": "ポストシーズン分配金が4100万ドル超"
+      "tone": "話題",
+      "gist": "マリナーズがサンタナとマイナー契約"
     },
     {
       "team_id": "116",
@@ -54,23 +62,15 @@
       "name_en": "Detroit Tigers",
       "mentions": 1,
       "tone": "話題",
-      "gist": "元新人王ギルがタイガースと1年契約"
+      "gist": "タイガースが内野手キムと1年契約"
     },
     {
-      "team_id": "117",
-      "name": "アストロズ",
-      "name_en": "Houston Astros",
+      "team_id": "121",
+      "name": "メッツ",
+      "name_en": "New York Mets",
       "mentions": 1,
       "tone": "話題",
-      "gist": "新監督マルティネス、打撃コーチにベイツ"
-    },
-    {
-      "team_id": "118",
-      "name": "ロイヤルズ",
-      "name_en": "Kansas City Royals",
-      "mentions": 1,
-      "tone": "話題",
-      "gist": "左腕シールバーと1年契約を締結"
+      "gist": "カブスとメッツの次の一手に注目"
     }
   ],
   "players": []
