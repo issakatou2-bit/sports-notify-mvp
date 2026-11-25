@@ -60,5 +60,27 @@ class CheckSampleTest(unittest.TestCase):
         self.assertFalse(check_sample.translation(frame, frame + 8))
 
 
+    def test_corner_presenters_touch_floor_with_face_inside_safe_area(self):
+        # 11/25 ずんだもんの足が下端から29px浮いていた（顔を安全域に入れるため上げた分）。
+        from PIL import Image
+        import characters
+        for speaker in ('zundamon', 'metan'):
+            for elapsed in (0.05, 0.15, 0.3, 0.45):
+                im = Image.new('RGBA', (1080, 1920))
+                characters.corner_busts(im, speaker, 'あいう', elapsed, elapsed, 2.0)
+                for row in im.info['duo_portraits']:
+                    self.assertEqual(row['box'][3], 1920, row)
+                    self.assertGreaterEqual(row['floor'][1] - row['floor'][0], 16, row)
+                    self.assertLessEqual(row['face'][3], 1440, row)
+
+    def test_corner_presenter_size_follows_80_percent_design(self):
+        from PIL import Image
+        import characters
+        im = Image.new('RGBA', (1080, 1920))
+        characters.corner_busts(im, 'metan', 'あ', 0.1, 0.1, 2.0)
+        for row in im.info['duo_portraits']:
+            height = row['ink'][3] - row['ink'][1]
+            self.assertTrue(.17 * 1920 <= height <= .23 * 1920, row)
+
 if __name__ == '__main__':
     unittest.main(argv=[__file__])

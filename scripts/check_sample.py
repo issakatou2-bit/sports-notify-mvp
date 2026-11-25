@@ -78,8 +78,10 @@ def geometry_issues(frame, size):
             problems.append(f'{who} に回転・横移動・点滅の指定')
         ink = row.get('ink')
         if row.get('corner'):
-            if ink is None or not .22 * size[1] <= ink[3] - ink[1] <= .28 * size[1]:
-                problems.append(f'{who} の胸上が画面高の22〜28%に収まらない {ink}')
+            # 11/22 本人「8割くらい」で立ち絵を864→691に縮めたのに、この範囲は22〜28%のまま残り、
+            # 正しい回まで止めていた（11/25 関門で発覚）。8割の17.6〜22.4%を含む17〜23%にする。
+            if ink is None or not .17 * size[1] <= ink[3] - ink[1] <= .23 * size[1]:
+                problems.append(f'{who} の胸上が画面高の17〜23%に収まらない {ink}')
             floor = row.get('floor', [])
             if (len(floor) != 2 or not 0 <= floor[0] < floor[1] <= size[0]
                     or floor[1] - floor[0] < 16 or row['box'][3] != size[1]):
