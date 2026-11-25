@@ -25,6 +25,25 @@
       "recorded_at": "2026-11-25T08:33:49.596077+00:00",
       "fingerprint": "bc3eb46c7c043f8f4e9a71c7f11f912c5cceb0db942159b453919e08bd964b75",
       "event_id": "bad0b3ae5c7c9a1c7c8cfb1ae8215e182d3d1580bff5daa566fa09eea2e1fab7"
+    },
+    {
+      "source": "published_videos/mlb_market_topic/followup-sato-cubs",
+      "service": "youtube",
+      "video_id": "MGnJyRm12uo",
+      "state": "scheduled",
+      "scheduled_at": "2026-11-25T13:08:20Z",
+      "event_day": null,
+      "material_day": null,
+      "edition_day": "2026-11-25",
+      "run_at": "2026-11-25T12:47:30.608985+00:00",
+      "details": {
+        "privacy": "public"
+      },
+      "run_id": "45614637088",
+      "attempt": "1",
+      "recorded_at": "2026-11-25T12:47:30.639622+00:00",
+      "fingerprint": "1dffeb94fb453a383dd90a4e2f3a766327d09c058e3f44746af20ef810c511e7",
+      "event_id": "01bf05936185ccfa7aac78f33360abd3782076cda4ae99e2820e6599ec4f2059"
     }
   ]
 }
