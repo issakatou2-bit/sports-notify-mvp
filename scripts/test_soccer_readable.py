@@ -54,6 +54,18 @@ class Readable(unittest.TestCase):
         self.assertGreaterEqual(checked,20)
         self.assertFalse(failures,failures)
 
+    def test_long_club_name_with_ranks_stays_on_one_line(self):
+        # 11/25 の毎日の回で「アトレティコ・マド／リード」と折れた。順位つきの幅でも1行に収める。
+        import soccer_v5_cards as c
+        clubs=[dict(team_en='Atletico Madrid',name_jp='アトレティコ・マドリード',abbr='ATM'),
+               dict(team_en='Viking FK',name_jp='バイキング',abbr='?')]
+        width=layout.R-layout.L-56-170
+        size=layout.fit_name_size(clubs,width)
+        for club in clubs:
+            name=c.club_display_names.display(club)
+            bounds=c.measure(name,size)[2]
+            self.assertEqual(len(c.lines(name,size,width-c.tag_width(club,bounds[3]-bounds[1])-16)),1,(name,size))
+
     def test_seven_people_remain_once_across_two_pages(self):
         case=next(c for c in self.cases if c['key']=='week')
         seg=next(s for s in case['narration']['segments'] if s['kind']=='jp_roster')
