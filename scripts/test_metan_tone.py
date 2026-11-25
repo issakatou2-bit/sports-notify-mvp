@@ -21,6 +21,12 @@ class MetanToneTest(unittest.TestCase):
         self.assertEqual(metan_tone.fix('そうだよ。'), 'そうよ。')
         self.assertEqual(metan_tone.fix('行くんだよ。'), '行くのよ。')
 
+    def test_mada_yo_is_not_an_ending_error(self):
+        # 「まだよ」の「だよ」は語尾の「だよ」ではない（直した後の文が誤検出されて原稿が止まった）。
+        self.assertEqual(metan_tone.problems('球団の正式発表はまだよ。まだね。'), [])
+        self.assertEqual(metan_tone.fix('球団の正式発表はまだよ。'), '球団の正式発表はまだよ。')
+        self.assertEqual(len(metan_tone.problems('まだだよ。')), 1)
+
     def test_iru_endings_and_mada_yo(self):
         # 11/25 19:00 の回：「下にいます」が直らず sanity で止まった。直した「まだよ」を「だよ」と誤検出しない。
         self.assertEqual(metan_tone.fix('サバフは24位より下にいます。'), 'サバフは24位より下にいるわ。')

@@ -412,7 +412,7 @@ class Reactions(unittest.TestCase):
         self.assertEqual(len(asks), 4)
         self.assertIn('得点した久保建英と中村敬斗は、何と話したのだ？', asks)
         self.assertIn('分があると思っていた」と話し、中村敬斗は、「本当に僕は決めるだけだった」と話したわ。', answers[1]['text'])
-        self.assertIn('グローボの報道よ。', answers[2]['text'])
+        self.assertIn('グローボの報道なのよ。', answers[2]['text'])
         self.assertIn('レッドカードで退場したわ。', answers[3]['text'])
         self.assertEqual(list(answers[3]['meta']['rows'][-1]), ['出典', 'サッカーキング・GOAL'])
         for s in doc['segments']:
@@ -519,7 +519,7 @@ class TopicReactions(unittest.TestCase):
         self.assertIn('reactions-brazil', made)
         doc = make('reactions-brazil')
         # 相手国の組は相手の側から結果を言い、記事の文は「書きました」（話したとは言わない）。
-        self.assertIn('日本に2対3で敗れた試合の後、テスト記者は、「少ない好機を確実に決めた」と書きました。', ' '.join(spoken(doc)))
+        self.assertIn('日本に2対3で敗れた試合の後、テスト記者は、「少ない好機を確実に決めた」と書いたわ。', ' '.join(spoken(doc)))
         self.assertEqual(topics.check(doc), [])
         self.assertIn('https://example.com/analysis', topics.metadata(doc)['snippet']['description'])
 
