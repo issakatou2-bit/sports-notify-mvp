@@ -2455,6 +2455,8 @@ def main():
     if _json_or_empty(args.narration).get('offseason', {}).get('series_number'):
         body['snippet']['description'] += '\n' + (__import__('offseason_market').DESCRIPTION if _json_or_empty(args.narration)['offseason'].get('kind') == 'market' else __import__('jp_future_series').DESCRIPTION)
     body["snippet"]["description"] = __import__('fan_privacy').description(club_display_description(body["snippet"]["description"]))
+    # 登録の導線を最初の段落の後に1行（11/25 点検：どの型の説明欄にも登録のリンクが無かった）。
+    body["snippet"]["description"] = __import__('channel_follow').with_subscribe(body["snippet"]["description"])
     # BGM が Gemini（Lyria）製なら表記を足す（11/20、Morning_Tea を全部の既定に）。
     body["snippet"]["description"] = __import__('sound_mix').with_bgm_credit(body["snippet"]["description"])
     # publishAt は privacyStatus が private のときだけ有効。
