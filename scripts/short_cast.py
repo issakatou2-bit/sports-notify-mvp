@@ -80,7 +80,9 @@ def caption(im, speaker, elapsed, alpha=1):
     import bubble_styles
     import short_common
     line = caption_at(r3._CAPTION, elapsed)
-    if line and alpha > 0 and not short_common.duplicate_caption(im, line):
+    # 重複の判定と記録は、字幕がまだ見えない（alpha 0）出始めにも行う（出始めだけ記録が抜けていた）。
+    duplicate = bool(line) and short_common.duplicate_caption(im, line)
+    if line and alpha > 0 and not duplicate:
         before = im.copy() if alpha < 1 else None
         bubble_styles.draw(im, speaker, line, style='slant', box=CAPTION, seconds=elapsed)
         if before is not None:
