@@ -90,13 +90,13 @@ def design_team(spec):
     return None if spec.get('multi_team') or spec.get('game') or len(teams)>1 else spec.get('team_id')
 
 
-def _lines(d, text, size, width, max_lines=4, floor=24, atomic_numbers=False):
+def _lines(d, text, size, width, max_lines=4, floor=24, atomic_numbers=False, tokens=None):
     """描画と同じ書体で札の幅を計測する。長い語も幅以内で折る。"""
     while True:
         f = font(size)
         lines, line = [], ''
         for part in str(text).split('\n'):
-            for token in _tokens(part):
+            for token in (tokens or _tokens)(part):
                 if d.textbbox((0,0),line+token,font=f)[2] <= width:
                     line += token
                     continue

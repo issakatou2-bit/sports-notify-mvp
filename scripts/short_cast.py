@@ -90,6 +90,19 @@ def caption(im, speaker, elapsed, alpha=1):
     return bool(line and alpha > 0)
 
 
+def _source_tokens(text):
+    """出典の折り返し単位。媒体名の区切り「・」でも折り、英字の媒体名（Sportiva）を途中で切らない。"""
+    out, cur = [], ''
+    for c in str(text):
+        cur += c
+        if c in '　、：・' or (c == ' ' and cur.strip()):
+            out.append(cur)
+            cur = ''
+    if cur:
+        out.append(cur)
+    return out
+
+
 def source(im, text, color):
     if not text:
         return
@@ -97,7 +110,7 @@ def source(im, text, color):
     width = SOURCE_RIGHT - SOURCE_X
     letters = ''.join(str(text).split())
     for initial, lines in ((23, 1), (23, 4), (21, 5)):
-        rows, size = r3._lines(draw, text, initial, width, lines, 19)
+        rows, size = r3._lines(draw, text, initial, width, lines, 19, tokens=_source_tokens)
         if ''.join(''.join(rows).split()) == letters:
             break
     else:

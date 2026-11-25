@@ -138,7 +138,7 @@ class Material:
 
     def result(self):
         a,b=self.score
-        return ('試合の結果はどうなったのだ？',f'日本と{self.other}の試合は、日本が{a}対{b}で'+('勝ちました。' if a>b else '敗れました。' if a<b else '引き分けました。'),
+        return ('試合の結果はどうなったのだ？',f'日本と{self.other}の試合は、日本が{a}対{b}で'+('勝ったわ。' if a>b else '敗れたわ。' if a<b else '引き分けたわ。'),
                 '試合結果',[('日本 対 '+self.other,f'{a}-{b}')])
 
 
@@ -159,21 +159,21 @@ def team_numbers(m):
         return dict(compare=dict(teams=['日本',m.other],rows=[list(r) for r in shown[:count]]))
     def rows(*indexes):
         return [(t,shown[i][1 if t=='日本' else 2]) for i in indexes for t in ('日本',m.other)]
-    panels=[('ボール支配率は、どうだったのだ？',f'ボール支配率は、日本が{ja}パーセント、{m.other}が{oa}パーセントでした。','ボール支配率',
+    panels=[('ボール支配率は、どうだったのだ？',f'ボール支配率は、日本が{ja}パーセント、{m.other}が{oa}パーセントだったわ。','ボール支配率',
              rows(0),compare(1)),
-            ('シュートの数は、どうだったのだ？',f'シュートは、日本が{pairs[1][1]}本、{m.other}が{pairs[1][2]}本。枠内シュートは、日本が{pairs[2][1]}本、{m.other}が{pairs[2][2]}本でした。',
+            ('シュートの数は、どうだったのだ？',f'シュートは、日本が{pairs[1][1]}本、{m.other}が{pairs[1][2]}本。枠内シュートは、日本が{pairs[2][1]}本、{m.other}が{pairs[2][2]}本だったわ。',
              'シュートと枠内シュート',rows(1,2),compare(3)),
-            ('コーナーキックは、どうだったのだ？',f'コーナーキックは、日本が{pairs[3][1]}本、{m.other}が{pairs[3][2]}本でした。','コーナーキック',
+            ('コーナーキックは、どうだったのだ？',f'コーナーキックは、日本が{pairs[3][1]}本、{m.other}が{pairs[3][2]}本だったわ。','コーナーキック',
              rows(3),compare(4))]
     # 解説：数字で下回っても勝てた理由を、枠内シュートと得点の比で言う（本人 11/15「解説的な視点」）。
     on_j,on_o=int(pairs[2][1]),int(pairs[2][2]);g,h=m.score
     if 0<on_j and 0<on_o and g<=on_j and h<=on_o and g*on_o>h*on_j:
         panels[-1]=('なぜ、シュートが少なくても勝てたのだ？',
-            f'枠内に飛んだシュートのうち、日本は{on_j}本で{g}点、{m.other}は{on_o}本で{h}点でした。少ない好機を、日本が確実に決めた試合です。',
+            f'枠内に飛んだシュートのうち、日本は{on_j}本で{g}点、{m.other}は{on_o}本で{h}点だったわ。少ない好機を、日本が確実に決めた試合なのよ。',
             '枠内シュートと得点',[('日本',f'枠内{on_j}本で{g}点'),(m.other,f'枠内{on_o}本で{h}点')],
             dict(compare=dict(teams=['日本',m.other],rows=[list(r) for r in shown[:3]]+[['得点',f'{g}点',f'{h}点']])))
     # 題で結果を言うので、結果を先に言い、数字で上回られていたことへつなぐ（Argon 11/15）。
-    opening=(f'{m.other}戦は、どうなったのだ？',f'日本が{m.score[0]}対{m.score[1]}で勝ちました。ただ、試合の数字では{m.other}が上回っていました。',
+    opening=(f'{m.other}戦は、どうなったのだ？',f'日本が{m.score[0]}対{m.score[1]}で勝ったわ。ただ、試合の数字では{m.other}が上回っていたわ。',
              '試合結果',[('日本 対 '+m.other,f'{m.score[0]}-{m.score[1]}')])
     m.hook=dict(subject=f'シュート{pairs[1][1]}本で',big=str(g),unit='得点',note=f'{m.other}は{pairs[1][2]}本で{h}得点')
     return f'日本{m.score[0]}-{m.score[1]}{m.other} 支配率{ja}% シュート{pairs[1][1]}本で勝利',[opening]+panels
@@ -196,13 +196,13 @@ def late_winner(m):
     if not sub or m.minute_number(sub)>m.minute_number(decisive):raise Unavailable('得点前の途中出場が未確認')
     name=m.who(decisive);minute=m.minute(decisive);entry=m.minute(sub);replaced=m.who(sub,1)
     gap=m.minute_number(decisive)-m.minute_number(sub)
-    rows=[('決勝点は、誰が決めたのだ？',f'日本の決勝点を決めたのは、{name}です。得点は{national.minute_words(minute)}でした。','決勝点',[(name,minute+'分')]),
-          ('どのように出場したのだ？',f'{name}は先発ではなく、{national.minute_words(entry)}に{replaced}と交代で出場しました。'+(f'出場してから{gap}分で決めた決勝点です。' if gap>0 else ''),
+    rows=[('決勝点は、誰が決めたのだ？',f'日本の決勝点を決めたのは、{name}よ。得点は{national.minute_words(minute)}だったわ。','決勝点',[(name,minute+'分')]),
+          ('どのように出場したのだ？',f'{name}は先発ではなく、{national.minute_words(entry)}に{replaced}と交代で出場したわ。'+(f'出場してから{gap}分で決めた決勝点なのよ。' if gap>0 else ''),
            '途中出場',[(name,entry+'分'),('交代した選手',replaced)]+([('出場から得点まで',f'{gap}分')] if gap>0 else []))]
     confirmed=any('Goal confirmed following VAR Review' in c.get('text','') and
         (c.get('time',{}).get('displayValue')==decisive['clock']['displayValue']) and
         player['athlete']['displayName'] in c.get('text','') for c in m.raw.get('commentary',[]))
-    if confirmed:rows.append(('得点の確認は、どうなったのだ？','この決勝点は、VARの確認を経て認められました。','得点の確認',[('VARの確認','得点を認定')]))
+    if confirmed:rows.append(('得点の確認は、どうなったのだ？','この決勝点は、VARの確認を経て認められたわ。','得点の確認',[('VARの確認','得点を認定')]))
     m.hook=dict(subject=f'{name} 途中出場から',big=minute,unit='分',note='決勝点'+(f'（出場から{gap}分）' if gap>0 else ''))
     return f'{name} 途中出場から{minute}分の決勝点',rows+[m.result()]
 
@@ -220,15 +220,15 @@ def opponent_star(m):
     spoken='・'.join(national.minute_words(m.minute(e)) for e in goals)
     shots=m.stat(m.oid,'totalShots',m.player(goals[0]));target=m.stat(m.oid,'shotsOnTarget',m.player(goals[0]))
     team=m.stat(m.oid,'totalShots');alone=n==m.score[1]
-    rows=[(f'{m.other}の得点者は、誰なのだ？',f'{m.other}の{name}が{n}得点。得点した時間は{spoken}でした。'+(f'{m.other}の得点は、すべて{short}です。' if alone else ''),
+    rows=[(f'{m.other}の得点者は、誰なのだ？',f'{m.other}の{name}が{n}得点。得点した時間は{spoken}だったわ。'+(f'{m.other}の得点は、すべて{short}よ。' if alone else ''),
            '相手の得点者',[(name,f'{n}得点'),('得点の時間',minutes)]+([(f'{m.other}の得点',f'{n}点すべて')] if alone else [])),
-          ('シュートは、何本だったのだ？',f'{name}のシュートは{shots}本。そのうち枠内シュートは{target}本でした。'+(f'チーム全体のシュート{team}本のうち、{shots}本を打っています。' if int(team)>int(shots) else ''),
+          ('シュートは、何本だったのだ？',f'{name}のシュートは{shots}本。そのうち枠内シュートは{target}本だったわ。'+(f'チーム全体のシュート{team}本のうち、{shots}本を打っているわ。' if int(team)>int(shots) else ''),
            'シュートの数字',[('シュート',shots+'本'),('枠内シュート',target+'本')]+([('チームのシュート',team+'本')] if int(team)>int(shots) else []))]
     outside=all('outside the box' in e.get('text','') for e in goals)
-    if outside:rows.append((f'{short}は、どこから決めたのだ？',f'{n}得点とも、ペナルティエリアの外からのシュートでした。','得点の位置',[('ペナルティエリアの外',f'{n}得点')]))
+    if outside:rows.append((f'{short}は、どこから決めたのだ？',f'{n}得点とも、ペナルティエリアの外からのシュートだったわ。','得点の位置',[('ペナルティエリアの外',f'{n}得点')]))
     assists=[m.who(e,1) for e in goals if 'Assisted by ' in e.get('text','') and len(e.get('participants',[]))>=2]
     if len(assists)==n and len(set(assists))==1:
-        rows.append(('アシストしたのは、誰なのだ？',f'{n}点とも、{assists[0]}のアシストでした。','アシスト',[('全得点のアシスト',assists[0])]))
+        rows.append(('アシストしたのは、誰なのだ？',f'{n}点とも、{assists[0]}のアシストだったわ。','アシスト',[('全得点のアシスト',assists[0])]))
     m.hook=dict(subject=f'{m.other}の{short}',big=str(n),unit='得点',note=('すべてペナルティエリアの外から' if outside else f'{m.other}の得点はすべて{short}' if alone else ''))
     return f'{short} {n}得点'+('とも箱の外から' if outside else ''),rows+[m.result()]
 
@@ -243,12 +243,12 @@ def keeper(m):
     if len(opponents)!=1:raise Unavailable('相手GKが未確認')
     other_saves=m.stat(m.oid,'saves',opponents[0])
     shots=m.stat(m.oid,'totalShots');target=m.stat(m.oid,'shotsOnTarget')
-    rows=[('日本のゴールキーパーは、どうだったのだ？',f'日本のゴールキーパー、{name}のセーブ数は{saves}でした。','守護神の数字',[(name,saves+'セーブ')]),
-          ((f'{m.other}のシュートを、どれだけ止めたのだ？',f'{m.other}のシュートは{shots}本、枠内は{target}本。{name}はそのうち{saves}本を止め、決められたのは{m.score[1]}本でした。',
+    rows=[('日本のゴールキーパーは、どうだったのだ？',f'日本のゴールキーパー、{name}のセーブ数は{saves}だったわ。','守護神の数字',[(name,saves+'セーブ')]),
+          ((f'{m.other}のシュートを、どれだけ止めたのだ？',f'{m.other}のシュートは{shots}本、枠内は{target}本。{name}はそのうち{saves}本を止め、決められたのは{m.score[1]}本だったわ。',
             '枠内シュートとセーブ',[('被シュート',shots+'本'),('被枠内シュート',target+'本'),('止めた数',f'{target}本中{saves}本')])
            if int(saves)+m.score[1]==int(target) else
-           (f'{m.other}のシュートは、どうだったのだ？',f'{m.other}のシュートは{shots}本。そのうち枠内シュートは{target}本でした。日本が受けたシュートの数字です。','日本の被シュート',[('被シュート',shots+'本'),('被枠内シュート',target+'本')])),
-          (f'{m.other}のゴールキーパーは、どうだったのだ？',f'{m.other}のゴールキーパーのセーブ数は{other_saves}。{name}は{saves}セーブでした。','両チームのGK',[('日本',saves+'セーブ'),(m.other,other_saves+'セーブ')])]
+           (f'{m.other}のシュートは、どうだったのだ？',f'{m.other}のシュートは{shots}本。そのうち枠内シュートは{target}本だったわ。日本が受けたシュートの数字なのよ。','日本の被シュート',[('被シュート',shots+'本'),('被枠内シュート',target+'本')])),
+          (f'{m.other}のゴールキーパーは、どうだったのだ？',f'{m.other}のゴールキーパーのセーブ数は{other_saves}。{name}は{saves}セーブだったわ。','両チームのGK',[('日本',saves+'セーブ'),(m.other,other_saves+'セーブ')])]
     win=m.score[0]>m.score[1]
     m.hook=dict(subject=f'GK {name}',big=saves,unit='セーブ',note=f'枠内{target}本のうち{saves}本を止めた' if int(saves)+m.score[1]==int(target) else f'{m.other}のシュート{shots}本')
     return f'{name} {saves}セーブ'+(f'で{m.other}に勝利' if win else f' {m.other}のシュート{shots}本'),rows+[m.result()]
@@ -285,7 +285,7 @@ def early_goals(m):
         name=m.who(e);minute=m.minute(e)
         if 'Assisted by ' not in e.get('text','') or len(e.get('participants',[]))<2:raise Unavailable('アシストが未確認')
         assist=m.who(e,1);foot,kind=how(e)
-        said=f'{lead}{national.minute_words(minute)}、{assist}の'+(kind or 'アシスト')+f'から、{name}が'+(f'{foot}で' if foot else '')+'決めました。'
+        said=f'{lead}{national.minute_words(minute)}、{assist}の'+(kind or 'アシスト')+f'から、{name}が'+(f'{foot}で' if foot else '')+'決めたわ。'
         rows.append((q,said,head,[(name,minute+'分')]+([('シュート',foot)] if foot else [])+[('アシスト',assist+('の'+kind if kind else ''))]))
     # 2点のあとの流れも言う（「3-2」だけに飛ばさない。Argon 11/15）。
     groups,flow=goal_flow(m)
@@ -299,7 +299,7 @@ def early_goals(m):
         for e in es:tally[str(e['team']['id'])]+=1
         team='' if str(es[0]['team']['id'])==national.JAPAN else f'{m.other}の'
         parts.append(f"{team}{m.who(es[0])}が{'と'.join(national.minute_words(m.minute(e)) for e in es)}に決めて{tally[national.JAPAN]}対{tally[m.oid]}")
-    said='その後、'+'。'.join(parts)+'。日本が勝ちました。'
+    said='その後、'+'。'.join(parts)+'。日本が勝ったわ。'
     rows.append(('試合は、そのあとどうなったのだ？',said,'全得点の流れ',flow))
     m.hook=dict(subject=f'{m.who(a)}と{m.who(b)}',big=str(gap),unit='分間で2得点',note=f'前半{m.minute(a)}分から')
     return f'{m.who(a)}と{m.who(b)} {gap}分間で2得点',rows
@@ -324,11 +324,11 @@ def rematch(m):
     stage=lost.get('stage','')
     now=dict(date=m.today,competition='親善試合',gf=m.score[0],ga=m.score[1])
     # 今回の勝ちから入り、対戦を新しい順に1行ずつ積む（Argon 11/15：結論を先に・一覧で）。
-    rows=[(f'{m.other}戦は、どうなったのだ？',f'日本が{m.score[0]}対{m.score[1]}で勝ちました。ワールドカップで敗れた相手です。','対戦の記録',[board(now,m.other)]),
-          ('ワールドカップでは、どうだったのだ？',f"{day_words(lost)}のワールドカップの{stage}で、日本は{lost['gf']}対{lost['ga']}で敗れました。",
+    rows=[(f'{m.other}戦は、どうなったのだ？',f'日本が{m.score[0]}対{m.score[1]}で勝ったわ。ワールドカップで敗れた相手なのよ。','対戦の記録',[board(now,m.other)]),
+          ('ワールドカップでは、どうだったのだ？',f"{day_words(lost)}のワールドカップの{stage}で、日本は{lost['gf']}対{lost['ga']}で敗れたわ。",
             '対戦の記録',[board(now,m.other),board(lost,m.other)])]
     won=next((r for r in before if r['result']=='win' and r['gf']>r['ga'] and r['date']<lost['date']),None)
-    if won:rows.append(('その前の対戦は、どうだったのだ？',f"{won['date'][:4]}年{int(won['date'][5:7])}月の{won['competition']}では、日本が{won['gf']}対{won['ga']}で勝っています。",
+    if won:rows.append(('その前の対戦は、どうだったのだ？',f"{won['date'][:4]}年{int(won['date'][5:7])}月の{won['competition']}では、日本が{won['gf']}対{won['ga']}で勝っているわ。",
             '対戦の記録',[board(now,m.other),board(lost,m.other),board(won,m.other)]))
     m.hook=dict(subject=f'W杯で敗れた{m.other}に',big=f'{m.score[0]}-{m.score[1]}',unit='で勝利',note=f"{day_words(lost)}のW杯{stage}は{lost['gf']}-{lost['ga']}で敗戦")
     return f'W杯で敗れた{m.other}に{m.score[0]}-{m.score[1]}で勝利',rows
@@ -430,7 +430,8 @@ def quote_groups(quotes):
 
 def quote_panel(qs):
     # 記事・見出しの文は「書き」、会見・取材の言葉は「話し」（書いた物を「話した」と言わない）。
-    said=''.join(f"{q['lead']}は、「{q['quote']}」と{q.get('verb') or '話し'}"+('、' if i<len(qs)-1 else 'ました。') for i,q in enumerate(qs))+''.join(f"{q['via']}の報道です。" for q in qs if q.get('via'))
+    past={'話し':'話したわ。','書き':'書いたわ。','述べ':'述べたわ。','語り':'語ったわ。'}
+    said=''.join(f"{q['lead']}は、「{q['quote']}」と"+((q.get('verb') or '話し')+'、' if i<len(qs)-1 else past[q.get('verb') or '話し']) for i,q in enumerate(qs))+''.join(f"{q['via']}の報道なのよ。" for q in qs if q.get('via'))
     # 新聞・分析記事は「の発言」でなく label（Argon 11/15「見出しの発言」は不自然）
     panel=[(q.get('label') or q['who']+'の発言','「'+q['quote']+'」') for q in qs]+[('出典','・'.join(dict.fromkeys(q['source'] for q in qs)))]
     return said,panel
@@ -515,7 +516,15 @@ def narration(summary, topic, *, names=None, meetings=None):
     if is_reactions(topic):
         doc['reaction_material']=copy.deepcopy(reaction_material(raw['header']['id'],topic))
         doc['sanity_materials'].append(dict(source='試合後の発言（確認済み）',sport='soccer',facts=doc['reaction_material']))
-    return short_common.prepare(doc)
+    return tone_gate(short_common.prepare(doc))
+
+
+def tone_gate(doc):
+    """めたんの語尾が1つでも「です・ます」系なら原稿を作らない（revise 後の最終確認）。"""
+    import metan_tone
+    bad=[f'{i}番目「{e}」' for i,e in metan_tone.check(doc['segments'])]
+    if bad:raise ValueError('めたんの口調が決まりと違います: '+'、'.join(bad))
+    return doc
 
 
 def dialogue_segments(topic, panels, hook):
@@ -541,13 +550,13 @@ def mlb_narration(topic):
         raise Unavailable('冒頭の選手名の読みか要の数字が材料にありません')
     if any(not ask.endswith('？') for ask, *_ in panels):
         raise Unavailable('ずんだもんの台詞は問いだけです')
-    return short_common.prepare(dict(
+    return tone_gate(short_common.prepare(dict(
         program=MLB_PROGRAM, date_jst=data['checked_on'], title=title+' #Shorts',
         topic=topic, event_id=event, topic_key=topic, segments=dialogue_segments(topic,panels,hook),
         followup_material=data, team_id=MLB_TEAMS[event], screen_title='MLB',
         duration_budget=dict(limit=MLB_LIMIT,grace=0), baseball_average_voice=True,
         sanity_materials=[dict(source='MLB移籍報道（確認済み）',sport='mlb',facts=data)],
-    ))
+    )))
 
 
 def estimate(doc):
