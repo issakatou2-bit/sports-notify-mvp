@@ -1,5 +1,5 @@
 """Offline checks for full ledger coverage and preserving earlier snapshots."""
-from datetime import date
+from datetime import date, datetime, timedelta
 import json
 from pathlib import Path
 import sys
@@ -8,6 +8,7 @@ import unittest
 from unittest.mock import MagicMock, patch
 
 import fetch_analytics as analytics
+from analytics_snapshots import video_snapshots
 
 
 def vid(i):
@@ -67,18 +68,113 @@ class CoverageTests(unittest.TestCase):
     def test_later_batch_failure_preserves_existing_snapshot(self):
         with tempfile.TemporaryDirectory() as tmp:
             target = Path(tmp) / 'analytics.json'
-            original = json.dumps({'days': {'earlier': {'videos': []}}})
-            target.write_text(original, encoding='utf-8')
+            previous = {'2026-11-24': {'videos': [{'video': vid(0)}]}}
+            target.write_text(json.dumps({'days': previous}), encoding='utf-8')
             api = MagicMock()
-            api.reports.return_value.query.return_value.execute.side_effect = [
-                page(0, 200), RuntimeError('supplement unavailable')]
-            with patch.object(analytics, 'client', return_value=api), \
+            batches = iter([page(0, 200), RuntimeError('supplement unavailable')])
+
+            def query(**params):
+                request = MagicMock()
+                if params['dimensions'] == 'video':
+                    result = next(batches)
+                    if isinstance(result, Exception):
+                        request.execute.side_effect = result
+                    else:
+                        request.execute.return_value = result
+                elif params['dimensions'] == 'deviceType':
+                    request.execute.return_value = report('deviceType,views,estimatedMinutesWatched',
+                                                          [['MOBILE', 9, 2.5]])
+                else:
+                    request.execute.return_value = {}
+                return request
+
+            api.reports.return_value.query.side_effect = query
+            with patch.object(analytics, 'datetime', wraps=datetime) as clock, \
+                 patch.object(analytics, 'client', return_value=api), \
                  patch.object(analytics, 'known_video_ids', return_value=[vid(201)]), \
-                 patch.object(analytics, '_report') as report, \
+                 patch.object(analytics, '_report') as log, \
                  patch.object(sys, 'argv', ['fetch_analytics', '--out', str(target)]):
+                clock.now.return_value = datetime(2026, 11, 25, tzinfo=analytics.JST)
                 analytics.main()
-            report.assert_called_once()
-            self.assertEqual(target.read_text(encoding='utf-8'), original)
+            log.assert_called_once()
+            store = json.loads(target.read_text(encoding='utf-8'))
+            self.assertEqual(video_snapshots(store), previous)
+            saved = store['days']['2026-11-25']
+            self.assertNotIn('videos', saved)
+            self.assertEqual(saved['breakdowns']['last_28_days']['device']['status'], 'ok')
+
+
+def report(columns, rows):
+    return {'columnHeaders': [{'name': name} for name in columns.split(',')], 'rows': rows}
+
+
+class BreakdownTests(unittest.TestCase):
+    def test_partial_failure_persists_other_reports_and_video_snapshot(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            target = Path(tmp) / 'analytics.json'
+            end = date(2026, 11, 25)
+            prior = {(end - timedelta(days=n)).isoformat(): {'videos': []} for n in range(1, 91)}
+            target.write_text(json.dumps({'days': prior}), encoding='utf-8')
+            api = MagicMock()
+            traffic = 'insightTrafficSourceType'
+            responses = {
+                'day': report('day,views', [['2026-11-22', 12]]),
+                'video': page(0, 1),
+                traffic: report(f'estimatedMinutesWatched,{traffic},views',
+                                [[8.5, 'SHORTS', 30], [1, 'YT_CHANNEL', 4]]),
+                'subscribedStatus': report('subscribedStatus,views,averageViewPercentage',
+                                           [['UNSUBSCRIBED', 20, 63.5]]),
+                'country': report('country,views,estimatedMinutesWatched', [['JP', 20, 7.2]]),
+            }
+
+            def query(**params):
+                request = MagicMock()
+                dimension = params['dimensions']
+                if dimension == 'deviceType':
+                    request.execute.side_effect = TimeoutError('private details')
+                elif dimension == 'day' and params['metrics'] != analytics.DAILY_METRICS:
+                    request.execute.return_value = {}
+                else:
+                    request.execute.return_value = responses.get(dimension, {})
+                return request
+
+            api.reports.return_value.query.side_effect = query
+            with patch.object(analytics, 'datetime', wraps=datetime) as clock, \
+                 patch.object(analytics, 'client', side_effect=[api, None]), \
+                 patch.object(analytics, 'known_video_ids', return_value=[]), \
+                 patch.object(sys, 'argv', ['fetch_analytics', '--no-curves', '--out', str(target)]):
+                clock.now.return_value = datetime(2026, 11, 25, tzinfo=analytics.JST)
+                self.assertEqual(analytics._run(), 0)
+
+            store = json.loads(target.read_text(encoding='utf-8'))
+            self.assertEqual(len(store['days']), 90)
+            self.assertNotIn(min(prior), store['days'])
+            self.assertEqual(store['days'][max(prior)], prior[max(prior)])
+            self.assertEqual(store['daily']['2026-11-22']['views'], 12)
+            saved = store['days'][end.isoformat()]
+            self.assertEqual(saved['videos'], [{'video': vid(0), 'views': 1, 'title': ''}])
+            self.assertEqual(saved['sources'], {})
+            breakdowns = saved['breakdowns']
+            self.assertEqual(breakdowns['impressions']['status'], 'unavailable')
+            self.assertEqual(breakdowns['registration_source']['status'], 'unavailable')
+            week, month = (breakdowns[f'last_{n}_days'] for n in (7, 28))
+            self.assertEqual(week['range'], ['2026-11-16', '2026-11-22'])
+            self.assertEqual(month['range'], ['2026-10-26', '2026-11-22'])
+            self.assertEqual(week['traffic_source']['rows'][1],
+                             {traffic: 'YT_CHANNEL', 'views': 4, 'estimatedMinutesWatched': 1})
+            self.assertEqual(month['traffic_source'], week['traffic_source'])
+            self.assertEqual(month['subscribed_status']['rows'][0]['averageViewPercentage'], 63.5)
+            self.assertEqual(month['country']['rows'][0]['country'], 'JP')
+            self.assertEqual(month['device'], {'status': 'error', 'reason': 'TimeoutError'})
+            self.assertEqual(month['demographics'], {'status': 'empty', 'rows': []})
+
+            calls = [call.kwargs for call in api.reports.return_value.query.call_args_list]
+            self.assertEqual([(c['startDate'], c['endDate'], c['metrics']) for c in calls
+                              if c['dimensions'] == traffic],
+                             [(w['range'][0], w['range'][1], 'views,estimatedMinutesWatched')
+                              for w in (week, month)])
+            country = next(c for c in calls if c['dimensions'] == 'country')
+            self.assertEqual((country['sort'], country['maxResults']), ('-views', 10))
 
 
 if __name__ == '__main__':

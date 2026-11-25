@@ -550,7 +550,7 @@ class Screen:
             if values:
                 self.text(100,y+44,row['position'],60,90,number=True)
                 if row.get('played') is not None:self.text(714,y+44,row['played'],60,80,number=True)
-                self.text(832,y+30,row['points'],80,84,c.LIME,True)
+                self.text(832,y+30,row['points'],80,106,c.LIME,True)  # 84 では本番の字体で「29」が入らず止まった（11/24）。右端 R=940 まで
             if row['position'] in labels:
                 label=labels[row['position']]
                 color=c.LINE_COLORS.get(c.original._line_kind(label),c.MUTED)

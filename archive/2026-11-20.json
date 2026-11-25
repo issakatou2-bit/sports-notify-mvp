@@ -1,0 +1,201 @@
+{
+  "generated_at": "2026-11-20T19:39:12.022958+00:00",
+  "games": [
+    {
+      "game_id": "565859",
+      "league": "ブンデスリーガ",
+      "home_team_id": "BL1-5",
+      "away_team_id": "BL1-1",
+      "home_team_name": "バイエルン",
+      "away_team_name": "ケルン",
+      "home_abbr": null,
+      "away_abbr": null,
+      "home_color": null,
+      "away_color": null,
+      "matchup": "ケルン vs バイエルン",
+      "abbr_matchup": null,
+      "start_time_jst": "11/21 04:30",
+      "home_division": null,
+      "away_division": null,
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": {
+        "rank": 1,
+        "games_back": 0.0,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 0.0
+      },
+      "away_standing": {
+        "rank": 14,
+        "games_back": 4.0,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 12.0
+      },
+      "home_probable": null,
+      "away_probable": null,
+      "venue_name": null,
+      "venue_jp": null,
+      "venue_note": null,
+      "venue_runs_note": null,
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 2,
+      "game_type": "R",
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "バイエルンには伊藤洋輝が所属",
+          "weight": 1
+        },
+        {
+          "tag": "quality",
+          "text": "バイエルン の試合",
+          "weight": 1
+        },
+        {
+          "tag": "quality",
+          "text": "バイエルン（昨季ブンデスリーガ1位）とケルン（昨季ブンデスリーガ14位）の対戦",
+          "weight": 0
+        }
+      ],
+      "log_notes": [],
+      "ai_summary": "ブンデスリーガ首位のバイエルンが、【首位との勝ち点差12で14位】のケルンを本拠地に迎える一戦である。昨季ブンデスリーガ1位のバイエルンと昨季14位のケルンという、実績の大きく異なる両チームの対戦になる。バイエルンには日本代表の伊藤洋輝が所属しており、現在のリーグの形勢がどう推移するかが注視される。首位チームの攻撃陣がどこまで機能するか、一方のケルンがどのような守備戦術で対抗するかに注目したい。",
+      "notification_hook": "伊藤洋輝所属のバイエルンが首位での責務を果たすか。リーグ14位ケルンとの対戦で。"
+    },
+    {
+      "game_id": "559622",
+      "league": "リーグ・アン",
+      "home_team_id": "FL1-531",
+      "away_team_id": "FL1-533",
+      "home_team_name": "トロワ",
+      "away_team_name": "ル・アーブル",
+      "home_abbr": null,
+      "away_abbr": null,
+      "home_color": null,
+      "away_color": null,
+      "matchup": "ル・アーブル vs トロワ",
+      "abbr_matchup": null,
+      "start_time_jst": "11/21 04:45",
+      "home_division": null,
+      "away_division": null,
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": {
+        "rank": 17,
+        "games_back": 5.0,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 15.0
+      },
+      "away_standing": {
+        "rank": 18,
+        "games_back": 7.0,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 21.0
+      },
+      "home_probable": null,
+      "away_probable": null,
+      "venue_name": null,
+      "venue_jp": null,
+      "venue_note": null,
+      "venue_runs_note": null,
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 2,
+      "game_type": "R",
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "jp_team",
+          "text": "ル・アーブルには瀬古歩夢・中村草太・水多海斗が所属",
+          "weight": 2
+        }
+      ],
+      "log_notes": [],
+      "ai_summary": "リーグ・アン下位争いの重要な一戦となる。現在トロワは17位、ル・アーブルは18位と、【首位との勝ち点差で10以上離れた状況】が続いている。両チームともシーズン序盤の10試合を消化した段階で、ここからの戦いぶりが順位を大きく左右する局面にある。ル・アーブルにはリーグで活躍する日本人選手・瀬古歩夢、中村草太、水多海斗が所属しており、敵地での戦いの中で彼らがどのようなパフォーマンスを見せるかに注目したい。",
+      "notification_hook": "下位争うル・アーブルの日本人トリオが敵地で勝ち点奪取なるか"
+    },
+    {
+      "game_id": "564748",
+      "league": "ラ・リーガ",
+      "home_team_id": "PD-77",
+      "away_team_id": "PD-80",
+      "home_team_name": "アスレティック・ビルバオ",
+      "away_team_name": "エスパニョール",
+      "home_abbr": null,
+      "away_abbr": null,
+      "home_color": null,
+      "away_color": null,
+      "matchup": "エスパニョール vs アスレティック・ビルバオ",
+      "abbr_matchup": null,
+      "start_time_jst": "11/21 05:00",
+      "home_division": null,
+      "away_division": null,
+      "same_division": false,
+      "rivalry_type": null,
+      "jp_starters": [],
+      "jp_players": [],
+      "home_standing": {
+        "rank": 7,
+        "games_back": 5.7,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 17.0
+      },
+      "away_standing": {
+        "rank": 13,
+        "games_back": 7.0,
+        "streak": 0,
+        "wins": 0,
+        "losses": 0,
+        "last_ten": null,
+        "points_back": 21.0
+      },
+      "home_probable": null,
+      "away_probable": null,
+      "venue_name": null,
+      "venue_jp": null,
+      "venue_note": null,
+      "venue_runs_note": null,
+      "home_has_jp": false,
+      "away_has_jp": false,
+      "score": 0,
+      "game_type": "R",
+      "is_notable": true,
+      "reasons": [
+        {
+          "tag": "quality",
+          "text": "アスレティック・ビルバオ（昨季ラ・リーガ12位）とエスパニョール（昨季ラ・リーガ11位）の対戦",
+          "weight": 0
+        }
+      ],
+      "log_notes": [],
+      "ai_summary": "11試合を消化したアスレティック・ビルバオは現在【リーグ7位で首位から17勝ち点差】、12試合のエスパニョールは13位で首位との差がさらに広がる状況にある。昨季ラ・リーガではビルバオが12位、エスパニョールが11位と下位に甘んじた両チームだけに、今シーズンの順位争いがどう推移するかが見どころとなる。敵地を訪れるエスパニョールが、現在上位に位置するビルバオに対してどのような戦いを見せるかに注目したい。",
+      "notification_hook": "下位チーム同士の再戦、ビルバオはエスパニョールとの相手にどう対応するか"
+    }
+  ],
+  "schedule_date": "2026-11-20",
+  "ai_status": {
+    "targets": 3,
+    "succeeded": 3,
+    "cost_usd": 0.01962
+  }
+}

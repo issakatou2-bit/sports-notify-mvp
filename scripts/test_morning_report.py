@@ -45,7 +45,7 @@ class MorningReportTests(unittest.TestCase):
             with patch.object(fa, "client", return_value=yta), patch.object(fa, "channel_daily", return_value={"2026-10-21": {"views": 5}}), patch.object(sys, "argv", ["fetch", "--out", str(dest)]):
                 with self.assertRaises(RuntimeError):
                     fa._run()
-            self.assertEqual(json.loads(dest.read_text())["daily"]["2026-10-21"]["views"], 5)
+            self.assertEqual(json.loads(dest.read_text(encoding="utf-8"))["daily"]["2026-10-21"]["views"], 5)
 
     def test_short_query_still_revisits_28_days(self):
         with tempfile.TemporaryDirectory() as tmp:

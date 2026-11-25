@@ -9828,6 +9828,153 @@
       },
       "host_fallback_reason": null,
       "privacy": "public"
+    },
+    "2026-11-21": {
+      "video_id": "pOHI6Cwc4GU",
+      "url": "https://youtu.be/pOHI6Cwc4GU",
+      "title": "【欧州サッカー】トッテナムが勝点1差のイプスウィッチと対戦 #Shorts",
+      "published_at": "2026-11-21T10:11:39.115015+00:00",
+      "publish_at": "2026-11-21T10:30:00Z",
+      "preview_binding": {
+        "material_sha256": "4b016fdd8a9775eda8d37790edb45b4fd01b22e8b9c8326007539dad70ae0f52",
+        "narration_sha256": "3502cf754877324698166bede9faf15cb7ca22eb182ab3d85e0e6a2b14448066"
+      },
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-21",
+        "enabled": true,
+        "assigned": "generic",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false,
+        "source": "post_common.lineup:daily_soccer",
+        "next_date": "2026-11-22",
+        "next_time": "19:30",
+        "next_name": "欧州サッカー"
+      },
+      "duration_seconds": 50.5,
+      "short_information_count": 6,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-11-21",
+        "kind": "daily_soccer",
+        "phase": 1,
+        "planned_host": "ui",
+        "rule": "half-jst-week-v1",
+        "week": 45,
+        "weekday": 5
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-11-21T10:03:22.442319+00:00",
+        "comparison_eligible": false,
+        "label": "予定めたん（雨衣不可のため）",
+        "mode": "live",
+        "planned_host": "metan",
+        "reason": "ui_deadline_crosses_live",
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
+    },
+    "2026-11-22": {
+      "video_id": "EXjF5TNRubo",
+      "url": "https://youtu.be/EXjF5TNRubo",
+      "title": "【欧州サッカー】バルセロナが勝点18差のビジャレアルと対戦 #Shorts",
+      "published_at": "2026-11-22T10:11:42.077926+00:00",
+      "publish_at": "2026-11-22T10:30:00Z",
+      "preview_binding": {
+        "material_sha256": "78ffa43769be42eb3209bc272faf83d0aa5e9458e24a513ed4a27230108e3d33",
+        "narration_sha256": "35669a0decec6c3095be9738aed6ff9658b93932541f922832db9c248ee851ca"
+      },
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-22",
+        "enabled": true,
+        "assigned": "next",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false,
+        "source": "post_common.lineup:daily_soccer",
+        "next_date": "2026-11-23",
+        "next_time": "19:30",
+        "next_name": "欧州サッカー",
+        "speech": "次は11月23日19時30分の欧州サッカーです。また見に来てくださいね。",
+        "card": "次は11/23 19:30の欧州サッカー"
+      },
+      "duration_seconds": 52.87,
+      "short_information_count": 8,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-11-22",
+        "kind": "daily_soccer",
+        "phase": 1,
+        "planned_host": "metan",
+        "rule": "half-jst-week-v1",
+        "week": 45,
+        "weekday": 6
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-11-22T19:03:38.551713+09:00",
+        "comparison_eligible": true,
+        "planned_host": "metan",
+        "reason": null,
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
+    },
+    "2026-11-24": {
+      "video_id": "4UbaZ_WXDzU",
+      "url": "https://youtu.be/4UbaZ_WXDzU",
+      "title": "【欧州サッカー】佐野航大のPSVがチャンピオンズリーグで勝点8差のレアル・マドリードと対戦 #Shorts",
+      "published_at": "2026-11-24T10:13:41.225534+00:00",
+      "publish_at": "2026-11-24T10:30:00Z",
+      "preview_binding": {
+        "material_sha256": "042768b72063aeb4f87ca4e6f39e590547a3fe51249d5207f102caebe8995dfd",
+        "narration_sha256": "bdc34364e798194b9cbe31022c405054bfeb7ec7b6a39da60878e25a9a556ca6"
+      },
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-24",
+        "enabled": true,
+        "assigned": "next",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false,
+        "source": "post_common.lineup:daily_soccer",
+        "next_date": "2026-11-25",
+        "next_time": "19:30",
+        "next_name": "欧州サッカー",
+        "speech": "次は11月25日19時30分の欧州サッカーです。また見に来てくださいね。",
+        "card": "次は11/25 19:30の欧州サッカー"
+      },
+      "duration_seconds": 51.6,
+      "short_information_count": 10,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-11-24",
+        "kind": "daily_soccer",
+        "phase": 1,
+        "planned_host": "metan",
+        "rule": "half-jst-week-v1",
+        "week": 46,
+        "weekday": 1
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-11-24T19:04:15.382833+09:00",
+        "comparison_eligible": true,
+        "planned_host": "metan",
+        "reason": null,
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
     }
   },
   "weekly": {
@@ -19716,6 +19863,51 @@
       },
       "host_fallback_reason": null,
       "privacy": "public"
+    },
+    "2026-11-22": {
+      "video_id": "mmlsZBXtWd0",
+      "url": "https://youtu.be/mmlsZBXtWd0",
+      "title": "ラ・リーガ 順位争い｜久保建英のレアル・ソシエダはEL圏内。落ちるまで勝点3【欧州サッカー】#Shorts",
+      "published_at": "2026-11-22T10:17:40.217760+00:00",
+      "publish_at": "2026-11-22T11:30:00Z",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-22",
+        "enabled": true,
+        "assigned": "next",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false,
+        "source": "post_common.lineup:daily_soccer",
+        "next_date": "2026-11-23",
+        "next_time": "19:30",
+        "next_name": "欧州サッカー",
+        "speech": "次は11月23日19時30分の欧州サッカーです。また見に来てくださいね。",
+        "card": "次は11/23 19:30の欧州サッカー"
+      },
+      "duration_seconds": 23.9,
+      "short_information_count": 4,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-11-22",
+        "kind": "soccer_race",
+        "phase": 1,
+        "planned_host": "metan",
+        "rule": "half-jst-week-v1",
+        "week": 45,
+        "weekday": 6
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-11-22T19:13:35.101510+09:00",
+        "comparison_eligible": true,
+        "planned_host": "metan",
+        "reason": null,
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
     }
   },
   "soccer_week": {
@@ -22891,6 +23083,99 @@
       },
       "host_fallback_reason": null,
       "privacy": "public"
+    },
+    "season_win_2026_808967_pitching": {
+      "video_id": "8_gujMpRDPs",
+      "url": "https://youtu.be/8_gujMpRDPs",
+      "title": "【先発と勝敗】山本由伸 先発した試合でチームは18勝10敗 #Shorts",
+      "published_at": "2026-11-21T06:13:40.450233+00:00",
+      "publish_at": "2026-11-21T07:30:00Z",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-21",
+        "enabled": true,
+        "assigned": "generic",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false,
+        "source": "post_common.lineup:daily_soccer",
+        "next_date": "2026-11-22",
+        "next_time": "19:30",
+        "next_name": "欧州サッカー"
+      },
+      "player_ids": [
+        "808967"
+      ],
+      "duration_seconds": 30.19,
+      "short_information_count": 3,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-11-21",
+        "kind": "asset:season_win",
+        "phase": 1,
+        "planned_host": "ui",
+        "rule": "half-jst-week-v1",
+        "week": 45,
+        "weekday": 5
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-11-21T06:10:38.240284+00:00",
+        "comparison_eligible": false,
+        "label": "予定めたん（雨衣不可のため）",
+        "mode": "live",
+        "planned_host": "metan",
+        "reason": "ui_worker_stale",
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
+    },
+    "offseason_market_2026_3f1df573c501": {
+      "video_id": "T8wp6UUV9zo",
+      "url": "https://youtu.be/T8wp6UUV9zo",
+      "title": "【MLB】佐藤輝明 カブスと合意と米報道 #Shorts",
+      "published_at": "2026-11-24T23:38:24.889871+00:00",
+      "publish_at": "2026-11-25T07:30:00Z",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-25",
+        "enabled": true,
+        "assigned": "generic",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false,
+        "source": "post_common.lineup:daily_soccer",
+        "next_date": "2026-11-26",
+        "next_time": "19:30",
+        "next_name": "欧州サッカー"
+      },
+      "duration_seconds": 30.33,
+      "short_information_count": 4,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-11-25",
+        "kind": "asset:offseason",
+        "phase": 1,
+        "planned_host": "ui",
+        "rule": "half-jst-week-v1",
+        "week": 46,
+        "weekday": 2
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-11-24T23:35:30.858080+00:00",
+        "comparison_eligible": false,
+        "label": "予定めたん（雨衣不可のため）",
+        "mode": "live",
+        "planned_host": "metan",
+        "reason": "ui_before_0840",
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
     }
   },
   "soccer_results": {
@@ -23355,6 +23640,51 @@
       },
       "host_fallback_reason": null,
       "privacy": "public"
+    },
+    "2026-11-21": {
+      "video_id": "8RfwyU-uOcc",
+      "url": "https://youtu.be/8RfwyU-uOcc",
+      "title": "坂元達裕がゴール｜コベントリー対パレス 3-2 #Shorts",
+      "published_at": "2026-11-22T02:23:00.294021+00:00",
+      "publish_at": "2026-11-22T02:37:00Z",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-22",
+        "enabled": true,
+        "assigned": "next",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false,
+        "source": "post_common.lineup:daily_soccer",
+        "next_date": "2026-11-23",
+        "next_time": "19:30",
+        "next_name": "欧州サッカー",
+        "speech": "次は11月23日19時30分の欧州サッカーです。また見に来てくださいね。",
+        "card": "次は11/23 19:30の欧州サッカー"
+      },
+      "duration_seconds": 23.87,
+      "short_information_count": 4,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-11-22",
+        "kind": "soccer_results",
+        "phase": 1,
+        "planned_host": "metan",
+        "rule": "half-jst-week-v1",
+        "week": 45,
+        "weekday": 6
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-11-22T11:18:38.615889+09:00",
+        "comparison_eligible": true,
+        "planned_host": "metan",
+        "reason": null,
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
     }
   },
   "soccer_goal_short": {
@@ -23506,6 +23836,35 @@
       "host_fallback_reason": null,
       "duration_seconds": 25.9,
       "short_information_count": 7,
+      "short_content_policy": "short-content-20261027-v1",
+      "privacy": "public"
+    },
+    "2026-11-22:401879235": {
+      "video_id": "x_WXiUSV9Cw",
+      "url": "https://youtu.be/x_WXiUSV9Cw",
+      "title": "【欧州サッカー】坂元達裕がゴール｜コベントリー 3-2 クリスタルパレス 日本人選手の結果 #Shorts",
+      "published_at": "2026-11-21T17:04:33.306544+00:00",
+      "host_assignment": {
+        "day": "2026-11-22",
+        "kind": "soccer_results",
+        "phase": 1,
+        "planned_host": "metan",
+        "rule": "half-jst-week-v1",
+        "week": 45,
+        "weekday": 6
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-11-22T01:59:03.543479+09:00",
+        "comparison_eligible": true,
+        "planned_host": "metan",
+        "reason": null,
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "duration_seconds": 30.6,
+      "short_information_count": 11,
       "short_content_policy": "short-content-20261027-v1",
       "privacy": "public"
     }
@@ -24105,6 +24464,67 @@
         "eligible": false
       },
       "duration_seconds": 43.2,
+      "short_information_count": 5,
+      "short_content_policy": "short-content-20261027-v1",
+      "privacy": "public"
+    }
+  },
+  "soccer_weekly": {
+    "2026-11-23": {
+      "video_id": "N816WVuDAiY",
+      "url": "https://youtu.be/N816WVuDAiY",
+      "title": "【欧州サッカー】坂元達裕が1得点｜日本人選手の1週間（11/21〜11/23）",
+      "published_at": "2026-11-23T07:58:59.667028+00:00",
+      "publish_at": "2026-11-23T11:30:00Z",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-23",
+        "enabled": false,
+        "assigned": "generic",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false
+      },
+      "privacy": "public"
+    }
+  },
+  "mlb_market_topic": {
+    "followup-taira-bluejays": {
+      "video_id": "mgC-gR5GoAQ",
+      "url": "https://youtu.be/mgC-gR5GoAQ",
+      "title": "平良海馬 ブルージェイズと5年8000万ドルで合意と米報道 3年目の後に契約破棄の権利 #Shorts",
+      "published_at": "2026-11-25T08:21:22.586777+00:00",
+      "publish_at": "2026-11-25T08:42:13Z",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-25",
+        "enabled": false,
+        "assigned": "generic",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false
+      },
+      "duration_seconds": 40.07,
+      "short_information_count": 5,
+      "short_content_policy": "short-content-20261027-v1",
+      "privacy": "public"
+    },
+    "followup-sato-cubs": {
+      "video_id": "v-MN8mjMr6M",
+      "url": "https://youtu.be/v-MN8mjMr6M",
+      "title": "佐藤輝明 カブスと6年1億2000万ドルで合意と米報道 鈴木誠也の後の右翼へ #Shorts",
+      "published_at": "2026-11-25T08:33:49.575435+00:00",
+      "publish_at": "2026-11-25T08:54:41Z",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-25",
+        "enabled": false,
+        "assigned": "generic",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false
+      },
+      "duration_seconds": 56.67,
       "short_information_count": 5,
       "short_content_policy": "short-content-20261027-v1",
       "privacy": "public"

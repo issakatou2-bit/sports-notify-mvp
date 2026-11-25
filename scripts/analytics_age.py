@@ -26,6 +26,8 @@ import os
 import pathlib
 import sys
 
+from analytics_snapshots import video_snapshots
+
 
 def main() -> int:
     ap = argparse.ArgumentParser()
@@ -38,8 +40,7 @@ def main() -> int:
     p = pathlib.Path(args.path)
     if p.exists():
         try:
-            days = sorted(json.loads(
-                p.read_text(encoding="utf-8")).get("days") or {})
+            days = sorted(video_snapshots(json.loads(p.read_text(encoding="utf-8"))))
         except json.JSONDecodeError:
             pass
 

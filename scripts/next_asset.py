@@ -52,6 +52,7 @@ import pathlib
 import sys
 
 import asset_policy
+from analytics_snapshots import video_snapshots
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 
@@ -145,8 +146,8 @@ def measured(published_path: str, analytics_path: str) -> dict:
     try:
         pub = (json.loads(pathlib.Path(published_path).read_text(
             encoding="utf-8")).get("assets") or {})
-        days = json.loads(pathlib.Path(analytics_path).read_text(
-            encoding="utf-8")).get("days") or {}
+        days = video_snapshots(json.loads(pathlib.Path(analytics_path).read_text(
+            encoding="utf-8")))
     except (OSError, json.JSONDecodeError):
         return {}
     if not days:

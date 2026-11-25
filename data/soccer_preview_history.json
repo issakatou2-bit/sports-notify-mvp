@@ -1444,5 +1444,999 @@
         }
       }
     ]
+  },
+  "2026-11-21": {
+    "day": "2026-11-21",
+    "video_id": "pOHI6Cwc4GU",
+    "title": "【欧州サッカー】トッテナムが勝点1差のイプスウィッチと対戦 #Shorts",
+    "published_at": "2026-11-21T10:11:39.115015+00:00",
+    "binding": {
+      "material_sha256": "4b016fdd8a9775eda8d37790edb45b4fd01b22e8b9c8326007539dad70ae0f52",
+      "narration_sha256": "3502cf754877324698166bede9faf15cb7ca22eb182ab3d85e0e6a2b14448066"
+    },
+    "games": [
+      {
+        "game_id": "560648",
+        "espn_event_id": "401878754",
+        "league": "プレミアリーグ",
+        "competition_code": "PL",
+        "home": "トッテナム",
+        "away": "イプスウィッチ",
+        "start_utc": "2026-11-22T00:00:00+09:00",
+        "reasons": [
+          {
+            "kind": "points",
+            "score": 100,
+            "text": "プレミアリーグではトッテナムは勝点12、イプスウィッチは勝点11で、両チームの勝点差は1です。",
+            "source": "https://site.api.espn.com/apis/v2/sports/soccer/eng.1/standings",
+            "retrieved_at": "2026-11-21T10:02:29.283329+00:00",
+            "values": {
+              "competition": "PL",
+              "gap": 1,
+              "rows": {
+                "home": {
+                  "team_id": "367",
+                  "rank": 11,
+                  "points": 12,
+                  "played": 10,
+                  "tied": true
+                },
+                "away": {
+                  "team_id": "373",
+                  "rank": 14,
+                  "points": 11,
+                  "played": 10,
+                  "tied": true
+                }
+              },
+              "league": "プレミアリーグ"
+            }
+          },
+          {
+            "kind": "form",
+            "score": 85,
+            "text": "イプスウィッチはプレミアリーグの直近5試合で1勝2分2敗です。",
+            "source": "https://api.football-data.org/v4/competitions/PL/matches",
+            "retrieved_at": "2026-11-21T10:01:48.329018+00:00",
+            "values": {
+              "side": "away",
+              "form": [
+                "L",
+                "D",
+                "D",
+                "L",
+                "W"
+              ],
+              "match_ids": [
+                560637,
+                560629,
+                560620,
+                560610,
+                560599
+              ]
+            }
+          },
+          {
+            "kind": "h2h",
+            "score": 80,
+            "text": "前回の対戦は2025年2月22日のイプスウィッチ対トッテナムで1対4でした。",
+            "source": "https://api.football-data.org/v4/matches/560648/head2head",
+            "retrieved_at": "2026-11-21T10:01:55.293472+00:00",
+            "values": {
+              "match_id": 497666,
+              "score": {
+                "home": 1,
+                "away": 4
+              }
+            }
+          }
+        ],
+        "expectation": null,
+        "spoken": "日本時間11月22日0時、トッテナム対イプスウィッチ。プレミアリーグではトッテナムは勝点12、イプスウィッチは勝点11で、両チームの勝点差は1です。イプスウィッチはプレミアリーグの直近5試合で1勝2分2敗です。",
+        "standings": {
+          "home": {
+            "team_id": "367",
+            "rank": 11,
+            "points": 12,
+            "played": 10,
+            "tied": true,
+            "as_of": "2026-11-21T09:53:57.182172+00:00",
+            "competition": "PL",
+            "season": null
+          },
+          "away": {
+            "team_id": "373",
+            "rank": 14,
+            "points": 11,
+            "played": 10,
+            "tied": true,
+            "as_of": "2026-11-21T09:53:57.182172+00:00",
+            "competition": "PL",
+            "season": null
+          }
+        }
+      },
+      {
+        "game_id": "560650",
+        "espn_event_id": "401879235",
+        "league": "プレミアリーグ",
+        "competition_code": "PL",
+        "home": "コベントリー",
+        "away": "クリスタル・パレス",
+        "start_utc": "2026-11-22T00:00:00+09:00",
+        "reasons": [
+          {
+            "kind": "points",
+            "score": 100,
+            "text": "プレミアリーグではコベントリーは勝点9、クリスタルパレスは20位で勝点7で、両チームの勝点差は2です。",
+            "source": "https://site.api.espn.com/apis/v2/sports/soccer/eng.1/standings",
+            "retrieved_at": "2026-11-21T10:02:29.283329+00:00",
+            "values": {
+              "competition": "PL",
+              "gap": 2,
+              "rows": {
+                "home": {
+                  "team_id": "388",
+                  "rank": 17,
+                  "points": 9,
+                  "played": 10,
+                  "tied": true
+                },
+                "away": {
+                  "team_id": "384",
+                  "rank": 20,
+                  "points": 7,
+                  "played": 10,
+                  "tied": false
+                }
+              },
+              "league": "プレミアリーグ"
+            }
+          },
+          {
+            "kind": "form",
+            "score": 85,
+            "text": "クリスタルパレスはプレミアリーグの直近5試合で1勝0分4敗です。",
+            "source": "https://api.football-data.org/v4/competitions/PL/matches",
+            "retrieved_at": "2026-11-21T10:01:48.329018+00:00",
+            "values": {
+              "side": "away",
+              "form": [
+                "L",
+                "L",
+                "L",
+                "L",
+                "W"
+              ],
+              "match_ids": [
+                560635,
+                560627,
+                560613,
+                560609,
+                560596
+              ]
+            }
+          },
+          {
+            "kind": "season_player",
+            "score": 82,
+            "text": "鎌田大地は今季のプレミアリーグで1得点3アシストです。",
+            "source": "https://fantasy.premierleague.com/api/bootstrap-static/",
+            "retrieved_at": "2026-11-21T10:01:23.706012+00:00",
+            "values": {
+              "name": "鎌田大地",
+              "goals": 1,
+              "assists": 3
+            }
+          }
+        ],
+        "expectation": null,
+        "spoken": "日本時間11月22日0時、コベントリー対クリスタルパレス。",
+        "standings": {
+          "home": {
+            "team_id": "388",
+            "rank": 17,
+            "points": 9,
+            "played": 10,
+            "tied": true,
+            "as_of": "2026-11-21T09:53:57.182172+00:00",
+            "competition": "PL",
+            "season": null
+          },
+          "away": {
+            "team_id": "384",
+            "rank": 20,
+            "points": 7,
+            "played": 10,
+            "tied": false,
+            "as_of": "2026-11-21T09:53:57.182172+00:00",
+            "competition": "PL",
+            "season": null
+          }
+        }
+      },
+      {
+        "game_id": "559628",
+        "espn_event_id": "401876398",
+        "league": "リーグ・アン",
+        "competition_code": "FL1",
+        "home": "ニース",
+        "away": "パリ・サンジェルマン",
+        "start_utc": "2026-11-22T01:15:00+09:00",
+        "reasons": [
+          {
+            "kind": "points",
+            "score": 100,
+            "text": "リーグ・アンではニースは勝点17、パリ・サンジェルマンは1位で勝点23で、両チームの勝点差は6です。",
+            "source": "https://site.api.espn.com/apis/v2/sports/soccer/fra.1/standings",
+            "retrieved_at": "2026-11-21T10:02:29.202436+00:00",
+            "values": {
+              "competition": "FL1",
+              "gap": 6,
+              "rows": {
+                "home": {
+                  "team_id": "2502",
+                  "rank": 6,
+                  "points": 17,
+                  "played": 10,
+                  "tied": true
+                },
+                "away": {
+                  "team_id": "160",
+                  "rank": 1,
+                  "points": 23,
+                  "played": 10,
+                  "tied": false
+                }
+              },
+              "league": "リーグ・アン"
+            }
+          },
+          {
+            "kind": "form",
+            "score": 85,
+            "text": "ニースはリーグ・アンの直近5試合で4勝0分1敗です。",
+            "source": "https://api.football-data.org/v4/competitions/FL1/matches",
+            "retrieved_at": "2026-11-21T10:02:15.878302+00:00",
+            "values": {
+              "side": "home",
+              "form": [
+                "W",
+                "W",
+                "W",
+                "L",
+                "W"
+              ],
+              "match_ids": [
+                559634,
+                559646,
+                559654,
+                559665,
+                559670
+              ]
+            }
+          },
+          {
+            "kind": "h2h",
+            "score": 80,
+            "text": "前回の対戦は2026年3月21日のニース対パリ・サンジェルマンで0対4でした。",
+            "source": "https://api.football-data.org/v4/matches/559628/head2head",
+            "retrieved_at": "2026-11-21T10:02:22.440265+00:00",
+            "values": {
+              "match_id": 542644,
+              "score": {
+                "home": 0,
+                "away": 4
+              }
+            }
+          }
+        ],
+        "expectation": null,
+        "spoken": "日本時間11月22日1時15分、ニース対パリ・サンジェルマン。",
+        "standings": {
+          "home": {
+            "team_id": "2502",
+            "rank": 6,
+            "points": 17,
+            "played": 10,
+            "tied": true,
+            "as_of": "2026-11-21T09:53:57.182172+00:00",
+            "competition": "FL1",
+            "season": null
+          },
+          "away": {
+            "team_id": "160",
+            "rank": 1,
+            "points": 23,
+            "played": 10,
+            "tied": false,
+            "as_of": "2026-11-21T09:53:57.182172+00:00",
+            "competition": "FL1",
+            "season": null
+          }
+        }
+      },
+      {
+        "game_id": "560651",
+        "espn_event_id": "401879232",
+        "league": "プレミアリーグ",
+        "competition_code": "PL",
+        "home": "ニューカッスル",
+        "away": "アーセナル",
+        "start_utc": "2026-11-22T02:30:00+09:00",
+        "reasons": [
+          {
+            "kind": "points",
+            "score": 100,
+            "text": "プレミアリーグではニューカッスルは勝点12、アーセナルは1位で勝点27で、両チームの勝点差は15です。",
+            "source": "https://site.api.espn.com/apis/v2/sports/soccer/eng.1/standings",
+            "retrieved_at": "2026-11-21T10:02:29.283329+00:00",
+            "values": {
+              "competition": "PL",
+              "gap": 15,
+              "rows": {
+                "home": {
+                  "team_id": "361",
+                  "rank": 12,
+                  "points": 12,
+                  "played": 10,
+                  "tied": true
+                },
+                "away": {
+                  "team_id": "359",
+                  "rank": 1,
+                  "points": 27,
+                  "played": 10,
+                  "tied": false
+                }
+              },
+              "league": "プレミアリーグ"
+            }
+          },
+          {
+            "kind": "form",
+            "score": 85,
+            "text": "アーセナルはプレミアリーグの直近5試合で5勝0分0敗です。",
+            "source": "https://api.football-data.org/v4/competitions/PL/matches",
+            "retrieved_at": "2026-11-21T10:01:48.329018+00:00",
+            "values": {
+              "side": "away",
+              "form": [
+                "W",
+                "W",
+                "W",
+                "W",
+                "W"
+              ],
+              "match_ids": [
+                560640,
+                560631,
+                560616,
+                560608,
+                560593
+              ]
+            }
+          },
+          {
+            "kind": "h2h",
+            "score": 80,
+            "text": "前回の対戦は2026年4月25日のアーセナル対ニューカッスルで1対0でした。",
+            "source": "https://api.football-data.org/v4/matches/560651/head2head",
+            "retrieved_at": "2026-11-21T10:02:29.023233+00:00",
+            "values": {
+              "match_id": 538118,
+              "score": {
+                "home": 1,
+                "away": 0
+              }
+            }
+          }
+        ],
+        "expectation": null,
+        "spoken": "日本時間11月22日2時30分、ニューカッスル対アーセナル。",
+        "standings": {
+          "home": {
+            "team_id": "361",
+            "rank": 12,
+            "points": 12,
+            "played": 10,
+            "tied": true,
+            "as_of": "2026-11-21T09:53:57.182172+00:00",
+            "competition": "PL",
+            "season": null
+          },
+          "away": {
+            "team_id": "359",
+            "rank": 1,
+            "points": 27,
+            "played": 10,
+            "tied": false,
+            "as_of": "2026-11-21T09:53:57.182172+00:00",
+            "competition": "PL",
+            "season": null
+          }
+        }
+      }
+    ]
+  },
+  "2026-11-22": {
+    "day": "2026-11-22",
+    "video_id": "EXjF5TNRubo",
+    "title": "【欧州サッカー】バルセロナが勝点18差のビジャレアルと対戦 #Shorts",
+    "published_at": "2026-11-22T10:11:42.077926+00:00",
+    "binding": {
+      "material_sha256": "78ffa43769be42eb3209bc272faf83d0aa5e9458e24a513ed4a27230108e3d33",
+      "narration_sha256": "35669a0decec6c3095be9738aed6ff9658b93932541f922832db9c248ee851ca"
+    },
+    "games": [
+      {
+        "game_id": "564749",
+        "espn_event_id": "401882804",
+        "league": "ラ・リーガ",
+        "competition_code": "PD",
+        "home": "バルセロナ",
+        "away": "ビジャレアル",
+        "start_utc": "2026-11-22T22:00:00+09:00",
+        "reasons": [
+          {
+            "kind": "points",
+            "score": 100,
+            "text": "ラ・リーガではバルセロナは勝点33、ビジャレアルは勝点15で、両チームの勝点差は18です。",
+            "source": "https://site.api.espn.com/apis/v2/sports/soccer/esp.1/standings",
+            "retrieved_at": "2026-11-22T10:02:33.580808+00:00",
+            "values": {
+              "competition": "PD",
+              "gap": 18,
+              "rows": {
+                "home": {
+                  "team_id": "83",
+                  "rank": 1,
+                  "points": 33,
+                  "played": 12,
+                  "tied": true
+                },
+                "away": {
+                  "team_id": "102",
+                  "rank": 9,
+                  "points": 15,
+                  "played": 12,
+                  "tied": true
+                }
+              },
+              "league": "ラ・リーガ"
+            }
+          },
+          {
+            "kind": "form",
+            "score": 85,
+            "text": "バルセロナはラ・リーガの直近5試合で4勝0分1敗です。",
+            "source": "https://api.football-data.org/v4/competitions/PD/matches",
+            "retrieved_at": "2026-11-22T10:01:47.081167+00:00",
+            "values": {
+              "side": "home",
+              "form": [
+                "W",
+                "W",
+                "L",
+                "W",
+                "W"
+              ],
+              "match_ids": [
+                564746,
+                564732,
+                564723,
+                564713,
+                564700
+              ]
+            }
+          },
+          {
+            "kind": "h2h",
+            "score": 80,
+            "text": "前回の対戦は2026年2月28日のバルセロナ対ビジャレアルで4対1でした。",
+            "source": "https://api.football-data.org/v4/matches/564749/head2head",
+            "retrieved_at": "2026-11-22T10:01:53.677769+00:00",
+            "values": {
+              "match_id": 544461,
+              "score": {
+                "home": 4,
+                "away": 1
+              }
+            }
+          }
+        ],
+        "expectation": null,
+        "spoken": "日本時間22時、バルセロナ対ビジャレアル。ラ・リーガではバルセロナは勝点33、ビジャレアルは勝点15で、両チームの勝点差は18です。バルセロナはラ・リーガの直近5試合で4勝0分1敗です。前回の対戦は2026年2月28日のバルセロナ対ビジャレアルで4対1でした。",
+        "standings": {
+          "home": {
+            "team_id": "83",
+            "rank": 1,
+            "points": 33,
+            "played": 12,
+            "tied": true,
+            "as_of": "2026-11-22T09:53:50.307760+00:00",
+            "competition": "PD",
+            "season": null
+          },
+          "away": {
+            "team_id": "102",
+            "rank": 9,
+            "points": 15,
+            "played": 12,
+            "tied": true,
+            "as_of": "2026-11-22T09:53:50.307760+00:00",
+            "competition": "PD",
+            "season": null
+          }
+        }
+      },
+      {
+        "game_id": "560645",
+        "espn_event_id": "401878755",
+        "league": "プレミアリーグ",
+        "competition_code": "PL",
+        "home": "リバプール",
+        "away": "マンチェスター・ユナイテッド",
+        "start_utc": "2026-11-23T01:30:00+09:00",
+        "reasons": [
+          {
+            "kind": "points",
+            "score": 100,
+            "text": "プレミアリーグではリバプールは勝点18、マンチェスターUは19位で勝点8で、両チームの勝点差は10です。",
+            "source": "https://site.api.espn.com/apis/v2/sports/soccer/eng.1/standings",
+            "retrieved_at": "2026-11-22T10:02:33.726475+00:00",
+            "values": {
+              "competition": "PL",
+              "gap": 10,
+              "rows": {
+                "home": {
+                  "team_id": "364",
+                  "rank": 5,
+                  "points": 18,
+                  "played": 10,
+                  "tied": true
+                },
+                "away": {
+                  "team_id": "360",
+                  "rank": 19,
+                  "points": 8,
+                  "played": 10,
+                  "tied": false
+                }
+              },
+              "league": "プレミアリーグ"
+            }
+          },
+          {
+            "kind": "form",
+            "score": 85,
+            "text": "マンチェスターUはプレミアリーグの直近5試合で0勝3分2敗です。",
+            "source": "https://api.football-data.org/v4/competitions/PL/matches",
+            "retrieved_at": "2026-11-22T10:02:07.018971+00:00",
+            "values": {
+              "side": "away",
+              "form": [
+                "D",
+                "L",
+                "L",
+                "D",
+                "D"
+              ],
+              "match_ids": [
+                560639,
+                560626,
+                560615,
+                560605,
+                560600
+              ]
+            }
+          },
+          {
+            "kind": "h2h",
+            "score": 80,
+            "text": "前回の対戦は2026年5月3日のマンチェスターU対リバプールで3対2でした。",
+            "source": "https://api.football-data.org/v4/matches/560645/head2head",
+            "retrieved_at": "2026-11-22T10:02:13.618007+00:00",
+            "values": {
+              "match_id": 538132,
+              "score": {
+                "home": 3,
+                "away": 2
+              }
+            }
+          }
+        ],
+        "expectation": null,
+        "spoken": "日本時間11月23日1時30分、リバプール対マンチェスターU。プレミアリーグではリバプールは勝点18、マンチェスターUは19位で勝点8で、両チームの勝点差は10です。マンチェスターUはプレミアリーグの直近5試合で0勝3分2敗です。",
+        "standings": {
+          "home": {
+            "team_id": "364",
+            "rank": 5,
+            "points": 18,
+            "played": 10,
+            "tied": true,
+            "as_of": "2026-11-22T09:53:50.307760+00:00",
+            "competition": "PL",
+            "season": null
+          },
+          "away": {
+            "team_id": "360",
+            "rank": 19,
+            "points": 8,
+            "played": 10,
+            "tied": false,
+            "as_of": "2026-11-22T09:53:50.307760+00:00",
+            "competition": "PL",
+            "season": null
+          }
+        }
+      },
+      {
+        "game_id": "558523",
+        "espn_event_id": "401874989",
+        "league": "セリエA",
+        "competition_code": "SA",
+        "home": "ACミラン",
+        "away": "フロジノーネ",
+        "start_utc": "2026-11-23T02:00:00+09:00",
+        "reasons": [
+          {
+            "kind": "points",
+            "score": 100,
+            "text": "セリエAではACミランは5位で勝点24、フロジノーネは6位で勝点20で、両チームの勝点差は4です。",
+            "source": "https://site.api.espn.com/apis/v2/sports/soccer/ita.1/standings",
+            "retrieved_at": "2026-11-22T10:02:33.896640+00:00",
+            "values": {
+              "competition": "SA",
+              "gap": 4,
+              "rows": {
+                "home": {
+                  "team_id": "103",
+                  "rank": 5,
+                  "points": 24,
+                  "played": 11,
+                  "tied": false
+                },
+                "away": {
+                  "team_id": "4057",
+                  "rank": 6,
+                  "points": 20,
+                  "played": 11,
+                  "tied": false
+                }
+              },
+              "league": "セリエA"
+            }
+          },
+          {
+            "kind": "form",
+            "score": 85,
+            "text": "ACミランはセリエAの直近5試合で4勝0分1敗です。",
+            "source": "https://api.football-data.org/v4/competitions/SA/matches",
+            "retrieved_at": "2026-11-22T10:02:26.831173+00:00",
+            "values": {
+              "side": "home",
+              "form": [
+                "W",
+                "W",
+                "L",
+                "W",
+                "W"
+              ],
+              "match_ids": [
+                558536,
+                558548,
+                558549,
+                558559,
+                558569
+              ]
+            }
+          },
+          {
+            "kind": "h2h",
+            "score": 80,
+            "text": "前回の対戦は2024年2月3日のフロジノーネ対ACミランで2対3でした。",
+            "source": "https://api.football-data.org/v4/matches/558523/head2head",
+            "retrieved_at": "2026-11-22T10:02:33.323231+00:00",
+            "values": {
+              "match_id": 444477,
+              "score": {
+                "home": 2,
+                "away": 3
+              }
+            }
+          }
+        ],
+        "expectation": null,
+        "spoken": "日本時間11月23日2時、ACミラン対フロジノーネ。",
+        "standings": {
+          "home": {
+            "team_id": "103",
+            "rank": 5,
+            "points": 24,
+            "played": 11,
+            "tied": false,
+            "as_of": "2026-11-22T09:53:50.307760+00:00",
+            "competition": "SA",
+            "season": null
+          },
+          "away": {
+            "team_id": "4057",
+            "rank": 6,
+            "points": 20,
+            "played": 11,
+            "tied": false,
+            "as_of": "2026-11-22T09:53:50.307760+00:00",
+            "competition": "SA",
+            "season": null
+          }
+        }
+      }
+    ]
+  },
+  "2026-11-24": {
+    "day": "2026-11-24",
+    "video_id": "4UbaZ_WXDzU",
+    "title": "【欧州サッカー】佐野航大のPSVがチャンピオンズリーグで勝点8差のレアル・マドリードと対戦 #Shorts",
+    "published_at": "2026-11-24T10:13:41.225534+00:00",
+    "binding": {
+      "material_sha256": "042768b72063aeb4f87ca4e6f39e590547a3fe51249d5207f102caebe8995dfd",
+      "narration_sha256": "bdc34364e798194b9cbe31022c405054bfeb7ec7b6a39da60878e25a9a556ca6"
+    },
+    "games": [
+      {
+        "game_id": "575397",
+        "espn_event_id": "401915298",
+        "league": "チャンピオンズリーグ",
+        "competition_code": "CL",
+        "home": "レアル・マドリード",
+        "away": "PSV",
+        "start_utc": "2026-11-25T05:00:00+09:00",
+        "reasons": [
+          {
+            "kind": "european_points",
+            "score": 120,
+            "text": "チャンピオンズリーグではレアル・マドリードは勝点12、PSVは勝点4で、両チームの勝点差は8です。",
+            "source": "https://site.api.espn.com/apis/v2/sports/soccer/uefa.champions/standings",
+            "retrieved_at": "2026-11-24T10:02:46.901069+00:00",
+            "values": {
+              "competition": "CL",
+              "gap": 8,
+              "rows": {
+                "home": {
+                  "team_id": "86",
+                  "rank": 2,
+                  "points": 12,
+                  "played": 4,
+                  "tied": true
+                },
+                "away": {
+                  "team_id": "148",
+                  "rank": 24,
+                  "points": 4,
+                  "played": 4,
+                  "tied": true
+                }
+              },
+              "league": "チャンピオンズリーグ"
+            }
+          },
+          {
+            "kind": "previous_season",
+            "score": 40,
+            "text": "PSVは昨季CLリーグフェーズ28位。",
+            "source": "soccer_games.json.reasons.quality",
+            "retrieved_at": "2026-11-24T09:53:50.096915+00:00",
+            "values": {}
+          }
+        ],
+        "expectation": null,
+        "spoken": "日本時間11月25日5時、レアル・マドリード対PSV。チャンピオンズリーグではレアル・マドリードは勝点12、PSVは勝点4で、両チームの勝点差は8です。PSVは昨季CLリーグフェーズ28位。",
+        "standings": {
+          "home": {
+            "team_id": "86",
+            "rank": 2,
+            "points": 12,
+            "played": 4,
+            "tied": true,
+            "as_of": "2026-11-24T09:53:50.096915+00:00",
+            "competition": "CL",
+            "season": null
+          },
+          "away": {
+            "team_id": "148",
+            "rank": 24,
+            "points": 4,
+            "played": 4,
+            "tied": true,
+            "as_of": "2026-11-24T09:53:50.096915+00:00",
+            "competition": "CL",
+            "season": null
+          }
+        }
+      },
+      {
+        "game_id": "575399",
+        "espn_event_id": "401915295",
+        "league": "チャンピオンズリーグ",
+        "competition_code": "CL",
+        "home": "アーセナル",
+        "away": "ドルトムント",
+        "start_utc": "2026-11-25T05:00:00+09:00",
+        "reasons": [
+          {
+            "kind": "european_points",
+            "score": 120,
+            "text": "チャンピオンズリーグではアーセナルは3位で勝点10、ドルトムントは勝点9で、両チームの勝点差は1です。",
+            "source": "https://site.api.espn.com/apis/v2/sports/soccer/uefa.champions/standings",
+            "retrieved_at": "2026-11-24T10:02:46.901069+00:00",
+            "values": {
+              "competition": "CL",
+              "gap": 1,
+              "rows": {
+                "home": {
+                  "team_id": "359",
+                  "rank": 3,
+                  "points": 10,
+                  "played": 4,
+                  "tied": false
+                },
+                "away": {
+                  "team_id": "124",
+                  "rank": 12,
+                  "points": 9,
+                  "played": 4,
+                  "tied": true
+                }
+              },
+              "league": "チャンピオンズリーグ"
+            }
+          },
+          {
+            "kind": "european_zone",
+            "score": 110,
+            "text": "アーセナルは今3位で、チャンピオンズリーグで16強へ直接進む1位から8位の範囲にいます。",
+            "source": "https://site.api.espn.com/apis/v2/sports/soccer/uefa.champions/standings",
+            "retrieved_at": "2026-11-24T10:02:46.901069+00:00",
+            "values": {
+              "competition": "CL",
+              "side": "home",
+              "rank": 3,
+              "rule_source": "https://documents.uefa.com/r/Regulations-of-the-UEFA-Europa-League-2026/27/Article-17-Match-system-league-phase-Online"
+            }
+          },
+          {
+            "kind": "domestic_away",
+            "score": 55,
+            "text": "ドルトムントはブンデスリーガで現在1位、勝点24です。",
+            "source": "https://site.api.espn.com/apis/v2/sports/soccer/ger.1/standings",
+            "retrieved_at": "2026-11-24T10:02:46.744745+00:00",
+            "values": {
+              "competition": "BL1",
+              "side": "away",
+              "team_id": "124",
+              "rank": 1,
+              "points": 24,
+              "played": 10,
+              "tied": false
+            }
+          }
+        ],
+        "expectation": null,
+        "spoken": "日本時間11月25日5時、アーセナル対ドルトムント。チャンピオンズリーグではアーセナルは3位で勝点10、ドルトムントは勝点9で、両チームの勝点差は1です。アーセナルは今3位で、チャンピオンズリーグで16強へ直接進む1位から8位の範囲にいます。ドルトムントはブンデスリーガで現在1位、勝点24です。",
+        "standings": {
+          "home": {
+            "team_id": "359",
+            "rank": 3,
+            "points": 10,
+            "played": 4,
+            "tied": false,
+            "as_of": "2026-11-24T09:53:50.096915+00:00",
+            "competition": "CL",
+            "season": null
+          },
+          "away": {
+            "team_id": "124",
+            "rank": 12,
+            "points": 9,
+            "played": 4,
+            "tied": true,
+            "as_of": "2026-11-24T09:53:50.096915+00:00",
+            "competition": "CL",
+            "season": null
+          }
+        }
+      },
+      {
+        "game_id": "575398",
+        "espn_event_id": "401915379",
+        "league": "チャンピオンズリーグ",
+        "competition_code": "CL",
+        "home": "マンチェスター・シティ",
+        "away": "ナポリ",
+        "start_utc": "2026-11-25T05:00:00+09:00",
+        "reasons": [
+          {
+            "kind": "european_points",
+            "score": 120,
+            "text": "チャンピオンズリーグではマンチェスターCは勝点9、ナポリは勝点3で、両チームの勝点差は6です。",
+            "source": "https://site.api.espn.com/apis/v2/sports/soccer/uefa.champions/standings",
+            "retrieved_at": "2026-11-24T10:02:46.901069+00:00",
+            "values": {
+              "competition": "CL",
+              "gap": 6,
+              "rows": {
+                "home": {
+                  "team_id": "382",
+                  "rank": 7,
+                  "points": 9,
+                  "played": 4,
+                  "tied": true
+                },
+                "away": {
+                  "team_id": "114",
+                  "rank": 27,
+                  "points": 3,
+                  "played": 4,
+                  "tied": true
+                }
+              },
+              "league": "チャンピオンズリーグ"
+            }
+          },
+          {
+            "kind": "european_zone",
+            "score": 110,
+            "text": "ナポリは今、チャンピオンズリーグでプレーオフ圏の24位より下にいます。",
+            "source": "https://site.api.espn.com/apis/v2/sports/soccer/uefa.champions/standings",
+            "retrieved_at": "2026-11-24T10:02:46.901069+00:00",
+            "values": {
+              "competition": "CL",
+              "side": "away",
+              "rank": null,
+              "rule_source": "https://documents.uefa.com/r/Regulations-of-the-UEFA-Europa-League-2026/27/Article-17-Match-system-league-phase-Online"
+            }
+          },
+          {
+            "kind": "h2h",
+            "score": 80,
+            "text": "前回の対戦は2025年9月18日のマンチェスターC対ナポリで2対0でした。",
+            "source": "https://api.football-data.org/v4/matches/575398/head2head",
+            "retrieved_at": "2026-11-24T10:02:46.587590+00:00",
+            "values": {
+              "match_id": 551965,
+              "score": {
+                "home": 2,
+                "away": 0
+              }
+            }
+          }
+        ],
+        "expectation": null,
+        "spoken": "日本時間11月25日5時、マンチェスターC対ナポリ。チャンピオンズリーグではマンチェスターCは勝点9、ナポリは勝点3で、両チームの勝点差は6です。",
+        "standings": {
+          "home": {
+            "team_id": "382",
+            "rank": 7,
+            "points": 9,
+            "played": 4,
+            "tied": true,
+            "as_of": "2026-11-24T09:53:50.096915+00:00",
+            "competition": "CL",
+            "season": null
+          },
+          "away": {
+            "team_id": "114",
+            "rank": 27,
+            "points": 3,
+            "played": 4,
+            "tied": true,
+            "as_of": "2026-11-24T09:53:50.096915+00:00",
+            "competition": "CL",
+            "season": null
+          }
+        }
+      }
+    ]
   }
 }

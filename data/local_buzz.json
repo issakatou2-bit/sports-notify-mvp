@@ -1,12 +1,12 @@
 {
-  "updated_at": "2026-11-20T06:01:41.712110+00:00",
+  "updated_at": "2026-11-25T06:02:00.663976+00:00",
   "sources": [
     {
       "name": "MLB公式",
-      "items": 24
+      "items": 25
     }
   ],
-  "titles_count": 24,
+  "titles_count": 25,
   "teams": [
     {
       "team_id": "112",
@@ -14,31 +14,39 @@
       "name_en": "Chicago Cubs",
       "mentions": 3,
       "tone": "話題",
-      "gist": "カブスがマクダーモット獲得、投手層を厚く"
+      "gist": "カブスが佐藤と6年1.2億ドルで合意"
     },
     {
-      "team_id": "121",
-      "name": "メッツ",
-      "name_en": "New York Mets",
-      "mentions": 3,
-      "tone": "話題",
-      "gist": "メッツ、NPB防御率1.48のヘルナンデス復帰"
-    },
-    {
-      "team_id": "145",
-      "name": "ホワイトソックス",
-      "name_en": "Chicago White Sox",
+      "team_id": "113",
+      "name": "レッズ",
+      "name_en": "Cincinnati Reds",
       "mentions": 2,
       "tone": "話題",
-      "gist": "ホワイトソックス、ロッキーズと交換でメイ獲得"
+      "gist": "レッズがステフェンソンと3年契約で合意"
     },
     {
       "team_id": "141",
       "name": "ブルージェイズ",
       "name_en": "Toronto Blue Jays",
+      "mentions": 2,
+      "tone": "話題",
+      "gist": "ブルージェイズが平良と5年契約"
+    },
+    {
+      "team_id": "114",
+      "name": "ガーディアンズ",
+      "name_en": "Cleveland Guardians",
       "mentions": 1,
       "tone": "話題",
-      "gist": "ブルージェイズとペラルタの相性を検証"
+      "gist": "ガーディアンズがブービッチと1年1750万ドル"
+    },
+    {
+      "team_id": "145",
+      "name": "ホワイトソックス",
+      "name_en": "Chicago White Sox",
+      "mentions": 1,
+      "tone": "話題",
+      "gist": "ホワイトソックスがT・テイラーと契約合意"
     },
     {
       "team_id": "136",
@@ -46,31 +54,23 @@
       "name_en": "Seattle Mariners",
       "mentions": 1,
       "tone": "話題",
-      "gist": "ホットストーブ噂にマリナーズが登場"
+      "gist": "マリナーズがサンタナとマイナー契約"
     },
     {
-      "team_id": "143",
-      "name": "フィリーズ",
-      "name_en": "Philadelphia Phillies",
-      "mentions": 1,
-      "tone": "不振",
-      "gist": "フィリーズは右打者が必要、数字で示す"
-    },
-    {
-      "team_id": "115",
-      "name": "ロッキーズ",
-      "name_en": "Colorado Rockies",
+      "team_id": "116",
+      "name": "タイガース",
+      "name_en": "Detroit Tigers",
       "mentions": 1,
       "tone": "話題",
-      "gist": "ロッキーズ、マーティンとカスティーヨ獲得"
+      "gist": "タイガースが内野手キムと1年契約"
     },
     {
-      "team_id": "147",
-      "name": "ヤンキース",
-      "name_en": "New York Yankees",
+      "team_id": "121",
+      "name": "メッツ",
+      "name_en": "New York Mets",
       "mentions": 1,
       "tone": "話題",
-      "gist": "ヤンキース、2027年の三塁手の選択肢を検討"
+      "gist": "カブスとメッツの次の一手に注目"
     }
   ],
   "players": []

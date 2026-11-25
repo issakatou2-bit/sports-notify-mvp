@@ -1,14 +1,14 @@
 {
-  "updated_at": "2026-11-19T10:10:57.045227+00:00",
-  "date_jst": "2026-11-19",
-  "source_at": "2026-11-18T06:07:45.569142+00:00",
+  "updated_at": "2026-11-24T10:15:06.841055+00:00",
+  "date_jst": "2026-11-24",
+  "source_at": "2026-11-24T06:08:28.312021+00:00",
   "competitions": [
     {
       "code": "PL",
-      "round": 10,
+      "round": 11,
       "round_complete": true,
       "name_jp": "プレミアリーグ",
-      "played": 10,
+      "played": 11,
       "clubs": 20,
       "ready": true,
       "jp": [
@@ -18,23 +18,23 @@
           "position": 2,
           "points": 22,
           "out": true,
-          "out_note": "Hamstring injury - Expected back 22 Nov",
+          "out_note": "Hamstring injury - Expected back 2 Dec",
           "lines": [
             {
               "line": 4,
               "position": 2,
               "side": "inside",
-              "diff": 6,
+              "diff": 4,
               "label": "CL圏内",
-              "text": "CL圏内。落ちるまで勝点6"
+              "text": "CL圏内。落ちるまで勝点4"
             },
             {
               "line": 5,
               "position": 2,
               "side": "inside",
-              "diff": 6,
+              "diff": 5,
               "label": "EL圏内",
-              "text": "EL圏内。落ちるまで勝点6"
+              "text": "EL圏内。落ちるまで勝点5"
             }
           ]
         },
@@ -42,7 +42,7 @@
           "name": "遠藤航",
           "club_jp": "リバプール",
           "position": 4,
-          "points": 18,
+          "points": 21,
           "out": false,
           "out_note": "",
           "lines": [
@@ -50,39 +50,39 @@
               "line": 4,
               "position": 4,
               "side": "inside",
-              "diff": 2,
+              "diff": 3,
               "label": "CL圏内",
-              "text": "CL圏内。落ちるまで勝点2"
+              "text": "CL圏内。落ちるまで勝点3"
             },
             {
               "line": 5,
               "position": 4,
               "side": "inside",
-              "diff": 2,
+              "diff": 4,
               "label": "EL圏内",
-              "text": "EL圏内。落ちるまで勝点2"
+              "text": "EL圏内。落ちるまで勝点4"
             }
           ]
         },
         {
           "name": "田中碧",
           "club_jp": "リーズ",
-          "position": 9,
-          "points": 14,
+          "position": 7,
+          "points": 17,
           "out": false,
           "out_note": "",
           "lines": [
             {
               "line": 5,
-              "position": 9,
+              "position": 7,
               "side": "outside",
-              "diff": 2,
+              "diff": 1,
               "label": "EL圏内",
-              "text": "EL圏内まで勝点2"
+              "text": "EL圏内まで勝点1"
             },
             {
               "line": 4,
-              "position": 9,
+              "position": 7,
               "side": "outside",
               "diff": 4,
               "label": "CL圏内",
@@ -91,10 +91,10 @@
           ]
         },
         {
-          "name": "鈴木彩艶",
-          "club_jp": "アストンヴィラ",
+          "name": "高井幸大",
+          "club_jp": "トッテナム",
           "position": 10,
-          "points": 13,
+          "points": 15,
           "out": false,
           "out_note": "",
           "lines": [
@@ -110,32 +110,6 @@
               "line": 4,
               "position": 10,
               "side": "outside",
-              "diff": 5,
-              "label": "CL圏内",
-              "text": "CL圏内まで勝点5"
-            }
-          ]
-        },
-        {
-          "name": "高井幸大",
-          "club_jp": "トッテナム",
-          "position": 11,
-          "points": 12,
-          "out": false,
-          "out_note": "",
-          "lines": [
-            {
-              "line": 5,
-              "position": 11,
-              "side": "outside",
-              "diff": 4,
-              "label": "EL圏内",
-              "text": "EL圏内まで勝点4"
-            },
-            {
-              "line": 4,
-              "position": 11,
-              "side": "outside",
               "diff": 6,
               "label": "CL圏内",
               "text": "CL圏内まで勝点6"
@@ -145,26 +119,44 @@
         {
           "name": "守田英正",
           "club_jp": "ハル・シティ",
-          "position": 13,
-          "points": 11,
+          "position": 11,
+          "points": 14,
           "out": true,
           "out_note": "Groin injury - Unknown return date",
           "lines": [
             {
               "line": 5,
-              "position": 13,
+              "position": 11,
               "side": "outside",
-              "diff": 5,
+              "diff": 4,
               "label": "EL圏内",
-              "text": "EL圏内まで勝点5"
+              "text": "EL圏内まで勝点4"
             }
           ]
         },
         {
-          "name": "前田大然",
-          "club_jp": "イプスウィッチ",
+          "name": "鈴木彩艶",
+          "club_jp": "アストンヴィラ",
+          "position": 12,
+          "points": 14,
+          "out": false,
+          "out_note": "",
+          "lines": [
+            {
+              "line": 5,
+              "position": 12,
+              "side": "outside",
+              "diff": 4,
+              "label": "EL圏内",
+              "text": "EL圏内まで勝点4"
+            }
+          ]
+        },
+        {
+          "name": "坂元達裕",
+          "club_jp": "コベントリー",
           "position": 14,
-          "points": 11,
+          "points": 12,
           "out": false,
           "out_note": "",
           "lines": [
@@ -172,17 +164,17 @@
               "line": 5,
               "position": 14,
               "side": "outside",
-              "diff": 5,
+              "diff": 6,
               "label": "EL圏内",
-              "text": "EL圏内まで勝点5"
+              "text": "EL圏内まで勝点6"
             }
           ]
         },
         {
-          "name": "坂元達裕",
-          "club_jp": "コベントリー",
-          "position": 17,
-          "points": 9,
+          "name": "前田大然",
+          "club_jp": "イプスウィッチ",
+          "position": 16,
+          "points": 11,
           "out": false,
           "out_note": "",
           "lines": []
@@ -202,7 +194,7 @@
           "position": 20,
           "points": 7,
           "out": true,
-          "out_note": "Calf injury - Expected back 21 Nov",
+          "out_note": "Calf injury - Expected back 29 Nov",
           "lines": []
         }
       ],
@@ -215,19 +207,19 @@
               "position": 3,
               "team": "マンチェスター・シティ",
               "team_en": "Manchester City FC",
-              "played": 10,
-              "points": 21,
-              "gf": 21,
-              "ga": 13,
+              "played": 11,
+              "points": 22,
+              "gf": 22,
+              "ga": 14,
               "jp": []
             },
             {
               "position": 4,
               "team": "リバプール",
               "team_en": "Liverpool FC",
-              "played": 10,
-              "points": 18,
-              "gf": 14,
+              "played": 11,
+              "points": 21,
+              "gf": 18,
               "ga": 10,
               "jp": [
                 "遠藤航"
@@ -237,26 +229,26 @@
           "outside": [
             {
               "position": 5,
-              "team": "チェルシー",
-              "team_en": "Chelsea FC",
-              "played": 10,
-              "points": 16,
-              "gf": 19,
-              "ga": 16,
+              "team": "ボーンマス",
+              "team_en": "AFC Bournemouth",
+              "played": 11,
+              "points": 18,
+              "gf": 18,
+              "ga": 14,
               "jp": []
             },
             {
               "position": 6,
-              "team": "エバートン",
-              "team_en": "Everton FC",
-              "played": 10,
-              "points": 16,
-              "gf": 12,
-              "ga": 10,
+              "team": "ブレントフォード",
+              "team_en": "Brentford FC",
+              "played": 11,
+              "points": 17,
+              "gf": 20,
+              "ga": 11,
               "jp": []
             }
           ],
-          "diff": 2,
+          "diff": 3,
           "moved": {
             "line": 4,
             "in": [],
@@ -274,9 +266,9 @@
               "position": 4,
               "team": "リバプール",
               "team_en": "Liverpool FC",
-              "played": 10,
-              "points": 18,
-              "gf": 14,
+              "played": 11,
+              "points": 21,
+              "gf": 18,
               "ga": 10,
               "jp": [
                 "遠藤航"
@@ -284,44 +276,47 @@
             },
             {
               "position": 5,
-              "team": "チェルシー",
-              "team_en": "Chelsea FC",
-              "played": 10,
-              "points": 16,
-              "gf": 19,
-              "ga": 16,
+              "team": "ボーンマス",
+              "team_en": "AFC Bournemouth",
+              "played": 11,
+              "points": 18,
+              "gf": 18,
+              "ga": 14,
               "jp": []
             }
           ],
           "outside": [
             {
               "position": 6,
-              "team": "エバートン",
-              "team_en": "Everton FC",
-              "played": 10,
-              "points": 16,
-              "gf": 12,
-              "ga": 10,
+              "team": "ブレントフォード",
+              "team_en": "Brentford FC",
+              "played": 11,
+              "points": 17,
+              "gf": 20,
+              "ga": 11,
               "jp": []
             },
             {
               "position": 7,
-              "team": "ボーンマス",
-              "team_en": "AFC Bournemouth",
-              "played": 10,
-              "points": 15,
-              "gf": 16,
-              "ga": 14,
-              "jp": []
+              "team": "リーズ",
+              "team_en": "Leeds United FC",
+              "played": 11,
+              "points": 17,
+              "gf": 14,
+              "ga": 9,
+              "jp": [
+                "田中碧"
+              ]
             }
           ],
-          "diff": 0,
+          "diff": 1,
           "moved": {
             "line": 5,
             "in": [],
             "out": []
           },
           "jp": [
+            "田中碧",
             "遠藤航"
           ]
         }
@@ -329,10 +324,10 @@
     },
     {
       "code": "PD",
-      "round": 11,
+      "round": 12,
       "round_complete": false,
       "name_jp": "ラ・リーガ",
-      "played": 12,
+      "played": 13,
       "clubs": 20,
       "ready": true,
       "jp": [
@@ -345,28 +340,28 @@
           "out_note": "",
           "lines": [
             {
-              "line": 4,
-              "position": 5,
-              "side": "outside",
-              "diff": 4,
-              "label": "CL圏内",
-              "text": "CL圏内まで勝点4"
-            },
-            {
               "line": 5,
               "position": 5,
               "side": "inside",
-              "diff": 4,
+              "diff": 3,
               "label": "EL圏内",
-              "text": "EL圏内。落ちるまで勝点4"
+              "text": "EL圏内。落ちるまで勝点3"
+            },
+            {
+              "line": 4,
+              "position": 5,
+              "side": "outside",
+              "diff": 5,
+              "label": "CL圏内",
+              "text": "CL圏内まで勝点5"
             }
           ]
         },
         {
           "name": "佐藤龍之介",
           "club_jp": "バレンシア",
-          "position": 19,
-          "points": 9,
+          "position": 17,
+          "points": 12,
           "out": false,
           "out_note": "",
           "lines": []
@@ -381,9 +376,9 @@
               "position": 3,
               "team": "アトレティコ・マドリード",
               "team_en": "Club Atlético de Madrid",
-              "played": 12,
-              "points": 28,
-              "gf": 23,
+              "played": 13,
+              "points": 31,
+              "gf": 26,
               "ga": 10,
               "jp": []
             },
@@ -391,10 +386,10 @@
               "position": 4,
               "team": "レアル・ベティス",
               "team_en": "Real Betis Balompié",
-              "played": 12,
-              "points": 26,
-              "gf": 20,
-              "ga": 15,
+              "played": 13,
+              "points": 27,
+              "gf": 21,
+              "ga": 16,
               "jp": []
             }
           ],
@@ -403,10 +398,10 @@
               "position": 5,
               "team": "レアル・ソシエダ",
               "team_en": "Real Sociedad de Fútbol",
-              "played": 12,
+              "played": 13,
               "points": 22,
-              "gf": 21,
-              "ga": 20,
+              "gf": 23,
+              "ga": 23,
               "jp": [
                 "久保建英"
               ]
@@ -415,14 +410,14 @@
               "position": 6,
               "team": "セビージャ",
               "team_en": "Sevilla FC",
-              "played": 12,
-              "points": 18,
-              "gf": 17,
-              "ga": 19,
+              "played": 13,
+              "points": 19,
+              "gf": 18,
+              "ga": 20,
               "jp": []
             }
           ],
-          "diff": 4,
+          "diff": 5,
           "moved": {
             "line": 4,
             "in": [],
@@ -440,20 +435,20 @@
               "position": 4,
               "team": "レアル・ベティス",
               "team_en": "Real Betis Balompié",
-              "played": 12,
-              "points": 26,
-              "gf": 20,
-              "ga": 15,
+              "played": 13,
+              "points": 27,
+              "gf": 21,
+              "ga": 16,
               "jp": []
             },
             {
               "position": 5,
               "team": "レアル・ソシエダ",
               "team_en": "Real Sociedad de Fútbol",
-              "played": 12,
+              "played": 13,
               "points": 22,
-              "gf": 21,
-              "ga": 20,
+              "gf": 23,
+              "ga": 23,
               "jp": [
                 "久保建英"
               ]
@@ -464,24 +459,24 @@
               "position": 6,
               "team": "セビージャ",
               "team_en": "Sevilla FC",
-              "played": 12,
-              "points": 18,
-              "gf": 17,
-              "ga": 19,
+              "played": 13,
+              "points": 19,
+              "gf": 18,
+              "ga": 20,
               "jp": []
             },
             {
               "position": 7,
-              "team": "アスレティック・ビルバオ",
-              "team_en": "Athletic Club",
-              "played": 11,
-              "points": 16,
-              "gf": 15,
-              "ga": 11,
+              "team": "ラシン・サンタンデール",
+              "team_en": "Real Racing Club de Santander",
+              "played": 13,
+              "points": 17,
+              "gf": 20,
+              "ga": 32,
               "jp": []
             }
           ],
-          "diff": 4,
+          "diff": 3,
           "moved": {
             "line": 5,
             "in": [],
@@ -495,17 +490,17 @@
     },
     {
       "code": "SA",
-      "round": 11,
+      "round": 12,
       "round_complete": true,
       "name_jp": "セリエA",
-      "played": 11,
+      "played": 12,
       "clubs": 20,
       "ready": true,
       "jp": [
         {
           "name": "菅原由勢",
           "club_jp": "カリアリ",
-          "position": 9,
+          "position": 11,
           "points": 16,
           "out": false,
           "out_note": "",
@@ -519,22 +514,22 @@
           "inside": [
             {
               "position": 3,
-              "team": "ローマ",
-              "team_en": "AS Roma",
-              "played": 11,
-              "points": 27,
-              "gf": 31,
-              "ga": 10,
+              "team": "インテル",
+              "team_en": "FC Internazionale Milano",
+              "played": 12,
+              "points": 29,
+              "gf": 32,
+              "ga": 17,
               "jp": []
             },
             {
               "position": 4,
               "team": "ACミラン",
               "team_en": "AC Milan",
-              "played": 11,
-              "points": 24,
-              "gf": 23,
-              "ga": 13,
+              "played": 12,
+              "points": 27,
+              "gf": 28,
+              "ga": 14,
               "jp": []
             }
           ],
@@ -543,20 +538,20 @@
               "position": 5,
               "team": "コモ",
               "team_en": "Como 1907",
-              "played": 11,
-              "points": 23,
-              "gf": 18,
+              "played": 12,
+              "points": 26,
+              "gf": 20,
               "ga": 10,
               "jp": []
             },
             {
               "position": 6,
-              "team": "フロジノーネ",
-              "team_en": "Frosinone Calcio",
-              "played": 11,
-              "points": 20,
-              "gf": 24,
-              "ga": 15,
+              "team": "ユベントス",
+              "team_en": "Juventus FC",
+              "played": 12,
+              "points": 21,
+              "gf": 19,
+              "ga": 12,
               "jp": []
             }
           ],
@@ -576,19 +571,19 @@
               "position": 4,
               "team": "ACミラン",
               "team_en": "AC Milan",
-              "played": 11,
-              "points": 24,
-              "gf": 23,
-              "ga": 13,
+              "played": 12,
+              "points": 27,
+              "gf": 28,
+              "ga": 14,
               "jp": []
             },
             {
               "position": 5,
               "team": "コモ",
               "team_en": "Como 1907",
-              "played": 11,
-              "points": 23,
-              "gf": 18,
+              "played": 12,
+              "points": 26,
+              "gf": 20,
               "ga": 10,
               "jp": []
             }
@@ -596,26 +591,26 @@
           "outside": [
             {
               "position": 6,
-              "team": "フロジノーネ",
-              "team_en": "Frosinone Calcio",
-              "played": 11,
-              "points": 20,
-              "gf": 24,
-              "ga": 15,
+              "team": "ユベントス",
+              "team_en": "Juventus FC",
+              "played": 12,
+              "points": 21,
+              "gf": 19,
+              "ga": 12,
               "jp": []
             },
             {
               "position": 7,
-              "team": "ユベントス",
-              "team_en": "Juventus FC",
-              "played": 11,
-              "points": 18,
-              "gf": 15,
-              "ga": 12,
+              "team": "フロジノーネ",
+              "team_en": "Frosinone Calcio",
+              "played": 12,
+              "points": 20,
+              "gf": 25,
+              "ga": 20,
               "jp": []
             }
           ],
-          "diff": 3,
+          "diff": 5,
           "moved": {
             "line": 5,
             "in": [],
@@ -627,28 +622,28 @@
     },
     {
       "code": "BL1",
-      "round": 9,
+      "round": 10,
       "round_complete": true,
       "name_jp": "ブンデスリーガ",
-      "played": 9,
+      "played": 10,
       "clubs": 18,
       "ready": true,
       "jp": [
         {
           "name": "伊藤洋輝",
           "club_jp": "バイエルン",
-          "position": 1,
-          "points": 21,
+          "position": 2,
+          "points": 22,
           "out": false,
           "out_note": "",
           "lines": [
             {
               "line": 4,
-              "position": 1,
+              "position": 2,
               "side": "inside",
-              "diff": 5,
+              "diff": 3,
               "label": "CL圏内",
-              "text": "CL圏内。落ちるまで勝点5"
+              "text": "CL圏内。落ちるまで勝点3"
             }
           ]
         },
@@ -656,7 +651,7 @@
           "name": "鈴木唯人",
           "club_jp": "フライブルク",
           "position": 3,
-          "points": 19,
+          "points": 22,
           "out": false,
           "out_note": "",
           "lines": [
@@ -667,14 +662,6 @@
               "diff": 3,
               "label": "CL圏内",
               "text": "CL圏内。落ちるまで勝点3"
-            },
-            {
-              "line": 6,
-              "position": 3,
-              "side": "inside",
-              "diff": 6,
-              "label": "EL圏内",
-              "text": "EL圏内。落ちるまで勝点6"
             }
           ]
         },
@@ -682,7 +669,7 @@
           "name": "後藤啓介",
           "club_jp": "フライブルク",
           "position": 3,
-          "points": 19,
+          "points": 22,
           "out": false,
           "out_note": "",
           "lines": [
@@ -693,14 +680,6 @@
               "diff": 3,
               "label": "CL圏内",
               "text": "CL圏内。落ちるまで勝点3"
-            },
-            {
-              "line": 6,
-              "position": 3,
-              "side": "inside",
-              "diff": 6,
-              "label": "EL圏内",
-              "text": "EL圏内。落ちるまで勝点6"
             }
           ]
         },
@@ -708,7 +687,7 @@
           "name": "山本理仁",
           "club_jp": "フライブルク",
           "position": 3,
-          "points": 19,
+          "points": 22,
           "out": false,
           "out_note": "",
           "lines": [
@@ -719,54 +698,20 @@
               "diff": 3,
               "label": "CL圏内",
               "text": "CL圏内。落ちるまで勝点3"
-            },
-            {
-              "line": 6,
-              "position": 3,
-              "side": "inside",
-              "diff": 6,
-              "label": "EL圏内",
-              "text": "EL圏内。落ちるまで勝点6"
-            }
-          ]
-        },
-        {
-          "name": "町田浩樹",
-          "club_jp": "ホッフェンハイム",
-          "position": 9,
-          "points": 12,
-          "out": false,
-          "out_note": "",
-          "lines": [
-            {
-              "line": 6,
-              "position": 9,
-              "side": "outside",
-              "diff": 3,
-              "label": "EL圏内",
-              "text": "EL圏内まで勝点3"
-            },
-            {
-              "line": 4,
-              "position": 9,
-              "side": "outside",
-              "diff": 6,
-              "label": "CL圏内",
-              "text": "CL圏内まで勝点6"
             }
           ]
         },
         {
           "name": "堂安律",
           "club_jp": "フランクフルト",
-          "position": 10,
-          "points": 12,
+          "position": 7,
+          "points": 15,
           "out": false,
           "out_note": "",
           "lines": [
             {
               "line": 6,
-              "position": 10,
+              "position": 7,
               "side": "outside",
               "diff": 3,
               "label": "EL圏内",
@@ -774,7 +719,7 @@
             },
             {
               "line": 4,
-              "position": 10,
+              "position": 7,
               "side": "outside",
               "diff": 6,
               "label": "CL圏内",
@@ -785,14 +730,14 @@
         {
           "name": "小杉啓太",
           "club_jp": "フランクフルト",
-          "position": 10,
-          "points": 12,
+          "position": 7,
+          "points": 15,
           "out": false,
           "out_note": "",
           "lines": [
             {
               "line": 6,
-              "position": 10,
+              "position": 7,
               "side": "outside",
               "diff": 3,
               "label": "EL圏内",
@@ -800,7 +745,7 @@
             },
             {
               "line": 4,
-              "position": 10,
+              "position": 7,
               "side": "outside",
               "diff": 6,
               "label": "CL圏内",
@@ -809,40 +754,40 @@
           ]
         },
         {
-          "name": "佐野海舟",
-          "club_jp": "マインツ",
-          "position": 12,
-          "points": 10,
+          "name": "町田浩樹",
+          "club_jp": "ホッフェンハイム",
+          "position": 11,
+          "points": 12,
           "out": false,
           "out_note": "",
           "lines": [
             {
               "line": 6,
-              "position": 12,
+              "position": 11,
               "side": "outside",
-              "diff": 5,
+              "diff": 6,
               "label": "EL圏内",
-              "text": "EL圏内まで勝点5"
+              "text": "EL圏内まで勝点6"
             }
           ]
         },
         {
-          "name": "川﨑颯太",
+          "name": "佐野海舟",
           "club_jp": "マインツ",
-          "position": 12,
+          "position": 13,
           "points": 10,
           "out": false,
           "out_note": "",
-          "lines": [
-            {
-              "line": 6,
-              "position": 12,
-              "side": "outside",
-              "diff": 5,
-              "label": "EL圏内",
-              "text": "EL圏内まで勝点5"
-            }
-          ]
+          "lines": []
+        },
+        {
+          "name": "川﨑颯太",
+          "club_jp": "マインツ",
+          "position": 13,
+          "points": 10,
+          "out": false,
+          "out_note": "",
+          "lines": []
         }
       ],
       "lines": [
@@ -854,9 +799,9 @@
               "position": 3,
               "team": "フライブルク",
               "team_en": "SC Freiburg",
-              "played": 9,
-              "points": 19,
-              "gf": 20,
+              "played": 10,
+              "points": 22,
+              "gf": 21,
               "ga": 10,
               "jp": [
                 "山本理仁",
@@ -868,10 +813,10 @@
               "position": 4,
               "team": "ライプツィヒ",
               "team_en": "RB Leipzig",
-              "played": 9,
-              "points": 18,
-              "gf": 27,
-              "ga": 13,
+              "played": 10,
+              "points": 21,
+              "gf": 32,
+              "ga": 14,
               "jp": []
             }
           ],
@@ -880,9 +825,9 @@
               "position": 5,
               "team": "レバークーゼン",
               "team_en": "Bayer 04 Leverkusen",
-              "played": 9,
-              "points": 16,
-              "gf": 20,
+              "played": 10,
+              "points": 19,
+              "gf": 24,
               "ga": 17,
               "jp": []
             },
@@ -890,9 +835,9 @@
               "position": 6,
               "team": "ブレーメン",
               "team_en": "SV Werder Bremen",
-              "played": 9,
-              "points": 15,
-              "gf": 17,
+              "played": 10,
+              "points": 18,
+              "gf": 21,
               "ga": 15,
               "jp": []
             }
@@ -917,9 +862,9 @@
               "position": 5,
               "team": "レバークーゼン",
               "team_en": "Bayer 04 Leverkusen",
-              "played": 9,
-              "points": 16,
-              "gf": 20,
+              "played": 10,
+              "points": 19,
+              "gf": 24,
               "ga": 17,
               "jp": []
             },
@@ -927,9 +872,9 @@
               "position": 6,
               "team": "ブレーメン",
               "team_en": "SV Werder Bremen",
-              "played": 9,
-              "points": 15,
-              "gf": 17,
+              "played": 10,
+              "points": 18,
+              "gf": 21,
               "ga": 15,
               "jp": []
             }
@@ -937,81 +882,87 @@
           "outside": [
             {
               "position": 7,
-              "team": "エルバースベルク",
-              "team_en": "SV 07 Elversberg",
-              "played": 9,
-              "points": 13,
-              "gf": 17,
-              "ga": 18,
-              "jp": []
+              "team": "フランクフルト",
+              "team_en": "Eintracht Frankfurt",
+              "played": 10,
+              "points": 15,
+              "gf": 16,
+              "ga": 20,
+              "jp": [
+                "堂安律",
+                "小杉啓太"
+              ]
             },
             {
               "position": 8,
               "team": "シュツットガルト",
               "team_en": "VfB Stuttgart",
-              "played": 9,
-              "points": 12,
+              "played": 10,
+              "points": 13,
               "gf": 15,
               "ga": 15,
               "jp": []
             }
           ],
-          "diff": 2,
+          "diff": 3,
           "moved": {
             "line": 6,
             "in": [],
             "out": []
           },
-          "jp": []
+          "jp": [
+            "堂安律",
+            "小杉啓太"
+          ]
         }
       ]
     },
     {
       "code": "FL1",
-      "round": 10,
+      "round": 11,
       "round_complete": true,
       "name_jp": "リーグ・アン",
-      "played": 10,
+      "played": 11,
       "clubs": 18,
       "ready": true,
       "jp": [
         {
           "name": "上田綺世",
           "club_jp": "リール",
-          "position": 2,
+          "position": 3,
           "points": 21,
           "out": false,
           "out_note": "",
           "lines": [
             {
               "line": 3,
-              "position": 2,
+              "position": 3,
               "side": "inside",
-              "diff": 3,
+              "diff": 1,
               "label": "CL圏内",
-              "text": "CL圏内。落ちるまで勝点3"
+              "text": "CL圏内。落ちるまで勝点1"
             },
             {
               "line": 5,
-              "position": 2,
+              "position": 3,
               "side": "inside",
-              "diff": 4,
+              "diff": 3,
               "label": "EL圏内",
-              "text": "EL圏内。落ちるまで勝点4"
+              "text": "EL圏内。落ちるまで勝点3"
             }
           ]
         },
         {
           "name": "南野拓実",
           "club_jp": "モナコ",
-          "position": 7,
-          "points": 16,
+          "position": 8,
+          "points": 17,
           "out": false,
           "out_note": "",
           "lines": [
             {
               "line": 5,
-              "position": 7,
+              "position": 8,
               "side": "outside",
               "diff": 1,
               "label": "EL圏内",
@@ -1019,7 +970,7 @@
             },
             {
               "line": 3,
-              "position": 7,
+              "position": 8,
               "side": "outside",
               "diff": 4,
               "label": "CL圏内",
@@ -1062,50 +1013,50 @@
           "inside": [
             {
               "position": 2,
-              "team": "リール",
-              "team_en": "Lille OSC",
-              "played": 10,
-              "points": 21,
-              "gf": 14,
-              "ga": 7,
-              "jp": [
-                "上田綺世"
-              ]
+              "team": "パリFC",
+              "team_en": "Paris FC",
+              "played": 11,
+              "points": 23,
+              "gf": 21,
+              "ga": 10,
+              "jp": []
             },
             {
               "position": 3,
-              "team": "パリFC",
-              "team_en": "Paris FC",
-              "played": 10,
-              "points": 20,
-              "gf": 17,
-              "ga": 10,
-              "jp": []
+              "team": "リール",
+              "team_en": "Lille OSC",
+              "played": 11,
+              "points": 21,
+              "gf": 14,
+              "ga": 8,
+              "jp": [
+                "上田綺世"
+              ]
             }
           ],
           "outside": [
             {
               "position": 4,
-              "team": "マルセイユ",
-              "team_en": "Olympique de Marseille",
-              "played": 10,
-              "points": 18,
-              "gf": 22,
-              "ga": 14,
+              "team": "リヨン",
+              "team_en": "Olympique Lyonnais",
+              "played": 11,
+              "points": 20,
+              "gf": 16,
+              "ga": 9,
               "jp": []
             },
             {
               "position": 5,
-              "team": "リヨン",
-              "team_en": "Olympique Lyonnais",
-              "played": 10,
-              "points": 17,
-              "gf": 15,
-              "ga": 9,
+              "team": "マルセイユ",
+              "team_en": "Olympique de Marseille",
+              "played": 11,
+              "points": 18,
+              "gf": 24,
+              "ga": 17,
               "jp": []
             }
           ],
-          "diff": 2,
+          "diff": 1,
           "moved": {
             "line": 3,
             "in": [],
@@ -1121,47 +1072,45 @@
           "inside": [
             {
               "position": 4,
-              "team": "マルセイユ",
-              "team_en": "Olympique de Marseille",
-              "played": 10,
-              "points": 18,
-              "gf": 22,
-              "ga": 14,
+              "team": "リヨン",
+              "team_en": "Olympique Lyonnais",
+              "played": 11,
+              "points": 20,
+              "gf": 16,
+              "ga": 9,
               "jp": []
             },
             {
               "position": 5,
-              "team": "リヨン",
-              "team_en": "Olympique Lyonnais",
-              "played": 10,
-              "points": 17,
-              "gf": 15,
-              "ga": 9,
+              "team": "マルセイユ",
+              "team_en": "Olympique de Marseille",
+              "played": 11,
+              "points": 18,
+              "gf": 24,
+              "ga": 17,
               "jp": []
             }
           ],
           "outside": [
             {
               "position": 6,
-              "team": "ニース",
-              "team_en": "OGC Nice",
-              "played": 10,
-              "points": 17,
-              "gf": 15,
+              "team": "ブレスト",
+              "team_en": "Stade Brestois 29",
+              "played": 11,
+              "points": 18,
+              "gf": 19,
               "ga": 12,
               "jp": []
             },
             {
               "position": 7,
-              "team": "モナコ",
-              "team_en": "AS Monaco FC",
-              "played": 10,
-              "points": 16,
-              "gf": 13,
-              "ga": 11,
-              "jp": [
-                "南野拓実"
-              ]
+              "team": "ニース",
+              "team_en": "OGC Nice",
+              "played": 11,
+              "points": 17,
+              "gf": 17,
+              "ga": 15,
+              "jp": []
             }
           ],
           "diff": 0,
@@ -1170,137 +1119,24 @@
             "in": [],
             "out": []
           },
-          "jp": [
-            "南野拓実"
-          ]
+          "jp": []
         }
       ]
     },
     {
       "code": "CL",
-      "round": 4,
-      "round_complete": true,
+      "round": 0,
+      "round_complete": false,
       "name_jp": "チャンピオンズリーグ",
-      "played": 4,
-      "clubs": 36,
-      "ready": true,
+      "played": 0,
+      "clubs": 0,
+      "ready": false,
       "jp": [],
-      "lines": [
-        {
-          "at": 8,
-          "label": "決勝トーナメント直行",
-          "inside": [
-            {
-              "position": 7,
-              "team": "マンチェスター・シティ",
-              "team_en": "Manchester City FC",
-              "played": 4,
-              "points": 9,
-              "gf": 12,
-              "ga": 7,
-              "jp": []
-            },
-            {
-              "position": 8,
-              "team": "リバプール",
-              "team_en": "Liverpool FC",
-              "played": 4,
-              "points": 9,
-              "gf": 14,
-              "ga": 10,
-              "jp": []
-            }
-          ],
-          "outside": [
-            {
-              "position": 9,
-              "team": "クラブ・ブルージュ",
-              "team_en": "Club Brugge KV",
-              "played": 4,
-              "points": 9,
-              "gf": 11,
-              "ga": 7,
-              "jp": []
-            },
-            {
-              "position": 10,
-              "team": "スポルティング",
-              "team_en": "Sporting Clube de Portugal",
-              "played": 4,
-              "points": 9,
-              "gf": 8,
-              "ga": 4,
-              "jp": []
-            }
-          ],
-          "diff": 0,
-          "moved": {
-            "line": 8,
-            "in": [],
-            "out": []
-          },
-          "jp": []
-        },
-        {
-          "at": 24,
-          "label": "プレーオフ圏内",
-          "inside": [
-            {
-              "position": 23,
-              "team": "アトレティコ・マドリード",
-              "team_en": "Club Atlético de Madrid",
-              "played": 4,
-              "points": 4,
-              "gf": 4,
-              "ga": 5,
-              "jp": []
-            },
-            {
-              "position": 24,
-              "team": "PSV",
-              "team_en": "PSV",
-              "played": 4,
-              "points": 4,
-              "gf": 3,
-              "ga": 4,
-              "jp": []
-            }
-          ],
-          "outside": [
-            {
-              "position": 25,
-              "team": "ボドー／グリムト",
-              "team_en": "FK Bodø/Glimt",
-              "played": 4,
-              "points": 4,
-              "gf": 4,
-              "ga": 9,
-              "jp": []
-            },
-            {
-              "position": 26,
-              "team": "ポルト",
-              "team_en": "FC Porto",
-              "played": 4,
-              "points": 3,
-              "gf": 6,
-              "ga": 7,
-              "jp": []
-            }
-          ],
-          "diff": 0,
-          "moved": {
-            "line": 24,
-            "in": [],
-            "out": []
-          },
-          "jp": []
-        }
-      ]
+      "lines": []
     }
   ],
   "picked": [
-    "PL"
+    "SA"
   ],
   "moved_count": 0,
   "have_before": true,

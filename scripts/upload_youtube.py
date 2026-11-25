@@ -725,7 +725,7 @@ def record_kind(kind: str, morning_mode: str = "players",
 # 資産動画(asset)だけは日付ではなく話題で引くので、別の分岐が受け持つ。
 # --kind の選択肢と食い違っていないかは test_consistency が見る。
 DATED_KINDS = ("daily", "morning", "longform", "weekly", "verdict",
-               "soccer_race", "soccer_week", "soccer_results", "soccer_voices", "soccer_national_topic", "soccer_national", "player_story", "soccer_weekly", "soccer_national_long", "soccer_stake")
+               "soccer_race", "soccer_week", "soccer_results", "soccer_voices", "soccer_national_topic", "mlb_market_topic", "soccer_national", "player_story", "soccer_weekly", "soccer_national_long", "soccer_stake")
 
 
 def published_video(kind: str, date_key: str,
@@ -1453,7 +1453,7 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
     if kind == 'soccer_national_long':
         return __import__('soccer_national_long').metadata(_json_or_empty(narration_path),
                                                          pathlib.Path(narration_path).parent/'render_timeline.json')
-    if kind == 'soccer_national_topic':
+    if kind in ('soccer_national_topic', 'mlb_market_topic'):
         return __import__('soccer_national_topics').metadata(_json_or_empty(narration_path))
     if kind == 'soccer_stake':
         return __import__('soccer_stake').metadata(_json_or_empty(narration_path))
@@ -2200,7 +2200,7 @@ def main():
     parser.add_argument("--kind", default="daily",
                         choices=["daily", "weekly", "asset", "verdict",
                                  "morning", "longform", "soccer_race",
-                                 "soccer_week", "soccer_results", "soccer_voices", "soccer_national", "soccer_national_topic", "player_story", "soccer_weekly", "soccer_national_long", "soccer_stake"],
+                                 "soccer_week", "soccer_results", "soccer_voices", "soccer_national", "soccer_national_topic", "mlb_market_topic", "player_story", "soccer_weekly", "soccer_national_long", "soccer_stake"],
                         help="daily=ショート / weekly=週次まとめ / "
                              "asset=資産動画 / verdict=答え合わせ / "
                              "morning=夕方の5本 / longform=対話の通常動画 / "
@@ -2249,7 +2249,7 @@ def main():
         __import__('soccer_weekly_long').validate_upload(args)
     if args.kind == 'soccer_national_long':
         __import__('soccer_national_long').validate_upload(args)
-    if args.kind == 'soccer_national_topic':
+    if args.kind in ('soccer_national_topic', 'mlb_market_topic'):
         __import__('soccer_national_topics').validate_upload(args)
     if args.kind == 'soccer_stake':
         __import__('soccer_stake').validate_upload(args)
@@ -2330,7 +2330,7 @@ def main():
     # 話題で引くので、上の分岐がそのまま受け持つ。
     date_key = material_date_key(args.kind, args.sport, _json_or_empty(args.games), args.video_date,
                                  _json_or_empty(args.recap) if args.kind == 'morning' else None)
-    if args.kind in ('soccer_national_topic', 'soccer_stake'):
+    if args.kind in ('soccer_national_topic', 'mlb_market_topic', 'soccer_stake'):
         date_key = _json_or_empty(args.narration)['topic_key']
     rec_kind = record_kind(args.kind, args.morning_mode, args.sport)
     if args.kind == 'morning' and args.publish_at and 'T' not in args.publish_at:
@@ -2455,6 +2455,10 @@ def main():
     if _json_or_empty(args.narration).get('offseason', {}).get('series_number'):
         body['snippet']['description'] += '\n' + (__import__('offseason_market').DESCRIPTION if _json_or_empty(args.narration)['offseason'].get('kind') == 'market' else __import__('jp_future_series').DESCRIPTION)
     body["snippet"]["description"] = __import__('fan_privacy').description(club_display_description(body["snippet"]["description"]))
+    # 登録の導線を最初の段落の後に1行（11/25 点検：どの型の説明欄にも登録のリンクが無かった）。
+    body["snippet"]["description"] = __import__('channel_follow').with_subscribe(body["snippet"]["description"])
+    # BGM が Gemini（Lyria）製なら表記を足す（11/20、Morning_Tea を全部の既定に）。
+    body["snippet"]["description"] = __import__('sound_mix').with_bgm_credit(body["snippet"]["description"])
     # publishAt は privacyStatus が private のときだけ有効。
     # public のまま渡すと予約は無視され、その場で公開される。
     source_topics = None
@@ -2587,12 +2591,9 @@ def main():
                          publish_at=publish_at,preview_binding=preview_binding,
                          host_tracking=__import__('host_split').publication(args.video, args.narration), privacy=args.privacy,
                          experiment=experiment, source_topics=source_topics)
-            if args.kind == 'soccer_national_topic':
-                import soccer_national_topics as topics
-                topic_doc = _json_or_empty(args.narration)
-                topic_ledger = topics.national.read(topics.LEDGER)
-                topic_ledger[topic_doc['topic_key']] = dict(video_id=vid, publish_at=topics.national.instant(args.publish_at).astimezone(topics.national.JST).isoformat(), title=topic_doc['title'])
-                topics.national.save(topics.LEDGER, topic_ledger)
+            if args.kind in ('soccer_national_topic', 'mlb_market_topic'):
+                __import__('soccer_national_topics').record_published(
+                    _json_or_empty(args.narration), vid, args.publish_at)
             if args.kind == 'soccer_stake':
                 __import__('soccer_stake').record_published(_json_or_empty(args.narration), vid, args.publish_at)
             workflow_upload_result(True)

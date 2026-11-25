@@ -95,6 +95,17 @@ class HalfTests(unittest.TestCase):
         self.assertFalse(jp.rotation_available('b', b, ledgers, as_of))
         self.assertFalse(jp_assets.available('b', b, ledgers, as_of))
 
+    def test_star_player_comes_first_even_if_seen_more_recently(self):
+        # 11/23：週3本の枠は、よく見られる4人（大谷・山本・佐々木・村上）の回から先に使う。
+        as_of = datetime.fromisoformat('2026-11-23T18:30:00+09:00')
+        star = dict(jp_stock=True, player_ids=['808959'])
+        other = dict(jp_stock=True, player_ids=['673540'])
+        pair = dict(jp_stock=True, player_ids=['673548', '660271'])
+        ledgers = ({'asset': {'s': dict(player_ids=['808959'], published_at='2026-11-20T18:30:00+09:00'),
+                              'o': dict(player_ids=['673540'], published_at='2026-11-01T18:30:00+09:00')}}, {})
+        self.assertLess(jp.rotation_priority('s2', star, ledgers, as_of), jp.rotation_priority('o2', other, ledgers, as_of))
+        self.assertLess(jp.rotation_priority('p', pair, ledgers, as_of), jp.rotation_priority('o2', other, ledgers, as_of))
+
     def test_half_validates_and_uses_existing_duplicate_guards(self):
         import asset_sns
         import next_asset

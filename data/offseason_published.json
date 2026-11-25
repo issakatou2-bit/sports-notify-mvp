@@ -61,6 +61,10 @@
     "market:ito-posting-open-20261105:facts:open",
     "market:ito-posting-open-20261105:facts:stats",
     "market:ito-posting-open-20261105:reports:lockout",
+    "market:sato-cubs-agree-20261125:facts:open",
+    "market:sato-cubs-agree-20261125:facts:stats",
+    "market:sato-cubs-agree-20261125:reports:deal",
+    "market:sato-cubs-agree-20261125:reports:position",
     "market:sato-posting-open-20261103:facts:open",
     "market:sato-posting-open-20261103:facts:return",
     "market:sato-posting-open-20261103:facts:stats",
@@ -164,6 +168,10 @@
     },
     "offseason_awards_2026_e6296c74a5be": {
       "style": "v3"
+    },
+    "offseason_market_2026_3f1df573c501": {
+      "style": "v3",
+      "series_number": 8
     }
   }
 }

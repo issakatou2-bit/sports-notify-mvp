@@ -151,6 +151,9 @@ class OffseasonTests(unittest.TestCase):
             # 実部門の並びの試験だけに公式英語名を利用。製品の辞書には追加しない。
             complete = dict(table, **{r['player']['nameFirstLast']: r['player']['nameFirstLast'] for r in raw['awards']})
             rows = n.award_rows({ident:raw},2025,jp,complete)
+            # 日本人選手のいない複数部門の賞は出さない（11/22）。
+            self.assertEqual(n.award_topics([dict(r, japanese=False) for r in rows],self.day,2025), [])
+            rows = [dict(r, japanese=True) if i == 0 else r for i, r in enumerate(rows)]
             topics = n.award_topics(rows,self.day,2025)
             self.assertEqual([len(t['items']) for t in topics], [4,3,3])
             actual = [r['event_id'] for t in topics for r in t['offseason']['events']]

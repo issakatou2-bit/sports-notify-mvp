@@ -21,6 +21,7 @@
 
 何を取るか:
   動画ごとに、再生数・平均視聴率・平均視聴秒数・高評価・登録者の増減。
+  チャンネル全体の流入元（7日・28日）と視聴者の内訳（28日）。
   日付ごとに data/analytics.json へ積む。上書きせず足す。
 
 出力: data/analytics.json
@@ -35,7 +36,7 @@ import os
 import pathlib
 import re
 import sys
-from datetime import datetime, timedelta, timezone
+from datetime import date, datetime, timedelta, timezone
 
 try:
     from google.oauth2.credentials import Credentials
@@ -144,6 +145,72 @@ def merge_daily(store, rows):
                       **{k: v for k, v in rec.items() if v is not None}}
     store["daily"] = {d: daily[d] for d in sorted(daily)[-120:]}
     store["daily_timezone"] = "America/Los_Angeles"
+
+
+def breakdown_report(yta, start, end, dimensions, metrics, **options):
+    """内訳1件の失敗や空欄を、別の内訳とは独立して記録する。"""
+    try:
+        response = yta.reports().query(
+            ids="channel==MINE", startDate=start.isoformat(), endDate=end.isoformat(),
+            dimensions=dimensions, metrics=metrics, **options,
+        ).execute()
+        values = response.get("rows") or []
+        if not values:
+            return {"status": "empty", "rows": []}
+
+        columns = [header["name"] for header in response["columnHeaders"]]
+        expected = f"{dimensions},{metrics}".split(",")
+        if sorted(columns) != sorted(expected) or any(len(row) != len(columns) for row in values):
+            raise ValueError("unexpected breakdown columns")
+        return {"status": "ok", "rows": [dict(zip(columns, row)) for row in values]}
+    except HttpError as exc:
+        return {"status": "error", "reason": f"YouTube Analytics API HTTP {exc.resp.status}"}
+    except (KeyError, TypeError, ValueError):
+        return {"status": "error", "reason": "YouTube Analytics API の応答形式を確認できません"}
+    except Exception as exc:  # noqa: BLE001
+        return {"status": "error", "reason": type(exc).__name__}
+
+
+def audience_breakdowns(yta, end, fetched_at):
+    """期間は米国太平洋時間の両端を含む。range は照会した期間。"""
+    watch_metrics = "views,estimatedMinutesWatched"
+    result = {
+        "fetched_at": fetched_at,
+        "timezone": "America/Los_Angeles",
+        # https://developers.google.com/youtube/analytics/channel_reports#traffic-source
+        "registration_source": {"status": "unavailable", "reason":
+            "YouTube Analytics API は流入元と subscribersGained の組み合わせに未対応。"
+            "YT_CHANNEL はチャンネルページでの動画再生。"},
+        "impressions": {"status": "unavailable", "reason":
+            "サムネイル表示回数・クリック率は既存の YouTube Analytics API のチャンネル照会では取得できません。"},
+    }
+    for length in (7, 28):
+        start = end - timedelta(days=length - 1)
+        result[f"last_{length}_days"] = {
+            "range": [start.isoformat(), end.isoformat()],
+            "traffic_source": breakdown_report(yta, start, end, "insightTrafficSourceType",
+                                               watch_metrics),
+        }
+
+    start = end - timedelta(days=27)
+    result["last_28_days"].update(
+        subscribed_status=breakdown_report(yta, start, end, "subscribedStatus",
+                                           "views,averageViewPercentage"),
+        country=breakdown_report(yta, start, end, "country", watch_metrics,
+                                 sort="-views", maxResults=10),
+        device=breakdown_report(yta, start, end, "deviceType", watch_metrics),
+        demographics=breakdown_report(yta, start, end, "ageGroup,gender", "viewerPercentage"),
+    )
+    return result
+
+
+def save_snapshot(store, path):
+    # 積み上げるが、際限なく増やさない。90件の保存日を残す。
+    days = store["days"]
+    store["days"] = {day: days[day] for day in sorted(days)[-90:]}
+    path = pathlib.Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(store, ensure_ascii=False, indent=2), encoding="utf-8")
 
 
 def client(service: str, version: str):
@@ -507,11 +574,13 @@ def _run() -> int:
     merge_daily(store, extra)
     engagement = engagement_daily(yta, min(start, end - timedelta(days=28)), end)
     merge_daily(store, engagement)
-    if daily or extra or engagement:
-        # 動画別APIが失敗しても、取得できた日別値は失わない。
-        p = pathlib.Path(args.out)
-        p.parent.mkdir(parents=True, exist_ok=True)
-        p.write_text(json.dumps(store, ensure_ascii=False, indent=2), encoding="utf-8")
+    today = end.isoformat()
+    # 計上遅れを避けるため、今回の日別集計が返した最新日を期間の末日にする。
+    breakdown_end = date.fromisoformat(max(daily)) if daily else end
+    snapshot = store.setdefault("days", {}).setdefault(today, {})
+    snapshot["breakdowns"] = audience_breakdowns(yta, breakdown_end, fetched_at)
+    # 動画別APIが失敗しても、日別集計と内訳は保存する。
+    save_snapshot(store, args.out)
     try:
         known = known_video_ids()
         rows = video_rows(yta, start, end, known)
@@ -571,8 +640,7 @@ def _run() -> int:
             if c:
                 curves[r["video"]] = c
 
-    today = end.isoformat()
-    store.setdefault("days", {})[today] = {
+    snapshot.update({
         "fetched_at": fetched_at,
         "timezone": "America/Los_Angeles",
         "range": [start.isoformat(), end.isoformat()],
@@ -585,15 +653,8 @@ def _run() -> int:
                        if r.get("video") in curves else {})}
                    for r in rows],
         "sources": traffic_by_day(yta, start, end),
-    }
-    # 積み上げるが、際限なく増やさない。90日あれば季節の比較もできる。
-    days = sorted(store["days"])[-90:]
-    store["days"] = {d: store["days"][d] for d in days}
-
-    p = pathlib.Path(args.out)
-    p.parent.mkdir(parents=True, exist_ok=True)
-    p.write_text(json.dumps(store, ensure_ascii=False, indent=2),
-                 encoding="utf-8")
+    })
+    save_snapshot(store, args.out)
 
     print(f"[info] {len(rows)}本ぶんを取りました ({start} 〜 {end})")
 

@@ -42,7 +42,7 @@ class ArchiveDiscovery(unittest.TestCase):
     @patch.object(page, 'load_published_videos', return_value={})
     def test_external_text_cannot_close_title_or_json_script(self, _):
         name = '</title></script><script>alert("x")</script>'
-        output = page.render_day_page('2026-09-11', {'games': [game(matchup=name)]}, None, None)
+        output = page.render_day_page('2026-09-11', {'games': [game(matchup=name, venue='球場')]}, None, None)
         self.assertNotIn(name, output)
         values = re.findall(r'<script type="application/ld\+json">(.*?)</script>', output)
         self.assertEqual(json.loads(values[0])[0]['name'], name)

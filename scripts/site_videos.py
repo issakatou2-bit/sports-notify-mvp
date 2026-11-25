@@ -66,6 +66,11 @@ def video_jsonld(entries):
                 if entry.get(source):
                     obj[target] = entry[source]
                     break
+        # Googleの動画の結果に必須。台帳に無ければYouTubeが公開している縮小画像を使う。
+        obj.setdefault("thumbnailUrl",
+                       "https://i.ytimg.com/vi/" + entry["video_id"] + "/hqdefault.jpg")
+        if "description" not in obj and obj.get("name"):
+            obj["description"] = obj["name"]
         # YouTube視聴ページのurlは動画ファイルのcontentUrlではない。
         objects.append(obj)
     if not objects:
