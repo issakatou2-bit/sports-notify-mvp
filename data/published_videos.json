@@ -9975,6 +9975,54 @@
       },
       "host_fallback_reason": null,
       "privacy": "public"
+    },
+    "2026-11-25": {
+      "video_id": "51gZZeuv08Y",
+      "url": "https://youtu.be/51gZZeuv08Y",
+      "title": "【欧州サッカー】遠藤リバプールがチャンピオンズリーグで勝点0差のクラブ・ブルッヘと対戦 #Shorts",
+      "published_at": "2026-11-25T11:42:01.501955+00:00",
+      "preview_binding": {
+        "material_sha256": "84e542070f12393244b3694f45d450cae1243a12a16365294d5e81b9a1678fe6",
+        "narration_sha256": "e5f8ed1709f624c0c83c6183beba601d86cd8a6802a30f227b01ba8f39a0d845"
+      },
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-25",
+        "enabled": true,
+        "assigned": "generic",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false,
+        "source": "post_common.lineup:daily_soccer",
+        "next_date": "2026-11-26",
+        "next_time": "19:30",
+        "next_name": "欧州サッカー"
+      },
+      "duration_seconds": 54.43,
+      "short_information_count": 4,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-11-25",
+        "kind": "daily_soccer",
+        "phase": 1,
+        "planned_host": "ui",
+        "rule": "half-jst-week-v1",
+        "week": 46,
+        "weekday": 2
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-11-25T11:35:02.544203+00:00",
+        "comparison_eligible": false,
+        "label": "予定めたん（雨衣不可のため）",
+        "mode": "live",
+        "planned_host": "metan",
+        "reason": "ui_live_reserved",
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
     }
   },
   "weekly": {
