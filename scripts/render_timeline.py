@@ -50,6 +50,7 @@ class Recorder:
         sample_source = (narration or {}).get('segments') or segments
         self.sample_segments = [
             dict(text=row.get('text', ''), speaker=row.get('speaker'),
+                 **({'voice_host': row['voice_host']} if row.get('voice_host') else {}),
                  meta={key: row.get('meta', {})[key] for key in ('quote_rows', 'duo')
                        if key in (row.get('meta') or {})})
             for row in sample_source
@@ -84,6 +85,11 @@ class Recorder:
     def _observe_sample(self, image, raw, overlap):
         import sample_evidence
         layout = image.info.get('v3_layout', [])
+        badges = image.info.get('v4_badges', [])
+        if badges:
+            recorded = {tuple(row['box']) for row in layout if row['role'] in ('badge', 'team_badge')}
+            layout = layout + [dict(role='badge', box=badge['box'], text=badge.get('abbr', ''))
+                               for badge in badges if tuple(badge['box']) not in recorded]
         portraits = sample_evidence.portraits(image.info)
         transition = bool(overlap or image.info.get('v2_slide'))
         self.sample_last = (image, raw, self.frames, layout, portraits, transition)
@@ -139,14 +145,16 @@ class Recorder:
             print(f'::warning::字幕とカットの時刻の記録を保存しませんでした（{self.broken}）')
             return None
         try:
-            return self._save(video, audio_dir)
+            video = Path(video)
+            frames = self._video_frames(video)
+            if self.sample_last or self.sample_error:
+                self._save_sample(video, frames)
+            return self._save(video, audio_dir, frames)
         except Exception as exc:
             print(f'::warning::字幕とカットの時刻の記録を保存できませんでした（{type(exc).__name__}: {exc}）')
             return None
 
-    def _save(self, video, audio_dir):
-        """完成ファイルのフレーム数で末尾を切る（-shortestにも追従）。"""
-        video = Path(video)
+    def _video_frames(self, video):
         result = subprocess.run(['ffprobe', '-v', 'error', '-select_streams', 'v:0',
                                  '-show_entries', 'stream=nb_frames,avg_frame_rate', '-of', 'json', str(video)],
                                 capture_output=True, text=True, check=True)
@@ -155,7 +163,17 @@ class Recorder:
         numerator, denominator = map(int, stream['avg_frame_rate'].split('/'))
         if numerator / denominator != self.fps or frames > self.frames:
             raise ValueError('完成動画と観測したフレームが一致しません')
+        return frames
 
+    def save_sample(self, video):
+        """描画記録だけを保存し、完成動画のフレーム数で末尾を切る。"""
+        video = Path(video)
+        try:
+            self._save_sample(video, self._video_frames(video))
+        except (OSError, ValueError, KeyError, IndexError, subprocess.SubprocessError) as exc:
+            print(f'::warning::見本検査の記録を保存できませんでした（{exc}）')
+
+    def _save(self, video, audio_dir, frames):
         def timed(rows):
             out = []
             for row in rows:
@@ -212,8 +230,6 @@ class Recorder:
         # 共用のoutでも前の動画の記録を失わない。すべてJSONだけ。
         write_json(record_dir / 'render_timeline.json', payload)
         write_json(video.parent / 'render_timeline.json', payload)
-        if self.sample_last or self.sample_error:
-            self._save_sample(video, frames)
         return payload
 
     def _save_sample(self, video, frames):
@@ -221,6 +237,8 @@ class Recorder:
         try:
             if self.sample_error:
                 raise ValueError(self.sample_error)
+            if not self.sample_rows:
+                raise ValueError('描画記録にコマがありません')
             observed = [row for row in self.sample_rows if row['frame'] < frames]
             if frames == self.frames and observed and observed[-1]['frame'] != frames - 1:
                 observed.append(sample_evidence.record(*self.sample_last))

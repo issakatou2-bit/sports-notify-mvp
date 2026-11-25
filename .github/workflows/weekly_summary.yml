@@ -189,6 +189,7 @@ jobs:
             --video build/weekly/collespo_weekly.mp4 \
             --games notable_games.json \
             --kind weekly \
+            --narration build/weekly_narration.json \
             --thumbnail build/weekly/short.png \
             --privacy public --publish-at "22:00"
 
@@ -251,6 +252,7 @@ jobs:
           python scripts/upload_youtube.py \
             --video build/verdict/collespo_verdict.mp4 \
             --kind verdict \
+            --narration build/vs_narration.json \
             --thumbnail build/verdict/short.png \
             --privacy public
 

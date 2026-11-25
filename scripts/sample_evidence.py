@@ -3,10 +3,26 @@ import base64
 from copy import deepcopy
 import zlib
 
+from PIL import ImageDraw
+
 from voice_manifest import sha256, write_json
 
 
 REFERENCE_SIZE = (270, 480)
+
+
+class LayoutDraw(ImageDraw.ImageDraw):
+    """既存の Pillow 描画に、同じフォント・引数で測った文字の箱を付ける。"""
+
+    def text(self, xy, text, fill=None, font=None, anchor=None, *, role='text', **kwargs):
+        super().text(xy, text, fill=fill, font=font, anchor=anchor, **kwargs)
+        if not text or '\n' in text:
+            return
+        measured = {k: v for k, v in kwargs.items() if k in (
+            'spacing', 'align', 'direction', 'features', 'language', 'stroke_width',
+            'embedded_color', 'font_size')}
+        box = self.textbbox(xy, text, font=font, anchor=anchor, **measured)
+        self._image.info.setdefault('v3_layout', []).append(dict(role=role, box=list(box), text=text))
 
 
 def record(image, raw, index, layout, portraits, transition=False):

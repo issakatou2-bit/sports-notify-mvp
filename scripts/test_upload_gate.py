@@ -65,6 +65,34 @@ def test_missing_voice_credit(episode, description, missing):
         1, [f'説明欄に「{missing}」の表記がありません'])
 
 
+@pytest.mark.parametrize('explicit', [True, False])
+def test_solo_ui_uses_ui_credit_and_allows_polite_speech(episode, monkeypatch, explicit):
+    video, narration = episode
+    segment = dict(speaker=2, text='今日の試合です。')
+    if explicit:
+        segment['voice_host'] = 'ui'
+        monkeypatch.setenv('COLLESPO_SOLO_HOST', 'metan')
+    else:
+        monkeypatch.setenv('COLLESPO_SOLO_HOST', 'ui')
+    narration.write_text(json.dumps(dict(segments=[segment])), encoding='utf-8')
+    save_layout(video, safe_layout())
+    assert upload_gate.check(*episode, 'VoiSona Talk 雨衣', 'asset') == (0, [])
+    status, issues = upload_gate.check(*episode, 'VOICEVOX:四国めたん', 'asset')
+    assert status == 1 and '説明欄に「雨衣」の表記がありません' in issues
+
+
+def test_mixed_ui_and_zundamon_still_require_voicevox(episode):
+    video, narration = episode
+    narration.write_text(json.dumps(dict(segments=[
+        dict(speaker=2, voice_host='ui', text='今日の試合です。'),
+        dict(speaker=3, text='いつなのだ？'),
+    ])), encoding='utf-8')
+    save_layout(video, safe_layout())
+    assert upload_gate.check(*episode, 'VoiSona Talk 雨衣 / ずんだもん', 'asset') == (
+        1, ['説明欄に「VOICEVOX」の表記がありません'])
+    assert upload_gate.check(*episode, 'VoiSona Talk 雨衣 / VOICEVOX:ずんだもん', 'asset') == (0, [])
+
+
 @pytest.mark.parametrize(('role', 'lines', 'name'), [
     ('source', ['VOICEVOX:ず', 'んだもん'], 'ずんだもん'),
     ('source', ['VOI', 'CE', 'VOX:四国めたん'], 'VOICEVOX'),
@@ -165,3 +193,7 @@ def test_uploader_holds_private_video_before_building_youtube(episode, monkeypat
     assert 'ずんだもん' in capsys.readouterr().err and output.read_text() == 'uploaded=false\n'
     upload_youtube.require_upload_gate(video, narration, CREDITS, 'daily')
     assert upload_gate.read_json(video.with_suffix('.upload-hold.json'))['status'] == 'passed'
+
+
+if __name__ == '__main__':
+    raise SystemExit(pytest.main([__file__, '-q', '-p', 'no:cacheprovider']))

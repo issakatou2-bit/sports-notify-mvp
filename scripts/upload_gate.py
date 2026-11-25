@@ -9,6 +9,7 @@ import sys
 import zlib
 
 import check_sample
+import metan_tone
 
 
 EXEMPT = {}  # 描画記録を作らない種類を承認したときだけ、種類と理由を記す。
@@ -33,9 +34,19 @@ def probe_size(video):
 
 
 def credit_issues(segments, description):
-    speakers = {str(row.get('speaker', row.get('who'))) for row in segments}
-    required = ['VOICEVOX', *(name for name, aliases in VOICE_NAMES.items() if speakers & aliases)]
+    speakers = {str(row.get('speaker', row.get('who'))) for row in segments if row.get('voice_host') != 'ui'}
+    ui = any(row.get('voice_host') == 'ui' for row in segments)
+    required = ['VOICEVOX', *(name for name, aliases in VOICE_NAMES.items() if speakers & aliases)] if speakers else []
+    if ui:
+        required.append('雨衣')
     return [f'説明欄に「{name}」の表記がありません' for name in required if name not in description]
+
+
+def with_voice_hosts(segments):
+    """音声の明記がなければ、既存のソロ話者判定を使う。"""
+    if metan_tone.metan_enabled(segments):
+        return segments
+    return [dict(row, voice_host=row.get('voice_host') or 'ui') for row in segments]
 
 
 def protected_words(segments):
@@ -84,11 +95,13 @@ def check(video, segments_path, description, kind):
                 not isinstance(row, dict) or not isinstance(row.get('text'), str)
                 for row in segments):
             raise ValueError
-        # 投稿時は台本の voice_host を使い、実行時のソロ指定で口調の検査を省かない。
-        issues = check_sample.script_issues(segments, respect_solo_host=False)
+        voices = with_voice_hosts(segments)
+        # 説明欄でも雨衣を確認してから、ソロ指定による口調の例外を適用する。
+        tone_segments = voices if '雨衣' in description else segments
+        issues = check_sample.script_issues(tone_segments, respect_solo_host=False)
     except (OSError, ValueError, KeyError, TypeError, AttributeError):
         return 2, [f'台本の segments を読めません（{segments_path}）']
-    issues.extend(credit_issues(segments, description))
+    issues.extend(credit_issues(voices, description))
 
     try:
         size = probe_size(video)

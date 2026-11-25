@@ -163,7 +163,11 @@ jobs:
                 python scripts/generate_asset_video.py                   --topic "$t" --narration "build/narr_$t.json" --audio-dir "build/audio_$t" --out "build/asset_$t" &&
                 { if [ "$COLLESPO_SAMPLE_ONLY" = true ]; then echo "::notice::見本の描画で終了"; exit 0; fi; } &&
                 bash scripts/shorts_thumbnail.sh                   "build/asset_$t/collespo_asset_$t.mp4" "build/asset_$t/short.png" &&
-                python scripts/upload_youtube.py                   --video "build/asset_$t/collespo_asset_$t.mp4"                   --kind asset --asset-topic "$t"                   --thumbnail "build/asset_$t/short.png"                   --privacy public
+                python scripts/upload_youtube.py \
+                  --video "build/asset_$t/collespo_asset_$t.mp4" \
+                  --kind asset --asset-topic "$t" \
+                  --narration "build/narr_$t.json" \
+                  --thumbnail "build/asset_$t/short.png" --privacy public
                 if [ $? -eq 0 ]; then
                   if [ "$COLLESPO_EN_CAPTIONS" = "on" ]; then
                     python scripts/captions.py --language en --kind asset --asset-topic "$t" --record data/published_assets.json --narration "build/narr_$t.json" --audio-dir "build/audio_$t"

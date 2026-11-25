@@ -93,6 +93,7 @@ def _frame(t, seg, narr):
 
 
 def render(narr, audio, out):
+    import render_timeline
     __import__('slant_by_episode').set_episode(narr.get('program') or 'player_story')
     if not narr.get('can_make'):
         return None
@@ -143,10 +144,12 @@ def render(narr, audio, out):
            '-i', '-', '-i', str(track), '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '23',
            '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-t', str(sum(times)), '-movflags', '+faststart', str(video)]
     images = []; clock = 0.; previous=None
+    timeline = render_timeline.Recorder(24, audio, narr)
     with (out/'ffmpeg.log').open('w', encoding='utf-8') as log:
         proc = subprocess.Popen(cmd, stdin=subprocess.PIPE, stderr=log)
         try:
             for i, (seg, seconds) in enumerate(zip(narr['segments'], times)):
+                timeline.select(audio[i], i)
                 r3.set_caption(seg['text'], seconds, sum(times), speaker=2, duo=False, hide_caption=seg['kind']=='outro')
                 r3.set_program_clock(clock+1.4)
                 im = frame(1.4, seg, narr)
@@ -156,7 +159,7 @@ def render(narr, audio, out):
                     r3.set_program_clock(clock+k/24)
                     image=frame(k/24, seg, narr).convert('RGB')
                     raw=motion.transition(previous, image, k, 24) if motion.enabled() else image.tobytes()
-                    proc.stdin.write(raw)
+                    timeline.write(proc.stdin, raw, image, overlap=previous is not None and k < round(motion.SETTINGS['transition'] * 24))
                 previous=image.tobytes();clock += seconds
         finally:
             proc.stdin.close(); code = proc.wait(); r3.set_program_clock(None)
@@ -164,6 +167,7 @@ def render(narr, audio, out):
     if code:
         raise ValueError('動画生成に失敗しました。ffmpeg.logを確認してください')
     __import__('sound_mix').verify_short_video(video)
+    timeline.save_sample(video)
     from preview_unified_v3 import sheet
     sheet(images, [s['kind'] for s in narr['segments']], out/'all-screens.png', columns=3)
     verification = dict(seconds=sum(times), screens=len(images), direction=narr['direction'],

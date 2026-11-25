@@ -719,6 +719,7 @@ def script(program):
 
 def movie(program, audio_dir, out):
     import host_split
+    import render_timeline
     if host_split.enabled():
         if content_key(program) != program['edition_key']:
             raise ValueError('検証後の台本・画面・題が変更されています')
@@ -771,8 +772,10 @@ def movie(program, audio_dir, out):
            '-shortest', '-movflags', '+faststart', str(path)]
     previous_frame=None
     program_frame=0
+    timeline = render_timeline.Recorder(30, audio, program)
     with subprocess.Popen(cmd, stdin=subprocess.PIPE) as proc:
         for i, (seg, duration) in enumerate(zip(program['segments'], durations)):
+            timeline.select(audio[i], i)
             image, _, foreground = render_segment(seg,layers=True)
             if v3:
                 image=unified.frame(min(3,duration/4),seg['meta']['card'],focus_card,cover=i==0,duration=duration,ticker_line=ticker_line)
@@ -797,12 +800,13 @@ def movie(program, audio_dir, out):
                 raw=(unified.transition(previous_frame,frame,n,round(vc.FADE_SECONDS*30),program_frame/30,ticker_line) if v3
                      else vc.crossfade(previous_frame,frame,n,round(vc.FADE_SECONDS*30),(1080,1920)))
                 program_frame+=1
-                proc.stdin.write(raw)
+                timeline.write(proc.stdin, raw, frame, overlap=previous_frame is not None and n < round(vc.FADE_SECONDS * 30))
             previous_frame=raw
         proc.stdin.close()
         if proc.wait():
             raise ValueError('PS動画の書き出しに失敗')
     __import__('sound_mix').verify_short_video(path)
+    timeline.save_sample(path)
     check.update(video=str(path), expected_segments=len(audio), durations=durations,
                  motion='sequential-left-entry / subtle-background-drift / shared-crossfade')
     write(out / 'ps_program_gate.json', check)

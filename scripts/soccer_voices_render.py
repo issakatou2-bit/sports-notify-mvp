@@ -224,6 +224,7 @@ def prepare(data):
 
 
 def render_video(data,narr,audio,out):
+    import render_timeline
     __import__('slant_by_episode').set_episode('soccer_voices')
     sv.validate_data(data)
     if narr!=sv.narration(data):raise ValueError('原稿と採用した材料が一致しません')
@@ -238,6 +239,7 @@ def render_video(data,narr,audio,out):
     track=__import__('short_common').add_audio(track,audio,times,out)
     if not track:raise ValueError('実音声なしでは動画を作りません')
     video=out/'collespo_soccer_voices.mp4';images=[];layouts=[];previous=None;clock=0;clubs=clubs_for(data)
+    timeline = render_timeline.Recorder(FPS, audio, narr)
     cmd=['ffmpeg','-y','-f','rawvideo','-vcodec','rawvideo','-pix_fmt','rgb24','-s','1080x1920','-r',str(FPS),'-i','-',
          '-i',str(track),'-c:v','libx264','-preset','veryfast','-crf','23','-pix_fmt','yuv420p','-c:a','aac','-b:a','160k',
          '-t',str(sum(times)),'-movflags','+faststart',str(video)]
@@ -245,6 +247,7 @@ def render_video(data,narr,audio,out):
         proc=subprocess.Popen(cmd,stdin=subprocess.PIPE,stderr=log)
         try:
             for i,(seg,duration) in enumerate(zip(narr['segments'],times)):
+                timeline.select(audio[i], i)
                 r3.set_caption(seg['text'],duration,sum(times),speaker=2,duo=False,hide_caption=seg['kind']=='outro')
                 snap=min(3,duration*.6) if seg['kind']=='outro' else max(.5,duration-.5)
                 r3.set_program_clock(clock+snap);im=frame(snap,seg,data,clubs,duration)
@@ -253,12 +256,14 @@ def render_video(data,narr,audio,out):
                 im.save(out/f'{i+1:02d}.png');images.append(im);layouts.append(im.info)
                 for k in range(round(duration*FPS)):
                     r3.set_program_clock(clock+k/FPS);im=frame(k/FPS,seg,data,clubs,duration)
-                    proc.stdin.write(soccer_look.transition(previous,im,k,FPS))
+                    raw = soccer_look.transition(previous, im, k, FPS)
+                    timeline.write(proc.stdin, raw, im, overlap=previous is not None and k < round(vc.FADE_SECONDS * FPS))
                 previous=im.tobytes();clock+=duration
         finally:
             proc.stdin.close();code=proc.wait();r3.set_program_clock(None)
     if code:raise ValueError('動画生成失敗。ffmpeg.logを確認')
     __import__('sound_mix').verify_short_video(video)
+    timeline.save_sample(video)
     from preview_unified_v3 import sheet
     sheet(images,[s['kind'] for s in narr['segments']],out/'all-screens.png',columns=3)
     probe=subprocess.run(['ffmpeg','-hide_banner','-i',str(video)],capture_output=True,text=True,encoding='utf-8',errors='replace')

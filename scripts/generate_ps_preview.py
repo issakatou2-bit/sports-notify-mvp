@@ -12,6 +12,8 @@ import subprocess
 import sys
 
 from PIL import Image, ImageDraw
+import render_timeline
+from sample_evidence import LayoutDraw
 import video_common as vc
 from ps_editorial import preview_review_required
 
@@ -71,7 +73,7 @@ def render(context, segment):
     if segment['kind'] == 'outro':
         return __import__('review_render_v3').outro(1)
     im = Image.new('RGB', (W, H), BG)
-    d = ImageDraw.Draw(im)
+    d = LayoutDraw(im)
     d.rectangle((70, 135, 135, 145), fill=ACCENT)
     d.text((155, 110), 'コレスポ / MLB', font=vc.font(35), fill=ACCENT)
     d.text((70, 185), 'ポストシーズン', font=vc.font(60), fill=INK)
@@ -137,7 +139,8 @@ def render(context, segment):
     else:
         draw_lines(d, '出場12球団決定', 70, 440, 70)
         draw_lines(d, '組み合わせ・開始時刻は\n公式日程で確認中', 70, 820, 48, MUTED)
-    d.text((70, 1735), '出典：MLB公式日程 / 予定は変更される場合があります', font=vc.font(25), fill=MUTED)
+    d.text((70, 1735), '出典：MLB公式日程 / 予定は変更される場合があります',
+           font=vc.font(25), fill=MUTED, role='source')
     return im
 
 
@@ -169,18 +172,21 @@ def movie(context, script, audio_dir, out, require_audio):
     if track:
         cmd += ['-c:a', 'aac', '-b:a', '160k', '-shortest']
     cmd += [str(video)]
+    timeline = render_timeline.Recorder(FPS, audio, script)
     with subprocess.Popen(cmd, stdin=subprocess.PIPE) as process:
         for i, (segment, duration, n) in enumerate(zip(script['segments'], durations, vc.segment_frame_counts(durations, FPS))):
+            timeline.select(audio[i], i)
             im = render(context, segment)
             im.save(out / f'ps_preview_{i:02}.png')
             frame = im.tobytes()
             for _ in range(n):
-                process.stdin.write(frame)
+                timeline.write(process.stdin, frame, im)
         process.stdin.close()
         if process.wait():
             raise ValueError('PS案内動画の書き出しに失敗')
     if track:
         __import__('sound_mix').verify_short_video(video)
+    timeline.save_sample(video)
     print(f'[info] PS案内動画: {video}')
 
 
