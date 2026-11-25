@@ -55,6 +55,7 @@ except ImportError:
     anthropic = None
 
 import llm_models
+from analytics_snapshots import video_snapshots
 MODEL = llm_models.model("board")
 JST = timezone(timedelta(hours=9))
 
@@ -125,7 +126,7 @@ def gather(day: str = None) -> str:
             lines.append(f"- {when} {name}: {rec.get('title', '')}")
 
     # 枠ごとの実測。指摘を「なんとなく」ではなく数字に紐づけるため。
-    an = _load("data/analytics.json").get("days") or {}
+    an = video_snapshots(_load("data/analytics.json"))
     if an:
         latest = sorted(an)[-1]
         rows = [v for v in (an[latest].get("videos") or [])

@@ -38,6 +38,8 @@ import statistics
 import sys
 from datetime import date, datetime, timedelta, timezone
 
+from analytics_snapshots import video_snapshots
+
 JST = timezone(timedelta(hours=9))
 
 # published_videos.json の区分 → 型の名前。時刻は公開記録（日本時間）で多い時刻。
@@ -133,7 +135,7 @@ def published_items(videos: dict, assets: dict) -> list:
 def snapshots(analytics: dict) -> list:
     """[(保存日, 範囲の始め, {video_id: 行})] を日付順に。（遅れはまだ引かない）"""
     out = []
-    for day, snap in sorted(((analytics or {}).get("days") or {}).items()):
+    for day, snap in sorted(video_snapshots(analytics or {}).items()):
         try:
             d = date.fromisoformat(day)
             start = date.fromisoformat((snap.get("range") or [day])[0])

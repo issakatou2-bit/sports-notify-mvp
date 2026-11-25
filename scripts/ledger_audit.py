@@ -3,6 +3,7 @@ from collections import defaultdict
 import json
 from pathlib import Path
 
+from analytics_snapshots import video_snapshots
 from backfill_records import kind_of
 from ledger_adapter import convert, documents
 
@@ -36,7 +37,8 @@ def audit(docs, analytics, playlists):
             result['title_kind_mismatch'].append(dict(video_id=obs['video_id'], source=obs['source'],
                 kind=obs['legacy_kind'], title_kind=inferred, title=obs['raw']['title']))
     saved = defaultdict(list)
-    for day, data in sorted(analytics.get('days', {}).items()):
+    analytics_days = video_snapshots(analytics)
+    for day, data in sorted(analytics_days.items()):
         for row in data.get('videos', []):
             if row.get('video'):
                 saved[row['video']].append(dict(source=f'analytics/days/{day}', title=row.get('title')))
@@ -52,9 +54,9 @@ def audit(docs, analytics, playlists):
         if vid not in by_video:
             result['saved_not_in_ledger'].append(dict(video_id=vid, evidence=evidence))
     result['coverage'] = dict(youtube_observations=len(observations), ledger_video_ids=len(by_video),
-                              saved_video_ids=len(saved), analytics_days=len(analytics.get('days', {})),
-                              analytics_first=min(analytics.get('days', {}), default=None),
-                              analytics_last=max(analytics.get('days', {}), default=None), playlists=len(playlists))
+                              saved_video_ids=len(saved), analytics_days=len(analytics_days),
+                              analytics_first=min(analytics_days, default=None),
+                              analytics_last=max(analytics_days, default=None), playlists=len(playlists))
     return result
 
 

@@ -11,6 +11,7 @@ from statistics import median
 import urllib.error
 import urllib.request
 from urllib.parse import urlsplit
+from analytics_snapshots import video_snapshots
 from asset_policy import PAUSE_NOTE
 
 JST = timezone(timedelta(hours=9))
@@ -254,7 +255,7 @@ def report(data, now, check=oembed, actions=None):
                 extra += ["", "補足値の取得日: " + ", ".join(cell(a) for a in acquired)]
                 lines[-3:-3] = extra
             break
-    snapshots = analytics.get("days", {})
+    snapshots = video_snapshots(analytics)
     snapshot = snapshots[max(snapshots)] if snapshots else {}
     period = snapshot.get("range", ["未収録", "未収録"])
     lines += [f"動画別の期間合計: {cell(period[0])}〜{cell(period[-1])}。取得日: {cell(snapshot.get('fetched_at', max(snapshots) + '（保存日・取得時刻未収録）' if snapshots else '未収録'))}。上位200本の保存値、公開台帳publicとの結合。観測期間は動画ごとに異なり、週の増減や因果効果ではない。", ""]

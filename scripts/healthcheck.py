@@ -28,6 +28,7 @@ import os
 import pathlib
 import sys
 from datetime import datetime, timedelta, timezone
+from analytics_snapshots import video_snapshots
 from publication_clock import DAY_ROLLOVER_HOUR, publication_due, target_day
 
 JST = timezone(timedelta(hours=9))
@@ -505,7 +506,7 @@ def check_analytics() -> tuple:
     こちらは「残っているか」と「いま何％か」だけを見る。
     """
     d = load("data/analytics.json")
-    days = (d or {}).get("days") or {}
+    days = video_snapshots(d or {})
     if not days:
         return ("| 動画ごとの数字 | まだ取れていない | "
                 "yt-analytics の権限が要ります |", 0)
