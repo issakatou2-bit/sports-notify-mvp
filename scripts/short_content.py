@@ -30,7 +30,7 @@ def normalized(value):
 
 def information(document, material=None):
     """描画する段だけの情報。現在の別ファイルを勝手に根拠にしない。"""
-    if document.get('program') == 'soccer_national_topic':
+    if document.get('program') in ('soccer_national_topic', 'mlb_market_topic'):
         return importlib.import_module('soccer_national_topics').information(document)
     if document.get('program') == 'soccer_national':
         return importlib.import_module('soccer_national').information(document)

@@ -1,0 +1,327 @@
+{
+  "about": "MLB 移籍の合意報道の掛け合い回（11/25 本人「シンプルすぎない？ めたずんの応答形式で、少し踏み込む、具体的な情報も」）。soccer_national_followups.json と同じ形。各段の事実は2つ以上の出典で確かめた物（Claude 11/25）。合意は報道で、正式発表はまだ。",
+  "events": {
+    "sato-cubs": {
+      "checked_on": "2026-11-25",
+      "title": "佐藤輝明 カブスと6年1億2000万ドルで合意と米報道 鈴木誠也の後の右翼へ",
+      "readings": {
+        "佐藤輝明": "サトウテルアキ",
+        "佐藤": "サトウ",
+        "鈴木誠也": "スズキセイヤ"
+      },
+      "reading_sources": [
+        "https://npb.jp/bis/2026/stats/bat_c.html"
+      ],
+      "hook": {
+        "score": "佐藤輝明",
+        "result": "カブスと合意と米報道",
+        "subject": "6年総額",
+        "big": "1億2000",
+        "unit": "万ドル",
+        "note": "正式発表はまだ"
+      },
+      "items": [
+        {
+          "ask": "佐藤輝明、行き先が決まったのだ？",
+          "text": "はい。カブスと6年総額1億2000万ドルで合意したと、ESPNが報じています。球団の正式発表はまだです。",
+          "head": "カブスと合意と報道",
+          "rows": [
+            [
+              "球団",
+              "カブス"
+            ],
+            [
+              "契約",
+              "6年 総額1億2000万ドル"
+            ],
+            [
+              "報道",
+              "ESPN パッサン記者 11月24日"
+            ]
+          ],
+          "big": {
+            "label": "6年の総額",
+            "value": "1億2000",
+            "unit": "万ドル"
+          },
+          "source_names": "ESPN・MLBTR",
+          "sources": [
+            "https://www.espn.com/mlb/story/_/id/50583163/sources-cubs-teruaki-sato-reach-6-year-120m-deal",
+            "https://www.mlbtraderumors.com/2026/11/cubs-to-sign-teruaki-sato.html"
+          ]
+        },
+        {
+          "ask": "1年あたりだと、どれくらいなのだ？",
+          "text": "1年あたり平均2000万ドルです。同じカブスに2022年に入った鈴木誠也は、5年8500万ドルでした。",
+          "head": "鈴木誠也との比べ",
+          "rows": [
+            [
+              "佐藤輝明",
+              "6年1億2000万ドル（年2000万）"
+            ],
+            [
+              "鈴木誠也（2022年）",
+              "5年8500万ドル（年1700万）"
+            ]
+          ],
+          "big": {
+            "label": "1年あたり",
+            "value": "2000",
+            "unit": "万ドル"
+          },
+          "source_names": "ESPN・CBS",
+          "sources": [
+            "https://www.espn.com/mlb/story/_/id/50583163/sources-cubs-teruaki-sato-reach-6-year-120m-deal",
+            "https://www.cbssports.com/mlb/news/cubs-sign-seiya-suzuki-japanese-slugger-gets-five-year-85-million-deal-with-chicago"
+          ]
+        },
+        {
+          "ask": "今季は、どれくらい打ったのだ？",
+          "text": "打率3割6厘、39本塁打、106打点でセ・リーグの三冠王です。一方で614打席で164三振。三振の多さが課題だとESPNは伝えています。",
+          "head": "2026年の成績",
+          "rows": [
+            [
+              "打率",
+              ".306"
+            ],
+            [
+              "本塁打",
+              "39"
+            ],
+            [
+              "打点",
+              "106"
+            ],
+            [
+              "三振",
+              "164（614打席）"
+            ]
+          ],
+          "big": {
+            "label": "本塁打",
+            "value": "39",
+            "unit": "本"
+          },
+          "source_names": "NPB・ESPN",
+          "sources": [
+            "https://npb.jp/bis/2026/stats/bat_c.html",
+            "https://www.espn.com/mlb/story/_/id/50583163/sources-cubs-teruaki-sato-reach-6-year-120m-deal"
+          ]
+        },
+        {
+          "ask": "MLBでも、打てるのだ？",
+          "text": "三振率は村上宗隆が35.4%、岡本和真が28.8%でした。今季NPBから移った2人は、MLB1年目で本塁打を30本以上打った一方、三振が増えました。佐藤輝明の今季の三振率は26.7%です。",
+          "head": "NPBから移った2人の1年目",
+          "rows": [
+            [
+              "村上宗隆（ホワイトソックス）",
+              "35本 打率.207 三振率35.4%"
+            ],
+            [
+              "岡本和真（ブルージェイズ）",
+              "33本 打率.232 三振率28.8%"
+            ],
+            [
+              "佐藤輝明（2026年 阪神）",
+              "39本 打率.306 三振率26.7%"
+            ]
+          ],
+          "big": {
+            "label": "村上宗隆のMLB1年目の三振率",
+            "value": "35.4",
+            "unit": "%"
+          },
+          "source_names": "MLB公式・NPB・Sportiva",
+          "sources": [
+            "https://statsapi.mlb.com/api/v1/people/808959/stats?stats=season&season=2026&group=hitting",
+            "https://statsapi.mlb.com/api/v1/people/672960/stats?stats=season&season=2026&group=hitting",
+            "https://npb.jp/bis/2026/stats/bat_c.html",
+            "https://sportiva.shueisha.co.jp/clm/baseball/mlb/2026/09/29/post_24/"
+          ]
+        },
+        {
+          "ask": "カブスでは、どこを守るのだ？",
+          "text": "FAになった鈴木誠也に代わって、右翼を守る見込みだと報じられています。佐藤輝明は鈴木誠也より5歳若い27歳です。",
+          "head": "守る位置",
+          "rows": [
+            [
+              "見込み",
+              "右翼"
+            ],
+            [
+              "抜けた選手",
+              "鈴木誠也（FA）"
+            ],
+            [
+              "年齢",
+              "27歳"
+            ]
+          ],
+          "source_names": "ESPN・NBCスポーツ",
+          "sources": [
+            "https://www.espn.com/mlb/story/_/id/50583163/sources-cubs-teruaki-sato-reach-6-year-120m-deal",
+            "https://www.nbcsports.com/mlb/news/cubs-agree-to-six-year-deal-with-japanese-slugger-teruaki-sato-where-he-fits-in-chicagos-2027-lineup"
+          ]
+        }
+      ]
+    },
+    "taira-bluejays": {
+      "checked_on": "2026-11-25",
+      "title": "平良海馬 ブルージェイズと5年8000万ドルで合意と米報道 3年目の後に契約破棄の権利",
+      "readings": {
+        "平良海馬": "タイラカイマ",
+        "平良": "タイラ",
+        "岡本和真": "オカモトカズマ"
+      },
+      "reading_sources": [
+        "https://npb.jp/bis/2026/stats/pit_p.html"
+      ],
+      "hook": {
+        "score": "平良海馬",
+        "result": "ブルージェイズと合意と米報道",
+        "subject": "5年総額",
+        "big": "8000",
+        "unit": "万ドル",
+        "note": "正式発表はまだ"
+      },
+      "items": [
+        {
+          "ask": "平良海馬も、決まったのだ？",
+          "text": "はい。ブルージェイズと5年総額8000万ドルで合意したと、アメリカで報じられています。球団の正式発表はまだです。",
+          "head": "ブルージェイズと合意と報道",
+          "rows": [
+            [
+              "球団",
+              "ブルージェイズ"
+            ],
+            [
+              "契約",
+              "5年 総額8000万ドル"
+            ],
+            [
+              "報道",
+              "11月25日（日本時間）"
+            ]
+          ],
+          "big": {
+            "label": "5年の総額",
+            "value": "8000",
+            "unit": "万ドル"
+          },
+          "source_names": "時事・デイリー",
+          "sources": [
+            "https://www.jiji.com/jc/article?k=2026112500143&g=spo&m=rss",
+            "https://www.daily.co.jp/mlb/2026/11/25/0021070445.shtml"
+          ]
+        },
+        {
+          "ask": "途中で出ていける決まりもあるのだ？",
+          "text": "3年目の2029年が終わったら、残り2年をやめてFAになれる権利があると報じられています。",
+          "head": "契約を途中でやめる権利",
+          "rows": [
+            [
+              "権利が使える時",
+              "3年目（2029年）の後"
+            ],
+            [
+              "やめられる分",
+              "残り2年"
+            ]
+          ],
+          "big": {
+            "label": "権利が使える時",
+            "value": "3",
+            "unit": "年目の後"
+          },
+          "source_names": "デイリー・サンスポ",
+          "sources": [
+            "https://www.daily.co.jp/mlb/2026/11/25/0021070445.shtml",
+            "https://news.yahoo.co.jp/articles/80bc9154b673917af8a84d7b32eba96c53cdd158"
+          ]
+        },
+        {
+          "ask": "西武には、いくら入るのだ？",
+          "text": "決まりの計算では、譲渡金は1387万5000ドルです。",
+          "head": "西武への譲渡金",
+          "rows": [
+            [
+              "最初の2500万ドル",
+              "20%"
+            ],
+            [
+              "次の2500万ドル",
+              "17.5%"
+            ],
+            [
+              "5000万ドルを超えた分",
+              "15%"
+            ]
+          ],
+          "big": {
+            "label": "譲渡金（決まりの計算）",
+            "value": "1387.5",
+            "unit": "万ドル"
+          },
+          "source_names": "MLB公式・中日スポーツ",
+          "sources": [
+            "https://www.mlb.com/glossary/transactions/japanese-posting-system",
+            "https://news.yahoo.co.jp/articles/3b41afe6a20c32d70d9ad207557e2c7cf3fdcb17"
+          ]
+        },
+        {
+          "ask": "今季は、どんな成績だったのだ？",
+          "text": "先発で23試合に投げて12勝5敗、防御率1.36。パ・リーグで1番の防御率です。",
+          "head": "2026年の成績",
+          "rows": [
+            [
+              "登板",
+              "23"
+            ],
+            [
+              "勝敗",
+              "12勝5敗"
+            ],
+            [
+              "投球回",
+              "146"
+            ],
+            [
+              "奪三振",
+              "141"
+            ]
+          ],
+          "big": {
+            "label": "防御率",
+            "value": "1.36",
+            "unit": ""
+          },
+          "source_names": "NPB・サンスポ",
+          "sources": [
+            "https://npb.jp/bis/2026/stats/pit_p.html",
+            "https://news.yahoo.co.jp/articles/80bc9154b673917af8a84d7b32eba96c53cdd158"
+          ]
+        },
+        {
+          "ask": "ブルージェイズに、日本人はいるのだ？",
+          "text": "岡本和真がいます。今年1月に4年6000万ドルで入りました。",
+          "head": "岡本和真と同じ球団",
+          "rows": [
+            [
+              "岡本和真",
+              "2026年1月 4年6000万ドル"
+            ],
+            [
+              "平良海馬",
+              "5年8000万ドル（報道）"
+            ]
+          ],
+          "source_names": "MLB公式・TSN",
+          "sources": [
+            "https://www.mlb.com/news/kazuma-okamoto-blue-jays-deal",
+            "https://www.tsn.ca/mlb/article/blue-jays-officially-sign-japanese-infielder-okamoto-to-four-year-60m-deal/"
+          ]
+        }
+      ]
+    }
+  }
+}

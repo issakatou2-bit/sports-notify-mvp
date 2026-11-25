@@ -152,7 +152,7 @@ def dialogue_scope(dialogue):
     if dialogue.get('program')=='soccer_national' and (dialogue.get('national_material') or {}).get('mode') in ('squad','result'):
         import soccer_national
         extra=soccer_national.speech_readings(dialogue)
-    elif dialogue.get('program')=='soccer_national_topic':
+    elif dialogue.get('program') in ('soccer_national_topic','mlb_market_topic'):
         import soccer_national_topics
         extra=soccer_national_topics.speech_readings(dialogue)
     elif dialogue.get('program')=='soccer_national_long':
