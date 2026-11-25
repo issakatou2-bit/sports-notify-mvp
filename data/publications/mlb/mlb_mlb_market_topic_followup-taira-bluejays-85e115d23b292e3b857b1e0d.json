@@ -1,0 +1,30 @@
+{
+  "publication_id": "mlb:mlb_market_topic:followup-taira-bluejays",
+  "domain": "mlb",
+  "kind": "mlb_market_topic",
+  "key_parts": {
+    "legacy_key": "followup-taira-bluejays"
+  },
+  "version": 1,
+  "history": [
+    {
+      "source": "published_videos/mlb_market_topic/followup-taira-bluejays",
+      "service": "youtube",
+      "video_id": "mgC-gR5GoAQ",
+      "state": "scheduled",
+      "scheduled_at": "2026-11-25T08:42:13Z",
+      "event_day": null,
+      "material_day": null,
+      "edition_day": "2026-11-25",
+      "run_at": "2026-11-25T08:21:22.586777+00:00",
+      "details": {
+        "privacy": "public"
+      },
+      "run_id": "45574137779",
+      "attempt": "1",
+      "recorded_at": "2026-11-25T08:21:22.621171+00:00",
+      "fingerprint": "aea4a29f94caf11879b9443dbf86fb07c1a2c5051d6e0e9eed276d53efb2107b",
+      "event_id": "f72ea367995319f3c5470695bbb7f5843c18a5f79c91ba8af31990973f683423"
+    }
+  ]
+}
