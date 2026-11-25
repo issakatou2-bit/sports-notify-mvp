@@ -54,6 +54,24 @@ class MarketTopics(unittest.TestCase):
         doc['segments'][1]['text'] += '。'
         self.assertTrue(topics.check(doc))
 
+    def test_metan_tone_is_gated_in_build_and_sanity(self):
+        # 台本はめたんの口調で書いてあり、1件でも「です・ます」が残れば原稿を作らない。sanity も同じ kind の原稿を検査する。
+        import json, tempfile
+        import sanity
+        for event in ('sato-cubs', 'taira-bluejays'):
+            doc = topics.mlb_narration('followup-' + event)
+            self.assertEqual(list(metan_tone.check(doc['segments'])), [])
+            for item in topics.national.read(topics.MLB_FOLLOWUPS)['events'][event]['items']:
+                self.assertEqual(metan_tone.problems(item['text']), [], item['text'])
+            bad = copy.deepcopy(doc)
+            bad['segments'][1]['text'] = '球団の正式発表はまだです。ESPNが報じています。'
+            with self.assertRaises(ValueError):
+                topics.tone_gate(bad)
+            with tempfile.TemporaryDirectory() as folder:
+                path = Path(folder) / 'narration.json'
+                path.write_text(json.dumps(bad, ensure_ascii=False), encoding='utf-8')
+                self.assertTrue(any('めたんの語尾' in line for line in sanity.check_narration([str(path)])))
+
     def test_frames_have_mlb_badge_and_sources(self):
         env = {key: value for key,value in os.environ.items() if not key.startswith('COLLESPO_')}
         env.update(PYTHONUTF8='1', COLLESPO_STYLE='v2', COLLESPO_SOCCER_LOOK='v6',
@@ -101,7 +119,13 @@ for event, team in [('sato-cubs', '112'), ('taira-bluejays', '141')]:
         text = ' '.join(entry['text'] for entry in layout)
         assert 'MLB' in text and '日本代表' not in text and '#サッカー' not in text, text
         source = doc['followup_material']['items'][i//2]['source_names']
-        assert source in text, (event, i, source, text)
+        assert source in text.replace(' ', ''), (event, i, source, text)
+        # 字幕の箱と出典は YouTube ショートの UI に隠れない安全範囲の内側（SAFE_BOTTOM 1440）にある。
+        import shorts_safe_area as safe
+        shown = {e['role']: e['box'] for e in layout if e['role'] in ('caption', 'source')}
+        assert set(shown) == {'caption', 'source'}, (event, i, shown)
+        assert not [b for b in shown.values() if safe.outside(b)], (event, i, shown)
+        assert render.caption_source_problems(image) == [], (event, i)
         errors = render.validate_frame(image, clubs, doc)
         assert not errors, (event, i, errors)
         stamp = badge(team, 108, 54)

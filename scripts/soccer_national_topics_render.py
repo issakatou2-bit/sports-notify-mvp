@@ -281,10 +281,18 @@ def allowed_numbers(doc):
     return {float(v) for v in re.findall(r'\d+(?:\.\d+)?', pool)}
 
 
+def caption_source_problems(im):
+    """字幕の箱と出典が、YouTube ショートの UI に隠れない安全範囲（shorts_safe_area）の内側にあるか。"""
+    import shorts_safe_area
+    return [dict(caption_or_source_outside_safe_area=e) for e in im.info.get('v3_layout', [])
+            if e['role'] in ('caption', 'source') and shorts_safe_area.outside(e['box'])]
+
+
 def validate_frame(im, clubs, doc):
     import soccer_readable
     import soccer_v4_cards
     errors = soccer_readable.check_frame(im, clubs)
+    errors += caption_source_problems(im)
     allowed = allowed_numbers(doc)
     drawn = {v for v in soccer_v4_cards.drawn_numbers(im)}
     drawn |= {v for e in im.info.get('v3_layout', []) if e['role'] == 'national_fact'

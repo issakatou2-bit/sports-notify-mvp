@@ -2438,5 +2438,371 @@
         }
       }
     ]
+  },
+  "2026-11-25": {
+    "day": "2026-11-25",
+    "video_id": "51gZZeuv08Y",
+    "title": "【欧州サッカー】遠藤リバプールがチャンピオンズリーグで勝点0差のクラブ・ブルッヘと対戦 #Shorts",
+    "published_at": "2026-11-25T11:42:01.501955+00:00",
+    "binding": {
+      "material_sha256": "84e542070f12393244b3694f45d450cae1243a12a16365294d5e81b9a1678fe6",
+      "narration_sha256": "e5f8ed1709f624c0c83c6183beba601d86cd8a6802a30f227b01ba8f39a0d845"
+    },
+    "games": [
+      {
+        "game_id": "espn-401915292",
+        "espn_event_id": "401915292",
+        "league": "チャンピオンズリーグ",
+        "competition_code": "CL",
+        "home": "Club Brugge KV",
+        "away": "Liverpool FC",
+        "start_utc": "2026-11-26T05:00:00+09:00",
+        "reasons": [
+          {
+            "kind": "european_points",
+            "score": 120,
+            "text": "チャンピオンズリーグではクラブ・ブルッヘは勝点9、リバプールは勝点9で、両チームの勝点差は0です。",
+            "source": "https://site.api.espn.com/apis/v2/sports/soccer/uefa.champions/standings",
+            "retrieved_at": "2026-11-25T11:34:00.664205+00:00",
+            "values": {
+              "competition": "CL",
+              "gap": 0,
+              "rows": {
+                "home": {
+                  "team_id": "570",
+                  "rank": 11,
+                  "points": 9,
+                  "played": 4,
+                  "tied": true
+                },
+                "away": {
+                  "team_id": "364",
+                  "rank": 10,
+                  "points": 9,
+                  "played": 4,
+                  "tied": true
+                }
+              },
+              "league": "チャンピオンズリーグ"
+            }
+          },
+          {
+            "kind": "above",
+            "score": 75,
+            "text": "リバプールとすぐ上のマンチェスターCの勝点差は0です。",
+            "source": "https://api.football-data.org/v4/competitions/CL/standings",
+            "retrieved_at": "2026-11-25T11:33:33.764132+00:00",
+            "values": {
+              "side": "away",
+              "gap": 0
+            }
+          },
+          {
+            "kind": "domestic_away",
+            "score": 55,
+            "text": "リバプールはプレミアリーグで現在4位、勝点21です。",
+            "source": "https://site.api.espn.com/apis/v2/sports/soccer/eng.1/standings",
+            "retrieved_at": "2026-11-25T11:34:00.841412+00:00",
+            "values": {
+              "competition": "PL",
+              "side": "away",
+              "team_id": "364",
+              "rank": 4,
+              "points": 21,
+              "played": 11,
+              "tied": false
+            }
+          }
+        ],
+        "expectation": null,
+        "spoken": "日本時間11月26日5時、クラブ・ブルッヘ対リバプール。チャンピオンズリーグではクラブ・ブルッヘは勝点9、リバプールは勝点9で、両チームの勝点差は0よ。リバプールとすぐ上のマンチェスターCの勝点差は0よ。リバプールはプレミアリーグで現在4位、勝点21よ。",
+        "standings": {
+          "home": {
+            "team_id": "570",
+            "rank": 11,
+            "points": 9,
+            "played": 4,
+            "tied": true,
+            "as_of": "2026-11-25T09:53:47.446974+00:00",
+            "competition": "CL",
+            "season": null
+          },
+          "away": {
+            "team_id": "364",
+            "rank": 10,
+            "points": 9,
+            "played": 4,
+            "tied": true,
+            "as_of": "2026-11-25T09:53:47.446974+00:00",
+            "competition": "CL",
+            "season": null
+          }
+        }
+      },
+      {
+        "game_id": "575406",
+        "espn_event_id": "401915376",
+        "league": "チャンピオンズリーグ",
+        "competition_code": "CL",
+        "home": "インテル",
+        "away": "シュツットガルト",
+        "start_utc": "2026-11-26T05:00:00+09:00",
+        "reasons": [
+          {
+            "kind": "european_points",
+            "score": 120,
+            "text": "チャンピオンズリーグではインテルは勝点6、シュツットガルトは勝点7で、両チームの勝点差は1です。",
+            "source": "https://site.api.espn.com/apis/v2/sports/soccer/uefa.champions/standings",
+            "retrieved_at": "2026-11-25T11:34:00.664205+00:00",
+            "values": {
+              "competition": "CL",
+              "gap": 1,
+              "rows": {
+                "home": {
+                  "team_id": "110",
+                  "rank": 17,
+                  "points": 6,
+                  "played": 4,
+                  "tied": true
+                },
+                "away": {
+                  "team_id": "134",
+                  "rank": 15,
+                  "points": 7,
+                  "played": 4,
+                  "tied": true
+                }
+              },
+              "league": "チャンピオンズリーグ"
+            }
+          },
+          {
+            "kind": "european_zone",
+            "score": 110,
+            "text": "インテルは今、チャンピオンズリーグでプレーオフに進む9位から24位の範囲にいます。",
+            "source": "https://site.api.espn.com/apis/v2/sports/soccer/uefa.champions/standings",
+            "retrieved_at": "2026-11-25T11:34:00.664205+00:00",
+            "values": {
+              "competition": "CL",
+              "side": "home",
+              "rank": null,
+              "rule_source": "https://documents.uefa.com/r/Regulations-of-the-UEFA-Europa-League-2026/27/Article-17-Match-system-league-phase-Online"
+            }
+          },
+          {
+            "kind": "above",
+            "score": 75,
+            "text": "インテルとすぐ上のガラタサライの勝点差は1です。",
+            "source": "https://api.football-data.org/v4/competitions/CL/standings",
+            "retrieved_at": "2026-11-25T11:33:33.764132+00:00",
+            "values": {
+              "side": "home",
+              "gap": 1
+            }
+          }
+        ],
+        "expectation": null,
+        "spoken": "日本時間11月26日5時、インテル対シュツットガルト。チャンピオンズリーグではインテルは勝点6、シュツットガルトは勝点7で、両チームの勝点差は1よ。",
+        "standings": {
+          "home": {
+            "team_id": "110",
+            "rank": 17,
+            "points": 6,
+            "played": 4,
+            "tied": true,
+            "as_of": "2026-11-25T09:53:47.446974+00:00",
+            "competition": "CL",
+            "season": null
+          },
+          "away": {
+            "team_id": "134",
+            "rank": 15,
+            "points": 7,
+            "played": 4,
+            "tied": true,
+            "as_of": "2026-11-25T09:53:47.446974+00:00",
+            "competition": "CL",
+            "season": null
+          }
+        }
+      },
+      {
+        "game_id": "575407",
+        "espn_event_id": "401915291",
+        "league": "チャンピオンズリーグ",
+        "competition_code": "CL",
+        "home": "アトレティコ・マドリード",
+        "away": "バイキング",
+        "start_utc": "2026-11-26T05:00:00+09:00",
+        "reasons": [
+          {
+            "kind": "european_points",
+            "score": 120,
+            "text": "チャンピオンズリーグではアトレティコ・マドリードは勝点4、バイキングは勝点4で、両チームの勝点差は0です。",
+            "source": "https://site.api.espn.com/apis/v2/sports/soccer/uefa.champions/standings",
+            "retrieved_at": "2026-11-25T11:34:00.664205+00:00",
+            "values": {
+              "competition": "CL",
+              "gap": 0,
+              "rows": {
+                "home": {
+                  "team_id": "1068",
+                  "rank": 26,
+                  "points": 4,
+                  "played": 4,
+                  "tied": true
+                },
+                "away": {
+                  "team_id": "510",
+                  "rank": 25,
+                  "points": 4,
+                  "played": 4,
+                  "tied": true
+                }
+              },
+              "league": "チャンピオンズリーグ"
+            }
+          },
+          {
+            "kind": "above",
+            "score": 75,
+            "text": "アトレティコ・マドリードとすぐ上のバイキングの勝点差は0です。",
+            "source": "https://api.football-data.org/v4/competitions/CL/standings",
+            "retrieved_at": "2026-11-25T11:33:33.764132+00:00",
+            "values": {
+              "side": "home",
+              "gap": 0
+            }
+          },
+          {
+            "kind": "domestic_home",
+            "score": 55,
+            "text": "アトレティコ・マドリードはラ・リーガで現在3位、勝点31です。",
+            "source": "https://site.api.espn.com/apis/v2/sports/soccer/esp.1/standings",
+            "retrieved_at": "2026-11-25T11:34:00.754807+00:00",
+            "values": {
+              "competition": "PD",
+              "side": "home",
+              "team_id": "1068",
+              "rank": 3,
+              "points": 31,
+              "played": 13,
+              "tied": false
+            }
+          }
+        ],
+        "expectation": null,
+        "spoken": "日本時間11月26日5時、アトレティコ・マドリード対バイキング。",
+        "standings": {
+          "home": {
+            "team_id": "1068",
+            "rank": 26,
+            "points": 4,
+            "played": 4,
+            "tied": true,
+            "as_of": "2026-11-25T09:53:47.446974+00:00",
+            "competition": "CL",
+            "season": null
+          },
+          "away": {
+            "team_id": "510",
+            "rank": 25,
+            "points": 4,
+            "played": 4,
+            "tied": true,
+            "as_of": "2026-11-25T09:53:47.446974+00:00",
+            "competition": "CL",
+            "season": null
+          }
+        }
+      },
+      {
+        "game_id": "575404",
+        "espn_event_id": "401915378",
+        "league": "チャンピオンズリーグ",
+        "competition_code": "CL",
+        "home": "Sabah FK",
+        "away": "バルセロナ",
+        "start_utc": "2026-11-26T02:45:00+09:00",
+        "reasons": [
+          {
+            "kind": "european_points",
+            "score": 120,
+            "text": "チャンピオンズリーグではサバフは勝点3、バルセロナは勝点9で、両チームの勝点差は6です。",
+            "source": "https://site.api.espn.com/apis/v2/sports/soccer/uefa.champions/standings",
+            "retrieved_at": "2026-11-25T11:34:00.664205+00:00",
+            "values": {
+              "competition": "CL",
+              "gap": 6,
+              "rows": {
+                "home": {
+                  "team_id": "21922",
+                  "rank": 30,
+                  "points": 3,
+                  "played": 4,
+                  "tied": true
+                },
+                "away": {
+                  "team_id": "83",
+                  "rank": 8,
+                  "points": 9,
+                  "played": 4,
+                  "tied": true
+                }
+              },
+              "league": "チャンピオンズリーグ"
+            }
+          },
+          {
+            "kind": "european_zone",
+            "score": 110,
+            "text": "サバフは今、チャンピオンズリーグでプレーオフ圏の24位より下にいます。",
+            "source": "https://site.api.espn.com/apis/v2/sports/soccer/uefa.champions/standings",
+            "retrieved_at": "2026-11-25T11:34:00.664205+00:00",
+            "values": {
+              "competition": "CL",
+              "side": "home",
+              "rank": null,
+              "rule_source": "https://documents.uefa.com/r/Regulations-of-the-UEFA-Europa-League-2026/27/Article-17-Match-system-league-phase-Online"
+            }
+          },
+          {
+            "kind": "above",
+            "score": 75,
+            "text": "バルセロナとすぐ上のコモの勝点差は0です。",
+            "source": "https://api.football-data.org/v4/competitions/CL/standings",
+            "retrieved_at": "2026-11-25T11:33:33.764132+00:00",
+            "values": {
+              "side": "away",
+              "gap": 0
+            }
+          }
+        ],
+        "expectation": null,
+        "spoken": "日本時間11月26日2時45分、サバフ対バルセロナ。",
+        "standings": {
+          "home": {
+            "team_id": "21922",
+            "rank": 30,
+            "points": 3,
+            "played": 4,
+            "tied": true,
+            "as_of": "2026-11-25T09:53:47.446974+00:00",
+            "competition": "CL",
+            "season": null
+          },
+          "away": {
+            "team_id": "83",
+            "rank": 8,
+            "points": 9,
+            "played": 4,
+            "tied": true,
+            "as_of": "2026-11-25T09:53:47.446974+00:00",
+            "competition": "CL",
+            "season": null
+          }
+        }
+      }
+    ]
   }
 }
