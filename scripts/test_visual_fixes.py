@@ -71,7 +71,12 @@ class VisualFixes(unittest.TestCase):
                         import characters
                         caption_top = image.info['duo_caption']['box'][1]
                         for item in image.info['duo_layer']:
-                            art = characters.bust(item['who'], item['face'], item['height'], item['dim'])
+                            art = characters.bust(item['who'], item['face'], item['height'], item['dim'],
+                                                  item.get('side'), item.get('full', False))
+                            if image.info.get('short_cast'):
+                                # 隅の立ち絵は体ごと下の端まで描く（体の途中で切らない）。字幕は別の枠。
+                                self.assertEqual(item['at'][1] + item['cut'], min(image.height, item['at'][1] + art.height))
+                                continue
                             self.assertGreater(item['at'][1] + art.height, caption_top)
                             self.assertEqual(item['at'][1] + item['cut'], caption_top)
                     continue

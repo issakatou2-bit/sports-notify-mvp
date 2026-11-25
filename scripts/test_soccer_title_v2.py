@@ -83,7 +83,12 @@ class Tests(unittest.TestCase):
             with patch.dict(os.environ, {'COLLESPO_SOCCER_TITLE_V2':setting}):
                 self.assertFalse(v2.enabled())
                 data=read('soccer-daily/20261025.json')
-                self.assertEqual(preview.program(data)['narration'], old_preview.program(data)['narration'])
+                # 元の版はめたんの口調の変換より前。今の版と同じ変換を通して比べる。
+                before=old_preview.program(data)['narration']
+                import metan_tone
+                if metan_tone.metan_enabled(before['segments']):
+                    metan_tone.revise(before['segments'])
+                self.assertEqual(preview.program(data)['narration'], before)
                 data=read('soccer-results/run-40249272204.json')
                 self.assertEqual(results.title(data),old_results.title(data))
                 self.assertEqual(render.production_narration(data),__import__('short_common').prepare(old_render.production_narration(data)))

@@ -19908,6 +19908,51 @@
       },
       "host_fallback_reason": null,
       "privacy": "public"
+    },
+    "2026-11-25": {
+      "video_id": "VHvcOQaVxQM",
+      "url": "https://youtu.be/VHvcOQaVxQM",
+      "title": "セリエA 順位争い｜CL圏内・EL圏内の境目【欧州サッカー】#Shorts",
+      "published_at": "2026-11-25T10:09:03.879495+00:00",
+      "publish_at": "2026-11-25T11:30:00Z",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-25",
+        "enabled": true,
+        "assigned": "generic",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false,
+        "source": "post_common.lineup:daily_soccer",
+        "next_date": "2026-11-26",
+        "next_time": "19:30",
+        "next_name": "欧州サッカー"
+      },
+      "duration_seconds": 22.97,
+      "short_information_count": 4,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-11-25",
+        "kind": "soccer_race",
+        "phase": 1,
+        "planned_host": "ui",
+        "rule": "half-jst-week-v1",
+        "week": 46,
+        "weekday": 2
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-11-25T10:06:29.389397+00:00",
+        "comparison_eligible": false,
+        "label": "予定めたん（雨衣不可のため）",
+        "mode": "live",
+        "planned_host": "metan",
+        "reason": "ui_deadline_crosses_live",
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
     }
   },
   "soccer_week": {

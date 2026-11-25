@@ -232,7 +232,8 @@ class MarketTests(unittest.TestCase):
         with patch.object(solo_host, 'for_segments', return_value='ui'):
             ui = ui_tone.narration(doc)
         self.assertEqual(m.check(ui), [])
-        self.assertEqual([s['text'] for s in ui['segments']], [s['text'] for s in doc['segments']])
+        self.assertEqual([s['text'] for s in ui['segments'][:-1]], [s['text'] for s in doc['segments'][:-1]])
+        self.assertEqual(ui['segments'][-1]['text'], '高評価と登録、お願いします。')
         entry = self.entry()
         entry['facts'][0]['text'] = '交渉期限は12月15日だ。'
         with self.assertRaises(ValueError):

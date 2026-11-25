@@ -132,7 +132,7 @@ def frame(t, seg, doc, clubs, index=0, count=1, *, opening_hook=None):
         short_v4_cards.pinstripe_badge(s.im, cards.L + 400, 163, doc['team_id'], 108, 54)
     s.im.info.update(soccer_readable=True, semantic_items=[], readable_motion='v2 右から0.28秒・説明中停止・左へ0.14秒')
     spec = dict(source=credit(doc, meta.get('panel')), title=label, presenter='zundamon' if asking else 'metan',
-                slide_in=asking, slide_out=not asking)
+                cast=('zundamon', 'metan'), slide_in=asking, slide_out=not asking)
     if hook:
         spec.update(slide_in=False, slide_out=False)
         return hook_screen(s, hook, spec)
@@ -218,31 +218,32 @@ def big_fact_screen(s, head, big, rows, spec, sub):
     s.title(head, sub)
     value, unit = str(big['value']), big['unit']
     numeral = value.isascii()
-    for size in (240, 210, 180, 150, 120):
-        if cards.measure(value, size, numeral)[1] + 24 + cards.measure(unit, 64)[1] <= 800:
-            break
-    b = cards.measure(value, size, numeral)[2]
-    big_height = 18 + 30 + 32 + (b[3] - b[1]) + 44
-    rsize, width = 48, readable.R - readable.L - 56
+    rsize, width = 44, readable.R - readable.L - 56
     rows = [(label, chr(10).join(balanced_lines(v, rsize, width))) for label, v in rows]
-    heights = [80 + len(cards.lines(v, rsize, width)) * (rsize + 12) for _, v in rows]
-    height = big_height + sum(h + 24 for h in heights)
+    heights = [70 + len(cards.lines(v, rsize, width)) * (rsize + 12) for _, v in rows]
+    gap = 14
+    for size in (240, 210, 180, 150, 120):
+        _, advance, box = cards.measure(value, size, numeral)
+        big_height = 100 + box[3] - box[1]
+        height = big_height + sum(h + gap for h in heights)
+        if advance + 24 + cards.measure(unit, 64)[1] <= 800 and height <= readable.BODY_BOTTOM - readable.BODY_TOP:
+            break
     if height > readable.BODY_BOTTOM - readable.BODY_TOP:
         raise ValueError('要の数字の画面に行が入りません')
     top = readable.BODY_TOP + (readable.BODY_BOTTOM - readable.BODY_TOP - height) // 2
     s.panel(top, top + big_height)
     s.text(100, top + 18, big['label'], 30, 800, cards.MUTED, role='supplement')
-    box = s.text(100, top + 80, value, size, 800, cards.LIME, numeral, role='national_fact')
+    box = s.text(100, top + 66, value, size, 800, cards.LIME, numeral, role='national_fact')
     if unit:
         ub = cards.measure(unit, 64)[2]
         s.text(box[2] + 24, box[3] - (ub[3] - ub[1]), unit, 64, 800 - (box[2] - 100) - 24, cards.LIME, role='national_fact')
-    y = top + big_height + 24
+    y = top + big_height + gap
     for (label, v), h in zip(rows, heights):
         s.panel(y, y + h)
         s.text(100, y + 18, label, 30, 800, cards.MUTED, role='supplement')
-        s.lines(100, y + 70, v, rsize, 800, role='national_fact')
-        y += h + 24
-    s.im.info['preview_body'] = [readable.L, top, readable.R, y - 24]
+        s.lines(100, y + 56, v, rsize, 800, role='national_fact')
+        y += h + gap
+    s.im.info['preview_body'] = [readable.L, top, readable.R, y - gap]
     return s.finish(spec)
 
 

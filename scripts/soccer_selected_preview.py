@@ -54,6 +54,17 @@ def opening(game, generated):
 
 
 def program(data):
+    """選んだ試合の予告。めたんの台詞は口調の変換を通す（呼び出し元が早く返すため）。"""
+    plan=_program(data)
+    if plan:
+        import metan_tone
+        segs=plan['narration']['segments']
+        if metan_tone.metan_enabled(segs):
+            metan_tone.revise(segs)
+    return plan
+
+
+def _program(data):
     picked=data['preview_selection']['selected_ids']
     games=[g for ident in picked for g in data['games'] if str(g['game_id'])==ident]
     if not games:return slots.package('preview',data,[],[], '')

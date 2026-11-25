@@ -160,7 +160,9 @@ class V5(unittest.TestCase):
         self.assertTrue(any('numbers_missing_from_material' in e for e in errors if isinstance(e,dict)))
         self.assertTrue(any(e.get('text')=='987654321' for e in errors if isinstance(e,dict)))
         bad=copy.deepcopy(im)
-        layer=bad.info['duo_layer'][0];x,y=layer['at']
+        layer=bad.info['duo_layer'][0];x,_=layer['at']
+        # 立ち絵は情報の枠（1150）より下の字幕の脇へ移った。検出の仕組みだけを、枠の中へ置いた立ち絵で確かめる。
+        y=1000;layer['at']=[x,y];layer['cut']=layer['cut']+200
         bad.info['v3_layout'].append(dict(role='text',text='1',box=[x,y+25,x+220,min(1150,y+120)]))
         self.assertTrue(any('covered_by_presenter' in e for e in slots.check_frame(bad,plan) if isinstance(e,dict)))
         r3.set_caption('',0,0);r3.set_program_clock(None)

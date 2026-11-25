@@ -64,9 +64,14 @@ class OutroTest(unittest.TestCase):
         try:
             with patch.dict(os.environ, {'COLLESPO_OUTRO_NEXT': 'off'}):
                 gav.set_asset_caption(dict(kind='outro', text='', speaker=2), 9, 35, {})
-                before = r.outro(3.2).tobytes()
+                before = r.outro(3.2)
                 gav.set_asset_caption(dict(kind='outro', text=r.OFFSEASON_OUTRO_TEXT, speaker=2), 9, 35, {})
-                self.assertEqual(before, r.outro(3.2).tobytes())
+                after = r.outro(3.2)
+                # 字幕は隠れたまま。話している間の立ち絵の口だけが動く（それ以外の画素は同じ）。
+                from PIL import ImageChops
+                box = ImageChops.difference(before.convert('RGB'), after.convert('RGB')).getbbox()
+                if box is not None:
+                    self.assertTrue(780 <= box[0] and box[2] <= 980 and 1200 <= box[1] and box[3] <= 1400, box)
         finally:
             r._CAPTION.clear()
             r._CAPTION.update(saved)

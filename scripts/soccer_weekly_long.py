@@ -385,6 +385,9 @@ def dialogue(data):
         panels[key] = dict(type='soccer_weekly', heading=heading, rows=rows, atomic=list(dict.fromkeys(atomic)))
         return key, section
     def say(who, text, ref, **extra):
+        from metan_tone import fix
+        if who == 2:
+            text = fix(text)
         segments.append(dict(kind='talk', speaker=who, text=text, panel=ref[0], chapter=ref[1],
                              meta=dict(who='ずんだもん' if who == 3 else 'めたん'), **extra))
     def call(kind):

@@ -138,7 +138,7 @@ def frame(t, spec, rows, label, source_text="", times=None, replies=None, ends=N
                 card.info.update(original.info)
             progress=1
         else:
-            progress=r3.back_out((t-selected*page_seconds-r3.T_CARD0-j*r3.T_CARD_GAP)/r3.SLIDE)
+            progress=r3.ease_in_out((t-selected*page_seconds-r3.T_CARD0-j*r3.T_CARD_GAP)/r3.SLIDE)
         y=cell['box'][1]-top
         if focus:
             own=focus[i] if i<len(focus) else 0.0

@@ -220,6 +220,11 @@ def program(mode,data):
     import soccer_title_v2
     if mode=='preview' and soccer_title_v2.enabled():
         plan=soccer_title_v2.preview_plan(plan)
+    # 見どころの補足や題に応じた台詞は、共通の原稿整形より後から入る。
+    import metan_tone
+    segments = plan['narration']['segments']
+    if metan_tone.metan_enabled(segments):
+        metan_tone.revise(segments)
     return plan
 
 

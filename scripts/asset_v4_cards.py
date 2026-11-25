@@ -64,7 +64,7 @@ def intro_v2(t, spec, label):
     uw = r3.font(unit_size).getlength(unit)+14 if unit else 0
     top = 380
     size = 340
-    while size > 120 and r3.num_font(size).getlength(big)+uw > width:
+    while size > 120 and r3.num_font(size).getlength(big)+uw > width-8:  # 安全域の端にぴったり付けない（Linux の字幅で0.07px はみ出した）
         size -= 4
     def metrics(n):
         bb = r3.num_font(n).getbbox(big)

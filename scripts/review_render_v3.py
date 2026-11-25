@@ -56,8 +56,9 @@ if os.environ.get('COLLESPO_SOCCER_LOOK') == 'v5' or LOOK == 'v5':
 CONTENT_TOP = 236
 # v4 は札の下に出典（2行）と字幕の箱を置くので、札の下端を上げる
 CONTENT_BOTTOM = 1150 if LOOK == "v4" else 1216
-CAPTION_TOP, CAPTION_RIGHT, CAPTION_BOTTOM = 1248, 668, 1472
-SOURCE_BOTTOM = 1218 if LOOK == "v4" else 1478
+CAPTION_TOP, CAPTION_RIGHT, CAPTION_BOTTOM = 1172, 668, 1396
+SOURCE_BOTTOM = 1218 if LOOK == "v4" else 1388
+TICKER_HEIGHT = 40
 METAN_PINK = (238, 140, 186)
 # 新しい見た目（11/10 本人了承、scripts/style_v2.py）。切替 COLLESPO_STYLE=v2 の時だけ。
 # 地は球団色の縞ではなく濃紺＋粒子、字は白、差し色は黄1色。多くの部品が r3.INK / r3.GOLD を
@@ -160,12 +161,10 @@ def ease_out(x):
     return 1 - (1 - x) ** 3
 
 
-def back_out(x, s=1.6):
-    """少し行き過ぎて戻る。COLLESPO_MOTION=on では行き過ぎを小さく（弾みは1回だけ）。"""
-    s = s * calm_motion.value('overshoot', 1.0)
+def ease_in_out(x):
+    """札を出す時は行き過ぎず、両端でゆっくり止まる。"""
     x = max(0.0, min(1.0, x))
-    x -= 1
-    return 1 + x * x * ((s + 1) * x + s)
+    return x * x * (3 - 2 * x)
 
 
 # ------------------------------------------------------------------ 背景
@@ -221,25 +220,25 @@ def _badge(d, x, y, abbr, base, second):
 
 @functools.lru_cache(maxsize=16)
 def _ticker_strip(text):
-    f = font(40)
+    f = font(28)
     probe = ImageDraw.Draw(Image.new("RGB", (8, 8)))
     w = round(probe.textlength(text, font=f)) + 112
     repeats = (W+w-1)//w+2
     # 新しい見た目では黄の塗りの帯にしない（Argon 11/10「蛍光色のベタ塗りは目を刺す」）。暗い帯に黄の字
-    im = Image.new("RGB", (w * repeats, 88), (12, 22, 46) if STYLE_V2 else GOLD)
+    im = Image.new("RGB", (w * repeats, TICKER_HEIGHT), (12, 22, 46) if STYLE_V2 else GOLD)
     d = ImageDraw.Draw(im)
     for k in range(repeats):
-        _text(d,(k * w + 56, 44), text, font=f, fill=GOLD if STYLE_V2 else DARK_INK, anchor="lm")
+        _text(d,(k * w + 56, TICKER_HEIGHT // 2), text, font=f, fill=GOLD if STYLE_V2 else DARK_INK, anchor="lm")
     return im, w
 
 
 @functools.lru_cache(maxsize=16)
 def _single_ticker(text):
-    f = font(40)
+    f = font(28)
     probe = ImageDraw.Draw(Image.new('RGB',(8,8)))
-    box = probe.textbbox((0,44),text,font=f,anchor='lm')
-    strip = Image.new('RGB',(box[2]-box[0]+112,88),(12, 22, 46) if STYLE_V2 else GOLD)
-    ImageDraw.Draw(strip).text((56-box[0],44),text,font=f,fill=GOLD if STYLE_V2 else DARK_INK,anchor='lm')
+    box = probe.textbbox((0,TICKER_HEIGHT // 2),text,font=f,anchor='lm')
+    strip = Image.new('RGB',(box[2]-box[0]+112,TICKER_HEIGHT),(12, 22, 46) if STYLE_V2 else GOLD)
+    ImageDraw.Draw(strip).text((56-box[0],TICKER_HEIGHT // 2),text,font=f,fill=GOLD if STYLE_V2 else DARK_INK,anchor='lm')
     return strip
 
 
@@ -260,12 +259,16 @@ def redraw_ticker(raw, size=(1080, 1920)):
     if not last or _PROGRAM_CLOCK[0] is None:
         return raw
     im = Image.frombytes("RGB", size, raw)
-    ticker(im, _PROGRAM_CLOCK[0], last[0], y=last[1], once=last[2])
+    text, y, once = last
+    ticker(im, _PROGRAM_CLOCK[0], text, y=y, once=once)
     return im.tobytes()
 
 
-def ticker(im, t, text, y=1486, once=False):
+def ticker(im, t, text, y=SAFE_BOTTOM-TICKER_HEIGHT, once=False):
     if not text:
+        return
+    import short_cast
+    if short_cast.DEFERRED.get() is not None:
         return
     # クラブ名は表示名の表（notability_engine.club_display_text）を通す。古い書き方を帯に出さない
     import notability_engine as ne
@@ -273,16 +276,19 @@ def ticker(im, t, text, y=1486, once=False):
     if _PROGRAM_CLOCK[0] is not None:
         t = _PROGRAM_CLOCK[0]
     LAST_TICKER[0] = (text, y, once)
+    width = SAFE_RIGHT - LEFT
+    y = min(y, SAFE_BOTTOM - TICKER_HEIGHT)
     if once:
         strip = _single_ticker(text)
-        band = Image.new('RGB',(W,88),GOLD)
-        x = W-((W+round(t*80)) % (W+strip.width))
+        band = Image.new('RGB',(width,TICKER_HEIGHT),GOLD)
+        x = width-((width+round(t*80)) % (width+strip.width))
         band.paste(strip,(x,0))
-        im.paste(band,(0,y))
-        return
-    strip, w = _ticker_strip(text)
-    off = round(t * 80) % w
-    im.paste(strip.crop((off, 0, off + W, 88)), (0, y))
+    else:
+        strip, w = _ticker_strip(text)
+        off = round(t * 80) % w
+        band = strip.crop((off, 0, off + width, TICKER_HEIGHT))
+    im.paste(band, (LEFT, y))
+    record_box(im, "ticker", (LEFT, y, SAFE_RIGHT, y + TICKER_HEIGHT), text)
 
 
 @functools.lru_cache(maxsize=4)
@@ -296,8 +302,13 @@ def _portrait(who="metan"):
     return sp
 
 
-def source(d, text, color):
+def source(d, text, color, *, bottom=None):
     """出典。立ち絵（右下）にかからない幅で、2行まで（v4 は3行まで）。v4 は字幕の箱の上。"""
+    import short_cast
+    deferred = short_cast.DEFERRED.get()
+    if deferred is not None:
+        deferred['source'] = (text, color)
+        return
     # v4 は右に上半身が立つので、その手前まで（掛け合いは2人分）。入らなければ字を20まで小さく
     if LOOK == "v4":
         import characters
@@ -307,8 +318,9 @@ def source(d, text, color):
             lines, size = _lines(d, text, 20, width, 3, 20)   # 2行に入らないときだけ、20の字で3行
     else:
         lines, size = _lines(d, text, 24, SAFE_RIGHT - LEFT - 280, 2)
+    lower = SOURCE_BOTTOM if bottom is None else bottom
     for i, line in enumerate(lines):
-        _text(d,(LEFT, SOURCE_BOTTOM - (len(lines) - i) * (size + 6)), line, font=font(size), fill=color, role="source")
+        _text(d,(LEFT, lower - (len(lines) - i) * (size + 6)), line, font=font(size), fill=color, role="source")
 
 
 @functools.lru_cache(maxsize=16)
@@ -525,19 +537,24 @@ def presenter(im, t, which="right", who="metan"):
         # 10/9 本人: デフォルトの立ち絵（坂本アヒルさん）・横いっぱいの吹き出し（案1）。characters.py に1か所
         import characters
         return characters.presenter(im, t, ("zundamon", "metan") if _CAPTION.get("duo") else ("metan",))
-    if LOOK == "v4":
-        clock = _PROGRAM_CLOCK[0]
-        elapsed = (clock - _CAPTION["start"]) if clock is not None else t
-        line = current_sentence(elapsed, _CAPTION["text"], _CAPTION["duration"]) if _CAPTION["text"] else ""
-        face = face_for(line, elapsed, _CAPTION["duration"]) if line else "smile"
-        sp = _portrait_v4(who, face if who == "metan" else "base")
-    else:
-        sp = _portrait(who)
-    bob = round(6 * calm_motion.value('presenter_bob', 1.0)
-                * math.sin(t * 2 * math.pi / (2.4 * calm_motion.value('presenter_period', 1.0))))
-    x = SAFE_RIGHT - sp.width + (24 if LOOK == "v4" else 0) if which == "right" else 24
-    # テロップ（1486〜1574）の上に立つ。テロップの文字を隠さない
-    im.paste(sp, (x, 1480 - sp.height + bob), sp)
+    import characters
+    clock = _PROGRAM_CLOCK[0]
+    elapsed = clock - _CAPTION['start'] if clock is not None else t
+    line = current_sentence(elapsed, _CAPTION['text'], _CAPTION['duration'])
+    who = characters.SPEAKERS.get(_CAPTION.get('speaker'), who)
+    if who not in characters.PORTRAIT_CAST:
+        who = 'metan'
+    face = characters.expression(who, who, line, elapsed, clock if clock is not None else elapsed)
+    height = 200
+    sp = characters.bust(who, face, height, side=which)
+    dy = characters.speaking_offset(elapsed, bool(line) and elapsed < _CAPTION['duration'])
+    x = SAFE_RIGHT - sp.width if which == "right" else 24
+    y = 1348 - sp.height + dy
+    im.paste(sp, (x, y), sp)
+    record_box(im, 'face', (x, y, x + sp.width, y + round(height * .35)))
+    im.info['duo_layer'] = [dict(who=who, face=face, height=height, dim=False, at=[x, y], cut=sp.height,
+                                side=which, dy=dy, active=bool(line),
+                                facing=characters.inward_facing(who, which))]
     caption(im, t)
     progress(ImageDraw.Draw(im))
 
@@ -707,9 +724,9 @@ def intro(t, spec, kind_label):
                 old=card.info.get('v3_layout',[])
                 card=card.resize((cw,ch))
                 card.info['v3_layout']=[dict(e,box=[e['box'][0],e['box'][1]*factor,e['box'][2],e['box'][3]*factor]) for e in old]
-            _paste_card(im, card, cx, cy, back_out((t - t0) / SLIDE))
+            _paste_card(im, card, cx, cy, ease_in_out((t - t0) / SLIDE))
             if c.get("win") and c.get('win_explanation'):
-                kr = back_out((t - t0 - SLIDE - T_RING_AFTER) / 0.25, 2.4)
+                kr = ease_in_out((t - t0 - SLIDE - T_RING_AFTER) / 0.25)
                 if kr > 0:
                     r = round(30 * kr)
                     ox, oy = cx + cw - 64, cy + 112
@@ -1080,10 +1097,10 @@ def cues(kind, spec, items=(), start=0, count=0):
 # 10/7 本人「最後のコレスポの紹介、ちょっと雑すぎ。もっと突き詰めて各ショートの最後に付けられる？」。
 # どの枠の最後にも付ける。毎日の番組表（post_common.lineup、時刻つき）を時刻の順に並べ、
 # いま見ている枠は外す。地はコレスポの色（球団色にしない）。
-INSEASON_OUTRO_TEXT = ("コレスポでは毎日、日本人選手の成績や、明日の試合の見どころを届けています。"
-              "チャンネル登録して、また見に来てくださいね。")
-OFFSEASON_OUTRO_TEXT = ("コレスポでは毎日、MLBの話題と欧州サッカーの見どころを届けています。"
-                        "チャンネル登録して、また見に来てくださいね。")
+INSEASON_OUTRO_TEXT = ("コレスポでは毎日、日本人選手の成績や、明日の試合の見どころを届けているわ。"
+              "チャンネル登録して、また見に来てね。")
+OFFSEASON_OUTRO_TEXT = ("コレスポでは毎日、MLBの話題と欧州サッカーの見どころを届けているわ。"
+                        "チャンネル登録して、また見に来てね。")
 
 
 def outro_text(ps=None, today=None):
@@ -1132,7 +1149,7 @@ def outro(t, spec=None, exclude="", credit="音声: VOICEVOX:四国めたん　�
         d.rounded_rectangle((LEFT, 760, LEFT + box, 844), radius=14, fill=(16, 28, 56), outline=(52, 66, 100), width=2)
         d.rectangle((LEFT, 774, LEFT + 6, 830), fill=(214, 250, 70))
         _text(d, (LEFT + 30, 802), cta, font=font(40), fill=(241, 245, 249), anchor="lm")
-    source(d, credit, (196, 206, 212))
+    source(d, credit, (196, 206, 212), bottom=1140 if LOOK == 'v4' else None)
     presenter(im, t)
     return im
 

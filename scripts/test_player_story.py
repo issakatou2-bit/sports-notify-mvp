@@ -8,6 +8,7 @@ import unittest
 from unittest.mock import patch
 
 import player_story as s
+import metan_tone as tone
 
 FIX = Path(__file__).resolve().parent/'fixtures/player_story'
 AS_OF = s.stamp('2026-10-14T04:00:00+00:00')
@@ -52,13 +53,13 @@ class StoryTests(unittest.TestCase):
         narr = self.fixture(); s.validate(narr)
         reports = [seg for seg in narr['segments'] if seg['kind'] == 'report']
         self.assertEqual(len(reports), 2)
-        self.assertIn('協議する見込みと報じられています', reports[0]['text'])
+        self.assertIn('協議する見込みと報じられているわ', reports[0]['text'])
         self.assertIn('その後の報道によると', reports[1]['text'])
-        self.assertIn('予定と報じられています', reports[1]['text'])
+        self.assertIn('予定と報じられているわ', reports[1]['text'])
         self.assertTrue(all(seg['meta']['report']['source'] and seg['meta']['report']['at'] for seg in reports))
         self.assertTrue(reports[0]['meta']['report']['url'].startswith('https://bsky.app/'))
         self.assertEqual(narr['direction'], 'down')
-        self.assertEqual([seg for seg in narr['segments'] if seg['kind'] != 'outro'][-1]['text'], s.RULES['down']['closing'])
+        self.assertEqual([seg for seg in narr['segments'] if seg['kind'] != 'outro'][-1]['text'], tone.fix(s.RULES['down']['closing']))
         self.assertEqual(sum(seg['kind'] == 'fan' for seg in narr['segments']), 1)
         self.assertNotRegex(''.join(x['text'] for x in narr['segments']), '怪我|けが|疲労|心理|原因')
         bad = deepcopy(narr); bad['segments'][1]['text'] = '第3戦を休みます。'
@@ -66,8 +67,8 @@ class StoryTests(unittest.TestCase):
 
     def test_numeric_closings_and_pitcher_hits(self):
         down = self.build(stats=self.stats([0, 0, 0])); up = self.build(stats=self.stats([2, 2, 2]))
-        self.assertEqual([seg for seg in down['segments'] if seg['kind'] != 'outro'][-1]['text'], s.RULES['down']['closing'])
-        self.assertEqual([seg for seg in up['segments'] if seg['kind'] != 'outro'][-1]['text'], s.RULES['up']['closing'])
+        self.assertEqual([seg for seg in down['segments'] if seg['kind'] != 'outro'][-1]['text'], tone.fix(s.RULES['down']['closing']))
+        self.assertEqual([seg for seg in up['segments'] if seg['kind'] != 'outro'][-1]['text'], tone.fix(s.RULES['up']['closing']))
         self.assertIsNone(s.numeric_flow(dict(PLAYER, type='pitcher'), self.stats([0, 0, 0])['Shohei Ohtani']))
         neutral = self.build(reporters={'posts': s.read(FIX/'reporters_20261014.json')['posts']})
         self.assertEqual(neutral['direction'], 'neutral')

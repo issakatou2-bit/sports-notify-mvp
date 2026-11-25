@@ -60,7 +60,7 @@ class ProgramTests(unittest.TestCase):
                     program = p.prepare(snap, ev, 'forecast', now)
                     detail = next(s for s in program['segments'][1:] if 1002 in s['meta']['game_ids'])
                     rows = detail['meta']['card']['scoreboard']['rows']
-                    expected = '、'.join(f"{r['name']}が{r['wins']}勝" for r in rows) + 'です。'
+                    expected = '、'.join(f"{r['name']}が{r['wins']}勝" for r in rows) + 'よ。'
                     with self.subTest(round=kind, jp=jp_teams, winner=winner):
                         self.assertIn(expected, detail['text'])
                         self.assertNotRegex(detail['text'], r'ここまで\d+勝対\d+勝')
@@ -79,7 +79,7 @@ class ProgramTests(unittest.TestCase):
             with self.subTest(played=played):
                 program = p.prepare(snap, ev, 'forecast', now)
                 texts = ' '.join(s['text'] for s in program['segments'])
-                self.assertIn('試合です。', texts)
+                self.assertIn('試合よ。', texts)
                 self.assertNotIn('かかるです', texts)
                 self.assertNotIn('制するです', texts)
 

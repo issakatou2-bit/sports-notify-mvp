@@ -1,4 +1,4 @@
-"""描いた字幕と実際にpipeへ書いたフレームを観測する。画素には触れない。"""
+"""描いた字幕と実際にpipeへ書いたフレームを観測する。"""
 import json
 from pathlib import Path
 import subprocess
@@ -44,6 +44,16 @@ class Recorder:
         self.broken = None
         self.first_source = None
         self.opening_card = []
+        self.sample_rows = []
+        self.sample_last = None
+        self.sample_error = None
+        sample_source = (narration or {}).get('segments') or segments
+        self.sample_segments = [
+            dict(text=row.get('text', ''), speaker=row.get('speaker'),
+                 meta={key: row.get('meta', {})[key] for key in ('quote_rows', 'duo')
+                       if key in (row.get('meta') or {})})
+            for row in sample_source
+        ]
 
     def select(self, segment, index, page=None):
         self.previous_subtitle = self.last_subtitle
@@ -59,12 +69,26 @@ class Recorder:
             raise OSError('フレームの書込みが途中で終わりました')
         if self.broken:
             return result
+        if image.size == (1080, 1920) and not self.sample_error:
+            try:
+                self._observe_sample(image, raw, overlap)
+            except (ValueError, TypeError, OSError) as exc:
+                self.sample_error = str(exc)
         try:
             self._observe(image, overlap)
         except Exception as exc:
             # 記録は確認用。記録の失敗で動画の書き出しを止めない。
             self.broken = f'{type(exc).__name__}: {exc}'
         return result
+
+    def _observe_sample(self, image, raw, overlap):
+        import sample_evidence
+        layout = image.info.get('v3_layout', [])
+        portraits = sample_evidence.portraits(image.info)
+        transition = bool(overlap or image.info.get('v2_slide'))
+        self.sample_last = (image, raw, self.frames, layout, portraits, transition)
+        if self.frames % 3 == 0:
+            self.sample_rows.append(sample_evidence.record(*self.sample_last))
 
     def _observe(self, image, overlap):
         info = image.info
@@ -188,4 +212,18 @@ class Recorder:
         # 共用のoutでも前の動画の記録を失わない。すべてJSONだけ。
         write_json(record_dir / 'render_timeline.json', payload)
         write_json(video.parent / 'render_timeline.json', payload)
+        if self.sample_last or self.sample_error:
+            self._save_sample(video, frames)
         return payload
+
+    def _save_sample(self, video, frames):
+        import sample_evidence
+        try:
+            if self.sample_error:
+                raise ValueError(self.sample_error)
+            observed = [row for row in self.sample_rows if row['frame'] < frames]
+            if frames == self.frames and observed and observed[-1]['frame'] != frames - 1:
+                observed.append(sample_evidence.record(*self.sample_last))
+            sample_evidence.save(video, self.fps, self.sample_segments, observed)
+        except (ValueError, TypeError, OSError) as exc:
+            print(f'::warning::見本検査の記録を保存できませんでした（{exc}）')

@@ -342,6 +342,12 @@ def check(document):
         expected = caption_names(body(g, generated, opening(g, generated)), [g])
         for side,name in (g.get('preview_name_fallbacks') or {}).items():
             expected=expected.replace(name,'ホームのクラブ' if side=='home' else 'アウェーのクラブ')
+        import copy, metan_tone
+        if metan_tone.metan_enabled(document.get('segments', [])):
+            # 本文はめたんの口調へ変換済みなので、照合の元も同じ変換を通す。
+            probe = [dict(copy.deepcopy(seg), text=expected)]
+            metan_tone.revise(probe)
+            expected = probe[0]['text']
         if seg.get('text') != expected or (seg.get('meta') or {}).get('preview_angles') != chosen(g, generated):
             errors.append('予告の角度: 数字・名前・本文が保存材料と不一致')
     focus = document.get('preview_angles_game_id')

@@ -78,10 +78,10 @@ def main():
     plan = bn.timeline(scenes, times); motion.measured(audio)
     original_bust = characters.bust
     original_source = r3.source
-    def preview_bust(who, face, height, dim=False):
+    def preview_bust(who, face, height, dim=False, side=None, full=False):
         if args.silent and who == 'ui':
             face = __import__('re').sub(r':mouth[^:]+', ':mouth0', face)
-        return original_bust(who, face, height, dim)
+        return original_bust(who, face, height, dim, side, full)
     def preview_source(draw, text, *args, **kwargs):
         if args_silent and solo_host.UI_CREDIT in text:
             text = text.replace('音声: '+solo_host.UI_CREDIT, '雨衣の立ち絵試作（声未生成）')

@@ -105,7 +105,10 @@ class Unified(unittest.TestCase):
         expected=Image.new('RGB',(1080,1920))
         r3.ticker(expected,20.1,line,once=True)
         actual=Image.frombytes('RGB',(1080,1920),raw)
-        self.assertEqual(actual.crop((0,1486,1080,1574)).tobytes(),expected.crop((0,1486,1080,1574)).tobytes())
+        # 帯は安全域の下端（1400〜1440・左右は LEFT〜SAFE_RIGHT）へ移した。
+        band=(r3.LEFT,r3.SAFE_BOTTOM-r3.TICKER_HEIGHT,r3.SAFE_RIGHT,r3.SAFE_BOTTOM)
+        self.assertEqual(actual.crop(band).tobytes(),expected.crop(band).tobytes())
+        self.assertNotEqual(actual.crop(band).tobytes(),Image.new('RGB',(band[2]-band[0],band[3]-band[1]),'blue').tobytes())
 
     def test_chip_long_label_uses_a_font_that_fits(self):
         from PIL import ImageDraw

@@ -51,7 +51,7 @@ class Bubbles(unittest.TestCase):
                     self.assertGreaterEqual(report['name_contrast'],4.5)
                     self.assertTrue(report['full_text'])
                     self.assertLessEqual(im.info['duo_caption']['rows'],3)
-                    self.assertIsNone(ImageChops.difference(im.crop((0,0,1080,1200)),Image.new('RGB',(1080,1200),bg)).getbbox())
+                    self.assertIsNone(ImageChops.difference(im.crop((0,0,1080,c.BUBBLE[1]-60)),Image.new('RGB',(1080,c.BUBBLE[1]-60),bg)).getbbox())
 
     def test_long_text_is_not_silently_truncated(self):
         os.environ['COLLESPO_BUBBLE'] = 'glass'
