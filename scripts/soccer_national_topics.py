@@ -25,7 +25,9 @@ MLB_TEAMS = {'sato-cubs': '112', 'taira-bluejays': '141'}
 PROGRAMS = (PROGRAM, MLB_PROGRAM)
 VIDEO = 'collespo_national_topic.mp4'
 LIMIT = 45
-MLB_LIMIT = 60
+# MLB の掛け合いは契約・成績・比べを並べる型なので上限90秒（11/25 本人「まかせます」）。
+# 上限であって目安ではない。原稿は短い方がよい（短い回の方が見られた割合が高い：DECISIONS 参照）。
+MLB_LIMIT = 90
 OPENING_SECONDS = 3.0
 DEFAULT_EVENT = '401916337'
 

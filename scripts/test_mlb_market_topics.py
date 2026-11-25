@@ -108,5 +108,15 @@ for event, team in [('sato-cubs', '112'), ('taira-bluejays', '141')]:
 """
 
 
+
+class DurationLimit(unittest.TestCase):
+    def test_mlb_dialogue_up_to_90_but_soccer_topic_stays_45(self):
+        self.assertEqual(topics.MLB_LIMIT, 90)
+        self.assertEqual(topics.LIMIT, 45)
+
+    def test_market_report_stays_60(self):
+        doc = {'offseason': {'kind': 'market'}, 'segments': []}
+        self.assertEqual(short_content.assess(doc, [1.0], maximum=90)['maximum_seconds'], 60)
+
 if __name__ == '__main__':
     unittest.main(argv=[__file__])
