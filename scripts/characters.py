@@ -243,14 +243,14 @@ def place_busts(im, speaker, line, elapsed, duration, cast=("zundamon", "metan")
                           dy=dy, facing=inward_facing(who, side) if who in PORTRAIT_CAST else None))
     active_box = next((r["box"] for r in records if r["active"]), None)
     fan = ui_fan if speaker == 'ui' else fan_mood(line)
-    if fan and active_box and speaker == 'ui' and fan[1] == 'sad':
+    if fan and active_box:
         if speaker == 'ui':
             for record in layer:
                 if record['who'] == 'ui':
                     record.update(effect=fan[1], elapsed=elapsed)
             import ui_puppet
             active_box = ui_puppet.head_box(active_box)
-        fan_effect(im, fan[1], active_box, 0)
+        fan_effect(im, fan[1], active_box, elapsed)
         im.info["fan_expr"] = dict(face=fan[0], effect=fan[1], reason=fan[2], line=line)
     im.info["duo_portraits"] = records
     im.info["duo_layer"] = layer      # 札の演出（video_common.short_effects）のあとに描き直す

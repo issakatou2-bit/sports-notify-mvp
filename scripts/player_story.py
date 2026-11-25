@@ -299,13 +299,20 @@ def ip_outs(value):
     return int(whole)*3+int(fraction or 0)
 
 
+def _tone(text):
+    """めたんの口調へ変換された後の同じ文（short_common.prepare が segments の語尾を直す）。"""
+    return __import__('metan_tone').fix(text)
+
+
 def validate(narr, publish=False):
     """型訳・応援・出典の取り違えを公開直前にも止める。"""
     if not narr.get('can_make') or not narr.get('segments'):
         raise ValueError('この日は選手の話題の材料がありません')
     direction = narr['direction']
     body = [s for s in narr['segments'] if s['kind'] != 'outro']
-    if not body or body[-1]['text'] != RULES[direction]['closing']:
+    closing = RULES[direction]['closing']
+    # めたんの口調へ変換された締め（short_common.prepare）も同じ締めとして受ける。
+    if not body or body[-1]['text'] not in (closing, _tone(closing)):
         raise ValueError('締めが流れと違います')
     if not narr.get('flow') and not narr.get('reports'):
         raise ValueError('ファンの声だけでは作れません')
@@ -321,7 +328,7 @@ def validate(narr, publish=False):
         report = seg['meta']['report']
         if report.get('hub_event'):
             import topic_hub
-            if report['claim'] != topic_hub.phrase(report['hub_event']) or seg['text'] != report['claim']:
+            if report['claim'] != topic_hub.phrase(report['hub_event']) or seg['text'] not in (report['claim'], _tone(report['claim'])):
                 raise ValueError('集め所の確かさと言い方が一致しません')
             continue
         rule = next(r for r in REPORT_RULES if r[0] == report['kind'])
@@ -330,7 +337,7 @@ def validate(narr, publish=False):
         if not original_match or report['game'] not in original_match.groups():
             raise ValueError('報道の原文と試合番号が違います')
         claim = template.format(game=report['game'], name=narr['player']['name_jp'])
-        if report['claim'] != claim or seg['text'] not in ('報道によると、'+claim, 'その後の報道によると、'+claim):
+        if report['claim'] != claim or seg['text'] not in tuple(x for c in ('報道によると、'+claim, 'その後の報道によると、'+claim) for x in (c, _tone(c))):
             raise ValueError('報道を断定や根拠のない理由に変えています')
         if not report['source'] or not report['url'] or not report['at']:
             raise ValueError('報道の出典がありません')
