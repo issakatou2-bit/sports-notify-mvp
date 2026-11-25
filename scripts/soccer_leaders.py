@@ -417,17 +417,28 @@ def v4_program(data: dict) -> dict:
         who = "%sの%s" % (club, row["name_jp"])
         place = row["rank"]
         before = rows[i - 1] if i else None
+        # 語尾が「〜よ。」ばかりにならないよう、行ごとに言い方を変える（11/25 本人の指摘を受けて）。
         if i == 0:
-            say = "%sは、%s試合の出場よ。" % (who, row["matches"])
+            matches = row.get("matches")
+            if isinstance(matches, int) and matches > 0:
+                pace = "%g" % round(row["value"] / matches, 2)
+                say = "%sは、%s試合で%s%s。1試合あたり%s%sのペースね。" % (
+                    who, matches, row["value"], unit, pace, unit)
+            else:
+                say = "首位は%sね。" % who
         elif before and before["rank"] == place:
             say = "同じ%s位で、%sも並んでいるわ。" % (place, who)
-        else:
+        elif is_japanese(row["name"]):
+            say = "日本人では、%s位に%sが入っているわ。%s%sよ。" % (
+                place, who, row["value"], unit)
+        elif i == 1:
+            say = "%s位は%sで、%s%s。" % (place, who, row["value"], unit)
+            if gap is not None:
+                say += "首位と並んでいるのね。" if gap == 0 else "首位との差は%s%sね。" % (gap, unit)
+        elif i % 2:
             say = "%s位は%sで、%s%sよ。" % (place, who, row["value"], unit)
-            if i == 1 and gap is not None:
-                if gap == 0:
-                    say += "首位と並んでいるのね。"
-                else:
-                    say += "首位との差は%s%sね。" % (gap, unit)
+        else:
+            say = "%s位には、%sが%s%sで続くわ。" % (place, who, row["value"], unit)
         texts.append(say)
     # 時間が足りない時の補充用（画面に出さない5位以下を、読むだけ）
     spare = []
