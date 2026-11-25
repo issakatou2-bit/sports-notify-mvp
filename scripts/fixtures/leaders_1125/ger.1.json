@@ -1,0 +1,1323 @@
+{
+ "_note": "ESPN statistics の実応答（2026-11-25 17:55 JST 取得）から得点・アシスト上位の必要な欄だけ残した",
+ "season": {
+  "year": 2026,
+  "displayName": "2026-27 German Bundesliga",
+  "type": 14358,
+  "name": "2026-27 German Bundesliga"
+ },
+ "stats": [
+  {
+   "name": "goalsLeaders",
+   "displayName": "Goals",
+   "leaders": [
+    {
+     "displayValue": "Matches: 10, Goals: 10",
+     "value": 10.0,
+     "athlete": {
+      "id": "170257",
+      "displayName": "Niclas Füllkrug",
+      "team": {
+       "id": "137",
+       "displayName": "Werder Bremen",
+       "abbreviation": "SVW"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Goals: 9",
+     "value": 9.0,
+     "athlete": {
+      "id": "212330",
+      "displayName": "Patrik Schick",
+      "team": {
+       "id": "131",
+       "displayName": "Bayer Leverkusen",
+       "abbreviation": "B04"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 9, Goals: 7",
+     "value": 7.0,
+     "athlete": {
+      "id": "146804",
+      "displayName": "Michael Gregoritsch",
+      "team": {
+       "id": "3841",
+       "displayName": "FC Augsburg",
+       "abbreviation": "FCA"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Goals: 6",
+     "value": 6.0,
+     "athlete": {
+      "id": "234376",
+      "displayName": "Phillip Tietz",
+      "team": {
+       "id": "2950",
+       "displayName": "Mainz",
+       "abbreviation": "M05"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Goals: 6",
+     "value": 6.0,
+     "athlete": {
+      "id": "286831",
+      "displayName": "Michael Olise",
+      "team": {
+       "id": "132",
+       "displayName": "Bayern Munich",
+       "abbreviation": "MUN"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Goals: 6",
+     "value": 6.0,
+     "athlete": {
+      "id": "274887",
+      "displayName": "Jonathan Burkardt",
+      "team": {
+       "id": "125",
+       "displayName": "Eintracht Frankfurt",
+       "abbreviation": "SGE"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Goals: 6",
+     "value": 6.0,
+     "athlete": {
+      "id": "359793",
+      "displayName": "Younes Ebnoutalib",
+      "team": {
+       "id": "125",
+       "displayName": "Eintracht Frankfurt",
+       "abbreviation": "SGE"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 8, Goals: 6",
+     "value": 6.0,
+     "athlete": {
+      "id": "324766",
+      "displayName": "Rômulo",
+      "team": {
+       "id": "11420",
+       "displayName": "RB Leipzig",
+       "abbreviation": "RBL"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Goals: 5",
+     "value": 5.0,
+     "athlete": {
+      "id": "281122",
+      "displayName": "Felix Nmecha",
+      "team": {
+       "id": "124",
+       "displayName": "Borussia Dortmund",
+       "abbreviation": "DOR"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Goals: 5",
+     "value": 5.0,
+     "athlete": {
+      "id": "319368",
+      "displayName": "Antonio Nusa",
+      "team": {
+       "id": "11420",
+       "displayName": "RB Leipzig",
+       "abbreviation": "RBL"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Goals: 5",
+     "value": 5.0,
+     "athlete": {
+      "id": "310883",
+      "displayName": "Igor Matanovic",
+      "team": {
+       "id": "126",
+       "displayName": "SC Freiburg",
+       "abbreviation": "SCF"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Goals: 5",
+     "value": 5.0,
+     "athlete": {
+      "id": "269136",
+      "displayName": "Ermedin Demirovic",
+      "team": {
+       "id": "134",
+       "displayName": "VfB Stuttgart",
+       "abbreviation": "VFB"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 9, Goals: 5",
+     "value": 5.0,
+     "athlete": {
+      "id": "303031",
+      "displayName": "Yuito Suzuki",
+      "team": {
+       "id": "126",
+       "displayName": "SC Freiburg",
+       "abbreviation": "SCF"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 8, Goals: 5",
+     "value": 5.0,
+     "athlete": {
+      "id": "222176",
+      "displayName": "Christopher Nkunku",
+      "team": {
+       "id": "11420",
+       "displayName": "RB Leipzig",
+       "abbreviation": "RBL"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Goals: 4",
+     "value": 4.0,
+     "athlete": {
+      "id": "142200",
+      "displayName": "Harry Kane",
+      "team": {
+       "id": "132",
+       "displayName": "Bayern Munich",
+       "abbreviation": "MUN"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Goals: 4",
+     "value": 4.0,
+     "athlete": {
+      "id": "358496",
+      "displayName": "Maurice Krattenmacher",
+      "team": {
+       "id": "10388",
+       "displayName": "SV Elversberg",
+       "abbreviation": "ELV"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 6, Goals: 4",
+     "value": 4.0,
+     "athlete": {
+      "id": "257390",
+      "displayName": "Luis Díaz",
+      "team": {
+       "id": "132",
+       "displayName": "Bayern Munich",
+       "abbreviation": "MUN"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "214203",
+      "displayName": "Maximilian Eggestein",
+      "team": {
+       "id": "126",
+       "displayName": "SC Freiburg",
+       "abbreviation": "SCF"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "222793",
+      "displayName": "Dayot Upamecano",
+      "team": {
+       "id": "132",
+       "displayName": "Bayern Munich",
+       "abbreviation": "MUN"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "272135",
+      "displayName": "Joe Scally",
+      "team": {
+       "id": "268",
+       "displayName": "Borussia Mönchengladbach",
+       "abbreviation": "BMG"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "306928",
+      "displayName": "Robin Fellhauer",
+      "team": {
+       "id": "3841",
+       "displayName": "FC Augsburg",
+       "abbreviation": "FCA"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "241297",
+      "displayName": "Anthony Caci",
+      "team": {
+       "id": "2950",
+       "displayName": "Mainz",
+       "abbreviation": "M05"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "366911",
+      "displayName": "Tidiam Gomis",
+      "team": {
+       "id": "11420",
+       "displayName": "RB Leipzig",
+       "abbreviation": "RBL"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 9, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "361212",
+      "displayName": "Ibrahim Maza",
+      "team": {
+       "id": "131",
+       "displayName": "Bayer Leverkusen",
+       "abbreviation": "B04"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 9, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "380795",
+      "displayName": "Said El Mala",
+      "team": {
+       "id": "122",
+       "displayName": "FC Cologne",
+       "abbreviation": "KOE"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 9, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "291629",
+      "displayName": "Fábio Silva",
+      "team": {
+       "id": "124",
+       "displayName": "Borussia Dortmund",
+       "abbreviation": "DOR"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 8, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "186381",
+      "displayName": "Serhou Guirassy",
+      "team": {
+       "id": "124",
+       "displayName": "Borussia Dortmund",
+       "abbreviation": "DOR"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 8, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "258963",
+      "displayName": "Ridle Baku",
+      "team": {
+       "id": "11420",
+       "displayName": "RB Leipzig",
+       "abbreviation": "RBL"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 6, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "243626",
+      "displayName": "Miro Muheim",
+      "team": {
+       "id": "127",
+       "displayName": "Hamburg SV",
+       "abbreviation": "HSV"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Goals: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "308908",
+      "displayName": "Fabian Rieder",
+      "team": {
+       "id": "3841",
+       "displayName": "FC Augsburg",
+       "abbreviation": "FCA"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Goals: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "310692",
+      "displayName": "Lukas Petkov",
+      "team": {
+       "id": "10388",
+       "displayName": "SV Elversberg",
+       "abbreviation": "ELV"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Goals: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "340739",
+      "displayName": "Felix Keidel",
+      "team": {
+       "id": "10388",
+       "displayName": "SV Elversberg",
+       "abbreviation": "ELV"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Goals: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "261363",
+      "displayName": "Ludovit Reis",
+      "team": {
+       "id": "137",
+       "displayName": "Werder Bremen",
+       "abbreviation": "SVW"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Goals: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "346619",
+      "displayName": "Derry Scherhant",
+      "team": {
+       "id": "126",
+       "displayName": "SC Freiburg",
+       "abbreviation": "SCF"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Goals: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "361258",
+      "displayName": "Afonso Moreira",
+      "team": {
+       "id": "131",
+       "displayName": "Bayer Leverkusen",
+       "abbreviation": "B04"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Goals: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "330233",
+      "displayName": "Ezechiel Banzuzi",
+      "team": {
+       "id": "11420",
+       "displayName": "RB Leipzig",
+       "abbreviation": "RBL"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Goals: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "195027",
+      "displayName": "Sheraldo Becker",
+      "team": {
+       "id": "2950",
+       "displayName": "Mainz",
+       "abbreviation": "M05"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Goals: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "398004",
+      "displayName": "David Mokwa",
+      "team": {
+       "id": "10388",
+       "displayName": "SV Elversberg",
+       "abbreviation": "ELV"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Goals: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "332543",
+      "displayName": "Stefano Marino",
+      "team": {
+       "id": "3307",
+       "displayName": "SC Paderborn 07",
+       "abbreviation": "SCP"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Goals: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "364080",
+      "displayName": "Ezequiel Fernández",
+      "team": {
+       "id": "131",
+       "displayName": "Bayer Leverkusen",
+       "abbreviation": "B04"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Goals: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "338854",
+      "displayName": "Adam Daghim",
+      "team": {
+       "id": "7911",
+       "displayName": "TSG Hoffenheim",
+       "abbreviation": "TSG"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Goals: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "290639",
+      "displayName": "Maximilian Beier",
+      "team": {
+       "id": "124",
+       "displayName": "Borussia Dortmund",
+       "abbreviation": "DOR"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Goals: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "408539",
+      "displayName": "Wael Mohya",
+      "team": {
+       "id": "268",
+       "displayName": "Borussia Mönchengladbach",
+       "abbreviation": "BMG"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Goals: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "312112",
+      "displayName": "Eren Dinkci",
+      "team": {
+       "id": "137",
+       "displayName": "Werder Bremen",
+       "abbreviation": "SVW"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Goals: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "170604",
+      "displayName": "Janik Haberer",
+      "team": {
+       "id": "598",
+       "displayName": "1. FC Union Berlin",
+       "abbreviation": "FCU"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Goals: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "120829",
+      "displayName": "Nathaniel Brown",
+      "team": {
+       "id": "132",
+       "displayName": "Bayern Munich",
+       "abbreviation": "MUN"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Goals: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "292169",
+      "displayName": "Adam Hlozek",
+      "team": {
+       "id": "7911",
+       "displayName": "TSG Hoffenheim",
+       "abbreviation": "TSG"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Goals: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "336595",
+      "displayName": "Bilal El Khannouss",
+      "team": {
+       "id": "134",
+       "displayName": "VfB Stuttgart",
+       "abbreviation": "VFB"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Goals: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "220796",
+      "displayName": "Tim Skarke",
+      "team": {
+       "id": "598",
+       "displayName": "1. FC Union Berlin",
+       "abbreviation": "FCU"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Goals: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "289769",
+      "displayName": "Terem Moffi",
+      "team": {
+       "id": "127",
+       "displayName": "Hamburg SV",
+       "abbreviation": "HSV"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "name": "assistsLeaders",
+   "displayName": "Assists",
+   "leaders": [
+    {
+     "displayValue": "Matches: 10, Assists: 8",
+     "value": 8.0,
+     "athlete": {
+      "id": "142200",
+      "displayName": "Harry Kane",
+      "team": {
+       "id": "132",
+       "displayName": "Bayern Munich",
+       "abbreviation": "MUN"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Assists: 7",
+     "value": 7.0,
+     "athlete": {
+      "id": "319368",
+      "displayName": "Antonio Nusa",
+      "team": {
+       "id": "11420",
+       "displayName": "RB Leipzig",
+       "abbreviation": "RBL"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 9, Assists: 6",
+     "value": 6.0,
+     "athlete": {
+      "id": "305853",
+      "displayName": "Marco Grüll",
+      "team": {
+       "id": "137",
+       "displayName": "Werder Bremen",
+       "abbreviation": "SVW"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Assists: 5",
+     "value": 5.0,
+     "athlete": {
+      "id": "308908",
+      "displayName": "Fabian Rieder",
+      "team": {
+       "id": "3841",
+       "displayName": "FC Augsburg",
+       "abbreviation": "FCA"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 8, Assists: 5",
+     "value": 5.0,
+     "athlete": {
+      "id": "357683",
+      "displayName": "Brajan Gruda",
+      "team": {
+       "id": "11420",
+       "displayName": "RB Leipzig",
+       "abbreviation": "RBL"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Assists: 4",
+     "value": 4.0,
+     "athlete": {
+      "id": "290044",
+      "displayName": "Miguel Gutiérrez",
+      "team": {
+       "id": "131",
+       "displayName": "Bayer Leverkusen",
+       "abbreviation": "B04"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Assists: 4",
+     "value": 4.0,
+     "athlete": {
+      "id": "195027",
+      "displayName": "Sheraldo Becker",
+      "team": {
+       "id": "2950",
+       "displayName": "Mainz",
+       "abbreviation": "M05"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 9, Assists: 4",
+     "value": 4.0,
+     "athlete": {
+      "id": "297750",
+      "displayName": "Albert Grønbaek",
+      "team": {
+       "id": "127",
+       "displayName": "Hamburg SV",
+       "abbreviation": "HSV"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Assists: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "170209",
+      "displayName": "Matthias Ginter",
+      "team": {
+       "id": "126",
+       "displayName": "SC Freiburg",
+       "abbreviation": "SCF"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Assists: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "286831",
+      "displayName": "Michael Olise",
+      "team": {
+       "id": "132",
+       "displayName": "Bayern Munich",
+       "abbreviation": "MUN"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Assists: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "346619",
+      "displayName": "Derry Scherhant",
+      "team": {
+       "id": "126",
+       "displayName": "SC Freiburg",
+       "abbreviation": "SCF"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Assists: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "241297",
+      "displayName": "Anthony Caci",
+      "team": {
+       "id": "2950",
+       "displayName": "Mainz",
+       "abbreviation": "M05"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Assists: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "366911",
+      "displayName": "Tidiam Gomis",
+      "team": {
+       "id": "11420",
+       "displayName": "RB Leipzig",
+       "abbreviation": "RBL"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 9, Assists: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "361212",
+      "displayName": "Ibrahim Maza",
+      "team": {
+       "id": "131",
+       "displayName": "Bayer Leverkusen",
+       "abbreviation": "B04"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 9, Assists: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "190161",
+      "displayName": "Joshua Kimmich",
+      "team": {
+       "id": "132",
+       "displayName": "Bayern Munich",
+       "abbreviation": "MUN"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 9, Assists: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "324660",
+      "displayName": "Tom Bischof",
+      "team": {
+       "id": "132",
+       "displayName": "Bayern Munich",
+       "abbreviation": "MUN"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 8, Assists: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "222176",
+      "displayName": "Christopher Nkunku",
+      "team": {
+       "id": "11420",
+       "displayName": "RB Leipzig",
+       "abbreviation": "RBL"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "399214",
+      "displayName": "Hennes Behrens",
+      "team": {
+       "id": "3841",
+       "displayName": "FC Augsburg",
+       "abbreviation": "FCA"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "367558",
+      "displayName": "Jordy Makengo",
+      "team": {
+       "id": "126",
+       "displayName": "SC Freiburg",
+       "abbreviation": "SCF"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "310692",
+      "displayName": "Lukas Petkov",
+      "team": {
+       "id": "10388",
+       "displayName": "SV Elversberg",
+       "abbreviation": "ELV"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "219294",
+      "displayName": "Aleix García",
+      "team": {
+       "id": "131",
+       "displayName": "Bayer Leverkusen",
+       "abbreviation": "B04"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "357030",
+      "displayName": "Kaishu Sano",
+      "team": {
+       "id": "2950",
+       "displayName": "Mainz",
+       "abbreviation": "M05"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "272135",
+      "displayName": "Joe Scally",
+      "team": {
+       "id": "268",
+       "displayName": "Borussia Mönchengladbach",
+       "abbreviation": "BMG"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "212330",
+      "displayName": "Patrik Schick",
+      "team": {
+       "id": "131",
+       "displayName": "Bayer Leverkusen",
+       "abbreviation": "B04"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "361258",
+      "displayName": "Afonso Moreira",
+      "team": {
+       "id": "131",
+       "displayName": "Bayer Leverkusen",
+       "abbreviation": "B04"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "330233",
+      "displayName": "Ezechiel Banzuzi",
+      "team": {
+       "id": "11420",
+       "displayName": "RB Leipzig",
+       "abbreviation": "RBL"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "231190",
+      "displayName": "Niklas Beste",
+      "team": {
+       "id": "126",
+       "displayName": "SC Freiburg",
+       "abbreviation": "SCF"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "371689",
+      "displayName": "Chuki",
+      "team": {
+       "id": "137",
+       "displayName": "Werder Bremen",
+       "abbreviation": "SVW"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "231173",
+      "displayName": "Linton Maina",
+      "team": {
+       "id": "122",
+       "displayName": "FC Cologne",
+       "abbreviation": "KOE"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "324820",
+      "displayName": "Jobe Bellingham",
+      "team": {
+       "id": "124",
+       "displayName": "Borussia Dortmund",
+       "abbreviation": "DOR"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "338854",
+      "displayName": "Adam Daghim",
+      "team": {
+       "id": "7911",
+       "displayName": "TSG Hoffenheim",
+       "abbreviation": "TSG"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "290639",
+      "displayName": "Maximilian Beier",
+      "team": {
+       "id": "124",
+       "displayName": "Borussia Dortmund",
+       "abbreviation": "DOR"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "120829",
+      "displayName": "Nathaniel Brown",
+      "team": {
+       "id": "132",
+       "displayName": "Bayern Munich",
+       "abbreviation": "MUN"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 9, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "191209",
+      "displayName": "Vladimír Coufal",
+      "team": {
+       "id": "7911",
+       "displayName": "TSG Hoffenheim",
+       "abbreviation": "TSG"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 9, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "291629",
+      "displayName": "Fábio Silva",
+      "team": {
+       "id": "124",
+       "displayName": "Borussia Dortmund",
+       "abbreviation": "DOR"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 9, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "301416",
+      "displayName": "Malik Tillman",
+      "team": {
+       "id": "131",
+       "displayName": "Bayer Leverkusen",
+       "abbreviation": "B04"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 9, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "179571",
+      "displayName": "Vincenzo Grifo",
+      "team": {
+       "id": "126",
+       "displayName": "SC Freiburg",
+       "abbreviation": "SCF"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 8, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "186381",
+      "displayName": "Serhou Guirassy",
+      "team": {
+       "id": "124",
+       "displayName": "Borussia Dortmund",
+       "abbreviation": "DOR"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 8, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "346617",
+      "displayName": "Lukas Ullrich",
+      "team": {
+       "id": "268",
+       "displayName": "Borussia Mönchengladbach",
+       "abbreviation": "BMG"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 8, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "236721",
+      "displayName": "Alphonso Davies",
+      "team": {
+       "id": "132",
+       "displayName": "Bayern Munich",
+       "abbreviation": "MUN"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 8, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "331057",
+      "displayName": "Fisnik Asllani",
+      "team": {
+       "id": "7911",
+       "displayName": "TSG Hoffenheim",
+       "abbreviation": "TSG"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 8, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "336355",
+      "displayName": "Bambasé Conté",
+      "team": {
+       "id": "7911",
+       "displayName": "TSG Hoffenheim",
+       "abbreviation": "TSG"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 8, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "304572",
+      "displayName": "Ismael Saibari",
+      "team": {
+       "id": "132",
+       "displayName": "Bayern Munich",
+       "abbreviation": "MUN"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 8, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "357801",
+      "displayName": "Konstantinos Karetsas",
+      "team": {
+       "id": "124",
+       "displayName": "Borussia Dortmund",
+       "abbreviation": "DOR"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 7, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "290232",
+      "displayName": "Angelo Stiller",
+      "team": {
+       "id": "134",
+       "displayName": "VfB Stuttgart",
+       "abbreviation": "VFB"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 6, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "196029",
+      "displayName": "Franck Honorat",
+      "team": {
+       "id": "268",
+       "displayName": "Borussia Mönchengladbach",
+       "abbreviation": "BMG"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 5, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "209595",
+      "displayName": "Ellyes Skhiri",
+      "team": {
+       "id": "122",
+       "displayName": "FC Cologne",
+       "abbreviation": "KOE"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 4, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "263134",
+      "displayName": "Nathan Tella",
+      "team": {
+       "id": "131",
+       "displayName": "Bayer Leverkusen",
+       "abbreviation": "B04"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 3, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "222567",
+      "displayName": "Josip Juranovic",
+      "team": {
+       "id": "598",
+       "displayName": "1. FC Union Berlin",
+       "abbreviation": "FCU"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Assists: 1",
+     "value": 1.0,
+     "athlete": {
+      "id": "282646",
+      "displayName": "Karl Hein",
+      "team": {
+       "id": "137",
+       "displayName": "Werder Bremen",
+       "abbreviation": "SVW"
+      }
+     }
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,1323 @@
+{
+ "_note": "ESPN statistics の実応答（2026-11-25 17:55 JST 取得）から得点・アシスト上位の必要な欄だけ残した",
+ "season": {
+  "year": 2026,
+  "displayName": "2026-27 French Ligue 1",
+  "type": 14252,
+  "name": "2026-27 Ligue 1"
+ },
+ "stats": [
+  {
+   "name": "goalsLeaders",
+   "displayName": "Goals",
+   "leaders": [
+    {
+     "displayValue": "Matches: 10, Goals: 9",
+     "value": 9.0,
+     "athlete": {
+      "id": "271137",
+      "displayName": "Lassine Sinayoko",
+      "team": {
+       "id": "6851",
+       "displayName": "Paris FC",
+       "abbreviation": "PAR"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Goals: 8",
+     "value": 8.0,
+     "athlete": {
+      "id": "259743",
+      "displayName": "Amine Gouiri",
+      "team": {
+       "id": "176",
+       "displayName": "Marseille",
+       "abbreviation": "OLM"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 8, Goals: 7",
+     "value": 7.0,
+     "athlete": {
+      "id": "323850",
+      "displayName": "Esteban Lepaul",
+      "team": {
+       "id": "169",
+       "displayName": "Stade Rennais",
+       "abbreviation": "REN"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Goals: 6",
+     "value": 6.0,
+     "athlete": {
+      "id": "311118",
+      "displayName": "Elye Wahi",
+      "team": {
+       "id": "2502",
+       "displayName": "Nice",
+       "abbreviation": "NICE"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 9, Goals: 6",
+     "value": 6.0,
+     "athlete": {
+      "id": "293347",
+      "displayName": "Cameron Archer",
+      "team": {
+       "id": "172",
+       "displayName": "AJ Auxerre",
+       "abbreviation": "AUX"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 9, Goals: 6",
+     "value": 6.0,
+     "athlete": {
+      "id": "282381",
+      "displayName": "Boulaye Dia",
+      "team": {
+       "id": "169",
+       "displayName": "Stade Rennais",
+       "abbreviation": "REN"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Goals: 5",
+     "value": 5.0,
+     "athlete": {
+      "id": "192015",
+      "displayName": "Ludovic Ajorque",
+      "team": {
+       "id": "6997",
+       "displayName": "Brest",
+       "abbreviation": "BRE"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Goals: 5",
+     "value": 5.0,
+     "athlete": {
+      "id": "156898",
+      "displayName": "Florian Thauvin",
+      "team": {
+       "id": "175",
+       "displayName": "Lens",
+       "abbreviation": "RCL"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Goals: 5",
+     "value": 5.0,
+     "athlete": {
+      "id": "268720",
+      "displayName": "Louis Mafouta",
+      "team": {
+       "id": "2697",
+       "displayName": "Le Mans",
+       "abbreviation": "MNS"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Goals: 5",
+     "value": 5.0,
+     "athlete": {
+      "id": "265869",
+      "displayName": "Ferran Torres",
+      "team": {
+       "id": "160",
+       "displayName": "Paris Saint-Germain",
+       "abbreviation": "PSG"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Goals: 5",
+     "value": 5.0,
+     "athlete": {
+      "id": "243514",
+      "displayName": "Josh Maja",
+      "team": {
+       "id": "3236",
+       "displayName": "Le Havre AC",
+       "abbreviation": "HAC"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 9, Goals: 5",
+     "value": 5.0,
+     "athlete": {
+      "id": "306664",
+      "displayName": "Casper Tengstedt",
+      "team": {
+       "id": "179",
+       "displayName": "Toulouse",
+       "abbreviation": "TOU"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Goals: 4",
+     "value": 4.0,
+     "athlete": {
+      "id": "379012",
+      "displayName": "Gessime Yassine",
+      "team": {
+       "id": "180",
+       "displayName": "Strasbourg",
+       "abbreviation": "STR"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Goals: 4",
+     "value": 4.0,
+     "athlete": {
+      "id": "330412",
+      "displayName": "Kamory Doumbia",
+      "team": {
+       "id": "6997",
+       "displayName": "Brest",
+       "abbreviation": "BRE"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 9, Goals: 4",
+     "value": 4.0,
+     "athlete": {
+      "id": "365789",
+      "displayName": "Paris Brunner",
+      "team": {
+       "id": "174",
+       "displayName": "AS Monaco",
+       "abbreviation": "MON"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 9, Goals: 4",
+     "value": 4.0,
+     "athlete": {
+      "id": "333310",
+      "displayName": "Ernest Nuamah",
+      "team": {
+       "id": "167",
+       "displayName": "Lyon",
+       "abbreviation": "LYON"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 9, Goals: 4",
+     "value": 4.0,
+     "athlete": {
+      "id": "243844",
+      "displayName": "Sebastian Szymanski",
+      "team": {
+       "id": "169",
+       "displayName": "Stade Rennais",
+       "abbreviation": "REN"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "362777",
+      "displayName": "Thomas Jørgensen",
+      "team": {
+       "id": "179",
+       "displayName": "Toulouse",
+       "abbreviation": "TOU"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "232089",
+      "displayName": "Jonathan Clauss",
+      "team": {
+       "id": "2502",
+       "displayName": "Nice",
+       "abbreviation": "NICE"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "223122",
+      "displayName": "Maxime López",
+      "team": {
+       "id": "6851",
+       "displayName": "Paris FC",
+       "abbreviation": "PAR"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "270173",
+      "displayName": "Antoine Mille",
+      "team": {
+       "id": "170",
+       "displayName": "Troyes",
+       "abbreviation": "TRY"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "238917",
+      "displayName": "Amine Harit",
+      "team": {
+       "id": "176",
+       "displayName": "Marseille",
+       "abbreviation": "OLM"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "277525",
+      "displayName": "Himad Abdelli",
+      "team": {
+       "id": "176",
+       "displayName": "Marseille",
+       "abbreviation": "OLM"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "297121",
+      "displayName": "Jacen Russell-Rowe",
+      "team": {
+       "id": "179",
+       "displayName": "Toulouse",
+       "abbreviation": "TOU"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "289114",
+      "displayName": "Igor Paixão",
+      "team": {
+       "id": "176",
+       "displayName": "Marseille",
+       "abbreviation": "OLM"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "243748",
+      "displayName": "Danny Namaso",
+      "team": {
+       "id": "172",
+       "displayName": "AJ Auxerre",
+       "abbreviation": "AUX"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "290230",
+      "displayName": "Giovanni Reyna",
+      "team": {
+       "id": "180",
+       "displayName": "Strasbourg",
+       "abbreviation": "STR"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "88965",
+      "displayName": "Olivier Giroud",
+      "team": {
+       "id": "166",
+       "displayName": "Lille",
+       "abbreviation": "LILL"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 9, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "315384",
+      "displayName": "Mohamed Amoura",
+      "team": {
+       "id": "2502",
+       "displayName": "Nice",
+       "abbreviation": "NICE"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 9, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "240233",
+      "displayName": "Achraf Hakimi",
+      "team": {
+       "id": "160",
+       "displayName": "Paris Saint-Germain",
+       "abbreviation": "PSG"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 6, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "159047",
+      "displayName": "Marquinhos",
+      "team": {
+       "id": "160",
+       "displayName": "Paris Saint-Germain",
+       "abbreviation": "PSG"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 6, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "345645",
+      "displayName": "Edan Diop",
+      "team": {
+       "id": "174",
+       "displayName": "AS Monaco",
+       "abbreviation": "MON"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 6, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "367360",
+      "displayName": "Noah Edjouma",
+      "team": {
+       "id": "6997",
+       "displayName": "Brest",
+       "abbreviation": "BRE"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 5, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "418536",
+      "displayName": "Adil Bourabaa",
+      "team": {
+       "id": "2697",
+       "displayName": "Le Mans",
+       "abbreviation": "MNS"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 5, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "379088",
+      "displayName": "Senny Mayulu",
+      "team": {
+       "id": "160",
+       "displayName": "Paris Saint-Germain",
+       "abbreviation": "PSG"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Goals: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "370758",
+      "displayName": "Zachary Athekame",
+      "team": {
+       "id": "167",
+       "displayName": "Lyon",
+       "abbreviation": "LYON"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Goals: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "225557",
+      "displayName": "Jean-Victor Makengo",
+      "team": {
+       "id": "273",
+       "displayName": "Lorient",
+       "abbreviation": "LOR"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Goals: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "334359",
+      "displayName": "Pablo Pagis",
+      "team": {
+       "id": "6851",
+       "displayName": "Paris FC",
+       "abbreviation": "PAR"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Goals: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "192060",
+      "displayName": "Corentin Tolisso",
+      "team": {
+       "id": "167",
+       "displayName": "Lyon",
+       "abbreviation": "LYON"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Goals: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "365783",
+      "displayName": "Pathé Mboup",
+      "team": {
+       "id": "6997",
+       "displayName": "Brest",
+       "abbreviation": "BRE"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Goals: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "268591",
+      "displayName": "Romain Faivre",
+      "team": {
+       "id": "172",
+       "displayName": "AJ Auxerre",
+       "abbreviation": "AUX"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Goals: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "231366",
+      "displayName": "Mbwana Samatta",
+      "team": {
+       "id": "3236",
+       "displayName": "Le Havre AC",
+       "abbreviation": "HAC"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Goals: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "173266",
+      "displayName": "Adrien Thomasson",
+      "team": {
+       "id": "169",
+       "displayName": "Stade Rennais",
+       "abbreviation": "REN"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Goals: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "176406",
+      "displayName": "Renaud Ripart",
+      "team": {
+       "id": "170",
+       "displayName": "Troyes",
+       "abbreviation": "TRY"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Goals: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "276995",
+      "displayName": "Sofiane Diop",
+      "team": {
+       "id": "2502",
+       "displayName": "Nice",
+       "abbreviation": "NICE"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Goals: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "233199",
+      "displayName": "Matthieu Udol",
+      "team": {
+       "id": "175",
+       "displayName": "Lens",
+       "abbreviation": "RCL"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Goals: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "355971",
+      "displayName": "Ethan Mbappé",
+      "team": {
+       "id": "166",
+       "displayName": "Lille",
+       "abbreviation": "LILL"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Goals: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "336388",
+      "displayName": "Désiré Doué",
+      "team": {
+       "id": "160",
+       "displayName": "Paris Saint-Germain",
+       "abbreviation": "PSG"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Goals: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "403232",
+      "displayName": "Prosper Peter",
+      "team": {
+       "id": "7868",
+       "displayName": "Angers",
+       "abbreviation": "ANG"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Goals: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "259960",
+      "displayName": "Mama Baldé",
+      "team": {
+       "id": "6997",
+       "displayName": "Brest",
+       "abbreviation": "BRE"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "name": "assistsLeaders",
+   "displayName": "Assists",
+   "leaders": [
+    {
+     "displayValue": "Matches: 11, Assists: 7",
+     "value": 7.0,
+     "athlete": {
+      "id": "156898",
+      "displayName": "Florian Thauvin",
+      "team": {
+       "id": "175",
+       "displayName": "Lens",
+       "abbreviation": "RCL"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Assists: 6",
+     "value": 6.0,
+     "athlete": {
+      "id": "271244",
+      "displayName": "Cristian Cásseres Jr.",
+      "team": {
+       "id": "179",
+       "displayName": "Toulouse",
+       "abbreviation": "TOU"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Assists: 5",
+     "value": 5.0,
+     "athlete": {
+      "id": "271137",
+      "displayName": "Lassine Sinayoko",
+      "team": {
+       "id": "6851",
+       "displayName": "Paris FC",
+       "abbreviation": "PAR"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Assists: 4",
+     "value": 4.0,
+     "athlete": {
+      "id": "259743",
+      "displayName": "Amine Gouiri",
+      "team": {
+       "id": "176",
+       "displayName": "Marseille",
+       "abbreviation": "OLM"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Assists: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "370758",
+      "displayName": "Zachary Athekame",
+      "team": {
+       "id": "167",
+       "displayName": "Lyon",
+       "abbreviation": "LYON"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Assists: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "232089",
+      "displayName": "Jonathan Clauss",
+      "team": {
+       "id": "2502",
+       "displayName": "Nice",
+       "abbreviation": "NICE"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Assists: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "379012",
+      "displayName": "Gessime Yassine",
+      "team": {
+       "id": "180",
+       "displayName": "Strasbourg",
+       "abbreviation": "STR"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Assists: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "334359",
+      "displayName": "Pablo Pagis",
+      "team": {
+       "id": "6851",
+       "displayName": "Paris FC",
+       "abbreviation": "PAR"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Assists: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "192060",
+      "displayName": "Corentin Tolisso",
+      "team": {
+       "id": "167",
+       "displayName": "Lyon",
+       "abbreviation": "LYON"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Assists: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "268591",
+      "displayName": "Romain Faivre",
+      "team": {
+       "id": "172",
+       "displayName": "AJ Auxerre",
+       "abbreviation": "AUX"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Assists: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "239905",
+      "displayName": "Gauthier Hein",
+      "team": {
+       "id": "2502",
+       "displayName": "Nice",
+       "abbreviation": "NICE"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Assists: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "276995",
+      "displayName": "Sofiane Diop",
+      "team": {
+       "id": "2502",
+       "displayName": "Nice",
+       "abbreviation": "NICE"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Assists: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "195501",
+      "displayName": "Aleksandr Golovin",
+      "team": {
+       "id": "174",
+       "displayName": "AS Monaco",
+       "abbreviation": "MON"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 9, Assists: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "159051",
+      "displayName": "Emerson",
+      "team": {
+       "id": "176",
+       "displayName": "Marseille",
+       "abbreviation": "OLM"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 9, Assists: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "240233",
+      "displayName": "Achraf Hakimi",
+      "team": {
+       "id": "160",
+       "displayName": "Paris Saint-Germain",
+       "abbreviation": "PSG"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 8, Assists: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "303787",
+      "displayName": "Sebastian Nanasi",
+      "team": {
+       "id": "180",
+       "displayName": "Strasbourg",
+       "abbreviation": "STR"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 7, Assists: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "305545",
+      "displayName": "Pavel Sulc",
+      "team": {
+       "id": "167",
+       "displayName": "Lyon",
+       "abbreviation": "LYON"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 6, Assists: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "229744",
+      "displayName": "Ousmane Dembélé",
+      "team": {
+       "id": "160",
+       "displayName": "Paris Saint-Germain",
+       "abbreviation": "PSG"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 5, Assists: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "364754",
+      "displayName": "Panos Katseris",
+      "team": {
+       "id": "273",
+       "displayName": "Lorient",
+       "abbreviation": "LOR"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "381626",
+      "displayName": "Arsène Kouassi",
+      "team": {
+       "id": "273",
+       "displayName": "Lorient",
+       "abbreviation": "LOR"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "291850",
+      "displayName": "Joris Chotard",
+      "team": {
+       "id": "6997",
+       "displayName": "Brest",
+       "abbreviation": "BRE"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "310640",
+      "displayName": "Vanderson",
+      "team": {
+       "id": "174",
+       "displayName": "AS Monaco",
+       "abbreviation": "MON"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "223122",
+      "displayName": "Maxime López",
+      "team": {
+       "id": "6851",
+       "displayName": "Paris FC",
+       "abbreviation": "PAR"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "331636",
+      "displayName": "Lucas Calodat",
+      "team": {
+       "id": "2697",
+       "displayName": "Le Mans",
+       "abbreviation": "MNS"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "372260",
+      "displayName": "Mahamadou Nagida",
+      "team": {
+       "id": "169",
+       "displayName": "Stade Rennais",
+       "abbreviation": "REN"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "173266",
+      "displayName": "Adrien Thomasson",
+      "team": {
+       "id": "169",
+       "displayName": "Stade Rennais",
+       "abbreviation": "REN"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "257489",
+      "displayName": "Mousa Al-Tamari",
+      "team": {
+       "id": "169",
+       "displayName": "Stade Rennais",
+       "abbreviation": "REN"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "298511",
+      "displayName": "Kandet Diawara",
+      "team": {
+       "id": "170",
+       "displayName": "Troyes",
+       "abbreviation": "TRY"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "266027",
+      "displayName": "Timothy Weah",
+      "team": {
+       "id": "176",
+       "displayName": "Marseille",
+       "abbreviation": "OLM"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "250377",
+      "displayName": "Hugo Magnetti",
+      "team": {
+       "id": "6997",
+       "displayName": "Brest",
+       "abbreviation": "BRE"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "330412",
+      "displayName": "Kamory Doumbia",
+      "team": {
+       "id": "6997",
+       "displayName": "Brest",
+       "abbreviation": "BRE"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "243748",
+      "displayName": "Danny Namaso",
+      "team": {
+       "id": "172",
+       "displayName": "AJ Auxerre",
+       "abbreviation": "AUX"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "311118",
+      "displayName": "Elye Wahi",
+      "team": {
+       "id": "2502",
+       "displayName": "Nice",
+       "abbreviation": "NICE"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "330722",
+      "displayName": "Lucas Bretelle",
+      "team": {
+       "id": "2697",
+       "displayName": "Le Mans",
+       "abbreviation": "MNS"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "88965",
+      "displayName": "Olivier Giroud",
+      "team": {
+       "id": "166",
+       "displayName": "Lille",
+       "abbreviation": "LILL"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "353363",
+      "displayName": "Mika Godts",
+      "team": {
+       "id": "160",
+       "displayName": "Paris Saint-Germain",
+       "abbreviation": "PSG"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 9, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "315384",
+      "displayName": "Mohamed Amoura",
+      "team": {
+       "id": "2502",
+       "displayName": "Nice",
+       "abbreviation": "NICE"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 9, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "382872",
+      "displayName": "Rayan Bamba",
+      "team": {
+       "id": "2697",
+       "displayName": "Le Mans",
+       "abbreviation": "MNS"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 9, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "190806",
+      "displayName": "Przemyslaw Frankowski",
+      "team": {
+       "id": "169",
+       "displayName": "Stade Rennais",
+       "abbreviation": "REN"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 9, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "214596",
+      "displayName": "Fabián Ruiz",
+      "team": {
+       "id": "160",
+       "displayName": "Paris Saint-Germain",
+       "abbreviation": "PSG"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 9, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "301262",
+      "displayName": "Amine El Ouazzani",
+      "team": {
+       "id": "7868",
+       "displayName": "Angers",
+       "abbreviation": "ANG"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 8, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "377782",
+      "displayName": "Oso",
+      "team": {
+       "id": "180",
+       "displayName": "Strasbourg",
+       "abbreviation": "STR"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 8, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "250758",
+      "displayName": "Bryan Reynolds",
+      "team": {
+       "id": "169",
+       "displayName": "Stade Rennais",
+       "abbreviation": "REN"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 6, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "408780",
+      "displayName": "Anis Ouzenadji",
+      "team": {
+       "id": "170",
+       "displayName": "Troyes",
+       "abbreviation": "TRY"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 6, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "240660",
+      "displayName": "Jordan Teze",
+      "team": {
+       "id": "174",
+       "displayName": "AS Monaco",
+       "abbreviation": "MON"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 6, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "304011",
+      "displayName": "Maurits Kjaergaard",
+      "team": {
+       "id": "166",
+       "displayName": "Lille",
+       "abbreviation": "LILL"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 5, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "418536",
+      "displayName": "Adil Bourabaa",
+      "team": {
+       "id": "2697",
+       "displayName": "Le Mans",
+       "abbreviation": "MNS"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 5, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "400352",
+      "displayName": "Soriba Diaoune",
+      "team": {
+       "id": "166",
+       "displayName": "Lille",
+       "abbreviation": "LILL"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 5, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "379088",
+      "displayName": "Senny Mayulu",
+      "team": {
+       "id": "160",
+       "displayName": "Paris Saint-Germain",
+       "abbreviation": "PSG"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Assists: 1",
+     "value": 1.0,
+     "athlete": {
+      "id": "332549",
+      "displayName": "Diego Coppola",
+      "team": {
+       "id": "6851",
+       "displayName": "Paris FC",
+       "abbreviation": "PAR"
+      }
+     }
+    }
+   ]
+  }
+ ]
+}

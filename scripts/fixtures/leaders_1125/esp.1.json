@@ -1,0 +1,1323 @@
+{
+ "_note": "ESPN statistics の実応答（2026-11-25 17:55 JST 取得）から得点・アシスト上位の必要な欄だけ残した",
+ "season": {
+  "year": 2026,
+  "displayName": "2026-27 Spanish LALIGA",
+  "type": 14357,
+  "name": "2026-27 LALIGA"
+ },
+ "stats": [
+  {
+   "name": "goalsLeaders",
+   "displayName": "Goals",
+   "leaders": [
+    {
+     "displayValue": "Matches: 12, Goals: 15",
+     "value": 15.0,
+     "athlete": {
+      "id": "231050",
+      "displayName": "Raphinha",
+      "team": {
+       "id": "83",
+       "displayName": "Barcelona",
+       "abbreviation": "BAR"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 13, Goals: 13",
+     "value": 13.0,
+     "athlete": {
+      "id": "231388",
+      "displayName": "Kylian Mbappé",
+      "team": {
+       "id": "86",
+       "displayName": "Real Madrid",
+       "abbreviation": "RMA"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 13, Goals: 11",
+     "value": 11.0,
+     "athlete": {
+      "id": "390389",
+      "displayName": "Yassir Zabiri",
+      "team": {
+       "id": "87",
+       "displayName": "Racing Santander",
+       "abbreviation": "RAC"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 13, Goals: 10",
+     "value": 10.0,
+     "athlete": {
+      "id": "362150",
+      "displayName": "Lamine Yamal",
+      "team": {
+       "id": "83",
+       "displayName": "Barcelona",
+       "abbreviation": "BAR"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 13, Goals: 9",
+     "value": 9.0,
+     "athlete": {
+      "id": "207288",
+      "displayName": "Ante Budimir",
+      "team": {
+       "id": "97",
+       "displayName": "Osasuna",
+       "abbreviation": "OSA"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 12, Goals: 8",
+     "value": 8.0,
+     "athlete": {
+      "id": "354334",
+      "displayName": "Fermín López",
+      "team": {
+       "id": "83",
+       "displayName": "Barcelona",
+       "abbreviation": "BAR"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 13, Goals: 7",
+     "value": 7.0,
+     "athlete": {
+      "id": "318773",
+      "displayName": "Roberto Fernández",
+      "team": {
+       "id": "88",
+       "displayName": "Espanyol",
+       "abbreviation": "ESP"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 13, Goals: 7",
+     "value": 7.0,
+     "athlete": {
+      "id": "276652",
+      "displayName": "Sergio Camello",
+      "team": {
+       "id": "101",
+       "displayName": "Rayo Vallecano",
+       "abbreviation": "RAY"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 13, Goals: 6",
+     "value": 6.0,
+     "athlete": {
+      "id": "301684",
+      "displayName": "Fer Niño",
+      "team": {
+       "id": "3751",
+       "displayName": "Elche",
+       "abbreviation": "ELC"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 13, Goals: 6",
+     "value": 6.0,
+     "athlete": {
+      "id": "297373",
+      "displayName": "Álex Baena",
+      "team": {
+       "id": "1068",
+       "displayName": "Atlético Madrid",
+       "abbreviation": "ATM"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 12, Goals: 6",
+     "value": 6.0,
+     "athlete": {
+      "id": "207236",
+      "displayName": "Lucas Boyé",
+      "team": {
+       "id": "96",
+       "displayName": "Alavés",
+       "abbreviation": "ALA"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 13, Goals: 5",
+     "value": 5.0,
+     "athlete": {
+      "id": "291281",
+      "displayName": "Jude Bellingham",
+      "team": {
+       "id": "86",
+       "displayName": "Real Madrid",
+       "abbreviation": "RMA"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 12, Goals: 5",
+     "value": 5.0,
+     "athlete": {
+      "id": "166396",
+      "displayName": "Alejandro Grimaldo",
+      "team": {
+       "id": "1068",
+       "displayName": "Atlético Madrid",
+       "abbreviation": "ATM"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 12, Goals: 5",
+     "value": 5.0,
+     "athlete": {
+      "id": "267591",
+      "displayName": "Roger Brugué",
+      "team": {
+       "id": "1538",
+       "displayName": "Levante",
+       "abbreviation": "LEV"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Goals: 5",
+     "value": 5.0,
+     "athlete": {
+      "id": "122260",
+      "displayName": "Pierre-Emerick Aubameyang",
+      "team": {
+       "id": "90",
+       "displayName": "Deportivo",
+       "abbreviation": "DEP"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 9, Goals: 5",
+     "value": 5.0,
+     "athlete": {
+      "id": "373542",
+      "displayName": "Adrián Niño",
+      "team": {
+       "id": "99",
+       "displayName": "Málaga",
+       "abbreviation": "MCF"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 13, Goals: 4",
+     "value": 4.0,
+     "athlete": {
+      "id": "323838",
+      "displayName": "Giuliano Simeone",
+      "team": {
+       "id": "1068",
+       "displayName": "Atlético Madrid",
+       "abbreviation": "ATM"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 13, Goals: 4",
+     "value": 4.0,
+     "athlete": {
+      "id": "209579",
+      "displayName": "Álex Berenguer",
+      "team": {
+       "id": "93",
+       "displayName": "Athletic Club",
+       "abbreviation": "ATH"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 13, Goals: 4",
+     "value": 4.0,
+     "athlete": {
+      "id": "198832",
+      "displayName": "Mariano Díaz",
+      "team": {
+       "id": "96",
+       "displayName": "Alavés",
+       "abbreviation": "ALA"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 12, Goals: 4",
+     "value": 4.0,
+     "athlete": {
+      "id": "306263",
+      "displayName": "Luka Sucic",
+      "team": {
+       "id": "89",
+       "displayName": "Real Sociedad",
+       "abbreviation": "RSO"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Goals: 4",
+     "value": 4.0,
+     "athlete": {
+      "id": "341367",
+      "displayName": "Orri Óskarsson",
+      "team": {
+       "id": "89",
+       "displayName": "Real Sociedad",
+       "abbreviation": "RSO"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 13, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "284854",
+      "displayName": "Martín Satriano",
+      "team": {
+       "id": "2922",
+       "displayName": "Getafe",
+       "abbreviation": "GET"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 13, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "311054",
+      "displayName": "Iván Romero",
+      "team": {
+       "id": "1538",
+       "displayName": "Levante",
+       "abbreviation": "LEV"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 13, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "214412",
+      "displayName": "Iñaki Williams",
+      "team": {
+       "id": "93",
+       "displayName": "Athletic Club",
+       "abbreviation": "ATH"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 13, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "310452",
+      "displayName": "Arda Güler",
+      "team": {
+       "id": "86",
+       "displayName": "Real Madrid",
+       "abbreviation": "RMA"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 13, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "402479",
+      "displayName": "Yan Diomande",
+      "team": {
+       "id": "86",
+       "displayName": "Real Madrid",
+       "abbreviation": "RMA"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 13, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "300002",
+      "displayName": "Georges Mikautadze",
+      "team": {
+       "id": "102",
+       "displayName": "Villarreal",
+       "abbreviation": "VIL"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 12, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "255889",
+      "displayName": "Pape Gueye",
+      "team": {
+       "id": "102",
+       "displayName": "Villarreal",
+       "abbreviation": "VIL"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 12, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "229018",
+      "displayName": "Mikel Oyarzabal",
+      "team": {
+       "id": "89",
+       "displayName": "Real Sociedad",
+       "abbreviation": "RSO"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 12, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "125200",
+      "displayName": "Álvaro García",
+      "team": {
+       "id": "101",
+       "displayName": "Rayo Vallecano",
+       "abbreviation": "RAY"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 12, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "213141",
+      "displayName": "Gonçalo Guedes",
+      "team": {
+       "id": "89",
+       "displayName": "Real Sociedad",
+       "abbreviation": "RSO"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 12, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "70224",
+      "displayName": "Rodrigo Riquelme",
+      "team": {
+       "id": "244",
+       "displayName": "Real Betis",
+       "abbreviation": "BET"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "365821",
+      "displayName": "Isaac Romero",
+      "team": {
+       "id": "243",
+       "displayName": "Sevilla",
+       "abbreviation": "SEV"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "300912",
+      "displayName": "Abde Ezzalzouli",
+      "team": {
+       "id": "244",
+       "displayName": "Real Betis",
+       "abbreviation": "BET"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "138448",
+      "displayName": "Pablo Durán",
+      "team": {
+       "id": "85",
+       "displayName": "Celta Vigo",
+       "abbreviation": "CEL"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 9, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "145078",
+      "displayName": "Marc Bartra",
+      "team": {
+       "id": "244",
+       "displayName": "Real Betis",
+       "abbreviation": "BET"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 8, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "380286",
+      "displayName": "Carlos Espí",
+      "team": {
+       "id": "86",
+       "displayName": "Real Madrid",
+       "abbreviation": "RMA"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 7, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "273499",
+      "displayName": "Jonathan David",
+      "team": {
+       "id": "1068",
+       "displayName": "Atlético Madrid",
+       "abbreviation": "ATM"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 7, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "217289",
+      "displayName": "Gabriel Jesus",
+      "team": {
+       "id": "83",
+       "displayName": "Barcelona",
+       "abbreviation": "BAR"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 13, Goals: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "297358",
+      "displayName": "Germán Valera",
+      "team": {
+       "id": "3751",
+       "displayName": "Elche",
+       "abbreviation": "ELC"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 13, Goals: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "297353",
+      "displayName": "Mario Soriano Carreno",
+      "team": {
+       "id": "90",
+       "displayName": "Deportivo",
+       "abbreviation": "DEP"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 13, Goals: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "125383",
+      "displayName": "Sergio Canales",
+      "team": {
+       "id": "87",
+       "displayName": "Racing Santander",
+       "abbreviation": "RAC"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 13, Goals: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "414299",
+      "displayName": "Bil Nsongo",
+      "team": {
+       "id": "90",
+       "displayName": "Deportivo",
+       "abbreviation": "DEP"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 13, Goals: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "274197",
+      "displayName": "Lee Kang-In",
+      "team": {
+       "id": "1068",
+       "displayName": "Atlético Madrid",
+       "abbreviation": "ATM"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 13, Goals: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "307390",
+      "displayName": "Alberto Moleiro",
+      "team": {
+       "id": "102",
+       "displayName": "Villarreal",
+       "abbreviation": "VIL"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 13, Goals: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "274913",
+      "displayName": "Karim Adeyemi",
+      "team": {
+       "id": "83",
+       "displayName": "Barcelona",
+       "abbreviation": "BAR"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 12, Goals: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "218122",
+      "displayName": "Enes Ünal",
+      "team": {
+       "id": "2922",
+       "displayName": "Getafe",
+       "abbreviation": "GET"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 12, Goals: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "324098",
+      "displayName": "Carlos Dotor",
+      "team": {
+       "id": "99",
+       "displayName": "Málaga",
+       "abbreviation": "MCF"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 12, Goals: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "276841",
+      "displayName": "Adrián de la Fuente",
+      "team": {
+       "id": "1538",
+       "displayName": "Levante",
+       "abbreviation": "LEV"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 12, Goals: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "268782",
+      "displayName": "Anthony Gordon",
+      "team": {
+       "id": "83",
+       "displayName": "Barcelona",
+       "abbreviation": "BAR"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "name": "assistsLeaders",
+   "displayName": "Assists",
+   "leaders": [
+    {
+     "displayValue": "Matches: 13, Assists: 9",
+     "value": 9.0,
+     "athlete": {
+      "id": "362150",
+      "displayName": "Lamine Yamal",
+      "team": {
+       "id": "83",
+       "displayName": "Barcelona",
+       "abbreviation": "BAR"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 13, Assists: 6",
+     "value": 6.0,
+     "athlete": {
+      "id": "367946",
+      "displayName": "Javi Hernandez",
+      "team": {
+       "id": "88",
+       "displayName": "Espanyol",
+       "abbreviation": "ESP"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 13, Assists: 5",
+     "value": 5.0,
+     "athlete": {
+      "id": "307390",
+      "displayName": "Alberto Moleiro",
+      "team": {
+       "id": "102",
+       "displayName": "Villarreal",
+       "abbreviation": "VIL"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 12, Assists: 5",
+     "value": 5.0,
+     "athlete": {
+      "id": "354334",
+      "displayName": "Fermín López",
+      "team": {
+       "id": "83",
+       "displayName": "Barcelona",
+       "abbreviation": "BAR"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 13, Assists: 4",
+     "value": 4.0,
+     "athlete": {
+      "id": "209579",
+      "displayName": "Álex Berenguer",
+      "team": {
+       "id": "93",
+       "displayName": "Athletic Club",
+       "abbreviation": "ATH"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 13, Assists: 4",
+     "value": 4.0,
+     "athlete": {
+      "id": "310452",
+      "displayName": "Arda Güler",
+      "team": {
+       "id": "86",
+       "displayName": "Real Madrid",
+       "abbreviation": "RMA"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 13, Assists: 4",
+     "value": 4.0,
+     "athlete": {
+      "id": "198832",
+      "displayName": "Mariano Díaz",
+      "team": {
+       "id": "96",
+       "displayName": "Alavés",
+       "abbreviation": "ALA"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 12, Assists: 4",
+     "value": 4.0,
+     "athlete": {
+      "id": "374621",
+      "displayName": "Ángel Pérez",
+      "team": {
+       "id": "96",
+       "displayName": "Alavés",
+       "abbreviation": "ALA"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 12, Assists: 4",
+     "value": 4.0,
+     "athlete": {
+      "id": "268782",
+      "displayName": "Anthony Gordon",
+      "team": {
+       "id": "83",
+       "displayName": "Barcelona",
+       "abbreviation": "BAR"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 9, Assists: 4",
+     "value": 4.0,
+     "athlete": {
+      "id": "277206",
+      "displayName": "Julián Álvarez",
+      "team": {
+       "id": "1068",
+       "displayName": "Atlético Madrid",
+       "abbreviation": "ATM"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 13, Assists: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "231388",
+      "displayName": "Kylian Mbappé",
+      "team": {
+       "id": "86",
+       "displayName": "Real Madrid",
+       "abbreviation": "RMA"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 13, Assists: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "16340",
+      "displayName": "Javier Guerra",
+      "team": {
+       "id": "94",
+       "displayName": "Valencia",
+       "abbreviation": "VAL"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 13, Assists: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "284699",
+      "displayName": "Iñigo Vicente",
+      "team": {
+       "id": "87",
+       "displayName": "Racing Santander",
+       "abbreviation": "RAC"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 13, Assists: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "291281",
+      "displayName": "Jude Bellingham",
+      "team": {
+       "id": "86",
+       "displayName": "Real Madrid",
+       "abbreviation": "RMA"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 13, Assists: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "203711",
+      "displayName": "Unai López",
+      "team": {
+       "id": "101",
+       "displayName": "Rayo Vallecano",
+       "abbreviation": "RAY"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 13, Assists: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "250465",
+      "displayName": "Pedri",
+      "team": {
+       "id": "83",
+       "displayName": "Barcelona",
+       "abbreviation": "BAR"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 13, Assists: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "297373",
+      "displayName": "Álex Baena",
+      "team": {
+       "id": "1068",
+       "displayName": "Atlético Madrid",
+       "abbreviation": "ATM"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 13, Assists: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "192133",
+      "displayName": "Ayoze Pérez",
+      "team": {
+       "id": "102",
+       "displayName": "Villarreal",
+       "abbreviation": "VIL"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 13, Assists: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "259916",
+      "displayName": "José Antonio Morente",
+      "team": {
+       "id": "3751",
+       "displayName": "Elche",
+       "abbreviation": "ELC"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 12, Assists: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "231050",
+      "displayName": "Raphinha",
+      "team": {
+       "id": "83",
+       "displayName": "Barcelona",
+       "abbreviation": "BAR"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 12, Assists: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "235072",
+      "displayName": "Carlos Soler",
+      "team": {
+       "id": "89",
+       "displayName": "Real Sociedad",
+       "abbreviation": "RSO"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Assists: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "277307",
+      "displayName": "Youssouf Fofana",
+      "team": {
+       "id": "243",
+       "displayName": "Sevilla",
+       "abbreviation": "SEV"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Assists: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "227765",
+      "displayName": "Dani Olmo",
+      "team": {
+       "id": "83",
+       "displayName": "Barcelona",
+       "abbreviation": "BAR"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 9, Assists: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "252107",
+      "displayName": "Vinícius Júnior",
+      "team": {
+       "id": "86",
+       "displayName": "Real Madrid",
+       "abbreviation": "RMA"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 9, Assists: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "406379",
+      "displayName": "Job Ochieng",
+      "team": {
+       "id": "89",
+       "displayName": "Real Sociedad",
+       "abbreviation": "RSO"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 13, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "317784",
+      "displayName": "Jon Ander Olasagasti",
+      "team": {
+       "id": "1538",
+       "displayName": "Levante",
+       "abbreviation": "LEV"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 13, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "257786",
+      "displayName": "Dávid Hancko",
+      "team": {
+       "id": "1068",
+       "displayName": "Atlético Madrid",
+       "abbreviation": "ATM"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 13, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "297353",
+      "displayName": "Mario Soriano Carreno",
+      "team": {
+       "id": "90",
+       "displayName": "Deportivo",
+       "abbreviation": "DEP"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 13, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "284854",
+      "displayName": "Martín Satriano",
+      "team": {
+       "id": "2922",
+       "displayName": "Getafe",
+       "abbreviation": "GET"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 13, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "323838",
+      "displayName": "Giuliano Simeone",
+      "team": {
+       "id": "1068",
+       "displayName": "Atlético Madrid",
+       "abbreviation": "ATM"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 13, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "214412",
+      "displayName": "Iñaki Williams",
+      "team": {
+       "id": "93",
+       "displayName": "Athletic Club",
+       "abbreviation": "ATH"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 13, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "276652",
+      "displayName": "Sergio Camello",
+      "team": {
+       "id": "101",
+       "displayName": "Rayo Vallecano",
+       "abbreviation": "RAY"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 13, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "402479",
+      "displayName": "Yan Diomande",
+      "team": {
+       "id": "86",
+       "displayName": "Real Madrid",
+       "abbreviation": "RMA"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 13, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "324166",
+      "displayName": "Luismi Cruz",
+      "team": {
+       "id": "90",
+       "displayName": "Deportivo",
+       "abbreviation": "DEP"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 13, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "322993",
+      "displayName": "Robbie Ure",
+      "team": {
+       "id": "243",
+       "displayName": "Sevilla",
+       "abbreviation": "SEV"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 13, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "320648",
+      "displayName": "Lucas Cepeda",
+      "team": {
+       "id": "3751",
+       "displayName": "Elche",
+       "abbreviation": "ELC"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 13, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "274913",
+      "displayName": "Karim Adeyemi",
+      "team": {
+       "id": "83",
+       "displayName": "Barcelona",
+       "abbreviation": "BAR"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 12, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "166396",
+      "displayName": "Alejandro Grimaldo",
+      "team": {
+       "id": "1068",
+       "displayName": "Atlético Madrid",
+       "abbreviation": "ATM"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 12, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "235818",
+      "displayName": "Federico Valverde",
+      "team": {
+       "id": "86",
+       "displayName": "Real Madrid",
+       "abbreviation": "RMA"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 12, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "229018",
+      "displayName": "Mikel Oyarzabal",
+      "team": {
+       "id": "89",
+       "displayName": "Real Sociedad",
+       "abbreviation": "RSO"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 12, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "125200",
+      "displayName": "Álvaro García",
+      "team": {
+       "id": "101",
+       "displayName": "Rayo Vallecano",
+       "abbreviation": "RAY"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 12, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "143564",
+      "displayName": "Isco",
+      "team": {
+       "id": "244",
+       "displayName": "Real Betis",
+       "abbreviation": "BET"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "260740",
+      "displayName": "Jorge de Frutos",
+      "team": {
+       "id": "101",
+       "displayName": "Rayo Vallecano",
+       "abbreviation": "RAY"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "188391",
+      "displayName": "Hugo Álvarez",
+      "team": {
+       "id": "85",
+       "displayName": "Celta Vigo",
+       "abbreviation": "CEL"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "283941",
+      "displayName": "Ander Barrenetxea",
+      "team": {
+       "id": "89",
+       "displayName": "Real Sociedad",
+       "abbreviation": "RSO"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "376423",
+      "displayName": "Marc Bernal",
+      "team": {
+       "id": "83",
+       "displayName": "Barcelona",
+       "abbreviation": "BAR"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "365821",
+      "displayName": "Isaac Romero",
+      "team": {
+       "id": "243",
+       "displayName": "Sevilla",
+       "abbreviation": "SEV"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "323286",
+      "displayName": "Roy Revivo",
+      "team": {
+       "id": "3751",
+       "displayName": "Elche",
+       "abbreviation": "ELC"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "169089",
+      "displayName": "Moi Gómez",
+      "team": {
+       "id": "97",
+       "displayName": "Osasuna",
+       "abbreviation": "OSA"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "122260",
+      "displayName": "Pierre-Emerick Aubameyang",
+      "team": {
+       "id": "90",
+       "displayName": "Deportivo",
+       "abbreviation": "DEP"
+      }
+     }
+    }
+   ]
+  }
+ ]
+}

@@ -32,7 +32,12 @@ def candidates(mode, data, narr):
         for i, seg in enumerate(segs):
             if seg['kind'] != 'standings':
                 continue
+            # 得点王・アシスト王争い：画面に出さない5位以下を読むだけの補充
+            for text in seg['meta'].get('reserve_texts', []):
+                add(i, text)
             for row in seg['meta'].get('rows', []):
+                if row.get('player'):
+                    continue
                 rank, points = row.get('position'), row.get('points')
                 if type(rank) is int and rank > 0 and type(points) is int and points >= 0:
                     club = ne.club_name_jp(row.get('team_en') or row['team'])

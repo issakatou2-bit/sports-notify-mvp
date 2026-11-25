@@ -45,7 +45,10 @@ def phrases(text):
         for key,offset,length in features:
             start = i+offset
             if start>=0 and start+length<=len(text):score += data.get(key,{}).get(text[start:start+length],0)
-        if score>0 or text[i-1] in '。！？!?、\n　 ':breaks.append(i)
+        # 「AチームA対Bチーム」は「対」の前でも区切れる（11/25 アトレティコ・マドリード対バイキング。が1かたまりで字幕幅を超え、毎日の回が止まった）。
+        # 「3対1」は NUMBER で区切らない。
+        versus=text[i]=='対' and i+1<len(text) and not text[i-1].isdigit() and not text[i+1].isdigit()
+        if score>0 or versus or text[i-1] in '。！？!?、\n　 ':breaks.append(i)
     breaks.append(len(text))
     return tuple(text[a:b] for a,b in zip(breaks,breaks[1:]))
 

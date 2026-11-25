@@ -1,0 +1,1323 @@
+{
+ "_note": "ESPN statistics の実応答（2026-11-25 17:55 JST 取得）から得点・アシスト上位の必要な欄だけ残した",
+ "season": {
+  "year": 2026,
+  "displayName": "2026-27 English Premier League",
+  "type": 14308,
+  "name": "2026-27 English Premier League"
+ },
+ "stats": [
+  {
+   "name": "goalsLeaders",
+   "displayName": "Goals",
+   "leaders": [
+    {
+     "displayValue": "Matches: 11, Goals: 9",
+     "value": 9.0,
+     "athlete": {
+      "id": "253989",
+      "displayName": "Erling Haaland",
+      "team": {
+       "id": "382",
+       "displayName": "Manchester City",
+       "abbreviation": "MNC"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Goals: 7",
+     "value": 7.0,
+     "athlete": {
+      "id": "235662",
+      "displayName": "Alexander Isak",
+      "team": {
+       "id": "364",
+       "displayName": "Liverpool",
+       "abbreviation": "LIV"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Goals: 6",
+     "value": 6.0,
+     "athlete": {
+      "id": "102368",
+      "displayName": "Evanilson",
+      "team": {
+       "id": "349",
+       "displayName": "AFC Bournemouth",
+       "abbreviation": "BOU"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Goals: 6",
+     "value": 6.0,
+     "athlete": {
+      "id": "301166",
+      "displayName": "Thierno Barry",
+      "team": {
+       "id": "368",
+       "displayName": "Everton",
+       "abbreviation": "EVE"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Goals: 6",
+     "value": 6.0,
+     "athlete": {
+      "id": "308524",
+      "displayName": "Nicolas Jackson",
+      "team": {
+       "id": "362",
+       "displayName": "Aston Villa",
+       "abbreviation": "AVL"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Goals: 5",
+     "value": 5.0,
+     "athlete": {
+      "id": "265653",
+      "displayName": "Morgan Rogers",
+      "team": {
+       "id": "363",
+       "displayName": "Chelsea",
+       "abbreviation": "CHE"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Goals: 5",
+     "value": 5.0,
+     "athlete": {
+      "id": "243364",
+      "displayName": "Marcus Tavernier",
+      "team": {
+       "id": "349",
+       "displayName": "AFC Bournemouth",
+       "abbreviation": "BOU"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Goals: 5",
+     "value": 5.0,
+     "athlete": {
+      "id": "298008",
+      "displayName": "Rayan Cherki",
+      "team": {
+       "id": "382",
+       "displayName": "Manchester City",
+       "abbreviation": "MNC"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 6, Goals: 5",
+     "value": 5.0,
+     "athlete": {
+      "id": "284960",
+      "displayName": "João Pedro",
+      "team": {
+       "id": "363",
+       "displayName": "Chelsea",
+       "abbreviation": "CHE"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Goals: 4",
+     "value": 4.0,
+     "athlete": {
+      "id": "193010",
+      "displayName": "Oliver McBurnie",
+      "team": {
+       "id": "306",
+       "displayName": "Hull City",
+       "abbreviation": "HUL"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Goals: 4",
+     "value": 4.0,
+     "athlete": {
+      "id": "132659",
+      "displayName": "Pascal Gross",
+      "team": {
+       "id": "331",
+       "displayName": "Brighton & Hove Albion",
+       "abbreviation": "BHA"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Goals: 4",
+     "value": 4.0,
+     "athlete": {
+      "id": "197717",
+      "displayName": "Dominic Calvert-Lewin",
+      "team": {
+       "id": "357",
+       "displayName": "Leeds United",
+       "abbreviation": "LEE"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Goals: 4",
+     "value": 4.0,
+     "athlete": {
+      "id": "271170",
+      "displayName": "Bryan Mbeumo",
+      "team": {
+       "id": "360",
+       "displayName": "Manchester United",
+       "abbreviation": "MAN"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Goals: 4",
+     "value": 4.0,
+     "athlete": {
+      "id": "284490",
+      "displayName": "Keane Lewis-Potter",
+      "team": {
+       "id": "337",
+       "displayName": "Brentford",
+       "abbreviation": "BRE"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Goals: 4",
+     "value": 4.0,
+     "athlete": {
+      "id": "124091",
+      "displayName": "Bruno Fernandes",
+      "team": {
+       "id": "360",
+       "displayName": "Manchester United",
+       "abbreviation": "MAN"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Goals: 4",
+     "value": 4.0,
+     "athlete": {
+      "id": "270641",
+      "displayName": "Noah Okafor",
+      "team": {
+       "id": "357",
+       "displayName": "Leeds United",
+       "abbreviation": "LEE"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "243386",
+      "displayName": "Harvey Barnes",
+      "team": {
+       "id": "361",
+       "displayName": "Newcastle United",
+       "abbreviation": "NEW"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "296395",
+      "displayName": "Cole Palmer",
+      "team": {
+       "id": "363",
+       "displayName": "Chelsea",
+       "abbreviation": "CHE"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "252389",
+      "displayName": "Kiernan Dewsbury-Hall",
+      "team": {
+       "id": "368",
+       "displayName": "Everton",
+       "abbreviation": "EVE"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "288340",
+      "displayName": "Enzo Le Fée",
+      "team": {
+       "id": "366",
+       "displayName": "Sunderland",
+       "abbreviation": "SUN"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "203669",
+      "displayName": "Martin Ødegaard",
+      "team": {
+       "id": "359",
+       "displayName": "Arsenal",
+       "abbreviation": "ARS"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "286967",
+      "displayName": "Jack Rudoni",
+      "team": {
+       "id": "388",
+       "displayName": "Coventry City",
+       "abbreviation": "COV"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "231182",
+      "displayName": "Kai Havertz",
+      "team": {
+       "id": "359",
+       "displayName": "Arsenal",
+       "abbreviation": "ARS"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "310958",
+      "displayName": "Kevin Schade",
+      "team": {
+       "id": "337",
+       "displayName": "Brentford",
+       "abbreviation": "BRE"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "256115",
+      "displayName": "Pedro Neto",
+      "team": {
+       "id": "363",
+       "displayName": "Chelsea",
+       "abbreviation": "CHE"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "387655",
+      "displayName": "Charalambos Kostoulas",
+      "team": {
+       "id": "331",
+       "displayName": "Brighton & Hove Albion",
+       "abbreviation": "BHA"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "225564",
+      "displayName": "Vitaly Janelt",
+      "team": {
+       "id": "337",
+       "displayName": "Brentford",
+       "abbreviation": "BRE"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "304242",
+      "displayName": "Yasin Ayari",
+      "team": {
+       "id": "331",
+       "displayName": "Brighton & Hove Albion",
+       "abbreviation": "BHA"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "320417",
+      "displayName": "Mohamed Belloumi",
+      "team": {
+       "id": "306",
+       "displayName": "Hull City",
+       "abbreviation": "HUL"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "307114",
+      "displayName": "Liam Delap",
+      "team": {
+       "id": "393",
+       "displayName": "Nottingham Forest",
+       "abbreviation": "NFO"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "397545",
+      "displayName": "Víctor Muñoz",
+      "team": {
+       "id": "364",
+       "displayName": "Liverpool",
+       "abbreviation": "LIV"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 8, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "282229",
+      "displayName": "Brian Brobbey",
+      "team": {
+       "id": "366",
+       "displayName": "Sunderland",
+       "abbreviation": "SUN"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 7, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "280555",
+      "displayName": "Bukayo Saka",
+      "team": {
+       "id": "359",
+       "displayName": "Arsenal",
+       "abbreviation": "ARS"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 6, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "328011",
+      "displayName": "Jack Hinshelwood",
+      "team": {
+       "id": "331",
+       "displayName": "Brighton & Hove Albion",
+       "abbreviation": "BHA"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Goals: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "282583",
+      "displayName": "Jan Paul van Hecke",
+      "team": {
+       "id": "367",
+       "displayName": "Tottenham Hotspur",
+       "abbreviation": "TOT"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Goals: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "283086",
+      "displayName": "Leif Davis",
+      "team": {
+       "id": "373",
+       "displayName": "Ipswich Town",
+       "abbreviation": "IPS"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Goals: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "300853",
+      "displayName": "Tyrick Mitchell",
+      "team": {
+       "id": "384",
+       "displayName": "Crystal Palace",
+       "abbreviation": "CRY"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Goals: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "192278",
+      "displayName": "Diego Gómez",
+      "team": {
+       "id": "331",
+       "displayName": "Brighton & Hove Albion",
+       "abbreviation": "BHA"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Goals: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "20975",
+      "displayName": "Julio Enciso",
+      "team": {
+       "id": "373",
+       "displayName": "Ipswich Town",
+       "abbreviation": "IPS"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Goals: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "301327",
+      "displayName": "Maxim De Cuyper",
+      "team": {
+       "id": "331",
+       "displayName": "Brighton & Hove Albion",
+       "abbreviation": "BHA"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Goals: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "243408",
+      "displayName": "Jayden Bogle",
+      "team": {
+       "id": "357",
+       "displayName": "Leeds United",
+       "abbreviation": "LEE"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Goals: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "303748",
+      "displayName": "Florian Wirtz",
+      "team": {
+       "id": "364",
+       "displayName": "Liverpool",
+       "abbreviation": "LIV"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Goals: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "409541",
+      "displayName": "Josh King",
+      "team": {
+       "id": "370",
+       "displayName": "Fulham",
+       "abbreviation": "FUL"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Goals: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "162843",
+      "displayName": "John McGinn",
+      "team": {
+       "id": "362",
+       "displayName": "Aston Villa",
+       "abbreviation": "AVL"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Goals: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "297370",
+      "displayName": "Yéremy Pino",
+      "team": {
+       "id": "384",
+       "displayName": "Crystal Palace",
+       "abbreviation": "CRY"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Goals: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "322654",
+      "displayName": "Emersonn",
+      "team": {
+       "id": "373",
+       "displayName": "Ipswich Town",
+       "abbreviation": "IPS"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Goals: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "275842",
+      "displayName": "Dan Ndoye",
+      "team": {
+       "id": "393",
+       "displayName": "Nottingham Forest",
+       "abbreviation": "NFO"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Goals: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "259517",
+      "displayName": "Joe Willock",
+      "team": {
+       "id": "361",
+       "displayName": "Newcastle United",
+       "abbreviation": "NEW"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Goals: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "194115",
+      "displayName": "Dominic Solanke",
+      "team": {
+       "id": "367",
+       "displayName": "Tottenham Hotspur",
+       "abbreviation": "TOT"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Goals: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "301894",
+      "displayName": "Igor Thiago",
+      "team": {
+       "id": "337",
+       "displayName": "Brentford",
+       "abbreviation": "BRE"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "name": "assistsLeaders",
+   "displayName": "Assists",
+   "leaders": [
+    {
+     "displayValue": "Matches: 11, Assists: 5",
+     "value": 5.0,
+     "athlete": {
+      "id": "238262",
+      "displayName": "Declan Rice",
+      "team": {
+       "id": "359",
+       "displayName": "Arsenal",
+       "abbreviation": "ARS"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Assists: 4",
+     "value": 4.0,
+     "athlete": {
+      "id": "132659",
+      "displayName": "Pascal Gross",
+      "team": {
+       "id": "331",
+       "displayName": "Brighton & Hove Albion",
+       "abbreviation": "BHA"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Assists: 4",
+     "value": 4.0,
+     "athlete": {
+      "id": "102368",
+      "displayName": "Evanilson",
+      "team": {
+       "id": "349",
+       "displayName": "AFC Bournemouth",
+       "abbreviation": "BOU"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Assists: 4",
+     "value": 4.0,
+     "athlete": {
+      "id": "303748",
+      "displayName": "Florian Wirtz",
+      "team": {
+       "id": "364",
+       "displayName": "Liverpool",
+       "abbreviation": "LIV"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Assists: 4",
+     "value": 4.0,
+     "athlete": {
+      "id": "162843",
+      "displayName": "John McGinn",
+      "team": {
+       "id": "362",
+       "displayName": "Aston Villa",
+       "abbreviation": "AVL"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Assists: 4",
+     "value": 4.0,
+     "athlete": {
+      "id": "307657",
+      "displayName": "Jaidon Anthony",
+      "team": {
+       "id": "337",
+       "displayName": "Brentford",
+       "abbreviation": "BRE"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 9, Assists: 4",
+     "value": 4.0,
+     "athlete": {
+      "id": "328238",
+      "displayName": "Bradley Barcola",
+      "team": {
+       "id": "364",
+       "displayName": "Liverpool",
+       "abbreviation": "LIV"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Assists: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "219362",
+      "displayName": "Daichi Kamada",
+      "team": {
+       "id": "384",
+       "displayName": "Crystal Palace",
+       "abbreviation": "CRY"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Assists: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "296395",
+      "displayName": "Cole Palmer",
+      "team": {
+       "id": "363",
+       "displayName": "Chelsea",
+       "abbreviation": "CHE"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Assists: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "301327",
+      "displayName": "Maxim De Cuyper",
+      "team": {
+       "id": "331",
+       "displayName": "Brighton & Hove Albion",
+       "abbreviation": "BHA"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Assists: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "299910",
+      "displayName": "Josko Gvardiol",
+      "team": {
+       "id": "382",
+       "displayName": "Manchester City",
+       "abbreviation": "MNC"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Assists: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "243396",
+      "displayName": "Morgan Gibbs-White",
+      "team": {
+       "id": "393",
+       "displayName": "Nottingham Forest",
+       "abbreviation": "NFO"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Assists: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "320417",
+      "displayName": "Mohamed Belloumi",
+      "team": {
+       "id": "306",
+       "displayName": "Hull City",
+       "abbreviation": "HUL"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Assists: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "266599",
+      "displayName": "Mohammed Kudus",
+      "team": {
+       "id": "367",
+       "displayName": "Tottenham Hotspur",
+       "abbreviation": "TOT"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 8, Assists: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "249524",
+      "displayName": "Cody Gakpo",
+      "team": {
+       "id": "364",
+       "displayName": "Liverpool",
+       "abbreviation": "LIV"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 8, Assists: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "386992",
+      "displayName": "Johan Manzambi",
+      "team": {
+       "id": "362",
+       "displayName": "Aston Villa",
+       "abbreviation": "AVL"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 7, Assists: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "273292",
+      "displayName": "Antoine Semenyo",
+      "team": {
+       "id": "382",
+       "displayName": "Manchester City",
+       "abbreviation": "MNC"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 7, Assists: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "241077",
+      "displayName": "Ben White",
+      "team": {
+       "id": "359",
+       "displayName": "Arsenal",
+       "abbreviation": "ARS"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 6, Assists: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "284960",
+      "displayName": "João Pedro",
+      "team": {
+       "id": "363",
+       "displayName": "Chelsea",
+       "abbreviation": "CHE"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "318390",
+      "displayName": "Tarik Muharemovic",
+      "team": {
+       "id": "357",
+       "displayName": "Leeds United",
+       "abbreviation": "LEE"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "193010",
+      "displayName": "Oliver McBurnie",
+      "team": {
+       "id": "306",
+       "displayName": "Hull City",
+       "abbreviation": "HUL"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "243386",
+      "displayName": "Harvey Barnes",
+      "team": {
+       "id": "361",
+       "displayName": "Newcastle United",
+       "abbreviation": "NEW"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "265653",
+      "displayName": "Morgan Rogers",
+      "team": {
+       "id": "363",
+       "displayName": "Chelsea",
+       "abbreviation": "CHE"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "192278",
+      "displayName": "Diego Gómez",
+      "team": {
+       "id": "331",
+       "displayName": "Brighton & Hove Albion",
+       "abbreviation": "BHA"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "197717",
+      "displayName": "Dominic Calvert-Lewin",
+      "team": {
+       "id": "357",
+       "displayName": "Leeds United",
+       "abbreviation": "LEE"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "20975",
+      "displayName": "Julio Enciso",
+      "team": {
+       "id": "373",
+       "displayName": "Ipswich Town",
+       "abbreviation": "IPS"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "298329",
+      "displayName": "Riccardo Calafiori",
+      "team": {
+       "id": "359",
+       "displayName": "Arsenal",
+       "abbreviation": "ARS"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "286967",
+      "displayName": "Jack Rudoni",
+      "team": {
+       "id": "388",
+       "displayName": "Coventry City",
+       "abbreviation": "COV"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "387655",
+      "displayName": "Charalambos Kostoulas",
+      "team": {
+       "id": "331",
+       "displayName": "Brighton & Hove Albion",
+       "abbreviation": "BHA"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "259902",
+      "displayName": "Matheus Cunha",
+      "team": {
+       "id": "360",
+       "displayName": "Manchester United",
+       "abbreviation": "MAN"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "336794",
+      "displayName": "Abdoul Ouattara",
+      "team": {
+       "id": "373",
+       "displayName": "Ipswich Town",
+       "abbreviation": "IPS"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "240495",
+      "displayName": "Brandon Thomas-Asante",
+      "team": {
+       "id": "388",
+       "displayName": "Coventry City",
+       "abbreviation": "COV"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "124091",
+      "displayName": "Bruno Fernandes",
+      "team": {
+       "id": "360",
+       "displayName": "Manchester United",
+       "abbreviation": "MAN"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "301894",
+      "displayName": "Igor Thiago",
+      "team": {
+       "id": "337",
+       "displayName": "Brentford",
+       "abbreviation": "BRE"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "104943",
+      "displayName": "Andy Robertson",
+      "team": {
+       "id": "367",
+       "displayName": "Tottenham Hotspur",
+       "abbreviation": "TOT"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "298008",
+      "displayName": "Rayan Cherki",
+      "team": {
+       "id": "382",
+       "displayName": "Manchester City",
+       "abbreviation": "MNC"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 9, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "308979",
+      "displayName": "Amar Dedic",
+      "team": {
+       "id": "361",
+       "displayName": "Newcastle United",
+       "abbreviation": "NEW"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 9, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "268641",
+      "displayName": "Iliman Ndiaye",
+      "team": {
+       "id": "382",
+       "displayName": "Manchester City",
+       "abbreviation": "MNC"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 9, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "245916",
+      "displayName": "Justin Kluivert",
+      "team": {
+       "id": "349",
+       "displayName": "AFC Bournemouth",
+       "abbreviation": "BOU"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 9, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "250787",
+      "displayName": "Phil Foden",
+      "team": {
+       "id": "382",
+       "displayName": "Manchester City",
+       "abbreviation": "MNC"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 8, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "278061",
+      "displayName": "Georginio Rutter",
+      "team": {
+       "id": "331",
+       "displayName": "Brighton & Hove Albion",
+       "abbreviation": "BHA"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 7, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "319431",
+      "displayName": "William Osula",
+      "team": {
+       "id": "361",
+       "displayName": "Newcastle United",
+       "abbreviation": "NEW"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 7, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "366781",
+      "displayName": "Patrick Dorgu",
+      "team": {
+       "id": "360",
+       "displayName": "Manchester United",
+       "abbreviation": "MAN"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 6, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "353951",
+      "displayName": "Jorrel Hato",
+      "team": {
+       "id": "363",
+       "displayName": "Chelsea",
+       "abbreviation": "CHE"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Assists: 1",
+     "value": 1.0,
+     "athlete": {
+      "id": "307069",
+      "displayName": "Carl Rushworth",
+      "team": {
+       "id": "388",
+       "displayName": "Coventry City",
+       "abbreviation": "COV"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Assists: 1",
+     "value": 1.0,
+     "athlete": {
+      "id": "279155",
+      "displayName": "James Hill",
+      "team": {
+       "id": "349",
+       "displayName": "AFC Bournemouth",
+       "abbreviation": "BOU"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Assists: 1",
+     "value": 1.0,
+     "athlete": {
+      "id": "338894",
+      "displayName": "Murillo",
+      "team": {
+       "id": "393",
+       "displayName": "Nottingham Forest",
+       "abbreviation": "NFO"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Assists: 1",
+     "value": 1.0,
+     "athlete": {
+      "id": "106139",
+      "displayName": "Lewis Hall",
+      "team": {
+       "id": "361",
+       "displayName": "Newcastle United",
+       "abbreviation": "NEW"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Assists: 1",
+     "value": 1.0,
+     "athlete": {
+      "id": "305684",
+      "displayName": "Adrien Truffert",
+      "team": {
+       "id": "349",
+       "displayName": "AFC Bournemouth",
+       "abbreviation": "BOU"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Assists: 1",
+     "value": 1.0,
+     "athlete": {
+      "id": "283086",
+      "displayName": "Leif Davis",
+      "team": {
+       "id": "373",
+       "displayName": "Ipswich Town",
+       "abbreviation": "IPS"
+      }
+     }
+    }
+   ]
+  }
+ ]
+}

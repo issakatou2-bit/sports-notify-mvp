@@ -539,13 +539,15 @@ class Screen:
         title=spec['title'].split('　');self.title(title[0],'　'.join(title[1:]))
         rows={r['position']:r for r in spec['rows']}
         shown=[rows[p] for p in sorted({p for a,b in spec['shown'] for p in range(a,b+1) if p in rows})]
+        # 得点王・アシスト王争い：同点は同じ順位が並ぶので、渡された並びのまま出す。
+        if spec.get('player_rows'):shown=list(spec['rows'])
         pages=[shown[i:i+4] for i in range(0,len(shown),4)] or [[]]
         index=page_at(self.t,len(pages));shown=pages[index]
         self.im.info.update(readable_page=index,readable_page_count=len(pages),readable_rows=shown)
         labels=dict(spec.get('lines',[]))
         top=442;bottom=BODY_BOTTOM-106 if spec.get('gap') else BODY_BOTTOM
         height=(bottom-top)//max(1,len(shown))
-        for x,label,width in [(96,'順位',100),(220,'クラブ',420),(710,'試合',90),(830,'勝点',100)]:
+        for x,label,width in spec.get('columns') or [(96,'順位',100),(220,'クラブ',420),(710,'試合',90),(830,'勝点',100)]:
             self.text(x,390,label,30,width,c.MUTED,role='supplement')
         visible_rows=[]
         for i,row in enumerate(shown):
@@ -556,7 +558,11 @@ class Screen:
             y=top+i*height;self.panel(y,y+height-14)
             if row['team']==spec.get('primary'):
                 ImageDraw.Draw(self.im).rectangle((L,y,L+8,y+height-14),fill=c.LIME)
-            self.name(220,y+38,row['team'],450,44 if row['team']==spec.get('primary') else 40)
+            if row.get('player'):
+                # 選手名（札なし）と所属クラブ。クラブ名は補足の大きさ（30px）で下に。
+                self.text(220,y+26,row['team'],44 if row['team']==spec.get('primary') else 40,470)
+                self.text(220,y+96,row['club'],30,470,c.MUTED,role='supplement')
+            else:self.name(220,y+38,row['team'],450,44 if row['team']==spec.get('primary') else 40)
             if values:
                 self.text(100,y+44,row['position'],60,90,number=True)
                 if row.get('played') is not None:self.text(714,y+44,row['played'],60,80,number=True)

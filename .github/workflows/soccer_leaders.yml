@@ -1,0 +1,362 @@
+name: 欧州サッカー　得点王・アシスト王争い
+
+# 欧州5大リーグの得点王・アシスト王争いショート。
+#
+# なぜこの枠を作るか:
+#   順位争い（soccer_race）は勝点の話で、個人の数字は扱っていない。
+#   得点王・アシスト王は「誰が何点か」を確かめに戻ってくる種類の画面で、
+#   順位表と同じくシーズン中ずっと材料がある。
+#
+# いつ出すか:
+#   **動きがあった日だけ1本。** 首位交代・首位タイ・2位との差が
+#   2以上に開く/1以内に詰まる・日本人が上位10入り/順位上昇、のどれか。
+#   動きが無ければ材料だけ残して終わる（picked=[]）。
+#
+#   同じリーグ・同じ部門は7日に1本まで。全体でも1日1本。
+#   日本人の動きがあれば、その部門を先に選ぶ。
+#
+# 公開について:
+#   vars.COLLESPO_LEADERS_PUBLISH が 'true' の時だけ公開する。
+#   既定は見本のみ。cron は増やさず、19時のサッカー枠の後に走らせる。
+#   見本の回は本番の状態を消費しない（build/ 側の写しを使う）。
+
+on:
+  workflow_run:
+    workflows: ["毎日 19:00　欧州サッカー"]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      sample_only:
+        description: 見本のmp4だけを保存する（公開・SNS・台帳・コミット・通知なし）
+        type: boolean
+        required: false
+        default: true
+      only:
+        description: '部門を指定して作る（例 PL:goals / SA:assists）。動きが無くても今の順位だけで作る。空なら動きがある部門を自動で選ぶ'
+        required: false
+        default: ''
+      privacy:
+        description: '公開設定 (private / unlisted / public)'
+        required: false
+        default: 'public'
+      upload:
+        description: 'YouTubeへ上げるか'
+        required: false
+        default: 'true'
+      publish_at:
+        description: '公開時刻 (HH:MM、空なら 20:45)'
+        required: false
+        default: ''
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: soccer-leaders
+  cancel-in-progress: false
+
+env:
+  COLLESPO_SAMPLE_ONLY: ${{ inputs.sample_only && 'true' || 'false' }}
+  COLLESPO_LEADERS_PUBLISH: ${{ vars.COLLESPO_LEADERS_PUBLISH || 'false' }}
+  COLLESPO_HOST_SPLIT: ${{ vars.COLLESPO_HOST_SPLIT || '' }}
+  COLLESPO_UI_VOICE_STOCK: ${{ vars.COLLESPO_UI_VOICE_STOCK || '' }}
+  COLLESPO_UI_PARTS_KEY: ${{ secrets.COLLESPO_UI_PARTS_KEY }}
+  COLLESPO_UI_VOICE_WAIT_MINUTES: ${{ vars.COLLESPO_UI_VOICE_WAIT_MINUTES || '15' }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      # 見た目は順位争い（soccer_race）の本番と同じ新しい見た目に固定する。
+      # 変数からは読まない（変数が無い・古い時に旧い見た目で描かれた事故の再発防止。11/25 本人）。
+      COLLESPO_SOCCER_LOOK: v6
+      COLLESPO_SOCCER_FOCUS: 'on'
+      COLLESPO_STYLE: v2
+      COLLESPO_SHORT_LOOK: v4
+      COLLESPO_BUBBLE: ${{ vars.COLLESPO_BUBBLE || '' }}
+      COLLESPO_MOTION: ${{ vars.COLLESPO_MOTION || '' }}
+      COLLESPO_CAPTION_BREAKS: ${{ vars.COLLESPO_CAPTION_BREAKS || '' }}
+      COLLESPO_SLANT_VARIANT: ${{ vars.COLLESPO_SLANT_VARIANT || 'cream' }}
+      COLLESPO_GLASS_BACKGROUND: ${{ vars.COLLESPO_GLASS_BACKGROUND || 'stripes' }}
+      COLLESPO_OUTRO_NEXT: ${{ vars.COLLESPO_OUTRO_NEXT == 'on' && 'on' || 'off' }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Ignore a sample-only source run
+        id: sample_source
+        if: github.event_name == 'workflow_run'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_RUN: ${{ github.event.workflow_run.id }}
+        run: python scripts/sample_source.py --source-run "$SOURCE_RUN" --github-output "$GITHUB_OUTPUT"
+      - uses: actions/setup-python@v5
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true')
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true')
+        run: |
+          pip install -r scripts/requirements.txt
+          pip install pillow google-api-python-client google-auth imageio_ffmpeg
+
+      # 見本の回は本番の状態を読むが、書き戻さない。
+      - name: Keep the sample state separate
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && inputs.sample_only
+        run: |
+          mkdir -p build
+          cp data/soccer_leaders_state.json build/leaders_state_sample.json
+
+      # 5大リーグの得点・アシスト上位を取り、前回の状態と比べる。
+      # 動きが無ければ count=0 で、この後の動画づくりは全部飛ばす。
+      - name: Build the leaders material
+        id: leaders
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true')
+        run: |
+          STATE=data/soccer_leaders_state.json
+          if [ "${{ inputs.sample_only }}" = "true" ]; then
+            STATE=build/leaders_state_sample.json
+          fi
+          python scripts/soccer_leaders.py \
+            --out data/soccer_leaders.json \
+            --race-out build/leaders_race.json \
+            --only "${{ inputs.only }}" \
+            --state "$STATE" \
+            --github-output "$GITHUB_OUTPUT" | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: Install video tools
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && steps.leaders.outputs.count == '1'
+        timeout-minutes: 16
+        run: bash scripts/install_video_tools.sh
+
+      - name: Start VOICEVOX engine
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && steps.leaders.outputs.count == '1'
+        continue-on-error: true
+        run: |
+          docker run -d --rm -p 50021:50021 --name voicevox \
+            voicevox/voicevox_engine:cpu-latest || \
+            echo "::warning::VOICEVOXの起動に失敗しました"
+          for i in $(seq 1 30); do
+            if curl -s http://127.0.0.1:50021/version > /dev/null; then
+              echo "VOICEVOX ready"; break
+            fi
+            sleep 2
+          done
+
+      # 台本は順位争いと同じ入口（generate_morning_short --mode soccer_race）から作る。
+      # 材料に leaders があると、ずんだもんが問い・めたんが数字で答える台本になる。
+      - name: Write the script
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && steps.leaders.outputs.count == '1'
+        run: |
+          python scripts/generate_morning_short.py \
+            --mode soccer_race --race build/leaders_race.json \
+            --narration-out build/leaders_narration.json
+
+      - name: Synthesize narration
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && steps.leaders.outputs.count == '1'
+        run: |
+          python scripts/synthesize_narration.py \
+            --narration build/leaders_narration.json \
+            --out-dir build/leaders_audio
+
+      - name: Fill short narration from unused facts
+        id: length
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && steps.leaders.outputs.count == '1'
+        run: python scripts/soccer_minimum.py --mode race --data build/leaders_race.json --narration build/leaders_narration.json --audio-dir build/leaders_audio
+
+      - name: Sanity check
+        id: sanity
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && steps.length.outputs.skip != 'true' && steps.leaders.outputs.count == '1'
+        continue-on-error: true
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          python scripts/sanity.py --general --strict \
+            --narration build/leaders_narration.json \
+            --out data/sanity_leaders.json \
+            --hold-record build/sanity_hold_leaders.json \
+            --kind soccer_leaders
+
+      - name: Build the video
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && steps.length.outputs.skip != 'true' && steps.leaders.outputs.count == '1' && steps.sanity.outcome == 'success'
+        run: |
+          python scripts/generate_morning_short.py \
+            --mode soccer_race --race build/leaders_race.json \
+            --narration build/leaders_narration.json \
+            --audio-dir build/leaders_audio --out build/leaders --require-audio
+
+      - name: Vertical thumbnail
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && steps.length.outputs.skip != 'true' && steps.leaders.outputs.count == '1' && steps.sanity.outcome == 'success'
+        continue-on-error: true
+        run: |
+          bash scripts/shorts_thumbnail.sh \
+            build/leaders/collespo_morning_soccer_race.mp4 build/leaders/short.png
+
+      # 公開は変数で明示された時だけ。見本・手動停止・検査失敗は上げない。
+      - name: Upload to YouTube
+        id: upload
+        if: >-
+          (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') &&
+          env.COLLESPO_LEADERS_PUBLISH == 'true' &&
+          steps.length.outputs.skip != 'true' &&
+          steps.leaders.outputs.count == '1' &&
+          steps.sanity.outcome == 'success' &&
+          (github.event_name != 'workflow_dispatch' ||
+           (inputs.sample_only != true && inputs.upload == 'true'))
+        continue-on-error: true
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+          BLUESKY_HANDLE: ${{ secrets.BLUESKY_HANDLE }}
+        run: |
+          AT="${{ inputs.publish_at }}"
+          [ -n "$AT" ] || AT="20:45"
+          python scripts/upload_youtube.py \
+            --video build/leaders/collespo_morning_soccer_race.mp4 \
+            --kind soccer_leaders --sport soccer \
+            --narration build/leaders_narration.json \
+            --thumbnail build/leaders/short.png \
+            --privacy "${{ inputs.privacy || 'public' }}" --publish-at "$AT"
+
+      # 出した部門だけを記録する。作っただけ・見本の回では消費しない。
+      - name: Remember the section
+        if: >-
+          (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') &&
+          steps.upload.outcome == 'success' &&
+          steps.leaders.outputs.key != ''
+        run: |
+          python scripts/soccer_leaders.py \
+            --state data/soccer_leaders_state.json \
+            --mark-published "${{ steps.leaders.outputs.key }}"
+
+      - name: Keep the video
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (always())
+        uses: actions/upload-artifact@v4
+        with:
+          name: soccer-leaders
+          path: |
+            data/sanity*.json
+            build/sanity*hold*.json
+            data/soccer_leaders.json
+            data/soccer_leaders_state.json
+            build/leaders_race.json
+            build/leaders_narration.json
+            build/leaders/collespo_morning_soccer_race.mp4
+            build/leaders/short.png
+            !build/**/portrait/**
+          if-no-files-found: warn
+
+      # 動きが無い日も、前回との比べに使う上位を残す。
+      # **ここを count == '1' にすると、土台が空のまま更新されない。**
+      - name: Commit the material
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && ((github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (always()))
+        run: |
+          bash scripts/commit_data.sh \
+            "soccer leaders: ${{ github.run_id }}" \
+            data/soccer_leaders.json data/soccer_leaders_state.json \
+            data/published_videos.json data/token_usage.json             data/morning_recap.json data/player_profile.json
+
+      - name: Keep unsaved data records
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && ((github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (always() && hashFiles('build/data-save-recovery/**/FAILED') != ''))
+        uses: actions/upload-artifact@v4
+        with:
+          name: unsaved-data-${{ github.job }}-${{ github.run_attempt }}
+          path: |
+            build/data-save-recovery/
+            !build/**/portrait/**
+          retention-days: 14
+          if-no-files-found: error
+
+      - name: Save quota-exceeded thumbnails
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && ((github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (always() && hashFiles('build/thumbnail_pending/**') != ''))
+        uses: actions/upload-artifact@v4
+        with:
+          name: thumbnail-pending
+          path: |
+            build/thumbnail_pending/
+            !build/**/portrait/**
+          retention-days: 3
+          if-no-files-found: ignore
+
+      - name: Save sanity gate records
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (always())
+        uses: actions/upload-artifact@v4
+        with:
+          name: sanity-gate-${{ github.job }}
+          path: |
+            data/sanity*.json
+            build/sanity*hold*.json
+            !build/**/portrait/**
+          retention-days: 14
+
+      - name: Save voice and render records
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (always())
+        uses: actions/upload-artifact@v4
+        with:
+          name: voice-render-records-${{ github.job }}-${{ github.run_attempt }}
+          path: |
+            build/**/voice_manifest.json
+            build/**/render_timeline.json
+            !build/**/portrait/**
+          retention-days: 14
+          if-no-files-found: ignore
+
+      - name: Say what happened
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (always())
+        run: |
+          {
+            echo "## 得点王・アシスト王争い"
+            echo
+            echo "- 対象: ${{ steps.leaders.outputs.code }} ${{ steps.leaders.outputs.key }}"
+            echo "- 題: ${{ steps.leaders.outputs.title }}"
+            if [ -f build/leaders/collespo_morning_soccer_race.mp4 ]; then
+              echo "- 動画: $(du -h build/leaders/collespo_morning_soccer_race.mp4 | cut -f1)"
+            else
+              echo "- 動画: なし（動きが無いか、作りませんでした）"
+            fi
+            echo "- 公開変数: $COLLESPO_LEADERS_PUBLISH / 投稿: ${{ inputs.upload }}"
+            echo
+            echo '### 読み上げ'
+            echo
+            echo '```'
+            python - <<'PY'
+          import json, pathlib
+          try:
+              d = json.loads(pathlib.Path("build/leaders_narration.json")
+                             .read_text(encoding="utf-8"))
+              for s in d.get("segments", []):
+                  print("[%s] %s" % (s.get("kind", "?"), s.get("text", "")))
+          except Exception as e:
+              print("(原稿を読めません: %s)" % e)
+          PY
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Mark sample-only execution
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (always() && inputs.sample_only)
+        run: python scripts/sample_only.py --mark build/sample_only.json
+      - name: Save sample video
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && (always() && inputs.sample_only)
+        uses: actions/upload-artifact@v4
+        with:
+          name: sample-soccer_leaders
+          path: |
+            build/sample_only.json
+            build/leaders_narration.json
+            build/**/*.mp4
+            build/**/audio_mix.json
+            !build/**/portrait/**
+          if-no-files-found: warn
+          retention-days: 7
+      - name: Preserve inherited sample-only marker
+        if: always() && steps.sample_source.outputs.allowed == 'false'
+        uses: actions/upload-artifact@v4
+        with:
+          name: sample-inherited-${{ github.job }}
+          path: |
+            build/sample_only.json
+            !build/**/portrait/**
+          if-no-files-found: error
+          retention-days: 3

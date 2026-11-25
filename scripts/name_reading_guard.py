@@ -264,8 +264,12 @@ def particle_repairs(original, query):
         kana=normalized_kana(row['reading'])
         if not kana or not any(c in PARTICLE_MORAS for c in kana):continue
         spans=[i for i in range(len(raw)-len(kana)+1) if i in boundaries and i+len(kana) in boundaries]
-        if any(normalized_kana(raw[i:i+len(kana)])==kana for i in spans):continue
+        # 同じ名前が2回出て、1回目は正しく2回目だけ助詞で読まれることがある（11/25 19:00
+        # 「クラブ・ブルッヘ対…」は正しく、「クラブ・ブルッヘは」が「ブルッエワ」になって止まった）。
+        # 正しく読めた所は飛ばし、読み違えた所をすべて直す。
+        done=-1
         for i in spans:
+            if i<done or normalized_kana(raw[i:i+len(kana)])==kana:continue
             seg=list(raw[i:i+len(kana)]);fix=[]
             for j,c in enumerate(kana):
                 said=PARTICLE_MORAS.get(c,(None,))[0]
@@ -273,8 +277,9 @@ def particle_repairs(original, query):
                 if said and seg[j]==said and i+j in boundaries and i+j+1 in boundaries:
                     seg[j]=c;fix.append((owners[i+j],c))
             if fix and normalized_kana(''.join(seg))==kana:
-                out.extend(fix);break
-    return out
+                out.extend(fix);done=i+len(kana)
+    # 同じ名前は行ごとに数えられるので、同じ拍の直しを重ねない。
+    return list(dict.fromkeys(out))
 
 
 def repair_particle_moras(original, query, speaker, url):

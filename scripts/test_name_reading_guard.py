@@ -179,6 +179,12 @@ class ParticleMoras(unittest.TestCase):
         self.assertEqual(''.join(m['text'] for p in fixed['accent_phrases'] for m in p['moras']),'ピイエスブイタイクラブブルッヘ')
         guard.validate_query('PSV対クラブ・ブルッヘ。',fixed,check_phrases=False)
 
+    def test_second_mention_read_as_particle_is_restored(self):
+        # 11/25 19:00：1回目「クラブ・ブルッヘ対」は正しく、2回目「クラブ・ブルッヘは」だけ「ブルッエワ」になって止まった。
+        q=query('クラブブルッヘタイリバプウルクラブブルッエワカチ')
+        fixes=guard.particle_repairs('クラブ・ブルッヘ対リバプール。クラブ・ブルッヘは勝ち',q)
+        self.assertEqual([c for _,c in fixes],['ヘ'])
+
     def test_other_misreadings_still_stop(self):
         q=query('ピイエスブイタイクラブブリッヘ')
         self.assertEqual(guard.particle_repairs('PSV対クラブ・ブルッヘ。',q),[])
