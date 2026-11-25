@@ -157,7 +157,10 @@ def frame(t, seg, doc, clubs, index=0, count=1, *, opening_hook=None):
         rows = [(label, chr(10).join(balanced_lines(value, size, readable.R - readable.L - 56))) for label, value in rows]
 
     if topics.is_followup(meta.get('topic')) and meta.get('big'):
-        facts = rows if doc.get('program') == topics.MLB_PROGRAM else [tuple(r) for r in meta['rows']]
+        facts = [tuple(r) for r in meta['rows']]
+        # MLB は出典の行を外すだけ。折り返しは big_fact_screen で1回（2回折ると改行を測って Linux の raqm が落ちる）。
+        if doc.get('program') == topics.MLB_PROGRAM:
+            facts = [row for row in facts if row[0] != '出典']
         return big_fact_screen(s, meta['head'], meta['big'], facts, spec, sub)
     if meta.get('compare'):
         cmp = meta['compare']
