@@ -25,8 +25,13 @@ CREDIT = '音声: VOICEVOX:ずんだもん・四国めたん　出典: ESPN'
 CTA = '高評価・チャンネル登録で応援を'
 
 
-def credit(doc):
+def credit(doc, panel=None):
     """画面の出典。試合後の声は記事の媒体を先に出す（ESPN は試合結果だけ）。"""
+    if doc.get('program') == topics.MLB_PROGRAM:
+        voice = '音声: VOICEVOX:ずんだもん・四国めたん'
+        if panel is None:
+            return voice
+        return voice + '　出典: ' + doc['followup_material']['items'][panel]['source_names']
     if doc.get('credit'):
         return doc['credit']  # 欧州の注目試合（soccer_stake）は台本が出典を持つ。
     names = []
@@ -46,6 +51,8 @@ def credit(doc):
 
 
 def clubs_for(doc):
+    if doc.get('program') == topics.MLB_PROGRAM:
+        return {}
     if doc.get('clubs'):
         return doc['clubs']
     c = doc['topic_summary']['header']['competitions'][0]
@@ -120,29 +127,38 @@ def frame(t, seg, doc, clubs, index=0, count=1, *, opening_hook=None):
     hook = opening_hook or meta.get('hook')
     label = doc.get('screen_title') or '日本代表'
     s.im = cards.canvas(0 if hook else s.t, clubs, label)
+    if doc.get('program') == topics.MLB_PROGRAM:
+        import short_v4_cards
+        short_v4_cards.pinstripe_badge(s.im, cards.L + 400, 163, doc['team_id'], 108, 54)
     s.im.info.update(soccer_readable=True, semantic_items=[], readable_motion='v2 右から0.28秒・説明中停止・左へ0.14秒')
-    spec = dict(source=credit(doc), title=label, presenter='zundamon' if asking else 'metan',
+    spec = dict(source=credit(doc, meta.get('panel')), title=label, presenter='zundamon' if asking else 'metan',
                 slide_in=asking, slide_out=not asking)
     if hook:
         spec.update(slide_in=False, slide_out=False)
         return hook_screen(s, hook, spec)
-    if meta.get('sub'):
+    if doc.get('program') == topics.MLB_PROGRAM:
+        sub = '移籍報道'
+    elif meta.get('sub'):
         sub = meta['sub']
     else:
         other = next(n for n in clubs if n != '日本')
         sub = f'日本対{other}' + ('' if meta.get('topic') == 'rematch' else '　親善試合')
     rows = [tuple(r) for r in meta['rows']]
+    if doc.get('program') == topics.MLB_PROGRAM:
+        rows = [row for row in rows if row[0] != '出典']
     # その後の話題も値を釣り合いよく折る（Argon 11/15「ヴォルフスブル／ク」の1字だけの改行）。
     if topics.is_reactions(meta.get('topic')) or meta.get('quote') or topics.is_followup(meta.get('topic')):
         if topics.is_reactions(meta.get('topic')):
             sub = f'日本対{other}　試合後'
     if topics.is_followup(meta.get('topic')):
-        sub = '日本代表　その後'
+        if doc.get('program') != topics.MLB_PROGRAM:
+            sub = '日本代表　その後'
         size = 72 if len(rows) == 1 else 64
         rows = [(label, chr(10).join(balanced_lines(value, size, readable.R - readable.L - 56))) for label, value in rows]
 
     if topics.is_followup(meta.get('topic')) and meta.get('big'):
-        return big_fact_screen(s, meta['head'], meta['big'], [tuple(r) for r in meta['rows']], spec, sub)
+        facts = rows if doc.get('program') == topics.MLB_PROGRAM else [tuple(r) for r in meta['rows']]
+        return big_fact_screen(s, meta['head'], meta['big'], facts, spec, sub)
     if meta.get('compare'):
         cmp = meta['compare']
         return s.national_compare(meta['head'], cmp['rows'], cmp['teams'], spec, sub)
@@ -167,21 +183,22 @@ def hook_screen(s, hook, spec):
     cards.rec(s.im, 'card', (readable.R - chip, 254, readable.R, 322))
     s.text(readable.R - chip + 24, 266, hook['result'], 40, chip, cards.DARK if win or hook['result'] != '敗戦' else (40, 8, 8), role='supplement')
     big, unit = str(hook['big']), hook['unit']
-    for size in (300, 260, 220, 180, 150):
-        bw = cards.measure(big, size, True)[1]
+    numeral = big.isascii()
+    for size in (300, 260, 220, 180, 150, 120):
+        bw = cards.measure(big, size, numeral)[1]
         uw = cards.measure(unit, 72)[1]
         if bw + 24 + uw <= 800:
             break
     # 中身の高さに合わせた箱を、本文の領域の真ん中に置く（下が空いた箱にしない）。
     subject_h = len(cards.lines(hook['subject'], 68, 800)) * 80
-    b = cards.measure(big, size, True)[2]
+    b = cards.measure(big, size, numeral)[2]
     big_h = b[3] - b[1]
     note_h = len(cards.lines(hook['note'], 48, 800)) * 60 + 48 if hook.get('note') else 0
     height = 56 + subject_h + 40 + big_h + note_h + 56
     top = readable.BODY_TOP + (readable.BODY_BOTTOM - readable.BODY_TOP - height) // 2
     s.panel(top, top + height)
     y = s.lines(100, top + 56, hook['subject'], 68, 800, role='national_fact')
-    box = s.text(100, y + 40, big, size, 800, accent, True, role='national_fact')
+    box = s.text(100, y + 40, big, size, 800, accent, numeral, role='national_fact')
     s.text(box[2] + 24, box[3] - 84, unit, 72, 800 - (box[2] - 100) - 24, accent, role='national_fact')
     if hook.get('note'):
         s.lines(100, box[3] + 48, hook['note'], 48, 800, cards.MUTED, 'supplement')
@@ -197,10 +214,11 @@ def big_fact_screen(s, head, big, rows, spec, sub):
     import soccer_v5_cards as cards
     s.title(head, sub)
     value, unit = str(big['value']), big['unit']
+    numeral = value.isascii()
     for size in (240, 210, 180, 150, 120):
-        if cards.measure(value, size, True)[1] + 24 + cards.measure(unit, 64)[1] <= 800:
+        if cards.measure(value, size, numeral)[1] + 24 + cards.measure(unit, 64)[1] <= 800:
             break
-    b = cards.measure(value, size, True)[2]
+    b = cards.measure(value, size, numeral)[2]
     big_height = 18 + 30 + 32 + (b[3] - b[1]) + 44
     rsize, width = 48, readable.R - readable.L - 56
     rows = [(label, chr(10).join(balanced_lines(v, rsize, width))) for label, v in rows]
@@ -211,9 +229,10 @@ def big_fact_screen(s, head, big, rows, spec, sub):
     top = readable.BODY_TOP + (readable.BODY_BOTTOM - readable.BODY_TOP - height) // 2
     s.panel(top, top + big_height)
     s.text(100, top + 18, big['label'], 30, 800, cards.MUTED, role='supplement')
-    box = s.text(100, top + 80, value, size, 800, cards.LIME, True, role='national_fact')
-    ub = cards.measure(unit, 64)[2]
-    s.text(box[2] + 24, box[3] - (ub[3] - ub[1]), unit, 64, 800 - (box[2] - 100) - 24, cards.LIME, role='national_fact')
+    box = s.text(100, top + 80, value, size, 800, cards.LIME, numeral, role='national_fact')
+    if unit:
+        ub = cards.measure(unit, 64)[2]
+        s.text(box[2] + 24, box[3] - (ub[3] - ub[1]), unit, 64, 800 - (box[2] - 100) - 24, cards.LIME, role='national_fact')
     y = top + big_height + 24
     for (label, v), h in zip(rows, heights):
         s.panel(y, y + h)
@@ -309,9 +328,10 @@ def render(narr, audio, out, *, sample=False):
     segments = narr['segments']
     frame_counts = [math.ceil(t * FPS) for t in common.durations(segments, audio)]
     times = [count / FPS for count in frame_counts]
-    if sum(times) > topics.LIMIT:
-        raise ValueError(f'{topics.LIMIT}秒を超えます: {sum(times):.2f}秒')
-    short_content.require(narr, times, out, None, maximum=topics.LIMIT, video_name=VIDEO)
+    limit = topics.MLB_LIMIT if narr.get('program') == topics.MLB_PROGRAM else topics.LIMIT
+    if sum(times) > limit:
+        raise ValueError(f'{limit}秒を超えます: {sum(times):.2f}秒')
+    short_content.require(narr, times, out, None, maximum=limit, video_name=VIDEO)
     track = vc.build_narration_track(audio, times, out)
     if not track:
         raise ValueError('実音声なし')
