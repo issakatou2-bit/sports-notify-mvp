@@ -85,17 +85,17 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      COLLESPO_SOCCER_FOCUS: ${{ vars.COLLESPO_SOCCER_FOCUS == 'on' && 'on' || 'off' }}
+      COLLESPO_SOCCER_FOCUS: 'on'
       # サッカーの3枠は専用の変数で切り替える（本人が試作を見てから COLLESPO_SOCCER_LOOK=v4。10/10 エマ）
       COLLESPO_BUBBLE: ${{ vars.COLLESPO_BUBBLE || '' }}
-      COLLESPO_STYLE: ${{ vars.COLLESPO_STYLE || '' }}
+      COLLESPO_STYLE: v2
       COLLESPO_MOTION: ${{ vars.COLLESPO_MOTION || '' }}
       COLLESPO_CAPTION_BREAKS: ${{ vars.COLLESPO_CAPTION_BREAKS || '' }}
       COLLESPO_SLANT_VARIANT: ${{ vars.COLLESPO_SLANT_VARIANT || 'cream' }}
       COLLESPO_GLASS_BACKGROUND: ${{ vars.COLLESPO_GLASS_BACKGROUND || 'stripes' }}
       COLLESPO_OUTRO_NEXT: ${{ vars.COLLESPO_OUTRO_NEXT == 'on' && 'on' || 'off' }}
-      COLLESPO_SHORT_LOOK: ${{ vars.COLLESPO_SOCCER_LOOK || 'v3' }}
-      COLLESPO_SOCCER_LOOK: ${{ vars.COLLESPO_SOCCER_LOOK || 'v3' }}
+      COLLESPO_SHORT_LOOK: v6
+      COLLESPO_SOCCER_LOOK: v6
     steps:
       - uses: actions/checkout@v4
       - name: Ignore a sample-only source run

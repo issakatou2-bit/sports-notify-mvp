@@ -38,7 +38,7 @@ env:
   COLLESPO_SAMPLE_ONLY: ${{ (github.event_name == 'workflow_dispatch' && !inputs.publish && inputs.sample_only) && 'true' || 'false' }}
   PUBLISH: ${{ (github.event_name == 'schedule' || inputs.publish) && 'true' || 'false' }}
   COLLESPO_LONGFORM_STYLE: v3
-  COLLESPO_STYLE: ${{ vars.COLLESPO_STYLE || '' }}
+  COLLESPO_STYLE: v2
 
 jobs:
   render:

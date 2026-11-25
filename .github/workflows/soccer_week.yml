@@ -36,17 +36,17 @@ jobs:
     if: github.event_name == 'workflow_dispatch' || vars.COLLESPO_SOCCER_WEEK == 'on'
     runs-on: ubuntu-latest
     env:
-      COLLESPO_SOCCER_FOCUS: ${{ vars.COLLESPO_SOCCER_FOCUS == 'on' && 'on' || 'off' }}
+      COLLESPO_SOCCER_FOCUS: 'on'
       COLLESPO_SOCCER_WEEK: ${{ vars.COLLESPO_SOCCER_WEEK || 'off' }}
       COLLESPO_BUBBLE: ${{ vars.COLLESPO_BUBBLE || '' }}
-      COLLESPO_STYLE: ${{ vars.COLLESPO_STYLE || '' }}
+      COLLESPO_STYLE: v2
       COLLESPO_MOTION: ${{ vars.COLLESPO_MOTION || '' }}
       COLLESPO_CAPTION_BREAKS: ${{ vars.COLLESPO_CAPTION_BREAKS || '' }}
       COLLESPO_SLANT_VARIANT: ${{ vars.COLLESPO_SLANT_VARIANT || 'cream' }}
       COLLESPO_GLASS_BACKGROUND: ${{ vars.COLLESPO_GLASS_BACKGROUND || 'stripes' }}
       COLLESPO_OUTRO_NEXT: ${{ vars.COLLESPO_OUTRO_NEXT == 'on' && 'on' || 'off' }}
       COLLESPO_SHORT_LOOK: v4
-      COLLESPO_SOCCER_LOOK: ${{ vars.COLLESPO_SOCCER_LOOK || 'v5' }}
+      COLLESPO_SOCCER_LOOK: v6
     steps:
       - uses: actions/checkout@v4
 
