@@ -451,7 +451,8 @@ def v4_program(data: dict) -> dict:
             row["name_jp"], row["value"], unit))
     primary = leader["name_jp"]
     table_title = "%s　%s" % (league, label)
-    if info.get("baseline_date"):
+    # 前回の日付は、今日より前の時だけ出す（11/25 見本で「前回は11月25日」と当日が出た）。
+    if info.get("baseline_date") and info["baseline_date"][:10] < (data.get("date_jst") or "9999")[:10]:
         # 比べの基準の日付を画面に出す（前回の記録があるときだけ）
         d = date.fromisoformat(info["baseline_date"])
         table_title += "　前回は%d月%d日" % (d.month, d.day)
