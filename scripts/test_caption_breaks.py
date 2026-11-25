@@ -59,6 +59,17 @@ class CaptionBreaks(unittest.TestCase):
         for unit in ('3打数','1回3分の1','23時00分','3対2','1被安打','6奪三振','.280','38.4%','9月19日','2得点','1アシスト','3ホールド','2四球','150球'):
             self.assertEqual(cb.phrases(unit),(unit,))
 
+    def test_long_club_pair_breaks_before_versus_and_fits_short_caption(self):
+        # 11/25 20:00 の毎日の回が「文節が幅に収まりません」で止まった実際の台詞。
+        text='日本時間11月26日5時、アトレティコ・マドリード対バイキング。'
+        self.assertIn('対バイキング。',cb.phrases(text))
+        self.assertTrue(any('3対1' in p for p in cb.phrases('試合は3対1でした。')))
+        import short_cast
+        with patch.dict(os.environ,{'COLLESPO_BUBBLE':'slant'}):
+            short_cast.caption_pages.cache_clear()
+            pages=short_cast.caption_pages((text,))
+        self.assertEqual(''.join(pages),text)
+
     def test_checker_rejects_bad_manual_breaks(self):
         self.assertTrue(cb.violations('3打数',['3','打数']))
         self.assertTrue(cb.violations('1回3分の1',['1回3分','の1']))
