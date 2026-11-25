@@ -725,7 +725,7 @@ def record_kind(kind: str, morning_mode: str = "players",
 # 資産動画(asset)だけは日付ではなく話題で引くので、別の分岐が受け持つ。
 # --kind の選択肢と食い違っていないかは test_consistency が見る。
 DATED_KINDS = ("daily", "morning", "longform", "weekly", "verdict",
-               "soccer_race", "soccer_week", "soccer_results", "soccer_voices", "soccer_national_topic", "mlb_market_topic", "soccer_national", "player_story", "soccer_weekly", "soccer_national_long", "soccer_stake")
+               "soccer_race", "soccer_leaders", "soccer_week", "soccer_results", "soccer_voices", "soccer_national_topic", "mlb_market_topic", "soccer_national", "player_story", "soccer_weekly", "soccer_national_long", "soccer_stake")
 
 
 def published_video(kind: str, date_key: str,
@@ -1420,6 +1420,47 @@ def _soccer_race_lines() -> list:
     return out
 
 
+def _soccer_leaders_lines() -> list:
+    """得点王・アシスト王争いの説明文。画面と同じ数字だけを並べる。"""
+    data = _json_or_empty("data/soccer_leaders.json")
+    story = data.get("story") or {}
+    snap = story.get("snap") or {}
+    if not snap:
+        return []
+    try:
+        import soccer_leaders as _sl
+        unit = _sl.UNIT.get(story.get("section"), "点")
+        label = _sl.SECTION_JP.get(story.get("section"), "得点王")
+    except Exception:                            # noqa: BLE001
+        unit, label = "点", "得点王"
+    out = ["%sの%s争いです。" % (story.get("league_jp", ""), label), ""]
+    for row in (snap.get("top") or [])[:10]:
+        # 日本語の名前が表にある選手だけ（英字のまま出さない）
+        if not row.get("name_jp"):
+            continue
+        out.append("%d位 %s（%s） %s%s %s試合"
+                   % (row.get("rank"), row.get("name_jp"),
+                      row.get("team_jp") or "", row.get("value"), unit,
+                      row.get("matches") or "-"))
+    jp = [r for r in (snap.get("jp") or []) if r.get("name_jp")]
+    if jp:
+        out += ["", "日本人選手"]
+        for row in jp[:4]:
+            out.append("%d位 %s %s%s"
+                       % (row.get("rank"), row.get("name_jp"),
+                          row.get("value"), unit))
+    base = story.get("baseline_date")
+    out += [""]
+    if base:
+        try:
+            d = __import__("datetime").date.fromisoformat(base)
+            out.append("比べの基準は%d月%d日の前回の記録です。" % (d.month, d.day))
+        except ValueError:
+            pass
+    out += ["数字はESPNの今季成績です。同点は同順位で並べています。", ""]
+    return out
+
+
 def club_display_title(title: str) -> str:
     """題のクラブの古い書き方（「マンチェスター・シティ」など）を表示名に（Opus-33、10/14）。
 
@@ -1703,6 +1744,10 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
         title = _soccer_race_title()
         title = (f"{title}【欧州サッカー】#Shorts" if title
                  else f"欧州サッカー 順位争い｜{date_label}#Shorts")
+    elif kind == "soccer_leaders":
+        title = _json_or_empty("data/soccer_leaders.json").get("title") or ""
+        title = (f"{title}【欧州サッカー】#Shorts" if title
+                 else f"欧州サッカー 得点王争い｜{date_label}#Shorts")
     elif kind == "weekly":
         # 週次まとめは横型の通常動画なので #Shorts は付けない。
         #
@@ -1798,7 +1843,7 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
     # 選手名と球団名を新聞の書き方に（「村上宗隆のホワイトソックス」→「村上ホワイトソックス」。10/10 本人）
     import video_titles
     title = video_titles.public_title(title, soccer=(sport == 'soccer' or kind in (
-        'soccer_race', 'soccer_week', 'soccer_results', 'soccer_voices')))
+        'soccer_race', 'soccer_leaders', 'soccer_week', 'soccer_results', 'soccer_voices')))
     import soccer_title_v2
     _title_v2_data = None
     if soccer_title_v2.enabled() and (kind == 'soccer_results' or kind == 'daily' and sport == 'soccer'):
@@ -2045,6 +2090,8 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
                  "区切って見ます。順位と勝ち点はすべて公式の順位表の"
                  "数字です。", ""]
         lines += _soccer_race_lines()
+    elif kind == "soccer_leaders":
+        lines = _soccer_leaders_lines()
     elif kind == "weekly":
         # 10分の動画に1行しか説明が無かった。週次はこのチャンネルの本命で、
         # 検索も関連動画も説明文を読む。中身はアーカイブに全部あるので使う。
@@ -2199,8 +2246,8 @@ def main():
     parser.add_argument("--games", default="notable_games.json")
     parser.add_argument("--kind", default="daily",
                         choices=["daily", "weekly", "asset", "verdict",
-                                 "morning", "longform", "soccer_race",
-                                 "soccer_week", "soccer_results", "soccer_voices", "soccer_national", "soccer_national_topic", "mlb_market_topic", "player_story", "soccer_weekly", "soccer_national_long", "soccer_stake"],
+                                  "morning", "longform", "soccer_race", "soccer_leaders",
+                                  "soccer_week", "soccer_results", "soccer_voices", "soccer_national", "soccer_national_topic", "mlb_market_topic", "player_story", "soccer_weekly", "soccer_national_long", "soccer_stake"],
                         help="daily=ショート / weekly=週次まとめ / "
                              "asset=資産動画 / verdict=答え合わせ / "
                              "morning=夕方の5本 / longform=対話の通常動画 / "

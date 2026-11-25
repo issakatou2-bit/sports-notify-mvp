@@ -570,7 +570,7 @@ KINDS = {
         "why": "",
     },
     "soccer_race": {
-        "workflows": ["soccer_race"],
+        "workflows": ["soccer_race", "soccer_leaders"],
         "render": render_soccer_race,
         "why": "",
     },

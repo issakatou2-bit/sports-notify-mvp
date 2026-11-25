@@ -102,6 +102,10 @@ def preview_program(data):
 
 
 def race_program(data):
+    if data.get('leaders'):
+        # 得点王・アシスト王争い。順位争いと同じ package・同じ画面部品を通る別の台本。
+        import soccer_leaders
+        return soccer_leaders.v4_program(data)
     import soccer_race as race
     picked=[c for c in data.get('competitions',[]) if c.get('code') in data.get('picked',[]) and c.get('ready')]
     if not picked:return package('race',data,[],[], '')
@@ -173,7 +177,7 @@ def package(mode,data,segs,names,head,clubs=None):
     try:
         _d=__import__('datetime').date.fromisoformat(day[:10]);day=f"{_d.month}月{_d.day}日（{'月火水木金土日'[_d.weekday()]}）"
     except ValueError:pass   # 帯は「9月19日（土）」の形（2026-09-18 のような書き方を画面に出さない）
-    shared=dict(label={'preview':'欧州サッカー　予告','race':'欧州サッカー　順位争い','week':'欧州サッカー　日本人選手の週末'}[mode],source='音声: VOICEVOX:四国めたん　出典: '+source,ticker=day+'　'+head)
+    shared=dict(label=data.get('frame_label') or {'preview':'欧州サッカー　予告','race':'欧州サッカー　順位争い','week':'欧州サッカー　日本人選手の週末'}[mode],source='音声: VOICEVOX:四国めたん　出典: '+source,ticker=day+'　'+(data.get('ticker_head') or head))
     import solo_host
     if solo_host.for_segments(segs) == 'ui':
         shared['source'] = solo_host.UI_CREDIT+'　出典: '+source
@@ -186,7 +190,7 @@ def package(mode,data,segs,names,head,clubs=None):
     narration = sanity_sources.attach(narration, data, sport='soccer')
     # 札の配列をJSONの型にそろえ、保存原稿・音声manifestとも同じ値で照合する。
     narration=json.loads(json.dumps(narration,ensure_ascii=False))
-    if mode=='race' and soccer_look.v5():
+    if mode=='race' and soccer_look.v5() and not data.get('leaders'):
         plan=dict(mode=mode,data=data,narration=narration,shared=shared)
         __import__('short_context').slots(plan, modern=True)
         race_details(plan)

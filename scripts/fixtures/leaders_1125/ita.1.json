@@ -1,0 +1,1323 @@
+{
+ "_note": "ESPN statistics の実応答（2026-11-25 17:55 JST 取得）から得点・アシスト上位の必要な欄だけ残した",
+ "season": {
+  "year": 2026,
+  "displayName": "2026-27 Italian Serie A",
+  "type": 14240,
+  "name": "2026-27 Italian Serie A"
+ },
+ "stats": [
+  {
+   "name": "goalsLeaders",
+   "displayName": "Goals",
+   "leaders": [
+    {
+     "displayValue": "Matches: 11, Goals: 12",
+     "value": 12.0,
+     "athlete": {
+      "id": "259481",
+      "displayName": "Donyell Malen",
+      "team": {
+       "id": "104",
+       "displayName": "AS Roma",
+       "abbreviation": "ROMA"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Goals: 11",
+     "value": 11.0,
+     "athlete": {
+      "id": "384482",
+      "displayName": "Gustavo Varela",
+      "team": {
+       "id": "4007",
+       "displayName": "Monza",
+       "abbreviation": "MON"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Goals: 8",
+     "value": 8.0,
+     "athlete": {
+      "id": "319265",
+      "displayName": "Antonio Raimondo",
+      "team": {
+       "id": "4057",
+       "displayName": "Frosinone",
+       "abbreviation": "FRO"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 12, Goals: 7",
+     "value": 7.0,
+     "athlete": {
+      "id": "258158",
+      "displayName": "Nikola Krstovic",
+      "team": {
+       "id": "105",
+       "displayName": "Atalanta",
+       "abbreviation": "ATA"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 12, Goals: 6",
+     "value": 6.0,
+     "athlete": {
+      "id": "362674",
+      "displayName": "Pio Esposito",
+      "team": {
+       "id": "110",
+       "displayName": "Internazionale",
+       "abbreviation": "INT"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Goals: 6",
+     "value": 6.0,
+     "athlete": {
+      "id": "275444",
+      "displayName": "Milutin Osmajic",
+      "team": {
+       "id": "3263",
+       "displayName": "Genoa",
+       "abbreviation": "GEN"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Goals: 6",
+     "value": 6.0,
+     "athlete": {
+      "id": "217331",
+      "displayName": "Marcus Thuram",
+      "team": {
+       "id": "110",
+       "displayName": "Internazionale",
+       "abbreviation": "INT"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Goals: 6",
+     "value": 6.0,
+     "athlete": {
+      "id": "323113",
+      "displayName": "Tijjani Noslin",
+      "team": {
+       "id": "112",
+       "displayName": "Lazio",
+       "abbreviation": "LAZ"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Goals: 6",
+     "value": 6.0,
+     "athlete": {
+      "id": "359754",
+      "displayName": "Alphadjo Cissè",
+      "team": {
+       "id": "103",
+       "displayName": "AC Milan",
+       "abbreviation": "MIL"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 12, Goals: 5",
+     "value": 5.0,
+     "athlete": {
+      "id": "236038",
+      "displayName": "Giacomo Calo",
+      "team": {
+       "id": "4057",
+       "displayName": "Frosinone",
+       "abbreviation": "FRO"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 12, Goals: 5",
+     "value": 5.0,
+     "athlete": {
+      "id": "262071",
+      "displayName": "Tasos Douvikas",
+      "team": {
+       "id": "2572",
+       "displayName": "Como",
+       "abbreviation": "COMO"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 12, Goals: 5",
+     "value": 5.0,
+     "athlete": {
+      "id": "250850",
+      "displayName": "Davide Frattesi",
+      "team": {
+       "id": "112",
+       "displayName": "Lazio",
+       "abbreviation": "LAZ"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 12, Goals: 5",
+     "value": 5.0,
+     "athlete": {
+      "id": "290545",
+      "displayName": "Daniel Maldini",
+      "team": {
+       "id": "2925",
+       "displayName": "Cagliari",
+       "abbreviation": "CAG"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Goals: 5",
+     "value": 5.0,
+     "athlete": {
+      "id": "176203",
+      "displayName": "Adrien Rabiot",
+      "team": {
+       "id": "103",
+       "displayName": "AC Milan",
+       "abbreviation": "MIL"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Goals: 5",
+     "value": 5.0,
+     "athlete": {
+      "id": "387204",
+      "displayName": "Rodrigo Mora",
+      "team": {
+       "id": "104",
+       "displayName": "AS Roma",
+       "abbreviation": "ROMA"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 9, Goals: 5",
+     "value": 5.0,
+     "athlete": {
+      "id": "225607",
+      "displayName": "Christian Pulisic",
+      "team": {
+       "id": "103",
+       "displayName": "AC Milan",
+       "abbreviation": "MIL"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 12, Goals: 4",
+     "value": 4.0,
+     "athlete": {
+      "id": "376473",
+      "displayName": "Franco Mastantuono",
+      "team": {
+       "id": "109",
+       "displayName": "Fiorentina",
+       "abbreviation": "FIO"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 12, Goals: 4",
+     "value": 4.0,
+     "athlete": {
+      "id": "312757",
+      "displayName": "Mateo Pellegrino",
+      "team": {
+       "id": "109",
+       "displayName": "Fiorentina",
+       "abbreviation": "FIO"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 12, Goals: 4",
+     "value": 4.0,
+     "athlete": {
+      "id": "291550",
+      "displayName": "Gustav Isaksen",
+      "team": {
+       "id": "112",
+       "displayName": "Lazio",
+       "abbreviation": "LAZ"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 12, Goals: 4",
+     "value": 4.0,
+     "athlete": {
+      "id": "134947",
+      "displayName": "Kevin De Bruyne",
+      "team": {
+       "id": "114",
+       "displayName": "Napoli",
+       "abbreviation": "NAP"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Goals: 4",
+     "value": 4.0,
+     "athlete": {
+      "id": "213725",
+      "displayName": "Ché Adams",
+      "team": {
+       "id": "239",
+       "displayName": "Torino",
+       "abbreviation": "TOR"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 8, Goals: 4",
+     "value": 4.0,
+     "athlete": {
+      "id": "340678",
+      "displayName": "Diego Moreira",
+      "team": {
+       "id": "103",
+       "displayName": "AC Milan",
+       "abbreviation": "MIL"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 6, Goals: 4",
+     "value": 4.0,
+     "athlete": {
+      "id": "219713",
+      "displayName": "Lautaro Martínez",
+      "team": {
+       "id": "110",
+       "displayName": "Internazionale",
+       "abbreviation": "INT"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 12, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "258307",
+      "displayName": "Bremer",
+      "team": {
+       "id": "111",
+       "displayName": "Juventus",
+       "abbreviation": "JUV"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 12, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "288896",
+      "displayName": "Gonçalo Ramos",
+      "team": {
+       "id": "103",
+       "displayName": "AC Milan",
+       "abbreviation": "MIL"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 12, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "270817",
+      "displayName": "Jurgen Ekkelenkamp",
+      "team": {
+       "id": "118",
+       "displayName": "Udinese",
+       "abbreviation": "UDI"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 12, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "380318",
+      "displayName": "Jacobo Ramón",
+      "team": {
+       "id": "2572",
+       "displayName": "Como",
+       "abbreviation": "COMO"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 12, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "360714",
+      "displayName": "Giorgi Kvernadze",
+      "team": {
+       "id": "4057",
+       "displayName": "Frosinone",
+       "abbreviation": "FRO"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 12, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "296319",
+      "displayName": "Charles De Ketelaere",
+      "team": {
+       "id": "105",
+       "displayName": "Atalanta",
+       "abbreviation": "ATA"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 12, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "180956",
+      "displayName": "Federico Bernardeschi",
+      "team": {
+       "id": "107",
+       "displayName": "Bologna",
+       "abbreviation": "BOL"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 12, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "323974",
+      "displayName": "Matìas Soulè",
+      "team": {
+       "id": "104",
+       "displayName": "AS Roma",
+       "abbreviation": "ROMA"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 12, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "413818",
+      "displayName": "Simone Lontani",
+      "team": {
+       "id": "115",
+       "displayName": "Parma",
+       "abbreviation": "PAR"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "337970",
+      "displayName": "Nico Paz",
+      "team": {
+       "id": "2572",
+       "displayName": "Como",
+       "abbreviation": "COMO"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "309273",
+      "displayName": "Rasmus Højlund",
+      "team": {
+       "id": "114",
+       "displayName": "Napoli",
+       "abbreviation": "NAP"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "311475",
+      "displayName": "Martin Baturina",
+      "team": {
+       "id": "2572",
+       "displayName": "Como",
+       "abbreviation": "COMO"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "360235",
+      "displayName": "Niccolò Pisilli",
+      "team": {
+       "id": "104",
+       "displayName": "AS Roma",
+       "abbreviation": "ROMA"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "367743",
+      "displayName": "Alieu Njie",
+      "team": {
+       "id": "109",
+       "displayName": "Fiorentina",
+       "abbreviation": "FIO"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "355359",
+      "displayName": "Jay Robinson",
+      "team": {
+       "id": "4007",
+       "displayName": "Monza",
+       "abbreviation": "MON"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "170785",
+      "displayName": "Hakan Çalhanoglu",
+      "team": {
+       "id": "110",
+       "displayName": "Internazionale",
+       "abbreviation": "INT"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 9, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "255850",
+      "displayName": "Scott McTominay",
+      "team": {
+       "id": "114",
+       "displayName": "Napoli",
+       "abbreviation": "NAP"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 9, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "344917",
+      "displayName": "Vasilije Adzic",
+      "team": {
+       "id": "3997",
+       "displayName": "Sassuolo",
+       "abbreviation": "SAS"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 7, Goals: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "355997",
+      "displayName": "Samuel Mbangula",
+      "team": {
+       "id": "107",
+       "displayName": "Bologna",
+       "abbreviation": "BOL"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 12, Goals: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "288472",
+      "displayName": "Akor Adams",
+      "team": {
+       "id": "17530",
+       "displayName": "Venezia",
+       "abbreviation": "VEN"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 12, Goals: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "346916",
+      "displayName": "Antoine Hainaut",
+      "team": {
+       "id": "17530",
+       "displayName": "Venezia",
+       "abbreviation": "VEN"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 12, Goals: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "252971",
+      "displayName": "Randal Kolo Muani",
+      "team": {
+       "id": "111",
+       "displayName": "Juventus",
+       "abbreviation": "JUV"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 12, Goals: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "324256",
+      "displayName": "Mikael Ellertsson",
+      "team": {
+       "id": "3263",
+       "displayName": "Genoa",
+       "abbreviation": "GEN"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 12, Goals: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "278210",
+      "displayName": "Éderson",
+      "team": {
+       "id": "105",
+       "displayName": "Atalanta",
+       "abbreviation": "ATA"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 12, Goals: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "272719",
+      "displayName": "Armand Laurienté",
+      "team": {
+       "id": "3997",
+       "displayName": "Sassuolo",
+       "abbreviation": "SAS"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 12, Goals: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "282228",
+      "displayName": "Kenneth Taylor",
+      "team": {
+       "id": "112",
+       "displayName": "Lazio",
+       "abbreviation": "LAZ"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 12, Goals: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "193919",
+      "displayName": "Hassane Kamara",
+      "team": {
+       "id": "118",
+       "displayName": "Udinese",
+       "abbreviation": "UDI"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "name": "assistsLeaders",
+   "displayName": "Assists",
+   "leaders": [
+    {
+     "displayValue": "Matches: 10, Assists: 6",
+     "value": 6.0,
+     "athlete": {
+      "id": "176203",
+      "displayName": "Adrien Rabiot",
+      "team": {
+       "id": "103",
+       "displayName": "AC Milan",
+       "abbreviation": "MIL"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Assists: 5",
+     "value": 5.0,
+     "athlete": {
+      "id": "332354",
+      "displayName": "Wesley",
+      "team": {
+       "id": "104",
+       "displayName": "AS Roma",
+       "abbreviation": "ROMA"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Assists: 5",
+     "value": 5.0,
+     "athlete": {
+      "id": "204669",
+      "displayName": "Mattia Zaccagni",
+      "team": {
+       "id": "112",
+       "displayName": "Lazio",
+       "abbreviation": "LAZ"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Assists: 5",
+     "value": 5.0,
+     "athlete": {
+      "id": "261616",
+      "displayName": "Juan Miranda",
+      "team": {
+       "id": "107",
+       "displayName": "Bologna",
+       "abbreviation": "BOL"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Assists: 5",
+     "value": 5.0,
+     "athlete": {
+      "id": "288488",
+      "displayName": "Nicola Zalewski",
+      "team": {
+       "id": "105",
+       "displayName": "Atalanta",
+       "abbreviation": "ATA"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 12, Assists: 4",
+     "value": 4.0,
+     "athlete": {
+      "id": "360714",
+      "displayName": "Giorgi Kvernadze",
+      "team": {
+       "id": "4057",
+       "displayName": "Frosinone",
+       "abbreviation": "FRO"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 12, Assists: 4",
+     "value": 4.0,
+     "athlete": {
+      "id": "238296",
+      "displayName": "Romano Schmid",
+      "team": {
+       "id": "4057",
+       "displayName": "Frosinone",
+       "abbreviation": "FRO"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Assists: 4",
+     "value": 4.0,
+     "athlete": {
+      "id": "297084",
+      "displayName": "Yan Couto",
+      "team": {
+       "id": "2572",
+       "displayName": "Como",
+       "abbreviation": "COMO"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Assists: 4",
+     "value": 4.0,
+     "athlete": {
+      "id": "323113",
+      "displayName": "Tijjani Noslin",
+      "team": {
+       "id": "112",
+       "displayName": "Lazio",
+       "abbreviation": "LAZ"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Assists: 4",
+     "value": 4.0,
+     "athlete": {
+      "id": "356536",
+      "displayName": "Farès Ghedjemis",
+      "team": {
+       "id": "4057",
+       "displayName": "Frosinone",
+       "abbreviation": "FRO"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Assists: 4",
+     "value": 4.0,
+     "athlete": {
+      "id": "319167",
+      "displayName": "Andy Diouf",
+      "team": {
+       "id": "110",
+       "displayName": "Internazionale",
+       "abbreviation": "INT"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 8, Assists: 4",
+     "value": 4.0,
+     "athlete": {
+      "id": "340678",
+      "displayName": "Diego Moreira",
+      "team": {
+       "id": "103",
+       "displayName": "AC Milan",
+       "abbreviation": "MIL"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 7, Assists: 4",
+     "value": 4.0,
+     "athlete": {
+      "id": "164839",
+      "displayName": "Paulo Dybala",
+      "team": {
+       "id": "104",
+       "displayName": "AS Roma",
+       "abbreviation": "ROMA"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 12, Assists: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "296319",
+      "displayName": "Charles De Ketelaere",
+      "team": {
+       "id": "105",
+       "displayName": "Atalanta",
+       "abbreviation": "ATA"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 12, Assists: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "287790",
+      "displayName": "Nicolò Cambiaghi",
+      "team": {
+       "id": "107",
+       "displayName": "Bologna",
+       "abbreviation": "BOL"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 12, Assists: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "323974",
+      "displayName": "Matìas Soulè",
+      "team": {
+       "id": "104",
+       "displayName": "AS Roma",
+       "abbreviation": "ROMA"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 12, Assists: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "188306",
+      "displayName": "Matteo Politano",
+      "team": {
+       "id": "114",
+       "displayName": "Napoli",
+       "abbreviation": "NAP"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Assists: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "337970",
+      "displayName": "Nico Paz",
+      "team": {
+       "id": "2572",
+       "displayName": "Como",
+       "abbreviation": "COMO"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Assists: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "217331",
+      "displayName": "Marcus Thuram",
+      "team": {
+       "id": "110",
+       "displayName": "Internazionale",
+       "abbreviation": "INT"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Assists: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "288901",
+      "displayName": "Nuno Tavares",
+      "team": {
+       "id": "112",
+       "displayName": "Lazio",
+       "abbreviation": "LAZ"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Assists: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "364590",
+      "displayName": "Rafik Belghali",
+      "team": {
+       "id": "239",
+       "displayName": "Torino",
+       "abbreviation": "TOR"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Assists: 3",
+     "value": 3.0,
+     "athlete": {
+      "id": "260300",
+      "displayName": "Edon Zhegrova",
+      "team": {
+       "id": "111",
+       "displayName": "Juventus",
+       "abbreviation": "JUV"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 12, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "344844",
+      "displayName": "Danilo Veiga",
+      "team": {
+       "id": "113",
+       "displayName": "Lecce",
+       "abbreviation": "LEC"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 12, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "272745",
+      "displayName": "Michel Adopo",
+      "team": {
+       "id": "2925",
+       "displayName": "Cagliari",
+       "abbreviation": "CAG"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 12, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "288896",
+      "displayName": "Gonçalo Ramos",
+      "team": {
+       "id": "103",
+       "displayName": "AC Milan",
+       "abbreviation": "MIL"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 12, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "346916",
+      "displayName": "Antoine Hainaut",
+      "team": {
+       "id": "17530",
+       "displayName": "Venezia",
+       "abbreviation": "VEN"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 12, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "252971",
+      "displayName": "Randal Kolo Muani",
+      "team": {
+       "id": "111",
+       "displayName": "Juventus",
+       "abbreviation": "JUV"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 12, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "360061",
+      "displayName": "Cher Ndour",
+      "team": {
+       "id": "109",
+       "displayName": "Fiorentina",
+       "abbreviation": "FIO"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 12, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "259871",
+      "displayName": "Ricardo Mangas",
+      "team": {
+       "id": "4007",
+       "displayName": "Monza",
+       "abbreviation": "MON"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 12, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "282228",
+      "displayName": "Kenneth Taylor",
+      "team": {
+       "id": "112",
+       "displayName": "Lazio",
+       "abbreviation": "LAZ"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 12, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "320074",
+      "displayName": "Douglas Luiz",
+      "team": {
+       "id": "111",
+       "displayName": "Juventus",
+       "abbreviation": "JUV"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 12, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "193919",
+      "displayName": "Hassane Kamara",
+      "team": {
+       "id": "118",
+       "displayName": "Udinese",
+       "abbreviation": "UDI"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 12, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "76762",
+      "displayName": "Luka Modric",
+      "team": {
+       "id": "103",
+       "displayName": "AC Milan",
+       "abbreviation": "MIL"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 12, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "258158",
+      "displayName": "Nikola Krstovic",
+      "team": {
+       "id": "105",
+       "displayName": "Atalanta",
+       "abbreviation": "ATA"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 12, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "418819",
+      "displayName": "Paul Mendy",
+      "team": {
+       "id": "2925",
+       "displayName": "Cagliari",
+       "abbreviation": "CAG"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 12, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "291550",
+      "displayName": "Gustav Isaksen",
+      "team": {
+       "id": "112",
+       "displayName": "Lazio",
+       "abbreviation": "LAZ"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 12, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "194748",
+      "displayName": "Federico Dimarco",
+      "team": {
+       "id": "110",
+       "displayName": "Internazionale",
+       "abbreviation": "INT"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "248440",
+      "displayName": "Samuele Birindelli",
+      "team": {
+       "id": "4007",
+       "displayName": "Monza",
+       "abbreviation": "MON"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "204441",
+      "displayName": "Nicolò Barella",
+      "team": {
+       "id": "110",
+       "displayName": "Internazionale",
+       "abbreviation": "INT"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "367861",
+      "displayName": "Álex Jiménez",
+      "team": {
+       "id": "109",
+       "displayName": "Fiorentina",
+       "abbreviation": "FIO"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "135743",
+      "displayName": "Nemanja Matic",
+      "team": {
+       "id": "3997",
+       "displayName": "Sassuolo",
+       "abbreviation": "SAS"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "276254",
+      "displayName": "Nicolò Fagioli",
+      "team": {
+       "id": "109",
+       "displayName": "Fiorentina",
+       "abbreviation": "FIO"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "259481",
+      "displayName": "Donyell Malen",
+      "team": {
+       "id": "104",
+       "displayName": "AS Roma",
+       "abbreviation": "ROMA"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "338266",
+      "displayName": "Gvidas Gineitis",
+      "team": {
+       "id": "239",
+       "displayName": "Torino",
+       "abbreviation": "TOR"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 11, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "218439",
+      "displayName": "Alfonso Pedraza",
+      "team": {
+       "id": "112",
+       "displayName": "Lazio",
+       "abbreviation": "LAZ"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "155904",
+      "displayName": "Giovanni Di Lorenzo",
+      "team": {
+       "id": "114",
+       "displayName": "Napoli",
+       "abbreviation": "NAP"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "212597",
+      "displayName": "Gianluca Mancini",
+      "team": {
+       "id": "104",
+       "displayName": "AS Roma",
+       "abbreviation": "ROMA"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "367743",
+      "displayName": "Alieu Njie",
+      "team": {
+       "id": "109",
+       "displayName": "Fiorentina",
+       "abbreviation": "FIO"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "271769",
+      "displayName": "Carlos Augusto",
+      "team": {
+       "id": "110",
+       "displayName": "Internazionale",
+       "abbreviation": "INT"
+      }
+     }
+    },
+    {
+     "displayValue": "Matches: 10, Assists: 2",
+     "value": 2.0,
+     "athlete": {
+      "id": "233654",
+      "displayName": "Keinan Davis",
+      "team": {
+       "id": "118",
+       "displayName": "Udinese",
+       "abbreviation": "UDI"
+      }
+     }
+    }
+   ]
+  }
+ ]
+}
