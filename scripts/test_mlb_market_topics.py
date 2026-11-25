@@ -109,4 +109,4 @@ for event, team in [('sato-cubs', '112'), ('taira-bluejays', '141')]:
 
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main(argv=[__file__])
