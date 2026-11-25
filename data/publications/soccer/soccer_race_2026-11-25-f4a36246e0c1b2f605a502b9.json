@@ -1,0 +1,30 @@
+{
+  "publication_id": "soccer:race:2026-11-25",
+  "domain": "soccer",
+  "kind": "race",
+  "key_parts": {
+    "legacy_key": "2026-11-25"
+  },
+  "version": 1,
+  "history": [
+    {
+      "source": "published_videos/soccer_race/2026-11-25",
+      "service": "youtube",
+      "video_id": "VHvcOQaVxQM",
+      "state": "scheduled",
+      "scheduled_at": "2026-11-25T11:30:00Z",
+      "event_day": null,
+      "material_day": null,
+      "edition_day": "2026-11-25",
+      "run_at": "2026-11-25T10:09:03.879495+00:00",
+      "details": {
+        "privacy": "public"
+      },
+      "run_id": "45591584509",
+      "attempt": "1",
+      "recorded_at": "2026-11-25T10:09:03.911063+00:00",
+      "fingerprint": "47595707e9b7e630d7e54455a1debcb0b73f497e88d8f8afaa36e7515eda10d6",
+      "event_id": "bdf4c6a9d4ec9a48fe204e86274609b1c6edb4fbb4f2aa9b5a084396c9505dd1"
+    }
+  ]
+}
