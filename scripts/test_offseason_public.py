@@ -143,8 +143,12 @@ class OffseasonPublic(unittest.TestCase):
             for service in ('twitter', 'instagram', 'bluesky'):
                 self.assertEqual(bd.caption(service, '2026-11-01', record, kind), old_bd.caption(service, '2026-11-01', record, kind))
         old_r3 = old_module('review_render_v3')
+        import characters
         old_characters = old_module('characters')
-        with patch.object(r3, 'LOOK', 'v4'), patch.object(old_r3, 'LOOK', 'v4'):
+        # 字幕の位置は安全域（930・1440）へ意図して動かした。古い版も同じ位置に揃えて、絵の描き方だけを比べる。
+        with patch.object(r3, 'LOOK', 'v4'), patch.object(old_r3, 'LOOK', 'v4'), \
+             patch.object(old_r3, 'CAPTION_TOP', r3.CAPTION_TOP), patch.object(old_r3, 'CAPTION_BOTTOM', r3.CAPTION_BOTTOM), \
+             patch.object(old_characters, 'BUBBLE', characters.BUBBLE):
             for text in ('今永昇太は七回を投げました。', '鈴木誠也は3打数2安打です。'):
                 r3.set_caption(text, 10)
                 old_r3.set_caption(text, 10)

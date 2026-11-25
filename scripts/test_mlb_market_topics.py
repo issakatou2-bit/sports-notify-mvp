@@ -1,5 +1,6 @@
 """MLBの材料、代表から引き継いだ画面、手動公開の接続を確認する。"""
 
+import metan_tone
 import copy
 import os
 from pathlib import Path
@@ -30,7 +31,7 @@ class MarketTopics(unittest.TestCase):
                 for index, item in enumerate(material['items']):
                     ask, answer = doc['segments'][2*index:2*index+2]
                     self.assertEqual((ask['speaker'], ask['text']), (topics.ZUNDA, item['ask']))
-                    self.assertEqual((answer['speaker'], answer['text']), (topics.METAN, item['text']))
+                    self.assertEqual((answer['speaker'], answer['text']), (topics.METAN, metan_tone.fix(item['text'])))
                     self.assertEqual(answer['meta']['followup_sources'], item['sources'])
                     self.assertGreaterEqual(len(set(item['sources'])), 2)
                     if 'big' in item:

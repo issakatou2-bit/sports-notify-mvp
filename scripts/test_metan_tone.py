@@ -14,6 +14,13 @@ class MetanToneTest(unittest.TestCase):
         self.assertEqual(metan_tone.fix(line), wanted)
         self.assertEqual(metan_tone.problems(wanted), [])
 
+    def test_replaced_text_is_not_rewritten_by_a_later_rule(self):
+        # まだです→まだよ（「まよ」にならない）、なんです→なのよ、そうだよ→そうよ
+        self.assertEqual(metan_tone.fix('球団の正式発表はまだです。'), '球団の正式発表はまだよ。')
+        self.assertEqual(metan_tone.fix('そういうことなんです。'), 'そういうことなのよ。')
+        self.assertEqual(metan_tone.fix('そうだよ。'), 'そうよ。')
+        self.assertEqual(metan_tone.fix('行くんだよ。'), '行くのよ。')
+
     def test_detects_each_bad_ending_and_allows_similar_words(self):
         line = '1点です。話します。昨日でした。勝ちました。どうでしょう？確認してください。そうだよ。そうだね。見直しよう。'
         self.assertEqual(len(metan_tone.problems(line)), 9)
