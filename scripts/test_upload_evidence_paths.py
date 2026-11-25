@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 import re
 import shlex
+import shutil
 import subprocess
 import sys
 from types import SimpleNamespace
@@ -119,6 +120,9 @@ def episode(tmp_path, monkeypatch):
 
     monkeypatch.setattr(subprocess, 'Popen', Encoder)
     monkeypatch.setattr(subprocess, 'run', probe)
+    # CI の機械には ffmpeg が無い（imageio_ffmpeg だけ）。描画器の「ffmpeg があるか」の確認も偽の道具へ向ける。
+    which = shutil.which
+    monkeypatch.setattr(shutil, 'which', lambda name, *a, **k: f'/fake/{name}' if name in ('ffmpeg', 'ffprobe') else which(name, *a, **k))
 
     def write_audio(segment):
         audio = dict(segment, file=str(tmp_path / 'voice.wav'), duration=0.08)
