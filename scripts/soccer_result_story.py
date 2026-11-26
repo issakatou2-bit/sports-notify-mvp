@@ -23,6 +23,21 @@ def clubs_for(data):
     return resolved
 
 
+
+def spoken(text, segments):
+    """めたんが話す回は語尾を直す（11/26 朝、尺の補いの「〜です。」で関門が止めた）。雨衣のソロは敬語のまま。"""
+    import metan_tone
+    return metan_tone.fix(text) if metan_tone.metan_enabled(segments) else text
+
+
+def tone_segments(segments):
+    for seg in segments:
+        seg['text'] = spoken(seg['text'], segments)
+        if 'caption_units' in seg:
+            seg['caption_units'] = [spoken(unit, segments) for unit in seg['caption_units']]
+    return segments
+
+
 def narration(data):
     import soccer_results_render as render
     followup=data.get('preview_followup')
@@ -122,6 +137,7 @@ def narration(data):
             seg['text'] = flow.caption_names(seg['text'], data['games'])
             if 'caption_units' in seg:
                 seg['caption_units'] = [flow.caption_names(s, data['games']) for s in seg['caption_units']]
+    tone_segments(segments)
     import sanity_sources
     return sanity_sources.attach(dict(label=data['date_jst'],segments=segments,
         duration_budget=dict(limit=results.LIMIT,grace=0)), data, sport='soccer')
@@ -366,7 +382,7 @@ def fit_to_audio(narration,audio, *, data=None, audio_dir=None, resynthesize=Non
                         if extra:
                             return ('前半' if int(base)<=45 else '後半')+'追加時間'+str(int(extra))+'分'
                         return facts.minute_text(goal['minute'])
-                    line = '得点が入ったのは、' + '、'.join(time_fact(row[0]) for row in trace) + 'です。'
+                    line = spoken('得点が入ったのは、' + '、'.join(time_fact(row[0]) for row in trace) + 'です。', narr['segments'])
                     if line in seg['text']:
                         continue
                     seg['text'] += line
@@ -388,7 +404,7 @@ def fit_to_audio(narration,audio, *, data=None, audio_dir=None, resynthesize=Non
         if index is None:
             if data is None or not render.soccer_look.readable() or stage==3:raise ValueError('必須の結果/期待選手/日本人選手の実音声が60秒を超えます（段階短縮後）')
             stage+=1
-            shortened=shorten_required(narr['segments'],data,stage)
+            shortened=tone_segments(shorten_required(narr['segments'],data,stage))
             while True:
                 narr.setdefault('results_length_adjustment',[]).append(dict(stage=stage,kind='required-shortening',segments=len(shortened)))
                 print('[shorten] 必須部分を短縮します: stage',stage)
