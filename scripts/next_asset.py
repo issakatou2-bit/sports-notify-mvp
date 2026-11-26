@@ -366,6 +366,7 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--published", default="data/published_assets.json")
     ap.add_argument("--analytics", default="data/analytics.json")
+    ap.add_argument("--stock", action="store_true", help="日次上限を除いた未投稿の在庫数のみ")
     ap.add_argument("--report", action="store_true")
     ap.add_argument("--again", action="store_true",
                     help="きょう既に出していても、もう1本選ぶ")
@@ -390,7 +391,7 @@ def main() -> int:
     if args.season:
         return pick_season(args)
 
-    if daily_limit_reached(args.published, again=args.again):
+    if not args.stock and daily_limit_reached(args.published, again=args.again):
         print("[info] きょうはもう1本出しています", file=sys.stderr)
         out = os.environ.get("GITHUB_OUTPUT")
         if out:
@@ -442,6 +443,10 @@ def main() -> int:
     import ui_voice_stock
     todo = ui_voice_stock.prioritize(todo)
 
+    if args.stock:
+        print(len(todo))
+        return 0
+
     if args.report:
         print(f"トピック {len(gav.LIST_TOPICS)}件 / 投稿済み {len(done)}件 / "
               f"残り {len(todo)}件")
@@ -457,7 +462,7 @@ def main() -> int:
 
     nxt = todo[0] if todo else ""
     if not nxt:
-        print("[info] 未投稿の資産動画はありません", file=sys.stderr)
+        print("::warning::未投稿の資産動画はありません（資産在庫0）", file=sys.stderr)
 
     # ワークフローの次のステップへ渡す。
     out = os.environ.get("GITHUB_OUTPUT")

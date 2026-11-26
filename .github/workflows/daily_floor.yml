@@ -1,0 +1,36 @@
+name: ショートの日次本数
+
+on:
+  schedule:
+    - cron: '30 7 * * *' # JST 16:30
+    - cron: '40 12 * * *' # JST 21:40
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: write
+
+concurrency:
+  group: daily-floor
+  cancel-in-progress: false
+
+jobs:
+  count:
+    runs-on: ubuntu-latest
+    timeout-minutes: 115
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install -r scripts/requirements.txt
+      - name: Count and fill the daily shortfall
+        env:
+          PYTHONUTF8: '1'
+          GH_TOKEN: ${{ github.token }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+          COLLESPO_DAILY_FLOOR: ${{ vars.COLLESPO_DAILY_FLOOR || 'off' }}
+          COLLESPO_CLUB_TOPICS_PUBLISH: ${{ vars.COLLESPO_CLUB_TOPICS_PUBLISH || 'false' }}
+        run: python scripts/daily_floor.py --ref "$DEFAULT_BRANCH"

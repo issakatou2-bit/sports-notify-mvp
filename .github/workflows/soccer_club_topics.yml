@@ -1,0 +1,204 @@
+name: 欧州クラブ戦 話題ショート
+
+on:
+  workflow_run:
+    workflows: ['毎朝 8:00　欧州サッカーの結果']
+    types: [completed]
+    branches: [main]
+  schedule:
+    - cron: '30 3 * * *' # JST 12:30
+    - cron: '30 8 * * *' # JST 17:30
+  workflow_dispatch:
+    inputs:
+      topic_key:
+        description: '話題の鍵（試合ID:話題名）。空なら候補の先頭'
+        type: string
+      publication_day:
+        description: '本数の見張りが対象にした日本時間の日付'
+        type: string
+      replaces:
+        description: '非公開にした差し替え元の動画ID'
+        type: string
+      sample_only:
+        description: '見本のmp4だけを作る'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: soccer-club-topics
+  cancel-in-progress: false
+
+env:
+  PYTHONUTF8: '1'
+  COLLESPO_CLUB_TOPICS_PUBLISH: ${{ vars.COLLESPO_CLUB_TOPICS_PUBLISH == 'true' && !inputs.sample_only && 'true' || 'false' }}
+  COLLESPO_SAMPLE_ONLY: ${{ (vars.COLLESPO_CLUB_TOPICS_PUBLISH != 'true' || inputs.sample_only) && 'true' || 'false' }}
+  COLLESPO_TOPIC_REPLACES: ${{ inputs.replaces || '' }}
+
+jobs:
+  build:
+    if: github.event_name != 'workflow_run' || (github.event.workflow_run.event == 'schedule' && github.event.workflow_run.conclusion == 'success')
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      COLLESPO_SOCCER_LOOK: v6
+      COLLESPO_SOCCER_FOCUS: 'on'
+      COLLESPO_SHORT_LOOK: v4
+      COLLESPO_SOCCER_TITLE_V2: 'on'
+      COLLESPO_SOLO_HOST: metan
+      COLLESPO_HOST_SPLIT: 'off'
+      COLLESPO_DUO: 'off'
+      COLLESPO_MOTION: ${{ vars.COLLESPO_MOTION || '' }}
+      COLLESPO_BUBBLE: ${{ vars.COLLESPO_BUBBLE || '' }}
+      COLLESPO_STYLE: v2
+      COLLESPO_CAPTION_BREAKS: ${{ vars.COLLESPO_CAPTION_BREAKS || '' }}
+      COLLESPO_SLANT_VARIANT: ${{ vars.COLLESPO_SLANT_VARIANT || 'cream' }}
+      COLLESPO_GLASS_BACKGROUND: ${{ vars.COLLESPO_GLASS_BACKGROUND || 'stripes' }}
+      ANTHROPIC_API_KEY: ''
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # 開始時点の台帳を読む。待機中や前の回の予約も反映する。
+          ref: ${{ github.event.repository.default_branch }}
+      - name: Check whether the morning source was a sample
+        id: sample_source
+        if: github.event_name == 'workflow_run'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_RUN: ${{ github.event.workflow_run.id }}
+        run: python3 scripts/sample_source.py --source-run "$SOURCE_RUN" --github-output "$GITHUB_OUTPUT"
+      - name: Save inherited sample marker
+        if: github.event_name == 'workflow_run' && steps.sample_source.outputs.allowed == 'false'
+        uses: actions/upload-artifact@v4
+        with:
+          name: sample-inherited-soccer-club-topics
+          path: |
+            build/sample_only.json
+            !build/**/portrait/**
+          retention-days: 7
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          pip install -r scripts/requirements.txt
+          pip install imageio_ffmpeg pyyaml
+      - name: Select one story
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true')
+        id: select
+        env:
+          TOPIC_KEY: ${{ inputs.topic_key }}
+          PUBLICATION_DAY: ${{ inputs.publication_day }}
+        run: |
+          args=(--topic-key "$TOPIC_KEY" --publication-day "$PUBLICATION_DAY" --out build/soccer_club_topics)
+          if [ "$COLLESPO_CLUB_TOPICS_PUBLISH" = true ]; then args+=(--reserve); fi
+          python scripts/soccer_club_topics.py "${args[@]}"
+      - name: Install video tools
+        if: steps.select.outputs.build == 'true'
+        run: bash scripts/install_video_tools.sh
+      - name: Start VOICEVOX
+        if: steps.select.outputs.build == 'true'
+        run: |
+          docker run -d --rm -p 50021:50021 --name voicevox voicevox/voicevox_engine:cpu-latest
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:50021/version > /dev/null; then break; fi
+            sleep 2
+          done
+          curl -fsS http://127.0.0.1:50021/version
+      - name: Synthesize narration
+        if: steps.select.outputs.build == 'true'
+        run: python scripts/synthesize_narration.py --narration build/soccer_club_topics/narration.json --out-dir build/soccer_club_topics/audio
+      - name: Render with the national topics layout
+        if: steps.select.outputs.build == 'true'
+        run: python scripts/soccer_national_topics_render.py --out build/soccer_club_topics
+      - name: Sanity gate
+        if: steps.select.outputs.build == 'true'
+        run: python scripts/sanity.py --general --strict --narration build/soccer_club_topics/narration.json --out build/soccer_club_topics/sanity.json --hold-record build/soccer_club_topics/sanity_hold.json --kind soccer_club_topic
+      - name: Check sample and upload gate
+        if: steps.select.outputs.build == 'true'
+        run: |
+          python scripts/check_sample.py build/soccer_club_topics/collespo_national_topic.mp4
+          python scripts/upload_gate.py build/soccer_club_topics/collespo_national_topic.mp4 --segments build/soccer_club_topics/narration.json --description-file build/soccer_club_topics/description.txt --kind soccer_club_topic
+      - name: Vertical thumbnail
+        if: env.COLLESPO_CLUB_TOPICS_PUBLISH == 'true' && steps.select.outputs.build == 'true'
+        run: bash scripts/shorts_thumbnail.sh build/soccer_club_topics/collespo_national_topic.mp4 build/soccer_club_topics/short.png
+      - name: Choose a reservation with room after rendering
+        if: env.COLLESPO_CLUB_TOPICS_PUBLISH == 'true' && steps.select.outputs.build == 'true'
+        id: reservation
+        env:
+          TOPIC_KEY: ${{ steps.select.outputs.topic_key }}
+          PUBLICATION_DAY: ${{ steps.select.outputs.publication_day }}
+        run: python scripts/soccer_club_topics.py --topic-key "$TOPIC_KEY" --publication-day "$PUBLICATION_DAY" --reserve --out build/soccer_club_topics
+      - name: Upload to YouTube
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && env.COLLESPO_CLUB_TOPICS_PUBLISH == 'true' && steps.reservation.outputs.build == 'true'
+        id: upload
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+          PUBLISH_AT: ${{ steps.reservation.outputs.publish_at }}
+          TOPIC_KEY: ${{ steps.reservation.outputs.topic_key }}
+        run: |
+          python scripts/upload_youtube.py --video build/soccer_club_topics/collespo_national_topic.mp4 --kind soccer_club_topic --sport soccer --games build/soccer_club_topics/material.json --narration build/soccer_club_topics/narration.json --thumbnail build/soccer_club_topics/short.png --video-date "$TOPIC_KEY" --publish-at "$PUBLISH_AT" --privacy public
+      - name: Commit publication record
+        if: always() && (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && steps.upload.outcome != 'skipped' && steps.reservation.outputs.build == 'true'
+        run: |
+          bash scripts/commit_data.sh "soccer club topic: ${{ github.run_id }}" data/published_videos.json data/soccer_club_topics_published.json
+      - name: Confirm publication reservation
+        if: (github.event_name != 'workflow_run' || steps.sample_source.outputs.allowed == 'true') && env.COLLESPO_CLUB_TOPICS_PUBLISH == 'true' && steps.reservation.outputs.build == 'true'
+        env:
+          TOPIC_KEY: ${{ steps.reservation.outputs.topic_key }}
+        run: python scripts/verify_published.py --kind soccer_club_topic --video-date "$TOPIC_KEY"
+      - name: Mark sample-only execution
+        if: env.COLLESPO_SAMPLE_ONLY == 'true' && steps.select.outputs.build == 'true'
+        run: python scripts/sample_only.py --mark build/sample_only.json --require-video
+      - name: Save sample video
+        if: env.COLLESPO_SAMPLE_ONLY == 'true' && steps.select.outputs.build == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: sample-soccer_club_topics
+          path: |
+            build/sample_only.json
+            build/soccer_club_topics/*.mp4
+            !build/**/portrait/**
+          retention-days: 7
+      - name: Save sanity gate records
+        if: always() && env.COLLESPO_CLUB_TOPICS_PUBLISH == 'true' && steps.select.outputs.build == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: club-topic-verification
+          path: |
+            build/soccer_club_topics/*.json
+            build/**/voice_manifest.json
+            build/**/render_timeline.json
+            !build/**/portrait/**
+          retention-days: 14
+      - name: Keep unsaved data records
+        if: env.COLLESPO_CLUB_TOPICS_PUBLISH == 'true' && always() && hashFiles('build/data-save-recovery/**/FAILED') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: unsaved-data-${{ github.job }}-${{ github.run_attempt }}
+          path: |
+            build/data-save-recovery/
+            !build/**/portrait/**
+          retention-days: 14
+          if-no-files-found: error
+      - name: Save quota-exceeded thumbnails
+        if: always() && env.COLLESPO_CLUB_TOPICS_PUBLISH == 'true' && hashFiles('build/thumbnail_pending/**') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: thumbnail-pending
+          path: |
+            build/thumbnail_pending/
+            !build/**/portrait/**
+          retention-days: 3
+          if-no-files-found: ignore
+      - name: Stop own VOICEVOX
+        if: always() && steps.select.outputs.build == 'true'
+        run: docker stop voicevox || true

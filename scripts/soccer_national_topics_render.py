@@ -88,9 +88,55 @@ def topic_transition_cues(segments, frame_counts, hook_end):
     return short_common.transition_cues(screens, lengths, core_only=True)
 
 
+def club_cast(im, speaker, line, elapsed, clock, duration):
+    """既存の内向き素材の胸上を、字幕と出典の下で左右に置く。"""
+    import characters
+    import review_render_v3 as r3
+    height = 420
+    layers, portraits = [], []
+    for who, (side, _, _, face_ratio) in characters.CORNERS.items():
+        active = who == speaker
+        face = characters.expression(who, speaker, line, elapsed, clock, volume=True)
+        dy = characters.speaking_offset(elapsed, active and bool(line) and 0 <= elapsed < duration)
+        art = characters.bust(who, face, height, side=side)
+        x = r3.LEFT if side == 'left' else r3.SAFE_RIGHT - art.width
+        y = 1475 - art.height + dy
+        im.paste(art, (x, y), art)
+        a, b, c, d = art.getbbox()
+        ink = [x+a, y+b, x+c, y+d]
+        left, top, right, bottom = face_ratio
+        face_box = [x+round(art.width*left), y+round(height*top),
+                    x+round(art.width*right), y+round(height*bottom)]
+        r3.record_box(im, 'face', face_box)
+        portraits.append(dict(who=who, box=ink, face=face_box, ink=ink, active=active))
+        layers.append(dict(who=who, face=face, height=height, dim=False, side=side, at=[x,y],
+                           cut=art.height, active=active, dy=dy, facing=characters.inward_facing(who, side)))
+    im.info.update(duo_portraits=portraits, duo_layer=layers)
+
+
+def club_outro(t, doc):
+    import review_render_v3 as r3
+    import short_cast
+    footer = {}
+    token = short_cast.DEFERRED.set(footer)
+    try:
+        im = r3.outro(t, credit=credit(doc), cta=CTA)
+    finally:
+        short_cast.DEFERRED.reset(token)
+    speaker, elapsed, line, clock = footer['presenter']
+    club_cast(im, speaker, line, elapsed, clock, r3._CAPTION['duration'])
+    text, color = footer['source']
+    text = text.removeprefix('音声: ').replace('　出典: ', ' / ')
+    short_cast.source(im, text+'　立ち絵: 坂本アヒル', color)
+    return im
+
+
 def frame(t, seg, doc, clubs, index=0, count=1, *, opening_hook=None):
     """index 番目の区間の時刻 t の絵。問い（ずんだもん）と答え（めたん）の組は同じ画面。"""
+    club_topic = doc.get('program') == 'soccer_club_topic'
     if seg['kind'] == 'outro':
+        if club_topic:
+            return club_outro(t, doc)
         import review_render_v3 as r3
         return r3.outro(t, credit=credit(doc), cta=CTA)
     import soccer_readable as readable
@@ -133,6 +179,8 @@ def frame(t, seg, doc, clubs, index=0, count=1, *, opening_hook=None):
     s.im.info.update(soccer_readable=True, semantic_items=[], readable_motion='v2 右から0.28秒・説明中停止・左へ0.14秒')
     spec = dict(source=credit(doc, meta.get('panel')), title=label, presenter='zundamon' if asking else 'metan',
                 cast=('zundamon', 'metan'), slide_in=asking, slide_out=not asking)
+    if club_topic:
+        spec['paint_cast'] = club_cast
     if hook:
         spec.update(slide_in=False, slide_out=False)
         return hook_screen(s, hook, spec)
@@ -330,7 +378,11 @@ def render(narr, audio, out, *, sample=False):
     import video_common as vc
     import render_timeline
     import voice_manifest
-    if topics.check(narr):
+    if narr.get('program') == 'soccer_club_topic':
+        from soccer_club_topics import check as check_topics
+    else:
+        check_topics = topics.check
+    if check_topics(narr):
         raise ValueError('原稿と材料が一致しません')
     if not soccer_look.readable() or not soccer_look.focus():
         raise ValueError('話題ショートはv6 focusだけを使います')
