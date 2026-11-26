@@ -1,68 +1,17 @@
 {
-  "updated_at": "2026-11-26T06:15:41.304143+00:00",
+  "short_content_version": "1108",
+  "updated_at": "2026-11-26T20:57:21.746796+00:00",
   "hours": 30,
   "reporters": 38,
-  "collected": 29,
+  "collected": 27,
   "posts": [
-    {
-      "handle": "keeganmatheson.bsky.social",
-      "author": "Keegan Matheson",
-      "team": "ブルージェイズ",
-      "outlet": "MLB.com",
-      "text": "This is also a major factor in the #BlueJays becoming a premiere destination for Japanese stars, which I expect to continue. What Taira or Okamoto face coming to MLB really isn't comparable to MLB free agents moving cities. Toronto has handled this very well. Word gets around.",
-      "likes": 80,
-      "reposts": 3,
-      "replies": 1,
-      "at": "2026-11-25T02:53:50.084Z",
-      "uri": "at://did:plc:wwjv37n37xrozzfku6zvduez/app.bsky.feed.post/3n345rw5hwc2q",
-      "jp_players": [
-        "Okamoto"
-      ],
-      "jp": "これも#BlueJaysが日本人スターにとって屈指の移籍先になりつつある大きな要因で、今後も続くと見ている。Taira や岡本和真がMLBに来る際に直面することは、MLBのFA選手が球団を移るのとは比べものにならない。トロントはそこをうまく対応してきた。評判は広まる。"
-    },
-    {
-      "handle": "keeganmatheson.bsky.social",
-      "author": "Keegan Matheson",
-      "team": "ブルージェイズ",
-      "outlet": "MLB.com",
-      "text": "This offseason, I've had two former #BlueJays tell me that, if everything were equal, Toronto is the only place they'd want to play. Money always wins, but that reputation is fully out there now. My working theory is that this is most valuable to veterans (with families), but...",
-      "likes": 105,
-      "reposts": 14,
-      "replies": 10,
-      "at": "2026-11-25T02:47:53.318Z",
-      "uri": "at://did:plc:wwjv37n37xrozzfku6zvduez/app.bsky.feed.post/3n345hbvtms2p",
-      "jp_players": [],
-      "reply_texts": [
-        {
-          "text": "This is also a major factor in the #BlueJays becoming a premiere destination for Japanese stars, which I expect to continue.\n\nWhat Taira or Okamoto face coming to MLB really isn't comparable to MLB free agents moving cities. Toronto has handled this very well. Word gets around.",
-          "likes": 80,
-          "author": "keeganmatheson.bsky.social"
-        },
-        {
-          "text": "All things equal I would also like to play for the blue jays",
-          "likes": 9,
-          "author": "8fullhourssleep.bsky.social"
-        },
-        {
-          "text": "My guess is Gaus and Biebs. I’d still imagine one or both are still on their list",
-          "likes": 5,
-          "author": "huedub.bsky.social"
-        },
-        {
-          "text": "Are these recent former Blue Jays, or classic former Blue Jays?\n\nIt'd be interesting to see how that reputation has changed over the decades.",
-          "likes": 2,
-          "author": "theterroirist.bsky.social"
-        }
-      ],
-      "jp": "このオフ、元#BlueJaysの2人から「条件が同じなら、プレーしたいのはトロントだけ」と聞いた。結局は金がものを言うが、その評判はもう完全に定着している。私の見立てでは、特に家族のいるベテランにとって価値が大きいが…"
-    },
     {
       "handle": "timstebbins.bsky.social",
       "author": "Tim Stebbins",
       "team": "ガーディアンズ",
       "outlet": "MLB.com",
       "text": "The Guardians' rotation shopping continues. They've agreed to a three-year, $48 million deal with Foster Griffin, MLB.com's Mark Feinsand reports.",
-      "likes": 42,
+      "likes": 44,
       "reposts": 3,
       "replies": 5,
       "at": "2026-11-25T23:32:48.712Z",
@@ -98,13 +47,25 @@
       "team": "オリオールズ",
       "outlet": "Baltimore Banner",
       "text": "The Orioles and Luis Robert Jr. have agreed on a deal, source says, that brings the outfielder back to Baltimore. It’s one year for $12 million, source said. @JonHeyman first on terms. @FrancysRomero first said the Orioles are closing in on this.",
-      "likes": 30,
+      "likes": 34,
       "reposts": 6,
       "replies": 3,
       "at": "2026-11-26T00:25:21.218Z",
       "uri": "at://did:plc:licyksm72ljqiq4oxbwxu2mi/app.bsky.feed.post/3n36fxdhcfk2o",
       "jp_players": [],
-      "jp": "オリオールズとルイス・ロバート・ジュニアが合意に達したと関係者。外野手がボルチモアに戻る。1年1200万ドルとのこと。条件はジョン・ヘイマン記者が最初に報じ、オリオールズが大詰めと最初に伝えたのはフランシス・ロメロ記者。"
+      "reply_texts": [
+        {
+          "text": "Source with knowledge said Luis Robert Jr. had other offers. He wanted Baltimore as his destination",
+          "likes": 14,
+          "author": "afkostka.bsky.social"
+        },
+        {
+          "text": "Nice job giving credit where due. Very professional. Happy Thanksgiving Andy.",
+          "likes": 0,
+          "author": "rayglennon.bsky.social"
+        }
+      ],
+      "jp": "オリオールズとルイス・ロバート・ジュニアが合意。外野手がボルチモアに戻る。1年1200万ドルとのこと。条件は@JonHeymanが最初に報じ、@FrancysRomeroがオリオールズが詰めの段階と先に伝えていた。"
     },
     {
       "handle": "afkostka.bsky.social",
@@ -112,13 +73,39 @@
       "team": "オリオールズ",
       "outlet": "Baltimore Banner",
       "text": "Orioles outfielders in 2026 combined to produce a .225 average and .674 on-base-plus-slugging percentage, both of which were third worst in baseball. They need a lift. Luis Robert Jr. may not be the final one",
-      "likes": 25,
+      "likes": 31,
       "reposts": 3,
       "replies": 3,
       "at": "2026-11-26T01:01:46.082Z",
       "uri": "at://did:plc:licyksm72ljqiq4oxbwxu2mi/app.bsky.feed.post/3n36hyh3wqk2h",
       "jp_players": [],
-      "jp": "2026年のオリオールズ外野陣は合計で打率.225、OPS.674。ともにMLBでワースト3位だった。底上げが必要だ。ルイス・ロバート・ジュニアが最後の補強とは限らない"
+      "reply_texts": [
+        {
+          "text": "Arozarena when?",
+          "likes": 0,
+          "author": "rabitaluna.bsky.social"
+        },
+        {
+          "text": "They need a lift out of town I’ll be happy to drive them.",
+          "likes": 0,
+          "author": "neartheelevators.com"
+        }
+      ],
+      "jp": "2026年のオリオールズ外野手陣は合計で打率.225、OPS.674。どちらもMLBで下から3番目だった。てこ入れが必要で、ルイス・ロバート・ジュニアが最後の補強とは限らない。"
+    },
+    {
+      "handle": "nightengalejr.bsky.social",
+      "author": "Bobby Nightengale",
+      "team": "ツインズ",
+      "outlet": "Star Tribune",
+      "text": "The Twins are signing reliever Kevin Ginkel to a two-year contract, a source tells the Star Tribune. He had a 4.12 ERA in 74 games for the Diamondbacks last season with 72 strikeouts in 67.2 innings.",
+      "likes": 27,
+      "reposts": 2,
+      "replies": 0,
+      "at": "2026-11-26T03:24:31.220Z",
+      "uri": "at://did:plc:gtt6sqfv2lck4wxdxymmhrxk/app.bsky.feed.post/3n36pxph6ds22",
+      "jp_players": [],
+      "jp": "ツインズがリリーフのケビン・ギンケルと2年契約を結ぶ。スター・トリビューン紙に情報筋が明かした。昨季はダイヤモンドバックスで74試合に登板し、防御率4.12、67.2回で72奪三振。"
     },
     {
       "handle": "timstebbins.bsky.social",
@@ -126,9 +113,9 @@
       "team": "ガーディアンズ",
       "outlet": "MLB.com",
       "text": "The Guardians have made Kris Bubic's deal official.",
-      "likes": 21,
+      "likes": 23,
       "reposts": 2,
-      "replies": 0,
+      "replies": 1,
       "at": "2026-11-25T18:49:54.019Z",
       "uri": "at://did:plc:jrwmzzblbtbegomwff262gv4/app.bsky.feed.post/3n35t7inrqk2y",
       "jp_players": [],
@@ -139,36 +126,69 @@
       "author": "Bobby Nightengale",
       "team": "ツインズ",
       "outlet": "Star Tribune",
-      "text": "The Twins are signing reliever Kevin Ginkel to a two-year contract, a source tells the Star Tribune. He had a 4.12 ERA in 74 games for the Diamondbacks last season with 72 strikeouts in 67.2 innings.",
-      "likes": 22,
-      "reposts": 1,
-      "replies": 0,
-      "at": "2026-11-26T03:24:31.220Z",
-      "uri": "at://did:plc:gtt6sqfv2lck4wxdxymmhrxk/app.bsky.feed.post/3n36pxph6ds22",
-      "jp_players": [],
-      "jp": "ツインズが救援のケビン・ギンケルと2年契約を結ぶと、関係者がスター・トリビューン紙に明かした。昨季はダイヤモンドバックスで74試合に登板して防御率4.12、67回2/3で72奪三振。"
-    },
-    {
-      "handle": "nightengalejr.bsky.social",
-      "author": "Bobby Nightengale",
-      "team": "ツインズ",
-      "outlet": "Star Tribune",
       "text": "The Twins were hunting another reliever with strong swing-and-miss stuff. Kevin Ginkel (26.2% K rate this year) joins Jeff Hoffman, Yoendrys Gómez and Andrew Morris in the back of their bullpen. More on their latest addition: www.startribune.com/kevin-ginkel...",
-      "likes": 15,
-      "reposts": 1,
+      "likes": 18,
+      "reposts": 2,
       "replies": 0,
       "at": "2026-11-26T03:54:37.287Z",
       "uri": "at://did:plc:gtt6sqfv2lck4wxdxymmhrxk/app.bsky.feed.post/3n36rnjtxnk22",
       "jp_players": [],
-      "jp": "ツインズは空振りを奪える力のある救援投手をもう1人探していた。ケビン・ギンケル(今季の奪三振率26.2%)が、ジェフ・ホフマン、ヨエンドリス・ゴメス、アンドリュー・モリスとともにブルペン後方を固める。"
+      "jp": "ツインズは空振りを奪える力のあるリリーフをもう1人探していた。ケビン・ギンケル(今季の奪三振率26.2%)が、ジェフ・ホフマン、ヨエンドリス・ゴメス、アンドリュー・モリスらと終盤を担う。"
+    },
+    {
+      "handle": "jasonbeck.bsky.social",
+      "author": "Jason Beck",
+      "team": "タイガース",
+      "outlet": "MLB.com",
+      "text": "Kevin Gausman has pitched 175+ innings in 8 of last 10 non-pandemic seasons, and fell 1 out shy in another. He has 7 quality starts in 7 career outings in Detroit. He turns 36 in January. Tigers are banking on him providing innings + veteran presence for a young group. www.mlb.com/news/kevin-g...",
+      "likes": 15,
+      "reposts": 3,
+      "replies": 0,
+      "at": "2026-11-26T04:34:37.699Z",
+      "uri": "at://did:plc:ug2irz5m3k7nlbpiggqc73wt/app.bsky.feed.post/3n36tv32swc24",
+      "jp_players": [],
+      "jp": "ケビン・ガウスマンは、パンデミックの年を除く直近10シーズンのうち8シーズンで175イニング以上を投げ、もう1シーズンもあと1アウトに迫った。デトロイトでは通算7登板で7度のクオリティスタート。1月に36歳になる。タイガースは若い投手陣にイニングと経験をもたらしてくれることを期待している。"
+    },
+    {
+      "handle": "keeganmatheson.bsky.social",
+      "author": "Keegan Matheson",
+      "team": "ブルージェイズ",
+      "outlet": "MLB.com",
+      "text": "I've spent the past two decades training to talk about Aaron Rodgers this morning. 10am ET on Off The Roster: www.youtube.com/watch?v=-zw3...",
+      "likes": 14,
+      "reposts": 0,
+      "replies": 1,
+      "at": "2026-11-26T14:54:56.066Z",
+      "uri": "at://did:plc:wwjv37n37xrozzfku6zvduez/app.bsky.feed.post/3n37wkbb6ik2k",
+      "jp_players": [],
+      "jp": "この20年、今朝アーロン・ロジャースについて語るために準備してきた。東部時間午前10時、Off The Rosterで。"
     }
   ],
   "headlines": [
     {
       "query": "Shohei Ohtani",
+      "title": "Dodgers Superstar Shohei Ohtani Talks Future As 2-Way MLB Player",
+      "source": "FOX Sports",
+      "at": "Thu, 26 Nov 2026 16:01:37 GMT",
+      "url": "https://news.google.com/rss/articles/CBMigwFBVV95cUxNYkJwLXcwUXFpUkJWVG12WUE4V29pdUZBRWNXaEJyalJmNkEzeU5OQkhDaUZiTjIzX2hCU3cwemt1X0ZzazRhYkJUeTkyS1dTSENkYVMzdXJpVVgyZUhHQ2hZV2FNLVVTLS10ZENLa3pqNlkwdVpJaWlBUHhXVVl1WWNsc9IBgwFBVV95cUxPTFpnMG9KeHgzbkF4WUd1UXNuRXZ0UVpTNlBIR1BVM190bFhFMTBGWDZkaXltcTBCRUFYMm5RUEF5Yl9Na0VSeXhpLXcxNFk0cmVHamhDUk1zRW1rVFl4cUFoMlpLMVJnaTk4amd2ZnRfTV9COTFSUE5od29jbklJTVZLOA?oc=5",
+      "publication_evidence": [
+        {
+          "source": "at",
+          "date": "2026-11-26"
+        },
+        {
+          "source": "published_date",
+          "date": "2026-11-26"
+        }
+      ],
+      "published_date": "2026-11-26",
+      "jp": "ドジャースのスーパースター、大谷翔平が二刀流選手としての将来を語る"
+    },
+    {
+      "query": "Shohei Ohtani",
       "title": "Ohtani plans to remain 2-way player, make up for 'this year's frustration'",
       "source": "MLB.com",
-      "at": "Thu, 26 Nov 2026 01:41:47 GMT",
+      "at": "Thu, 26 Nov 2026 03:47:59 GMT",
       "url": "https://news.google.com/rss/articles/CBMifkFVX3lxTE5CdE1sd21kOTNmUlowc2c1R3B0MjdkemZCczM3bUR5OThvZ2h0RlpYVXRBeU5wcFFocHExWmpObmpXMFdTbVd2NXRUZ04wME5VTnZxTVRNa2FBLS1vTEZEdFBMYWgtbktCNnBRV0hmTWRZeGl5emdxZXVmSTQ0Zw?oc=5",
       "publication_evidence": [
         {
@@ -181,33 +201,14 @@
         }
       ],
       "published_date": "2026-11-26",
-      "jp": "大谷翔平、二刀流を続ける意向 「今年のフラストレーション」を晴らす"
+      "jp": "大谷翔平、二刀流を続ける意向「今年の悔しさ」を晴らす"
     },
     {
       "query": "Shohei Ohtani",
-      "title": "Shohei Ohtani Reveals Lockout Concern as Dodgers Weigh His Pitching Plans",
-      "source": "DodgersBeat",
-      "at": "Wed, 25 Nov 2026 23:49:36 GMT",
-      "url": "https://news.google.com/rss/articles/CBMif0FVX3lxTE9ZbHVMaDVlUGFBQVhfSTVGekp5NlNzZFlMYlN4cEMzLVRBeEdXQVhOdGowMlA0bkJTdmU0TzlDbkNIYmJiS055U2czR2hqclJPQVVCdUI2Qklvd0Q5Vmo2SE1HVGdUYjY0bHpLOWVOMU1GZFlFRXhEZEJJZlV2U0k?oc=5",
-      "publication_evidence": [
-        {
-          "source": "at",
-          "date": "2026-11-25"
-        },
-        {
-          "source": "published_date",
-          "date": "2026-11-25"
-        }
-      ],
-      "published_date": "2026-11-25",
-      "jp": "大谷翔平、ロックアウトへの懸念を明かす ドジャースは投球プランを検討"
-    },
-    {
-      "query": "Shohei Ohtani",
-      "title": "Shohei Ohtani exploring 2-way options with Dodgers ahead of new season",
-      "source": "Japan Wire by Kyodo News",
-      "at": "Thu, 26 Nov 2026 05:44:00 GMT",
-      "url": "https://news.google.com/rss/articles/CBMiWkFVX3lxTFBYVXYwR0NEZkF2YU43TG9ET1pxVzhOd2U1WGdnczItcmJuTVJMdjFRSXpzbzFiZzFCMzk3U1h6ZjdBWjE5d25aSkRxYjBVaHY2Q0tVMTZFSXFRQQ?oc=5",
+      "title": "Dodgers’ Shohei Ohtani admits regret over injury-plagued season",
+      "source": "Qazinform",
+      "at": "Thu, 26 Nov 2026 20:18:09 GMT",
+      "url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxOUmp5cXBVV25RSUdUVnB5NEN5Ql9Qc1pyU2RwdUo1SGxSaFpCU2UxSE1RZ202aVVhUHJCSzlwanhmLWNVdVJBSDlCdkZLbHJGQTVKaTFmZ2NxdU5YeGR4aFBuMjhnbGlmc3NJdXIwcTVVNUc3QWloU3BqRkc2Z3dYYTBJcXFsSHNEMnByZk4wb0MycHp1T19KcmNqTljSAZwBQVVfeXFMTTFhb0lnNEZuYjcySzZsZDVZNkJjYlYwUjI1ZjRGR3E5dUZ0YUwtOUlJb0p2cGpWd0dIMWxnMUtTNVo0S3U4RGk5aXUyckRENHcxb3VPY1lNbzg5X29hbUpHMVhRdFhQV0pWazZ1RXJOSFZ1S3I0Vk9MdWxBUzlVMElzOVpUUndhLUdmTVM4V3FZbElzZTBGcnBER0xG?oc=5",
       "publication_evidence": [
         {
           "source": "at",
@@ -219,45 +220,26 @@
         }
       ],
       "published_date": "2026-11-26",
-      "jp": "大谷翔平、新シーズンに向けドジャースと二刀流の選択肢を探る"
+      "jp": "ドジャースの大谷翔平、故障に悩まされたシーズンへの悔いを認める"
     },
     {
       "query": "Shohei Ohtani",
-      "title": "Shohei Ohtani New Balance Contract Extension",
-      "source": "Yahoo Sports",
-      "at": "Wed, 25 Nov 2026 19:43:25 GMT",
-      "url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxPeVFRcDhzM3BwV3g2eFlHMHdmQXZhSWtkRWY5cXB3Tk1sWDJ5WHhFb2ozN3N4UW5uVUNCcU5jVlVIajdSX1hEQ1diWkh1bmxhRW1MZWZmQkhZME1QX2htZGM1eTY4eUNqcHdBWXdIZ1hWQ29wV3U3NU9fMm5tdTBNUGRMaUhXS3l4b2dTR19ESElkc0Z2dEtMYkZUaDhMTkFocEwxSks1bUg?oc=5",
+      "title": "Shohei Ohtani Discusses Future as Dodgers Two-Way MLB Star",
+      "source": "BVM Sports",
+      "at": "Thu, 26 Nov 2026 16:27:49 GMT",
+      "url": "https://news.google.com/rss/articles/CBMilwFBVV95cUxNZ29BUkFlZGFoTkdFajNMc3VZd1ppcFp4YUMzeU1CM2FCMTV0a0FCOHpEb281X3p0RTc4LU9qXzFuRkdUTkh4ZEJrbWp4d3lURmVUTlhnNEU3SU9BT3VvM1lPQzh4SXNSYzRERW9lZWhOUmhaVGF1X24tWWtYY1FBWFdTZy1GOUhDc2Q3YUFGaDA3VzlReFh3?oc=5",
       "publication_evidence": [
         {
           "source": "at",
-          "date": "2026-11-25"
+          "date": "2026-11-26"
         },
         {
           "source": "published_date",
-          "date": "2026-11-25"
+          "date": "2026-11-26"
         }
       ],
-      "published_date": "2026-11-25",
-      "jp": "大谷翔平、ニューバランスと契約延長"
-    },
-    {
-      "query": "Yu Darvish",
-      "title": "With Teruaki Sato and Kaima Taira off the board, don't sleep on Japanese pitcher Hiromi Itoh",
-      "source": "Yahoo Sports",
-      "at": "Wed, 25 Nov 2026 20:09:39 GMT",
-      "url": "https://news.google.com/rss/articles/CBMi2gFBVV95cUxOYi1sRWNzcEVmazhqaHpOSmhjRGkzejFUcmtYczNzMXA1QlVmSXJlRHJEdnZrdUYta1BUS05nTVBjOUlzWUVTeVNSblB0WFVIWTBmdHMxV0x0UUdoYTFNS21EYUJVTDc4SmhHY05qdDByS3J6dWFjbXNHaFFQSXFwTUowaXN2Qi1uYXF6THdMZ29nSUVLY0JVRTBtb1gyTlc3YUJMbzBYR1NBRjNGd3pGaW01eVlCX0praEtDWTQ1MXMwM2VRZV85eW5ZbndFdmRmWnljWm1DLUNRZw?oc=5",
-      "publication_evidence": [
-        {
-          "source": "at",
-          "date": "2026-11-25"
-        },
-        {
-          "source": "published_date",
-          "date": "2026-11-25"
-        }
-      ],
-      "published_date": "2026-11-25",
-      "jp": "Teruaki SatoとKaima Taira が消えた今、日本人投手Hiromi Itohにも注目を"
+      "published_date": "2026-11-26",
+      "jp": "大谷翔平、ドジャースの二刀流スターとしての将来を語る"
     },
     {
       "query": "Roki Sasaki",
@@ -276,7 +258,7 @@
         }
       ],
       "published_date": "2026-11-26",
-      "jp": "「やさしい英語のニュース」ドジャースの佐々木朗希、岩手で子ども向け野球大会を開催"
+      "jp": "やさしい英語のニュース:ドジャースの佐々木朗希が岩手で子ども向け野球大会を開催"
     },
     {
       "query": "Roki Sasaki",
@@ -295,14 +277,14 @@
         }
       ],
       "published_date": "2026-11-26",
-      "jp": "ドジャース、日本でShoki Odaを訪問 投手育成プランを提示"
+      "jp": "ドジャース、日本でShoki Odaを訪問し投手育成プランを提示"
     },
     {
       "query": "Yoshinobu Yamamoto",
-      "title": "YAMAMOTO IS TOO TALENTED 🔥",
-      "source": "Yahoo Sports",
-      "at": "Wed, 25 Nov 2026 18:40:02 GMT",
-      "url": "https://news.google.com/rss/articles/CBMiggFBVV95cUxQQlEzSmwtRmVWZFJYOENGeFFnZnBNNWFuR1I2elp1MXNaQ3p6cEhpRDYtLWNtQm5wLVo2UHJuMWhHUk1lLTNMOFNVa2NwVWd5Y0pMRFdKM2I2OGRIVUZGTVUxd1JURC1ZTEdHSUZvb3NkZXZydFNLeXFvUjdPYktzdFFB?oc=5",
+      "title": "Tarik Skubal and New York Mets finalize $450 million, 9-year contract, record for a pitcher",
+      "source": "News4JAX",
+      "at": "Wed, 25 Nov 2026 23:52:37 GMT",
+      "url": "https://news.google.com/rss/articles/CBMizAFBVV95cUxOX2xoS2VVTlQ0OW9BUkxiUVd0dUFtWXZ4Nnh5cXo0dXBYVVlaa1A3NGZBanlzcXZtUFhHZmlBVGdYeVZCZVR0RTh4Rlh2TGtIMFY0SFFremZlemFXaEhYM2NqWDlRcWR2OWdTOVVGT3liYjdMbVM1aU9nVVRPbGpndXdrT21VeFFETld6VmJGbVMwTkc5c1lkZE5oa1NGRklzajR5MmQtaGhOYUtyaEZhaDE3VHRZZXEyN3hNYVZneGZydmxFM0hDQnREZWU?oc=5",
       "publication_evidence": [
         {
           "source": "at",
@@ -314,16 +296,53 @@
         }
       ],
       "published_date": "2026-11-25",
-      "jp": "山本由伸、才能がありすぎる🔥"
+      "jp": "タリク・スクーバルとニューヨーク・メッツが総額4億5000万ドル、9年契約で合意、投手として史上最高額"
+    },
+    {
+      "query": "Yoshinobu Yamamoto",
+      "title": "Watch Los Angeles Dodgers at Cincinnati Reds",
+      "source": "Fubo",
+      "at": "Thu, 26 Nov 2026 16:26:59 GMT",
+      "url": "https://news.google.com/rss/articles/CBMiwAFBVV95cUxPVVZkcl9ySVVCeG9qNnAxaVpxT0dQMnQ1RHdOdHl2WWtEZno4cjFVWXdWVW1aVWhEMWNqYlU3OWFLWWZSRFozQzlQTkVPRm5nZGNPSkhnODd4bEVmbHdrcThQaktBc1hYeEllYmNEaXExSEoxbHhFcmVqVHgycVBrQWpPTDJQM1lUNnkxTS1hWExSS3lzenQ5NFh5QmJFejFJOHZQVDhXdzNZZ3FwckZqRW5fb2FDUmpneTVnYlh6Y24?oc=5",
+      "publication_evidence": [
+        {
+          "source": "at",
+          "date": "2026-11-26"
+        },
+        {
+          "source": "published_date",
+          "date": "2026-11-26"
+        }
+      ],
+      "published_date": "2026-11-26",
+      "jp": "ロサンゼルス・ドジャース対シンシナティ・レッズ戦を視聴"
     }
   ],
   "headline_pool": [
     {
       "query": "Shohei Ohtani",
+      "title": "Dodgers Superstar Shohei Ohtani Talks Future As 2-Way MLB Player",
+      "source": "FOX Sports",
+      "url": "https://news.google.com/rss/articles/CBMigwFBVV95cUxNYkJwLXcwUXFpUkJWVG12WUE4V29pdUZBRWNXaEJyalJmNkEzeU5OQkhDaUZiTjIzX2hCU3cwemt1X0ZzazRhYkJUeTkyS1dTSENkYVMzdXJpVVgyZUhHQ2hZV2FNLVVTLS10ZENLa3pqNlkwdVpJaWlBUHhXVVl1WWNsc9IBgwFBVV95cUxPTFpnMG9KeHgzbkF4WUd1UXNuRXZ0UVpTNlBIR1BVM190bFhFMTBGWDZkaXltcTBCRUFYMm5RUEF5Yl9Na0VSeXhpLXcxNFk0cmVHamhDUk1zRW1rVFl4cUFoMlpLMVJnaTk4amd2ZnRfTV9COTFSUE5od29jbklJTVZLOA?oc=5",
+      "at": "Thu, 26 Nov 2026 16:01:37 GMT",
+      "publication_evidence": [
+        {
+          "source": "at",
+          "date": "2026-11-26"
+        },
+        {
+          "source": "published_date",
+          "date": "2026-11-26"
+        }
+      ],
+      "corroborated_by": []
+    },
+    {
+      "query": "Shohei Ohtani",
       "title": "Ohtani plans to remain 2-way player, make up for 'this year's frustration'",
       "source": "MLB.com",
       "url": "https://news.google.com/rss/articles/CBMifkFVX3lxTE5CdE1sd21kOTNmUlowc2c1R3B0MjdkemZCczM3bUR5OThvZ2h0RlpYVXRBeU5wcFFocHExWmpObmpXMFdTbVd2NXRUZ04wME5VTnZxTVRNa2FBLS1vTEZEdFBMYWgtbktCNnBRV0hmTWRZeGl5emdxZXVmSTQ0Zw?oc=5",
-      "at": "Thu, 26 Nov 2026 01:41:47 GMT",
+      "at": "Thu, 26 Nov 2026 03:47:59 GMT",
       "publication_evidence": [
         {
           "source": "at",
@@ -338,28 +357,10 @@
     },
     {
       "query": "Shohei Ohtani",
-      "title": "Shohei Ohtani Reveals Lockout Concern as Dodgers Weigh His Pitching Plans",
-      "source": "DodgersBeat",
-      "url": "https://news.google.com/rss/articles/CBMif0FVX3lxTE9ZbHVMaDVlUGFBQVhfSTVGekp5NlNzZFlMYlN4cEMzLVRBeEdXQVhOdGowMlA0bkJTdmU0TzlDbkNIYmJiS055U2czR2hqclJPQVVCdUI2Qklvd0Q5Vmo2SE1HVGdUYjY0bHpLOWVOMU1GZFlFRXhEZEJJZlV2U0k?oc=5",
-      "at": "Wed, 25 Nov 2026 23:49:36 GMT",
-      "publication_evidence": [
-        {
-          "source": "at",
-          "date": "2026-11-25"
-        },
-        {
-          "source": "published_date",
-          "date": "2026-11-25"
-        }
-      ],
-      "corroborated_by": []
-    },
-    {
-      "query": "Shohei Ohtani",
-      "title": "Shohei Ohtani exploring 2-way options with Dodgers ahead of new season",
-      "source": "Japan Wire by Kyodo News",
-      "url": "https://news.google.com/rss/articles/CBMiWkFVX3lxTFBYVXYwR0NEZkF2YU43TG9ET1pxVzhOd2U1WGdnczItcmJuTVJMdjFRSXpzbzFiZzFCMzk3U1h6ZjdBWjE5d25aSkRxYjBVaHY2Q0tVMTZFSXFRQQ?oc=5",
-      "at": "Thu, 26 Nov 2026 05:44:00 GMT",
+      "title": "Dodgers’ Shohei Ohtani admits regret over injury-plagued season",
+      "source": "Qazinform",
+      "url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxOUmp5cXBVV25RSUdUVnB5NEN5Ql9Qc1pyU2RwdUo1SGxSaFpCU2UxSE1RZ202aVVhUHJCSzlwanhmLWNVdVJBSDlCdkZLbHJGQTVKaTFmZ2NxdU5YeGR4aFBuMjhnbGlmc3NJdXIwcTVVNUc3QWloU3BqRkc2Z3dYYTBJcXFsSHNEMnByZk4wb0MycHp1T19KcmNqTljSAZwBQVVfeXFMTTFhb0lnNEZuYjcySzZsZDVZNkJjYlYwUjI1ZjRGR3E5dUZ0YUwtOUlJb0p2cGpWd0dIMWxnMUtTNVo0S3U4RGk5aXUyckRENHcxb3VPY1lNbzg5X29hbUpHMVhRdFhQV0pWazZ1RXJOSFZ1S3I0Vk9MdWxBUzlVMElzOVpUUndhLUdmTVM4V3FZbElzZTBGcnBER0xG?oc=5",
+      "at": "Thu, 26 Nov 2026 20:18:09 GMT",
       "publication_evidence": [
         {
           "source": "at",
@@ -374,36 +375,18 @@
     },
     {
       "query": "Shohei Ohtani",
-      "title": "Shohei Ohtani New Balance Contract Extension",
-      "source": "Yahoo Sports",
-      "url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxPeVFRcDhzM3BwV3g2eFlHMHdmQXZhSWtkRWY5cXB3Tk1sWDJ5WHhFb2ozN3N4UW5uVUNCcU5jVlVIajdSX1hEQ1diWkh1bmxhRW1MZWZmQkhZME1QX2htZGM1eTY4eUNqcHdBWXdIZ1hWQ29wV3U3NU9fMm5tdTBNUGRMaUhXS3l4b2dTR19ESElkc0Z2dEtMYkZUaDhMTkFocEwxSks1bUg?oc=5",
-      "at": "Wed, 25 Nov 2026 19:43:25 GMT",
+      "title": "Shohei Ohtani Discusses Future as Dodgers Two-Way MLB Star",
+      "source": "BVM Sports",
+      "url": "https://news.google.com/rss/articles/CBMilwFBVV95cUxNZ29BUkFlZGFoTkdFajNMc3VZd1ppcFp4YUMzeU1CM2FCMTV0a0FCOHpEb281X3p0RTc4LU9qXzFuRkdUTkh4ZEJrbWp4d3lURmVUTlhnNEU3SU9BT3VvM1lPQzh4SXNSYzRERW9lZWhOUmhaVGF1X24tWWtYY1FBWFdTZy1GOUhDc2Q3YUFGaDA3VzlReFh3?oc=5",
+      "at": "Thu, 26 Nov 2026 16:27:49 GMT",
       "publication_evidence": [
         {
           "source": "at",
-          "date": "2026-11-25"
+          "date": "2026-11-26"
         },
         {
           "source": "published_date",
-          "date": "2026-11-25"
-        }
-      ],
-      "corroborated_by": []
-    },
-    {
-      "query": "Yu Darvish",
-      "title": "With Teruaki Sato and Kaima Taira off the board, don't sleep on Japanese pitcher Hiromi Itoh",
-      "source": "Yahoo Sports",
-      "url": "https://news.google.com/rss/articles/CBMi2gFBVV95cUxOYi1sRWNzcEVmazhqaHpOSmhjRGkzejFUcmtYczNzMXA1QlVmSXJlRHJEdnZrdUYta1BUS05nTVBjOUlzWUVTeVNSblB0WFVIWTBmdHMxV0x0UUdoYTFNS21EYUJVTDc4SmhHY05qdDByS3J6dWFjbXNHaFFQSXFwTUowaXN2Qi1uYXF6THdMZ29nSUVLY0JVRTBtb1gyTlc3YUJMbzBYR1NBRjNGd3pGaW01eVlCX0praEtDWTQ1MXMwM2VRZV85eW5ZbndFdmRmWnljWm1DLUNRZw?oc=5",
-      "at": "Wed, 25 Nov 2026 20:09:39 GMT",
-      "publication_evidence": [
-        {
-          "source": "at",
-          "date": "2026-11-25"
-        },
-        {
-          "source": "published_date",
-          "date": "2026-11-25"
+          "date": "2026-11-26"
         }
       ],
       "corroborated_by": []
@@ -440,24 +423,6 @@
         {
           "source": "published_date",
           "date": "2026-11-26"
-        }
-      ],
-      "corroborated_by": []
-    },
-    {
-      "query": "Yoshinobu Yamamoto",
-      "title": "YAMAMOTO IS TOO TALENTED 🔥",
-      "source": "Yahoo Sports",
-      "url": "https://news.google.com/rss/articles/CBMiggFBVV95cUxQQlEzSmwtRmVWZFJYOENGeFFnZnBNNWFuR1I2elp1MXNaQ3p6cEhpRDYtLWNtQm5wLVo2UHJuMWhHUk1lLTNMOFNVa2NwVWd5Y0pMRFdKM2I2OGRIVUZGTVUxd1JURC1ZTEdHSUZvb3NkZXZydFNLeXFvUjdPYktzdFFB?oc=5",
-      "at": "Wed, 25 Nov 2026 18:40:02 GMT",
-      "publication_evidence": [
-        {
-          "source": "at",
-          "date": "2026-11-25"
-        },
-        {
-          "source": "published_date",
-          "date": "2026-11-25"
         }
       ],
       "corroborated_by": []
@@ -481,19 +446,19 @@
       "corroborated_by": []
     },
     {
-      "query": "Tomoyuki Sugano",
-      "title": "Sugano Could Be a Calculated Buy-Low Gamble for Giants",
-      "source": "Yahoo Sports",
-      "url": "https://news.google.com/rss/articles/CBMijAFBVV95cUxQdVNHY1hVV3Y2bnpKdXplTDYwV0RCM2N5MUd5ZFppX2NwdjJtSUt0SVFsOGVEanFGUGh4UlRqUjdpRGQzMXQxRnkzQnFBenBna3d2M25oczNZUjVLR1d6UFRZWjVITlg3Z216X1M1NkhXcG51YjhzQXRMTmRsOTBtV1BTUzIxandhbGdlcQ?oc=5",
-      "at": "Wed, 25 Nov 2026 14:38:24 GMT",
+      "query": "Yoshinobu Yamamoto",
+      "title": "Watch Los Angeles Dodgers at Cincinnati Reds",
+      "source": "Fubo",
+      "url": "https://news.google.com/rss/articles/CBMiwAFBVV95cUxPVVZkcl9ySVVCeG9qNnAxaVpxT0dQMnQ1RHdOdHl2WWtEZno4cjFVWXdWVW1aVWhEMWNqYlU3OWFLWWZSRFozQzlQTkVPRm5nZGNPSkhnODd4bEVmbHdrcThQaktBc1hYeEllYmNEaXExSEoxbHhFcmVqVHgycVBrQWpPTDJQM1lUNnkxTS1hWExSS3lzenQ5NFh5QmJFejFJOHZQVDhXdzNZZ3FwckZqRW5fb2FDUmpneTVnYlh6Y24?oc=5",
+      "at": "Thu, 26 Nov 2026 16:26:59 GMT",
       "publication_evidence": [
         {
           "source": "at",
-          "date": "2026-11-25"
+          "date": "2026-11-26"
         },
         {
           "source": "published_date",
-          "date": "2026-11-25"
+          "date": "2026-11-26"
         }
       ],
       "corroborated_by": []
@@ -554,18 +519,18 @@
     },
     {
       "query": "Yusei Kikuchi",
-      "title": "[Seibu Lions] Kaima Taira wins Best Nine for the first time, agrees to a 5-year deal totaling 12.7 billion yen with the Blue Jays. A decoration for his final year in Japan. First pitcher from the club to win since Yusei Kikuchi in 2018 | Pacific League.com | Profession",
+      "title": "[Seibu Lions] Taiga Ueda's number changed from \"11\" to \"48\". Heading into a decisive 4th year, he says, \"I want to show a new version of myself.\" | Pacific League.com | Professional baseball",
       "source": "パ・リーグ.com",
-      "url": "https://news.google.com/rss/articles/CBMiX0FVX3lxTFBkMWlyRmRDcEU5enl2WWItUkNDZU1FaERHT1FTYUh3aExtczIybHNLUldwUkZneXA3VnE2cDQ5clE3aHJjV3VmeUgtTDdkOEdwdmE1eWxTZ3lFeWZsaFk4?oc=5",
-      "at": "Wed, 25 Nov 2026 09:57:44 GMT",
+      "url": "https://news.google.com/rss/articles/CBMiX0FVX3lxTE92b2tQUm1ndkcydFJ3cTZPbzNZbVB2aWFFbTFhMEpVRVIxTU5FSXFMS01sLTJVRlh0SkFuSDB2TDN1UGJmOUphVUFrdFNpLVBtb2J4dkhaMjltVkFudXRR?oc=5",
+      "at": "Thu, 26 Nov 2026 07:23:38 GMT",
       "publication_evidence": [
         {
           "source": "at",
-          "date": "2026-11-25"
+          "date": "2026-11-26"
         },
         {
           "source": "published_date",
-          "date": "2026-11-25"
+          "date": "2026-11-26"
         }
       ],
       "corroborated_by": []
@@ -584,24 +549,6 @@
         {
           "source": "published_date",
           "date": "2026-11-26"
-        }
-      ],
-      "corroborated_by": []
-    },
-    {
-      "query": "Yusei Kikuchi",
-      "title": "[Seibu Lions] Kaima Taira, who reached an agreement with the Blue Jays, was absent from the Best Nine awards ceremony; 5-year contract totaling 12.7 billion yen | Pacific League.com | Professional baseball",
-      "source": "パ・リーグ.com",
-      "url": "https://news.google.com/rss/articles/CBMiX0FVX3lxTE9CelVmMW5ZUjA5TC1xV0JheWRHSDhhYmVmQlMxNmN2Q1RrbG9IQUFONEp1NG9LX0dvc2tHRVRvbERrUFdIQjh4MTNjem1jdzdDTWpfel9palVIbm53d2R3?oc=5",
-      "at": "Wed, 25 Nov 2026 09:57:44 GMT",
-      "publication_evidence": [
-        {
-          "source": "at",
-          "date": "2026-11-25"
-        },
-        {
-          "source": "published_date",
-          "date": "2026-11-25"
         }
       ],
       "corroborated_by": []
@@ -626,18 +573,18 @@
     },
     {
       "query": "Shota Imanaga",
-      "title": "Padres Nearing Deal For Top Starting Pitcher",
-      "source": "Padres Mission",
-      "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxOczlLenotUHZzam9BUEtwM0tjTlJ3ZTJYYUFVTFAtS1I1bFpIQ214UlV6bk0wZVhJRUtJS01YSllmRFA5QTZXOTdybXZJTEhtZEFpSGxlT082NmNBak5nQ3dqdDdWa1ozamhxRXB3dUFkM2w2TXdmbjFuejhSVlJGMElRRnBaS0dMY1pqemwxcEVISFlUSjBrMll3ZlRPOW40Q0hGdjlzc0NwSzJURWVPcVlwWkc?oc=5",
-      "at": "Wed, 25 Nov 2026 23:39:17 GMT",
+      "title": "Cardinals Interested in Cubs All-Star After 3.77 ERA Season",
+      "source": "Sports Illustrated",
+      "url": "https://news.google.com/rss/articles/CBMipAFBVV95cUxQNEhwMm9FUFhqMHhfc3BQUTFZd1liYy1vOWlETk5BNXlVQmJ2Q2dTbDJJTHdFaHlxa2NXUEhhNUg0aHh2b0luUnNfTFVfU3BYd0dVT2lObkg2NXNXMzJIM09HVXFxYkY1T094T09IRk9hay12aWdYd1I3TnhuZXJ3NC1YYWdxa2QwYWFkRk1tdmxNRFN4bUc3bFhxQ0JkT3R4bHhZcw?oc=5",
+      "at": "Thu, 26 Nov 2026 15:00:01 GMT",
       "publication_evidence": [
         {
           "source": "at",
-          "date": "2026-11-25"
+          "date": "2026-11-26"
         },
         {
           "source": "published_date",
-          "date": "2026-11-25"
+          "date": "2026-11-26"
         }
       ],
       "corroborated_by": []
@@ -662,10 +609,10 @@
     },
     {
       "query": "Shota Imanaga",
-      "title": "Predicting 3 Free Agents the Padres Will Sign Before the MLB Lockout",
-      "source": "Sports Illustrated",
-      "url": "https://news.google.com/rss/articles/CBMilAFBVV95cUxQbW1aMnNIWEVEQ3R1TExSOUpuZ3NvV041Um42aGdTdllLZTVKU3hPTnVpZ0paOGI5c3N5NUFyTTNYVzZhYVVnZkpWV2kwaE1VNlpMWkl4UVpnSi1GTlVEN0N4U1hnOEJGbU4zNkZldkxhVlR6djNnWEE3ZWJjTkdhU0tacGRJeTR4N2NJTGFNNjluYmVW?oc=5",
-      "at": "Wed, 25 Nov 2026 19:00:01 GMT",
+      "title": "Padres Nearing Deal For Top Starting Pitcher",
+      "source": "Padres Mission",
+      "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxOczlLenotUHZzam9BUEtwM0tjTlJ3ZTJYYUFVTFAtS1I1bFpIQ214UlV6bk0wZVhJRUtJS01YSllmRFA5QTZXOTdybXZJTEhtZEFpSGxlT082NmNBak5nQ3dqdDdWa1ozamhxRXB3dUFkM2w2TXdmbjFuejhSVlJGMElRRnBaS0dMY1pqemwxcEVISFlUSjBrMll3ZlRPOW40Q0hGdjlzc0NwSzJURWVPcVlwWkc?oc=5",
+      "at": "Wed, 25 Nov 2026 23:39:17 GMT",
       "publication_evidence": [
         {
           "source": "at",
@@ -680,10 +627,28 @@
     },
     {
       "query": "Seiya Suzuki",
-      "title": "Padres rumors: San Diego’s Seiya Suzuki free agency pursuit gets massive update",
+      "title": "Padres pursue Cubs FA Seiya Suzuki",
       "source": "Yahoo Sports",
-      "url": "https://news.google.com/rss/articles/CBMiigFBVV95cUxNMDRKUWNfdlhXZjllSU9QTUJFbWZhdHRubS1TdkRPM2N2LWNadUVwcWZQeDliekliekkwRl9oV1ljZ3lUdzBvdXZqRmRmVmRUbTNNTnhIMWE5YWwzZTVod3RteHhVV0ZiOWs3MTNNMllkYkFvWU1qTERjcnVUcWMyZEJ2NDVhWFRpZHc?oc=5",
-      "at": "Thu, 26 Nov 2026 03:38:00 GMT",
+      "url": "https://news.google.com/rss/articles/CBMihwFBVV95cUxObFUybVpNSENtYU91eVR2NlpHQzBlX243UHRrb1dPclVfZE1iVnNjLXE2LWpjcEZvOFhENTNEdDRuQWlfWmV4MVl0RV83dDZ1ejA5dGQ2VkVDRmljYmdjZjVWNHA1bGpNcGV2UnZyRGI1c0RKOHk2aGxxWUZPY0RNR19aTE5mdmc?oc=5",
+      "at": "Thu, 26 Nov 2026 06:15:00 GMT",
+      "publication_evidence": [
+        {
+          "source": "at",
+          "date": "2026-11-26"
+        },
+        {
+          "source": "published_date",
+          "date": "2026-11-26"
+        }
+      ],
+      "corroborated_by": []
+    },
+    {
+      "query": "Seiya Suzuki",
+      "title": "Blue Jays reportedly face stiff competition for Seiya Suzuki and Randy Arozarena",
+      "source": "Jays Journal",
+      "url": "https://news.google.com/rss/articles/CBMipwFBVV95cUxQd0lvcXlyTWlXYzBNMzExbWZ4NEd5NEg5T2h4MGctdERpSE8ybUxVblZGMTc0WEpiSlJ2bEE5cF91NTV2TWhxNDVPSVpWZnNfMWtxb0d2UFRwVEZEdFlSS01NM2dPeXNodmRIQ1YtV0ZyRlc4ekg3a1lQWldjcFZNb2lKS1NDakVsWjh3UWh1NmV3Tzc1THFUZUZzaVNwZnJqekh2U1gwbw?oc=5",
+      "at": "Thu, 26 Nov 2026 17:00:02 GMT",
       "publication_evidence": [
         {
           "source": "at",
@@ -715,19 +680,37 @@
       "corroborated_by": []
     },
     {
-      "query": "Seiya Suzuki",
-      "title": "MLB Rumors: Three-team race for Suzuki and Arozarena and Red Sox’ top priority",
-      "source": "FanSided",
-      "url": "https://news.google.com/rss/articles/CBMiowFBVV95cUxNbVdtX1hQdUdiRm55UnE2cUpwRkJEZFBaQ3p3N3RqZ3BlQktGYm9vXzNOeU1ONjREejA3M2pNY0FEbThxTWw1NEtjWWNLYWhxTlZVX3Qxekk0SEhaWi1pc002ckRkQ0FaOHhEU0ZMcURLQm5PRHdlLWRPX0xpLV9aVGJIWDBjX0FFSlhnQmstQjRjQTJBZjdGSk9ldGJDTnJUQlRJ?oc=5",
-      "at": "Wed, 25 Nov 2026 23:56:44 GMT",
+      "query": "Kodai Senga",
+      "title": "Mets Rumors: Rotation, Manaea, Senga, Outfield",
+      "source": "MLB Trade Rumors",
+      "url": "https://news.google.com/rss/articles/CBMijwFBVV95cUxNLUVqc0thRWtwRTg5dUQ4YlpUWGh1ZGdscXZKTTFXRFc5aUZpUXJnbC1vT2tPX3FBTGZSVW5Rd2I5T19Tak0ya0hCMXZvcXJrbmROQkxyTHZucWpGSWpfZ3NSSVRickJaRV9CYk5HdGdpY3NaakY0akpFSW8xWjVPbkVrdXFVbzJ4bmVFdEl0RQ?oc=5",
+      "at": "Thu, 26 Nov 2026 19:38:22 GMT",
       "publication_evidence": [
         {
           "source": "at",
-          "date": "2026-11-25"
+          "date": "2026-11-26"
         },
         {
           "source": "published_date",
-          "date": "2026-11-25"
+          "date": "2026-11-26"
+        }
+      ],
+      "corroborated_by": []
+    },
+    {
+      "query": "Kodai Senga",
+      "title": "Mets owners 'thrilled' to add 'impressive' Tarik Skubal to rotation",
+      "source": "ESPN",
+      "url": "https://news.google.com/rss/articles/CBMirgFBVV95cUxQTXJ0ampYeWxLU2J2ekwtVkV1eW5rTjd6R19IWGxXQ2VGQ0dDX1dhZXZVSDhLMl9TRzc1S24xclBvU0FzQkVSeTBiRzJiR3ZFZlc5MTNuemxYQUZlM18xdkIxOXRuNXY5TWJ3OS0xQU81WkJNbEh4YlktcDdydUlWRjBHa2l2TlQtaXFaYUdKMU9WUEhxT3I0b0xYN3N2X3hwZldwUFZTY1F1NXZZOHc?oc=5",
+      "at": "Thu, 26 Nov 2026 00:13:00 GMT",
+      "publication_evidence": [
+        {
+          "source": "at",
+          "date": "2026-11-26"
+        },
+        {
+          "source": "published_date",
+          "date": "2026-11-26"
         }
       ],
       "corroborated_by": []
@@ -751,29 +734,29 @@
       "corroborated_by": []
     },
     {
-      "query": "Masataka Yoshida",
-      "title": "Starr’s 7 Questions: How can Red Sox balance lefty-heavy starting rotation?",
-      "source": "Boston Herald",
-      "url": "https://news.google.com/rss/articles/CBMi9wFBVV95cUxPNkR0enBqbC1ROTVhaDJxNXVYemVjWnQ0Z3J6MkNPSFVqRkNhVlB3a2pvZ0wzblFNYVdQX1IxMmRYTlZiNGxVeW1YM0lCYWRxY1Y3VERkME9iclZtWTluSzk2SUFtYU9hU3NyYUZnc0trTnhqV1piOExpNFlIOEEtcGV0VnRtNlZzTVRGbGk0S2ZzN3c1Y3NYT3JJTHg5MHJqRzQzaWExV3Ntc3JjaTdQUk9YUFdIVEtJOU1KZm1oS2xaSTI2bjZ4dlhNSG40ZHlCT1pjaWNVRFZzWS1keGJndWtxQTZIa0xpWWxIQUY1aEItNFc2Q2w0?oc=5",
-      "at": "Wed, 25 Nov 2026 10:31:23 GMT",
+      "query": "Kazuma Okamoto",
+      "title": "Kazuma Okamoto's success may have paved the way for Blue Jays to land Kaima Taira",
+      "source": "Jays Journal",
+      "url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxObGJvcjZFY2oyTUpTenVxb3BVZnRlbm1DWG0zdWEzV0NfeS1QUE82UFFDT0VSaW9ESW10dUlHcDNYSkdzeDV1MVBnZWVUdEQ3MEh1b0RvWF9ZWkE5MC1EcUJ6RzJraHF0bGEzSWVpeVFNLWdIWHpvOTZ4YUtqRXNnbS1qbVp1Y1g5TFZZWHIxMUZBZm9La3Y3Tm1sb3hZWDNjOUZBa3BNbmw?oc=5",
+      "at": "Thu, 26 Nov 2026 16:00:02 GMT",
       "publication_evidence": [
         {
           "source": "at",
-          "date": "2026-11-25"
+          "date": "2026-11-26"
         },
         {
           "source": "published_date",
-          "date": "2026-11-25"
+          "date": "2026-11-26"
         }
       ],
       "corroborated_by": []
     },
     {
-      "query": "Masataka Yoshida",
-      "title": "Boston Red Sox Trade Rumors: One Analyst Predicts Sizable Haul for Outfielder",
-      "source": "roundtable.io",
-      "url": "https://news.google.com/rss/articles/CBMivwFBVV95cUxPQm4teHBpYVMyTk9XbW1sVVdLSHBoX0UyRFZwVmp1bXB6bS0xTGlEbDJhLVJ5ZUhoNV9SY2NtRHF6b1FSQnB0LWVYRWN0VXp4a3FoUVhYdk1HdFktMHZCQzdyUERpUTU0ZDBSLWVFZEZVd05sOGJrUk5QVGM0ZjhOaXdhMlJqOVItRGJ3U3A1RTdmWTZKV3lIVjExZ1RCSE16N3VSNVVWSGNhWFYyNHlMeW1BS3BUb3pSc0stZVZ2TQ?oc=5",
-      "at": "Wed, 25 Nov 2026 18:37:54 GMT",
+      "query": "Kazuma Okamoto",
+      "title": "Toronto Blue Jays' new $80 million pitcher has a fascinating off-field hobby",
+      "source": "blogTO",
+      "url": "https://news.google.com/rss/articles/CBMikwFBVV95cUxNWWdWbWRuWkkzZzBFSDhXS1NBLXVRTV9BZGx1S3hQR1dNdnZNMFJvZVJ0U3MxN0pQTUJ5WkwyY2tYLUZLbFh3bVNPZGNHQlJhdWpfZllKaWtfeE1qU1hxUTE0U2I0bnRsNVVfenNTTjZwaERHNDlxZGEzVkc0MUE1alkzU3RJWTYwQThYdEZUd1YwX2c?oc=5",
+      "at": "Wed, 25 Nov 2026 21:09:44 GMT",
       "publication_evidence": [
         {
           "source": "at",
@@ -788,54 +771,54 @@
     },
     {
       "query": "Kazuma Okamoto",
-      "title": "Blue Jays agree to five-year contract with Japanese pitcher Kaima Taira",
-      "source": "CHAT News Today",
-      "url": "https://news.google.com/rss/articles/CBMitwFBVV95cUxPajlmNzJ2THhfQzdyc2RIZWZiWHB1VGp5RTBJd0dZeGg1bHBYcEVRY0lIM1lRLVg2YmJLdlVxRlZ1Q1pnUE11VXp2Zy1SU2JLeFhnOWN6R2NtaTI2bzNqUy1GdGNKdnZpVTMyZWtndFJMaFI4ZVphYkdBQVNacFJqQTA0NVVRWmlnVGFwSXlhV1NwcHk2NDJkdldtdG9nbUY1SjVhRl9YcmNrei1iTFBvYmhrT290Szg?oc=5",
-      "at": "Wed, 25 Nov 2026 08:15:00 GMT",
+      "title": "MLB rumors: Blue Jays narrow focus, Cardinals target pitching, plus more relievers off the board",
+      "source": "NewsBreak: Local News & Alerts",
+      "url": "https://news.google.com/rss/articles/CBMi5wFBVV95cUxNazI1OE4xaDd6OGFldWFHbFNSRk4telo3b1BZZXM1TTZ6QklkcUhOZ1dmQ2RWY1g3anRjcGhNUFVWU0RXMS1ZZ18weDdJc0M5VGdaSnlYNVJTQXRzRUZ2dU9aaWJhNDJXOHg5aXNSQWc4MlNiSlBhLTBzWnVIcmRXSFExRWNfLVJPRlJmX196Q2x0clppTmgwaFNKbDVab2l3X19HR1lfVS11LVcxZ2RhbGlWWnVlNmtOc1U1bVA4ZFI4UUxJZ0RfWnp3R0hWc3NBNFI4aGNWRUhISGw4SXJvVHc5dHE1Y2M?oc=5",
+      "at": "Thu, 26 Nov 2026 15:24:15 GMT",
       "publication_evidence": [
         {
           "source": "at",
-          "date": "2026-11-25"
+          "date": "2026-11-26"
         },
         {
           "source": "published_date",
-          "date": "2026-11-25"
+          "date": "2026-11-26"
         }
       ],
       "corroborated_by": []
     },
     {
       "query": "Munetaka Murakami",
-      "title": "How White Sox Munetaka Murakami deal paved way for Cubs, Teruaki Sato",
+      "title": "How Munetaka Murakami's monstrous rookie season forced Cubs to spend more on Teruaki Sato",
       "source": "Southside Showdown",
-      "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxQM0VKU3pQMEs1VFRqVllPV2xUM3JWWGFDSFhXMEQ5OHN1RGNXUWJpMDdYTFVBNXpsUGNKVHFfVURlSkxRWWEzdDdWTDFWcmtMbXJQS1NhZ3puZVdhS2dTc2pOdmU1cHRkYjNqOE5TN2Y0WU90X3E0TWswaTBwcy1VNGsxQUhrbFZQeWJkdUcxQXRHUGxsUUhuSzZHRmN2X00?oc=5",
-      "at": "Wed, 25 Nov 2026 14:00:02 GMT",
+      "url": "https://news.google.com/rss/articles/CBMiugFBVV95cUxOamkwSWZTTXdYa0tIVEpycVpsSzUzSm93V1QzYW1rVXBIX2dqQ0dmSi1wdk1DQ200U0dUMkpLaVBCTlZIMlpheFluWUl0NFlYbmJoT3UtU3NzbTNoaS1teHlKVEFScEtaYTZ0bl9vVjVvZG9BOVZjS3MzOXpYMEFoZ1BIRUZ5UjFwc0hWcmoyNk80bFlRWU5RRnFMRXZld1lNY2h4NURmaUtzMG9KaFlhYUNTVTFMY3hzeHc?oc=5",
+      "at": "Thu, 26 Nov 2026 14:00:02 GMT",
       "publication_evidence": [
         {
           "source": "at",
-          "date": "2026-11-25"
+          "date": "2026-11-26"
         },
         {
           "source": "published_date",
-          "date": "2026-11-25"
+          "date": "2026-11-26"
         }
       ],
       "corroborated_by": []
     },
     {
-      "query": "Munetaka Murakami",
-      "title": "Chicago Cubs sign Japanese superstar Teruaki Sato to $120 million deal",
-      "source": "Axios",
-      "url": "https://news.google.com/rss/articles/CBMijwFBVV95cUxPbkpJQzJEZUVpQXhOd3JPVGRGNkdrRFE2NGNWa0RZMXoweWlXaTVGejZFQ19yN0ZaT0xrUEtvRm4ycWoxQmtZN244Nk5pLTJLRmhUbFFlcTVRM3hpbEdxNkF1T2RpQ3htT0FBVDNDZlo3WDhXREdySTlLN2dSd0RXT3dIUzdHRk1XMWFsWUthQQ?oc=5",
-      "at": "Wed, 25 Nov 2026 10:48:51 GMT",
+      "query": "Shinnosuke Ogasawara",
+      "title": "Washington Nationals Take a Low-Risk Swing on A.J. Puk",
+      "source": "The Nats Report",
+      "url": "https://news.google.com/rss/articles/CBMijgFBVV95cUxQR2tiMXA3ejl1YTZlMmJLVTliUlJ6S3JDeS1pNXEyQWcwaVloc1RpMWp4RWkzaTh0VEU5MWpNUG5WTjQwWG5YbEdSN3dBY041LUpWTERwZEZTWENUMDNxV0NZY2RpSDVuUk9qQ0xjUUJzcWswOGZKSmVEWHh5cHJGR1RWODFMVzBJZ214d0VR?oc=5",
+      "at": "Thu, 26 Nov 2026 12:37:00 GMT",
       "publication_evidence": [
         {
           "source": "at",
-          "date": "2026-11-25"
+          "date": "2026-11-26"
         },
         {
           "source": "published_date",
-          "date": "2026-11-25"
+          "date": "2026-11-26"
         }
       ],
       "corroborated_by": []
@@ -861,27 +844,9 @@
     {
       "query": "Lars Nootbaar",
       "title": "2027 St. Louis Cardinals Need Roster Additions with the Subtractions",
-      "source": "Viva El Birdos",
-      "url": "https://news.google.com/rss/articles/CBMiygFBVV95cUxOX3FIWmZJY0pwdVUxb1BiTzNSZVRkalhiZlFmbXpMZndTSzlTTmZTVndwSlpTU0FVaHF5ZjJiVThCX3NYQ2JiTTB3RVVuak1HU1UtX2M5NlhMTUV5cUZVck9GMGJ0R3BKeHlhZEVPNGVQcXhEeHlZYUZQTEJFSE1qc055eTZoWlZIc3R0M2JSSVE4RWhYTHVsdDlfS1BJazNMemtTMzZnYlB3OGN6NlR0Mm9QLXBSaEVQZkpJOWx5bzk5Y2tVUms1UVB3?oc=5",
-      "at": "Wed, 25 Nov 2026 19:43:59 GMT",
-      "publication_evidence": [
-        {
-          "source": "at",
-          "date": "2026-11-25"
-        },
-        {
-          "source": "published_date",
-          "date": "2026-11-25"
-        }
-      ],
-      "corroborated_by": []
-    },
-    {
-      "query": "MLB playoff race",
-      "title": "The Athletic’s NFL Simulator 2026: Live forecast of playoff picture and outcomes for every team",
-      "source": "The New York Times",
-      "url": "https://news.google.com/rss/articles/CBMihwFBVV95cUxNdDZ1bXc2WHpRS0tsb25VdjhNWFRJQ3IzUmtHNTQtLVh4cFdkWTlGeE9MZlZaMWlzaURNQnNESHA2d1dCelV4eU1UVm1ObVpFbUVNNEFiOXE0dVNwYUtzTXlRbE5ncnN4eDBVYlJLckpRb0JLYUx5OEZNM2xHZWo4VFgxSnp6dFE?oc=5",
-      "at": "Thu, 26 Nov 2026 04:33:29 GMT",
+      "source": "www.wtyefm.com",
+      "url": "https://news.google.com/rss/articles/CBMipAFBVV95cUxNZDVrN0xJMzNuT0JCckhIdGJPeUMyNEt2NW45bS1ySEhMUGw3SUp1d1N2YkhIMThvQmRyTTd6RGxjdmVSeUVmazJEdWV0d3NKT04zMUhuU3U4X3E2UmZ3Z1lzYWlDb3lsdjlfOTFGbHBCUWRjeGFfWHZuZXNXcHJLM0lsQS0zUk1qT3FIR184VE51RTBOVHBTM1V3RFlxUnlPbmY3cA?oc=5",
+      "at": "Thu, 26 Nov 2026 08:33:04 GMT",
       "publication_evidence": [
         {
           "source": "at",
@@ -896,10 +861,10 @@
     },
     {
       "query": "MLB playoff race",
-      "title": "Seattle Seahawks 2026 NFL Playoff Simulator - The Athletic",
+      "title": "Our NFL playoff simulator shows who has the most to lose this Thanksgiving",
       "source": "The New York Times",
-      "url": "https://news.google.com/rss/articles/CBMitwFBVV95cUxPNGhKUUZPbjNCY182T2w0a2VBTHBKU2tUd3ZfOU5iQWxEV2NaNTF3Z0RhVHhDZU9sZ0RiT1BQNTRHWXJIdnlJMm1Ldk1CTkNWUzkzek5FbDVrTDNMU1dhdTJ5V3JUOXhpVmZQSGYtNjhWZTNsUDJDN2MzbEREOWstV0pwcGVrMnBocjZtenBQaVZtV3d4OU5vSjZpOF96ekkyaFVwVFNhUUJhNzBjWXlNODdrazNzTW8?oc=5",
-      "at": "Thu, 26 Nov 2026 04:33:29 GMT",
+      "url": "https://news.google.com/rss/articles/CBMijgFBVV95cUxPOWtnTkljSFp2anhyb3o4S1ZQZUc1d2Zna3N6WHUwUDRvT0ZGc2NXZEQ0NjJkM0tZNnRTR0xqUmwyZmJmS2tWZU5CVVV5ckdSOXJPelFIVmM0cWo3eE10N3pIS0ZmeG1ZMkYwdnhDM2RwOWxuU2liZzI4c24yVWRfaThEeVkwV3BPZzRacktR?oc=5",
+      "at": "Thu, 26 Nov 2026 10:30:57 GMT",
       "publication_evidence": [
         {
           "source": "at",
@@ -908,42 +873,6 @@
         {
           "source": "published_date",
           "date": "2026-11-26"
-        }
-      ],
-      "corroborated_by": []
-    },
-    {
-      "query": "MLB playoff race",
-      "title": "Atlanta Falcons 2026 NFL Playoff Simulator",
-      "source": "The New York Times",
-      "url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxNRlpFbDUwb0h6S0hBUnZqdk1CTm9hWDhidGtJQkZBOEhwb2s3NXItdDlkZFpBX1hPLXJLSHJOOWhBTnd2VHQ5OWNSYkJLbWVOdE1aRGtUQV9idUNXWXVCLVhnT0ZZbTRDXzZ6RFdEcTFHakl5MXI0TkR4WW5TZVZ5SFVSNTZBTWJNVmlqQk42YjFUVEJxY2RWQUhUTDdhVGpQUU4wYzJ3NVpSQjV3TFNwcDdvOUNtUQ?oc=5",
-      "at": "Thu, 26 Nov 2026 04:33:29 GMT",
-      "publication_evidence": [
-        {
-          "source": "at",
-          "date": "2026-11-26"
-        },
-        {
-          "source": "published_date",
-          "date": "2026-11-26"
-        }
-      ],
-      "corroborated_by": []
-    },
-    {
-      "query": "MLB playoff race",
-      "title": "NFL Playoff Simulator: Stakes are huge for Packers-Rams, with loser likely to miss postseason",
-      "source": "The New York Times",
-      "url": "https://news.google.com/rss/articles/CBMilAFBVV95cUxQV1NOaFQ2UEFhdm1oTmZHS0w3UDdWNWd3emdla2FfTUlyMW00RkxNU3k3N3ZlR2doYmlGU05FajVBRXlnM2JUMDh6RGRQZVYwekdlRmdtV1hCb25NVHplNzFOT292QmppWkV0R25EV2lpV3ktcklwbnFxV1JfcjhPY2MtRFBZX3dycVpMX3hRLWNLRC1n?oc=5",
-      "at": "Wed, 25 Nov 2026 22:18:48 GMT",
-      "publication_evidence": [
-        {
-          "source": "at",
-          "date": "2026-11-25"
-        },
-        {
-          "source": "published_date",
-          "date": "2026-11-25"
         }
       ],
       "corroborated_by": []
@@ -968,46 +897,100 @@
     },
     {
       "query": "MLB playoff race",
-      "title": "What happened to Ohio State? 4 reasons the Buckeyes will miss the College Football Playoff",
+      "title": "Can NFC North make NFL playoff history? What odds say about Lions, Bears, Vikings, Packers - The Athletic",
       "source": "The New York Times",
-      "url": "https://news.google.com/rss/articles/CBMikwFBVV95cUxNbFlQcDJIRXVDX2dGT1ZRaVJYVFR1MU5va1BGWWlWQk1CWUhxS0ZTdzFnczNmZ1I0bERFUVpjUnUwdGF0RUw2LXhGamNNaFk2S3lYdlpMZlFxX2l3dG1OLW85MllzY1NuQ1BPV0NSV3Z4Y0pqSXYwZjdzdVplNjhMdkdfdkxRd0pQVmVWeTE2aHhKX2c?oc=5",
-      "at": "Wed, 25 Nov 2026 12:24:00 GMT",
+      "url": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxNOEhQNlNSYXNaY2RQNUxVV3lnamx3T1FZcWh3Rm5ENEVFazRwYXJFOVBzLWdFSnNvdGx0dmpUWElQRnBfZm9RY3FMdnMxQkdoQmxoM29YWVh0Y1U3U1dqNTh1T21yVWdlZjFaXzRBVTB1WXNnenhnSVpJbHcxQVBXOTBiVHp1QkFYZFIyczE3OWFwWnVaR2ZaWWtEZS16cEJFRW5qZWVxRkw0SGM?oc=5",
+      "at": "Thu, 26 Nov 2026 14:56:00 GMT",
       "publication_evidence": [
         {
           "source": "at",
-          "date": "2026-11-25"
+          "date": "2026-11-26"
         },
         {
           "source": "published_date",
-          "date": "2026-11-25"
+          "date": "2026-11-26"
+        }
+      ],
+      "corroborated_by": []
+    },
+    {
+      "query": "MLB playoff race",
+      "title": "The Rangers are outside the NHL playoff picture at Thanksgiving. Here’s one bright spot for 23 players",
+      "source": "The New York Times",
+      "url": "https://news.google.com/rss/articles/CBMikgFBVV95cUxPVGE4RGwyLXlxdlFJek5UV0pPRkJTX245b2Rjd0phSVVTNmtEdkx2aGJKajhVSks4cHJ0MVpTTHVCbXgzWmZpeC1EdThsNjVOaU9Da25keWVaREdfdjd5UU13WWRtMXJrWGppdll5SHVLMVU2UmxfVXlCUVNzdTR4WjJTc3ozZFBhaDhtemxrNWZQdw?oc=5",
+      "at": "Thu, 26 Nov 2026 11:41:28 GMT",
+      "publication_evidence": [
+        {
+          "source": "at",
+          "date": "2026-11-26"
+        },
+        {
+          "source": "published_date",
+          "date": "2026-11-26"
+        }
+      ],
+      "corroborated_by": []
+    },
+    {
+      "query": "MLB playoff race",
+      "title": "The Athletic’s NFL Simulator 2026: Live forecast of playoff picture and outcomes for every team",
+      "source": "The New York Times",
+      "url": "https://news.google.com/rss/articles/CBMihwFBVV95cUxNdDZ1bXc2WHpRS0tsb25VdjhNWFRJQ3IzUmtHNTQtLVh4cFdkWTlGeE9MZlZaMWlzaURNQnNESHA2d1dCelV4eU1UVm1ObVpFbUVNNEFiOXE0dVNwYUtzTXlRbE5ncnN4eDBVYlJLckpRb0JLYUx5OEZNM2xHZWo4VFgxSnp6dFE?oc=5",
+      "at": "Thu, 26 Nov 2026 13:40:11 GMT",
+      "publication_evidence": [
+        {
+          "source": "at",
+          "date": "2026-11-26"
+        },
+        {
+          "source": "published_date",
+          "date": "2026-11-26"
+        }
+      ],
+      "corroborated_by": []
+    },
+    {
+      "query": "MLB playoff race",
+      "title": "New England Patriots 2026 NFL Playoff Simulator",
+      "source": "The New York Times",
+      "url": "https://news.google.com/rss/articles/CBMivAFBVV95cUxQOWw4LVBqUzEyWkc1YkJBYWRudHZxTGQ3bXdBS2gwTmtRYnBHVC1EY0xzZEx3cm1nNHlqbUx0RDZkN1BLUV9aRUpLU2pjWkd0TG1pRUNYZEtZc3FIQjc0TnktRldCYTh5UUtGUXl3MXZGYzM1cjRWamVWMF94TjQyeUtCZHhSMGlaYlhib2luNmpCTGE2VkJrOHZsck9IbVFIblgtVE9fYTAtYjFDNlNIS2dIMzlaZXVKUE1XTw?oc=5",
+      "at": "Thu, 26 Nov 2026 13:40:11 GMT",
+      "publication_evidence": [
+        {
+          "source": "at",
+          "date": "2026-11-26"
+        },
+        {
+          "source": "published_date",
+          "date": "2026-11-26"
         }
       ],
       "corroborated_by": []
     },
     {
       "query": "MLB wild card",
-      "title": "MLB: Playoffs-Kansas City Royals at Baltimore Orioles",
-      "source": "The Lufkin Daily News",
-      "url": "https://news.google.com/rss/articles/CBMi4gFBVV95cUxOUm5SNkNhc0RxVndwaUJWRmFReFRwVkpMai1SbmdhZEUzdEJtQ3JsTWJyazRRUldRUzVCcHhiVVpzMGI0enhxZnRVb0Z0MzJkSVhvMTByLUhRTks2MlBTZy1DT0padXFvUFpiSVJLT2RVdlNjVFpoOVRfWlJ0ZXBwOURaMmlZREZXOTNLUE9YVVVWRy1sNlVVcGlVQ0Y2NWdhbHZQTTh6Nm5KblNCOElNMGpXME8xSDE3ajEtM3BVWTR2a1J2S3ZobDAtNVRGcUp4WVNTeVZRZlNoSFRrVm13VVNB?oc=5",
-      "at": "Wed, 25 Nov 2026 19:08:07 GMT",
+      "title": "What all 30 MLB teams have to be thankful for this year",
+      "source": "CBS Sports",
+      "url": "https://news.google.com/rss/articles/CBMihgFBVV95cUxQSExuei1Ib2hSdURDbHM3Q1JmajFISV83VnMxR29KNmZlcFFvSzl4eWpaNVNwNmdoUW9LNHNnVDRGYklDc0h1UENNeXlQZGI1RFF1Umd5TUNCdU5NRlFfR1Y4RV9jM0YyYTR6QkxuWDlkemZIbTM5QjVSbURUVk5tdHJFNkJ2QQ?oc=5",
+      "at": "Thu, 26 Nov 2026 14:35:10 GMT",
       "publication_evidence": [
         {
           "source": "at",
-          "date": "2026-11-25"
+          "date": "2026-11-26"
         },
         {
           "source": "published_date",
-          "date": "2026-11-25"
+          "date": "2026-11-26"
         }
       ],
       "corroborated_by": []
     },
     {
       "query": "MLB wild card",
-      "title": "Baseball Wiretap",
-      "source": "RealGM",
-      "url": "https://news.google.com/rss/articles/CBMiSEFVX3lxTFAxeTNRckFBbnlxZFZNMXNqNlpxV0N1Y0k4dHU4NGplTGxwZjVreTRLX2FRVjFHc3lPYkRfU2ZseUotNy1pVG1NaQ?oc=5",
-      "at": "Thu, 26 Nov 2026 04:08:52 GMT",
+      "title": "NHL Playoffs 2026-27: Latest bracket projections",
+      "source": "The New York Times",
+      "url": "https://news.google.com/rss/articles/CBMioAFBVV95cUxQR1FmOEY5RnM2aTdSSms4X21zTVJXZktpZHZhUDNmSEJnSjA4WnRhX1JVc2lyTUViWHF4Y0hJSUtHT2pEd1huYlVRa0Q1THhoZXp1bUV0YzhtelFBNTE3XzIwQVIwa1lnTUprWEw3VDFQM09haHJZRWtTUUxaNndzMzI0czl3MVlyaTZ4ZkItLU1Jc2ZQX05iM0Vha1hOeElu?oc=5",
+      "at": "Thu, 26 Nov 2026 13:17:03 GMT",
       "publication_evidence": [
         {
           "source": "at",
@@ -1021,11 +1004,11 @@
       "corroborated_by": []
     },
     {
-      "query": "MLB injury",
-      "title": "Cody Ponce Rehabbing After ACL Injury, Aims for MLB Return",
-      "source": "조선일보",
-      "url": "https://news.google.com/rss/articles/CBMihgFBVV95cUxPc3g0ZFY5bFNvWVh1YndqUHc2MUdPNmFKR3R3V2sxY0FCU2xzMFF5b1VUS3RXd2NBSEdvN1J2R2RfV21IYnlMQVRpaWJHYmVRX2k1b0REbC1TU2c3UEtQU01mNGNNY3FKRS1Ya0RUVUlMaGNPaV9MMnJqd2xZWVFZYzFGMEFzQQ?oc=5",
-      "at": "Thu, 26 Nov 2026 03:43:36 GMT",
+      "query": "MLB trade",
+      "title": "Orioles Reportedly Willing To Trade Infielders For Starting Pitchers",
+      "source": "MLB Trade Rumors",
+      "url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxOWHRvN1JmalFsM1FSYURfVkJOSDFlVUJNTHJaTUtMR0xGOXZ3RmhKT1E5T1ZiVWxkLTA5NldJc0lnVHJkN0tHQ2t1alFRalRkNlF1cXpaOXpVSVR6SU9wR0xjLXloM1p1RHFoNHNteld1MWFYaFFPMmtHSjZqWHFJQk1ZNWJJQmNJTkU0OURrczNpcldiX00xWlFrb3ZyeHl5ZHh3NHhFSFZ4eU14NkMzTVBn?oc=5",
+      "at": "Thu, 26 Nov 2026 18:06:58 GMT",
       "publication_evidence": [
         {
           "source": "at",
@@ -1039,11 +1022,11 @@
       "corroborated_by": []
     },
     {
-      "query": "MLB injury",
-      "title": "Dodgers lose another pitcher to unexpected offseason surgery",
-      "source": "Yahoo Sports",
-      "url": "https://news.google.com/rss/articles/CBMilwFBVV95cUxNZVduTnlaUFZpVmRRaFkyRHd6VVVQWWxfandkeTF2Mm9LVVFqeWlsU2RhV0s5cmJFZTFkcnZ6c2ZMTDliZXdveE13dk44akU4UVl2ZFNKV0txQWdNWmhlRTdLM1czYmRWZXhuUTREM0pEeEpCTUVzdS16a2VoTjVBbjlISTg0LVZyU0tISnY5Z0liZ2hBcTFz?oc=5",
-      "at": "Thu, 26 Nov 2026 00:41:00 GMT",
+      "query": "MLB trade",
+      "title": "BS Meter on Logan Webb, Ketel Marte, Jazz Chisholm Jr. and Latest MLB Trade, Free Agent Rumors",
+      "source": "Bleacher Report",
+      "url": "https://news.google.com/rss/articles/CBMizAFBVV95cUxObXZaMGI1azJ2clhIR0ExOFdmQVJISXh5MHZLb0FDa1RPbmN0TGltVFJjOVNLMU56THU0WUo3NklyeElRWmZvSzVuazJzQkxJRUtTeVJKREg5THZVY25wbXhneE16bFNDUmVPZEVYVVlSdkhNTFJTbFBEVHNKWVIxekllMWVhaDFQQ2dGekxRZ2J3WTNCb3puODBzS3BfaVBSWVZtMmFtR3ZPWlFmTzl4Tkk2SkMtMlpNOEFoMlIwM1pTbExoNFJLVUFOcHM?oc=5",
+      "at": "Thu, 26 Nov 2026 12:28:36 GMT",
       "publication_evidence": [
         {
           "source": "at",
@@ -1076,28 +1059,10 @@
     },
     {
       "query": "MLB trade",
-      "title": "MLB Free Agency Buzz: Rockies Sign Patrick Sandoval, Orioles Bring Back Luis Robert Jr.",
-      "source": "FOX Sports",
-      "url": "https://news.google.com/rss/articles/CBMihgFBVV95cUxQY1ZpYlJ6OGlUb2Qtb1Zza3Zja21aWjNiQlQ0S0Z2V2duTFFpVmdFS0RHSlFoUVNHTnJQYlRoOXFhQUxyTXdkZ1ZPcUFBaTloRVFzOHZqeC00NHI1M0V1ZENCQUtwUlczMm9FLWF0aVc1anREa1FWVFFvZ2NvdGhuVlNCbDZJUQ?oc=5",
-      "at": "Thu, 26 Nov 2026 01:47:00 GMT",
-      "publication_evidence": [
-        {
-          "source": "at",
-          "date": "2026-11-26"
-        },
-        {
-          "source": "published_date",
-          "date": "2026-11-26"
-        }
-      ],
-      "corroborated_by": []
-    },
-    {
-      "query": "MLB trade",
-      "title": "Fantasy baseball reactions to MLB offseason trades, signings",
-      "source": "ESPN",
-      "url": "https://news.google.com/rss/articles/CBMitwFBVV95cUxPZnhwakJOYndtQmNyc2dxaHc2ZHNIZFNUVHFDa1hxdEJYbUZ6WlpLQTlEWV9oRFltQXgzUHF6UXYycnFvak5pSGhZY0JKcjV2V29lLWRrUTRURDNaSjI4Uy1IRFNpRXJqa1BiRkFmYThjenJzcHM0Z3pxQ25oZWRIOXVlVHBqQ283MUd0MDIwQXRrX1VZeVdmbDRUYkZuRkRVYUN4RkRCeFJpbzhfd2pEeG9RdXIxcms?oc=5",
-      "at": "Thu, 26 Nov 2026 00:55:00 GMT",
+      "title": "Each MLB club's best prospect acquired via trade",
+      "source": "MLB.com",
+      "url": "https://news.google.com/rss/articles/CBMidkFVX3lxTE5UMXBocDd1alNuREVhWVZHeS1KVHhWS1FiMmlUYkFXZm5rMXhTdDh4bXhTYkpKWUNCTHFBTlFtQ2lUcGE1dGRsUjJ1WWh6OHV4QkFOdnFidEpBM2VUd2k3bXE1RFM3Y1lMU2UyZkNFSUsxUVJxanc?oc=5",
+      "at": "Thu, 26 Nov 2026 16:56:18 GMT",
       "publication_evidence": [
         {
           "source": "at",
@@ -1112,28 +1077,10 @@
     },
     {
       "query": "MLB home run record",
-      "title": "Cubs' Pete Crow-Armstrong to receive a record in pre-arbitration bonus pool",
-      "source": "Sportsnet.ca",
-      "url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxPZ3dKTUtBVFlsZTB3Q1p3TXJTVTZWRDBNLWJXNmFXYmpyby1kTmxEcEc0MGpTRmp3enhWWi1iSFJQN2RkNnlFbkc3VnQ2RDk5blNwcmJDeHZHR1BWbUgwdTVEc3RRdmRHYTdCWnVYbWlBTnluVmFGcUUzX3k2VnJqcExhY2Q5dm5YRU94dkRjRW5YbU40RzBnZ0RnOF9FNUNSblNmMlpWQTI1SmRoMnZidVpR?oc=5",
-      "at": "Wed, 25 Nov 2026 23:26:00 GMT",
-      "publication_evidence": [
-        {
-          "source": "at",
-          "date": "2026-11-25"
-        },
-        {
-          "source": "published_date",
-          "date": "2026-11-25"
-        }
-      ],
-      "corroborated_by": []
-    },
-    {
-      "query": "MLB home run record",
-      "title": "A look into next year’s MLB Hall-of-Fame candidates",
-      "source": "Daily Sundial",
-      "url": "https://news.google.com/rss/articles/CBMilAFBVV95cUxNUjAxZVowdE5NaUktUTB6U1BhTU5ENWlPcWtyVHV2SXpCMlZ0aTlSS0d3dVZHd3VZbnFBN0R6anpmNVJwLUVaM2VoUEc0c01xWEM3RWNZd0hzMTZFX1N6RVdxcURMYnVTMVRYMVJfcjg4YTFCUjlyLWF2WU55bTA2eHo0d3huY3d2b3ZZN19ncS1pVjBY?oc=5",
-      "at": "Thu, 26 Nov 2026 00:49:41 GMT",
+      "title": "Why the Astros Need More Than Power in Their 2027 Lineup",
+      "source": "Yahoo Sports",
+      "url": "https://news.google.com/rss/articles/CBMihgFBVV95cUxNbmlMN2N4MXV1UkdRbFR3QTdZLUNIb1FHb3o2aElaVEw0UHRUYVJjc2o1SkgxdDdYUE81c3lzLXdZR3UycEZvRGw4M28wVUxXMTM3aTZyWFNaNnVlY25CdXdMMlZ5OGYxelJURHppQ25OTWc2Si1kQWRwNFJIZWg3ZXVuUTlzdw?oc=5",
+      "at": "Thu, 26 Nov 2026 18:00:40 GMT",
       "publication_evidence": [
         {
           "source": "at",
@@ -1148,22 +1095,57 @@
     },
     {
       "query": "MLB manager",
-      "title": "Meet the man tasked with leading the Modesto Roadsters into a new era of baseball",
-      "source": "Modesto Bee",
-      "url": "https://news.google.com/rss/articles/CBMiYEFVX3lxTFBqajBzRXFzRmRfM3VKN3VPbUdvbXE3dDJNX1M0ZHBWQ1RfS0xzZ1YzenF6UnBGa01qcTA4UGJDdnU3S0plUWV4TURpb3kzTk5CTGpVYU1TUkd0ZHBQLUcwZtIBYEFVX3lxTE0wanh6MDJRSVJaSGEzNTFxcU04Z1k5T3htNGowRkd4eF9PUk9jOWMxX3VSUWNFRGlBYkRvRGQ2SkxEUWhabVJyU3hXVTQ5aGJWTGl0SnktRHlNa3ZxR3RzbQ?oc=5",
-      "at": "Wed, 25 Nov 2026 23:32:48 GMT",
+      "title": "Three Things for Texas Rangers Fans to be Thankful For in 2026",
+      "source": "Yahoo Sports",
+      "url": "https://news.google.com/rss/articles/CBMijAFBVV95cUxQQjFndnl5RUg3dXQ5em5NenA0N29fNjcyLU1YQTE3VjFEanVpRXJkUlIya3hhSDNOclo3TVQ1LU55YjB2WlZIdVBoSUNmVGlPVzc0MDZSNzZ0TmpuSVpYVkZ5MllhVnlyaDhKLWtIQmlsa0lSa0IzczdVUE9jM201T01HeEE5aEtuMUltbg?oc=5",
+      "at": "Thu, 26 Nov 2026 14:00:08 GMT",
       "publication_evidence": [
         {
           "source": "at",
-          "date": "2026-11-25"
+          "date": "2026-11-26"
         },
         {
           "source": "published_date",
-          "date": "2026-11-25"
+          "date": "2026-11-26"
+        }
+      ],
+      "corroborated_by": []
+    },
+    {
+      "query": "MLB manager",
+      "title": "Baseball Wiretap",
+      "source": "RealGM",
+      "url": "https://news.google.com/rss/articles/CBMiSEFVX3lxTFAxeTNRckFBbnlxZFZNMXNqNlpxV0N1Y0k4dHU4NGplTGxwZjVreTRLX2FRVjFHc3lPYkRfU2ZseUotNy1pVG1NaQ?oc=5",
+      "at": "Thu, 26 Nov 2026 19:39:43 GMT",
+      "publication_evidence": [
+        {
+          "source": "at",
+          "date": "2026-11-26"
+        },
+        {
+          "source": "published_date",
+          "date": "2026-11-26"
+        }
+      ],
+      "corroborated_by": []
+    },
+    {
+      "query": "MLB manager",
+      "title": "Plenty of Astros Stand to Benefit from New Pitching, Hitting Coaches",
+      "source": "Sports Illustrated",
+      "url": "https://news.google.com/rss/articles/CBMipAFBVV95cUxNNUlEYmxKWkxDS0xaTUhnOHNTSHBVaUR2N29YMGNHNVZzRHVldlluQnZFVkU5QkZfdEhhZ0lnT2ViTE5Ld2R3aUhERDV4aUZUTlVsUVZqMjY3TWFJby1tcURibEVpaUVYNTRDOVNVVVJrNVlPT0dWeVdXUkg5bGszUnJaZXBObjdHZjZaZWo3NTNRMERVc28tTXNhSW5hOUg2WkZfMA?oc=5",
+      "at": "Thu, 26 Nov 2026 14:00:03 GMT",
+      "publication_evidence": [
+        {
+          "source": "at",
+          "date": "2026-11-26"
+        },
+        {
+          "source": "published_date",
+          "date": "2026-11-26"
         }
       ],
       "corroborated_by": []
     }
-  ],
-  "short_content_version": "1108"
+  ]
 }

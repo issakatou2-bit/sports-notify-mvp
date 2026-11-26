@@ -1,129 +1,107 @@
 {
-  "generated_at": "2026-11-26T06:00:59.417708+00:00",
-  "date_jst": "2026-11-26",
-  "name": "Jacob Misiorowski",
-  "player_id": "694819",
-  "team": "ブリュワーズ",
-  "group": "pitching",
+  "generated_at": "2026-11-26T20:55:42.876454+00:00",
+  "date_jst": "2026-11-27",
+  "name": "Chandler Simpson",
+  "player_id": "802415",
+  "team": "レイズ",
+  "group": "hitting",
   "why": "2026-10-29のMLBで最も活躍",
-  "headline": "5.2回　2奪三振　自責0　2被安打",
-  "score": 101,
+  "headline": "4打数2安打　1二塁打　1打点",
+  "score": 73,
   "bio": {
-    "name_en": "Jacob Misiorowski",
-    "age": 24,
-    "birth_city": "Blue Springs",
-    "birth_state": "MO",
+    "name_en": "Chandler Simpson",
+    "age": 26,
+    "birth_city": "Atlanta",
+    "birth_state": "GA",
     "birth_country": "USA",
-    "birth_date": "2002-04-03",
-    "debut": "2025-06-12",
+    "birth_date": "2000-11-18",
+    "debut": "2025-04-19",
     "draft_year": 2022,
-    "bats": "Right",
+    "bats": "Left",
     "throws": "Right",
-    "number": "32",
-    "position": "Pitcher",
+    "number": "14",
+    "position": "Outfielder",
     "nickname": null,
-    "height": "6' 7\"",
-    "weight": 201
+    "height": "5' 11\"",
+    "weight": 170
   },
   "teams": [
     {
-      "team": "ブリュワーズ",
+      "team": "レイズ",
       "from": 2025,
       "to": 2026
     }
   ],
   "career": {
-    "games": 45,
-    "avg": ".281",
-    "hr": 3,
-    "rbi": 34,
-    "ops": ".718",
-    "sb": 19,
-    "hits": 64,
-    "wins": 21,
-    "losses": 8,
-    "era": "2.51",
-    "so": 339,
-    "ip": "240.2",
-    "whip": "0.92"
+    "games": 260,
+    "avg": ".302",
+    "hr": 0,
+    "rbi": 64,
+    "ops": ".681",
+    "sb": 90,
+    "hits": 297
   },
   "this_season": {
-    "games": 30,
-    "avg": ".281",
-    "hr": 3,
-    "rbi": 34,
-    "ops": ".718",
-    "sb": 19,
-    "hits": 64,
-    "wins": 16,
-    "losses": 5,
-    "era": "1.80",
-    "so": 252,
-    "ip": "174.2",
-    "whip": "0.80"
+    "games": 151,
+    "avg": ".306",
+    "hr": 0,
+    "rbi": 38,
+    "ops": ".689",
+    "sb": 46,
+    "hits": 175
   },
   "last_season": {
-    "games": 15,
-    "avg": ".247",
-    "hr": 6,
-    "rbi": 45,
-    "ops": ".692",
-    "sb": 2,
-    "hits": 82,
-    "wins": 5,
-    "losses": 3,
-    "era": "4.36",
-    "so": 87,
-    "ip": "66.0",
-    "whip": "1.24"
+    "games": 109,
+    "avg": ".295",
+    "hr": 0,
+    "rbi": 26,
+    "ops": ".671",
+    "sb": 44,
+    "hits": 122
   },
   "recent": [
     {
-      "date": "2026-09-27",
-      "line": "5.1回 自責0 5奪三振",
-      "opponent": "St. Louis Cardinals"
+      "date": "2026-09-25",
+      "line": "3打数0安打",
+      "opponent": "Philadelphia Phillies"
+    },
+    {
+      "date": "2026-09-24",
+      "line": "5打数1安打",
+      "opponent": "New York Yankees"
+    },
+    {
+      "date": "2026-09-22",
+      "line": "4打数1安打",
+      "opponent": "New York Yankees"
+    },
+    {
+      "date": "2026-09-22",
+      "line": "3打数1安打",
+      "opponent": "New York Yankees"
     },
     {
       "date": "2026-09-20",
-      "line": "3.0回 自責0 4奪三振",
-      "opponent": "Baltimore Orioles"
-    },
-    {
-      "date": "2026-09-15",
-      "line": "5.0回 自責0 7奪三振",
-      "opponent": "Pittsburgh Pirates"
-    },
-    {
-      "date": "2026-09-08",
-      "line": "6.1回 自責1 9奪三振",
-      "opponent": "Chicago Cubs"
-    },
-    {
-      "date": "2026-09-02",
-      "line": "4.0回 自責5 5奪三振",
-      "opponent": "Chicago Cubs"
+      "line": "3打数1安打 2打点",
+      "opponent": "Boston Red Sox"
     }
   ],
   "awards": [
     {
-      "season": "2026",
-      "name": "NL Cy Young"
+      "season": "2024",
+      "name": "SOU Post-Season All-Star"
     },
     {
-      "season": "2026",
-      "name": "World Series Championship"
+      "season": "2024",
+      "name": "Baseball America Double-A All-Star"
     },
     {
-      "season": "2026",
-      "name": "NL All-Star"
+      "season": "2023",
+      "name": "MiLB.com Organization All-Star"
     },
     {
-      "season": "2026",
-      "name": "NL Player of the Week"
-    },
-    {
-      "season": "2025",
-      "name": "NL All-Star"
+      "season": "2023",
+      "name": "CAR Post-Season All-Star"
     }
   ],
   "quotes": []
