@@ -2,6 +2,7 @@
 from copy import deepcopy
 from datetime import datetime, timedelta
 import os
+import re
 from pathlib import Path
 import sys
 import tempfile
@@ -34,6 +35,12 @@ class ClubTopics(unittest.TestCase):
             self.assertGreaterEqual(len(short_content.information(doc)), 3)
             self.assertTrue(all(not metan_tone.problems(s['text']) for s in doc['segments'] if s['speaker'] == METAN))
             self.assertNotIn('、', doc['title'])
+            # 11/26 本人：問いと答えを淡々と繰り返さない。ずんだもんは感想で始め、数字は言わない。
+            zunda = [s['text'] for s in doc['segments'] if s['speaker'] != METAN and s['kind'] != 'outro']
+            self.assertTrue(zunda[0].endswith('！'))
+            self.assertFalse(all(line.endswith('？') for line in zunda))
+            self.assertFalse([line for line in zunda if re.search('[0-9０-９一二三四五六七八九十百千]', line)])
+            self.assertTrue(doc['segments'][1]['text'].startswith('ええ、'))
         forged = deepcopy(docs[0])
         forged['title'] = '未照合の題'
         self.assertTrue(club.check(forged))
