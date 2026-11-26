@@ -595,7 +595,7 @@ KINDS = {
         "why": "",
     },
     "soccer_national_topics": {
-        "workflows": ["soccer_national_topics", "soccer_club_topics", "soccer_stake", "mlb_market_topics"],
+        "workflows": ["soccer_national_topics", "soccer_club_topics", "soccer_stake", "mlb_market_topics", "related_videos"],
         "render": render_soccer_national_topics,
         "why": "",
     },
@@ -605,7 +605,7 @@ KINDS = {
         "why": "",
     },
     "soccer_weekly_long": {
-        "workflows": ["soccer_weekly_long"],
+        "workflows": ["soccer_weekly_long", "scheduled_longs"],
         "render": render_soccer_weekly_long,
         "why": "",
     },

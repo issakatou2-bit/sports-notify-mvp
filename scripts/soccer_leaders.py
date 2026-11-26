@@ -21,6 +21,7 @@ ESPN の statistics は、リーグごとに goalsLeaders / assistsLeaders を
 
 import argparse
 import copy
+from collections import Counter
 import json
 import pathlib
 import re
@@ -176,6 +177,7 @@ def parse_all(raw_by_code: dict) -> dict:
 
 def snapshot(entries: list) -> dict:
     top = entries[:TOP_N]
+    rank_sizes = Counter(row["rank"] for row in entries)
     leader = top[0] if top else None
     second = top[1] if len(top) > 1 else None
     gap = None
@@ -187,9 +189,9 @@ def snapshot(entries: list) -> dict:
         "leader_value": leader.get("value") if leader else None,
         "second_value": second.get("value") if second else None,
         "gap": gap,
-        "top": [{k: e.get(k) for k in
-                 ("rank", "name", "name_jp", "team", "team_jp",
-                  "value", "matches", "jp")} for e in top],
+        "top": [dict({k: e.get(k) for k in
+                     ("rank", "name", "name_jp", "team", "team_jp",
+                      "value", "matches", "jp")}, rank_size=rank_sizes[e["rank"]]) for e in top],
         "jp": [{"name": e["name"], "name_jp": e["name_jp"],
                 "team_jp": e.get("team_jp") or "",
                 "rank": e["rank"], "value": e["value"]}
@@ -393,13 +395,18 @@ def v4_program(data: dict) -> dict:
     second = top[1] if len(top) > 1 else None
     gap = leader["value"] - second["value"] if second else None
 
-    # 表紙：冒頭で「誰が何点で首位か」を言う。リーグ名と部門は画面の題。
-    if gap == 0 and second:
-        ask = "%sと%sが%s%sで並んで首位なのだ？" % (
-            leader["name_jp"], second["name_jp"], leader["value"], unit)
+    japanese = next((row for row in rows if row.get("jp") and row != leader), None)
+    matches = leader.get("matches")
+    if japanese:
+        ask = f'{japanese["name_jp"]}は、この争いで何位なのだ？'
+    elif matches and leader["value"] * 4 >= matches * 3:
+        ask = f'{leader["name_jp"]}は、出場1試合あたりいくつ稼いでいるのだ？'
+    elif gap == 0:
+        ask = f'{leader["name_jp"]}に、何人が並んでいるのだ？'
+    elif second:
+        ask = f'{leader["name_jp"]}は、2位に何{unit}差をつけているのだ？'
     else:
-        ask = "%sが%s%sで首位って、本当なのだ？" % (
-            leader["name_jp"], leader["value"], unit)
+        ask = f'{leader["name_jp"]}は、ここまで何{unit}なのだ？'
     hook = short_renewal.hook(leader["name_jp"], leader["value"], unit,
                               context="%s　%s" % (league, label))
     hook["text"] = ask
@@ -407,11 +414,12 @@ def v4_program(data: dict) -> dict:
     cover = dict(kind="cover", text=ask, speaker=3,
                  meta=dict(opening_hook=hook, presenter="zundamon"))
 
-    # 順位表：めたんの答え。首位の点数は表紙で言ったので重ねない。
+    # 順位表：問いに答え、出場数と点差を同じ材料から読む。
     scope = "ええ、%sの%sよ。" % (league, label)
     for move in info.get("movements") or []:
         scope += movement_say(move, info.get("baseline_date") or "")
     texts = []
+    omitted_ties = {}
     for i, row in enumerate(rows):
         club = row.get("team_jp") or row.get("team")
         who = "%sの%s" % (club, row["name_jp"])
@@ -422,11 +430,10 @@ def v4_program(data: dict) -> dict:
             matches = row.get("matches")
             if isinstance(matches, int) and matches > 0:
                 pace = "%g" % round(row["value"] / matches, 2)
-                # 首位の数字は表紙で言ったので重ねない（言い直しの禁止）。
-                say = "%sは、%s試合に出て、1試合あたり%s%sのペースね。" % (
-                    who, matches, pace, unit)
+                say = "%sは%s試合で%s%s。1試合あたり%s%sのペースね。" % (
+                    who, matches, row["value"], unit, pace, unit)
             else:
-                say = "首位は%sね。" % who
+                say = "首位は%sで、%s%sね。" % (who, row["value"], unit)
         elif before and before["rank"] == place:
             say = "同じ%s位で、%sも並んでいるわ。" % (place, who)
         elif is_japanese(row["name"]):
@@ -440,11 +447,19 @@ def v4_program(data: dict) -> dict:
             say = "%s位は%sで、%s%sよ。" % (place, who, row["value"], unit)
         else:
             say = "%s位には、%sが%s%sで続くわ。" % (place, who, row["value"], unit)
+        if not any(r["rank"] == place for r in rows[i + 1:]):
+            total = row.get("rank_size") or sum(r["rank"] == place for r in top)
+            omitted = total - sum(r["rank"] == place for r in rows)
+            if omitted:
+                omitted_ties[row["name"]] = f"ほか{omitted}人"
+                say += f"同じ{place}位には、ほかに{omitted}人いるわ。"
+            if place == 1 and total > 1:
+                say += f"首位に並んでいるのは、合わせて{total}人よ。"
         texts.append(say)
     # 時間が足りない時の補充用（画面に出さない5位以下を、読むだけ）
     spare = []
     for row in top[SHOWN:SHOWN + 3]:
-        if row["name"] in info["shown"] or not row.get("name_jp"):
+        if row["rank"] in {r["rank"] for r in rows} or not row.get("name_jp"):
             continue
         spare.append("%s位は%sの%sで、%s%sよ。" % (
             row["rank"], row.get("team_jp") or row.get("team"),
@@ -457,7 +472,8 @@ def v4_program(data: dict) -> dict:
         d = date.fromisoformat(info["baseline_date"])
         table_title += "　前回は%d月%d日" % (d.month, d.day)
     display = [dict(position=r["rank"], team=r["name_jp"], team_en=r["name"],
-                    club=r.get("team_jp") or r.get("team"), player=True,
+                    club=r.get("team_jp") or r.get("team"),
+                    tied_summary=omitted_ties.get(r["name"]), player=True,
                     played=r.get("matches"), points=r["value"]) for r in rows]
     table = dict(kind="standings", text=scope + "".join(texts), speaker=2,
                  caption_units=[scope] + texts,
@@ -508,7 +524,10 @@ def build(raw_by_code: dict, previous_state: dict = None,
         if (league, section) not in sections:
             raise ValueError("知らない部門です: %s" % only)
         if not is_ready(sections[(league, section)]):
-            raise ValueError("日本語の名前が未登録の選手がいます: %s" % only)
+            missing = [r["name"] for r in shown_rows(sections[(league, section)]["top"])
+                       if not r.get("name_jp") or len(r["name_jp"]) > MAX_NAME]
+            raise ValueError("日本語の名前が未登録または表に入らない選手: %s %s" %
+                             (only, "、".join(missing)))
         moves = movements.get(story_key, [])
     else:
         chosen = choose(movements, previous_state, today, sections)

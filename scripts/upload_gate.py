@@ -124,7 +124,7 @@ def check(video, segments_path, description, kind):
         frames = record['frames'] if has_sample else record
         if not isinstance(frames, list) or not frames:
             return 1, [*issues, f'描画の記録にコマがありません（{record_path}）']
-        if has_sample and size == SHORT_SIZE:
+        if has_sample and size in (SHORT_SIZE, (1920, 1080)):
             issues.extend(check_sample.video_issues(video, record))
         words = protected_words(segments)
         for index, frame in enumerate(frames):

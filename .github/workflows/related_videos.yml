@@ -1,0 +1,118 @@
+name: 長編の要所と関連動画一覧
+
+on:
+  schedule:
+    - cron: '15 1 * * *' # 毎日10:15 JST
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: scheduled-longs
+  cancel-in-progress: false
+
+env:
+  PYTHONUTF8: '1'
+  ANTHROPIC_API_KEY: ''
+  COLLESPO_STYLE: v2
+  COLLESPO_MOTION: ${{ vars.COLLESPO_MOTION || '' }}
+  COLLESPO_BUBBLE: ${{ vars.COLLESPO_BUBBLE || '' }}
+  COLLESPO_CAPTION_BREAKS: ${{ vars.COLLESPO_CAPTION_BREAKS || '' }}
+  COLLESPO_GLASS_BACKGROUND: ${{ vars.COLLESPO_GLASS_BACKGROUND || 'stripes' }}
+  COLLESPO_SLANT_VARIANT: ${{ vars.COLLESPO_SLANT_VARIANT || 'cream' }}
+  COLLESPO_SOLO_HOST: metan
+  COLLESPO_HOST_SPLIT: 'off'
+  COLLESPO_CUP_LONG_PUBLISH: ${{ vars.COLLESPO_CUP_LONG_PUBLISH || 'false' }}
+  COLLESPO_MARKET_LONG_PUBLISH: ${{ vars.COLLESPO_MARKET_LONG_PUBLISH || 'false' }}
+
+jobs:
+  related:
+    runs-on: ubuntu-latest
+    timeout-minutes: 70
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: |
+          pip install -r scripts/requirements.txt
+          pip install imageio_ffmpeg
+      - name: 公開済み長編から短編の要所を選ぶ
+        id: shortlist
+        run: python scripts/scheduled_longs.py highlights --out build/long_highlights
+      - name: 制作道具とVOICEVOX
+        if: steps.shortlist.outputs.count != '0'
+        run: |
+          bash scripts/install_video_tools.sh
+          docker run -d --rm -p 50021:50021 --name voicevox voicevox/voicevox_engine:cpu-latest
+          for i in $(seq 1 60); do
+            if curl -fsS http://127.0.0.1:50021/version; then exit 0; fi
+            sleep 2
+          done
+          exit 1
+      - name: 短編を制作して投稿前検査
+        if: steps.shortlist.outputs.count != '0'
+        run: |
+          for p in build/long_highlights/*; do
+            python scripts/sanity.py --general --strict --narration "$p/narration.json" --out "$p/sanity.json" --hold-record "$p/sanity_hold.json" --kind long_highlight
+            python scripts/synthesize_narration.py --narration "$p/narration.json" --out-dir "$p/audio"
+            python scripts/soccer_national_topics_render.py --out "$p"
+            python -c "import json,sys; sys.path.insert(0,'scripts'); import scheduled_longs as l; print(l.highlight_metadata(json.load(open('$p/narration.json')))['snippet']['description'])" > "$p/description.txt"
+            python scripts/check_sample.py "$p/collespo_national_topic.mp4"
+            python scripts/upload_gate.py "$p/collespo_national_topic.mp4" --segments "$p/narration.json" --description-file "$p/description.txt" --kind long_highlight
+            bash scripts/shorts_thumbnail.sh "$p/collespo_national_topic.mp4" "$p/short.png"
+          done
+      - name: 長編の公開を照合して短編を予約
+        id: publish
+        if: steps.shortlist.outputs.count != '0'
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+        run: |
+          for p in build/long_highlights/*; do
+            read -r KEY SPORT <<< "$(python -c "import json; d=json.load(open('$p/narration.json')); k=d['topic_key']; print(k,'soccer' if k.startswith('soccer_') else 'mlb')")"
+            AT=$(python -c "from datetime import datetime,timedelta,timezone; print((datetime.now(timezone.utc)+timedelta(minutes=25+20*int('$p'.split('/')[-1]))).isoformat(timespec='seconds'))")
+            python scripts/upload_youtube.py --video "$p/collespo_national_topic.mp4" --games "$p/material.json" --narration "$p/narration.json" \
+              --kind long_highlight --sport "$SPORT" --video-date "$KEY" --thumbnail "$p/short.png" --privacy public --publish-at "$AT"
+            python scripts/verify_published.py --kind long_highlight --video-date "$KEY" --hold-record "$p/sanity_hold.json"
+          done
+      - name: 公開台帳を保存
+        if: always() && steps.publish.outcome != 'skipped' && steps.publish.outcome != ''
+        run: bash scripts/commit_data.sh "long highlights ${{ github.run_id }}" data/published_videos.json data/playlists.json
+      - name: 関連動画の一覧を出す
+        if: always()
+        run: python scripts/scheduled_longs.py related --out build
+      - name: Keep unsaved data records
+        if: always() && hashFiles('build/data-save-recovery/**/FAILED') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: unsaved-data-${{ github.job }}-${{ github.run_attempt }}
+          path: |
+            build/data-save-recovery/
+            !build/**/portrait/**
+          retention-days: 14
+          if-no-files-found: error
+      - name: Save quota-exceeded thumbnails
+        if: always() && hashFiles('build/thumbnail_pending/**') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: thumbnail-pending
+          path: |
+            build/thumbnail_pending/
+            !build/**/portrait/**
+          retention-days: 3
+          if-no-files-found: ignore
+      - name: Save sanity gate records
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: related-videos-${{ github.run_id }}
+          path: |
+            build/related_videos_*.md
+            build/long_highlights/
+            build/**/voice_manifest.json
+            build/**/render_timeline.json
+            !build/**/portrait/**
+          retention-days: 14

@@ -124,6 +124,8 @@ def check(document, materials=None):
     errors += soccer_national.check(document)
     import soccer_national_topics
     errors += soccer_national_topics.check(document)
+    if document.get('program') in ('mlb_season_insight', 'long_highlight'):
+        errors += __import__('phase2_shorts').check(document)
     import soccer_preview_angles
     errors += soccer_preview_angles.check(document)
     import offseason_news

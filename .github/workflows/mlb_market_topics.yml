@@ -6,12 +6,10 @@ on:
   workflow_dispatch:
     inputs:
       topic:
-        description: '話題'
-        type: choice
+        description: '話題の鍵。例 followup-sato-cubs。大型契約は見張りの段2の鍵に followup- を付ける'
+        type: string
         required: true
-        options:
-          - followup-sato-cubs
-          - followup-taira-bluejays
+        default: followup-sato-cubs
       publish:
         description: '予約投稿する（false なら見本のmp4だけ）'
         type: boolean

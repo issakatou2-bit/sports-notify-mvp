@@ -87,10 +87,14 @@ def preflight(doc):
         draw_panel(image, ImageDraw.Draw(image), panel, 8, {})
 
 
+def document_rules(doc):
+    return __import__('scheduled_longs') if 'scheduled_long_material' in doc else weekly
+
+
 def frames(doc, directory):
     import longform_render_v3 as v3
     install(doc)
-    weekly.validate_document(doc)
+    document_rules(doc).validate_document(doc)
     preflight(doc)
     directory = Path(directory)
     directory.mkdir(parents=True, exist_ok=True)
@@ -115,8 +119,9 @@ def main():
     ap.add_argument('--dialogue', required=True)
     args, rest = ap.parse_known_args()
     doc = weekly.load(args.dialogue)
-    weekly.validate_document(doc)
-    if not doc['soccer_weekly_material']['can_make']:
+    rules = document_rules(doc)
+    rules.validate_document(doc)
+    if 'soccer_weekly_material' in doc and not doc['soccer_weekly_material']['can_make']:
         print(doc['soccer_weekly_material']['reason'])
         return 0
     install(doc)
@@ -144,7 +149,7 @@ def main():
     result = generate_longform.main()
     if result == 0:
         out_dir = Path(rest[rest.index('--out')+1]) if '--out' in rest else Path('build/lf')
-        weekly.save(out_dir/'metadata.json', weekly.metadata(doc, out_dir/'render_timeline.json'))
+        weekly.save(out_dir/'metadata.json', rules.metadata(doc, out_dir/'render_timeline.json'))
     return result
 
 

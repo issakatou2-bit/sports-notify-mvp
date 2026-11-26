@@ -133,7 +133,7 @@ def publication_available(topic, spec, ledgers, as_of):
         return False
     day = as_of.astimezone(pp.JST).date()
     rows = policy.merge_records(ledgers[0].get('asset', {}), ledgers[1].get('assets', {}))
-    count = 0
+    count, insight_count = 0, 0
     for key, row in rows.items():
         if not key.startswith('season_'):
             continue
@@ -143,9 +143,11 @@ def publication_available(topic, spec, ledgers, as_of):
             continue
         if stamp.astimezone(pp.JST).date() == day:
             count += 1
-            if policy.season_kind(key) == policy.season_kind(topic):
+            insight_count += key.startswith("season_insight_")
+            if (policy.season_kind(key) == policy.season_kind(topic)
+                    and not topic.startswith("season_insight_")):
                 return False
-    return count < 3
+    return count < 3 and (not topic.startswith("season_insight_") or insight_count < 2)
 
 
 def publication_ledgers():

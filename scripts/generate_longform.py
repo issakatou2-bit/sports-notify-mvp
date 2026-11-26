@@ -871,7 +871,8 @@ def main() -> int:
     out_dir.mkdir(parents=True, exist_ok=True)
     video_path = out_dir / "collespo_longform.mp4"
     import render_timeline
-    timeline = render_timeline.Recorder(FPS, segs)
+    landscape_record = 'scheduled_long_material' in dia
+    timeline = render_timeline.Recorder(FPS, segs, dia, landscape=landscape_record)
     segs = [dict(s, _source_line_ids=[s.get('index', i) + 1]) for i, s in enumerate(segs)]
 
     # 冒頭。2人ぶんの「コレスポ」を1つに重ねて、1枚の札にする。
@@ -987,7 +988,7 @@ def main() -> int:
                     im = lr3.render_line(tk, seg, args.portrait_dir, topic, r["panel"], None, score,
                                          chapters=chapters, progress=(r["start"] + tk) / video_total,
                                          panel_t=r["panel_since"] + tk, chapter_t=r["chapter_since"] + tk,
-                                         dur=dur)
+                                         dur=dur, record_layout=landscape_record)
                     last_frame = video_common.crossfade(last, im, k, fade, (W, H))
                     timeline.write(proc.stdin, last_frame, im, overlap=last is not None and k < fade)
                     continue

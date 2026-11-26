@@ -635,6 +635,8 @@ def rivalry_items() -> list:
 
 @short_common.narration
 def build_narration(topic: str) -> dict:
+    if (LIST_TOPICS.get(topic) or {}).get('insight'):
+        return __import__('phase2_shorts').season_narration(topic)
     if (LIST_TOPICS.get(topic) or {}).get('mlb_term'):
         import duo
         spec = LIST_TOPICS[topic]
@@ -1849,6 +1851,8 @@ def main():
     parser.add_argument('--publish-at',help='次情報を数える公開予約のJST時刻またはISO日時')
     parser.add_argument('--next-schedule',help='保存した公式日程（試作用）')
     args = parser.parse_args()
+    if (LIST_TOPICS.get(args.topic) or {}).get('insight'):
+        return __import__('soccer_national_topics_render').asset_main(args)
     __import__('market_art').validate_spec(LIST_TOPICS.get(args.topic) or {})
     if (LIST_TOPICS.get(args.topic) or {}).get('mlb_term') and not args.narration_out:
         import review_render_v3 as r3

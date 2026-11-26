@@ -57,7 +57,7 @@ def portraits(info):
     return result
 
 
-def save(video, fps, segments, rows):
+def save(video, fps, segments, rows, *, size=(1080, 1920), stride=3):
     write_json(video.with_suffix('.sample-check.json'),
-               dict(video_sha256=sha256(video), fps=fps, size=[1080, 1920],
+               dict(video_sha256=sha256(video), fps=fps, size=list(size), stride=stride,
                     reference_size=list(REFERENCE_SIZE), segments=segments, frames=rows))

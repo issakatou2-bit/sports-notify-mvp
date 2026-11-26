@@ -1,4 +1,4 @@
-name: MLB 日本人選手の移籍報道 見張り（下書きのみ）
+name: MLB 日本人選手と大型契約の移籍報道 見張り（下書きのみ）
 
 on:
   schedule:
@@ -31,7 +31,9 @@ jobs:
         id: watch
         shell: bash
         run: |
-          python scripts/market_watch.py --out build/market_watch --state data/market_watch_state.json | tee build/market_watch_stdout.txt
+          set -o pipefail
+          mkdir -p build
+          python scripts/market_watch.py --out build/market_watch --state data/market_watch_state.json --large-material data/mlb_large_contracts.json | tee build/market_watch_stdout.txt
           python - <<'PY' >> "$GITHUB_OUTPUT"
           import json
           r = json.load(open('build/market_watch/market_watch_report.json', encoding='utf-8'))
@@ -41,7 +43,7 @@ jobs:
       - name: Save the seen-state
         if: steps.watch.outputs.new != '0' && steps.watch.outputs.new != ''
         run: |
-          bash scripts/commit_data.sh "market watch: ${{ github.run_id }}" data/market_watch_state.json
+          bash scripts/commit_data.sh "market watch: ${{ github.run_id }}" data/market_watch_state.json data/mlb_large_contracts.json
       # 新しい話は課題で知らせる（本人と Claude が見る）。公開はしない。確かめてから材料へ足す。
       - name: Notify new reports
         if: steps.watch.outputs.new != '0' && steps.watch.outputs.new != ''
@@ -55,7 +57,7 @@ jobs:
             cat build/market_watch_stdout.txt
             echo '```'
             echo
-            echo "下書き：この run の artifact「market-watch-drafts」。出典を開いて確かめてから data/mlb_market_followups.json へ足す。"
+            echo "下書き：この run の artifact「market-watch-drafts」。日本人選手の話題は出典を開いて確かめてから data/mlb_market_followups.json へ足す。大型契約は段2の保存項目を確認し、followup- を付けた鍵で見本を作れる。"
           } > build/market_watch_issue.md
           gh issue create --title "移籍報道 $(TZ=Asia/Tokyo date +%m/%d\ %H:%M)" --body-file build/market_watch_issue.md
       - name: Save drafts

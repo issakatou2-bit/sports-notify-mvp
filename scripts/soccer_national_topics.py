@@ -394,7 +394,8 @@ def followup_panels(data, *, mlb=False):
     rows=[]
     for f in data['items']:
         sources = [url for url in f.get('sources', []) if url.startswith('https://')]
-        if len(set(sources) if mlb else sources) < 2:
+        minimum = 1 if data.get('large_contract', {}).get('state') == '契約を発表' and not rows else 2
+        if len(set(sources) if mlb else sources) < minimum:
             raise Unavailable('2つの出典で確かめていない事実がある: '+f.get('head',''))
         extra=dict(followup_sources=f['sources'])
         # 答えの画面の要の数字（Argon 11/15「どの数字が主役か分かりにくい」）。数字は本文と同じ材料から。
@@ -527,7 +528,7 @@ def tone_gate(doc):
     return doc
 
 
-def dialogue_segments(topic, panels, hook):
+def dialogue_segments(topic, panels, hook, *, ending=None):
     segments=[]
     for i,(question,answer,head,rows,*extra) in enumerate(panels):
         meta=dict(duo=True,topic=topic,panel=i,head=head,rows=rows,**(extra[0] if extra else {}))
@@ -535,25 +536,70 @@ def dialogue_segments(topic, panels, hook):
         if i==0 and hook:ask['hook']=hook
         segments += [dict(kind='list',text=question,speaker=ZUNDA,meta=ask),
                      dict(kind='list',text=answer,speaker=METAN,meta=dict(meta,who='四国めたん'))]
+    if ending:
+        import topic_dialogue
+        segments = topic_dialogue.ending_segments(segments, ending)
+        topic_dialogue.require(segments)
     return segments
+
+
+MARKET_TRANSITIONS = {
+    '鈴木誠也との比べ': '同じカブスの鈴木誠也と比べると、年平均はどうなのだ？',
+    '2026年の成績': '契約の話を聞くと、移籍前のプレーも気になるのだ。',
+    'NPBから移った2人の1年目': 'メジャーに渡った打者の数字も見ておきたいのだ。',
+    '守る位置': '移籍先では、どこを守る見込みなのだ？',
+    '契約を途中でやめる権利': '総額に加えて、契約の途中にも注目なのだ。',
+    '西武への譲渡金': '送り出した西武にも、譲渡金が入るのだ？',
+    '岡本和真と同じ球団': '岡本和真もいるチームなのだ！',
+}
+
+
+def market_panels(data, key):
+    import topic_dialogue
+    _, facts, _ = followup_panels(data, mlb=True)
+    panels = []
+    for i, (ask, answer, head, rows, meta) in enumerate(facts):
+        if i == 0:
+            line = topic_dialogue.market_opening(data, key)
+        else:
+            line = MARKET_TRANSITIONS.get(head, ask)
+        # 比較や成績の台詞には、直前のひと言を受ける短い言葉を置く。
+        response = ('ええ', 'そうね', 'そうなの', 'ええ', 'そうね')[i % 5]
+        if i == 1 and data.get('large_contract'):
+            response = 'そうね'
+        panels.append((line, topic_dialogue.receive(answer, response), head, rows, meta))
+    return panels
 
 
 def mlb_narration(topic):
     event = topic.removeprefix('followup-')
-    if not is_followup(topic) or event not in MLB_TEAMS:
+    if not is_followup(topic):
         raise Unavailable('MLB移籍の話題は followup-<名前> で指定してください')
-    data = national.read(MLB_FOLLOWUPS)['events'][event]
-    title, panels, hook = followup_panels(data, mlb=True)
+    team_id = MLB_TEAMS.get(event)
+    if team_id:
+        data = national.read(MLB_FOLLOWUPS)['events'][event]
+    else:
+        import market_watch
+        from notability_engine import MLB_TEAM_NAME_EN
+        entries = national.read(market_watch.LARGE_CONTRACTS).get('events', {})
+        if event not in entries:
+            raise Unavailable('大型契約の段2材料がありません')
+        entry = entries[event]
+        data = market_watch.large_followup(entry)
+        team_id = next((str(i) for i, name in MLB_TEAM_NAME_EN.items()
+                        if name == entry['reports'][0]['team_en']), None)
+    import topic_dialogue
+    title, _, hook = followup_panels(data, mlb=True)
+    panels = market_panels(data, topic)
     if hook['score'] not in data['readings'] or not mlb_big_in_text(
         dict(value=hook['big'], unit=hook['unit']), panels[0][1]
     ):
         raise Unavailable('冒頭の選手名の読みか要の数字が材料にありません')
-    if any(not ask.endswith('？') for ask, *_ in panels):
-        raise Unavailable('ずんだもんの台詞は問いだけです')
     return tone_gate(short_common.prepare(dict(
         program=MLB_PROGRAM, date_jst=data['checked_on'], title=title+' #Shorts',
-        topic=topic, event_id=event, topic_key=topic, segments=dialogue_segments(topic,panels,hook),
-        followup_material=data, team_id=MLB_TEAMS[event], screen_title='MLB',
+        topic=topic, event_id=event, topic_key=topic,
+        segments=dialogue_segments(topic, panels, hook, ending=topic_dialogue.market_ending(data)),
+        followup_material=data, team_id=team_id, screen_title='MLB',
         duration_budget=dict(limit=MLB_LIMIT,grace=0), baseball_average_voice=True,
         sanity_materials=[dict(source='MLB移籍報道（確認済み）',sport='mlb',facts=data)],
     )))
@@ -623,7 +669,14 @@ def speech_readings(doc):
 
 def information(doc):
     if check(doc):raise ValueError('材料が不一致')
-    answers=[(i,s) for i,s in enumerate(doc['segments']) if s['speaker']==METAN and s['kind']!='outro']
+    answers=[(i,s) for i,s in enumerate(doc['segments']) if s['speaker']==METAN and s['kind']!='outro' and not s['meta'].get('dialogue_ending')]
+    if doc.get('followup_material', {}).get('large_contract'):
+        first, comparison = answers
+        return [dict(subject=first[1]['meta']['head'], fact='報じられた契約', value=first[1]['meta']['rows'],
+                     source=' '.join(first[1]['meta']['followup_sources']), segments=[first[0]])] + [
+                dict(subject=name, fact='比較する契約', value=value,
+                     source=' '.join(comparison[1]['meta']['followup_sources']), segments=[comparison[0]])
+                for name, value in doc['followup_material']['items'][1]['comparison_rows']]
     if is_followup(doc['topic']):
         return [dict(subject=s['meta']['head'],fact='確認済みの事実（その後）',value=s['meta']['rows']+([('要の数字',s['meta']['big']['label']+' '+str(s['meta']['big']['value'])+s['meta']['big']['unit'])] if s['meta'].get('big') else []),source=' '.join(s['meta']['followup_sources']),segments=[i])
                 for i,s in answers]
@@ -701,6 +754,13 @@ def validate_upload(args, now=None):
     if not args.publish_at:raise ValueError('未来の予約時刻が必要です')
     at=national.instant(args.publish_at);now=now or datetime.now(timezone.utc)
     if at<=now:raise ValueError('未来の予約時刻が必要です')
+    if mlb:
+        day = at.astimezone(national.JST).date()
+        occupied = [key for key, row in ledger.items()
+                    if key != doc['topic_key'] and row.get('publish_at')
+                    and national.instant(row['publish_at']).astimezone(national.JST).date() == day]
+        if len(occupied) >= 2:
+            raise ValueError('MLB移籍のショートは日本時間で1日2本までです')
     import short_content
     report=short_content.validate_upload(args.video)
     limit=MLB_LIMIT if mlb else LIMIT

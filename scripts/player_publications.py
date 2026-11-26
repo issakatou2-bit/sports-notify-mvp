@@ -95,8 +95,8 @@ def row_ids(row):
 
 
 def topic_id(topic):
-    match = re.fullmatch(r'season_player_(\d+)', topic or '')
-    return match[1] if match else None
+    match = re.fullmatch(r'season_player_(\d+)|season_insight_2026_(\d+)_[a-zA-Z_]+', topic or '')
+    return next((part for part in match.groups() if part), None) if match else None
 
 
 def record(player_id, as_of=None):

@@ -118,7 +118,7 @@ class MarketWatchTest(unittest.TestCase):
                       'Kaima Taira and the Blue Jays agreed to a five-year, $80 million deal, sources told ESPN\'s Jeff Passan.',
                       'https://www.espn.com/mlb/story/_/id/2/taira')
         big = market_watch.group_stories(market_watch.collect_items(passan, 'ESPN', targets, teams))
-        self.assertEqual([market_watch.stage_for(rows) for rows in big.values()], [2])
+        self.assertEqual([market_watch.stage_for(rows) for rows in big.values()], [1])
 
         official = feed('Blue Jays announce signing of Kaima Taira',
                         'The Blue Jays announced the signing of Kaima Taira.',
@@ -150,7 +150,13 @@ class MarketWatchTest(unittest.TestCase):
         state = {'version': 1, 'stories': {}}
         with patch.object(market_watch, 'read_source', side_effect=[interest, agree]):
             result = market_watch.run([('MLBTR', 'interest'), ('MLBTR', 'agree')], state, NOW)
-        self.assertEqual(result['stage1'], [])
+        self.assertEqual(result['stage2'], {})
+        self.assertEqual(len(result['stage1']), 2)
+        espn = feed('Blue Jays Agree With Kaima Taira',
+                    'Kaima Taira and the Blue Jays agreed to a five-year, $80 million deal.',
+                    'https://www.espn.com/mlb/story/_/id/2/taira')
+        with patch.object(market_watch, 'read_source', side_effect=[interest, agree, espn]):
+            result = market_watch.run([('MLBTR', 'interest'), ('MLBTR', 'agree'), ('ESPN', 'espn')], state, NOW)
         self.assertEqual(result['all_stage1'], [])
         self.assertEqual(list(result['stage2']), ['kaima-taira-toronto-blue-jays-agreement'])
         self.assertEqual(state['stories']['kaima-taira-toronto-blue-jays-interest']['stage'], 1)

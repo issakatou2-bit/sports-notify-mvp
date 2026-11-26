@@ -1,0 +1,319 @@
+[
+  {
+    "id": "401915300",
+    "league": "CL",
+    "league_jp": "チャンピオンズリーグ",
+    "start_utc": "2026-11-24T17:45Z",
+    "finished_utc": "2026-11-24T19:38:57+00:00",
+    "date_jst": "2026-11-24",
+    "score": {
+      "home": 1,
+      "away": 0
+    },
+    "players": [
+      {
+        "name": "鈴木彩艶",
+        "name_en": "Zion Suzuki",
+        "club": "アストンヴィラ",
+        "side": "away",
+        "event_id": "401915300",
+        "athlete_id": "265958",
+        "status": "starter",
+        "goals": 0,
+        "assists": 0,
+        "yellow_cards": 0,
+        "red_cards": 0,
+        "plays": [],
+        "position": "GK",
+        "stats_source": "ESPN summary.rosters.roster.stats",
+        "saves": 1,
+        "conceded": 1,
+        "subbed_out": false,
+        "appearance_evidence": "ESPN starter/subbedIn"
+      }
+    ],
+    "goals": [
+      {
+        "minute": "77",
+        "scorer": "Deniz Gül",
+        "athlete_id": "350513",
+        "side": "home",
+        "own_goal": false,
+        "japanese_goal": false,
+        "japanese_assists": []
+      }
+    ],
+    "unresolved": [],
+    "home": {
+      "id": "432",
+      "name_en": "Galatasaray",
+      "name_jp": "ガラタサライ",
+      "abbr": "GAL"
+    },
+    "away": {
+      "id": "362",
+      "name_en": "Aston Villa",
+      "name_jp": "アストンヴィラ",
+      "abbr": "AVL"
+    },
+    "match_stats": {
+      "source": "ESPN summary.boxscore.teams.statistics",
+      "home": {
+        "possession": 45.4,
+        "shots": 9,
+        "on_target": 2
+      },
+      "away": {
+        "possession": 54.6,
+        "shots": 4,
+        "on_target": 0
+      }
+    },
+    "goals_complete": true,
+    "score_crosscheck": "unavailable"
+  },
+  {
+    "id": "401915298",
+    "league": "CL",
+    "league_jp": "チャンピオンズリーグ",
+    "start_utc": "2026-11-24T20:00Z",
+    "finished_utc": "2026-11-24T21:52:20+00:00",
+    "date_jst": "2026-11-24",
+    "score": {
+      "home": 5,
+      "away": 1
+    },
+    "players": [
+      {
+        "name": "佐野航大",
+        "name_en": "Kodai Sano",
+        "club": "PSV",
+        "side": "away",
+        "event_id": "401915298",
+        "athlete_id": "341715",
+        "status": "starter",
+        "goals": 0,
+        "assists": 0,
+        "yellow_cards": 0,
+        "red_cards": 0,
+        "plays": [],
+        "position": "MF",
+        "stats_source": "ESPN summary.rosters.roster.stats",
+        "shots": 2,
+        "on_target": 0,
+        "subbed_out": true,
+        "minutes": 78,
+        "minutes_source": "ESPN keyEvents substitution",
+        "minutes_approx": true,
+        "appearance_evidence": "ESPN starter/subbedIn"
+      }
+    ],
+    "goals": [
+      {
+        "minute": "32",
+        "scorer": "Ivan Perisic",
+        "athlete_id": "103485",
+        "side": "away",
+        "own_goal": false,
+        "japanese_goal": false,
+        "japanese_assists": []
+      },
+      {
+        "minute": "50",
+        "scorer": "Federico Valverde",
+        "athlete_id": "235818",
+        "side": "home",
+        "own_goal": false,
+        "japanese_goal": false,
+        "japanese_assists": []
+      },
+      {
+        "minute": "60",
+        "scorer": "Jude Bellingham",
+        "athlete_id": "291281",
+        "side": "home",
+        "own_goal": false,
+        "japanese_goal": false,
+        "japanese_assists": []
+      },
+      {
+        "minute": "64",
+        "scorer": "Kylian Mbappé",
+        "athlete_id": "231388",
+        "side": "home",
+        "own_goal": false,
+        "japanese_goal": false,
+        "japanese_assists": []
+      },
+      {
+        "minute": "84",
+        "scorer": "Kylian Mbappé",
+        "athlete_id": "231388",
+        "side": "home",
+        "own_goal": false,
+        "japanese_goal": false,
+        "japanese_assists": []
+      },
+      {
+        "minute": "87",
+        "scorer": "Vinícius Júnior",
+        "athlete_id": "252107",
+        "side": "home",
+        "own_goal": false,
+        "japanese_goal": false,
+        "japanese_assists": []
+      }
+    ],
+    "unresolved": [],
+    "home": {
+      "id": "86",
+      "name_en": "Real Madrid",
+      "name_jp": "レアル・マドリード",
+      "abbr": "RMA"
+    },
+    "away": {
+      "id": "148",
+      "name_en": "PSV Eindhoven",
+      "name_jp": "PSV",
+      "abbr": "PSV"
+    },
+    "match_stats": {
+      "source": "ESPN summary.boxscore.teams.statistics",
+      "home": {
+        "possession": 61.5,
+        "shots": 24,
+        "on_target": 9
+      },
+      "away": {
+        "possession": 38.5,
+        "shots": 10,
+        "on_target": 1
+      }
+    },
+    "goals_complete": true,
+    "score_crosscheck": "unavailable"
+  },
+  {
+    "id": "401915377",
+    "league": "CL",
+    "league_jp": "チャンピオンズリーグ",
+    "start_utc": "2026-11-25T20:00Z",
+    "finished_utc": "2026-11-25T21:52:17+00:00",
+    "date_jst": "2026-11-25",
+    "score": {
+      "home": 2,
+      "away": 1
+    },
+    "players": [
+      {
+        "name": "上田綺世",
+        "name_en": "Ayase Ueda",
+        "club": "リール",
+        "side": "home",
+        "event_id": "401915377",
+        "athlete_id": "274277",
+        "status": "starter",
+        "goals": 1,
+        "assists": 0,
+        "yellow_cards": 0,
+        "red_cards": 0,
+        "plays": [
+          {
+            "minute": "62",
+            "goal": true,
+            "assist": false
+          }
+        ],
+        "position": "FW",
+        "stats_source": "ESPN summary.rosters.roster.stats",
+        "shots": 4,
+        "on_target": 2,
+        "subbed_out": true,
+        "minutes": 77,
+        "minutes_source": "ESPN keyEvents substitution",
+        "minutes_approx": true,
+        "appearance_evidence": "ESPN starter/subbedIn"
+      },
+      {
+        "name": "伊藤洋輝",
+        "name_en": "Hiroki Ito",
+        "club": "バイエルン",
+        "side": "away",
+        "event_id": "401915377",
+        "athlete_id": "97111",
+        "status": "starter",
+        "goals": 0,
+        "assists": 0,
+        "yellow_cards": 0,
+        "red_cards": 0,
+        "plays": [],
+        "position": "DF",
+        "stats_source": "ESPN summary.rosters.roster.stats",
+        "shots": 2,
+        "on_target": 1,
+        "subbed_out": true,
+        "minutes": 76,
+        "minutes_source": "ESPN keyEvents substitution",
+        "minutes_approx": true,
+        "appearance_evidence": "ESPN starter/subbedIn"
+      }
+    ],
+    "goals": [
+      {
+        "minute": "15",
+        "scorer": "Dayot Upamecano",
+        "athlete_id": "222793",
+        "side": "away",
+        "own_goal": false,
+        "japanese_goal": false,
+        "japanese_assists": []
+      },
+      {
+        "minute": "62",
+        "scorer": "上田綺世",
+        "athlete_id": "274277",
+        "side": "home",
+        "own_goal": false,
+        "japanese_goal": true,
+        "japanese_assists": []
+      },
+      {
+        "minute": "65",
+        "scorer": "Aleksandar Pavlovic",
+        "athlete_id": "359370",
+        "side": "home",
+        "own_goal": true,
+        "japanese_goal": false,
+        "japanese_assists": []
+      }
+    ],
+    "unresolved": [],
+    "home": {
+      "id": "166",
+      "name_en": "Lille",
+      "name_jp": "リール",
+      "abbr": "LILL"
+    },
+    "away": {
+      "id": "132",
+      "name_en": "Bayern Munich",
+      "name_jp": "バイエルン",
+      "abbr": "MUN"
+    },
+    "match_stats": {
+      "source": "ESPN summary.boxscore.teams.statistics",
+      "home": {
+        "possession": 35.2,
+        "shots": 15,
+        "on_target": 3
+      },
+      "away": {
+        "possession": 64.8,
+        "shots": 12,
+        "on_target": 7
+      }
+    },
+    "goals_complete": true,
+    "score_crosscheck": "unavailable"
+  }
+]

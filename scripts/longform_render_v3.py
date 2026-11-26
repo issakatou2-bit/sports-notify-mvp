@@ -849,11 +849,15 @@ def panel_title(kind, panel):
     return gl._TITLES.get(kind, "")
 
 
-def draw_card(kind, panel, pt, base_rgb):
+def draw_card(kind, panel, pt, base_rgb, *, record_layout=False):
     """札1枚（RGBA、幅 CARD_W）。高さは中身に合わせる（CARD_MIN_H〜限界）。"""
     max_h = CARD_BOTTOM - CARD_Y
     content = Image.new("RGBA", (CARD_W, max_h), (0, 0, 0, 0))
-    d = ImageDraw.Draw(content)
+    if record_layout:
+        from sample_evidence import LayoutDraw
+        d = LayoutDraw(content)
+    else:
+        d = ImageDraw.Draw(content)
     title = panel_title(kind, panel)
     if title:
         _label(d, _ellipsize(d, title, font(24), INNER_W))
@@ -865,6 +869,7 @@ def draw_card(kind, panel, pt, base_rgb):
     ImageDraw.Draw(card).rounded_rectangle((0, 0, CARD_W - 1, h - 1), radius=32, fill=(255, 255, 255, 20),
                                            outline=(255, 255, 255, 46), width=4)
     card.alpha_composite(content.crop((0, 0, CARD_W, h)))
+    card.info.update(content.info)
     return card, bottom
 
 
@@ -879,12 +884,17 @@ def card_motion(pt):
     return round(12 * (1 - k)), 1.0
 
 
-def paste_card(im, kind, panel, pt, base_rgb):
-    card, _ = draw_card(kind, panel, pt, base_rgb)
+def paste_card(im, kind, panel, pt, base_rgb, *, record_layout=False):
+    card, _ = draw_card(kind, panel, pt, base_rgb, record_layout=record_layout)
     dx, a = card_motion(pt)
     if a <= 0:
         return card
     _over(im, card, (CARD_X + dx, CARD_Y), a)
+    if record_layout:
+        for row in card.info.get('v3_layout', []):
+            x1, y1, x2, y2 = row['box']
+            im.info.setdefault('v3_layout', []).append(dict(row, role='card_text',
+                box=[x1+CARD_X+dx, y1+CARD_Y, x2+CARD_X+dx, y2+CARD_Y]))
     return card
 
 
@@ -1059,6 +1069,9 @@ def subtitle(im, d, t, seg, who, dur=None):
         x = 0
         for part, gold in _gold_runs(ln):
             x = _draw_text(lay, ld, (x, 0), part, f, GOLD if gold else INK)
+        if shown >= w and isinstance(d, __import__('sample_evidence').LayoutDraw):
+            box = d.textbbox((x0, y), ln, font=f)
+            im.info.setdefault('v3_layout', []).append(dict(role='caption', text=ln, box=list(box)))
         cut = int(min(w, shown)) + (16 if shown >= w else 0)
         part = lay.crop((0, 0, cut, lay.height))
         visible = visible or bool(part.getbbox())
@@ -1086,7 +1099,7 @@ def _gold_runs(line):
 # ---------------------------------------------------------------------------
 def render_line(t, seg, portrait_dir="", topic="", panel=None, state=None, score=None, *,
                 chapters=None, progress=None, panel_t=None, chapter_t=None, dur=None,
-                team_id=None):
+                team_id=None, record_layout=False):
     """台詞1つぶんの画面（1920×1080、RGB）。
 
     t: その台詞（paginate で分けたときはそのページ）が出てからの秒。
@@ -1112,7 +1125,11 @@ def render_line(t, seg, portrait_dir="", topic="", panel=None, state=None, score
     tid = team_id_of(panel_, score, team_id)
     base, second, _ = colors(tid)
     im = background(t, tid)
-    d = ImageDraw.Draw(im, "RGBA")          # 半透明の色を地に重ねて描く
+    if record_layout:
+        from sample_evidence import LayoutDraw
+        d = LayoutDraw(im, "RGBA")
+    else:
+        d = ImageDraw.Draw(im, "RGBA")          # 半透明の色を地に重ねて描く
     idx = chapter_index(seg, chapters)
     header(im, d, topic, chapters, idx, progress, ct, score)
     is_card = seg.get("kind") in ("intro", "outro")
@@ -1120,9 +1137,11 @@ def render_line(t, seg, portrait_dir="", topic="", panel=None, state=None, score
     talking = BOTH if is_card else who["name"]
     paste_portraits(im, t, talking)
     try:
-        paste_card(im, kind, panel_, pt, base)
+        paste_card(im, kind, panel_, pt, base, record_layout=record_layout)
     except Exception as e:                       # noqa: BLE001
         # 札が1枚描けないだけで動画を落とさない（いまの長編と同じ）。黙って空にもしない。
+        if record_layout:
+            raise
         print(f"[warn] 札を描けません({kind}): {e}")
         paste_card(im, "topic", {"type": "topic", "topic": topic}, pt, base)
     if not is_card:

@@ -28,7 +28,7 @@ def _append(rows, signature, frame, fields):
 
 
 class Recorder:
-    def __init__(self, fps, segments, narration=None):
+    def __init__(self, fps, segments, narration=None, *, landscape=False):
         self.fps = fps
         self.segments = segments
         original = (narration or {}).get('segments', [])
@@ -44,6 +44,8 @@ class Recorder:
         self.broken = None
         self.first_source = None
         self.opening_card = []
+        self.sample_size = (1920, 1080) if landscape else (1080, 1920)
+        self.sample_stride = 12 if landscape else 3
         self.sample_rows = []
         self.sample_last = None
         self.sample_error = None
@@ -70,7 +72,7 @@ class Recorder:
             raise OSError('フレームの書込みが途中で終わりました')
         if self.broken:
             return result
-        if image.size == (1080, 1920) and not self.sample_error:
+        if image.size == self.sample_size and not self.sample_error:
             try:
                 self._observe_sample(image, raw, overlap)
             except (ValueError, TypeError, OSError) as exc:
@@ -93,7 +95,7 @@ class Recorder:
         portraits = sample_evidence.portraits(image.info)
         transition = bool(overlap or image.info.get('v2_slide'))
         self.sample_last = (image, raw, self.frames, layout, portraits, transition)
-        if self.frames % 3 == 0:
+        if self.frames % self.sample_stride == 0:
             self.sample_rows.append(sample_evidence.record(*self.sample_last))
 
     def _observe(self, image, overlap):
@@ -242,6 +244,7 @@ class Recorder:
             observed = [row for row in self.sample_rows if row['frame'] < frames]
             if frames == self.frames and observed and observed[-1]['frame'] != frames - 1:
                 observed.append(sample_evidence.record(*self.sample_last))
-            sample_evidence.save(video, self.fps, self.sample_segments, observed)
+            sample_evidence.save(video, self.fps, self.sample_segments, observed,
+                                 size=self.sample_size, stride=self.sample_stride)
         except (ValueError, TypeError, OSError) as exc:
             print(f'::warning::見本検査の記録を保存できませんでした（{exc}）')

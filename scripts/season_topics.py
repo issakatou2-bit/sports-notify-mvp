@@ -520,12 +520,29 @@ def build(ps: dict, only: int = 0) -> list:
     return out
 
 
+def saved_insights(root=None):
+    import rare_topics
+    import season_stock
+    root = root or season_stock.ROOT
+    return (rare_topics.season_insights(season_stock.read(root / 'data/rarity.json'))
+            + season_stock.player_insights(season_stock.read(root / 'data/jp_player_logs_2026.json')))
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--postseason", default="data/postseason.json")
     ap.add_argument("--out", default=OUT)
     ap.add_argument("--only", type=int, default=0)
+    ap.add_argument("--saved-insights", help="保存成績だけからオフの在庫を書き出す")
     args = ap.parse_args()
+    if args.saved_insights:
+        topics = saved_insights()
+        if not topics:
+            raise ValueError('日本人選手の保存成績から題材を確認できません')
+        pathlib.Path(args.saved_insights).write_text(json.dumps(
+            {"season": 2026, "topics": topics}, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+        print(f"[info] 保存成績の在庫 {len(topics)}件 -> {args.saved_insights}")
+        return 0
     try:
         ps = json.loads(pathlib.Path(args.postseason).read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as e:

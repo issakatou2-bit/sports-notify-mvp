@@ -32,6 +32,7 @@ SOURCES = (
     "data/team_topics.json",    # 球団 (team_topics.py)
     "data/rare_topics.json",    # 名前のある指標 (rare_topics.py)
     "data/legend_topics.json",  # 球団の殿堂入り選手 (legend_topics.py)
+    "data/season_insights.json",  # 保存成績からの比較
     "data/season_topics.json",  # シーズンを終えた球団・選手のまとめ (season_topics.py)
     "data/ps_story_topics.json",  # PSの話題：決着したシリーズで何が起きたか (ps_story.py)
     "data/ps_game_topics.json",   # PSの話題：その日に終わった試合で何が起きたか (ps_game_story.py)

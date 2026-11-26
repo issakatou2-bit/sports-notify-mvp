@@ -12,6 +12,7 @@ from unittest.mock import patch
 
 import short_content
 import soccer_national_topics as topics
+import topic_dialogue
 from synthesize_narration import baseball_average_reading
 
 
@@ -25,14 +26,18 @@ class MarketTopics(unittest.TestCase):
                 self.assertEqual(topics.check(doc), [])
                 self.assertEqual(doc['program'], topics.MLB_PROGRAM)
                 self.assertEqual(doc['screen_title'], 'MLB')
+                self.assertEqual(topic_dialogue.problems(doc['segments']), [])
+                self.assertTrue(doc['segments'][0]['text'].endswith('！'))
+                self.assertEqual(doc, topics.mlb_narration('followup-' + event))
                 player = material['hook']['score']
                 self.assertEqual(doc['segments'][0]['meta']['hook']['score'], player)
                 info = short_content.information(doc)
                 self.assertEqual(len(info), 5)
                 for index, item in enumerate(material['items']):
                     ask, answer = doc['segments'][2*index:2*index+2]
-                    self.assertEqual((ask['speaker'], ask['text']), (topics.ZUNDA, item['ask']))
-                    self.assertEqual((answer['speaker'], answer['text']), (topics.METAN, metan_tone.fix(item['text'])))
+                    self.assertEqual(ask['speaker'], topics.ZUNDA)
+                    self.assertEqual(answer['speaker'], topics.METAN)
+                    self.assertTrue(answer['text'].endswith(metan_tone.fix(item['text']).removeprefix('はい。')))
                     self.assertEqual(answer['meta']['followup_sources'], item['sources'])
                     self.assertGreaterEqual(len(set(item['sources'])), 2)
                     if 'big' in item:
@@ -149,7 +154,7 @@ for event, team in [('sato-cubs', '112'), ('taira-bluejays', '141')]:
         layout = image.info['v3_layout']
         text = ' '.join(entry['text'] for entry in layout)
         assert 'MLB' in text and '日本代表' not in text and '#サッカー' not in text, text
-        source = doc['followup_material']['items'][i//2]['source_names']
+        source = doc['followup_material']['items'][seg['meta']['panel']]['source_names']
         assert source in text.replace(' ', ''), (event, i, source, text)
         # 字幕の箱と出典は YouTube ショートの UI に隠れない安全範囲の内側（SAFE_BOTTOM 1440）にある。
         import shorts_safe_area as safe

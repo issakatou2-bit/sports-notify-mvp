@@ -726,7 +726,7 @@ def record_kind(kind: str, morning_mode: str = "players",
 # 資産動画(asset)だけは日付ではなく話題で引くので、別の分岐が受け持つ。
 # --kind の選択肢と食い違っていないかは test_consistency が見る。
 DATED_KINDS = ("daily", "morning", "longform", "weekly", "verdict",
-               "soccer_race", "soccer_leaders", "soccer_week", "soccer_results", "soccer_voices", "soccer_national_topic", "soccer_club_topic", "mlb_market_topic", "soccer_national", "player_story", "soccer_weekly", "soccer_national_long", "soccer_stake")
+               "soccer_race", "soccer_leaders", "soccer_week", "soccer_results", "soccer_voices", "soccer_national_topic", "soccer_club_topic", "mlb_market_topic", "soccer_national", "player_story", "soccer_weekly", "soccer_national_long", "soccer_stake", "soccer_cup_long", "mlb_market_long", "long_highlight")
 
 
 def published_video(kind: str, date_key: str,
@@ -1319,7 +1319,7 @@ OTHER_CHANNEL_LINES = _other_channels()
 # 「kind != weekly」で判定していたので、長編がショート扱いのまま
 # 公開された。説明欄に #Shorts が入り、タグにも Shorts が付いていた。
 # 種類が増えるたびに同じ間違いが起きるので、集合で持つ。
-LANDSCAPE_KINDS = {"weekly", "longform", "soccer_weekly", "soccer_national_long"}
+LANDSCAPE_KINDS = {"weekly", "longform", "soccer_weekly", "soccer_national_long", "soccer_cup_long", "mlb_market_long"}
 
 
 def _postseason_data(path: str = "data/postseason.json") -> dict:
@@ -1489,6 +1489,11 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
                    longform_mode: str = "voices",
                    longform_subject: str = "") -> dict:
     """タイトル・説明文・タグを、その日のデータから組み立てる"""
+    if kind in ['soccer_cup_long', 'mlb_market_long']:
+        return __import__('scheduled_longs').metadata(_json_or_empty(narration_path),
+            pathlib.Path(narration_path).with_name('render_timeline.json'))
+    if kind == 'long_highlight':
+        return __import__('scheduled_longs').highlight_metadata(_json_or_empty(narration_path))
     if kind == 'soccer_weekly':
         return __import__('soccer_weekly_long').metadata(_json_or_empty(narration_path),
                                                        pathlib.Path(narration_path).parent/'render_timeline.json')
@@ -2288,7 +2293,7 @@ def main():
     parser.add_argument("--kind", default="daily",
                         choices=["daily", "weekly", "asset", "verdict",
                                   "morning", "longform", "soccer_race", "soccer_leaders",
-                                  "soccer_week", "soccer_results", "soccer_voices", "soccer_national", "soccer_national_topic", "soccer_club_topic", "mlb_market_topic", "player_story", "soccer_weekly", "soccer_national_long", "soccer_stake"],
+                                  "soccer_week", "soccer_results", "soccer_voices", "soccer_national", "soccer_national_topic", "soccer_club_topic", "mlb_market_topic", "player_story", "soccer_weekly", "soccer_national_long", "soccer_stake", "soccer_cup_long", "mlb_market_long", "long_highlight"],
                         help="daily=ショート / weekly=週次まとめ / "
                              "asset=資産動画 / verdict=答え合わせ / "
                              "morning=夕方の5本 / longform=対話の通常動画 / "
@@ -2337,6 +2342,8 @@ def main():
         args.narration = default_narration
     import ui_voice_queue
     ui_voice_queue.configure(args)
+    if args.kind in ('soccer_cup_long', 'mlb_market_long', 'long_highlight'):
+        __import__('scheduled_longs').validate_upload(args)
     if args.kind == 'soccer_weekly':
         __import__('soccer_weekly_long').validate_upload(args)
     if args.kind == 'soccer_national_long':
@@ -2463,7 +2470,13 @@ def main():
     if args.kind == "asset":
         # 資産動画は試合データを一切参照しない(日付に依存しないため)
         topic = args.asset_topic or "mlb_abbr"
-        if topic.startswith('offseason_'):
+        if topic.startswith('season_insight_'):
+            from phase2_shorts import check, season_metadata, SEASON
+            narration = _json_or_empty(args.narration)
+            if narration.get('program') != SEASON or narration.get('topic') != topic or check(narration):
+                raise ValueError('台本と在庫の材料が一致しません')
+            body = season_metadata(narration)
+        elif topic.startswith('offseason_'):
             narration = _json_or_empty(args.narration)
             import host_split
             receipt = host_split.read(host_split.video_receipt(args.video))
@@ -2584,16 +2597,21 @@ def main():
         # そうした改変は一切していないため false とする。
         "containsSyntheticMedia": False,
     }
+    if args.kind in ('soccer_cup_long', 'mlb_market_long', 'long_highlight') and not publish_at:
+        raise ValueError('未来の予約時刻を確認できません')
     if publish_at:
         body["status"]["publishAt"] = publish_at
 
     import player_publications as player_pubs
     # 複数選手の比較・所属回は予約する時点でも全員を再照合する。
+    if args.kind == 'soccer_results':
+        result_games = _json_or_empty(args.games).get('games', [])
+        experiment = dict(experiment or {}, event_ids=[str(game['id']) for game in result_games])
     if args.kind == 'asset' and args.asset_topic:
         import jp_assets
         spec = __import__('generated_topics').get(args.asset_topic)
         guarded = args.asset_topic.startswith(('season_compare_', 'season_momentum_rs2026_',
-                   'season_best_', 'season_month_', 'season_vs_', 'season_streak_', 'season_home_', 'season_win_', 'season_daynight_', 'season_half_')) or args.asset_topic == 'season_game_823818'
+                   'season_insight_', 'season_best_', 'season_month_', 'season_vs_', 'season_streak_', 'season_home_', 'season_win_', 'season_daynight_', 'season_half_')) or args.asset_topic == 'season_game_823818'
         if guarded and not spec:
             print('[info] 日本人資産の材料が無いため公開を見送ります')
             return
@@ -2608,7 +2626,7 @@ def main():
             experiment = dict(experiment or {}, player_ids=sorted(jp_assets.ids(args.asset_topic, spec)))
             if publish_at:
                 experiment['publish_at'] = publish_at
-    player_kind = 'player_story' if args.kind == 'player_story' else 'season_player' if args.kind == 'asset' and player_pubs.topic_id(args.asset_topic) else None
+    player_kind = 'player_story' if args.kind == 'player_story' else 'season_player' if args.kind == 'asset' and (args.asset_topic or '').startswith('season_player_') and player_pubs.topic_id(args.asset_topic) else None
     if player_kind:
         player_id = (player_pubs.identity(_json_or_empty(args.narration)['player']) if player_kind == 'player_story'
                      else player_pubs.topic_id(args.asset_topic))
@@ -2645,6 +2663,8 @@ def main():
     require_upload_gate(video_path, gate_narration, body['snippet']['description'], rec_kind)
     try:
         youtube = build("youtube", "v3", credentials=creds, cache_discovery=False)
+        if args.kind == 'long_highlight':
+            __import__('scheduled_longs').confirm_public(youtube, _json_or_empty(args.narration)['long_video_id'])
         response = insert_with_retry(youtube, body, video_path)
         vid = response.get("id")
         print(f"[info] アップロードしました: https://youtu.be/{vid}")
@@ -2697,6 +2717,8 @@ def main():
             if args.kind in ('soccer_national_topic', 'mlb_market_topic'):
                 __import__('soccer_national_topics').record_published(
                     _json_or_empty(args.narration), vid, args.publish_at)
+            if args.kind in ('soccer_cup_long', 'mlb_market_long'):
+                __import__('scheduled_longs').remember(_json_or_empty(args.narration), vid)
             if args.kind == 'soccer_stake':
                 __import__('soccer_stake').record_published(_json_or_empty(args.narration), vid, args.publish_at)
             workflow_upload_result(True)

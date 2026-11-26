@@ -1,0 +1,1013 @@
+{
+  "season": 2026,
+  "topics": [
+    {
+      "key": "season_insight_2026_808967_rare_whip",
+      "label": "山本由伸のWHIP 0.87",
+      "heading": "山本由伸のWHIP 0.87",
+      "hook": "山本由伸のWHIP 0.87",
+      "title": "山本由伸のWHIP 0.87 #Shorts",
+      "jp": "山本由伸",
+      "player_id": 808967,
+      "game_type": "R",
+      "season_stock": true,
+      "source": "MLB Stats API / 2026年レギュラーシーズン",
+      "source_paths": [
+        "data/rarity.json"
+      ],
+      "items": [
+        [
+          "WHIP",
+          "0.87"
+        ],
+        [
+          "MLBでの順位",
+          "60回以上276人の中で4位"
+        ],
+        [
+          "MLB最上位の数字",
+          "0.80"
+        ]
+      ],
+      "insight": {
+        "ask": "山本由伸のWHIPは、MLBでどのくらいなのだ？",
+        "answer": "山本由伸のWHIPは0.87で、60回以上276人の中で4位よ。この指標の最上位は0.80よ。この指標は、1回あたりに出した走者（被安打＋与四球）を表すのよ。",
+        "rows": [
+          [
+            "WHIP",
+            "0.87"
+          ],
+          [
+            "MLBでの順位",
+            "60回以上276人の中で4位"
+          ],
+          [
+            "MLB最上位の数字",
+            "0.80"
+          ]
+        ],
+        "source": "https://statsapi.mlb.com/api/v1/people/808967/stats?stats=gameLog&season=2026&group=pitching&gameType=R"
+      }
+    },
+    {
+      "key": "season_insight_2026_808959_rare_dunn",
+      "label": "村上宗隆のアダム・ダン率 58.4%",
+      "heading": "村上宗隆のアダム・ダン率 58.4%",
+      "hook": "村上宗隆のアダム・ダン率 58.4%",
+      "title": "村上宗隆のアダム・ダン率 58.4% #Shorts",
+      "jp": "村上宗隆",
+      "player_id": 808959,
+      "game_type": "R",
+      "season_stock": true,
+      "source": "MLB Stats API / 2026年レギュラーシーズン",
+      "source_paths": [
+        "data/rarity.json"
+      ],
+      "items": [
+        [
+          "アダム・ダン率",
+          "58.4%"
+        ],
+        [
+          "MLBでの順位",
+          "300打席以上267人の中で1位"
+        ],
+        [
+          "指標の由来",
+          "アダム・ダン本人の最高（2012年 56.7%）を上回っている"
+        ]
+      ],
+      "insight": {
+        "ask": "村上宗隆のアダム・ダン率は、MLBでどのくらいなのだ？",
+        "answer": "村上宗隆のアダム・ダン率は58.4%で、300打席以上267人の中で1位よ。アダム・ダン本人の最高（2012年 56.7%）を上回ったわ。この指標は、本塁打・四球・三振で終わった打席の割合を表すのよ。",
+        "rows": [
+          [
+            "アダム・ダン率",
+            "58.4%"
+          ],
+          [
+            "MLBでの順位",
+            "300打席以上267人の中で1位"
+          ],
+          [
+            "指標の由来",
+            "アダム・ダン本人の最高（2012年 56.7%）を上回っている"
+          ]
+        ],
+        "source": "https://statsapi.mlb.com/api/v1/people/808959/stats?stats=gameLog&season=2026&group=hitting&gameType=R"
+      }
+    },
+    {
+      "key": "season_insight_2026_808959_rare_bb",
+      "label": "村上宗隆の四球率 16.6%",
+      "heading": "村上宗隆の四球率 16.6%",
+      "hook": "村上宗隆の四球率 16.6%",
+      "title": "村上宗隆の四球率 16.6% #Shorts",
+      "jp": "村上宗隆",
+      "player_id": 808959,
+      "game_type": "R",
+      "season_stock": true,
+      "source": "MLB Stats API / 2026年レギュラーシーズン",
+      "source_paths": [
+        "data/rarity.json"
+      ],
+      "items": [
+        [
+          "四球率",
+          "16.6%"
+        ],
+        [
+          "MLBでの順位",
+          "300打席以上267人の中で3位"
+        ],
+        [
+          "MLB最上位の数字",
+          "18.2%"
+        ]
+      ],
+      "insight": {
+        "ask": "村上宗隆の四球率は、MLBでどのくらいなのだ？",
+        "answer": "村上宗隆の四球率は16.6%で、300打席以上267人の中で3位よ。この指標の最上位は18.2%よ。この指標は、四球で終わった打席の割合を表すのよ。",
+        "rows": [
+          [
+            "四球率",
+            "16.6%"
+          ],
+          [
+            "MLBでの順位",
+            "300打席以上267人の中で3位"
+          ],
+          [
+            "MLB最上位の数字",
+            "18.2%"
+          ]
+        ],
+        "source": "https://statsapi.mlb.com/api/v1/people/808959/stats?stats=gameLog&season=2026&group=hitting&gameType=R"
+      }
+    },
+    {
+      "key": "season_insight_2026_663457_game_baseOnBalls",
+      "label": "ヌートバー 1試合で最多4四球",
+      "heading": "ヌートバー 1試合で最多4四球",
+      "hook": "ヌートバー 1試合で最多4四球",
+      "title": "ヌートバー 1試合で最多4四球 #Shorts",
+      "jp": "ヌートバー",
+      "player_id": 663457,
+      "game_type": "R",
+      "season_stock": true,
+      "source": "MLB Stats API / 2026年レギュラーシーズン",
+      "source_paths": [
+        "data/jp_player_logs_2026.json"
+      ],
+      "items": [
+        [
+          "7月19日",
+          "今季最多 4四球"
+        ],
+        [
+          "同じ数字の試合",
+          "90試合中1試合"
+        ],
+        [
+          "今季の合計",
+          "46四球"
+        ]
+      ],
+      "insight": {
+        "ask": "ヌートバーは今季、1試合で最多いくつの四球を記録したのだ？",
+        "answer": "7月19日の4四球が最多よ。今季の90試合の中で、この数字を記録したのは1試合だったわ。今季の合計は46四球よ。",
+        "rows": [
+          [
+            "7月19日",
+            "今季最多 4四球"
+          ],
+          [
+            "同じ数字の試合",
+            "90試合中1試合"
+          ],
+          [
+            "今季の合計",
+            "46四球"
+          ]
+        ],
+        "source": "https://statsapi.mlb.com/api/v1/people/663457/stats?stats=gameLog&season=2026&group=hitting&gameType=R"
+      }
+    },
+    {
+      "key": "season_insight_2026_673548_hr_month",
+      "label": "鈴木誠也 本塁打が最も出やすかったのは4月",
+      "heading": "鈴木誠也 本塁打が最も出やすかったのは4月",
+      "hook": "鈴木誠也 本塁打が最も出やすかったのは4月",
+      "title": "鈴木誠也 本塁打が最も出やすかったのは4月 #Shorts",
+      "jp": "鈴木誠也",
+      "player_id": 673548,
+      "game_type": "R",
+      "season_stock": true,
+      "source": "MLB Stats API / 2026年レギュラーシーズン",
+      "source_paths": [
+        "data/jp_player_logs_2026.json"
+      ],
+      "items": [
+        [
+          "4月",
+          "79打席・5本"
+        ],
+        [
+          "5月",
+          "117打席・2本"
+        ],
+        [
+          "今季の合計",
+          "26本"
+        ]
+      ],
+      "insight": {
+        "ask": "鈴木誠也がいちばん本塁打を打ったペースは、何月なのだ？",
+        "answer": "65打席以上の月で見ると、4月が79打席で5本。最も出にくかった5月は117打席で2本だったわ。今季は全部で26本よ。",
+        "rows": [
+          [
+            "4月",
+            "79打席・5本"
+          ],
+          [
+            "5月",
+            "117打席・2本"
+          ],
+          [
+            "今季の合計",
+            "26本"
+          ]
+        ],
+        "source": "https://statsapi.mlb.com/api/v1/people/673548/stats?stats=gameLog&season=2026&group=hitting&gameType=R"
+      }
+    },
+    {
+      "key": "season_insight_2026_673548_hr_streak",
+      "label": "鈴木誠也 出場3試合連続で本塁打",
+      "heading": "鈴木誠也 出場3試合連続で本塁打",
+      "hook": "鈴木誠也 出場3試合連続で本塁打",
+      "title": "鈴木誠也 出場3試合連続で本塁打 #Shorts",
+      "jp": "鈴木誠也",
+      "player_id": 673548,
+      "game_type": "R",
+      "season_stock": true,
+      "source": "MLB Stats API / 2026年レギュラーシーズン",
+      "source_paths": [
+        "data/jp_player_logs_2026.json"
+      ],
+      "items": [
+        [
+          "期間（現地）",
+          "4月21日から4月23日"
+        ],
+        [
+          "出場連続",
+          "3試合で3本"
+        ],
+        [
+          "今季の本塁打あり",
+          "26試合"
+        ]
+      ],
+      "insight": {
+        "ask": "鈴木誠也は今季、出場何試合続けて本塁打を打ったのだ？",
+        "answer": "最長は3試合よ。現地時間の4月21日から4月23日にかけて、合わせて3本だったわ。シーズンを通して、本塁打が出た試合は26試合よ。",
+        "rows": [
+          [
+            "期間（現地）",
+            "4月21日から4月23日"
+          ],
+          [
+            "出場連続",
+            "3試合で3本"
+          ],
+          [
+            "今季の本塁打あり",
+            "26試合"
+          ]
+        ],
+        "source": "https://statsapi.mlb.com/api/v1/people/673548/stats?stats=gameLog&season=2026&group=hitting&gameType=R"
+      }
+    },
+    {
+      "key": "season_insight_2026_684007_game_strikeOuts",
+      "label": "今永昇太 1試合で最多11奪三振",
+      "heading": "今永昇太 1試合で最多11奪三振",
+      "hook": "今永昇太 1試合で最多11奪三振",
+      "title": "今永昇太 1試合で最多11奪三振 #Shorts",
+      "jp": "今永昇太",
+      "player_id": 684007,
+      "game_type": "R",
+      "season_stock": true,
+      "source": "MLB Stats API / 2026年レギュラーシーズン",
+      "source_paths": [
+        "data/jp_player_logs_2026.json"
+      ],
+      "items": [
+        [
+          "4月15日",
+          "今季最多 11奪三振"
+        ],
+        [
+          "同じ数字の試合",
+          "32試合中1試合"
+        ],
+        [
+          "今季の合計",
+          "174奪三振"
+        ]
+      ],
+      "insight": {
+        "ask": "今永昇太は今季、1試合で最多いくつの三振を記録したのだ？",
+        "answer": "4月15日の11奪三振が最多よ。今季の32試合の中で、この数字を記録したのは1試合だったわ。今季の合計は174奪三振よ。",
+        "rows": [
+          [
+            "4月15日",
+            "今季最多 11奪三振"
+          ],
+          [
+            "同じ数字の試合",
+            "32試合中1試合"
+          ],
+          [
+            "今季の合計",
+            "174奪三振"
+          ]
+        ],
+        "source": "https://statsapi.mlb.com/api/v1/people/684007/stats?stats=gameLog&season=2026&group=pitching&gameType=R"
+      }
+    },
+    {
+      "key": "season_insight_2026_837227_game_strikeOuts",
+      "label": "今井達也 1試合で最多11奪三振",
+      "heading": "今井達也 1試合で最多11奪三振",
+      "hook": "今井達也 1試合で最多11奪三振",
+      "title": "今井達也 1試合で最多11奪三振 #Shorts",
+      "jp": "今井達也",
+      "player_id": 837227,
+      "game_type": "R",
+      "season_stock": true,
+      "source": "MLB Stats API / 2026年レギュラーシーズン",
+      "source_paths": [
+        "data/jp_player_logs_2026.json"
+      ],
+      "items": [
+        [
+          "6月19日",
+          "今季最多 11奪三振"
+        ],
+        [
+          "同じ数字の試合",
+          "23試合中1試合"
+        ],
+        [
+          "今季の合計",
+          "97奪三振"
+        ]
+      ],
+      "insight": {
+        "ask": "今井達也は今季、1試合で最多いくつの三振を記録したのだ？",
+        "answer": "6月19日の11奪三振が最多よ。今季の23試合の中で、この数字を記録したのは1試合だったわ。今季の合計は97奪三振よ。",
+        "rows": [
+          [
+            "6月19日",
+            "今季最多 11奪三振"
+          ],
+          [
+            "同じ数字の試合",
+            "23試合中1試合"
+          ],
+          [
+            "今季の合計",
+            "97奪三振"
+          ]
+        ],
+        "source": "https://statsapi.mlb.com/api/v1/people/837227/stats?stats=gameLog&season=2026&group=pitching&gameType=R"
+      }
+    },
+    {
+      "key": "season_insight_2026_660271_hr_streak",
+      "label": "大谷翔平 出場3試合連続で本塁打",
+      "heading": "大谷翔平 出場3試合連続で本塁打",
+      "hook": "大谷翔平 出場3試合連続で本塁打",
+      "title": "大谷翔平 出場3試合連続で本塁打 #Shorts",
+      "jp": "大谷翔平",
+      "player_id": 660271,
+      "game_type": "R",
+      "season_stock": true,
+      "source": "MLB Stats API / 2026年レギュラーシーズン",
+      "source_paths": [
+        "data/jp_player_logs_2026.json"
+      ],
+      "items": [
+        [
+          "期間（現地）",
+          "6月10日から6月13日"
+        ],
+        [
+          "出場連続",
+          "3試合で3本"
+        ],
+        [
+          "今季の本塁打あり",
+          "28試合"
+        ]
+      ],
+      "insight": {
+        "ask": "大谷翔平は今季、出場何試合続けて本塁打を打ったのだ？",
+        "answer": "最長は3試合よ。現地時間の6月10日から6月13日にかけて、合わせて3本だったわ。シーズンを通して、本塁打が出た試合は28試合よ。",
+        "rows": [
+          [
+            "期間（現地）",
+            "6月10日から6月13日"
+          ],
+          [
+            "出場連続",
+            "3試合で3本"
+          ],
+          [
+            "今季の本塁打あり",
+            "28試合"
+          ]
+        ],
+        "source": "https://statsapi.mlb.com/api/v1/people/660271/stats?stats=gameLog&season=2026&group=hitting&gameType=R"
+      }
+    },
+    {
+      "key": "season_insight_2026_660271_game_homeRuns",
+      "label": "大谷翔平 1試合で最多2本",
+      "heading": "大谷翔平 1試合で最多2本",
+      "hook": "大谷翔平 1試合で最多2本",
+      "title": "大谷翔平 1試合で最多2本 #Shorts",
+      "jp": "大谷翔平",
+      "player_id": 660271,
+      "game_type": "R",
+      "season_stock": true,
+      "source": "MLB Stats API / 2026年レギュラーシーズン",
+      "source_paths": [
+        "data/jp_player_logs_2026.json"
+      ],
+      "items": [
+        [
+          "8月5日",
+          "今季最多 2本"
+        ],
+        [
+          "同じ数字の試合",
+          "135試合中2試合"
+        ],
+        [
+          "今季の合計",
+          "30本"
+        ]
+      ],
+      "insight": {
+        "ask": "大谷翔平は今季、1試合で最多いくつの本塁打を記録したのだ？",
+        "answer": "8月5日の2本が最多よ。今季の135試合の中で、この数字を記録したのは2試合だったわ。今季の合計は30本よ。",
+        "rows": [
+          [
+            "8月5日",
+            "今季最多 2本"
+          ],
+          [
+            "同じ数字の試合",
+            "135試合中2試合"
+          ],
+          [
+            "今季の合計",
+            "30本"
+          ]
+        ],
+        "source": "https://statsapi.mlb.com/api/v1/people/660271/stats?stats=gameLog&season=2026&group=hitting&gameType=R"
+      }
+    },
+    {
+      "key": "season_insight_2026_660271_game_rbi",
+      "label": "大谷翔平 1試合で最多5打点",
+      "heading": "大谷翔平 1試合で最多5打点",
+      "hook": "大谷翔平 1試合で最多5打点",
+      "title": "大谷翔平 1試合で最多5打点 #Shorts",
+      "jp": "大谷翔平",
+      "player_id": 660271,
+      "game_type": "R",
+      "season_stock": true,
+      "source": "MLB Stats API / 2026年レギュラーシーズン",
+      "source_paths": [
+        "data/jp_player_logs_2026.json"
+      ],
+      "items": [
+        [
+          "5月16日",
+          "今季最多 5打点"
+        ],
+        [
+          "同じ数字の試合",
+          "135試合中1試合"
+        ],
+        [
+          "今季の合計",
+          "81打点"
+        ]
+      ],
+      "insight": {
+        "ask": "大谷翔平は今季、1試合で最多いくつの打点を記録したのだ？",
+        "answer": "5月16日の5打点が最多よ。今季の135試合の中で、この数字を記録したのは1試合だったわ。今季の合計は81打点よ。",
+        "rows": [
+          [
+            "5月16日",
+            "今季最多 5打点"
+          ],
+          [
+            "同じ数字の試合",
+            "135試合中1試合"
+          ],
+          [
+            "今季の合計",
+            "81打点"
+          ]
+        ],
+        "source": "https://statsapi.mlb.com/api/v1/people/660271/stats?stats=gameLog&season=2026&group=hitting&gameType=R"
+      }
+    },
+    {
+      "key": "season_insight_2026_660271_game_hits",
+      "label": "大谷翔平 1試合で最多4安打",
+      "heading": "大谷翔平 1試合で最多4安打",
+      "hook": "大谷翔平 1試合で最多4安打",
+      "title": "大谷翔平 1試合で最多4安打 #Shorts",
+      "jp": "大谷翔平",
+      "player_id": 660271,
+      "game_type": "R",
+      "season_stock": true,
+      "source": "MLB Stats API / 2026年レギュラーシーズン",
+      "source_paths": [
+        "data/jp_player_logs_2026.json"
+      ],
+      "items": [
+        [
+          "8月17日",
+          "今季最多 4安打"
+        ],
+        [
+          "同じ数字の試合",
+          "135試合中1試合"
+        ],
+        [
+          "今季の合計",
+          "144安打"
+        ]
+      ],
+      "insight": {
+        "ask": "大谷翔平は今季、1試合で最多いくつの安打を記録したのだ？",
+        "answer": "8月17日の4安打が最多よ。今季の135試合の中で、この数字を記録したのは1試合だったわ。今季の合計は144安打よ。",
+        "rows": [
+          [
+            "8月17日",
+            "今季最多 4安打"
+          ],
+          [
+            "同じ数字の試合",
+            "135試合中1試合"
+          ],
+          [
+            "今季の合計",
+            "144安打"
+          ]
+        ],
+        "source": "https://statsapi.mlb.com/api/v1/people/660271/stats?stats=gameLog&season=2026&group=hitting&gameType=R"
+      }
+    },
+    {
+      "key": "season_insight_2026_660271_game_strikeOuts",
+      "label": "大谷翔平 1試合で最多10奪三振",
+      "heading": "大谷翔平 1試合で最多10奪三振",
+      "hook": "大谷翔平 1試合で最多10奪三振",
+      "title": "大谷翔平 1試合で最多10奪三振 #Shorts",
+      "jp": "大谷翔平",
+      "player_id": 660271,
+      "game_type": "R",
+      "season_stock": true,
+      "source": "MLB Stats API / 2026年レギュラーシーズン",
+      "source_paths": [
+        "data/jp_player_logs_2026.json"
+      ],
+      "items": [
+        [
+          "4月15日",
+          "今季最多 10奪三振"
+        ],
+        [
+          "同じ数字の試合",
+          "14試合中1試合"
+        ],
+        [
+          "今季の合計",
+          "95奪三振"
+        ]
+      ],
+      "insight": {
+        "ask": "大谷翔平は今季、1試合で最多いくつの三振を記録したのだ？",
+        "answer": "4月15日の10奪三振が最多よ。今季の14試合の中で、この数字を記録したのは1試合だったわ。今季の合計は95奪三振よ。",
+        "rows": [
+          [
+            "4月15日",
+            "今季最多 10奪三振"
+          ],
+          [
+            "同じ数字の試合",
+            "14試合中1試合"
+          ],
+          [
+            "今季の合計",
+            "95奪三振"
+          ]
+        ],
+        "source": "https://statsapi.mlb.com/api/v1/people/660271/stats?stats=gameLog&season=2026&group=pitching&gameType=R"
+      }
+    },
+    {
+      "key": "season_insight_2026_808967_game_strikeOuts",
+      "label": "山本由伸 1試合で最多10奪三振",
+      "heading": "山本由伸 1試合で最多10奪三振",
+      "hook": "山本由伸 1試合で最多10奪三振",
+      "title": "山本由伸 1試合で最多10奪三振 #Shorts",
+      "jp": "山本由伸",
+      "player_id": 808967,
+      "game_type": "R",
+      "season_stock": true,
+      "source": "MLB Stats API / 2026年レギュラーシーズン",
+      "source_paths": [
+        "data/jp_player_logs_2026.json"
+      ],
+      "items": [
+        [
+          "5月31日",
+          "今季最多 10奪三振"
+        ],
+        [
+          "同じ数字の試合",
+          "28試合中3試合"
+        ],
+        [
+          "今季の合計",
+          "182奪三振"
+        ]
+      ],
+      "insight": {
+        "ask": "山本由伸は今季、1試合で最多いくつの三振を記録したのだ？",
+        "answer": "5月31日の10奪三振が最多よ。今季の28試合の中で、この数字を記録したのは3試合だったわ。今季の合計は182奪三振よ。",
+        "rows": [
+          [
+            "5月31日",
+            "今季最多 10奪三振"
+          ],
+          [
+            "同じ数字の試合",
+            "28試合中3試合"
+          ],
+          [
+            "今季の合計",
+            "182奪三振"
+          ]
+        ],
+        "source": "https://statsapi.mlb.com/api/v1/people/808967/stats?stats=gameLog&season=2026&group=pitching&gameType=R"
+      }
+    },
+    {
+      "key": "season_insight_2026_808963_game_strikeOuts",
+      "label": "佐々木朗希 1試合で最多10奪三振",
+      "heading": "佐々木朗希 1試合で最多10奪三振",
+      "hook": "佐々木朗希 1試合で最多10奪三振",
+      "title": "佐々木朗希 1試合で最多10奪三振 #Shorts",
+      "jp": "佐々木朗希",
+      "player_id": 808963,
+      "game_type": "R",
+      "season_stock": true,
+      "source": "MLB Stats API / 2026年レギュラーシーズン",
+      "source_paths": [
+        "data/jp_player_logs_2026.json"
+      ],
+      "items": [
+        [
+          "6月5日",
+          "今季最多 10奪三振"
+        ],
+        [
+          "同じ数字の試合",
+          "26試合中1試合"
+        ],
+        [
+          "今季の合計",
+          "123奪三振"
+        ]
+      ],
+      "insight": {
+        "ask": "佐々木朗希は今季、1試合で最多いくつの三振を記録したのだ？",
+        "answer": "6月5日の10奪三振が最多よ。今季の26試合の中で、この数字を記録したのは1試合だったわ。今季の合計は123奪三振よ。",
+        "rows": [
+          [
+            "6月5日",
+            "今季最多 10奪三振"
+          ],
+          [
+            "同じ数字の試合",
+            "26試合中1試合"
+          ],
+          [
+            "今季の合計",
+            "123奪三振"
+          ]
+        ],
+        "source": "https://statsapi.mlb.com/api/v1/people/808963/stats?stats=gameLog&season=2026&group=pitching&gameType=R"
+      }
+    },
+    {
+      "key": "season_insight_2026_672960_hr_streak",
+      "label": "岡本和真 出場3試合連続で本塁打",
+      "heading": "岡本和真 出場3試合連続で本塁打",
+      "hook": "岡本和真 出場3試合連続で本塁打",
+      "title": "岡本和真 出場3試合連続で本塁打 #Shorts",
+      "jp": "岡本和真",
+      "player_id": 672960,
+      "game_type": "R",
+      "season_stock": true,
+      "source": "MLB Stats API / 2026年レギュラーシーズン",
+      "source_paths": [
+        "data/jp_player_logs_2026.json"
+      ],
+      "items": [
+        [
+          "期間（現地）",
+          "5月1日から5月3日"
+        ],
+        [
+          "出場連続",
+          "3試合で4本"
+        ],
+        [
+          "今季の本塁打あり",
+          "32試合"
+        ]
+      ],
+      "insight": {
+        "ask": "岡本和真は今季、出場何試合続けて本塁打を打ったのだ？",
+        "answer": "最長は3試合よ。現地時間の5月1日から5月3日にかけて、合わせて4本だったわ。シーズンを通して、本塁打が出た試合は32試合よ。",
+        "rows": [
+          [
+            "期間（現地）",
+            "5月1日から5月3日"
+          ],
+          [
+            "出場連続",
+            "3試合で4本"
+          ],
+          [
+            "今季の本塁打あり",
+            "32試合"
+          ]
+        ],
+        "source": "https://statsapi.mlb.com/api/v1/people/672960/stats?stats=gameLog&season=2026&group=hitting&gameType=R"
+      }
+    },
+    {
+      "key": "season_insight_2026_672960_game_homeRuns",
+      "label": "岡本和真 1試合で最多2本",
+      "heading": "岡本和真 1試合で最多2本",
+      "hook": "岡本和真 1試合で最多2本",
+      "title": "岡本和真 1試合で最多2本 #Shorts",
+      "jp": "岡本和真",
+      "player_id": 672960,
+      "game_type": "R",
+      "season_stock": true,
+      "source": "MLB Stats API / 2026年レギュラーシーズン",
+      "source_paths": [
+        "data/jp_player_logs_2026.json"
+      ],
+      "items": [
+        [
+          "5月1日",
+          "今季最多 2本"
+        ],
+        [
+          "同じ数字の試合",
+          "156試合中1試合"
+        ],
+        [
+          "今季の合計",
+          "33本"
+        ]
+      ],
+      "insight": {
+        "ask": "岡本和真は今季、1試合で最多いくつの本塁打を記録したのだ？",
+        "answer": "5月1日の2本が最多よ。今季の156試合の中で、この数字を記録したのは1試合だったわ。今季の合計は33本よ。",
+        "rows": [
+          [
+            "5月1日",
+            "今季最多 2本"
+          ],
+          [
+            "同じ数字の試合",
+            "156試合中1試合"
+          ],
+          [
+            "今季の合計",
+            "33本"
+          ]
+        ],
+        "source": "https://statsapi.mlb.com/api/v1/people/672960/stats?stats=gameLog&season=2026&group=hitting&gameType=R"
+      }
+    },
+    {
+      "key": "season_insight_2026_672960_game_hits",
+      "label": "岡本和真 1試合で最多4安打",
+      "heading": "岡本和真 1試合で最多4安打",
+      "hook": "岡本和真 1試合で最多4安打",
+      "title": "岡本和真 1試合で最多4安打 #Shorts",
+      "jp": "岡本和真",
+      "player_id": 672960,
+      "game_type": "R",
+      "season_stock": true,
+      "source": "MLB Stats API / 2026年レギュラーシーズン",
+      "source_paths": [
+        "data/jp_player_logs_2026.json"
+      ],
+      "items": [
+        [
+          "9月5日",
+          "今季最多 4安打"
+        ],
+        [
+          "同じ数字の試合",
+          "156試合中1試合"
+        ],
+        [
+          "今季の合計",
+          "132安打"
+        ]
+      ],
+      "insight": {
+        "ask": "岡本和真は今季、1試合で最多いくつの安打を記録したのだ？",
+        "answer": "9月5日の4安打が最多よ。今季の156試合の中で、この数字を記録したのは1試合だったわ。今季の合計は132安打よ。",
+        "rows": [
+          [
+            "9月5日",
+            "今季最多 4安打"
+          ],
+          [
+            "同じ数字の試合",
+            "156試合中1試合"
+          ],
+          [
+            "今季の合計",
+            "132安打"
+          ]
+        ],
+        "source": "https://statsapi.mlb.com/api/v1/people/672960/stats?stats=gameLog&season=2026&group=hitting&gameType=R"
+      }
+    },
+    {
+      "key": "season_insight_2026_808959_hr_streak",
+      "label": "村上宗隆 出場5試合連続で本塁打",
+      "heading": "村上宗隆 出場5試合連続で本塁打",
+      "hook": "村上宗隆 出場5試合連続で本塁打",
+      "title": "村上宗隆 出場5試合連続で本塁打 #Shorts",
+      "jp": "村上宗隆",
+      "player_id": 808959,
+      "game_type": "R",
+      "season_stock": true,
+      "source": "MLB Stats API / 2026年レギュラーシーズン",
+      "source_paths": [
+        "data/jp_player_logs_2026.json"
+      ],
+      "items": [
+        [
+          "期間（現地）",
+          "4月17日から4月22日"
+        ],
+        [
+          "出場連続",
+          "5試合で5本"
+        ],
+        [
+          "今季の本塁打あり",
+          "32試合"
+        ]
+      ],
+      "insight": {
+        "ask": "村上宗隆は今季、出場何試合続けて本塁打を打ったのだ？",
+        "answer": "最長は5試合よ。現地時間の4月17日から4月22日にかけて、合わせて5本だったわ。シーズンを通して、本塁打が出た試合は32試合よ。",
+        "rows": [
+          [
+            "期間（現地）",
+            "4月17日から4月22日"
+          ],
+          [
+            "出場連続",
+            "5試合で5本"
+          ],
+          [
+            "今季の本塁打あり",
+            "32試合"
+          ]
+        ],
+        "source": "https://statsapi.mlb.com/api/v1/people/808959/stats?stats=gameLog&season=2026&group=hitting&gameType=R"
+      }
+    },
+    {
+      "key": "season_insight_2026_808959_game_homeRuns",
+      "label": "村上宗隆 1試合で最多2本",
+      "heading": "村上宗隆 1試合で最多2本",
+      "hook": "村上宗隆 1試合で最多2本",
+      "title": "村上宗隆 1試合で最多2本 #Shorts",
+      "jp": "村上宗隆",
+      "player_id": 808959,
+      "game_type": "R",
+      "season_stock": true,
+      "source": "MLB Stats API / 2026年レギュラーシーズン",
+      "source_paths": [
+        "data/jp_player_logs_2026.json"
+      ],
+      "items": [
+        [
+          "5月16日",
+          "今季最多 2本"
+        ],
+        [
+          "同じ数字の試合",
+          "127試合中3試合"
+        ],
+        [
+          "今季の合計",
+          "35本"
+        ]
+      ],
+      "insight": {
+        "ask": "村上宗隆は今季、1試合で最多いくつの本塁打を記録したのだ？",
+        "answer": "5月16日の2本が最多よ。今季の127試合の中で、この数字を記録したのは3試合だったわ。今季の合計は35本よ。",
+        "rows": [
+          [
+            "5月16日",
+            "今季最多 2本"
+          ],
+          [
+            "同じ数字の試合",
+            "127試合中3試合"
+          ],
+          [
+            "今季の合計",
+            "35本"
+          ]
+        ],
+        "source": "https://statsapi.mlb.com/api/v1/people/808959/stats?stats=gameLog&season=2026&group=hitting&gameType=R"
+      }
+    },
+    {
+      "key": "season_insight_2026_808959_game_rbi",
+      "label": "村上宗隆 1試合で最多6打点",
+      "heading": "村上宗隆 1試合で最多6打点",
+      "hook": "村上宗隆 1試合で最多6打点",
+      "title": "村上宗隆 1試合で最多6打点 #Shorts",
+      "jp": "村上宗隆",
+      "player_id": 808959,
+      "game_type": "R",
+      "season_stock": true,
+      "source": "MLB Stats API / 2026年レギュラーシーズン",
+      "source_paths": [
+        "data/jp_player_logs_2026.json"
+      ],
+      "items": [
+        [
+          "7月26日",
+          "今季最多 6打点"
+        ],
+        [
+          "同じ数字の試合",
+          "127試合中1試合"
+        ],
+        [
+          "今季の合計",
+          "77打点"
+        ]
+      ],
+      "insight": {
+        "ask": "村上宗隆は今季、1試合で最多いくつの打点を記録したのだ？",
+        "answer": "7月26日の6打点が最多よ。今季の127試合の中で、この数字を記録したのは1試合だったわ。今季の合計は77打点よ。",
+        "rows": [
+          [
+            "7月26日",
+            "今季最多 6打点"
+          ],
+          [
+            "同じ数字の試合",
+            "127試合中1試合"
+          ],
+          [
+            "今季の合計",
+            "77打点"
+          ]
+        ],
+        "source": "https://statsapi.mlb.com/api/v1/people/808959/stats?stats=gameLog&season=2026&group=hitting&gameType=R"
+      }
+    }
+  ]
+}
