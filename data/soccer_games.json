@@ -1,10 +1,899 @@
 {
   "generated_at": "2026-11-26T09:53:49.762763+00:00",
   "games": [],
-  "schedule_date": "2026-11-26",
   "ai_status": {
     "targets": 0,
     "succeeded": 0,
     "cost_usd": 0.0
-  }
+  },
+  "source_errors": [],
+  "fixture_coverage": [
+    {
+      "competition": "PL",
+      "status": "success",
+      "events": 19,
+      "label": "取得成功"
+    },
+    {
+      "competition": "PD",
+      "status": "success",
+      "events": 12,
+      "label": "取得成功"
+    },
+    {
+      "competition": "BL1",
+      "status": "success",
+      "events": 9,
+      "label": "取得成功"
+    },
+    {
+      "competition": "SA",
+      "status": "success",
+      "events": 10,
+      "label": "取得成功"
+    },
+    {
+      "competition": "FL1",
+      "status": "success",
+      "events": 9,
+      "label": "取得成功"
+    },
+    {
+      "competition": "CL",
+      "status": "success",
+      "events": 9,
+      "label": "取得成功"
+    },
+    {
+      "competition": "EL",
+      "status": "success",
+      "events": 18,
+      "label": "取得成功"
+    },
+    {
+      "competition": "UECL",
+      "status": "success",
+      "events": 18,
+      "label": "取得成功"
+    },
+    {
+      "competition": "FAC",
+      "status": "no_games",
+      "events": 0,
+      "label": "試合なし"
+    },
+    {
+      "competition": "EFL",
+      "status": "no_games",
+      "events": 0,
+      "label": "試合なし"
+    },
+    {
+      "competition": "CDR",
+      "status": "success",
+      "events": 22,
+      "label": "取得成功"
+    },
+    {
+      "competition": "DFB",
+      "status": "success",
+      "events": 8,
+      "label": "取得成功"
+    },
+    {
+      "competition": "CI",
+      "status": "success",
+      "events": 2,
+      "label": "取得成功"
+    },
+    {
+      "competition": "CDF",
+      "status": "success",
+      "events": 46,
+      "label": "取得成功"
+    }
+  ],
+  "club_registration_check": {
+    "days": 7,
+    "checked_at": "2026-11-25T20:33:25.897469+09:00",
+    "missing": [
+      {
+        "club": "AS Cannes",
+        "game_ids": [
+          "espn-401934489"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "AS Etoile Matoury",
+        "game_ids": [
+          "espn-401934501"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "AS Nancy Lorraine",
+        "game_ids": [
+          "espn-401934499"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Albacete",
+        "game_ids": [
+          "espn-401936424"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Anglet Genets",
+        "game_ids": [
+          "espn-401934513"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Angouleme",
+        "game_ids": [
+          "espn-401934510"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Annecy",
+        "game_ids": [
+          "espn-401934518"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Antequera CF",
+        "game_ids": [
+          "espn-401936411"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Avenir Foot Lozere",
+        "game_ids": [
+          "espn-401934490"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Avranches",
+        "game_ids": [
+          "espn-401934497"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Bayonne",
+        "game_ids": [
+          "espn-401934511"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Biesheim",
+        "game_ids": [
+          "espn-401934504"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Bourg-Peronnas",
+        "game_ids": [
+          "espn-401934535"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Bressuire",
+        "game_ids": [
+          "espn-401934485"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "CD Extremadura",
+        "game_ids": [
+          "espn-401936406"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "CE Europa",
+        "game_ids": [
+          "espn-401936400"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Caen",
+        "game_ids": [
+          "espn-401934495"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Calais",
+        "game_ids": [
+          "espn-401934477"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Castanet",
+        "game_ids": [
+          "espn-401934512"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Chassieu Declines FC",
+        "game_ids": [
+          "espn-401934517"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Chateaubriant",
+        "game_ids": [
+          "espn-401934508"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Clermont Foot",
+        "game_ids": [
+          "espn-401934484"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Club Franciscain",
+        "game_ids": [
+          "espn-401934511"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Concarneau",
+        "game_ids": [
+          "espn-401934506"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "ES Thaon",
+        "game_ids": [
+          "espn-401934479"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "ESA Linas-Montlhery",
+        "game_ids": [
+          "espn-401934492"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Epinal",
+        "game_ids": [
+          "espn-401934480"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "FC Andorra",
+        "game_ids": [
+          "espn-401936422"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "FC Cartagena",
+        "game_ids": [
+          "espn-401936408"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "FC Chambly",
+        "game_ids": [
+          "espn-401934497"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "FC Fleury 91",
+        "game_ids": [
+          "espn-401934501"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "FC Limonest",
+        "game_ids": [
+          "espn-401934519"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Frejus",
+        "game_ids": [
+          "espn-401934488"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Furiani-Agliani",
+        "game_ids": [
+          "espn-401934499"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Gimnástica Torrelavega",
+        "game_ids": [
+          "espn-401936397"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Girona",
+        "game_ids": [
+          "espn-401936417"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Grenoble",
+        "game_ids": [
+          "espn-401934514"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Hauts Lyonnais",
+        "game_ids": [
+          "espn-401934519"
+        ],
+        "candidates": [
+          {
+            "id": "Olympique Lyonnais",
+            "display": "リヨン"
+          }
+        ]
+      },
+      {
+        "club": "Hertha Berlin",
+        "game_ids": [
+          "espn-401932935"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Huesca",
+        "game_ids": [
+          "espn-401936417"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "La Baule-Le Pouliguen",
+        "game_ids": [
+          "espn-401934485"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "La Roche-sur-Yon",
+        "game_ids": [
+          "espn-401934508"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "La Tamponnaise",
+        "game_ids": [
+          "espn-401934510"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Lannion",
+        "game_ids": [
+          "espn-401934507"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Las Palmas",
+        "game_ids": [
+          "espn-401936424"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Le Pays Du Valois",
+        "game_ids": [
+          "espn-401934500"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Le Poire SV",
+        "game_ids": [
+          "espn-401934536"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Le Puy",
+        "game_ids": [
+          "espn-401934489"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Les Ulis",
+        "game_ids": [
+          "espn-401934492"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Loon Plage FC",
+        "game_ids": [
+          "espn-401934496"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Massay",
+        "game_ids": [
+          "espn-401934516"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Montlucon Football",
+        "game_ids": [
+          "espn-401934484"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Montpellier",
+        "game_ids": [
+          "espn-401934490"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Nantes",
+        "game_ids": [
+          "espn-401934486"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Nimes",
+        "game_ids": [
+          "espn-401934514"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Nueillaubiers",
+        "game_ids": [
+          "espn-401934486"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Numancia",
+        "game_ids": [
+          "espn-401936399"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Oberlauterbach",
+        "game_ids": [
+          "espn-401934481"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Olympique Charleville Prix AM",
+        "game_ids": [
+          "espn-401934478"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Orléans",
+        "game_ids": [
+          "espn-401934516"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Pau",
+        "game_ids": [
+          "espn-401934512"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Pays de Saint-Omer",
+        "game_ids": [
+          "espn-401934495"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Ponferradina",
+        "game_ids": [
+          "espn-401936422"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Pontarlier",
+        "game_ids": [
+          "espn-401934502"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Puissalicon Magalas",
+        "game_ids": [
+          "espn-401934491"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Racing Besancon",
+        "game_ids": [
+          "espn-401934504"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Racing Chambery",
+        "game_ids": [
+          "espn-401934513"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Racing Club de France",
+        "game_ids": [
+          "espn-401934496"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Red Star FC 93",
+        "game_ids": [
+          "espn-401934493"
+        ],
+        "candidates": [
+          {
+            "id": "FK Crvena Zvezda",
+            "display": "ツルベナ・ズベズダ"
+          }
+        ]
+      },
+      {
+        "club": "Reipertswiller",
+        "game_ids": [
+          "espn-401934505"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Rennes TA",
+        "game_ids": [
+          "espn-401934483"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Reus FC Reddis",
+        "game_ids": [
+          "espn-401936401"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Rives 82",
+        "game_ids": [
+          "espn-401934487"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Riviera",
+        "game_ids": [
+          "espn-401934491"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Rochefort FC",
+        "game_ids": [
+          "espn-401934509"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Rouen",
+        "game_ids": [
+          "espn-401934483"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "SC Amiens",
+        "game_ids": [
+          "espn-401934480"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "SV Darmstadt 98",
+        "game_ids": [
+          "espn-401932915"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Sablé FC",
+        "game_ids": [
+          "espn-401934536"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Saint-Die Kellermann",
+        "game_ids": [
+          "espn-401934503"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Saint-Pierre Milizac",
+        "game_ids": [
+          "espn-401934482"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Saint-Pryvé Saint Hilaire",
+        "game_ids": [
+          "espn-401934515"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Saint-Étienne",
+        "game_ids": [
+          "espn-401934520"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Sedan",
+        "game_ids": [
+          "espn-401934494"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Selongey",
+        "game_ids": [
+          "espn-401934515"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Siroco Les Abymes",
+        "game_ids": [
+          "espn-401934502"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Sochaux",
+        "game_ids": [
+          "espn-401934503"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "St Paul en Jarez",
+        "game_ids": [
+          "espn-401934517"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "St-Ouen L'Aumone",
+        "game_ids": [
+          "espn-401934477"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Stade Bordelais",
+        "game_ids": [
+          "espn-401934509"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Stade Laval",
+        "game_ids": [
+          "espn-401934507"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Stade Pontivy",
+        "game_ids": [
+          "espn-401934482"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Stade Sotteville",
+        "game_ids": [
+          "espn-401934498"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Stade de Reims",
+        "game_ids": [
+          "espn-401934478"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Sundhoffen",
+        "game_ids": [
+          "espn-401934505"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Talange",
+        "game_ids": [
+          "espn-401934481"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Thionville",
+        "game_ids": [
+          "espn-401934535"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Tremblay",
+        "game_ids": [
+          "espn-401934493"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "US Feurs",
+        "game_ids": [
+          "espn-401934518"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "US Marseille Endoume",
+        "game_ids": [
+          "espn-401934488"
+        ],
+        "candidates": [
+          {
+            "id": "Olympique de Marseille",
+            "display": "マルセイユ"
+          }
+        ]
+      },
+      {
+        "club": "US Quevilly",
+        "game_ids": [
+          "espn-401934498"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Union Cosnoise",
+        "game_ids": [
+          "espn-401934494"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Valenciennes",
+        "game_ids": [
+          "espn-401934500"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Vannes OC",
+        "game_ids": [
+          "espn-401934506"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Vermelles",
+        "game_ids": [
+          "espn-401934479"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Versailles 78",
+        "game_ids": [
+          "espn-401934487"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "Villefranche",
+        "game_ids": [
+          "espn-401934520"
+        ],
+        "candidates": []
+      },
+      {
+        "club": "クラブ・ブルージュ",
+        "game_ids": [
+          "575409"
+        ],
+        "candidates": []
+      }
+    ],
+    "source_errors": []
+  },
+  "source": "ESPN・football-data.org",
+  "preview_selection": {
+    "day": "2026-11-25",
+    "threshold": 30,
+    "max_games": 4,
+    "policy_sha256": "585b6eb07dd181762e53d0d10718ce0f8109e330863ca80770cf4a8e305d9faf",
+    "selected_ids": [
+      "espn-401915292",
+      "575406",
+      "575407",
+      "575404"
+    ],
+    "count": 4,
+    "reason": "",
+    "rejected": [
+      {
+        "id": "575409",
+        "reason": "クラブの表示名/読みが未登録"
+      }
+    ],
+    "source_errors": [],
+    "rescued": []
+  },
+  "schedule_date": "2026-11-26",
+  "preview_angles_version": 1
 }
