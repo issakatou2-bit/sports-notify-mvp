@@ -203,7 +203,8 @@ class Screen:
                                 reserve_bottom=BODY_BOTTOM if spec.get('progressive_rows') else 0)
         body_only = self.im.copy()
         self.im.info['short_cast'] = True
-        characters.corner_busts(self.im, speaker, line, elapsed, clock, ctx['duration'])
+        paint_cast = spec.get('paint_cast', characters.corner_busts)
+        paint_cast(self.im, speaker, line, elapsed, clock, ctx['duration'])
         alpha = max(0., min(1., float(spec.get('caption_alpha', 1.))))
         visible = short_cast.caption(self.im, speaker, elapsed, alpha)
         if 'caption_alpha' in spec:

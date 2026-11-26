@@ -80,6 +80,9 @@ jobs:
           args=()
           if [ "$GITHUB_EVENT_NAME" = schedule ]; then args+=(--scheduled); fi
           if [ -n "$RESULT_DAY" ]; then args=(--date "$RESULT_DAY"); fi
+          if [ "$COLLESPO_SAMPLE_ONLY" != true ]; then
+            args+=(--club-topic-pool data/soccer_club_topic_candidates.json)
+          fi
           python scripts/soccer_results.py "${args[@]}" --out data/soccer_results.json
       - name: Optional TheSportsDB score second opinion
         if: vars.COLLESPO_THESPORTSDB_CHECK == 'on'
@@ -185,7 +188,7 @@ jobs:
         if: (github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (always())
         run: |
           bash scripts/commit_data.sh "soccer results: ${{ github.run_id }}" \
-            data/soccer_results.json data/published_videos.json data/token_usage.json
+            data/soccer_results.json data/published_videos.json data/token_usage.json data/soccer_club_topic_candidates.json
       - name: Save video and verification
         if: (github.event_name != 'workflow_dispatch' || inputs.sample_only != true) && (always())
         uses: actions/upload-artifact@v4
