@@ -545,7 +545,8 @@ def main(argv=None):
         print(f'  段2 {key}: {entry["title"]}')
     for failure in result['failures']:
         print(f'  取得失敗 {failure["feed"]}: {failure["error"]}', file=sys.stderr)
-    if result['failures'] and not result['all_stage1'] and not result['stage2']:
+    # 全部の元が取れなかった時だけ失敗にする。11/25〜26 ESPN が HTTP 202 を返し続け、MLBTR は取れて該当0件でも毎回赤になっていた。
+    if feeds and len(result['failures']) >= len(feeds):
         return 1
     return 0
 

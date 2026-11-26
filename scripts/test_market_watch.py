@@ -181,5 +181,12 @@ class MarketWatchTest(unittest.TestCase):
         self.assertEqual(second['stage1'], [])
 
 
+    def test_one_feed_down_is_not_a_failure(self):
+        empty = feed('Unrelated Story', 'Nothing about targets.', 'https://www.mlbtraderumors.com/2026/11/other.html')
+        with patch.object(market_watch, 'read_source', side_effect=[empty, OSError('HTTP 202')]),                 patch.object(market_watch, 'load_state', return_value={'version': 1, 'stories': {}}),                 patch.object(market_watch, 'save_state'), patch.object(market_watch, 'write_outputs'):
+            self.assertEqual(market_watch.main(['--feed', 'MLBTR=a', '--feed', 'ESPN=b']), 0)
+        with patch.object(market_watch, 'read_source', side_effect=[OSError('down'), OSError('HTTP 202')]),                 patch.object(market_watch, 'load_state', return_value={'version': 1, 'stories': {}}),                 patch.object(market_watch, 'save_state'), patch.object(market_watch, 'write_outputs'):
+            self.assertEqual(market_watch.main(['--feed', 'MLBTR=a', '--feed', 'ESPN=b']), 1)
+
 if __name__ == '__main__':
     unittest.main(argv=[__file__])
