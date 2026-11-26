@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 import os
 from pathlib import Path
 import re
+import zlib
 
 import soccer_national as national
 import soccer_national_topics as shared
@@ -132,11 +133,25 @@ def panel(question, answer, heading, *rows):
     return question, answer, heading, list(rows)
 
 
-def context(game, player):
+# 掛け合いの決まり（11/26 本人「淡々と質問と回答が続くのは変」「ずんだもんが喜びつつ〇〇がゴールを決めたのだ！
+# えぇそうね、〇〇対〇〇の試合で〜のような始まり方、色々なパターンがあってもいい」）。
+# ずんだもんは驚き・喜び・惜しさで話を始め、合いの手と問いを混ぜる。数字は言わない（数字はめたんが材料どおりに言う）。
+# めたんは「ええ」「そうね」で受けてから事実を話す。始まり方は試合ごとに決まった1つ（作り直しても同じ台本になる）。
+
+
+def pick(game, player, options):
+    return options[zlib.crc32(f"{game['id']}:{player['athlete_id']}:{options[0]}".encode()) % len(options)]
+
+
+def opening(game, player, cheers, said, head, *rows):
+    club, other, _, _ = pair(game, player['side'])
+    return panel(pick(game, player, cheers), f'ええ、{club}と{other}の試合ね。' + said, head, *rows)
+
+
+def ending(game, player, cheers, said):
+    """締めは問いでなく、ずんだもんの感想とめたんのまとめ（最終スコアは材料どおり）。"""
     club, other, a, b = pair(game, player['side'])
-    result = '勝ったわ。' if a > b else '敗れたわ。' if a < b else '引き分けたわ。'
-    return panel('試合はどうなったのだ？', f'{club}は{other}と対戦して{a}対{b}で{result}',
-                 '試合結果', (club, str(a)), (other, str(b)))
+    return panel(pick(game, player, cheers), said, '試合結果', (club, str(a)), (other, str(b)))
 
 
 def late_winner(g, p):
@@ -154,17 +169,24 @@ def late_winner(g, p):
         if not decisive or not (minute_number(goal) >= 75 or (gap is not None and 0 <= gap <= 15)):
             continue
         name, minute = p['name'], goal['minute']
-        action = '決勝点' if goal['scorer'] == p['athlete_id'] else '決勝点をアシスト'
-        said = f'{name}が{national.minute_words(minute)}に' + ('決めたわ。' if action == '決勝点' else '決勝点をアシストしたわ。')
-        panels = [panel('決勝点に絡んだのは誰なのだ？', said, '決勝点', (name, minute + '分'))]
+        scored = goal['scorer'] == p['athlete_id']
+        action = '決勝点' if scored else '決勝点をアシスト'
+        when = national.minute_words(minute)
+        cheers = ([f'{name}が決勝点を決めたのだ！', f'やったのだ！{name}の勝ち越しゴールなのだ！', f'{name}、終盤に大仕事なのだ！']
+                  if scored else [f'{name}が決勝点をお膳立てしたのだ！', f'{name}のアシストで勝ったのだ！'])
+        said = (f'{when}に決めて、{a}対{b}で勝ったわ。' if scored
+                else f'{when}の決勝点をアシストして、{a}対{b}で勝ったわ。')
+        panels = [opening(g, p, cheers, said, '決勝点', (name, minute + '分'), ('スコア', f'{a}-{b}'))]
         if gap is not None and gap > 0:
-            panels.append(panel('いつ出場したのだ？', f'{national.minute_words(entry)}に出場してから{gap}分だったわ。',
+            panels.append(panel(pick(g, p, ['途中から出てきたのだ？', 'えっ、途中出場だったのだ？']),
+                                f'そうよ。{national.minute_words(entry)}に出場して、{gap}分後の' + ('得点だったわ。' if scored else 'アシストだったわ。'),
                                 '途中出場', ('交代出場', entry + '分'), ('出場から', f'{gap}分')))
-        else:
-            panels.append(panel('その直前はどうだったのだ？',
-                                f'{club}と{other}は{before_a}対{before_b}で並んでいたわ。',
-                                '決勝点の直前', (club, str(before_a)), (other, str(before_b))))
-        return f'{name} {minute}分に{action} {other}に{a}-{b}で勝利', panels + [context(g, p)], minute, '分', action
+        panels.append(panel('それまでは競っていたのだ？', f'そうよ。直前は{before_a}対{before_b}の同点だったわ。',
+                            '決勝点の直前', (club, str(before_a)), (other, str(before_b))))
+        if len(panels) < 3:
+            panels.append(ending(g, p, ['勝負を決めたのだ！', '大きなゴールなのだ！'] if scored else ['大きなアシストなのだ！', '勝負を決めたのだ！'],
+                                 f'ええ、最後は{a}対{b}。{club}が勝ち切ったわ。'))
+        return f'{name} {minute}分に{action} {other}に{a}-{b}で勝利', panels, minute, '分', action
 
 
 def keeper(g, p):
@@ -180,11 +202,18 @@ def keeper(g, p):
         return
     name = p['name']
     result = '無失点' if b == 0 else '1失点'
+    cheers = ([f'{name}が完封したのだ！', f'{name}、ゴールに鍵をかけたのだ！'] if b == 0
+              else [f'{name}がゴールを守り抜いたのだ！', f'{name}、止めまくったのだ！'])
+    if a > b:
+        last = panel('チームも勝てたのだ？', f'ええ、{a}対{b}で勝ったわ。', '試合結果', (club, str(a)), (other, str(b)))
+    else:
+        last = panel('試合はどうなったのだ？', f'{a}対{b}の引き分けだったわ。', '試合結果', (club, str(a)), (other, str(b)))
     return (f'{name} {other}戦で{saves}セーブ {result}に抑える',
-            [panel('ゴールを守ったのは誰なのだ？', f'{club}の{name}が{other}を相手に{saves}セーブを記録したわ。',
-                   'セーブ', (name, f'{saves}回'), ('失点', f'{b}点')),
-             panel('相手はどれだけ打ったのだ？', f'{other}はシュートを{shots}本打っていて枠内は{target}本だったわ。',
-                   '相手のシュート', ('シュート', f'{shots}本'), ('枠内', f'{target}本')), context(g, p)], str(saves), 'セーブ', '失点 ' + str(b))
+            [opening(g, p, cheers, f'{name}は{saves}回のセーブを記録したわ。', 'セーブ', (name, f'{saves}回'), ('失点', f'{b}点')),
+             panel(pick(g, p, ['相手はたくさん打ってきたのだ？', 'そんなに攻められていたのだ？']),
+                   f'そうね。{other}のシュートは{shots}本で、枠内は{target}本だったわ。',
+                   '相手のシュート', ('シュート', f'{shots}本'), ('枠内', f'{target}本')), last],
+            str(saves), 'セーブ', '失点 ' + str(b))
 
 
 def early_goals(g, p):
@@ -201,21 +230,25 @@ def early_goals(g, p):
     reply = next((goal for goal in goals[2:] if goal['side'] != p['side']), None)
     if a <= b or not reply:
         return
-    panels = []
-    for goal, label in ((first, '先制点'), (second, '追加点')):
+    scorers = []
+    for goal in (first, second):
         name = player_name(goal['name'], True)
         assist = player_name(goal.get('assist_name', ''), True)
         if not name or not assist:
             return
-        minute = national.minute_words(goal['minute'])
-        panels.append(panel(f'{label}はどう決まったのだ？',
-                            f'{minute}に{assist}のアシストから{name}が決めたわ。',
-                            label, (name, goal['minute']+'分'), ('アシスト', assist)))
-    panels.extend((panel('相手はいつ反撃したのだ？',
-                         f'{other}の最初の得点は{national.minute_words(reply["minute"])}だったわ。',
-                         '相手の反撃', (other, reply['minute']+'分')), context(g, p)))
+        scorers.append((name, assist, goal['minute']))
+    (n1, a1, m1), (n2, a2, m2) = scorers
+    w1, w2 = national.minute_words(m1), national.minute_words(m2)
     return (f'{club} 前半{gap}分間で2得点 {other}に{a}-{b}で勝利',
-            panels, str(gap), '分間で2得点', '前半' + first['minute'] + '分から')
+            [opening(g, p, [f'{club}が立て続けに決めたのだ！', f'あっという間に{club}が突き放したのだ！'],
+                     f'{w1}と{w2}に続けて決めて、{gap}分間で2点を取ったわ。', '2得点の間隔', ('先制点', m1 + '分'), ('追加点', m2 + '分')),
+             panel(pick(g, p, ['誰が決めたのだ？', 'どんな形のゴールだったのだ？']),
+                   f'先制点は{a1}のアシストから{n1}、追加点は{a2}のアシストから{n2}が決めたわ。',
+                   '得点者', (n1, f'アシスト {a1}'), (n2, f'アシスト {a2}')),
+             panel('相手も反撃してきたのだ？',
+                   f'{other}は{national.minute_words(reply["minute"])}に1点目を返したわ。最後は{a}対{b}で{club}が勝ったわ。',
+                   '相手の反撃', (other, reply['minute'] + '分'), ('スコア', f'{a}-{b}'))],
+            str(gap), '分間で2得点', '前半' + first['minute'] + '分から')
 
 
 def opponent_star(g, p):
@@ -232,11 +265,18 @@ def opponent_star(g, p):
         if not name or re.search('[A-Za-z]', name) or not (shots and target and count <= target <= shots):
             continue
         minutes = 'と'.join(national.minute_words(goal['minute']) for goal in goals)
+        cheers = ([f'相手の{name}にやられたのだ…', f'{name}が止められなかったのだ…'] if a < b
+                  else [f'相手の{name}がすごかったのだ！', f'{name}に何度も決められたのだ！'])
+        words = '勝ったわ。' if a > b else '敗れたわ。' if a < b else '引き分けたわ。'
         return (f'{other}の{name}が{count}得点 枠内シュート{target}本',
-                [panel('相手の得点を決めたのは誰なのだ？', f'{name}が{minutes}に決めて{count}得点だったわ。',
-                       '相手の得点者', (name, f'{count}得点'), ('時間', '・'.join(goal['minute']+'分' for goal in goals))),
-                 panel('シュートの数字はどうだったのだ？', f'{name}のシュートは{shots}本で枠内は{target}本だったわ。',
-                       'シュート', ('シュート', f'{shots}本'), ('枠内', f'{target}本')), context(g, p)],
+                [opening(g, p, cheers, f'{other}の{name}が{minutes}に決めて{count}得点だったわ。',
+                         '相手の得点者', (name, f'{count}得点'), ('時間', '・'.join(goal['minute']+'分' for goal in goals))),
+                 panel(pick(g, p, ['シュートもたくさん打っていたのだ？', 'どれくらい狙ってきたのだ？']),
+                       f'{name}のシュートは{shots}本で、枠内は{target}本だったわ。',
+                       'シュート', ('シュート', f'{shots}本'), ('枠内', f'{target}本')),
+                 panel('それでも勝ったのだ？' if a > b else f'{club}はどうなったのだ？',
+                       ('ええ、' if a > b else '') + f'{club}は{a}対{b}で{words}',
+                       '試合結果', (club, str(a)), (other, str(b)))],
                 str(count), '得点', f'枠内シュート{target}本')
 
 
@@ -260,10 +300,13 @@ def team_numbers(g, p):
     rows = [('支配率', *[n+'%' for n in possession])] + [
         (label, f'{int(x)}本', f'{int(y)}本') for label, (x,y) in zip(('シュート','枠内','コーナー'), pairs[1:])]
     return (f'{club} 支配率{possession[0]}% シュート{shots}本で{other}に勝利',
-            [context(g, p), ('数字ではどんな差があったのだ？',
-                            f'{club}の支配率は{possession[0]}パーセント。シュートは{shots}本で{other}の{opposed}本を下回ったわ。',
-                            '試合の数字', [('シュート', f'{shots}本')], dict(compare=dict(teams=[club,other], rows=rows[:2]))),
-             ('ほかの数字も下回ったのだ？', f'枠内シュートは{rows[2][1]}対{rows[2][2]}。コーナーも{rows[3][1]}対{rows[3][2]}だったわ。',
+            [opening(g, p, [f'{club}が勝ったのだ！', f'{club}の勝利なのだ！'],
+                     f'{a}対{b}で勝ったわ。でも、数字を見ると意外なの。', '試合結果', (club, str(a)), (other, str(b))),
+             ('えっ、どういうことなのだ？',
+              f'{club}の支配率は{possession[0]}パーセント。シュートは{shots}本で、{other}の{opposed}本より少なかったわ。',
+              '試合の数字', [('シュート', f'{shots}本')], dict(compare=dict(teams=[club,other], rows=rows[:2]))),
+             (pick(g, p, ['ほかの数字も負けていたのだ？', 'それでも勝てたのは不思議なのだ！ほかの数字はどうなのだ？']),
+              f'枠内シュートは{rows[2][1]}対{rows[2][2]}。コーナーも{rows[3][1]}対{rows[3][2]}だったわ。',
               '枠内とコーナー', [('枠内', rows[2][1]), ('コーナー', rows[3][1])],
               dict(compare=dict(teams=[club,other], rows=rows[2:])))],
             str(shots), '本のシュート', f'{a}得点で勝利')
@@ -281,12 +324,14 @@ def rematch(g, p):
     goal = next((event for event in g['goals'] if event['scorer'] == p['athlete_id']), None)
     if not goal:
         return
+    name = p['name']
     return (f'{club} 前の対戦で敗れた{other}に{a}-{b}で勝利',
-            [context(g, p), panel('前の対戦ではどうだったのだ？',
-                                  f'{day.month}月{day.day}日の対戦では{club}が{old_a}対{old_b}で敗れていたわ。',
-                                  '過去の対戦', (club, str(old_a)), (other, str(old_b))),
-             panel('今回は誰が得点したのだ？', f'{p["name"]}が{national.minute_words(goal["minute"])}に決めたわ。',
-                   '今回の得点', (p['name'], goal['minute']+'分'))],
+            [opening(g, p, [f'{name}がゴールを決めたのだ！', f'{name}、やったのだ！'],
+                     f'{name}が{national.minute_words(goal["minute"])}に決めたわ。', '今回の得点', (name, goal['minute']+'分')),
+             panel('チームも勝てたのだ？', f'ええ、{a}対{b}で勝ったわ。', '試合結果', (club, str(a)), (other, str(b))),
+             panel('前にも戦った相手なのだ？',
+                   f'そうよ。{day.month}月{day.day}日の対戦では{club}が{old_a}対{old_b}で敗れていたわ。今回はやり返した形ね。',
+                   '過去の対戦', (club, str(old_a)), (other, str(old_b)))],
             f'{a}-{b}', 'で勝利', f'以前は{old_a}-{old_b}で敗戦')
 
 
@@ -306,11 +351,14 @@ def late_goal(g, p):
             continue
         name, minute = p['name'], goal['minute']
         return (f'{name} {minute}分に1点差へ {other}に{a}-{b}で敗戦',
-                [panel('終盤に差を縮めたのは誰なのだ？',
-                       f'{club}の{name}が{national.minute_words(minute)}に決めたわ。{x}対{y}から{a}対{b}に縮めたのよ。',
-                       '終盤の得点', (name, minute+'分'), ('得点前', f'{x}-{y}')),
-                 panel('その前に何があったのだ？', f'{other}が{national.minute_words(previous["minute"])}に追加点を挙げていたわ。',
-                       '相手の追加点', (other, previous['minute']+'分')), context(g, p)],
+                [opening(g, p, [f'{name}がゴールを決めたのだ！', f'{name}、最後に意地のゴールなのだ！'],
+                         f'{national.minute_words(minute)}に決めて、{x}対{y}から{a}対{b}に縮めたわ。',
+                         '終盤の得点', (name, minute+'分'), ('得点前', f'{x}-{y}')),
+                 panel(pick(g, p, ['あと少しだったのだ…。その前はどうだったのだ？', '惜しいのだ…。どうして差が開いていたのだ？']),
+                       f'{other}が{national.minute_words(previous["minute"])}に追加点を挙げて、差を広げていたわ。',
+                       '相手の追加点', (other, previous['minute']+'分')),
+                 ending(g, p, ['悔しいけど、最後まで諦めなかったのだ！', '惜しかったのだ…。でも意地を見せたのだ！'],
+                        f'そうね。{a}対{b}で敗れたけれど、{name}のゴールで1点差まで迫ったわ。')],
                 minute, '分に得点', '1点差に縮める')
 
 
@@ -335,18 +383,19 @@ def equalizer(g, p):
         push_a, push_b = (national.minute_words(previous['minute']) for previous in leads)
         passers = {person['athlete_id']: person['name'] for person in g['players']}
         assist = passers.get(leads[0]['assist'])
-        said = f'{other}は{push_a}と{push_b}にリードを奪ったわ。'
-        rows = [(other, '・'.join(previous['minute']+'分' for previous in leads))]
+        said = f'そうなの。{other}が{push_a}と{push_b}にリードを奪って、{club}は{national.minute_words(first)}にも一度追いついていたわ。'
+        rows = [(other, '・'.join(previous['minute']+'分' for previous in leads)), (club, first+'分')]
         if assist:
-            said += f'最初の得点は{assist}のアシストだったわ。'
+            said += f'{other}の先制点は{assist}のアシストだったわ。'
             rows.append(('先制点のアシスト', assist))
         name = p['name']
         return (f'{name} {minute}分に同点弾 {club}が{other}に2度追いつく',
-                [panel('最後に追いついたのは誰なのだ？', f'{name}が{national.minute_words(minute)}に決めて{a}対{b}にしたわ。',
-                       '同点ゴール', (name, minute+'分'), ('スコア', f'{a}-{b}')),
-                 panel('その前も追いかけていたのだ？', f'{club}は{national.minute_words(first)}にも一度追いついていたわ。',
-                       '最初の同点', (club, first+'分')),
-                 panel('相手はいつリードしたのだ？', said, '相手のリード', *rows), context(g, p)],
+                [opening(g, p, [f'{name}が同点ゴールなのだ！', f'{name}が追いついたのだ！'],
+                         f'{national.minute_words(minute)}に決めて{a}対{b}にしたわ。', '同点ゴール', (name, minute+'分'), ('スコア', f'{a}-{b}')),
+                 panel(pick(g, p, ['ずっと追いかける展開だったのだ？', 'もしかして何度も追いついたのだ？']),
+                       said, '追いかけた展開', *rows),
+                 ending(g, p, ['負けなかったのはえらいのだ！', '粘り強いのだ！'],
+                        f'ええ。リードされても追いついて、{a}対{b}の引き分けに持ち込んだわ。')],
                 minute, '分に同点弾', '2度追いつく')
 
 
