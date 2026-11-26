@@ -100,7 +100,8 @@ class LeadersTest(unittest.TestCase):
             self.assertNotIn(word, text)
 
     def test_saved_state_is_a_dated_baseline_and_same_data_is_no_movement(self):
-        state = sl.load_state(str(ROOT / "data" / "soccer_leaders_state.json"))
+        # 本番の data/ は毎日書き換わるので、11/25 の保存を固定して使う（11/26 日付がずれて赤になった）。
+        state = sl.load_state(str(HERE / "fixtures" / "leaders_state_1125.json"))
         self.assertEqual(state["sections"]["eng.1:goals"]["snapshot_date"],
                          "2026-11-25")
         data = sl.build(self.raw, state, LATER)
