@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-26T06:20:59.123196+00:00",
+  "generated_at": "2026-11-26T13:04:34.317707+00:00",
   "competitions": [
     {
       "code": "PL",
@@ -7,14 +7,14 @@
       "season": {
         "start": "2026-08-21",
         "end": "2027-05-30",
-        "matchday": 11,
+        "matchday": 12,
         "year": 2026
       },
       "stale": false,
       "preview_angle_context": {
         "finished": {
           "source": "https://api.football-data.org/v4/competitions/PL/matches",
-          "retrieved_at": "2026-11-26T06:18:42.547239+00:00",
+          "retrieved_at": "2026-11-26T13:02:18.717847+00:00",
           "payload": {
             "matches": [
               {
@@ -7282,7 +7282,7 @@
         },
         "standings": {
           "source": "https://api.football-data.org/v4/competitions/PL/standings",
-          "retrieved_at": "2026-11-26T06:18:43.078307+00:00",
+          "retrieved_at": "2026-11-26T13:02:19.460485+00:00",
           "payload": {
             "filters": {
               "season": "2026"
@@ -7304,7 +7304,7 @@
               "id": 2502,
               "startDate": "2026-08-21",
               "endDate": "2027-05-30",
-              "currentMatchday": 11,
+              "currentMatchday": 12,
               "winner": null
             },
             "standings": [
@@ -8540,14 +8540,14 @@
       "season": {
         "start": "2026-08-16",
         "end": "2027-05-30",
-        "matchday": 13,
+        "matchday": 14,
         "year": 2026
       },
       "stale": false,
       "preview_angle_context": {
         "finished": {
           "source": "https://api.football-data.org/v4/competitions/PD/matches",
-          "retrieved_at": "2026-11-26T06:18:45.180773+00:00",
+          "retrieved_at": "2026-11-26T13:02:21.208979+00:00",
           "payload": {
             "matches": [
               {
@@ -16950,7 +16950,7 @@
         },
         "standings": {
           "source": "https://api.football-data.org/v4/competitions/PD/standings",
-          "retrieved_at": "2026-11-26T06:18:45.548992+00:00",
+          "retrieved_at": "2026-11-26T13:02:21.558879+00:00",
           "payload": {
             "filters": {
               "season": "2026"
@@ -16972,7 +16972,7 @@
               "id": 2518,
               "startDate": "2026-08-16",
               "endDate": "2027-05-30",
-              "currentMatchday": 13,
+              "currentMatchday": 14,
               "winner": null
             },
             "standings": [
@@ -18209,14 +18209,14 @@
       "season": {
         "start": "2026-08-23",
         "end": "2027-05-30",
-        "matchday": 12,
+        "matchday": 13,
         "year": 2026
       },
       "stale": false,
       "preview_angle_context": {
         "finished": {
           "source": "https://api.football-data.org/v4/competitions/SA/matches",
-          "retrieved_at": "2026-11-26T06:18:48.673278+00:00",
+          "retrieved_at": "2026-11-26T13:02:24.494142+00:00",
           "payload": {
             "matches": [
               {
@@ -26144,7 +26144,7 @@
         },
         "standings": {
           "source": "https://api.football-data.org/v4/competitions/SA/standings",
-          "retrieved_at": "2026-11-26T06:18:50.028809+00:00",
+          "retrieved_at": "2026-11-26T13:02:25.860701+00:00",
           "payload": {
             "filters": {
               "season": "2026"
@@ -26166,7 +26166,7 @@
               "id": 2494,
               "startDate": "2026-08-23",
               "endDate": "2027-05-30",
-              "currentMatchday": 12,
+              "currentMatchday": 13,
               "winner": null
             },
             "standings": [
@@ -27406,7 +27406,7 @@
       "preview_angle_context": {
         "finished": {
           "source": "https://api.football-data.org/v4/competitions/BL1/matches",
-          "retrieved_at": "2026-11-26T06:19:52.148727+00:00",
+          "retrieved_at": "2026-11-26T13:03:27.563724+00:00",
           "payload": {
             "matches": [
               {
@@ -33366,7 +33366,7 @@
         },
         "standings": {
           "source": "https://api.football-data.org/v4/competitions/BL1/standings",
-          "retrieved_at": "2026-11-26T06:19:52.684386+00:00",
+          "retrieved_at": "2026-11-26T13:03:27.909321+00:00",
           "payload": {
             "filters": {
               "season": "2026"
@@ -34519,7 +34519,7 @@
       "preview_angle_context": {
         "finished": {
           "source": "https://api.football-data.org/v4/competitions/FL1/matches",
-          "retrieved_at": "2026-11-26T06:19:54.258316+00:00",
+          "retrieved_at": "2026-11-26T13:03:29.286301+00:00",
           "payload": {
             "matches": [
               {
@@ -41061,7 +41061,7 @@
         },
         "standings": {
           "source": "https://api.football-data.org/v4/competitions/FL1/standings",
-          "retrieved_at": "2026-11-26T06:19:54.572956+00:00",
+          "retrieved_at": "2026-11-26T13:03:29.624601+00:00",
           "payload": {
             "filters": {
               "season": "2026"
@@ -41327,7 +41327,7 @@
                       "name": "Le Mans FC",
                       "shortName": "Le Mans",
                       "tla": "LMF",
-                      "crest": "https://crests.football-data.org/535.png"
+                      "crest": "https://upload.wikimedia.org/wikipedia/en/5/57/Le_Mans_FC_logo.svg"
                     },
                     "playedGames": 11,
                     "form": null,
@@ -42213,7 +42213,7 @@
       "preview_angle_context": {
         "finished": {
           "source": "https://api.football-data.org/v4/competitions/CL/matches",
-          "retrieved_at": "2026-11-26T06:19:57.899495+00:00",
+          "retrieved_at": "2026-11-26T13:03:33.138269+00:00",
           "payload": {
             "matches": [
               {
@@ -48161,7 +48161,7 @@
         },
         "standings": {
           "source": "https://api.football-data.org/v4/competitions/CL/standings",
-          "retrieved_at": "2026-11-26T06:20:58.743136+00:00",
+          "retrieved_at": "2026-11-26T13:04:33.828657+00:00",
           "payload": {
             "filters": {
               "season": "2026"
