@@ -50,6 +50,9 @@ def selectable(topic, spec, names=None):
         return True  # 別workflowの公式速報。本数は既存の専用枠。
     if not spec:
         return False
+    if topic.startswith('season_insight_'):
+        return bool(spec.get('jp') and spec.get('insight') and spec.get('game_type') == 'R'
+                    and spec.get('source', '').startswith('MLB Stats API'))
     if names is None:
         import json
         from pathlib import Path

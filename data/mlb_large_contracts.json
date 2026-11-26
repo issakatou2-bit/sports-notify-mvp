@@ -1,0 +1,84 @@
+{
+  "events": {
+    "freddy-peralta-baltimore-orioles-deal": {
+      "story_key": "freddy-peralta-baltimore-orioles-deal",
+      "stage": 2,
+      "checked_on": "2026-11-25",
+      "title": "フレディ・ペラルタ オリオールズと5年総額1億2500万ドル 契約を発表",
+      "subject": "フレディ・ペラルタ",
+      "team": "オリオールズ",
+      "state": "契約を発表",
+      "reports": [
+        {
+          "name_en": "Freddy Peralta",
+          "name_jp": "フレディ・ペラルタ",
+          "team_en": "Baltimore Orioles",
+          "team_jp": "オリオールズ",
+          "kind": "正式",
+          "outlet": "MLBTR",
+          "url": "https://www.mlbtraderumors.com/2026/11/orioles-sign-freddy-peralta.html",
+          "reported_at": "2026-11-25T14:58:25+09:00",
+          "contract": {
+            "years": 5,
+            "amount": 12500.0,
+            "value": "1億2500",
+            "unit": "万ドル",
+            "text": "1億2500万ドル"
+          }
+        },
+        {
+          "name_en": "Freddy Peralta",
+          "name_jp": "フレディ・ペラルタ",
+          "team_en": "Baltimore Orioles",
+          "team_jp": "オリオールズ",
+          "kind": "合意",
+          "outlet": "ESPN",
+          "url": "https://www.espn.com/mlb/story/_/id/50583512/sources-freddy-peralta-orioles-5-years-125-million",
+          "reported_at": "2026-11-25T12:16:23+09:00",
+          "contract": {
+            "years": 5,
+            "amount": 12500.0,
+            "value": "1億2500",
+            "unit": "万ドル",
+            "text": "1億2500万ドル"
+          }
+        }
+      ],
+      "contract": {
+        "years": 5,
+        "amount": 12500.0,
+        "value": "1億2500",
+        "unit": "万ドル",
+        "text": "1億2500万ドル"
+      },
+      "comparisons": [
+        {
+          "name": "佐藤輝明",
+          "value": "6年 総額1億2000万ドル",
+          "sources": [
+            "https://www.espn.com/mlb/story/_/id/50583163/sources-cubs-teruaki-sato-reach-6-year-120m-deal",
+            "https://www.mlbtraderumors.com/2026/11/cubs-to-sign-teruaki-sato.html"
+          ],
+          "reported": true
+        },
+        {
+          "name": "平良海馬",
+          "value": "5年 総額8000万ドル",
+          "sources": [
+            "https://www.jiji.com/jc/article?k=2026112500143&g=spo&m=rss",
+            "https://www.daily.co.jp/mlb/2026/11/25/0021070445.shtml"
+          ],
+          "reported": true
+        },
+        {
+          "name": "鈴木誠也（2022年）",
+          "value": "5年8500万ドル",
+          "sources": [
+            "https://www.cbssports.com/mlb/news/cubs-sign-seiya-suzuki-japanese-slugger-gets-five-year-85-million-deal-with-chicago"
+          ],
+          "reported": false
+        }
+      ]
+    }
+  }
+}

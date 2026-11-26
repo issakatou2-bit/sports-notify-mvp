@@ -32,6 +32,8 @@ def credit(doc, panel=None):
         if panel is None:
             return voice
         return voice + '　出典: ' + doc['followup_material']['items'][panel]['source_names']
+    if doc.get('program') in ('mlb_season_insight', 'long_highlight'):
+        return '音声: VOICEVOX:ずんだもん・四国めたん' + ('　出典: ' + doc['credit'] if panel is not None else '')
     if doc.get('credit'):
         return doc['credit']  # 欧州の注目試合（soccer_stake）は台本が出典を持つ。
     names = []
@@ -51,7 +53,7 @@ def credit(doc, panel=None):
 
 
 def clubs_for(doc):
-    if doc.get('program') == topics.MLB_PROGRAM:
+    if doc.get('program') in (topics.MLB_PROGRAM, 'mlb_season_insight', 'long_highlight'):
         return {}
     if doc.get('clubs'):
         return doc['clubs']
@@ -173,7 +175,7 @@ def frame(t, seg, doc, clubs, index=0, count=1, *, opening_hook=None):
     hook = opening_hook or meta.get('hook')
     label = doc.get('screen_title') or '日本代表'
     s.im = cards.canvas(0 if hook else s.t, clubs, label)
-    if doc.get('program') == topics.MLB_PROGRAM:
+    if doc.get('program') == topics.MLB_PROGRAM and doc.get('team_id'):
         import short_v4_cards
         short_v4_cards.pinstripe_badge(s.im, cards.L + 400, 163, doc['team_id'], 108, 54)
     s.im.info.update(soccer_readable=True, semantic_items=[], readable_motion='v2 右から0.28秒・説明中停止・左へ0.14秒')
@@ -188,6 +190,8 @@ def frame(t, seg, doc, clubs, index=0, count=1, *, opening_hook=None):
         sub = '移籍報道'
     elif meta.get('sub'):
         sub = meta['sub']
+    elif doc.get('program') in ('mlb_season_insight', 'long_highlight'):
+        sub = doc['date_jst'][:4] + '年'
     else:
         other = next(n for n in clubs if n != '日本')
         sub = f'日本対{other}' + ('' if meta.get('topic') == 'rematch' else '　親善試合')
@@ -370,7 +374,7 @@ def silent_audio(narr, out, rate=24000):
     return rows
 
 
-def render(narr, audio, out, *, sample=False):
+def render(narr, audio, out, *, sample=False, video_name=VIDEO):
     import soccer_results_render as common
     import soccer_look
     import short_content
@@ -380,6 +384,8 @@ def render(narr, audio, out, *, sample=False):
     import voice_manifest
     if narr.get('program') == 'soccer_club_topic':
         from soccer_club_topics import check as check_topics
+    elif narr.get('program') in ('mlb_season_insight', 'long_highlight'):
+        from phase2_shorts import check as check_topics
     else:
         check_topics = topics.check
     if check_topics(narr):
@@ -395,14 +401,14 @@ def render(narr, audio, out, *, sample=False):
     limit = topics.MLB_LIMIT if narr.get('program') == topics.MLB_PROGRAM else topics.LIMIT
     if sum(times) > limit:
         raise ValueError(f'{limit}秒を超えます: {sum(times):.2f}秒')
-    short_content.require(narr, times, out, None, maximum=limit, video_name=VIDEO)
+    short_content.require(narr, times, out, None, maximum=limit, video_name=video_name)
     track = vc.build_narration_track(audio, times, out)
     if not track:
         raise ValueError('実音声なし')
     hook_end = opening_frames(segments, frame_counts[0])
     cues = topic_transition_cues(segments, frame_counts, hook_end)
     track = short_common.add_audio(track, audio, times, out, cues=cues)
-    clubs = clubs_for(narr); video = out / VIDEO; clock = 0; layouts = []
+    clubs = clubs_for(narr); video = out / video_name; clock = 0; layouts = []
     timeline = render_timeline.Recorder(FPS, audio, narr)
     hook = segments[0]['meta'].get('hook')
     command = ['ffmpeg', '-y', '-f', 'rawvideo', '-vcodec', 'rawvideo', '-pix_fmt', 'rgb24', '-s', '1080x1920', '-r', str(FPS), '-i', '-',
@@ -449,12 +455,32 @@ def render(narr, audio, out, *, sample=False):
     return report
 
 
+def render_settings():
+    os.environ.update(COLLESPO_SOCCER_LOOK='v6', COLLESPO_SOCCER_FOCUS='on', COLLESPO_SHORT_LOOK='v4')
+
+
+def asset_main(args):
+    """今季比較の資産動画から、共通の掛け合い描画を呼ぶ入口。"""
+    from phase2_shorts import season_narration
+
+    if args.narration_out:
+        national.save(Path(args.narration_out), season_narration(args.topic))
+        return
+    doc = national.read(Path(args.narration))
+    if doc['topic'] != args.topic:
+        raise ValueError('在庫の鍵が台本と一致しません')
+    render_settings()
+    os.environ['COLLESPO_STYLE'] = 'v2'
+    audio = national.read(Path(args.audio_dir) / 'manifest.json')['segments']
+    render(doc, audio, args.out, video_name=f'collespo_asset_{args.topic}.mp4')
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument('--out', type=Path, default=ROOT / 'build/soccer_national_topics')
     ap.add_argument('--silent-sample', action='store_true', help='声が無い環境の見本（無音）。公開には使えない')
     args = ap.parse_args()
-    os.environ.update(COLLESPO_SOCCER_LOOK='v6', COLLESPO_SOCCER_FOCUS='on', COLLESPO_SHORT_LOOK='v4')
+    render_settings()
     narr = national.read(args.out / 'narration.json')
     if args.silent_sample:
         audio = silent_audio(narr, args.out / 'audio')

@@ -3,10 +3,7 @@
  "scope": "得点・アシスト上位の選手の日本語表記。**Claudeが一般的な表記を書いた下書き。一次資料（クラブ公式・報道）との照合は未了**。この表に無い選手は画面にも声にも出さない。",
  "status": "claude_draft_unverified",
  "unregistered_on_purpose": [
-  "Yassir Zabiri",
-  "Gustavo Varela",
-  "Esteban Lepaul",
-  "Brajan Gruda"
+  "Gustavo Varela"
  ],
  "players": {
   "Alexander Isak": {
@@ -213,6 +210,21 @@
    "name": "ザカリー・アテカメ",
    "reading": "ザカリーアテカメ",
    "status": "claude_draft_unverified"
+  },
+  "Yassir Zabiri": {
+   "name": "ヤシル・ザビリ",
+   "reading": "ヤシルザビリ",
+   "source_url": "https://www.goal.com/jp/チーム/モロッコ/メンバー/avggs3u2b5cu8i1dnzknhth52"
+  },
+  "Esteban Lepaul": {
+   "name": "エステバン・ルポール",
+   "reading": "エステバンルポール",
+   "source_url": "https://www.soccer-king.jp/player/article/2164157.html"
+  },
+  "Brajan Gruda": {
+   "name": "ブラヤン・グルダ",
+   "reading": "ブラヤングルダ",
+   "source_url": "https://www.soccer-king.jp/player/article/1814533.html"
   }
  }
 }

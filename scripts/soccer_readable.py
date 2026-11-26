@@ -572,7 +572,10 @@ class Screen:
             if row.get('player'):
                 # 選手名（札なし）と所属クラブ。クラブ名は補足の大きさ（30px）で下に。
                 self.text(220,y+26,row['team'],44 if row['team']==spec.get('primary') else 40,470)
-                self.text(220,y+96,row['club'],30,470,c.MUTED,role='supplement')
+                club_box = self.text(220,y+96,row['club'],30,470,c.MUTED,role='supplement')
+                if row.get('tied_summary'):
+                    x = club_box[2] + 18
+                    self.text(x,y+96,row['tied_summary'],30,690-x,c.MUTED,role='supplement')
             else:self.name(220,y+38,row['team'],450,44 if row['team']==spec.get('primary') else 40)
             if values:
                 self.text(100,y+44,row['position'],60,90,number=True)

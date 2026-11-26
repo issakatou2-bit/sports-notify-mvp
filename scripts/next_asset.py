@@ -73,7 +73,7 @@ def published(path: str) -> set:
 
 
 def posted_today(path: str, today=None, kinds=None, count=False,
-                 exclude=(), extra=None, skip_keys=()):
+                 exclude=(), extra=None, skip_keys=(), return_keys=False):
     """きょう、もう1本出したか。
 
     **起動する入口が2つある。**cron-job.org（JST 22:00）と、
@@ -89,7 +89,7 @@ def posted_today(path: str, today=None, kinds=None, count=False,
     except (json.JSONDecodeError, OSError):
         rows = {}
     rows = merge_records(extra or {}, rows)
-    hits = 0
+    hits = []
     for key, rec in rows.items():
         # 種類を絞るとき（シーズンまとめの枠は、自分の本数だけ数える。
         # 資産動画の枠はシーズンまとめを数えない）。
@@ -105,8 +105,8 @@ def posted_today(path: str, today=None, kinds=None, count=False,
         except ValueError:
             continue
         if when.astimezone(jst).date() == today:
-            hits += 1
-    return hits if count else hits > 0
+            hits.append(key)
+    return hits if return_keys else len(hits) if count else bool(hits)
 
 
 def kind_of(key: str) -> str:
@@ -270,7 +270,7 @@ def pick_season(args) -> int:
     import generate_asset_video as gav
     import player_publications as publications
     ledgers = publications.load(assets_path=args.published)
-    done = published(args.published)
+    done = published(args.published) | set(ledgers[0].get("asset", {}))
     import offseason_market
     market_done = offseason_market.posted_today(merge_records(ledgers[0].get('asset', {}), ledgers[1].get('assets', {})))
     left = max(0, args.season - posted_today(args.published,
@@ -295,6 +295,9 @@ def pick_season(args) -> int:
     stats_left = max(0, min(SEASON_STATS_PER_WEEK - season_stats_recent(args.published, extra=ledgers[0].get('asset', {})),
                             SEASON_STATS_PER_DAY - posted_today(args.published, kinds={"season"}, count=True,
                                                                 extra=ledgers[0].get('asset', {}))))
+    insight_left = 2 - sum(
+        key.startswith('season_insight_')
+        for key in posted_today(args.published, kinds={'season'}, extra=ledgers[0].get('asset', {}), return_keys=True))
     used = season_kinds_today(args.published, extra=ledgers[0].get('asset', {}))
     used_players = set()
     for k in todo:
@@ -303,14 +306,18 @@ def pick_season(args) -> int:
         kind = season_kind(k)
         if k.startswith(offseason_market.PREFIX) and any(x.startswith(offseason_market.PREFIX) for x in picked):
             continue
-        is_stats = kind_of(k) == "season"
+        insight = k.startswith("season_insight_")
+        if insight and insight_left <= 0:
+            continue
+        is_stats = kind_of(k) == "season" and not insight
         if is_stats and stats_left <= 0:
             continue
         players = jp_assets.ids(k, gav.LIST_TOPICS[k])
-        if kind in used or players & used_players:
+        if (kind in used and not insight) or players & used_players:
             continue
         if not superseded(gav.LIST_TOPICS[k]):
             stats_left -= is_stats
+            insight_left -= insight
             picked.append(k)
             used.add(kind)
             used_players.update(players)

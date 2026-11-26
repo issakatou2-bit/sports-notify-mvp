@@ -65,17 +65,14 @@ class LeadersTest(unittest.TestCase):
 
     # ---- 4. 選手名は日本語。表に無い人は出さない -------------------------
     def test_unregistered_player_has_no_japanese_name_and_is_never_shown(self):
-        esp = self.parsed[("esp.1", "goals")]
-        zabiri = next(x for x in esp if x["name"] == "Yassir Zabiri")
-        self.assertIsNone(zabiri["name_jp"])          # 英字で代用しない
-        self.assertFalse(sl.is_ready(self.snapshots["esp.1:goals"]))
-        with self.assertRaises(ValueError):
-            sl.build(self.raw, {}, TODAY, only="esp.1:goals")
-        # 自動選択でも、名前の無い人がいる部門は選ばれない
-        moves = {"esp.1:goals": [{"kind": "gap_opened", "gap": 2}]}
+        esp = sl.build(self.raw, {}, TODAY, only="esp.1:goals")
+        zabiri = next(x for x in esp["story"]["snap"]["top"] if x["name"] == "Yassir Zabiri")
+        self.assertEqual(zabiri["name_jp"], "ヤシル・ザビリ")
+        with self.assertRaisesRegex(ValueError, "Gustavo Varela"):
+            sl.build(self.raw, {}, TODAY, only="ita.1:goals")
+        moves = {"ita.1:goals": [{"kind": "gap_opened", "gap": 2}]}
         self.assertIsNone(sl.choose(moves, {}, TODAY, {
-            (k.split(":")[0], k.split(":")[1]): v
-            for k, v in self.snapshots.items()}))
+            ("ita.1", "goals"): self.snapshots["ita.1:goals"]}))
 
     def test_registered_names_are_katakana_with_reading(self):
         names = json.loads((ROOT / "data" / "soccer_leaders_names.json")
@@ -195,8 +192,10 @@ class LeadersTest(unittest.TestCase):
         ask, answer = segs[0], segs[1]
         self.assertTrue(ask["text"].rstrip().endswith("？"))
         self.assertIn("ハーランド", ask["text"])
-        self.assertIn("9点", ask["text"])                # 冒頭で誰が何点か
-        self.assertNotIn("9点", answer["text"])          # 同じ数字を2回言わない
+        self.assertIn("出場1試合あたり", ask["text"])
+        self.assertNotIn("9点", ask["text"])
+        self.assertIn("11試合で9点", answer["text"])
+        self.assertIn("0.82点", answer["text"])
         self.assertIn("2点", answer["text"])             # 差は答えのほうで
         self.assertEqual(ask["meta"]["presenter"], "zundamon")
         hook = ask["meta"]["opening_hook"]
@@ -204,7 +203,7 @@ class LeadersTest(unittest.TestCase):
         self.assertEqual((hook["subject"], hook["value"]), ("ハーランド", 9))
         self.assertTrue(self.program(data)["narration"]["opening_check"]["passed"])
         # 同じ数字を2回言わない（答えの中でも）
-        numbers = re.findall(r"\d+点", answer["text"])
+        numbers = re.findall(r"\d+(?:\.\d+)?点", answer["text"])
         self.assertEqual(len(numbers), len(set(numbers)))
 
     def test_metan_uses_current_tone_and_zundamon_uses_noda(self):
@@ -219,6 +218,8 @@ class LeadersTest(unittest.TestCase):
         data = sl.build(self.raw, {}, TODAY, only="eng.1:goals")
         rows = self.program(data)["narration"]["segments"][1]["meta"]["rows"]
         self.assertEqual([r["position"] for r in rows], [1, 2, 3, 3])
+        self.assertEqual(rows[-1]["tied_summary"], "ほか1人")
+        self.assertIn("ほかに1人", self.program(data)["narration"]["segments"][1]["text"])
         self.assertTrue(all(re.search(r"[ァ-ヶー・一-龯]", r["team"])
                             for r in rows))
 

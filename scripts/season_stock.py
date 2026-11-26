@@ -152,3 +152,130 @@ def game_topics(games):
                         source_paths=[g['source_path']]))
     return out
 
+# 全選手を調べ、出場単位の最大値・大差だけを取り上げる。
+INSIGHT_PREFIX = 'season_insight_'
+INSIGHT_PATH = 'data/season_insights.json'
+
+
+def insight_topic(pid, name, metric, title, ask, answer, rows, group, *, source_path):
+    source = f'https://statsapi.mlb.com/api/v1/people/{pid}/stats?stats=gameLog&season=2026&group={group}&gameType=R'
+    key = f'{INSIGHT_PREFIX}2026_{pid}_{metric}'
+    return dict(key=key, label=title, heading=title, hook=title, title=f'{title} #Shorts',
+                jp=name, player_id=int(pid), game_type='R', season_stock=True,
+                source='MLB Stats API / 2026年レギュラーシーズン', source_paths=[source_path],
+                items=rows, insight=dict(ask=ask, answer=answer, rows=rows, source=source))
+
+
+def standout_games(games, name, metrics):
+    for metric, label, minimum, unit in metrics:
+        peak = max(game['stat'].get(metric, 0) for game in games)
+        if peak < minimum:
+            continue
+        best = [game for game in games if game['stat'].get(metric, 0) == peak]
+        if len(best) > 4 or len(best) * 5 > len(games):
+            continue
+        month, day = map(int, best[0]['date'].split('-')[1:])
+        at = f'{month}月{day}日'
+        number = f'{peak}{unit}'
+        yield (f'game_{metric}', f'1試合で最多{number}',
+               f'{name}は今季、1試合で最多いくつの{label}を記録したのだ？',
+               f'{at}の{number}が最多よ。今季の{len(games)}試合の中で、'
+               f'この数字を記録したのは{len(best)}試合だったわ。'
+               f'今季の合計は{sum(g['stat'].get(metric, 0) for g in games)}{unit}よ。',
+               [[at, f'今季最多 {number}'], ['同じ数字の試合', f'{len(games)}試合中{len(best)}試合'],
+                ['今季の合計', f'{sum(g['stat'].get(metric, 0) for g in games)}{unit}']])
+
+
+def home_run_month(games, name):
+    by_month = defaultdict(list)
+    for game in games:
+        by_month[int(game['date'][5:7])].append(game['stat'])
+    months = []
+    for month, stats in by_month.items():
+        pa = sum(s.get('plateAppearances', 0) for s in stats)
+        hr = sum(s.get('homeRuns', 0) for s in stats)
+        if pa >= 65:
+            months.append((hr / pa, month, pa, hr))
+    if len(months) < 2:
+        return
+    high, low = max(months), min(months)
+    _, m1, pa1, hr1 = high
+    _, m2, pa2, hr2 = low
+    if hr1 >= 5 and high[0] - low[0] >= .045 and high[0] >= 2.5 * low[0]:
+        total = sum(g['stat'].get('homeRuns', 0) for g in games)
+        yield ('hr_month', f'本塁打が最も出やすかったのは{m1}月',
+               f'{name}がいちばん本塁打を打ったペースは、何月なのだ？',
+               f'65打席以上の月で見ると、{m1}月が{pa1}打席で{hr1}本。'
+               f'最も出にくかった{m2}月は{pa2}打席で{hr2}本だったわ。今季は全部で{total}本よ。',
+               [[f'{m1}月', f'{pa1}打席・{hr1}本'], [f'{m2}月', f'{pa2}打席・{hr2}本'], ['今季の合計', f'{total}本']])
+
+
+def long_scoreless_starts(games, name):
+    starts = [g for g in games if g['stat'].get('gamesStarted') == 1]
+    qualified = [g for g in starts if g['stat'].get('runs') == 0 and g['stat'].get('outs', 0) >= 18]
+    if len(qualified) >= 5 and len(qualified) * 3 >= len(starts):
+        longest = max(g['stat']['outs'] for g in qualified)
+        innings, outs = divmod(longest, 3)
+        duration = f'{innings}回' + (f'と3分の{outs}' if outs else '')
+        yield ('scoreless', f'6回以上無失点が{len(qualified)}試合',
+               f'{name}は、今季何試合で6回以上を無失点に抑えたのだ？',
+               f'今季の先発{len(starts)}試合のうち、6回以上を投げて無失点だったのが{len(qualified)}試合よ。'
+               f'その中で最も長く投げた試合は{duration}を無失点だったわ。',
+               [['先発', f'{len(starts)}試合'], ['6回以上・無失点', f'{len(qualified)}試合'], ['最長', duration]])
+
+
+def home_run_streak(games, name):
+    from datetime import date
+    runs, run = [], []
+    for game in sorted(games, key=lambda g: (g['date'], g.get('game_number', 1))):
+        if game['stat'].get('homeRuns', 0):
+            run.append(game)
+        elif run:
+            runs.append(run)
+            run = []
+    if run:
+        runs.append(run)
+    best = max(runs, key=len, default=[])
+    if len(best) < 3:
+        return
+    start, end = (date.fromisoformat(g['date']) for g in (best[0], best[-1]))
+    homers = sum(g['stat']['homeRuns'] for g in best)
+    period = f'{start.month}月{start.day}日から{end.month}月{end.day}日'
+    hit_games = sum(bool(g['stat'].get('homeRuns', 0)) for g in games)
+    yield ('hr_streak', f'出場{len(best)}試合連続で本塁打',
+           f'{name}は今季、出場何試合続けて本塁打を打ったのだ？',
+           f'最長は{len(best)}試合よ。現地時間の{period}にかけて、合わせて{homers}本だったわ。'
+           f'シーズンを通して、本塁打が出た試合は{hit_games}試合よ。',
+           [['期間（現地）', period], ['出場連続', f'{len(best)}試合で{homers}本'],
+            ['今季の本塁打あり', f'{hit_games}試合']])
+
+
+def player_insights(logs):
+    if str(logs.get('season')) != '2026' or logs.get('game_type') != 'R':
+        return []
+    out = []
+    for pid, player in logs['players'].items():
+        name = player['jp']
+        hitting = player.get('hitting') or []
+        pitching = player.get('pitching') or []
+        hitting_facts = list(home_run_month(hitting, name)) + list(home_run_streak(hitting, name))
+        if hitting:
+            hitting_facts.extend(standout_games(hitting, name, (
+                ('homeRuns', '本塁打', 2, '本'), ('rbi', '打点', 5, '打点'),
+                ('hits', '安打', 4, '安打'), ('baseOnBalls', '四球', 4, '四球'),
+            )))
+        pitching_facts = list(standout_games(pitching, name, (
+            ('strikeOuts', '三振', 10, '奪三振'),
+        ))) if pitching else []
+        pitching_facts.extend(long_scoreless_starts(pitching, name))
+        # 同じ試合の本塁打と打点などは、先に並べた着眼点だけ残す。
+        seen = set()
+        for group, facts in (('hitting', hitting_facts), ('pitching', pitching_facts)):
+            for metric, title, ask, answer, rows in facts:
+                signature = (group, rows[0][0])
+                if signature in seen:
+                    continue
+                seen.add(signature)
+                out.append(insight_topic(pid, name, metric, f'{name} {title}', ask, answer,
+                                         rows, group, source_path='data/jp_player_logs_2026.json'))
+    return out

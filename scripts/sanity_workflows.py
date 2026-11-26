@@ -26,6 +26,8 @@ NARRATIONS = {
     'soccer_voices': ['build/soccer_voices/narration.json'],
     'soccer_week': ['build/week_narration.json'],
     'soccer_weekly_long': ['build/soccer_weekly/dialogue.json'],
+    'scheduled_longs': ['build/scheduled_long/dialogue.json'],
+    'related_videos': ['"$p/narration.json"'],
     'soccer_national_long': ['build/national_long/dialogue.json'],
     'weekly_summary': ['build/weekly_narration.json', 'build/vs_narration.json'],
 }
@@ -41,6 +43,7 @@ KINDS = {
     'mlb_market_topics': 'mlb_market_topic',
     'soccer_stake': 'soccer_stake',
     'soccer_weekly_long': 'soccer_weekly',
+    'related_videos': 'long_highlight',
     'soccer_national_long': 'soccer_national_long',
 }
 PUBLISHER = re.compile(r'scripts/(?:upload_youtube|soccer_results_upload|soccer_week_publish)\.py'

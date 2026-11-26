@@ -7,6 +7,11 @@ def check(documents):
     import voices_context
     errors = voices_context.checks(documents)
     for doc in documents:
+        if 'scheduled_long_material' in doc:
+            try:
+                __import__('scheduled_longs').validate_document(doc)
+            except (ValueError, KeyError, TypeError) as error:
+                errors.append('長編の材料照合: '+str(error))
         if 'soccer_weekly_material' in doc:
             try:
                 __import__('soccer_weekly_long').validate_document(doc)

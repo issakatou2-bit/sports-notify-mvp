@@ -2,6 +2,7 @@
 import argparse
 from datetime import datetime, timedelta, timezone
 from email.utils import parsedate_to_datetime
+from decimal import Decimal, ROUND_HALF_UP
 import html
 import json
 from pathlib import Path
@@ -286,6 +287,187 @@ def collect_items(raw, feed_name, targets, teams=None, cache=None):
     return records
 
 
+LARGE_CONTRACTS = ROOT / 'data/mlb_large_contracts.json'
+
+
+def league_names():
+    def load(file):
+        return json.loads((ROOT / 'data' / file).read_text(encoding='utf-8'))
+    kana = load('player_kana.json').get('names', {})
+    names = {row['name'] for row in load('roster_stats.json').get('league', [])}
+    return {name: kana.get(name, '') for name in names}
+
+
+def large_records(raw, feed, names, teams):
+    """選手・球団・年数・総額が冒頭で照合できる記事だけを拾う。"""
+    join = r'(?<!\d)[.!?]\s+|\.\s+(?=[A-Z])'
+    for item in parse_feed(raw):
+        try:
+            source_ok(item['link'])
+        except ValueError:
+            continue
+        if outlet_for(item['link'], '') != feed or not item['published_at']:
+            continue
+        title = item['title']
+        lead, _, rest = item['description'].partition('. ')
+        lead = re.split(r',\s+(?:who|which|while|after|sources)\b', lead, maxsplit=1, flags=re.I)[0]
+        matched = find_targets(title, names)
+        if len(matched) != 1:
+            matched = find_targets(lead, names)
+        if len(matched) != 1:
+            continue
+        name_en, name_jp = matched[0]
+        if not find_targets(lead or title, {name_en: name_jp}):
+            continue
+        kind = classify(lead) or classify(title)
+        if kind not in ('正式', '契約', '合意', 'トレード'):
+            continue
+        team, team_jp = team_in(lead, teams)
+        title_team, title_jp = team_in(title, teams)
+        if title_team:
+            team, team_jp = title_team, title_jp
+        if not team or (kind == 'トレード' and not title_team):
+            continue
+        first_money = rest.split('. ', 1)[0]
+        # 「契約を発表した。保証額は…」と続く形も、同じ契約の総額として読む。
+        continuation = first_money if re.match(r"(?:it['’]s|the (?:deal|contract)) (?:reportedly )?a?\s*\$", first_money, re.I) else ''
+        context = ' '.join([lead, continuation])
+        contract = parse_contract(context) or parse_contract(title)
+        if not contract or contract['amount'] < 10000 or re.search(
+                r'per year|annually|AAV|could be worth|up to|offer(?:ed)?|projected|asking price',
+                context, re.I):
+            continue
+        # トレードで選手を出した球団を移籍先と誤認しない。
+        if kind == 'トレード':
+            if not re.search(r'\b(?:acquire[ds]?|trade[ds]? for)\b', title, re.I):
+                continue
+        yield dict(name_en=name_en, name_jp=name_jp, team_en=team, team_jp=team_jp,
+                   kind=kind, outlet=feed, url=item['link'],
+                   reported_at=item['published_at'].isoformat(), contract=contract)
+
+
+def confirmed_large(records):
+    """同じ移籍・同じ条件の2媒体、または球団発表のある組だけ。"""
+    groups = {}
+    for row in records:
+        c = row['contract']
+        key = (row['name_en'], row['team_en'], row['kind'] == 'トレード')
+        groups.setdefault(key, {}).setdefault((c['years'], c['amount']), []).append(row)
+    for (name, team, trade), contracts in groups.items():
+        if len(contracts) != 1:
+            continue
+        rows = next(iter(contracts.values()))
+        if len({r['outlet'] for r in rows}) < 2 and not any(r['kind'] == '正式' for r in rows):
+            continue
+        yield '-'.join((slug(name), slug(team), 'trade' if trade else 'deal')), rows
+
+
+def contract_material():
+    events = json.loads((ROOT / 'data/mlb_market_followups.json').read_text(encoding='utf-8'))['events']
+    rows = []
+    for event, name in (('sato-cubs', '佐藤輝明'), ('taira-bluejays', '平良海馬')):
+        data = events[event]
+        first = data['items'][0]
+        value = next(v for label,v in first['rows'] if label == '契約')
+        rows.append(dict(name=name, value=value, sources=first['sources'], reported=True))
+    first = events['sato-cubs']['items'][1]
+    name, value = next((k, v.split('（', 1)[0]) for k, v in first['rows'] if k.startswith('鈴木誠也'))
+    rows.append(dict(name=name, value=value, sources=first['sources'][-1:], reported=False))
+    return rows
+
+
+def large_draft(key, rows):
+    row = next((r for r in rows if r['kind'] == '正式'), rows[0])
+    c = row['contract']
+    name, team = row['name_jp'] or row['name_en'], row['team_jp']
+    state = ('移籍と報道' if row['kind'] == 'トレード' else
+             '契約を発表' if row['kind'] == '正式' else '合意と報道')
+    return dict(story_key=key, stage=2, checked_on=row['reported_at'][:10],
+                title=f'{name} {team}と{c["years"]}年総額{c["text"]} {state}',
+                subject=name, team=team, state=state, reports=rows,
+                contract=c, comparisons=contract_material())
+
+
+def saved_contract_total(value):
+    """保存表の年数・億・万を、年数と万ドル単位の総額へ戻す。"""
+    matched = re.fullmatch(r'(\d+)年\s*(?:総額)?(?:(\d+)億)?(?:(\d+(?:\.\d+)?)万)?ドル', value)
+    if not matched or not any(matched.groups()[1:]) or not int(matched[1]):
+        raise ValueError('比較する契約の年数と総額を照合できません: ' + value)
+    return int(matched[1]), Decimal(matched[2] or 0) * 10000 + Decimal(matched[3] or 0)
+
+
+def annual_average(amount, years):
+    """年平均は万ドル単位で四捨五入。年数と保存済み総額を使う。"""
+    return (Decimal(str(amount)) / years).quantize(Decimal('1'), rounding=ROUND_HALF_UP)
+
+
+def comparison_item(entry, term, sources):
+    name, contract = entry['subject'], entry['contract']
+    saved = [r for r in entry['comparisons'] if r['name'] != name][:2]
+    if len(saved) < 2:
+        raise ValueError('照合済みの比較契約が足りません')
+    comparison_rows = []
+    statements = []
+    by_year = {}
+    for row in saved:
+        years, total = saved_contract_total(row['value'])
+        label = row['name'] + ('（報道）' if row['reported'] else '')
+        comparison_rows.append([label, row['value']])
+        term_text = re.sub(r'年\s*(?:総額)?', '年総額', row['value'], count=1)
+        statements.append(f'{row["name"]}は{term_text}' +
+                          ('と報じられているわ。' if row['reported'] else 'だったわ。'))
+        by_year[row['name']] = annual_average(total, years)
+    current = annual_average(contract['amount'], contract['years'])
+    annual = format_man(int(current))[1]
+    statements.append(f'年平均にすると、{name}は約{annual}。')
+    if current > max(by_year.values()):
+        statements.append('この比較では、年平均が最も高いわ。')
+    elif current < min(by_year.values()):
+        statements.append('この比較では、年平均はいちばん低いわ。')
+    else:
+        statements.append('年数を入れると、契約の見え方が変わるわね。')
+    return dict(ask='日本人選手の契約と比べると、どんな規模なのだ？',
+                text=''.join(statements), head='日本人選手の契約と比較',
+                rows=[[name, term], *comparison_rows],
+                comparison_rows=comparison_rows, source_names='報道資料',
+                sources=unique(sources + [url for row in saved for url in row['sources']]))
+
+
+def large_followup(entry):
+    key = entry['story_key']
+    confirmed = dict(confirmed_large(entry['reports']))
+    if key not in confirmed or large_draft(key, confirmed[key]) != entry:
+        raise ValueError('大型契約の数字と出典が段2の保存材料と一致しません')
+    name, team, state, c = (entry[k] for k in ('subject', 'team', 'state', 'contract'))
+    reading = reading_for(name)
+    if not reading and re.fullmatch(r'[ァ-ヶー・]+', name):
+        reading = name.replace('・', '')
+    if not reading:
+        raise ValueError(f'選手名の日本語読みが未登録: {name}')
+    sources = unique(row['url'] for row in entry['reports'])
+    outlets = '・'.join(sorted({row['outlet'] for row in entry['reports']}))
+    if state == '契約を発表':
+        action = f'{team}が{name}との契約を発表したわ。報じられた条件は'
+    elif state == '移籍と報道':
+        action = f'{name}の{team}へのトレードが報じられたわ。報道にある契約の総額は'
+    else:
+        action = f'{name}と{team}が合意したそうよ。報じられた条件は'
+    term = f'{c["years"]}年総額{c["text"]}'
+    big = dict(label=f'{c["years"]}年の総額', value=c['value'], unit=c['unit'])
+    if not big['unit']:
+        big.update(value=c['value'].removesuffix('億'), unit='億ドル')
+    items = [dict(ask=f'{name}の契約は、いくらなのだ？',
+                  text=action + f'{term}よ。', head='報じられた契約',
+                  rows=[['球団', team], ['契約', term]], big=big,
+                  source_names=outlets, sources=sources)]
+    items.append(comparison_item(entry, term, sources))
+    return dict(checked_on=entry['checked_on'], title=entry['title'],
+                readings={name:reading}, reading_sources=[], items=items,
+                hook=dict(score=name, result='大型契約' if state != '移籍と報道' else 'トレード',
+                          subject=f'{c["years"]}年総額', big=big['value'], unit=big['unit'], note=state),
+                large_contract=entry)
+
+
 def group_stories(records):
     groups = {}
     for row in records:
@@ -315,11 +497,13 @@ def story_key(name_en, kind, team_en):
 def stage_for(records):
     kinds = {row['kind'] for row in records}
     outlets = {row['outlet'] for row in records}
-    big = any(set(row['reporters']) & set(BIG_REPORTERS) for row in records)
     if '正式' in kinds:
         return 2
-    if kinds & {'合意', '契約'} and (big or len(outlets) >= 2):
-        return 2
+    if kinds & {'合意', '契約', 'トレード'} and len(outlets) >= 2:
+        contracts = {(r['contract']['years'], r['contract']['amount'])
+                     for r in records if r['contract']}
+        if len(contracts) <= 1:
+            return 2
     return 1
 
 
@@ -467,10 +651,13 @@ def run(feeds, state, now, targets=None):
     targets = targets if targets is not None else target_names()
     teams = team_table()
     cache = {}
-    records, failures = [], []
+    records, large, failures = [], [], []
+    names = league_names()
     for feed_name, source in feeds:
         try:
-            records.extend(collect_items(read_source(source), feed_name, targets, teams, cache))
+            raw = read_source(source)
+            records.extend(collect_items(raw, feed_name, targets, teams, cache))
+            large.extend(large_records(raw, feed_name, {**names, **targets}, teams))
         except Exception as exc:
             failures.append(dict(feed=feed_name, error=str(exc) or type(exc).__name__))
     stories = group_stories(records)
@@ -502,11 +689,21 @@ def run(feeds, state, now, targets=None):
             previous['last_seen'] = now.isoformat()
             previous['title'] = entry['title']
             previous['outlets'] = entry.get('outlets', previous.get('outlets', []))
+    # 保存済みの確定項目は一覧で参照できる。同じ契約は媒体の順が変わっても1件。
+    new_large = {}
+    for key, rows in confirmed_large(large):
+        if key == 'teruaki-sato-chicago-cubs-deal':
+            continue  # 照合済みの followup-sato-cubs と同じ契約。
+        entry = large_draft(key, rows)
+        entry_state = state.setdefault('large_seen', {})
+        if key not in entry_state:
+            new_large[key] = entry
+            entry_state[key] = entry['checked_on']
     state['version'] = 1
     state['updated_at'] = now.isoformat()
     state['failures'] = failures
     return dict(stage1=new_stage1, stage2=new_stage2, all_stage1=all_stage1,
-                failures=failures, state=state)
+                failures=failures, state=state, large_stage2=new_large)
 
 
 def write_outputs(result, out_dir, now):
@@ -516,10 +713,10 @@ def write_outputs(result, out_dir, now):
         dict(updated_at=now.isoformat(), items=result['all_stage1'], new=result['stage1']),
         ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
     (out_dir / 'market_watch_stage2.json').write_text(json.dumps(
-        dict(updated_at=now.isoformat(), events=result['stage2']),
+        dict(updated_at=now.isoformat(), events={**result['stage2'], **result['large_stage2']}),
         ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
     (out_dir / 'market_watch_report.json').write_text(json.dumps(
-        dict(updated_at=now.isoformat(), stage1=len(result['stage1']), stage2=len(result['stage2']),
+        dict(updated_at=now.isoformat(), stage1=len(result['stage1']), stage2=len(result['stage2']) + len(result['large_stage2']),
              failures=result['failures']), ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
 
 
@@ -529,6 +726,7 @@ def main(argv=None):
     parser.add_argument('--state', default=str(STATE))
     parser.add_argument('--out', default=str(ROOT / 'build'))
     parser.add_argument('--now', default=None)
+    parser.add_argument('--large-material', type=Path)
     args = parser.parse_args(argv)
     feeds = FEEDS
     if args.feed:
@@ -537,11 +735,16 @@ def main(argv=None):
     state = load_state(args.state)
     result = run(feeds, state, now)
     write_outputs(result, args.out, now)
+    if args.large_material and result['large_stage2']:
+        target = args.large_material
+        saved = json.loads(target.read_text(encoding='utf-8')) if target.exists() else {'events': {}}
+        saved['events'].update(result['large_stage2'])
+        target.write_text(json.dumps(saved, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
     save_state(result['state'], args.state)
-    print(f'段1の新しい項目: {len(result["stage1"])}件 / 段2の新しい下書き: {len(result["stage2"])}件')
+    print(f'段1の新しい項目: {len(result["stage1"])}件 / 段2の新しい下書き: {len(result["stage2"]) + len(result["large_stage2"])}件')
     for entry in result['stage1']:
         print(f'  段1 {entry["key"]}: {entry["title"]}')
-    for key, entry in result['stage2'].items():
+    for key, entry in {**result['stage2'], **result['large_stage2']}.items():
         print(f'  段2 {key}: {entry["title"]}')
     for failure in result['failures']:
         print(f'  取得失敗 {failure["feed"]}: {failure["error"]}', file=sys.stderr)

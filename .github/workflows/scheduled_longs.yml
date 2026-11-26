@@ -1,0 +1,119 @@
+name: 欧州カップとMLB移籍市場の長編
+
+on:
+  schedule:
+    - cron: '40 7 * * 4' # 木曜16:40 JSTに制作、20:30に公開予約
+    - cron: '5 8 * * 6' # 土曜17:05 JSTに制作、20:30に公開予約
+  workflow_dispatch:
+    inputs:
+      kind:
+        description: 長編の種類
+        type: choice
+        options: [soccer_cup_long, mlb_market_long]
+        default: soccer_cup_long
+      date:
+        description: 対象の木曜または土曜（空欄は今日）
+        type: string
+      sample_only:
+        description: 見本のmp4だけを保存
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: scheduled-longs
+  cancel-in-progress: false
+
+env:
+  PYTHONUTF8: '1'
+  ANTHROPIC_API_KEY: ''
+  COLLESPO_STYLE: v2
+  COLLESPO_MOTION: ${{ vars.COLLESPO_MOTION || '' }}
+  COLLESPO_BUBBLE: ${{ vars.COLLESPO_BUBBLE || '' }}
+  COLLESPO_CAPTION_BREAKS: ${{ vars.COLLESPO_CAPTION_BREAKS || '' }}
+  COLLESPO_GLASS_BACKGROUND: ${{ vars.COLLESPO_GLASS_BACKGROUND || 'stripes' }}
+  COLLESPO_SLANT_VARIANT: ${{ vars.COLLESPO_SLANT_VARIANT || 'cream' }}
+  COLLESPO_LONGFORM_STYLE: v3
+  COLLESPO_SOLO_HOST: metan
+  COLLESPO_HOST_SPLIT: 'off'
+  COLLESPO_SAMPLE_ONLY: ${{ (github.event_name == 'workflow_dispatch' && inputs.sample_only) && 'true' || 'false' }}
+  COLLESPO_CUP_LONG_PUBLISH: ${{ vars.COLLESPO_CUP_LONG_PUBLISH || 'false' }}
+  COLLESPO_MARKET_LONG_PUBLISH: ${{ vars.COLLESPO_MARKET_LONG_PUBLISH || 'false' }}
+
+jobs:
+  long:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      KIND: ${{ inputs.kind || (github.event.schedule == '40 7 * * 4' && 'soccer_cup_long' || 'mlb_market_long') }}
+      TARGET_DATE: ${{ inputs.date }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install -r scripts/requirements.txt
+      - name: 保存材料で長編を組み立てる
+        id: material
+        run: |
+          set -o pipefail
+          ARGS=()
+          if [ -n "$TARGET_DATE" ]; then ARGS+=(--date "$TARGET_DATE"); fi
+          python scripts/scheduled_longs.py "$KIND" --out build/scheduled_long "${ARGS[@]}" | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: 常識点検
+        if: steps.material.outputs.can_make == 'true'
+        run: python scripts/sanity.py --general --strict --narration build/scheduled_long/dialogue.json --out build/scheduled_long/sanity.json --hold-record build/scheduled_long/sanity_hold.json --kind "$KIND"
+      - name: 制作道具とVOICEVOX
+        if: steps.material.outputs.can_make == 'true'
+        run: |
+          bash scripts/install_video_tools.sh
+          docker run -d --rm -p 50021:50021 --name voicevox voicevox/voicevox_engine:cpu-latest
+          for i in $(seq 1 60); do
+            if curl -fsS http://127.0.0.1:50021/version; then exit 0; fi
+            sleep 2
+          done
+          exit 1
+      - name: 長編を書き出して投稿前検査
+        if: steps.material.outputs.can_make == 'true'
+        run: |
+          p=build/scheduled_long
+          python scripts/synthesize_narration.py --narration "$p/dialogue.json" --out-dir "$p/audio"
+          python scripts/render_soccer_weekly.py --dialogue "$p/dialogue.json" --frames "$p/frames"
+          python scripts/render_soccer_weekly.py --dialogue "$p/dialogue.json" --audio-dir "$p/audio" --out "$p" --require-audio
+          python -c "import json; print(json.load(open('$p/metadata.json'))['snippet']['description'])" > "$p/description.txt"
+          python scripts/check_sample.py "$p/collespo_longform.mp4"
+          python scripts/upload_gate.py "$p/collespo_longform.mp4" --segments "$p/dialogue.json" --description-file "$p/description.txt" --kind "$KIND"
+          if [ "$COLLESPO_SAMPLE_ONLY" = true ]; then python scripts/sample_only.py --mark "$p/sample_only.json" --require-video; fi
+      - name: 20:30に公開予約
+        id: publish
+        if: steps.material.outputs.can_make == 'true' && env.COLLESPO_SAMPLE_ONLY != 'true' && ((env.KIND == 'soccer_cup_long' && env.COLLESPO_CUP_LONG_PUBLISH == 'true') || (env.KIND == 'mlb_market_long' && env.COLLESPO_MARKET_LONG_PUBLISH == 'true'))
+        env:
+          VIDEO_DAY: ${{ steps.material.outputs.key }}
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+        run: |
+          p=build/scheduled_long
+          SPORT=mlb
+          if [ "$KIND" = soccer_cup_long ]; then SPORT=soccer; fi
+          python scripts/upload_youtube.py --video "$p/collespo_longform.mp4" --games "$p/material.json" --narration "$p/dialogue.json" \
+            --kind "$KIND" --sport "$SPORT" --video-date "$VIDEO_DAY" --thumbnail "$p/frames/opening.png" --privacy public --publish-at 20:30
+          python scripts/verify_published.py --kind "$KIND" --video-date "$VIDEO_DAY" --hold-record "$p/sanity_hold.json"
+      - name: 公開台帳を保存
+        if: always() && steps.publish.outcome != 'skipped' && steps.publish.outcome != ''
+        run: bash scripts/commit_data.sh "scheduled long ${{ github.run_id }}" data/published_videos.json data/scheduled_long_published.json data/playlists.json
+      - name: Save sanity gate records
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: scheduled-long-${{ github.run_id }}
+          path: |
+            build/scheduled_long/
+            build/**/voice_manifest.json
+            build/**/render_timeline.json
+            !build/**/portrait/**
+          retention-days: 14

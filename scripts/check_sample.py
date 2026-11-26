@@ -138,8 +138,12 @@ def video_issues(path, evidence):
         'stream=width,height,nb_frames', '-of', 'json', str(path)]))
     video = probe['streams'][0]
     size = [video['width'], video['height']]
-    if size != [1080, 1920] or size != evidence['size']:
+    if size not in ([1080, 1920], [1920, 1080]) or size != evidence['size']:
         return ['完成動画と安全域の寸法が一致しない']
+    landscape = size == [1920, 1080]
+    stride = evidence.get('stride', 3)
+    if type(stride) is not int or not 1 <= stride <= (12 if landscape else 3):
+        return ['描画記録の検査間隔が不正']
     problems = script_issues(evidence['segments'])
     rows = evidence['frames']
     if not rows or rows[0]['frame'] != 0:
@@ -147,8 +151,8 @@ def video_issues(path, evidence):
     width, height = REFERENCE_SIZE
     expected_frames = int(video['nb_frames'])
     indexes = [row['frame'] for row in rows]
-    if not (0 <= expected_frames - 1 - indexes[-1] < 3) or any(
-            not 1 <= b-a <= 3 for a, b in zip(indexes, indexes[1:])):
+    if not (0 <= expected_frames - 1 - indexes[-1] < stride) or any(
+            not 1 <= b-a <= stride for a, b in zip(indexes, indexes[1:])):
         problems.append('末尾までの描画記録がない')
     selected = {row['frame']: row for row in rows}
     command = ['ffmpeg', '-v', 'error', '-i', str(path), '-an', '-vf',
@@ -164,8 +168,16 @@ def video_issues(path, evidence):
             if index not in selected:
                 continue
             row = selected[index]
-            for problem in geometry_issues(row, size):
-                problems.append(f'コマ{index} {problem}')
+            if landscape:
+                if not row['layout']:
+                    problems.append(f'コマ{index} 描画した文字の配置記録がない')
+                for text in row['layout']:
+                    x, y, right, bottom = text['box']
+                    if not (0 <= x <= right <= size[0] and 0 <= y <= bottom <= size[1]):
+                        problems.append(f"コマ{index} 見切れ {text['text']}")
+            else:
+                for problem in geometry_issues(row, size):
+                    problems.append(f'コマ{index} {problem}')
             arr = np.frombuffer(raw, dtype=np.uint8).reshape(height, width).astype('float32')
             ref = np.frombuffer(zlib.decompress(base64.b64decode(row['reference'])), dtype=np.uint8)
             delta = np.abs(arr - ref.reshape(height, width))
@@ -178,7 +190,7 @@ def video_issues(path, evidence):
                         problems.append(f"コマ{index} {portrait['who']} の下端の画素が記録と違う")
             layout = [item for item in row['layout'] if item['role'] != 'face']
             stable = previous is not None and last == layout and not row['transition']
-            if stable and translation(previous, arr):
+            if stable and not landscape and translation(previous, arr):
                 problems.append(f'コマ{index} 画面・字幕の揺れ')
             if stable:
                 old = {p['who']: p for p in last_row['portraits']}

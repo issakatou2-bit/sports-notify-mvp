@@ -563,8 +563,11 @@ def main():
     odd, contradictions = sanity_material.assess([], documents, materials)
     for error in contradictions:
         print('  NG 材料照合:', error)
+    fixed_only = bool(documents) and all(
+        doc.get('program') in ('mlb_season_insight', 'long_highlight')
+        or 'scheduled_long_material' in doc for doc in documents)
+    key = os.environ.get("ANTHROPIC_API_KEY", "") if args.general and not fixed_only else ""
     if args.general:
-        key = os.environ.get("ANTHROPIC_API_KEY", "")
         if key:
             odd, contradictions = sanity_material.assess(
                 general(args.narration, key, materials=materials), documents, materials)
@@ -599,7 +602,7 @@ def main():
     import sanity_recheck
     odd, contradictions, materials, attempts = sanity_recheck.run(
         documents, odd, materials, impossible, contradictions,
-        os.environ.get('ANTHROPIC_API_KEY', '') if args.general else '')
+        key)
     impossible += voices_context.checks(documents, odd)
     impossible = list(dict.fromkeys(impossible))
     material_status = sanity_sources.availability(documents, materials)

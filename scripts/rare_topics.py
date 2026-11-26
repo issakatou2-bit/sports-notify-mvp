@@ -102,6 +102,43 @@ def build(rarity: dict) -> list:
     return out
 
 
+def season_insights(rarity):
+    import season_stock
+    if str(rarity.get('season')) != '2026':
+        return []
+    out = []
+    for name, player in rarity.get('players', {}).items():
+        for item in player.get('items', []):
+            if item.get('side') != 'top' or not item.get('at') or not item.get('of'):
+                continue
+            if item['of'] < 100 or item['at'] * 50 > item['of'] or item.get('ties', 1) != 1:
+                continue
+            group = item['group']
+            label, value = item['label'], item['shown']
+            if label == '三振率':
+                continue  # アダム・ダン率の内訳と別動画で重ねない。
+            rank = _rank_text(item, rarity['min_pa'], rarity['min_ip'])
+            rows = [[label, value], ['MLBでの順位', rank]]
+            detail = item.get('namesake')
+            if detail:
+                rows.append(['指標の由来', detail])
+            elif item.get('leader'):
+                detail = f'この指標の最上位は{item["leader"]["shown"]}よ。'
+                rows.append(['MLB最上位の数字', item['leader']['shown']])
+            else:
+                continue
+            note = (item.get('note') or '').rstrip('。')
+            detail = detail.rstrip('。').replace('上回っている', '上回ったわ')
+            answer = f'{name}の{label}は{value}で、{rank}よ。{detail}。'
+            if note:
+                answer += 'この指標は、' + note + 'を表すのよ。'
+            out.append(season_stock.insight_topic(
+                player['player_id'], name, 'rare_' + {'アダム・ダン率': 'dunn', '四球率': 'bb', 'WHIP': 'whip'}.get(label, str(len(out))), f'{name}の{label} {value}',
+                f'{name}の{label}は、MLBでどのくらいなのだ？', answer, rows, group,
+                source_path='data/rarity.json'))
+    return out
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--rarity", default="data/rarity.json")
