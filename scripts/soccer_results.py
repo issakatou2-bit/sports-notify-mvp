@@ -390,9 +390,13 @@ def main():
         data['can_make'] = any(positive(player) for player in data['players'])
     validate_data(data)
     if args.club_topic_pool and target == __import__('soccer_results_clock').target_day(scheduled=True):
-        import soccer_club_topics as club_topics
-        previous = club_topics.read_pool(args.club_topic_pool)
-        club_topics.national.save(args.club_topic_pool, club_topics.collect(data, summaries, previous))
+        # クラブ戦の話題の材料づくりが失敗しても、朝の結果の回は止めない。
+        try:
+            import soccer_club_topics as club_topics
+            previous = club_topics.read_pool(args.club_topic_pool)
+            club_topics.national.save(args.club_topic_pool, club_topics.collect(data, summaries, previous))
+        except Exception as exc:
+            print(f'::warning::クラブ戦の話題の材料を保存できませんでした（{type(exc).__name__}: {exc}）', file=sys.stderr)
     args.out.parent.mkdir(parents=True,exist_ok=True)
     args.out.write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
     print(json.dumps({'date':args.date,'games':len(data['games']),'players':len(data['players']),'can_make':data['can_make'],'rejected':data['rejected']},ensure_ascii=False))
