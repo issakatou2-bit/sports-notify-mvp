@@ -181,9 +181,9 @@ def standout_games(games, name, metrics):
                f'{name}は今季、1試合で最多いくつの{label}を記録したのだ？',
                f'{at}の{number}が最多よ。今季の{len(games)}試合の中で、'
                f'この数字を記録したのは{len(best)}試合だったわ。'
-               f'今季の合計は{sum(g['stat'].get(metric, 0) for g in games)}{unit}よ。',
+               f'今季の合計は{sum(g["stat"].get(metric, 0) for g in games)}{unit}よ。',
                [[at, f'今季最多 {number}'], ['同じ数字の試合', f'{len(games)}試合中{len(best)}試合'],
-                ['今季の合計', f'{sum(g['stat'].get(metric, 0) for g in games)}{unit}']])
+                ['今季の合計', f'{sum(g["stat"].get(metric, 0) for g in games)}{unit}']])
 
 
 def home_run_month(games, name):

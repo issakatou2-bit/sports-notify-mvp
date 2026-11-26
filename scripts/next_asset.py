@@ -73,13 +73,20 @@ def published(path: str) -> set:
 
 
 def posted_today(path: str, today=None, kinds=None, count=False,
-                 exclude=(), extra=None, skip_keys=(), return_keys=False):
+                 exclude=(), extra=None, skip_keys=()):
     """きょう、もう1本出したか。
 
     **起動する入口が2つある。**cron-job.org（JST 22:00）と、
     夕方の枠のあと（18:30に公開するため）。どちらからでも走るので、
     このガードが無いと1日2本出て、在庫が倍の速さで減る。
     """
+    hits = keys_posted_today(path, today=today, kinds=kinds, exclude=exclude,
+                             extra=extra, skip_keys=skip_keys)
+    return len(hits) if count else bool(hits)
+
+
+def keys_posted_today(path: str, today=None, kinds=None, exclude=(), extra=None, skip_keys=()):
+    """きょう公開（予約）した資産動画の名前の一覧。"""
     from datetime import datetime, timedelta, timezone
     jst = timezone(timedelta(hours=9))
     today = today or datetime.now(jst).date()
@@ -106,7 +113,7 @@ def posted_today(path: str, today=None, kinds=None, count=False,
             continue
         if when.astimezone(jst).date() == today:
             hits.append(key)
-    return hits if return_keys else len(hits) if count else bool(hits)
+    return hits
 
 
 def kind_of(key: str) -> str:
@@ -297,7 +304,7 @@ def pick_season(args) -> int:
                                                                 extra=ledgers[0].get('asset', {}))))
     insight_left = 2 - sum(
         key.startswith('season_insight_')
-        for key in posted_today(args.published, kinds={'season'}, extra=ledgers[0].get('asset', {}), return_keys=True))
+        for key in keys_posted_today(args.published, kinds={'season'}, extra=ledgers[0].get('asset', {})))
     used = season_kinds_today(args.published, extra=ledgers[0].get('asset', {}))
     used_players = set()
     for k in todo:
