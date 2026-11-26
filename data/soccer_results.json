@@ -1,156 +1,44 @@
 {
   "schema_version": 1,
-  "date_jst": "2026-11-24",
-  "generated_at": "2026-11-25T04:55:10.052513+00:00",
+  "date_jst": "2026-11-25",
+  "generated_at": "2026-11-26T04:11:06.552079+00:00",
   "source": "ESPN・football-data.org",
   "games": [
     {
-      "id": "401915298",
+      "id": "401915292",
       "league": "CL",
       "league_jp": "チャンピオンズリーグ",
-      "start_utc": "2026-11-24T20:00Z",
-      "finished_utc": "2026-11-24T21:52:20+00:00",
-      "date_jst": "2026-11-24",
+      "start_utc": "2026-11-25T20:00Z",
+      "finished_utc": "2026-11-25T21:54:19+00:00",
+      "date_jst": "2026-11-25",
       "score": {
-        "home": 5,
-        "away": 1
-      },
-      "players": [
-        {
-          "name": "佐野航大",
-          "name_en": "Kodai Sano",
-          "club": "PSV",
-          "side": "away",
-          "event_id": "401915298",
-          "athlete_id": "341715",
-          "status": "starter",
-          "goals": 0,
-          "assists": 0,
-          "yellow_cards": 0,
-          "red_cards": 0,
-          "plays": [],
-          "position": "MF",
-          "stats_source": "ESPN summary.rosters.roster.stats",
-          "shots": 2,
-          "on_target": 0,
-          "subbed_out": true,
-          "minutes": 78,
-          "minutes_source": "ESPN keyEvents substitution",
-          "minutes_approx": true,
-          "appearance_evidence": "ESPN starter/subbedIn"
-        }
-      ],
-      "goals": [
-        {
-          "minute": "32",
-          "scorer": "Ivan Perisic",
-          "athlete_id": "103485",
-          "side": "away",
-          "own_goal": false,
-          "japanese_goal": false,
-          "japanese_assists": []
-        },
-        {
-          "minute": "50",
-          "scorer": "Federico Valverde",
-          "athlete_id": "235818",
-          "side": "home",
-          "own_goal": false,
-          "japanese_goal": false,
-          "japanese_assists": []
-        },
-        {
-          "minute": "60",
-          "scorer": "Jude Bellingham",
-          "athlete_id": "291281",
-          "side": "home",
-          "own_goal": false,
-          "japanese_goal": false,
-          "japanese_assists": []
-        },
-        {
-          "minute": "64",
-          "scorer": "Kylian Mbappé",
-          "athlete_id": "231388",
-          "side": "home",
-          "own_goal": false,
-          "japanese_goal": false,
-          "japanese_assists": []
-        },
-        {
-          "minute": "84",
-          "scorer": "Kylian Mbappé",
-          "athlete_id": "231388",
-          "side": "home",
-          "own_goal": false,
-          "japanese_goal": false,
-          "japanese_assists": []
-        },
-        {
-          "minute": "87",
-          "scorer": "Vinícius Júnior",
-          "athlete_id": "252107",
-          "side": "home",
-          "own_goal": false,
-          "japanese_goal": false,
-          "japanese_assists": []
-        }
-      ],
-      "unresolved": [],
-      "home": {
-        "id": "86",
-        "name_en": "Real Madrid",
-        "name_jp": "レアル・マドリード",
-        "abbr": "RMA"
-      },
-      "away": {
-        "id": "148",
-        "name_en": "PSV Eindhoven",
-        "name_jp": "PSV",
-        "abbr": "PSV"
-      },
-      "match_stats": {
-        "source": "ESPN summary.boxscore.teams.statistics",
-        "home": {
-          "possession": 61.5,
-          "shots": 24,
-          "on_target": 9
-        },
-        "away": {
-          "possession": 38.5,
-          "shots": 10,
-          "on_target": 1
-        }
-      },
-      "goals_complete": true,
-      "score_crosscheck": "unavailable"
-    },
-    {
-      "id": "401915295",
-      "league": "CL",
-      "league_jp": "チャンピオンズリーグ",
-      "start_utc": "2026-11-24T20:00Z",
-      "finished_utc": "2026-11-24T21:50:23+00:00",
-      "date_jst": "2026-11-24",
-      "score": {
-        "home": 1,
-        "away": 1
+        "home": 0,
+        "away": 3
       },
       "players": [],
       "goals": [
         {
-          "minute": "10",
-          "scorer": "Viktor Gyökeres",
-          "athlete_id": "258906",
-          "side": "home",
+          "minute": "13",
+          "scorer": "Alexander Isak",
+          "athlete_id": "235662",
+          "side": "away",
           "own_goal": false,
           "japanese_goal": false,
           "japanese_assists": []
         },
         {
-          "minute": "55",
-          "scorer": "Maximilian Beier",
-          "athlete_id": "290639",
+          "minute": "79",
+          "scorer": "Florian Wirtz",
+          "athlete_id": "303748",
+          "side": "away",
+          "own_goal": false,
+          "japanese_goal": false,
+          "japanese_assists": []
+        },
+        {
+          "minute": "82",
+          "scorer": "Alexander Isak",
+          "athlete_id": "235662",
           "side": "away",
           "own_goal": false,
           "japanese_goal": false,
@@ -159,26 +47,26 @@
       ],
       "unresolved": [],
       "home": {
-        "id": "359",
-        "name_en": "Arsenal",
-        "name_jp": "アーセナル",
-        "abbr": "ARS"
+        "id": "570",
+        "name_en": "Club Brugge",
+        "name_jp": "クラブ・ブルージュ",
+        "abbr": "BRU"
       },
       "away": {
-        "id": "124",
-        "name_en": "Borussia Dortmund",
-        "name_jp": "ドルトムント",
-        "abbr": "DOR"
+        "id": "364",
+        "name_en": "Liverpool",
+        "name_jp": "リバプール",
+        "abbr": "LIV"
       },
       "match_stats": {
         "source": "ESPN summary.boxscore.teams.statistics",
         "home": {
-          "possession": 63.2,
-          "shots": 30,
-          "on_target": 4
+          "possession": 53.5,
+          "shots": 17,
+          "on_target": 5
         },
         "away": {
-          "possession": 36.8,
+          "possession": 46.5,
           "shots": 13,
           "on_target": 4
         }
@@ -187,49 +75,31 @@
       "score_crosscheck": "unavailable"
     },
     {
-      "id": "401915379",
+      "id": "401915376",
       "league": "CL",
       "league_jp": "チャンピオンズリーグ",
-      "start_utc": "2026-11-24T20:00Z",
-      "finished_utc": "2026-11-24T21:49:49+00:00",
-      "date_jst": "2026-11-24",
+      "start_utc": "2026-11-25T20:00Z",
+      "finished_utc": "2026-11-25T21:53:16+00:00",
+      "date_jst": "2026-11-25",
       "score": {
         "home": 2,
-        "away": 2
+        "away": 0
       },
       "players": [],
       "goals": [
         {
-          "minute": "55",
-          "scorer": "Rasmus Højlund",
-          "athlete_id": "309273",
-          "side": "away",
-          "own_goal": false,
-          "japanese_goal": false,
-          "japanese_assists": []
-        },
-        {
-          "minute": "67",
-          "scorer": "Ayyoub Bouaddi",
-          "athlete_id": "373927",
+          "minute": "57",
+          "scorer": "Petar Sucic",
+          "athlete_id": "341494",
           "side": "home",
           "own_goal": false,
           "japanese_goal": false,
           "japanese_assists": []
         },
         {
-          "minute": "76",
-          "scorer": "Noa Lang",
-          "athlete_id": "255344",
-          "side": "away",
-          "own_goal": false,
-          "japanese_goal": false,
-          "japanese_assists": []
-        },
-        {
-          "minute": "86",
-          "scorer": "Rayan Cherki",
-          "athlete_id": "298008",
+          "minute": "74",
+          "scorer": "Lautaro Martínez",
+          "athlete_id": "219713",
           "side": "home",
           "own_goal": false,
           "japanese_goal": false,
@@ -238,71 +108,59 @@
       ],
       "unresolved": [],
       "home": {
-        "id": "382",
-        "name_en": "Manchester City",
-        "name_jp": "マンチェスター・シティ",
-        "abbr": "MNC"
+        "id": "110",
+        "name_en": "Internazionale",
+        "name_jp": "インテル",
+        "abbr": "INT"
       },
       "away": {
-        "id": "114",
-        "name_en": "Napoli",
-        "name_jp": "ナポリ",
-        "abbr": "NAP"
+        "id": "134",
+        "name_en": "VfB Stuttgart",
+        "name_jp": "シュツットガルト",
+        "abbr": "VFB"
       },
       "match_stats": {
         "source": "ESPN summary.boxscore.teams.statistics",
         "home": {
-          "possession": 62.7,
-          "shots": 18,
-          "on_target": 7
+          "possession": 50.8,
+          "shots": 20,
+          "on_target": 5
         },
         "away": {
-          "possession": 37.3,
-          "shots": 9,
-          "on_target": 3
+          "possession": 49.2,
+          "shots": 13,
+          "on_target": 2
         }
       },
       "goals_complete": true,
       "score_crosscheck": "unavailable"
     },
     {
-      "id": "401915300",
+      "id": "401915291",
       "league": "CL",
       "league_jp": "チャンピオンズリーグ",
-      "start_utc": "2026-11-24T17:45Z",
-      "finished_utc": "2026-11-24T19:38:57+00:00",
-      "date_jst": "2026-11-24",
+      "start_utc": "2026-11-25T20:00Z",
+      "finished_utc": "2026-11-25T21:51:04+00:00",
+      "date_jst": "2026-11-25",
       "score": {
-        "home": 1,
+        "home": 2,
         "away": 0
       },
-      "players": [
-        {
-          "name": "鈴木彩艶",
-          "name_en": "Zion Suzuki",
-          "club": "アストンヴィラ",
-          "side": "away",
-          "event_id": "401915300",
-          "athlete_id": "265958",
-          "status": "starter",
-          "goals": 0,
-          "assists": 0,
-          "yellow_cards": 0,
-          "red_cards": 0,
-          "plays": [],
-          "position": "GK",
-          "stats_source": "ESPN summary.rosters.roster.stats",
-          "saves": 1,
-          "conceded": 1,
-          "subbed_out": false,
-          "appearance_evidence": "ESPN starter/subbedIn"
-        }
-      ],
+      "players": [],
       "goals": [
         {
-          "minute": "77",
-          "scorer": "Deniz Gül",
-          "athlete_id": "350513",
+          "minute": "19",
+          "scorer": "Alexander Sørloth",
+          "athlete_id": "188230",
+          "side": "home",
+          "own_goal": false,
+          "japanese_goal": false,
+          "japanese_assists": []
+        },
+        {
+          "minute": "24",
+          "scorer": "Julián Álvarez",
+          "athlete_id": "277206",
           "side": "home",
           "own_goal": false,
           "japanese_goal": false,
@@ -311,28 +169,239 @@
       ],
       "unresolved": [],
       "home": {
-        "id": "432",
-        "name_en": "Galatasaray",
-        "name_jp": "ガラタサライ",
-        "abbr": "GAL"
+        "id": "1068",
+        "name_en": "Atlético Madrid",
+        "name_jp": "アトレティコ・マドリード",
+        "abbr": "ATM"
       },
       "away": {
-        "id": "362",
-        "name_en": "Aston Villa",
-        "name_jp": "アストンヴィラ",
-        "abbr": "AVL"
+        "id": "510",
+        "name_en": "Viking FK",
+        "name_jp": "バイキング",
+        "abbr": "VFK"
       },
       "match_stats": {
         "source": "ESPN summary.boxscore.teams.statistics",
         "home": {
-          "possession": 45.4,
-          "shots": 9,
-          "on_target": 2
+          "possession": 48.4,
+          "shots": 20,
+          "on_target": 9
         },
         "away": {
-          "possession": 54.6,
+          "possession": 51.6,
+          "shots": 9,
+          "on_target": 1
+        }
+      },
+      "goals_complete": true,
+      "score_crosscheck": "unavailable"
+    },
+    {
+      "id": "401915378",
+      "league": "CL",
+      "league_jp": "チャンピオンズリーグ",
+      "start_utc": "2026-11-25T17:45Z",
+      "finished_utc": "2026-11-25T19:34:47+00:00",
+      "date_jst": "2026-11-25",
+      "score": {
+        "home": 1,
+        "away": 4
+      },
+      "players": [],
+      "goals": [
+        {
+          "minute": "31",
+          "scorer": "Anthony Gordon",
+          "athlete_id": "268782",
+          "side": "away",
+          "own_goal": false,
+          "japanese_goal": false,
+          "japanese_assists": []
+        },
+        {
+          "minute": "51",
+          "scorer": "Anthony Gordon",
+          "athlete_id": "268782",
+          "side": "away",
+          "own_goal": false,
+          "japanese_goal": false,
+          "japanese_assists": []
+        },
+        {
+          "minute": "55",
+          "scorer": "Karim Adeyemi",
+          "athlete_id": "274913",
+          "side": "away",
+          "own_goal": false,
+          "japanese_goal": false,
+          "japanese_assists": []
+        },
+        {
+          "minute": "60",
+          "scorer": "Gabriel Jesus",
+          "athlete_id": "217289",
+          "side": "away",
+          "own_goal": false,
+          "japanese_goal": false,
+          "japanese_assists": []
+        },
+        {
+          "minute": "63",
+          "scorer": "Joy-Lance Mickels",
+          "athlete_id": "291791",
+          "side": "home",
+          "own_goal": false,
+          "japanese_goal": false,
+          "japanese_assists": []
+        }
+      ],
+      "unresolved": [],
+      "home": {
+        "id": "21922",
+        "name_en": "Sabah FK",
+        "name_jp": "Sabah FK",
+        "abbr": "SAB"
+      },
+      "away": {
+        "id": "83",
+        "name_en": "Barcelona",
+        "name_jp": "Barcelona",
+        "abbr": "BAR"
+      },
+      "match_stats": {
+        "source": "ESPN summary.boxscore.teams.statistics",
+        "home": {
+          "possession": 28.6,
+          "shots": 8,
+          "on_target": 3
+        },
+        "away": {
+          "possession": 71.4,
+          "shots": 25,
+          "on_target": 14
+        }
+      },
+      "goals_complete": true,
+      "score_crosscheck": "unavailable"
+    },
+    {
+      "id": "401915377",
+      "league": "CL",
+      "league_jp": "チャンピオンズリーグ",
+      "start_utc": "2026-11-25T20:00Z",
+      "finished_utc": "2026-11-25T21:52:17+00:00",
+      "date_jst": "2026-11-25",
+      "score": {
+        "home": 2,
+        "away": 1
+      },
+      "players": [
+        {
+          "name": "上田綺世",
+          "name_en": "Ayase Ueda",
+          "club": "リール",
+          "side": "home",
+          "event_id": "401915377",
+          "athlete_id": "274277",
+          "status": "starter",
+          "goals": 1,
+          "assists": 0,
+          "yellow_cards": 0,
+          "red_cards": 0,
+          "plays": [
+            {
+              "minute": "62",
+              "goal": true,
+              "assist": false
+            }
+          ],
+          "position": "FW",
+          "stats_source": "ESPN summary.rosters.roster.stats",
           "shots": 4,
-          "on_target": 0
+          "on_target": 2,
+          "subbed_out": true,
+          "minutes": 77,
+          "minutes_source": "ESPN keyEvents substitution",
+          "minutes_approx": true,
+          "appearance_evidence": "ESPN starter/subbedIn"
+        },
+        {
+          "name": "伊藤洋輝",
+          "name_en": "Hiroki Ito",
+          "club": "バイエルン",
+          "side": "away",
+          "event_id": "401915377",
+          "athlete_id": "97111",
+          "status": "starter",
+          "goals": 0,
+          "assists": 0,
+          "yellow_cards": 0,
+          "red_cards": 0,
+          "plays": [],
+          "position": "DF",
+          "stats_source": "ESPN summary.rosters.roster.stats",
+          "shots": 2,
+          "on_target": 1,
+          "subbed_out": true,
+          "minutes": 76,
+          "minutes_source": "ESPN keyEvents substitution",
+          "minutes_approx": true,
+          "appearance_evidence": "ESPN starter/subbedIn"
+        }
+      ],
+      "goals": [
+        {
+          "minute": "15",
+          "scorer": "Dayot Upamecano",
+          "athlete_id": "222793",
+          "side": "away",
+          "own_goal": false,
+          "japanese_goal": false,
+          "japanese_assists": []
+        },
+        {
+          "minute": "62",
+          "scorer": "上田綺世",
+          "athlete_id": "274277",
+          "side": "home",
+          "own_goal": false,
+          "japanese_goal": true,
+          "japanese_assists": []
+        },
+        {
+          "minute": "65",
+          "scorer": "Aleksandar Pavlovic",
+          "athlete_id": "359370",
+          "side": "home",
+          "own_goal": true,
+          "japanese_goal": false,
+          "japanese_assists": []
+        }
+      ],
+      "unresolved": [],
+      "home": {
+        "id": "166",
+        "name_en": "Lille",
+        "name_jp": "リール",
+        "abbr": "LILL"
+      },
+      "away": {
+        "id": "132",
+        "name_en": "Bayern Munich",
+        "name_jp": "バイエルン",
+        "abbr": "MUN"
+      },
+      "match_stats": {
+        "source": "ESPN summary.boxscore.teams.statistics",
+        "home": {
+          "possession": 35.2,
+          "shots": 15,
+          "on_target": 3
+        },
+        "away": {
+          "possession": 64.8,
+          "shots": 12,
+          "on_target": 7
         }
       },
       "goals_complete": true,
@@ -341,137 +410,79 @@
   ],
   "players": [
     {
-      "name": "佐野航大",
-      "name_en": "Kodai Sano",
-      "club": "PSV",
-      "side": "away",
-      "event_id": "401915298",
-      "athlete_id": "341715",
+      "name": "上田綺世",
+      "name_en": "Ayase Ueda",
+      "club": "リール",
+      "side": "home",
+      "event_id": "401915377",
+      "athlete_id": "274277",
       "status": "starter",
-      "goals": 0,
+      "goals": 1,
       "assists": 0,
       "yellow_cards": 0,
       "red_cards": 0,
-      "plays": [],
-      "position": "MF",
+      "plays": [
+        {
+          "minute": "62",
+          "goal": true,
+          "assist": false
+        }
+      ],
+      "position": "FW",
       "stats_source": "ESPN summary.rosters.roster.stats",
-      "shots": 2,
-      "on_target": 0,
+      "shots": 4,
+      "on_target": 2,
       "subbed_out": true,
-      "minutes": 78,
+      "minutes": 77,
       "minutes_source": "ESPN keyEvents substitution",
       "minutes_approx": true,
       "appearance_evidence": "ESPN starter/subbedIn"
     },
     {
-      "name": "鈴木彩艶",
-      "name_en": "Zion Suzuki",
-      "club": "アストンヴィラ",
+      "name": "伊藤洋輝",
+      "name_en": "Hiroki Ito",
+      "club": "バイエルン",
       "side": "away",
-      "event_id": "401915300",
-      "athlete_id": "265958",
+      "event_id": "401915377",
+      "athlete_id": "97111",
       "status": "starter",
       "goals": 0,
       "assists": 0,
       "yellow_cards": 0,
       "red_cards": 0,
       "plays": [],
-      "position": "GK",
+      "position": "DF",
       "stats_source": "ESPN summary.rosters.roster.stats",
-      "saves": 1,
-      "conceded": 1,
-      "subbed_out": false,
+      "shots": 2,
+      "on_target": 1,
+      "subbed_out": true,
+      "minutes": 76,
+      "minutes_source": "ESPN keyEvents substitution",
+      "minutes_approx": true,
       "appearance_evidence": "ESPN starter/subbedIn"
     }
   ],
-  "can_make": false,
+  "can_make": true,
   "rejected": [
     {
-      "event_id": "401915380",
+      "event_id": "401915293",
       "reason": "日本人選手を当日の登録名簿で照合できず"
     },
     {
-      "event_id": "401915296",
+      "event_id": "401915374",
       "reason": "日本人選手を当日の登録名簿で照合できず"
     },
     {
-      "event_id": "401915294",
+      "event_id": "401915375",
       "reason": "日本人選手を当日の登録名簿で照合できず"
     },
     {
-      "event_id": "401915299",
-      "reason": "日本人選手を当日の登録名簿で照合できず"
-    },
-    {
-      "event_id": "401915297",
+      "event_id": "401915373",
       "reason": "日本人選手を当日の登録名簿で照合できず"
     }
   ],
   "preview_expectation_results": {},
   "preview_next_fixtures": [
-    {
-      "home": "Sabah FK",
-      "away": "FC Barcelona",
-      "start_utc": "2026-11-25T17:45:00Z",
-      "source": "https://api.football-data.org/v4/competitions/CL/matches",
-      "competition": "CL"
-    },
-    {
-      "home": "SK Slavia Praha",
-      "away": "Villarreal CF",
-      "start_utc": "2026-11-25T17:45:00Z",
-      "source": "https://api.football-data.org/v4/competitions/CL/matches",
-      "competition": "CL"
-    },
-    {
-      "home": "FC Internazionale Milano",
-      "away": "VfB Stuttgart",
-      "start_utc": "2026-11-25T20:00:00Z",
-      "source": "https://api.football-data.org/v4/competitions/CL/matches",
-      "competition": "CL"
-    },
-    {
-      "home": "Club Atlético de Madrid",
-      "away": "Viking FK",
-      "start_utc": "2026-11-25T20:00:00Z",
-      "source": "https://api.football-data.org/v4/competitions/CL/matches",
-      "competition": "CL"
-    },
-    {
-      "home": "Paris Saint-Germain FC",
-      "away": "AS Roma",
-      "start_utc": "2026-11-25T20:00:00Z",
-      "source": "https://api.football-data.org/v4/competitions/CL/matches",
-      "competition": "CL"
-    },
-    {
-      "home": "Club Brugge KV",
-      "away": "Liverpool FC",
-      "start_utc": "2026-11-25T20:00:00Z",
-      "source": "https://api.football-data.org/v4/competitions/CL/matches",
-      "competition": "CL"
-    },
-    {
-      "home": "Lille OSC",
-      "away": "FC Bayern München",
-      "start_utc": "2026-11-25T20:00:00Z",
-      "source": "https://api.football-data.org/v4/competitions/CL/matches",
-      "competition": "CL"
-    },
-    {
-      "home": "Sporting Clube de Portugal",
-      "away": "Manchester United FC",
-      "start_utc": "2026-11-25T20:00:00Z",
-      "source": "https://api.football-data.org/v4/competitions/CL/matches",
-      "competition": "CL"
-    },
-    {
-      "home": "FK Shakhtar Donetsk",
-      "away": "Fenerbahçe SK",
-      "start_utc": "2026-11-25T20:00:00Z",
-      "source": "https://api.football-data.org/v4/competitions/CL/matches",
-      "competition": "CL"
-    },
     {
       "home": "Villarreal CF",
       "away": "Sabah FK",
@@ -600,40 +611,241 @@
     }
   ],
   "preview_followup": {
-    "day": "2026-11-24",
-    "video_id": "4UbaZ_WXDzU",
+    "day": "2026-11-25",
+    "video_id": "51gZZeuv08Y",
     "games": [
       {
-        "event_id": "401915298",
+        "event_id": "401915292",
         "forecast": {
-          "game_id": "575397",
-          "espn_event_id": "401915298",
+          "game_id": "espn-401915292",
+          "espn_event_id": "401915292",
           "league": "チャンピオンズリーグ",
           "competition_code": "CL",
-          "home": "レアル・マドリード",
-          "away": "PSV",
-          "start_utc": "2026-11-25T05:00:00+09:00",
+          "home": "Club Brugge KV",
+          "away": "Liverpool FC",
+          "start_utc": "2026-11-26T05:00:00+09:00",
           "reasons": [
             {
               "kind": "european_points",
               "score": 120,
-              "text": "チャンピオンズリーグではレアル・マドリードは勝点12、PSVは勝点4で、両チームの勝点差は8です。",
+              "text": "チャンピオンズリーグではクラブ・ブルッヘは勝点9、リバプールは勝点9で、両チームの勝点差は0です。",
               "source": "https://site.api.espn.com/apis/v2/sports/soccer/uefa.champions/standings",
-              "retrieved_at": "2026-11-24T10:02:46.901069+00:00",
+              "retrieved_at": "2026-11-25T11:34:00.664205+00:00",
               "values": {
                 "competition": "CL",
-                "gap": 8,
+                "gap": 0,
                 "rows": {
                   "home": {
-                    "team_id": "86",
-                    "rank": 2,
-                    "points": 12,
+                    "team_id": "570",
+                    "rank": 11,
+                    "points": 9,
                     "played": 4,
                     "tied": true
                   },
                   "away": {
-                    "team_id": "148",
-                    "rank": 24,
+                    "team_id": "364",
+                    "rank": 10,
+                    "points": 9,
+                    "played": 4,
+                    "tied": true
+                  }
+                },
+                "league": "チャンピオンズリーグ"
+              }
+            },
+            {
+              "kind": "above",
+              "score": 75,
+              "text": "リバプールとすぐ上のマンチェスターCの勝点差は0です。",
+              "source": "https://api.football-data.org/v4/competitions/CL/standings",
+              "retrieved_at": "2026-11-25T11:33:33.764132+00:00",
+              "values": {
+                "side": "away",
+                "gap": 0
+              }
+            },
+            {
+              "kind": "domestic_away",
+              "score": 55,
+              "text": "リバプールはプレミアリーグで現在4位、勝点21です。",
+              "source": "https://site.api.espn.com/apis/v2/sports/soccer/eng.1/standings",
+              "retrieved_at": "2026-11-25T11:34:00.841412+00:00",
+              "values": {
+                "competition": "PL",
+                "side": "away",
+                "team_id": "364",
+                "rank": 4,
+                "points": 21,
+                "played": 11,
+                "tied": false
+              }
+            }
+          ],
+          "expectation": null,
+          "spoken": "日本時間11月26日5時、クラブ・ブルッヘ対リバプール。チャンピオンズリーグではクラブ・ブルッヘは勝点9、リバプールは勝点9で、両チームの勝点差は0よ。リバプールとすぐ上のマンチェスターCの勝点差は0よ。リバプールはプレミアリーグで現在4位、勝点21よ。",
+          "standings": {
+            "home": {
+              "team_id": "570",
+              "rank": 11,
+              "points": 9,
+              "played": 4,
+              "tied": true,
+              "as_of": "2026-11-25T09:53:47.446974+00:00",
+              "competition": "CL",
+              "season": null
+            },
+            "away": {
+              "team_id": "364",
+              "rank": 10,
+              "points": 9,
+              "played": 4,
+              "tied": true,
+              "as_of": "2026-11-25T09:53:47.446974+00:00",
+              "competition": "CL",
+              "season": null
+            }
+          }
+        },
+        "answer": null,
+        "rank_changes": [],
+        "next_game": {
+          "home": "SSC Napoli",
+          "away": "Club Brugge KV",
+          "start_utc": "2026-12-08T20:00:00Z",
+          "source": "https://api.football-data.org/v4/competitions/CL/matches",
+          "competition": "CL"
+        }
+      },
+      {
+        "event_id": "401915376",
+        "forecast": {
+          "game_id": "575406",
+          "espn_event_id": "401915376",
+          "league": "チャンピオンズリーグ",
+          "competition_code": "CL",
+          "home": "インテル",
+          "away": "シュツットガルト",
+          "start_utc": "2026-11-26T05:00:00+09:00",
+          "reasons": [
+            {
+              "kind": "european_points",
+              "score": 120,
+              "text": "チャンピオンズリーグではインテルは勝点6、シュツットガルトは勝点7で、両チームの勝点差は1です。",
+              "source": "https://site.api.espn.com/apis/v2/sports/soccer/uefa.champions/standings",
+              "retrieved_at": "2026-11-25T11:34:00.664205+00:00",
+              "values": {
+                "competition": "CL",
+                "gap": 1,
+                "rows": {
+                  "home": {
+                    "team_id": "110",
+                    "rank": 17,
+                    "points": 6,
+                    "played": 4,
+                    "tied": true
+                  },
+                  "away": {
+                    "team_id": "134",
+                    "rank": 15,
+                    "points": 7,
+                    "played": 4,
+                    "tied": true
+                  }
+                },
+                "league": "チャンピオンズリーグ"
+              }
+            },
+            {
+              "kind": "european_zone",
+              "score": 110,
+              "text": "インテルは今、チャンピオンズリーグでプレーオフに進む9位から24位の範囲にいます。",
+              "source": "https://site.api.espn.com/apis/v2/sports/soccer/uefa.champions/standings",
+              "retrieved_at": "2026-11-25T11:34:00.664205+00:00",
+              "values": {
+                "competition": "CL",
+                "side": "home",
+                "rank": null,
+                "rule_source": "https://documents.uefa.com/r/Regulations-of-the-UEFA-Europa-League-2026/27/Article-17-Match-system-league-phase-Online"
+              }
+            },
+            {
+              "kind": "above",
+              "score": 75,
+              "text": "インテルとすぐ上のガラタサライの勝点差は1です。",
+              "source": "https://api.football-data.org/v4/competitions/CL/standings",
+              "retrieved_at": "2026-11-25T11:33:33.764132+00:00",
+              "values": {
+                "side": "home",
+                "gap": 1
+              }
+            }
+          ],
+          "expectation": null,
+          "spoken": "日本時間11月26日5時、インテル対シュツットガルト。チャンピオンズリーグではインテルは勝点6、シュツットガルトは勝点7で、両チームの勝点差は1よ。",
+          "standings": {
+            "home": {
+              "team_id": "110",
+              "rank": 17,
+              "points": 6,
+              "played": 4,
+              "tied": true,
+              "as_of": "2026-11-25T09:53:47.446974+00:00",
+              "competition": "CL",
+              "season": null
+            },
+            "away": {
+              "team_id": "134",
+              "rank": 15,
+              "points": 7,
+              "played": 4,
+              "tied": true,
+              "as_of": "2026-11-25T09:53:47.446974+00:00",
+              "competition": "CL",
+              "season": null
+            }
+          }
+        },
+        "answer": null,
+        "rank_changes": [],
+        "next_game": {
+          "home": "Borussia Dortmund",
+          "away": "FC Internazionale Milano",
+          "start_utc": "2026-12-09T20:00:00Z",
+          "source": "https://api.football-data.org/v4/competitions/CL/matches",
+          "competition": "CL"
+        }
+      },
+      {
+        "event_id": "401915291",
+        "forecast": {
+          "game_id": "575407",
+          "espn_event_id": "401915291",
+          "league": "チャンピオンズリーグ",
+          "competition_code": "CL",
+          "home": "アトレティコ・マドリード",
+          "away": "バイキング",
+          "start_utc": "2026-11-26T05:00:00+09:00",
+          "reasons": [
+            {
+              "kind": "european_points",
+              "score": 120,
+              "text": "チャンピオンズリーグではアトレティコ・マドリードは勝点4、バイキングは勝点4で、両チームの勝点差は0です。",
+              "source": "https://site.api.espn.com/apis/v2/sports/soccer/uefa.champions/standings",
+              "retrieved_at": "2026-11-25T11:34:00.664205+00:00",
+              "values": {
+                "competition": "CL",
+                "gap": 0,
+                "rows": {
+                  "home": {
+                    "team_id": "1068",
+                    "rank": 26,
+                    "points": 4,
+                    "played": 4,
+                    "tied": true
+                  },
+                  "away": {
+                    "team_id": "510",
+                    "rank": 25,
                     "points": 4,
                     "played": 4,
                     "tied": true
@@ -643,138 +855,53 @@
               }
             },
             {
-              "kind": "previous_season",
-              "score": 40,
-              "text": "PSVは昨季CLリーグフェーズ28位。",
-              "source": "soccer_games.json.reasons.quality",
-              "retrieved_at": "2026-11-24T09:53:50.096915+00:00",
-              "values": {}
-            }
-          ],
-          "expectation": null,
-          "spoken": "日本時間11月25日5時、レアル・マドリード対PSV。チャンピオンズリーグではレアル・マドリードは勝点12、PSVは勝点4で、両チームの勝点差は8です。PSVは昨季CLリーグフェーズ28位。",
-          "standings": {
-            "home": {
-              "team_id": "86",
-              "rank": 2,
-              "points": 12,
-              "played": 4,
-              "tied": true,
-              "as_of": "2026-11-24T09:53:50.096915+00:00",
-              "competition": "CL",
-              "season": null
-            },
-            "away": {
-              "team_id": "148",
-              "rank": 24,
-              "points": 4,
-              "played": 4,
-              "tied": true,
-              "as_of": "2026-11-24T09:53:50.096915+00:00",
-              "competition": "CL",
-              "season": null
-            }
-          }
-        },
-        "answer": null,
-        "rank_changes": [],
-        "next_game": {
-          "home": "Arsenal FC",
-          "away": "Real Madrid CF",
-          "start_utc": "2026-12-09T20:00:00Z",
-          "source": "https://api.football-data.org/v4/competitions/CL/matches",
-          "competition": "CL"
-        }
-      },
-      {
-        "event_id": "401915295",
-        "forecast": {
-          "game_id": "575399",
-          "espn_event_id": "401915295",
-          "league": "チャンピオンズリーグ",
-          "competition_code": "CL",
-          "home": "アーセナル",
-          "away": "ドルトムント",
-          "start_utc": "2026-11-25T05:00:00+09:00",
-          "reasons": [
-            {
-              "kind": "european_points",
-              "score": 120,
-              "text": "チャンピオンズリーグではアーセナルは3位で勝点10、ドルトムントは勝点9で、両チームの勝点差は1です。",
-              "source": "https://site.api.espn.com/apis/v2/sports/soccer/uefa.champions/standings",
-              "retrieved_at": "2026-11-24T10:02:46.901069+00:00",
+              "kind": "above",
+              "score": 75,
+              "text": "アトレティコ・マドリードとすぐ上のバイキングの勝点差は0です。",
+              "source": "https://api.football-data.org/v4/competitions/CL/standings",
+              "retrieved_at": "2026-11-25T11:33:33.764132+00:00",
               "values": {
-                "competition": "CL",
-                "gap": 1,
-                "rows": {
-                  "home": {
-                    "team_id": "359",
-                    "rank": 3,
-                    "points": 10,
-                    "played": 4,
-                    "tied": false
-                  },
-                  "away": {
-                    "team_id": "124",
-                    "rank": 12,
-                    "points": 9,
-                    "played": 4,
-                    "tied": true
-                  }
-                },
-                "league": "チャンピオンズリーグ"
-              }
-            },
-            {
-              "kind": "european_zone",
-              "score": 110,
-              "text": "アーセナルは今3位で、チャンピオンズリーグで16強へ直接進む1位から8位の範囲にいます。",
-              "source": "https://site.api.espn.com/apis/v2/sports/soccer/uefa.champions/standings",
-              "retrieved_at": "2026-11-24T10:02:46.901069+00:00",
-              "values": {
-                "competition": "CL",
                 "side": "home",
-                "rank": 3,
-                "rule_source": "https://documents.uefa.com/r/Regulations-of-the-UEFA-Europa-League-2026/27/Article-17-Match-system-league-phase-Online"
+                "gap": 0
               }
             },
             {
-              "kind": "domestic_away",
+              "kind": "domestic_home",
               "score": 55,
-              "text": "ドルトムントはブンデスリーガで現在1位、勝点24です。",
-              "source": "https://site.api.espn.com/apis/v2/sports/soccer/ger.1/standings",
-              "retrieved_at": "2026-11-24T10:02:46.744745+00:00",
+              "text": "アトレティコ・マドリードはラ・リーガで現在3位、勝点31です。",
+              "source": "https://site.api.espn.com/apis/v2/sports/soccer/esp.1/standings",
+              "retrieved_at": "2026-11-25T11:34:00.754807+00:00",
               "values": {
-                "competition": "BL1",
-                "side": "away",
-                "team_id": "124",
-                "rank": 1,
-                "points": 24,
-                "played": 10,
+                "competition": "PD",
+                "side": "home",
+                "team_id": "1068",
+                "rank": 3,
+                "points": 31,
+                "played": 13,
                 "tied": false
               }
             }
           ],
           "expectation": null,
-          "spoken": "日本時間11月25日5時、アーセナル対ドルトムント。チャンピオンズリーグではアーセナルは3位で勝点10、ドルトムントは勝点9で、両チームの勝点差は1です。アーセナルは今3位で、チャンピオンズリーグで16強へ直接進む1位から8位の範囲にいます。ドルトムントはブンデスリーガで現在1位、勝点24です。",
+          "spoken": "日本時間11月26日5時、アトレティコ・マドリード対バイキング。",
           "standings": {
             "home": {
-              "team_id": "359",
-              "rank": 3,
-              "points": 10,
+              "team_id": "1068",
+              "rank": 26,
+              "points": 4,
               "played": 4,
-              "tied": false,
-              "as_of": "2026-11-24T09:53:50.096915+00:00",
+              "tied": true,
+              "as_of": "2026-11-25T09:53:47.446974+00:00",
               "competition": "CL",
               "season": null
             },
             "away": {
-              "team_id": "124",
-              "rank": 12,
-              "points": 9,
+              "team_id": "510",
+              "rank": 25,
+              "points": 4,
               "played": 4,
               "tied": true,
-              "as_of": "2026-11-24T09:53:50.096915+00:00",
+              "as_of": "2026-11-25T09:53:47.446974+00:00",
               "competition": "CL",
               "season": null
             }
@@ -783,45 +910,45 @@
         "answer": null,
         "rank_changes": [],
         "next_game": {
-          "home": "Arsenal FC",
-          "away": "Real Madrid CF",
-          "start_utc": "2026-12-09T20:00:00Z",
+          "home": "Viking FK",
+          "away": "Feyenoord Rotterdam",
+          "start_utc": "2026-12-08T17:45:00Z",
           "source": "https://api.football-data.org/v4/competitions/CL/matches",
           "competition": "CL"
         }
       },
       {
-        "event_id": "401915379",
+        "event_id": "401915378",
         "forecast": {
-          "game_id": "575398",
-          "espn_event_id": "401915379",
+          "game_id": "575404",
+          "espn_event_id": "401915378",
           "league": "チャンピオンズリーグ",
           "competition_code": "CL",
-          "home": "マンチェスター・シティ",
-          "away": "ナポリ",
-          "start_utc": "2026-11-25T05:00:00+09:00",
+          "home": "Sabah FK",
+          "away": "バルセロナ",
+          "start_utc": "2026-11-26T02:45:00+09:00",
           "reasons": [
             {
               "kind": "european_points",
               "score": 120,
-              "text": "チャンピオンズリーグではマンチェスターCは勝点9、ナポリは勝点3で、両チームの勝点差は6です。",
+              "text": "チャンピオンズリーグではサバフは勝点3、バルセロナは勝点9で、両チームの勝点差は6です。",
               "source": "https://site.api.espn.com/apis/v2/sports/soccer/uefa.champions/standings",
-              "retrieved_at": "2026-11-24T10:02:46.901069+00:00",
+              "retrieved_at": "2026-11-25T11:34:00.664205+00:00",
               "values": {
                 "competition": "CL",
                 "gap": 6,
                 "rows": {
                   "home": {
-                    "team_id": "382",
-                    "rank": 7,
-                    "points": 9,
+                    "team_id": "21922",
+                    "rank": 30,
+                    "points": 3,
                     "played": 4,
                     "tied": true
                   },
                   "away": {
-                    "team_id": "114",
-                    "rank": 27,
-                    "points": 3,
+                    "team_id": "83",
+                    "rank": 8,
+                    "points": 9,
                     "played": 4,
                     "tied": true
                   }
@@ -832,51 +959,48 @@
             {
               "kind": "european_zone",
               "score": 110,
-              "text": "ナポリは今、チャンピオンズリーグでプレーオフ圏の24位より下にいます。",
+              "text": "サバフは今、チャンピオンズリーグでプレーオフ圏の24位より下にいます。",
               "source": "https://site.api.espn.com/apis/v2/sports/soccer/uefa.champions/standings",
-              "retrieved_at": "2026-11-24T10:02:46.901069+00:00",
+              "retrieved_at": "2026-11-25T11:34:00.664205+00:00",
               "values": {
                 "competition": "CL",
-                "side": "away",
+                "side": "home",
                 "rank": null,
                 "rule_source": "https://documents.uefa.com/r/Regulations-of-the-UEFA-Europa-League-2026/27/Article-17-Match-system-league-phase-Online"
               }
             },
             {
-              "kind": "h2h",
-              "score": 80,
-              "text": "前回の対戦は2025年9月18日のマンチェスターC対ナポリで2対0でした。",
-              "source": "https://api.football-data.org/v4/matches/575398/head2head",
-              "retrieved_at": "2026-11-24T10:02:46.587590+00:00",
+              "kind": "above",
+              "score": 75,
+              "text": "バルセロナとすぐ上のコモの勝点差は0です。",
+              "source": "https://api.football-data.org/v4/competitions/CL/standings",
+              "retrieved_at": "2026-11-25T11:33:33.764132+00:00",
               "values": {
-                "match_id": 551965,
-                "score": {
-                  "home": 2,
-                  "away": 0
-                }
+                "side": "away",
+                "gap": 0
               }
             }
           ],
           "expectation": null,
-          "spoken": "日本時間11月25日5時、マンチェスターC対ナポリ。チャンピオンズリーグではマンチェスターCは勝点9、ナポリは勝点3で、両チームの勝点差は6です。",
+          "spoken": "日本時間11月26日2時45分、サバフ対バルセロナ。",
           "standings": {
             "home": {
-              "team_id": "382",
-              "rank": 7,
-              "points": 9,
+              "team_id": "21922",
+              "rank": 30,
+              "points": 3,
               "played": 4,
               "tied": true,
-              "as_of": "2026-11-24T09:53:50.096915+00:00",
+              "as_of": "2026-11-25T09:53:47.446974+00:00",
               "competition": "CL",
               "season": null
             },
             "away": {
-              "team_id": "114",
-              "rank": 27,
-              "points": 3,
+              "team_id": "83",
+              "rank": 8,
+              "points": 9,
               "played": 4,
               "tied": true,
-              "as_of": "2026-11-24T09:53:50.096915+00:00",
+              "as_of": "2026-11-25T09:53:47.446974+00:00",
               "competition": "CL",
               "season": null
             }
@@ -885,9 +1009,9 @@
         "answer": null,
         "rank_changes": [],
         "next_game": {
-          "home": "FC Barcelona",
-          "away": "Manchester City FC",
-          "start_utc": "2026-12-08T20:00:00Z",
+          "home": "Villarreal CF",
+          "away": "Sabah FK",
+          "start_utc": "2026-12-08T17:45:00Z",
           "source": "https://api.football-data.org/v4/competitions/CL/matches",
           "competition": "CL"
         }
