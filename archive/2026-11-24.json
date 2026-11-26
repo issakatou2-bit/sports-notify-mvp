@@ -135,7 +135,12 @@
           "weight": 0
         }
       ],
-      "log_notes": []
+      "log_notes": [],
+      "final_score": {
+        "home": 1,
+        "away": 1,
+        "winner": "draw"
+      }
     },
     {
       "game_id": "575397",
@@ -189,7 +194,12 @@
       ],
       "log_notes": [],
       "ai_summary": "チャンピオンズリーグは欧州の強豪クラブが一堂に集まる大会であり、昨季のリーグフェーズでレアル・マドリードは9位、PSVは28位と大きな力の差がある両者の対戦が実現した。迎えるレアル・マドリードにとって、敵地を訪れるPSVとの試合は【昨季の力関係を反映した対戦】となる。さらに、PSVに所属する日本代表の佐野航大がチャンピオンズリーグの舞台でどのようなプレーを見せるかに注目したい。",
-      "notification_hook": "佐野航大がチャンピオンズリーグで活躍できるか、欧州の強豪を相手にした戦いぶりに注目。"
+      "notification_hook": "佐野航大がチャンピオンズリーグで活躍できるか、欧州の強豪を相手にした戦いぶりに注目。",
+      "final_score": {
+        "home": 5,
+        "away": 1,
+        "winner": "home"
+      }
     },
     {
       "game_id": "575398",
@@ -235,7 +245,12 @@
           "text": "マンチェスター・シティ（昨季CLリーグフェーズ8位）とナポリ（昨季CLリーグフェーズ30位）の対戦",
           "weight": 0
         }
-      ]
+      ],
+      "final_score": {
+        "home": 2,
+        "away": 2,
+        "winner": "draw"
+      }
     },
     {
       "game_id": "575400",
@@ -270,7 +285,12 @@
       "score": 0,
       "game_type": "R",
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 0,
+        "away": 1,
+        "winner": "away"
+      }
     },
     {
       "game_id": "575401",
@@ -305,7 +325,12 @@
       "score": 0,
       "game_type": "R",
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 0,
+        "away": 2,
+        "winner": "away"
+      }
     },
     {
       "game_id": "575402",
@@ -340,7 +365,12 @@
       "score": 0,
       "game_type": "R",
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 3,
+        "away": 1,
+        "winner": "home"
+      }
     },
     {
       "game_id": "575403",
@@ -375,7 +405,12 @@
       "score": 0,
       "game_type": "R",
       "is_notable": false,
-      "reasons": []
+      "reasons": [],
+      "final_score": {
+        "home": 1,
+        "away": 0,
+        "winner": "home"
+      }
     }
   ],
   "schedule_date": "2026-11-24",
