@@ -352,7 +352,11 @@ def _presenter(im,t):
 
 def finish(im,t,spec):
     _body_effect(im,t)
-    source=spec.get('source','');body=lines(source,22,860 if im.info.get('v3_outro') and soccer_look.focus() else 610)
+    width=860 if im.info.get('v3_outro') and soccer_look.focus() else 610
+    source=spec.get('source','');body=lines(source,22,width)
+    # 折り返すなら「音声」と「出典」の間で折る（11/26 めたんの名前で長くなり football-data. / org と途中で折れた）。
+    parts=[p for p in source.split('　') if p]
+    if len(body)>1 and len(parts)==2 and all(len(lines(p,22,width))==1 for p in parts):body=parts
     if len(body)>2:raise ValueError('出典が2行に入りません')
     for i,line in enumerate(body):text(im,L,1166+i*28,line,22,MUTED,width=860 if im.info.get('v3_outro') and soccer_look.focus() else 610,role='source')
     d=ImageDraw.Draw(im);d.rectangle((L,1400,R,1440),fill=PITCH)
