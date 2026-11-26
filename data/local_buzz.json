@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-25T06:02:00.663976+00:00",
+  "updated_at": "2026-11-26T06:14:46.120495+00:00",
   "sources": [
     {
       "name": "MLB公式",
@@ -9,69 +9,78 @@
   "titles_count": 25,
   "teams": [
     {
-      "team_id": "112",
-      "name": "カブス",
-      "name_en": "Chicago Cubs",
-      "mentions": 3,
-      "tone": "話題",
-      "gist": "カブスが佐藤と6年1.2億ドルで合意"
-    },
-    {
-      "team_id": "113",
-      "name": "レッズ",
-      "name_en": "Cincinnati Reds",
-      "mentions": 2,
-      "tone": "話題",
-      "gist": "レッズがステフェンソンと3年契約で合意"
-    },
-    {
       "team_id": "141",
       "name": "ブルージェイズ",
       "name_en": "Toronto Blue Jays",
       "mentions": 2,
       "tone": "話題",
-      "gist": "ブルージェイズが平良と5年契約"
+      "gist": "Arozarena、Suzuki、Morejonに関する移籍"
+    },
+    {
+      "team_id": "110",
+      "name": "オリオールズ",
+      "name_en": "Baltimore Orioles",
+      "mentions": 2,
+      "tone": "話題",
+      "gist": "Arozarena、Suzuki、Morejonの噂。Rob"
     },
     {
       "team_id": "114",
       "name": "ガーディアンズ",
       "name_en": "Cleveland Guardians",
       "mentions": 1,
-      "tone": "話題",
-      "gist": "ガーディアンズがブービッチと1年1750万ドル"
+      "tone": "好調",
+      "gist": "左腕Griffinと3年4800万ドルで再契約へ"
     },
     {
-      "team_id": "145",
-      "name": "ホワイトソックス",
-      "name_en": "Chicago White Sox",
+      "team_id": "120",
+      "name": "ナショナルズ",
+      "name_en": "Washington Nationals",
       "mentions": 1,
-      "tone": "話題",
-      "gist": "ホワイトソックスがT・テイラーと契約合意"
+      "tone": "好調",
+      "gist": "救援Pukが1年契約でナショナルズ入りへ"
     },
     {
-      "team_id": "136",
-      "name": "マリナーズ",
-      "name_en": "Seattle Mariners",
+      "team_id": "115",
+      "name": "ロッキーズ",
+      "name_en": "Colorado Rockies",
       "mentions": 1,
-      "tone": "話題",
-      "gist": "マリナーズがサンタナとマイナー契約"
+      "tone": "好調",
+      "gist": "先発陣補強でPetersonとSandovalを獲得"
+    },
+    {
+      "team_id": "146",
+      "name": "マーリンズ",
+      "name_en": "Miami Marlins",
+      "mentions": 1,
+      "tone": "好調",
+      "gist": "ベテラン捕手Sánchezが1年契約で加入へ"
+    },
+    {
+      "team_id": "147",
+      "name": "ヤンキース",
+      "name_en": "New York Yankees",
+      "mentions": 1,
+      "tone": "不振",
+      "gist": "ブルペンの大きな課題がオフに浮上"
     },
     {
       "team_id": "116",
       "name": "タイガース",
       "name_en": "Detroit Tigers",
       "mentions": 1,
-      "tone": "話題",
-      "gist": "タイガースが内野手キムと1年契約"
-    },
-    {
-      "team_id": "121",
-      "name": "メッツ",
-      "name_en": "New York Mets",
-      "mentions": 1,
-      "tone": "話題",
-      "gist": "カブスとメッツの次の一手に注目"
+      "tone": "好調",
+      "gist": "ベテラン右腕Gausmanと1年契約で合意"
     }
   ],
-  "players": []
+  "players": [
+    {
+      "name": "大谷翔平",
+      "mentions": 1
+    },
+    {
+      "name": "鈴木誠也",
+      "mentions": 1
+    }
+  ]
 }

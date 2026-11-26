@@ -1,121 +1,111 @@
 {
-  "generated_at": "2026-11-25T06:01:10.580137+00:00",
-  "date_jst": "2026-11-25",
-  "name": "Cooper Pratt",
-  "player_id": "806198",
+  "generated_at": "2026-11-26T06:00:59.417708+00:00",
+  "date_jst": "2026-11-26",
+  "name": "Jacob Misiorowski",
+  "player_id": "694819",
   "team": "ブリュワーズ",
-  "group": "hitting",
+  "group": "pitching",
   "why": "2026-10-29のMLBで最も活躍",
-  "headline": "3打数2安打　2打点",
-  "score": 76,
+  "headline": "5.2回　2奪三振　自責0　2被安打",
+  "score": 101,
   "bio": {
-    "name_en": "Cooper Pratt",
-    "age": 22,
-    "birth_city": "Hialeah",
-    "birth_state": "FL",
+    "name_en": "Jacob Misiorowski",
+    "age": 24,
+    "birth_city": "Blue Springs",
+    "birth_state": "MO",
     "birth_country": "USA",
-    "birth_date": "2004-08-18",
-    "debut": "2026-06-16",
-    "draft_year": 2023,
+    "birth_date": "2002-04-03",
+    "debut": "2025-06-12",
+    "draft_year": 2022,
     "bats": "Right",
     "throws": "Right",
-    "number": "12",
-    "position": "Shortstop",
+    "number": "32",
+    "position": "Pitcher",
     "nickname": null,
-    "height": "6' 4\"",
-    "weight": 210
+    "height": "6' 7\"",
+    "weight": 201
   },
   "teams": [
     {
       "team": "ブリュワーズ",
-      "from": 2026,
+      "from": 2025,
       "to": 2026
     }
   ],
   "career": {
-    "games": 74,
-    "avg": ".281",
-    "hr": 3,
-    "rbi": 34,
-    "ops": ".718",
-    "sb": 19,
-    "hits": 64,
-    "wins": 49,
-    "losses": 65,
-    "era": "4.49",
-    "so": 1078,
-    "ip": "1055.2",
-    "whip": "1.37"
+    "games": 45,
+    "wins": 21,
+    "losses": 8,
+    "era": "2.51",
+    "so": 339,
+    "ip": "240.2",
+    "whip": "0.92"
   },
   "this_season": {
-    "games": 74,
-    "avg": ".281",
-    "hr": 3,
-    "rbi": 34,
-    "ops": ".718",
-    "sb": 19,
-    "hits": 64,
-    "wins": 1,
-    "losses": 7,
-    "era": "4.92",
-    "so": 67,
-    "ip": "67.2",
-    "whip": "1.54"
+    "games": 30,
+    "wins": 16,
+    "losses": 5,
+    "era": "1.80",
+    "so": 252,
+    "ip": "174.2",
+    "whip": "0.80"
   },
   "last_season": {
-    "games": 33,
-    "avg": ".247",
-    "hr": 6,
-    "rbi": 45,
-    "ops": ".692",
-    "sb": 2,
-    "hits": 82,
-    "wins": 7,
-    "losses": 11,
-    "era": "3.99",
-    "so": 174,
-    "ip": "178.1",
-    "whip": "1.42"
+    "games": 15,
+    "wins": 5,
+    "losses": 3,
+    "era": "4.36",
+    "so": 87,
+    "ip": "66.0",
+    "whip": "1.24"
   },
   "recent": [
     {
       "date": "2026-09-27",
-      "line": "4打数1安打",
+      "line": "5.1回 自責0 5奪三振",
       "opponent": "St. Louis Cardinals"
     },
     {
-      "date": "2026-09-26",
-      "line": "3打数1安打",
-      "opponent": "St. Louis Cardinals"
+      "date": "2026-09-20",
+      "line": "3.0回 自責0 4奪三振",
+      "opponent": "Baltimore Orioles"
     },
     {
-      "date": "2026-09-25",
-      "line": "1打数0安打",
-      "opponent": "St. Louis Cardinals"
+      "date": "2026-09-15",
+      "line": "5.0回 自責0 7奪三振",
+      "opponent": "Pittsburgh Pirates"
     },
     {
-      "date": "2026-09-24",
-      "line": "3打数2安打 1打点",
-      "opponent": "Philadelphia Phillies"
+      "date": "2026-09-08",
+      "line": "6.1回 自責1 9奪三振",
+      "opponent": "Chicago Cubs"
     },
     {
-      "date": "2026-09-22",
-      "line": "4打数0安打",
-      "opponent": "Philadelphia Phillies"
+      "date": "2026-09-02",
+      "line": "4.0回 自責5 5奪三振",
+      "opponent": "Chicago Cubs"
     }
   ],
   "awards": [
     {
       "season": "2026",
+      "name": "NL Cy Young"
+    },
+    {
+      "season": "2026",
       "name": "World Series Championship"
     },
     {
-      "season": "2024",
-      "name": "Rawlings MiLB Gold Glove"
+      "season": "2026",
+      "name": "NL All-Star"
     },
     {
-      "season": "2024",
-      "name": "CAR Post-Season All-Star"
+      "season": "2026",
+      "name": "NL Player of the Week"
+    },
+    {
+      "season": "2025",
+      "name": "NL All-Star"
     }
   ],
   "quotes": []
