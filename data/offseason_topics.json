@@ -1,5 +1,66 @@
 {
-  "day": "2026-11-25",
-  "topics": [],
-  "state": "ready"
+  "day": "2026-11-26",
+  "state": "ready",
+  "topics": [
+    {
+      "key": "offseason_transactions_2026_fc15b612c444",
+      "label": "佐藤輝明のFA契約｜日本人選手の来季 第9回",
+      "heading": "日本人選手の来季 第9回",
+      "kind_label": "MLB",
+      "data_credit": "MLB Stats API",
+      "v3": {
+        "source": "出典: MLB公式 / 受賞・取引記録"
+      },
+      "hook": "佐藤輝明のFA契約｜日本人選手の来季 第9回",
+      "intro": "日本人選手の来季 第9回です。佐藤輝明のFA契約がMLB公式に記録されました。",
+      "intro_as_is": true,
+      "style": "v3",
+      "source": "MLB公式 / 受賞・取引記録",
+      "source_url": "https://statsapi.mlb.com/api/v1/transactions?playerId=831664&startDate=2026-11-20&endDate=2026-11-26",
+      "items": [
+        [
+          "佐藤輝明｜FA契約",
+          "佐藤輝明はカブスとFA契約を結びました"
+        ]
+      ],
+      "offseason": {
+        "kind": "transactions",
+        "day": "2026-11-26",
+        "season": 2026,
+        "events": [
+          {
+            "event_id": "transaction:951127",
+            "head": "佐藤輝明｜FA契約",
+            "body": "佐藤輝明はカブスとFA契約を結びました",
+            "name": "佐藤輝明",
+            "japanese": true,
+            "raw": {
+              "id": 951127,
+              "person": {
+                "id": 831664,
+                "fullName": "Teruaki Sato",
+                "link": "/api/v1/people/831664",
+                "nameSlug": "teruaki-sato-831664"
+              },
+              "toTeam": {
+                "id": 112,
+                "name": "Chicago Cubs",
+                "link": "/api/v1/teams/112"
+              },
+              "date": "2026-11-25",
+              "effectiveDate": "2026-11-25",
+              "resolutionDate": "2026-11-25",
+              "typeCode": "SFA",
+              "typeDesc": "Signed as Free Agent",
+              "description": "Chicago Cubs signed free agent 3B Teruaki Sato."
+            },
+            "source": "https://statsapi.mlb.com/api/v1/transactions?playerId=831664&startDate=2026-11-20&endDate=2026-11-26"
+          }
+        ],
+        "series_number": 9,
+        "series_title": "日本人選手の来季"
+      },
+      "description_line": "連載「日本人選手の来季」では、MLB公式に確定した移籍・契約などの動きを追います。"
+    }
+  ]
 }
