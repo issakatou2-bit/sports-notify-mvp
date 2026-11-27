@@ -190,7 +190,8 @@ def frame(t, seg, doc, clubs, index=0, count=1, *, opening_hook=None):
         spec.update(slide_in=False, slide_out=False)
         return hook_screen(s, hook, spec)
     if doc.get('program') == topics.MLB_PROGRAM:
-        sub = '移籍報道'
+        # 分析の回（相場・移籍1年目の比べ）は材料で札を変える（11/27 平良の防御率の回に「移籍報道」と出た）。
+        sub = (doc.get('followup_material') or {}).get('sub') or '移籍報道'
     elif meta.get('sub'):
         sub = meta['sub']
     elif doc.get('program') in ('mlb_season_insight', 'long_highlight'):
