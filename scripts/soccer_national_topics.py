@@ -576,7 +576,8 @@ def mlb_narration(topic):
     if not is_followup(topic):
         raise Unavailable('MLB移籍の話題は followup-<名前> で指定してください')
     team_id = MLB_TEAMS.get(event)
-    if team_id:
+    # 確認済みの材料（日本人選手の移籍・市場の比べ）は球団が1つに決まらない回もある（11/27 先発の相場）。
+    if event in (national.read(MLB_FOLLOWUPS).get('events') or {}):
         data = national.read(MLB_FOLLOWUPS)['events'][event]
     else:
         import market_watch

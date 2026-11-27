@@ -322,6 +322,151 @@
           ]
         }
       ]
+    },
+    "sp-market-2026": {
+      "checked_on": "2026-11-27",
+      "title": "今オフの先発投手の相場 スクーバルは年平均5000万ドル ペラルタ・ロジャースの約2倍",
+      "readings": {
+        "スクーバル": "スクーバル",
+        "平良海馬": "タイラカイマ",
+        "山本由伸": "ヤマモトヨシノブ"
+      },
+      "reading_sources": [
+        "https://npb.jp/bis/2026/stats/pit_p.html"
+      ],
+      "hook": {
+        "score": "スクーバル",
+        "result": "メッツと9年契約",
+        "subject": "9年総額",
+        "big": "4億5000",
+        "unit": "万ドル",
+        "note": "投手で史上最高額"
+      },
+      "opening": "先発投手の値段が、すごいことになっているのだ！",
+      "ending": [
+        "同じ先発投手でも、こんなに値段が違うのだ！",
+        "そうね。1年あたりで見ると、スクーバルの契約が飛び抜けているわ。"
+      ],
+      "items": [
+        {
+          "ask": "先発投手の値段が、すごいことになっているのだ！",
+          "text": "スクーバルがメッツと9年総額4億5000万ドルの契約を結んで、球団が発表したわ。投手では史上最高額よ。それまでの最高は、山本由伸の12年総額3億2500万ドルだったの。",
+          "head": "スクーバル メッツと契約",
+          "rows": [
+            [
+              "球団",
+              "メッツ"
+            ],
+            [
+              "契約",
+              "9年 総額4億5000万ドル"
+            ],
+            [
+              "それまでの投手の最高",
+              "山本由伸 12年 3億2500万ドル"
+            ]
+          ],
+          "big": {
+            "label": "9年の総額",
+            "value": "4億5000",
+            "unit": "万ドル"
+          },
+          "source_names": "MLB公式・ESPN",
+          "sources": [
+            "https://www.mlb.com/news/tarik-skubal-mets-contract",
+            "https://www.espn.com/mlb/story/_/id/50565674/sources-mets-skubal-agree-9-year-450m-contract"
+          ]
+        },
+        {
+          "ask": "ほかの先発投手は、どうなったのだ？",
+          "text": "ペラルタはオリオールズと5年総額1億2500万ドルで契約したわ。ロジャースはカブスと5年総額1億2000万ドルで合意したと報じられているわ。",
+          "head": "ほかの先発投手の契約",
+          "rows": [
+            [
+              "ペラルタ",
+              "オリオールズ 5年 1億2500万ドル"
+            ],
+            [
+              "ロジャース",
+              "カブス 5年 1億2000万ドル（報道）"
+            ]
+          ],
+          "big": {
+            "label": "ペラルタの5年総額",
+            "value": "1億2500",
+            "unit": "万ドル"
+          },
+          "source_names": "MLBTR・ESPN・Fantasy Alarm",
+          "sources": [
+            "https://www.mlbtraderumors.com/2026/11/orioles-sign-freddy-peralta.html",
+            "https://www.espn.com/mlb/story/_/id/50583512/sources-freddy-peralta-orioles-5-years-125-million",
+            "https://www.espn.com/mlb/story/_/id/50579432/sources-free-agent-trevor-rogers-cubs-reach-5-year-deal",
+            "https://www.fantasyalarm.com/articles/mlb/MLB-Transactions/trevor-rogers-signs-cubs-five-year-120-million-contract/199217"
+          ]
+        },
+        {
+          "ask": "年数が違うと、比べにくいのだ。",
+          "text": "1年あたりで並べると、スクーバルが5000万ドル、ペラルタが2500万ドル、ロジャースが2400万ドル。スクーバルは、ほかの2人のおよそ2倍よ。",
+          "head": "1年あたりで比べる",
+          "rows": [
+            [
+              "スクーバル",
+              "5000万ドル"
+            ],
+            [
+              "ペラルタ",
+              "2500万ドル"
+            ],
+            [
+              "ロジャース",
+              "2400万ドル"
+            ]
+          ],
+          "big": {
+            "label": "スクーバルの年平均",
+            "value": "5000",
+            "unit": "万ドル"
+          },
+          "source_names": "MLB公式・ESPN・MLBTR（総額÷年数）",
+          "sources": [
+            "https://www.mlb.com/news/tarik-skubal-mets-contract",
+            "https://www.espn.com/mlb/story/_/id/50565674/sources-mets-skubal-agree-9-year-450m-contract",
+            "https://www.mlbtraderumors.com/2026/11/orioles-sign-freddy-peralta.html",
+            "https://www.espn.com/mlb/story/_/id/50583512/sources-freddy-peralta-orioles-5-years-125-million",
+            "https://www.espn.com/mlb/story/_/id/50579432/sources-free-agent-trevor-rogers-cubs-reach-5-year-deal",
+            "https://www.fantasyalarm.com/articles/mlb/MLB-Transactions/trevor-rogers-signs-cubs-five-year-120-million-contract/199217"
+          ]
+        },
+        {
+          "ask": "平良海馬は、どのあたりなのだ？",
+          "text": "平良海馬はブルージェイズと5年総額8000万ドルで合意したと報じられていて、1年あたり1600万ドルよ。",
+          "head": "平良海馬の契約",
+          "rows": [
+            [
+              "球団",
+              "ブルージェイズ（報道）"
+            ],
+            [
+              "契約",
+              "5年 総額8000万ドル"
+            ],
+            [
+              "1年あたり",
+              "1600万ドル"
+            ]
+          ],
+          "big": {
+            "label": "平良海馬の年平均",
+            "value": "1600",
+            "unit": "万ドル"
+          },
+          "source_names": "時事・デイリー",
+          "sources": [
+            "https://www.jiji.com/jc/article?k=2026112500143&g=spo&m=rss",
+            "https://www.daily.co.jp/mlb/2026/11/25/0021070445.shtml"
+          ]
+        }
+      ]
     }
   }
 }

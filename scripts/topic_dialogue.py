@@ -47,6 +47,9 @@ def require(segments):
 
 
 def market_opening(data, key):
+    # 市場の比べのように、決まった型が合わない回は材料に書いた台詞を使う（検査は problems のまま）。
+    if data.get('opening'):
+        return data['opening']
     name = data['hook']['score']
     if data.get('large_contract'):
         return pick(key, 'また大型契約なのだ！', f'{name}の大型契約にびっくりなのだ！',
@@ -56,6 +59,9 @@ def market_opening(data, key):
 
 
 def market_ending(data):
+    if data.get('ending'):
+        reaction, summary = data['ending']
+        return reaction, summary
     entry = data.get('large_contract')
     if entry:
         return ('年数と総額を並べると見え方が変わるのだ。',
