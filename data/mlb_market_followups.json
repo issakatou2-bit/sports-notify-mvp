@@ -789,6 +789,136 @@
         }
       ],
       "sub": "数字で読む"
+    },
+    "imanaga-hr-2026": {
+      "checked_on": "2026-11-27",
+      "title": "今永昇太の被本塁打35本はメジャーで2番目の多さ 1年目から毎年増加",
+      "readings": {
+        "今永昇太": "イマナガショウタ",
+        "菅野智之": "スガノトモユキ"
+      },
+      "reading_sources": [
+        "https://www.espn.com/mlb/player/stats/_/id/5134630/shota-imanaga",
+        "https://www.espn.com/mlb/player/stats/_/id/4142423/tomoyuki-sugano"
+      ],
+      "hook": {
+        "score": "今永昇太",
+        "result": "一発が増えた",
+        "subject": "今季の被本塁打",
+        "big": "35",
+        "unit": "本",
+        "note": "メジャーで2番目に多い"
+      },
+      "opening": "今永昇太、ホームランを打たれる数が増えているのだ！",
+      "ending": [
+        "三振は取れているのに、一発だけが増えているのだ…",
+        "そうね。1年目の27本から35本まで増えたわ。来季は、この一発をどこまで減らせるかね。"
+      ],
+      "sub": "数字で読む",
+      "items": [
+        {
+          "ask": "今永昇太、ホームランを打たれる数が増えているのだ！",
+          "text": "今永昇太は今季、35本の本塁打を打たれたわ。メジャーで2番目に多い数よ。",
+          "head": "2026年の被本塁打",
+          "rows": [
+            [
+              "1位 アーロン・ノラ",
+              "37本"
+            ],
+            [
+              "2位 今永昇太",
+              "35本"
+            ],
+            [
+              "2位 ジェフリー・スプリングス",
+              "35本"
+            ]
+          ],
+          "big": {
+            "label": "2026年の被本塁打",
+            "value": "35",
+            "unit": "本"
+          },
+          "source_names": "MLB公式・ESPN",
+          "sources": [
+            "https://statsapi.mlb.com/api/v1/stats/leaders?leaderCategories=homeRuns&statGroup=pitching&season=2026&sportId=1",
+            "https://www.espn.com/mlb/stats/player/_/view/pitching/season/2026/table/pitching/sort/homeRuns/dir/desc"
+          ]
+        },
+        {
+          "ask": "去年より増えているのだ？",
+          "text": "メジャー1年目から27本、31本、35本と、毎年増えているわ。",
+          "head": "今永昇太の被本塁打",
+          "rows": [
+            [
+              "2024年",
+              "27本"
+            ],
+            [
+              "2025年",
+              "31本"
+            ],
+            [
+              "2026年",
+              "35本"
+            ]
+          ],
+          "source_names": "MLB公式・ESPN",
+          "sources": [
+            "https://statsapi.mlb.com/api/v1/people/684007/stats?stats=yearByYear&group=pitching",
+            "https://www.espn.com/mlb/player/stats/_/id/5134630/shota-imanaga"
+          ]
+        },
+        {
+          "ask": "ほかの日本人投手はどうなのだ？",
+          "text": "菅野智之も、2年続けて33本打たれているわ。",
+          "head": "菅野智之の被本塁打",
+          "rows": [
+            [
+              "2025年 オリオールズ",
+              "33本"
+            ],
+            [
+              "2026年 ロッキーズ",
+              "33本"
+            ]
+          ],
+          "source_names": "MLB公式・ESPN",
+          "sources": [
+            "https://statsapi.mlb.com/api/v1/people/608372/stats?stats=yearByYear&group=pitching",
+            "https://www.espn.com/mlb/player/stats/_/id/4142423/tomoyuki-sugano"
+          ]
+        },
+        {
+          "ask": "でも、今永昇太は打たれてばかりではないのだ。",
+          "text": "奪三振は174で、1年目と同じ数よ。",
+          "head": "今永昇太の奪三振",
+          "rows": [
+            [
+              "2024年",
+              "174"
+            ],
+            [
+              "2025年",
+              "117"
+            ],
+            [
+              "2026年",
+              "174"
+            ]
+          ],
+          "big": {
+            "label": "2026年の奪三振",
+            "value": "174",
+            "unit": ""
+          },
+          "source_names": "MLB公式・ESPN",
+          "sources": [
+            "https://statsapi.mlb.com/api/v1/people/684007/stats?stats=yearByYear&group=pitching",
+            "https://www.espn.com/mlb/player/stats/_/id/5134630/shota-imanaga"
+          ]
+        }
+      ]
     }
   }
 }
