@@ -1,5 +1,6 @@
 {
-  "day": "2026-11-26",
+  "day": "2026-11-27",
+  "state": "ready",
   "topics": [
     {
       "key": "offseason_transactions_2026_fc15b612c444",
@@ -15,7 +16,7 @@
       "intro_as_is": true,
       "style": "v3",
       "source": "MLB公式 / 受賞・取引記録",
-      "source_url": "https://statsapi.mlb.com/api/v1/transactions?playerId=831664&startDate=2026-11-20&endDate=2026-11-26",
+      "source_url": "https://statsapi.mlb.com/api/v1/transactions?playerId=831664&startDate=2026-11-21&endDate=2026-11-27",
       "items": [
         [
           "佐藤輝明｜FA契約",
@@ -24,7 +25,7 @@
       ],
       "offseason": {
         "kind": "transactions",
-        "day": "2026-11-26",
+        "day": "2026-11-27",
         "season": 2026,
         "events": [
           {
@@ -53,7 +54,7 @@
               "typeDesc": "Signed as Free Agent",
               "description": "Chicago Cubs signed free agent 3B Teruaki Sato."
             },
-            "source": "https://statsapi.mlb.com/api/v1/transactions?playerId=831664&startDate=2026-11-20&endDate=2026-11-26"
+            "source": "https://statsapi.mlb.com/api/v1/transactions?playerId=831664&startDate=2026-11-21&endDate=2026-11-27"
           }
         ],
         "series_number": 9,
@@ -61,6 +62,5 @@
       },
       "description_line": "連載「日本人選手の来季」では、MLB公式に確定した移籍・契約などの動きを追います。"
     }
-  ],
-  "state": "ready"
+  ]
 }
