@@ -19,7 +19,7 @@ from synthesize_narration import baseball_average_reading
 class MarketTopics(unittest.TestCase):
     def test_both_scripts_keep_material_and_switch_sport(self):
         materials = topics.national.read(topics.MLB_FOLLOWUPS)['events']
-        self.assertEqual(set(materials), {'sato-cubs', 'taira-bluejays'})
+        self.assertLessEqual({'sato-cubs', 'taira-bluejays'}, set(materials))
         for event, material in materials.items():
             with self.subTest(event=event):
                 doc = topics.mlb_narration('followup-' + event)
@@ -32,7 +32,7 @@ class MarketTopics(unittest.TestCase):
                 player = material['hook']['score']
                 self.assertEqual(doc['segments'][0]['meta']['hook']['score'], player)
                 info = short_content.information(doc)
-                self.assertEqual(len(info), 5)
+                self.assertEqual(len(info), len(material['items']))
                 for index, item in enumerate(material['items']):
                     ask, answer = doc['segments'][2*index:2*index+2]
                     self.assertEqual(ask['speaker'], topics.ZUNDA)
@@ -178,6 +178,15 @@ class DurationLimit(unittest.TestCase):
     def test_market_report_stays_60(self):
         doc = {'offseason': {'kind': 'market'}, 'segments': []}
         self.assertEqual(short_content.assess(doc, [1.0], maximum=90)['maximum_seconds'], 60)
+    def test_market_comparison_uses_its_own_opening_and_ending(self):
+        # 11/27 先発の相場：球団が1つに決まらない比べの回は、材料に書いた始まりと締めを使う。
+        doc = topics.mlb_narration('followup-sp-market-2026')
+        zunda = [s['text'] for s in doc['segments'] if s['speaker'] != topic_dialogue.METAN and s['kind'] != 'outro']
+        data = doc['followup_material']
+        self.assertEqual(zunda[0], data['opening'])
+        self.assertEqual(zunda[-1], data['ending'][0])
+        self.assertEqual(topic_dialogue.problems(doc['segments']), [])
+        self.assertIsNone(doc['team_id'])
 
 if __name__ == '__main__':
     unittest.main(argv=[__file__])
