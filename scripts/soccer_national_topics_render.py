@@ -205,7 +205,11 @@ def frame(t, seg, doc, clubs, index=0, count=1, *, opening_hook=None):
         other = next(n for n in clubs if n != '日本')
         sub = f'日本対{other}' + ('' if meta.get('topic') == 'rematch' else '　親善試合')
     rows = [tuple(r) for r in meta['rows']]
-    if doc.get('program') == topics.MLB_PROGRAM:
+    # 欧州サッカーの分析ショートは、MLB のその後の回と同じ材料の形・同じ札で描く。
+    analysis = bool(doc.get('analysis_material'))
+    mlb = doc.get('program') == topics.MLB_PROGRAM or analysis
+    followup = topics.is_followup(meta.get('topic')) or analysis
+    if mlb:
         rows = [row for row in rows if row[0] != '出典']
     # その後の話題も値を釣り合いよく折る（Argon 11/15「ヴォルフスブル／ク」の1字だけの改行）。
     if topics.is_reactions(meta.get('topic')) or meta.get('quote') or topics.is_followup(meta.get('topic')):
@@ -217,24 +221,23 @@ def frame(t, seg, doc, clubs, index=0, count=1, *, opening_hook=None):
         size = 72 if len(rows) == 1 else 64
         rows = [(label, chr(10).join(balanced_lines(value, size, readable.R - readable.L - 56))) for label, value in rows]
 
-    mlb = doc.get('program') == topics.MLB_PROGRAM
     limit = fact_body_limit(spec) if mlb else readable.BODY_BOTTOM
-    if (topics.is_followup(meta.get('topic')) or doc.get('news_material')) and meta.get('big'):
+    if (followup or doc.get('news_material')) and meta.get('big'):
         facts = [tuple(r) for r in meta['rows']]
         # MLB は出典の行を外すだけ。折り返しは big_fact_screen で1回（2回折ると改行を測って Linux の raqm が落ちる）。
         if mlb:
             facts = [row for row in facts if row[0] != '出典']
-        if mlb and topics.is_followup(meta.get('topic')):
-            hero = (doc.get('followup_material') or {}).get('hook', {}).get('score')
+        if mlb and followup:
+            hero = (doc.get('followup_material') or doc.get('analysis_material') or {}).get('hook', {}).get('score')
             if rank_candidates(facts):
                 return rank_screen(s, meta['head'], facts, meta['big'], spec, sub, hero, limit)
             if bar_candidates(facts):
                 return bar_screen(s, meta['head'], facts, meta['big'], spec, sub, limit)
         return big_fact_screen(s, meta['head'], meta['big'], facts, spec, sub, limit)
-    if mlb and topics.is_followup(meta.get('topic')) and 'cast' in spec:
+    if mlb and followup and 'cast' in spec:
         facts = [tuple(r) for r in meta['rows'] if r[0] != '出典']
         if rank_candidates(facts):
-            hero = (doc.get('followup_material') or {}).get('hook', {}).get('score')
+            hero = (doc.get('followup_material') or doc.get('analysis_material') or {}).get('hook', {}).get('score')
             return rank_screen(s, meta['head'], facts, None, spec, sub, hero, limit)
         if bar_candidates(facts):
             return bar_screen(s, meta['head'], facts, None, spec, sub, limit)
