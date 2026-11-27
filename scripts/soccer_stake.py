@@ -154,16 +154,36 @@ def available_players(game, side):
     return names
 
 
+def table_row(table, name):
+    """順位表（英語名）から試合のクラブの行を探す。その夜の試合は日次（notability_engine）が日本語名で書くので、
+    日本語名でも引く（11/27 金曜の夜の5試合が名前で合わず、毎晩「対象の試合がありません」になっていた）。"""
+    for r in table:
+        if name in (r['team'], club_jp(r['team']), club_short(r['team'])):
+            return r
+    return None
+
+
+def with_sides(game, home_en, away_en):
+    """日本人選手を左右に分けた jp_by_side が無い形（日次の jp_players だけ）なら、所属から左右を決める。"""
+    if game.get('jp_by_side') is not None or 'jp_players' not in game:
+        return game
+    import notability_engine as ne
+    listed = set(game.get('jp_players') or [])
+    side = {key: [p['name_jp'] for p in ne.jp_players_for_club(team) if p['name_jp'] in listed]
+            for key, team in (('home', home_en), ('away', away_en))}
+    return dict(game, jp_by_side=side)
+
+
 def stake(game, comp):
     """この試合で懸かっている物。無ければ None。"""
     code = game.get('competition_code')
     if code not in LEAGUES:
         return None
     table = comp.get('table') or []
-    by_team = {r['team']: r for r in table}
-    home, away = by_team.get(game['home_team_name']), by_team.get(game['away_team_name'])
+    home, away = table_row(table, game['home_team_name']), table_row(table, game['away_team_name'])
     if not home or not away or not table:
         return None
+    game = with_sides(game, home['team'], away['team'])
     clubs = len(table)
     gap = abs(home['points'] - away['points'])
     jp = dict(home=available_players(game, 'home'), away=available_players(game, 'away'))
