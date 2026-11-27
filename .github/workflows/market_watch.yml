@@ -55,7 +55,7 @@ jobs:
           echo "url=$URL" >> "$GITHUB_OUTPUT"
       - name: Save the seen state
         run: |
-          bash scripts/commit_data.sh "market_watch: ${{ github.run_id }}" data/market_watch_news_state.json data/mlb_large_contracts.json
+          bash scripts/commit_data.sh "market_watch: ${{ github.run_id }}" data/market_watch_news_state.json data/mlb_large_contracts.json data/market_watch_news_previews.json
       - name: Save drafts
         if: always()
         uses: actions/upload-artifact@v4
