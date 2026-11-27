@@ -27,6 +27,9 @@ CTA = '高評価・チャンネル登録で応援を'
 
 def credit(doc, panel=None):
     """画面の出典。試合後の声は記事の媒体を先に出す（ESPN は試合結果だけ）。"""
+    if doc.get('news_material'):
+        voice = '音声: VOICEVOX:ずんだもん・四国めたん'
+        return voice if panel is None else voice + '　出典: ' + doc['news_material']['items'][panel]['source_names']
     if doc.get('program') == topics.MLB_PROGRAM:
         voice = '音声: VOICEVOX:ずんだもん・四国めたん'
         if panel is None:
@@ -208,7 +211,7 @@ def frame(t, seg, doc, clubs, index=0, count=1, *, opening_hook=None):
         size = 72 if len(rows) == 1 else 64
         rows = [(label, chr(10).join(balanced_lines(value, size, readable.R - readable.L - 56))) for label, value in rows]
 
-    if topics.is_followup(meta.get('topic')) and meta.get('big'):
+    if (topics.is_followup(meta.get('topic')) or doc.get('news_material')) and meta.get('big'):
         facts = [tuple(r) for r in meta['rows']]
         # MLB は出典の行を外すだけ。折り返しは big_fact_screen で1回（2回折ると改行を測って Linux の raqm が落ちる）。
         if doc.get('program') == topics.MLB_PROGRAM:

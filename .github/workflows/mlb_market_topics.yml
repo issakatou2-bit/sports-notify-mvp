@@ -1,8 +1,21 @@
 name: MLB 移籍 掛け合いショート
 
-# 手動だけ（schedule なし）。既定は予約投稿をしない。公開は publish=true のときだけで、
-# 事実の照合と講評のあとに Claude が手で流す。
+# 手動の話題と、監視で照合したニュースの両方に同じ描画・投稿検査を使う。
 on:
+  workflow_call:
+    inputs:
+      topic:
+        type: string
+        required: true
+      automatic_material:
+        type: string
+        required: true
+      publish:
+        type: boolean
+        default: false
+      news_issue:
+        type: string
+        required: false
   workflow_dispatch:
     inputs:
       topic:
@@ -33,6 +46,7 @@ on:
 
 permissions:
   contents: write
+  issues: write
 concurrency:
   group: mlb-market-topics
   cancel-in-progress: false
@@ -40,7 +54,8 @@ concurrency:
 env:
   PYTHONUTF8: '1'
   COLLESPO_SAMPLE_ONLY: ${{ inputs.sample_only && 'true' || 'false' }}
-  PUBLISH: ${{ (inputs.publish && !inputs.sample_only) && 'true' || 'false' }}
+  COLLESPO_MARKET_AUTO_PUBLISH: ${{ vars.COLLESPO_MARKET_AUTO_PUBLISH }}
+  PUBLISH: ${{ (inputs.publish && !inputs.sample_only && (inputs.automatic_material == '' || vars.COLLESPO_MARKET_AUTO_PUBLISH == 'true')) && 'true' || 'false' }}
 
 jobs:
   build:
@@ -63,6 +78,8 @@ jobs:
       ANTHROPIC_API_KEY: ''  # 翻訳・AI二段目はこの種類では実行しない。
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
@@ -71,9 +88,19 @@ jobs:
           pip install -r scripts/requirements.txt
           pip install imageio_ffmpeg pyyaml
       - name: Build the topic script from confirmed reporting
+        if: inputs.automatic_material == ''
         env:
           TOPIC: ${{ inputs.topic }}
         run: python scripts/soccer_national_topics.py --sport mlb --topic "$TOPIC" --out build/mlb_market_topics
+      - name: Build the watched news topic
+        if: inputs.automatic_material != ''
+        env:
+          TOPIC: ${{ inputs.topic }}
+          NEWS_MATERIAL: ${{ inputs.automatic_material }}
+        run: |
+          mkdir -p build/mlb_market_topics
+          printf '%s' "$NEWS_MATERIAL" > build/mlb_market_topics/news_input.json
+          python scripts/soccer_national_topics.py --sport mlb --topic "$TOPIC" --news-material build/mlb_market_topics/news_input.json --out build/mlb_market_topics
       - name: Install video tools
         run: bash scripts/install_video_tools.sh
       - name: Start VOICEVOX
@@ -92,6 +119,11 @@ jobs:
         env:
           ANTHROPIC_API_KEY: ''  # この種類は機械照合だけ。有料の二段目は呼ばない。
         run: python scripts/sanity.py --general --strict --narration build/mlb_market_topics/narration.json --out build/mlb_market_topics/sanity.json --hold-record build/mlb_market_topics/sanity_hold.json --kind mlb_market_topic
+      - name: Check the watched news video
+        if: inputs.automatic_material != ''
+        run: |
+          python scripts/check_sample.py build/mlb_market_topics/collespo_national_topic.mp4
+          python scripts/upload_gate.py build/mlb_market_topics/collespo_national_topic.mp4 --segments build/mlb_market_topics/narration.json --description-file build/mlb_market_topics/description.txt --kind mlb_market_topic
       - name: Resolve the reservation time
         if: env.PUBLISH == 'true'
         env:
@@ -133,6 +165,35 @@ jobs:
             build/mlb_market_topics/
             !build/**/portrait/**
           retention-days: 14
+      - name: Save news preview
+        id: news-preview
+        if: inputs.automatic_material != '' && env.PUBLISH != 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: sample-mlb_market_topics-news
+          path: build/mlb_market_topics/
+          retention-days: 14
+          if-no-files-found: error
+      - name: Notify the completed preview
+        if: steps.news-preview.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE: ${{ inputs.news_issue }}
+          ARTIFACT: ${{ steps.news-preview.outputs.artifact-url }}
+          TOPIC: ${{ inputs.topic }}
+        run: |
+          {
+            echo "見本あり"
+            echo
+            echo "$ARTIFACT"
+          } > build/mlb_market_topics/preview_issue.md
+          if [ -n "$ISSUE" ]; then
+            gh issue comment "$ISSUE" --body-file build/mlb_market_topics/preview_issue.md
+          else
+            gh issue create --title "ニュースの見本あり $TOPIC" --body-file build/mlb_market_topics/preview_issue.md
+          fi
+          python scripts/news_fast_watch.py mlb --preview-receipts data/market_watch_news_previews.json --record-preview "$TOPIC" "$ARTIFACT"
+          bash scripts/commit_data.sh "market_watch preview: ${{ github.run_id }}" data/market_watch_news_previews.json
       - name: Save quota-exceeded thumbnails
         if: env.PUBLISH == 'true' && (always() && hashFiles('build/thumbnail_pending/**') != '')
         uses: actions/upload-artifact@v4
@@ -147,7 +208,7 @@ jobs:
         if: always()
         run: docker stop voicevox || true
       - name: Keep unsaved data records
-        if: env.PUBLISH == 'true' && always() && hashFiles('build/data-save-recovery/**/FAILED') != ''
+        if: always() && hashFiles('build/data-save-recovery/**/FAILED') != ''
         uses: actions/upload-artifact@v4
         with:
           name: unsaved-data-${{ github.job }}-${{ github.run_attempt }}
