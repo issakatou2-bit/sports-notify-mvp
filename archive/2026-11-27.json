@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-27T09:53:52.250236+00:00",
+  "generated_at": "2026-11-27T20:42:40.067098+00:00",
   "games": [
     {
       "game_id": "565869",
@@ -31,13 +31,13 @@
         "points_back": 6.0
       },
       "away_standing": {
-        "rank": 18,
-        "games_back": 6.7,
+        "rank": 17,
+        "games_back": 5.7,
         "streak": 0,
         "wins": 0,
         "losses": 0,
         "last_ten": null,
-        "points_back": 20.0
+        "points_back": 17.0
       },
       "home_probable": null,
       "away_probable": null,
@@ -63,8 +63,8 @@
         }
       ],
       "log_notes": [],
-      "ai_summary": "現在10試合を消化したブンデスリーガで、【首位と勝ち点差6のブレーメン】と【同20のボルシアMG】が対戦する。昨季ブンデスリーガ15位のブレーメンと同12位のボルシアMGの今季の成績がどう推移するかが見どころとなる中、ボルシアMGに所属する町野修斗、宇野禅斗、橋岡大樹、板倉滉といった日本人選手がどのようなパフォーマンスを見せるかに注目したい。",
-      "notification_hook": "日本人4選手が敵地・ブレーメンで試される、ボルシアMG4番手の日本勢。"
+      "ai_summary": "現在11試合を消化したブンデスリーガで、ブレーメンは【6位で首位と6勝ち点差】につける中位勢として本拠地での試合に臨む。敵地を訪れるボルシアMGは17位と下位に沈んでおり、昨季ブンデスリーガ15位だったブレーメンと昨季12位だったボルシアMGという、シーズンを通じた成績が大きく異なる両チームの直接対決となる。両チームには町野修斗、宇野禅斗、橋岡大樹、板倉滉といった日本人選手が所属しており、個々の選手の活躍がどう試合の流れを左右するかに注目したい。",
+      "notification_hook": "町野修斗ら日本人4選手が交錯。ブレーメン中位の底力とボルシアMG下位からの脱出に注目。"
     },
     {
       "game_id": "559616",
@@ -87,13 +87,13 @@
       "jp_starters": [],
       "jp_players": [],
       "home_standing": {
-        "rank": 6,
-        "games_back": 2.7,
+        "rank": 3,
+        "games_back": 1.7,
         "streak": 0,
         "wins": 0,
         "losses": 0,
         "last_ten": null,
-        "points_back": 8.0
+        "points_back": 5.0
       },
       "away_standing": {
         "rank": 2,
@@ -112,7 +112,7 @@
       "venue_runs_note": null,
       "home_has_jp": false,
       "away_has_jp": false,
-      "score": 1,
+      "score": 6,
       "game_type": "R",
       "is_notable": true,
       "reasons": [
@@ -123,13 +123,18 @@
         },
         {
           "tag": "quality",
-          "text": "ブレスト6位 と パリFC2位",
-          "weight": 1
+          "text": "ブレストが3位、パリFCが2位の上位対決",
+          "weight": 3
+        },
+        {
+          "tag": "div",
+          "text": "首位争い、勝ち点差は2",
+          "weight": 3
         }
       ],
       "log_notes": [],
-      "ai_summary": "リーグ・アン11試合を消化した現段階で、パリFCが2位、ブレスト6位と順位に開きがある一方、【首位との勝ち点差は3と8】で異なる状況にある。昨季リーグ・アン12位だったブレストが今季6位まで躍進し、同じく昨季11位のパリFCが2位に浮上するなど、両チームとも前シーズンから大きく成績を伸ばしている。ホームで迎えるブレストが敵地のパリFCを相手にどのような戦術で挑むのか、また2位の座を守るパリFCの守備がどう機能するのかが見どころとなる。",
-      "notification_hook": "躍進する6位ブレスト、2位パリFCの勝ち点差5を縮める挑戦"
+      "ai_summary": "リーグ・アン12試合を終えた段階で、ブレストが3位、パリFCが2位と上位に並ぶ両チームの対戦である。首位との勝ち点差がブレスト5、パリFC3と、【パリFCが首位に近い立場】にあり、この試合の結果がリーグ全体の優勝争いの流れを左右する可能性を持つ。昨季リーグ・アンではブレストが12位、パリFCが11位と低迷していた両チームが、今季ここまで大きく順位を上げてきた背景も興味深い。現在の両チームの守備の安定性がどちらに軍配が上がるのかに注目したい。",
+      "notification_hook": "首位3勝差のパリFCが敵地ブレストの3位に挑む、上位チーム対決。"
     },
     {
       "game_id": "558515",
@@ -152,22 +157,22 @@
       "jp_starters": [],
       "jp_players": [],
       "home_standing": {
-        "rank": 20,
-        "games_back": 8.7,
+        "rank": 19,
+        "games_back": 8.3,
         "streak": 0,
         "wins": 0,
         "losses": 0,
         "last_ten": null,
-        "points_back": 26.0
+        "points_back": 25.0
       },
       "away_standing": {
-        "rank": 9,
-        "games_back": 4.7,
+        "rank": 8,
+        "games_back": 4.3,
         "streak": 0,
         "wins": 0,
         "losses": 0,
         "last_ten": null,
-        "points_back": 14.0
+        "points_back": 13.0
       },
       "home_probable": null,
       "away_probable": null,
@@ -203,13 +208,13 @@
       "jp_starters": [],
       "jp_players": [],
       "home_standing": {
-        "rank": 17,
-        "games_back": 6.3,
+        "rank": 14,
+        "games_back": 5.3,
         "streak": 0,
         "wins": 0,
         "losses": 0,
         "last_ten": null,
-        "points_back": 19.0
+        "points_back": 16.0
       },
       "away_standing": {
         "rank": 8,
@@ -244,8 +249,8 @@
         }
       ],
       "log_notes": [],
-      "ai_summary": "チェルシーがアウェーでノッティンガム・フォレストを訪れる本節は、昨季プレミアリーグ10位のチェルシーと昨季16位のノッティンガム・フォレストが、【現在首位との勝ち点差で大きく異なる立場】から対戦することになる。チェルシーは首位から12差、ノッティンガム・フォレストは首位から19差の状況にあり、シーズン序盤の11試合を消化した段階での両チームの実力差が試合内容にどう表れるかが見どころとなる。敵地での戦いに臨むチェルシーの攻撃陣がどの程度の得点機を作り出すのか、またホームで迎えるノッティンガム・フォレストがそれにどう対抗するのかに注目したい。",
-      "notification_hook": "首位から12差のチェルシーが、19差のノッティンガム・フォレストの敵地へ。上位と下位の力関係は試合で証明されるか。"
+      "ai_summary": "チェルシーが敵地でノッティンガム・フォレストを訪れる本節は、両チームの立場の違いが明確な対比となる。チェルシーは【首位との勝ち点差12】で8位に位置する上位勢であるのに対し、ノッティンガム・フォレストは14位で首位から16の勝ち点差がある。昨季プレミアリーグ16位から1部に返り咲いたノッティンガム・フォレストと、同10位のチェルシーという対戦構図も、両チームの現在地を語る。上位への浮上を狙うチェルシーの攻撃と、主導権を奪いたいノッティンガム・フォレストの守備がどう作用するかに注目したい。",
+      "notification_hook": "首位との勝ち点差12のチェルシー、敵地でノッティンガム・フォレストと対戦。"
     },
     {
       "game_id": "564765",
@@ -269,21 +274,21 @@
       "jp_players": [],
       "home_standing": {
         "rank": 15,
-        "games_back": 8.0,
+        "games_back": 7.7,
         "streak": 0,
         "wins": 0,
         "losses": 0,
         "last_ten": null,
-        "points_back": 24.0
+        "points_back": 23.0
       },
       "away_standing": {
         "rank": 7,
-        "games_back": 6.3,
+        "games_back": 6.0,
         "streak": 0,
         "wins": 0,
         "losses": 0,
         "last_ten": null,
-        "points_back": 19.0
+        "points_back": 18.0
       },
       "home_probable": null,
       "away_probable": null,
@@ -303,6 +308,6 @@
   "ai_status": {
     "targets": 3,
     "succeeded": 3,
-    "cost_usd": 0.01602
+    "cost_usd": 0.01209
   }
 }
