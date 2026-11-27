@@ -169,5 +169,36 @@ class AnalysisTopics(unittest.TestCase):
         self.assertEqual(snippet['tags'], ['欧州サッカー', 'サッカー', 'プレミアリーグ', SUBJECT])
 
 
+# 材料に足した回はすべて、流れと同じ見た目の設定で全場面を描いて画面検査に通す
+# （11/27 パレスの回で、つかみの札の名前と札が重なり、見本の実行で初めて落ちた）。
+REAL_FRAME_PROBE = """
+import json
+import review_render_v3 as r3
+import soccer_national_topics as topics
+import soccer_national_topics_render as render
+events = json.load(open('../data/soccer_analysis_topics.json', encoding='utf-8'))['events']
+for key in events:
+    doc = topics.analysis_narration('analysis-' + key)
+    clubs = render.clubs_for(doc)
+    for i, seg in enumerate(doc['segments'][:-1]):
+        r3.set_caption(seg['text'], 5, 60, speaker=seg['speaker'])
+        image = render.frame(1.5, seg, doc, clubs, i, len(doc['segments']))
+        errors = render.validate_frame(image, clubs, doc)
+        assert errors == [], (key, i, errors)
+"""
+
+
+class RealMaterials(unittest.TestCase):
+    def test_every_scene_of_every_material_passes_the_frame_check(self):
+        import subprocess
+        import sys
+        env = {key: value for key, value in os.environ.items() if not key.startswith('COLLESPO_')}
+        env.update(PYTHONUTF8='1', COLLESPO_STYLE='v2', COLLESPO_SOCCER_LOOK='v6', COLLESPO_SOCCER_FOCUS='on',
+                   COLLESPO_SHORT_LOOK='v4', COLLESPO_SOLO_HOST='metan', COLLESPO_SOCCER_TITLE_V2='on')
+        result = subprocess.run([sys.executable, '-c', REAL_FRAME_PROBE], cwd=Path(__file__).resolve().parent,
+                                env=env, capture_output=True, text=True, encoding='utf-8', timeout=120)
+        self.assertEqual(result.returncode, 0, result.stderr[-2000:])
+
+
 if __name__ == '__main__':
     unittest.main(argv=[__file__])
