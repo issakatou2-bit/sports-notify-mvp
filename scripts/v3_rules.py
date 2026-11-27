@@ -91,7 +91,7 @@ def check_layout(image):
         return ['描画位置の記録がありません']
     for e in entries:
         if e['role']=='face':
-            if safe.outside(e['box']):
+            if safe.outside(e['box'], safe.bottom_limit(e)):
                 errors.append(e)
             continue
         x,y,right,bottom=e['box']

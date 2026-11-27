@@ -64,6 +64,7 @@ class CheckSampleTest(unittest.TestCase):
         # 11/25 ずんだもんの足が下端から29px浮いていた（顔を安全域に入れるため上げた分）。
         from PIL import Image
         import characters
+        import shorts_safe_area
         for speaker in ('zundamon', 'metan'):
             for elapsed in (0.05, 0.15, 0.3, 0.45):
                 im = Image.new('RGBA', (1080, 1920))
@@ -71,7 +72,8 @@ class CheckSampleTest(unittest.TestCase):
                 for row in im.info['duo_portraits']:
                     self.assertEqual(row['box'][3], 1920, row)
                     self.assertGreaterEqual(row['floor'][1] - row['floor'][0], 16, row)
-                    self.assertLessEqual(row['face'][3], 1440, row)
+                    # 11/27 ずんだもんをめたんと同じ大きさにし、隅の顔だけ下限を1480にした
+                    self.assertLessEqual(row['face'][3], shorts_safe_area.CORNER_FACE_BOTTOM, row)
 
     def test_corner_presenter_size_follows_80_percent_design(self):
         from PIL import Image

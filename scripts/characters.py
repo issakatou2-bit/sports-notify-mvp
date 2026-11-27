@@ -90,12 +90,14 @@ def reserved_width(duo=False):
 
 # 11/22 本人「キャラの大きさ8割くらい」：864→691。顔が安全域（下1440・右930）に入る所まで上げた。
 CORNER_HEIGHT = 691
-# 11/25 ずんだもんは顔を安全域に入れると足が下端から29px浮いた（関門で検出）。
-# 顎を安全域の下端（1440）の内側に保ったまま足を下端へ届かせるため、ずんだもんだけ745（約86%）。話す時の上下3pxでも顎は1440の内側、足は下端に付く。
-CORNER_HEIGHTS = {'zundamon': 745, 'metan': CORNER_HEIGHT}
+# 11/25 ずんだもんは顎を1440の内側に保つため745（めたんより約8%大きい）にしていた。
+# 11/27 本人「めたずんのサイズ揃えたい」「ずんだもんをひとまわり小さく」→見本の案A：めたんと同じ691。
+# 足は下端に付けたまま、顔の中心の横位置（x≈176）を保つ。顎は1471（話す時の上下3pxで1474）になるので、
+# 隅の胸上の顔だけ安全域の下限を shorts_safe_area.CORNER_FACE_BOTTOM（1480）にする。
+CORNER_HEIGHTS = {'zundamon': CORNER_HEIGHT, 'metan': CORNER_HEIGHT}
 # x, y and the visible face within the full-height rig. Hair and clothing may extend out.
 CORNERS = {
-    'zundamon': ('left', -68, 1182, (.40, .15, .73, .34)),
+    'zundamon': ('left', -50, 1236, (.40, .15, .73, .34)),
     'metan': ('right', 692, 1240, (.28, .07, .70, .26)),
 }
 
@@ -130,7 +132,7 @@ def corner_busts(im, speaker, line, elapsed, clock, duration):
         layers.append(dict(who=who, face=face, height=height, dim=False, side=side,
                            active=active, dy=dy, at=[x, y], cut=cut, corner=True, full=True,
                            facing=inward_facing(who, side), ink=ink))
-        r3.record_box(im, 'face', face_box)
+        im.info.setdefault('v3_layout', []).append({'role': 'face', 'box': list(face_box), 'text': '', 'corner_face': True})
     im.info.update(duo_portraits=portraits, duo_layer=layers)
 
 
