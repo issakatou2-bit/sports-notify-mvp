@@ -1,0 +1,30 @@
+{
+  "publication_id": "mlb:mlb_market_topic:followup-imanaga-hr-2026",
+  "domain": "mlb",
+  "kind": "mlb_market_topic",
+  "key_parts": {
+    "legacy_key": "followup-imanaga-hr-2026"
+  },
+  "version": 1,
+  "history": [
+    {
+      "source": "published_videos/mlb_market_topic/followup-imanaga-hr-2026",
+      "service": "youtube",
+      "video_id": "KiAsBcjgk3Q",
+      "state": "scheduled",
+      "scheduled_at": "2026-11-28T09:00:00Z",
+      "event_day": null,
+      "material_day": null,
+      "edition_day": "2026-11-28",
+      "run_at": "2026-11-27T03:43:52.425549+00:00",
+      "details": {
+        "privacy": "public"
+      },
+      "run_id": "45935471378",
+      "attempt": "1",
+      "recorded_at": "2026-11-27T03:43:52.446191+00:00",
+      "fingerprint": "0f1ba489119d69452e09dae732b5f8367591793c19124af42dceee9c7da872ef",
+      "event_id": "54c750909f1498492c537f76a05e41cf9c26fd7f48a85743bec4d3db2e260ad0"
+    }
+  ]
+}
