@@ -467,6 +467,166 @@
           ]
         }
       ]
+    },
+    "taira-era-npb-mlb": {
+      "checked_on": "2026-11-27",
+      "title": "平良海馬の防御率1.36はメジャーで通用するか NPBから移った6人は1年目に全員上昇",
+      "readings": {
+        "平良海馬": "タイラカイマ",
+        "今永昇太": "イマナガショウタ",
+        "千賀滉大": "センガコウダイ",
+        "山本由伸": "ヤマモトヨシノブ",
+        "菅野智之": "スガノトモユキ",
+        "今井達也": "イマイタツヤ",
+        "小笠原慎之介": "オガサワラシンノスケ"
+      },
+      "reading_sources": [
+        "https://npb.jp/bis/2026/stats/pit_p.html",
+        "https://npb.jp/bis/2024/stats/pit_c.html"
+      ],
+      "hook": {
+        "score": "平良海馬",
+        "result": "メジャーで通用するか",
+        "subject": "パ・リーグ1位の防御率",
+        "big": "1.36",
+        "unit": "",
+        "note": "6人の1年目と比べる"
+      },
+      "opening": "平良海馬の防御率、メジャーでも通用するのか気になるのだ！",
+      "ending": [
+        "同じ日本の好投手でも、メジャーに来てからこんなに差が出るのだ！",
+        "そうね。6人とも防御率は上がったけれど、上がり方はばらばらよ。平良海馬の1年目を見るまで、答えは出せないわ。"
+      ],
+      "items": [
+        {
+          "ask": "平良海馬の防御率、メジャーでも通用するのか気になるのだ！",
+          "text": "平良海馬は今季、146回を投げて防御率1.36。パ・リーグで1位だったわ。",
+          "head": "平良海馬の2026年",
+          "rows": [
+            [
+              "投球回",
+              "146"
+            ],
+            [
+              "防御率",
+              "1.36（パ・リーグ1位）"
+            ]
+          ],
+          "big": {
+            "label": "2026年の防御率",
+            "value": "1.36",
+            "unit": ""
+          },
+          "source_names": "NPB公式",
+          "sources": [
+            "https://npb.jp/bis/2026/stats/pit_p.html",
+            "https://npb.jp/bis/2026/stats/idp1_l.html"
+          ]
+        },
+        {
+          "ask": "先にメジャーへ行った投手は、どうだったのだ？",
+          "text": "2023年から今年までにメジャーへ移った投手で、NPB最後の年に規定投球回を投げ、メジャー1年目に30回以上投げたのは6人。6人とも、1年目は防御率が上がったわ。",
+          "head": "NPBから移った6人",
+          "rows": [
+            [
+              "対象",
+              "2023〜2026年にメジャーへ"
+            ],
+            [
+              "条件",
+              "NPB最後の年に規定投球回、メジャー1年目に30回以上"
+            ],
+            [
+              "1年目に防御率が上がった",
+              "6人中6人"
+            ]
+          ],
+          "big": {
+            "label": "比べる投手",
+            "value": "6",
+            "unit": "人"
+          },
+          "source_names": "NPB公式・MLB公式",
+          "sources": [
+            "https://npb.jp/bis/2022/stats/pit_p.html",
+            "https://npb.jp/bis/2023/stats/pit_p.html",
+            "https://npb.jp/bis/2023/stats/pit_c.html",
+            "https://npb.jp/bis/2024/stats/pit_c.html",
+            "https://npb.jp/bis/2025/stats/pit_p.html",
+            "https://statsapi.mlb.com/api/v1/people/673540/stats?stats=yearByYear&group=pitching",
+            "https://statsapi.mlb.com/api/v1/people/808967/stats?stats=yearByYear&group=pitching",
+            "https://statsapi.mlb.com/api/v1/people/684007/stats?stats=yearByYear&group=pitching",
+            "https://statsapi.mlb.com/api/v1/people/608372/stats?stats=yearByYear&group=pitching",
+            "https://statsapi.mlb.com/api/v1/people/837227/stats?stats=yearByYear&group=pitching",
+            "https://statsapi.mlb.com/api/v1/people/829272/stats?stats=yearByYear&group=pitching"
+          ]
+        },
+        {
+          "ask": "どのくらい上がったのだ？",
+          "text": "小さく済んだのは今永昇太で、2.80から2.91。千賀滉大は1.94から2.98、山本由伸は1.21から3.00だったわ。",
+          "head": "NPB最後の年 → メジャー1年目",
+          "rows": [
+            [
+              "今永昇太",
+              "2.80 → 2.91"
+            ],
+            [
+              "千賀滉大",
+              "1.94 → 2.98"
+            ],
+            [
+              "山本由伸",
+              "1.21 → 3.00"
+            ]
+          ],
+          "big": {
+            "label": "今永昇太の1年目",
+            "value": "2.91",
+            "unit": ""
+          },
+          "source_names": "NPB公式・MLB公式",
+          "sources": [
+            "https://npb.jp/bis/2023/stats/pit_c.html",
+            "https://npb.jp/bis/2022/stats/pit_p.html",
+            "https://npb.jp/bis/2023/stats/pit_p.html",
+            "https://statsapi.mlb.com/api/v1/people/684007/stats?stats=yearByYear&group=pitching",
+            "https://statsapi.mlb.com/api/v1/people/673540/stats?stats=yearByYear&group=pitching",
+            "https://statsapi.mlb.com/api/v1/people/808967/stats?stats=yearByYear&group=pitching"
+          ]
+        },
+        {
+          "ask": "大きく上がった投手もいるのだ？",
+          "text": "菅野智之は1.67から4.64、今井達也は1.92から4.93、小笠原慎之介は3.12から6.98まで上がったわ。",
+          "head": "NPB最後の年 → メジャー1年目",
+          "rows": [
+            [
+              "菅野智之",
+              "1.67 → 4.64"
+            ],
+            [
+              "今井達也",
+              "1.92 → 4.93"
+            ],
+            [
+              "小笠原慎之介",
+              "3.12 → 6.98"
+            ]
+          ],
+          "big": {
+            "label": "小笠原慎之介の1年目",
+            "value": "6.98",
+            "unit": ""
+          },
+          "source_names": "NPB公式・MLB公式",
+          "sources": [
+            "https://npb.jp/bis/2024/stats/pit_c.html",
+            "https://npb.jp/bis/2025/stats/pit_p.html",
+            "https://statsapi.mlb.com/api/v1/people/608372/stats?stats=yearByYear&group=pitching",
+            "https://statsapi.mlb.com/api/v1/people/837227/stats?stats=yearByYear&group=pitching",
+            "https://statsapi.mlb.com/api/v1/people/829272/stats?stats=yearByYear&group=pitching"
+          ]
+        }
+      ]
     }
   }
 }
