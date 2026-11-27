@@ -1,0 +1,30 @@
+{
+  "publication_id": "mlb:mlb_market_topic:followup-sato-k-rate-npb-mlb",
+  "domain": "mlb",
+  "kind": "mlb_market_topic",
+  "key_parts": {
+    "legacy_key": "followup-sato-k-rate-npb-mlb"
+  },
+  "version": 1,
+  "history": [
+    {
+      "source": "published_videos/mlb_market_topic/followup-sato-k-rate-npb-mlb",
+      "service": "youtube",
+      "video_id": "DKqruipyk3U",
+      "state": "scheduled",
+      "scheduled_at": "2026-11-28T03:00:00Z",
+      "event_day": null,
+      "material_day": null,
+      "edition_day": "2026-11-28",
+      "run_at": "2026-11-27T02:04:22.436514+00:00",
+      "details": {
+        "privacy": "public"
+      },
+      "run_id": "45925357779",
+      "attempt": "1",
+      "recorded_at": "2026-11-27T02:04:22.466774+00:00",
+      "fingerprint": "8dae86b7665dd7fc12f9ed8db9d3a8d5b941b06582039bf28b782a5514c901a4",
+      "event_id": "31a7658a06d43aa50ef8f6166d359a38c978ef6e2189f50df4171204c98d6d69"
+    }
+  ]
+}
