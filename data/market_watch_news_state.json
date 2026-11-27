@@ -1,7 +1,8 @@
 {
   "noticed": {
     "news-mlb-teruaki-sato-official": "動画制作待ち",
-    "news-mlb-seiya-suzuki-report": "球団・年数・総額が一致する独立した2報道、またはMLB公式記録を待つ"
+    "news-mlb-seiya-suzuki-report": "球団・年数・総額が一致する独立した2報道、またはMLB公式記録を待つ",
+    "news-mlb-teruaki-sato-report": "球団・年数・総額が一致する独立した2報道、またはMLB公式記録を待つ"
   },
   "first_seen": {
     "teruaki-sato": "2026-11-27T18:29:18.704662+09:00",
@@ -106,6 +107,43 @@
       "url": "https://www.espn.com/mlb/story/_/id/50598771/source-marlins-agree-one-year-deal-gary-sanchez",
       "title": "Source: Marlins agree to 1-year deal with catcher Sanchez",
       "reported_at": "2026-11-26T14:56:03+09:00",
+      "opt_out": null
+    },
+    "https://www.mlbtraderumors.com/2026/11/cubs-to-sign-teruaki-sato.html": {
+      "name_en": "Teruaki Sato",
+      "name": "佐藤輝明",
+      "japanese": true,
+      "team_en": "Chicago Cubs",
+      "team": "カブス",
+      "terms": null,
+      "agreement": true,
+      "conflict": false,
+      "origin": "ESPN",
+      "reporter": "Jeff Passan",
+      "outlet": "MLBTR",
+      "url": "https://www.mlbtraderumors.com/2026/11/cubs-to-sign-teruaki-sato.html",
+      "title": "Cubs Sign Teruaki Sato",
+      "reported_at": "2026-11-28T03:03:59+09:00",
+      "opt_out": null
+    },
+    "https://www.mlbtraderumors.com/2026/11/royals-designate-mitch-spence-for-assignment.html": {
+      "name_en": "Mitch Spence",
+      "name": "",
+      "japanese": false,
+      "team_en": "Kansas City Royals",
+      "team": "ロイヤルズ",
+      "terms": {
+        "years": 2,
+        "amount": 2000.0
+      },
+      "agreement": true,
+      "conflict": false,
+      "origin": "",
+      "reporter": "",
+      "outlet": "MLBTR",
+      "url": "https://www.mlbtraderumors.com/2026/11/royals-designate-mitch-spence-for-assignment.html",
+      "title": "Royals Designate Mitch Spence For Assignment",
+      "reported_at": "2026-11-28T02:21:42+09:00",
       "opt_out": null
     }
   },
