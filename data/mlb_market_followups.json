@@ -627,6 +627,205 @@
           ]
         }
       ]
+    },
+    "sato-k-rate-npb-mlb": {
+      "checked_on": "2026-11-27",
+      "title": "佐藤輝明の三振率26.7%はメジャーでどうなるか NPBから移った打者4人は1年目に全員上昇",
+      "readings": {
+        "佐藤輝明": "サトウテルアキ",
+        "鈴木誠也": "スズキセイヤ",
+        "吉田正尚": "ヨシダマサタカ",
+        "村上宗隆": "ムラカミムネタカ",
+        "岡本和真": "オカモトカズマ"
+      },
+      "reading_sources": [
+        "https://npb.jp/bis/players/41845136.html",
+        "https://npb.jp/bis/players/11515130.html",
+        "https://npb.jp/bis/players/81785137.html",
+        "https://npb.jp/bis/players/63165132.html",
+        "https://npb.jp/bis/2026/stats/bat_c.html"
+      ],
+      "hook": {
+        "score": "佐藤輝明",
+        "result": "三振はどうなるか",
+        "subject": "今季の三振率",
+        "big": "26.7",
+        "unit": "%",
+        "note": "4人の1年目と比べる"
+      },
+      "opening": "佐藤輝明の三振、メジャーでどうなるのか気になるのだ！",
+      "ending": [
+        "三振の増え方は、人によってこんなに違うのだ！",
+        "ええ。4人とも三振率は上がったけれど、上がり幅はばらばらよ。佐藤輝明がどうなるかは、1年目を見るまで分からないわ。"
+      ],
+      "items": [
+        {
+          "ask": "佐藤輝明の三振、メジャーでどうなるのか気になるのだ！",
+          "text": "佐藤輝明は今季、614打席で三振が164。三振率は26.7%だったわ。",
+          "head": "佐藤輝明の2026年",
+          "rows": [
+            [
+              "打席",
+              "614"
+            ],
+            [
+              "三振",
+              "164"
+            ],
+            [
+              "三振率",
+              "26.7%"
+            ]
+          ],
+          "big": {
+            "label": "2026年の三振率",
+            "value": "26.7",
+            "unit": "%"
+          },
+          "source_names": "NPB公式・ESPN",
+          "sources": [
+            "https://npb.jp/bis/2026/stats/bat_c.html",
+            "https://www.espn.com/mlb/story/_/id/50583163/sources-cubs-teruaki-sato-reach-6-year-120m-deal"
+          ]
+        },
+        {
+          "ask": "先にメジャーへ行った打者は、どうだったのだ？",
+          "text": "2022年から今年までにNPBからメジャーへ移った打者は4人。4人とも、1年目は三振率が上がったわ。",
+          "head": "NPB最後の年→メジャー1年目の三振率",
+          "rows": [
+            [
+              "鈴木誠也（2021→2022）",
+              "16.5%→24.7%"
+            ],
+            [
+              "吉田正尚（2022→2023）",
+              "8.1%→14.0%"
+            ],
+            [
+              "村上宗隆（2025→2026）",
+              "28.6%→35.4%"
+            ],
+            [
+              "岡本和真（2025→2026）",
+              "11.3%→28.8%"
+            ]
+          ],
+          "big": {
+            "label": "三振率が上がった打者",
+            "value": "4",
+            "unit": "人"
+          },
+          "source_names": "NPB公式・MLB公式",
+          "sources": [
+            "https://npb.jp/bis/players/81785137.html",
+            "https://npb.jp/bis/players/63165132.html",
+            "https://npb.jp/bis/players/41845136.html",
+            "https://npb.jp/bis/players/11515130.html",
+            "https://statsapi.mlb.com/api/v1/people/673548/stats?stats=yearByYear&group=hitting",
+            "https://statsapi.mlb.com/api/v1/people/807799/stats?stats=yearByYear&group=hitting",
+            "https://statsapi.mlb.com/api/v1/people/808959/stats?stats=yearByYear&group=hitting",
+            "https://statsapi.mlb.com/api/v1/people/672960/stats?stats=yearByYear&group=hitting"
+          ]
+        },
+        {
+          "ask": "どのくらい上がったのだ？",
+          "text": "吉田正尚は8.1%から14.0%、村上宗隆は28.6%から35.4%、鈴木誠也は16.5%から24.7%だったわ。",
+          "head": "上がり幅が小さかった3人",
+          "rows": [
+            [
+              "吉田正尚",
+              "8.1%→14.0%"
+            ],
+            [
+              "村上宗隆（2025年は56試合）",
+              "28.6%→35.4%"
+            ],
+            [
+              "鈴木誠也",
+              "16.5%→24.7%"
+            ]
+          ],
+          "big": {
+            "label": "村上宗隆のメジャー1年目",
+            "value": "35.4",
+            "unit": "%"
+          },
+          "source_names": "NPB公式・MLB公式",
+          "sources": [
+            "https://npb.jp/bis/players/63165132.html",
+            "https://npb.jp/bis/players/41845136.html",
+            "https://npb.jp/bis/players/81785137.html",
+            "https://statsapi.mlb.com/api/v1/people/807799/stats?stats=yearByYear&group=hitting",
+            "https://statsapi.mlb.com/api/v1/people/808959/stats?stats=yearByYear&group=hitting",
+            "https://statsapi.mlb.com/api/v1/people/673548/stats?stats=yearByYear&group=hitting"
+          ]
+        },
+        {
+          "ask": "どの打者も、はっきり増えているのだ。",
+          "text": "中でも岡本和真は11.3%から28.8%。17.5ポイントも上がったわ。",
+          "head": "岡本和真の三振率",
+          "rows": [
+            [
+              "2025年 巨人",
+              "11.3%（293打席）"
+            ],
+            [
+              "2026年 ブルージェイズ",
+              "28.8%（636打席）"
+            ]
+          ],
+          "big": {
+            "label": "岡本和真のメジャー1年目",
+            "value": "28.8",
+            "unit": "%"
+          },
+          "source_names": "NPB公式・MLB公式",
+          "sources": [
+            "https://npb.jp/bis/players/11515130.html",
+            "https://statsapi.mlb.com/api/v1/people/672960/stats?stats=yearByYear&group=hitting"
+          ]
+        },
+        {
+          "ask": "佐藤輝明の三振率は、ほかの打者と比べてどうなのだ？",
+          "text": "NPB最後の年の三振率で並べると、佐藤輝明の26.7%は、村上宗隆の28.6%に次ぐ高さよ。",
+          "head": "NPB最後の年の三振率",
+          "rows": [
+            [
+              "村上宗隆",
+              "28.6%"
+            ],
+            [
+              "佐藤輝明",
+              "26.7%"
+            ],
+            [
+              "鈴木誠也",
+              "16.5%"
+            ],
+            [
+              "岡本和真",
+              "11.3%"
+            ],
+            [
+              "吉田正尚",
+              "8.1%"
+            ]
+          ],
+          "big": {
+            "label": "佐藤輝明の2026年",
+            "value": "26.7",
+            "unit": "%"
+          },
+          "source_names": "NPB公式",
+          "sources": [
+            "https://npb.jp/bis/2026/stats/bat_c.html",
+            "https://npb.jp/bis/players/41845136.html",
+            "https://npb.jp/bis/players/81785137.html",
+            "https://npb.jp/bis/players/11515130.html",
+            "https://npb.jp/bis/players/63165132.html"
+          ]
+        }
+      ]
     }
   }
 }
