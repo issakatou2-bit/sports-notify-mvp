@@ -1,6 +1,6 @@
 {
-  "date_jst": "2026-11-26",
-  "updated_at": "2026-11-26T10:10:24.832225+00:00",
+  "date_jst": "2026-11-27",
+  "updated_at": "2026-11-27T10:03:03.157546+00:00",
   "sections": {
     "eng.1:goals": {
       "leader": "Erling Haaland",
@@ -17,7 +17,8 @@
           "team_jp": "マンチェスター・シティ",
           "value": 9,
           "matches": 11,
-          "jp": false
+          "jp": false,
+          "rank_size": 1
         },
         {
           "rank": 2,
@@ -27,7 +28,8 @@
           "team_jp": "リバプール",
           "value": 7,
           "matches": 10,
-          "jp": false
+          "jp": false,
+          "rank_size": 1
         },
         {
           "rank": 3,
@@ -37,7 +39,8 @@
           "team_jp": "ボーンマス",
           "value": 6,
           "matches": 11,
-          "jp": false
+          "jp": false,
+          "rank_size": 3
         },
         {
           "rank": 3,
@@ -47,7 +50,8 @@
           "team_jp": "エバートン",
           "value": 6,
           "matches": 11,
-          "jp": false
+          "jp": false,
+          "rank_size": 3
         },
         {
           "rank": 3,
@@ -57,7 +61,8 @@
           "team_jp": "アストンヴィラ",
           "value": 6,
           "matches": 10,
-          "jp": false
+          "jp": false,
+          "rank_size": 3
         },
         {
           "rank": 6,
@@ -67,7 +72,8 @@
           "team_jp": "チェルシー",
           "value": 5,
           "matches": 11,
-          "jp": false
+          "jp": false,
+          "rank_size": 4
         },
         {
           "rank": 6,
@@ -77,7 +83,8 @@
           "team_jp": "ボーンマス",
           "value": 5,
           "matches": 11,
-          "jp": false
+          "jp": false,
+          "rank_size": 4
         },
         {
           "rank": 6,
@@ -87,7 +94,8 @@
           "team_jp": "マンチェスター・シティ",
           "value": 5,
           "matches": 10,
-          "jp": false
+          "jp": false,
+          "rank_size": 4
         },
         {
           "rank": 6,
@@ -97,7 +105,8 @@
           "team_jp": "チェルシー",
           "value": 5,
           "matches": 6,
-          "jp": false
+          "jp": false,
+          "rank_size": 4
         },
         {
           "rank": 10,
@@ -107,7 +116,8 @@
           "team_jp": "ハル・シティ",
           "value": 4,
           "matches": 11,
-          "jp": false
+          "jp": false,
+          "rank_size": 7
         }
       ],
       "jp": []
@@ -127,7 +137,8 @@
           "team_jp": "Barcelona",
           "value": 15,
           "matches": 12,
-          "jp": false
+          "jp": false,
+          "rank_size": 1
         },
         {
           "rank": 2,
@@ -137,17 +148,19 @@
           "team_jp": "レアル・マドリード",
           "value": 13,
           "matches": 13,
-          "jp": false
+          "jp": false,
+          "rank_size": 1
         },
         {
           "rank": 3,
           "name": "Yassir Zabiri",
-          "name_jp": null,
+          "name_jp": "ヤシル・ザビリ",
           "team": "Racing Santander",
           "team_jp": "Racing Santander",
           "value": 11,
           "matches": 13,
-          "jp": false
+          "jp": false,
+          "rank_size": 1
         },
         {
           "rank": 4,
@@ -157,7 +170,8 @@
           "team_jp": "Barcelona",
           "value": 10,
           "matches": 13,
-          "jp": false
+          "jp": false,
+          "rank_size": 1
         },
         {
           "rank": 5,
@@ -167,7 +181,8 @@
           "team_jp": "オサスナ",
           "value": 9,
           "matches": 13,
-          "jp": false
+          "jp": false,
+          "rank_size": 1
         },
         {
           "rank": 6,
@@ -177,7 +192,8 @@
           "team_jp": "Barcelona",
           "value": 8,
           "matches": 12,
-          "jp": false
+          "jp": false,
+          "rank_size": 1
         },
         {
           "rank": 7,
@@ -187,7 +203,8 @@
           "team_jp": "エスパニョール",
           "value": 7,
           "matches": 13,
-          "jp": false
+          "jp": false,
+          "rank_size": 2
         },
         {
           "rank": 7,
@@ -197,7 +214,8 @@
           "team_jp": "ラージョ・バジェカーノ",
           "value": 7,
           "matches": 13,
-          "jp": false
+          "jp": false,
+          "rank_size": 2
         },
         {
           "rank": 9,
@@ -207,7 +225,8 @@
           "team_jp": "エルチェ",
           "value": 6,
           "matches": 13,
-          "jp": false
+          "jp": false,
+          "rank_size": 3
         },
         {
           "rank": 9,
@@ -217,7 +236,8 @@
           "team_jp": "アトレティコ・マドリード",
           "value": 6,
           "matches": 13,
-          "jp": false
+          "jp": false,
+          "rank_size": 3
         }
       ],
       "jp": []
@@ -237,7 +257,8 @@
           "team_jp": "ブレーメン",
           "value": 10,
           "matches": 10,
-          "jp": false
+          "jp": false,
+          "rank_size": 1
         },
         {
           "rank": 2,
@@ -247,7 +268,8 @@
           "team_jp": "レバークーゼン",
           "value": 9,
           "matches": 10,
-          "jp": false
+          "jp": false,
+          "rank_size": 1
         },
         {
           "rank": 3,
@@ -257,7 +279,8 @@
           "team_jp": "アウクスブルク",
           "value": 7,
           "matches": 9,
-          "jp": false
+          "jp": false,
+          "rank_size": 1
         },
         {
           "rank": 4,
@@ -267,7 +290,8 @@
           "team_jp": "マインツ",
           "value": 6,
           "matches": 10,
-          "jp": false
+          "jp": false,
+          "rank_size": 5
         },
         {
           "rank": 4,
@@ -277,7 +301,8 @@
           "team_jp": "バイエルン",
           "value": 6,
           "matches": 10,
-          "jp": false
+          "jp": false,
+          "rank_size": 5
         },
         {
           "rank": 4,
@@ -287,7 +312,8 @@
           "team_jp": "フランクフルト",
           "value": 6,
           "matches": 10,
-          "jp": false
+          "jp": false,
+          "rank_size": 5
         },
         {
           "rank": 4,
@@ -297,7 +323,8 @@
           "team_jp": "フランクフルト",
           "value": 6,
           "matches": 10,
-          "jp": false
+          "jp": false,
+          "rank_size": 5
         },
         {
           "rank": 4,
@@ -307,7 +334,8 @@
           "team_jp": "ライプツィヒ",
           "value": 6,
           "matches": 8,
-          "jp": false
+          "jp": false,
+          "rank_size": 5
         },
         {
           "rank": 9,
@@ -317,7 +345,8 @@
           "team_jp": "ドルトムント",
           "value": 5,
           "matches": 10,
-          "jp": false
+          "jp": false,
+          "rank_size": 6
         },
         {
           "rank": 9,
@@ -327,7 +356,8 @@
           "team_jp": "ライプツィヒ",
           "value": 5,
           "matches": 10,
-          "jp": false
+          "jp": false,
+          "rank_size": 6
         }
       ],
       "jp": []
@@ -347,7 +377,8 @@
           "team_jp": "ローマ",
           "value": 12,
           "matches": 11,
-          "jp": false
+          "jp": false,
+          "rank_size": 1
         },
         {
           "rank": 2,
@@ -357,7 +388,8 @@
           "team_jp": "モンツァ",
           "value": 11,
           "matches": 11,
-          "jp": false
+          "jp": false,
+          "rank_size": 1
         },
         {
           "rank": 3,
@@ -367,7 +399,8 @@
           "team_jp": "フロジノーネ",
           "value": 8,
           "matches": 10,
-          "jp": false
+          "jp": false,
+          "rank_size": 1
         },
         {
           "rank": 4,
@@ -377,7 +410,8 @@
           "team_jp": "アタランタ",
           "value": 7,
           "matches": 12,
-          "jp": false
+          "jp": false,
+          "rank_size": 1
         },
         {
           "rank": 5,
@@ -387,7 +421,8 @@
           "team_jp": "インテル",
           "value": 6,
           "matches": 12,
-          "jp": false
+          "jp": false,
+          "rank_size": 5
         },
         {
           "rank": 5,
@@ -397,7 +432,8 @@
           "team_jp": "ジェノア",
           "value": 6,
           "matches": 11,
-          "jp": false
+          "jp": false,
+          "rank_size": 5
         },
         {
           "rank": 5,
@@ -407,7 +443,8 @@
           "team_jp": "インテル",
           "value": 6,
           "matches": 11,
-          "jp": false
+          "jp": false,
+          "rank_size": 5
         },
         {
           "rank": 5,
@@ -417,7 +454,8 @@
           "team_jp": "ラツィオ",
           "value": 6,
           "matches": 11,
-          "jp": false
+          "jp": false,
+          "rank_size": 5
         },
         {
           "rank": 5,
@@ -427,7 +465,8 @@
           "team_jp": "ACミラン",
           "value": 6,
           "matches": 10,
-          "jp": false
+          "jp": false,
+          "rank_size": 5
         },
         {
           "rank": 10,
@@ -437,7 +476,8 @@
           "team_jp": "フロジノーネ",
           "value": 5,
           "matches": 12,
-          "jp": false
+          "jp": false,
+          "rank_size": 7
         }
       ],
       "jp": []
@@ -457,7 +497,8 @@
           "team_jp": "パリFC",
           "value": 9,
           "matches": 10,
-          "jp": false
+          "jp": false,
+          "rank_size": 1
         },
         {
           "rank": 2,
@@ -467,17 +508,19 @@
           "team_jp": "マルセイユ",
           "value": 8,
           "matches": 11,
-          "jp": false
+          "jp": false,
+          "rank_size": 1
         },
         {
           "rank": 3,
           "name": "Esteban Lepaul",
-          "name_jp": null,
+          "name_jp": "エステバン・ルポール",
           "team": "Stade Rennais",
           "team_jp": "レンヌ",
           "value": 7,
           "matches": 8,
-          "jp": false
+          "jp": false,
+          "rank_size": 1
         },
         {
           "rank": 4,
@@ -487,7 +530,8 @@
           "team_jp": "ニース",
           "value": 6,
           "matches": 10,
-          "jp": false
+          "jp": false,
+          "rank_size": 3
         },
         {
           "rank": 4,
@@ -497,7 +541,8 @@
           "team_jp": "オセール",
           "value": 6,
           "matches": 9,
-          "jp": false
+          "jp": false,
+          "rank_size": 3
         },
         {
           "rank": 4,
@@ -507,7 +552,8 @@
           "team_jp": "レンヌ",
           "value": 6,
           "matches": 9,
-          "jp": false
+          "jp": false,
+          "rank_size": 3
         },
         {
           "rank": 7,
@@ -517,7 +563,8 @@
           "team_jp": "Brest",
           "value": 5,
           "matches": 11,
-          "jp": false
+          "jp": false,
+          "rank_size": 6
         },
         {
           "rank": 7,
@@ -527,7 +574,8 @@
           "team_jp": "ランス",
           "value": 5,
           "matches": 11,
-          "jp": false
+          "jp": false,
+          "rank_size": 6
         },
         {
           "rank": 7,
@@ -537,7 +585,8 @@
           "team_jp": "ル・マン",
           "value": 5,
           "matches": 11,
-          "jp": false
+          "jp": false,
+          "rank_size": 6
         },
         {
           "rank": 7,
@@ -547,7 +596,8 @@
           "team_jp": "パリ・サンジェルマン",
           "value": 5,
           "matches": 11,
-          "jp": false
+          "jp": false,
+          "rank_size": 6
         }
       ],
       "jp": []
@@ -567,7 +617,8 @@
           "team_jp": "アーセナル",
           "value": 5,
           "matches": 11,
-          "jp": false
+          "jp": false,
+          "rank_size": 1
         },
         {
           "rank": 2,
@@ -577,7 +628,8 @@
           "team_jp": "ブライトン",
           "value": 4,
           "matches": 11,
-          "jp": false
+          "jp": false,
+          "rank_size": 6
         },
         {
           "rank": 2,
@@ -587,7 +639,8 @@
           "team_jp": "ボーンマス",
           "value": 4,
           "matches": 11,
-          "jp": false
+          "jp": false,
+          "rank_size": 6
         },
         {
           "rank": 2,
@@ -597,7 +650,8 @@
           "team_jp": "リバプール",
           "value": 4,
           "matches": 11,
-          "jp": false
+          "jp": false,
+          "rank_size": 6
         },
         {
           "rank": 2,
@@ -607,7 +661,8 @@
           "team_jp": "アストンヴィラ",
           "value": 4,
           "matches": 11,
-          "jp": false
+          "jp": false,
+          "rank_size": 6
         },
         {
           "rank": 2,
@@ -617,7 +672,8 @@
           "team_jp": "ブレントフォード",
           "value": 4,
           "matches": 10,
-          "jp": false
+          "jp": false,
+          "rank_size": 6
         },
         {
           "rank": 2,
@@ -627,7 +683,8 @@
           "team_jp": "リバプール",
           "value": 4,
           "matches": 9,
-          "jp": false
+          "jp": false,
+          "rank_size": 6
         },
         {
           "rank": 8,
@@ -637,7 +694,8 @@
           "team_jp": "クリスタル・パレス",
           "value": 3,
           "matches": 11,
-          "jp": true
+          "jp": true,
+          "rank_size": 12
         },
         {
           "rank": 8,
@@ -647,7 +705,8 @@
           "team_jp": "チェルシー",
           "value": 3,
           "matches": 11,
-          "jp": false
+          "jp": false,
+          "rank_size": 12
         },
         {
           "rank": 8,
@@ -657,7 +716,8 @@
           "team_jp": "ブライトン",
           "value": 3,
           "matches": 11,
-          "jp": false
+          "jp": false,
+          "rank_size": 12
         }
       ],
       "jp": [
@@ -685,7 +745,8 @@
           "team_jp": "Barcelona",
           "value": 9,
           "matches": 13,
-          "jp": false
+          "jp": false,
+          "rank_size": 1
         },
         {
           "rank": 2,
@@ -695,7 +756,8 @@
           "team_jp": "エスパニョール",
           "value": 6,
           "matches": 13,
-          "jp": false
+          "jp": false,
+          "rank_size": 1
         },
         {
           "rank": 3,
@@ -705,7 +767,8 @@
           "team_jp": "ビジャレアル",
           "value": 5,
           "matches": 13,
-          "jp": false
+          "jp": false,
+          "rank_size": 2
         },
         {
           "rank": 3,
@@ -715,7 +778,8 @@
           "team_jp": "Barcelona",
           "value": 5,
           "matches": 12,
-          "jp": false
+          "jp": false,
+          "rank_size": 2
         },
         {
           "rank": 5,
@@ -725,7 +789,8 @@
           "team_jp": "アスレティック・ビルバオ",
           "value": 4,
           "matches": 13,
-          "jp": false
+          "jp": false,
+          "rank_size": 6
         },
         {
           "rank": 5,
@@ -735,7 +800,8 @@
           "team_jp": "レアル・マドリード",
           "value": 4,
           "matches": 13,
-          "jp": false
+          "jp": false,
+          "rank_size": 6
         },
         {
           "rank": 5,
@@ -745,7 +811,8 @@
           "team_jp": "アラベス",
           "value": 4,
           "matches": 13,
-          "jp": false
+          "jp": false,
+          "rank_size": 6
         },
         {
           "rank": 5,
@@ -755,7 +822,8 @@
           "team_jp": "アラベス",
           "value": 4,
           "matches": 12,
-          "jp": false
+          "jp": false,
+          "rank_size": 6
         },
         {
           "rank": 5,
@@ -765,7 +833,8 @@
           "team_jp": "Barcelona",
           "value": 4,
           "matches": 12,
-          "jp": false
+          "jp": false,
+          "rank_size": 6
         },
         {
           "rank": 5,
@@ -775,7 +844,8 @@
           "team_jp": "アトレティコ・マドリード",
           "value": 4,
           "matches": 9,
-          "jp": false
+          "jp": false,
+          "rank_size": 6
         }
       ],
       "jp": []
@@ -795,7 +865,8 @@
           "team_jp": "バイエルン",
           "value": 8,
           "matches": 10,
-          "jp": false
+          "jp": false,
+          "rank_size": 1
         },
         {
           "rank": 2,
@@ -805,7 +876,8 @@
           "team_jp": "ライプツィヒ",
           "value": 7,
           "matches": 10,
-          "jp": false
+          "jp": false,
+          "rank_size": 1
         },
         {
           "rank": 3,
@@ -815,7 +887,8 @@
           "team_jp": "ブレーメン",
           "value": 6,
           "matches": 9,
-          "jp": false
+          "jp": false,
+          "rank_size": 1
         },
         {
           "rank": 4,
@@ -825,17 +898,19 @@
           "team_jp": "アウクスブルク",
           "value": 5,
           "matches": 10,
-          "jp": false
+          "jp": false,
+          "rank_size": 2
         },
         {
           "rank": 4,
           "name": "Brajan Gruda",
-          "name_jp": null,
+          "name_jp": "ブラヤン・グルダ",
           "team": "RB Leipzig",
           "team_jp": "ライプツィヒ",
           "value": 5,
           "matches": 8,
-          "jp": false
+          "jp": false,
+          "rank_size": 2
         },
         {
           "rank": 6,
@@ -845,7 +920,8 @@
           "team_jp": "レバークーゼン",
           "value": 4,
           "matches": 10,
-          "jp": false
+          "jp": false,
+          "rank_size": 3
         },
         {
           "rank": 6,
@@ -855,7 +931,8 @@
           "team_jp": "マインツ",
           "value": 4,
           "matches": 10,
-          "jp": false
+          "jp": false,
+          "rank_size": 3
         },
         {
           "rank": 6,
@@ -865,7 +942,8 @@
           "team_jp": "ハンブルガーSV",
           "value": 4,
           "matches": 9,
-          "jp": false
+          "jp": false,
+          "rank_size": 3
         },
         {
           "rank": 9,
@@ -875,7 +953,8 @@
           "team_jp": "フライブルク",
           "value": 3,
           "matches": 10,
-          "jp": false
+          "jp": false,
+          "rank_size": 9
         },
         {
           "rank": 9,
@@ -885,7 +964,8 @@
           "team_jp": "バイエルン",
           "value": 3,
           "matches": 10,
-          "jp": false
+          "jp": false,
+          "rank_size": 9
         }
       ],
       "jp": []
@@ -905,7 +985,8 @@
           "team_jp": "ACミラン",
           "value": 6,
           "matches": 10,
-          "jp": false
+          "jp": false,
+          "rank_size": 1
         },
         {
           "rank": 2,
@@ -915,7 +996,8 @@
           "team_jp": "ローマ",
           "value": 5,
           "matches": 11,
-          "jp": false
+          "jp": false,
+          "rank_size": 4
         },
         {
           "rank": 2,
@@ -925,7 +1007,8 @@
           "team_jp": "ラツィオ",
           "value": 5,
           "matches": 10,
-          "jp": false
+          "jp": false,
+          "rank_size": 4
         },
         {
           "rank": 2,
@@ -935,7 +1018,8 @@
           "team_jp": "ボローニャ",
           "value": 5,
           "matches": 10,
-          "jp": false
+          "jp": false,
+          "rank_size": 4
         },
         {
           "rank": 2,
@@ -945,7 +1029,8 @@
           "team_jp": "アタランタ",
           "value": 5,
           "matches": 10,
-          "jp": false
+          "jp": false,
+          "rank_size": 4
         },
         {
           "rank": 6,
@@ -955,7 +1040,8 @@
           "team_jp": "フロジノーネ",
           "value": 4,
           "matches": 12,
-          "jp": false
+          "jp": false,
+          "rank_size": 8
         },
         {
           "rank": 6,
@@ -965,7 +1051,8 @@
           "team_jp": "フロジノーネ",
           "value": 4,
           "matches": 12,
-          "jp": false
+          "jp": false,
+          "rank_size": 8
         },
         {
           "rank": 6,
@@ -975,7 +1062,8 @@
           "team_jp": "コモ",
           "value": 4,
           "matches": 11,
-          "jp": false
+          "jp": false,
+          "rank_size": 8
         },
         {
           "rank": 6,
@@ -985,7 +1073,8 @@
           "team_jp": "ラツィオ",
           "value": 4,
           "matches": 11,
-          "jp": false
+          "jp": false,
+          "rank_size": 8
         },
         {
           "rank": 6,
@@ -995,7 +1084,8 @@
           "team_jp": "フロジノーネ",
           "value": 4,
           "matches": 10,
-          "jp": false
+          "jp": false,
+          "rank_size": 8
         }
       ],
       "jp": []
@@ -1015,7 +1105,8 @@
           "team_jp": "ランス",
           "value": 7,
           "matches": 11,
-          "jp": false
+          "jp": false,
+          "rank_size": 1
         },
         {
           "rank": 2,
@@ -1025,7 +1116,8 @@
           "team_jp": "トゥールーズ",
           "value": 6,
           "matches": 11,
-          "jp": false
+          "jp": false,
+          "rank_size": 1
         },
         {
           "rank": 3,
@@ -1035,7 +1127,8 @@
           "team_jp": "パリFC",
           "value": 5,
           "matches": 10,
-          "jp": false
+          "jp": false,
+          "rank_size": 1
         },
         {
           "rank": 4,
@@ -1045,7 +1138,8 @@
           "team_jp": "マルセイユ",
           "value": 4,
           "matches": 11,
-          "jp": false
+          "jp": false,
+          "rank_size": 1
         },
         {
           "rank": 5,
@@ -1055,7 +1149,8 @@
           "team_jp": "Lyon",
           "value": 3,
           "matches": 11,
-          "jp": false
+          "jp": false,
+          "rank_size": 15
         },
         {
           "rank": 5,
@@ -1065,7 +1160,8 @@
           "team_jp": "ニース",
           "value": 3,
           "matches": 11,
-          "jp": false
+          "jp": false,
+          "rank_size": 15
         },
         {
           "rank": 5,
@@ -1075,7 +1171,8 @@
           "team_jp": "ストラスブール",
           "value": 3,
           "matches": 11,
-          "jp": false
+          "jp": false,
+          "rank_size": 15
         },
         {
           "rank": 5,
@@ -1085,7 +1182,8 @@
           "team_jp": "パリFC",
           "value": 3,
           "matches": 11,
-          "jp": false
+          "jp": false,
+          "rank_size": 15
         },
         {
           "rank": 5,
@@ -1095,7 +1193,8 @@
           "team_jp": "Lyon",
           "value": 3,
           "matches": 11,
-          "jp": false
+          "jp": false,
+          "rank_size": 15
         },
         {
           "rank": 5,
@@ -1105,7 +1204,8 @@
           "team_jp": "オセール",
           "value": 3,
           "matches": 11,
-          "jp": false
+          "jp": false,
+          "rank_size": 15
         }
       ],
       "jp": []
