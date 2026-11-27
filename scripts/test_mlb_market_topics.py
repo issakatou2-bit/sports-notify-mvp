@@ -147,7 +147,12 @@ import soccer_national_topics_render as render
 from mlb_pinstripe_badge import render as badge
 from soccer_v5_cards import L
 
-for event, team in [('sato-cubs', '112'), ('taira-bluejays', '141')]:
+# 材料に足した回はすべて画面の検査に通す（11/27 単位の無い平良の回が見本の実行で初めて落ちた）。
+import json
+TEAMS = {'sato-cubs': '112', 'taira-bluejays': '141'}
+EVENTS = json.load(open('../data/mlb_market_followups.json', encoding='utf-8'))['events']
+for event in EVENTS:
+    team = TEAMS.get(event)
     doc = topics.mlb_narration('followup-' + event)
     clubs = render.clubs_for(doc)
     for i, seg in enumerate(doc['segments'][:-1]):
@@ -157,7 +162,7 @@ for event, team in [('sato-cubs', '112'), ('taira-bluejays', '141')]:
         text = ' '.join(entry['text'] for entry in layout)
         assert 'MLB' in text and '日本代表' not in text and '#サッカー' not in text, text
         source = doc['followup_material']['items'][seg['meta']['panel']]['source_names']
-        assert source in text.replace(' ', ''), (event, i, source, text)
+        assert source.replace(' ', '') in text.replace(' ', ''), (event, i, source, text)
         # 字幕の箱と出典は YouTube ショートの UI に隠れない安全範囲の内側（SAFE_BOTTOM 1440）にある。
         import shorts_safe_area as safe
         shown = {e['role']: e['box'] for e in layout if e['role'] in ('caption', 'source')}
@@ -166,6 +171,8 @@ for event, team in [('sato-cubs', '112'), ('taira-bluejays', '141')]:
         assert render.caption_source_problems(image) == [], (event, i)
         errors = render.validate_frame(image, clubs, doc)
         assert not errors, (event, i, errors)
+        if team is None:
+            continue
         stamp = badge(team, 108, 54)
         assert image.getpixel((L+454, 190)) == stamp.getpixel((54,27))[:3], (event, i)
 """

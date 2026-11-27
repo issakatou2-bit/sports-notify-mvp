@@ -244,8 +244,8 @@ def hook_screen(s, hook, spec):
     numeral = big.isascii()
     for size in (300, 260, 220, 180, 150, 120):
         bw = cards.measure(big, size, numeral)[1]
-        uw = cards.measure(unit, 72)[1]
-        if bw + 24 + uw <= 800:
+        uw = cards.measure(unit, 72)[1] + 24 if unit else 0
+        if bw + uw <= 800:
             break
     # 中身の高さに合わせた箱を、本文の領域の真ん中に置く（下が空いた箱にしない）。
     subject_h = len(cards.lines(hook['subject'], 68, 800)) * 80
@@ -257,7 +257,9 @@ def hook_screen(s, hook, spec):
     s.panel(top, top + height)
     y = s.lines(100, top + 56, hook['subject'], 68, 800, role='national_fact')
     box = s.text(100, y + 40, big, size, 800, accent, numeral, role='national_fact')
-    s.text(box[2] + 24, box[3] - 84, unit, 72, 800 - (box[2] - 100) - 24, accent, role='national_fact')
+    # 防御率のように単位の無い数字もある（11/27 平良の回で空の文字が画面検査に落ちた）。
+    if unit:
+        s.text(box[2] + 24, box[3] - 84, unit, 72, 800 - (box[2] - 100) - 24, accent, role='national_fact')
     if hook.get('note'):
         s.lines(100, box[3] + 48, hook['note'], 48, 800, cards.MUTED, 'supplement')
     s.im.info['preview_body'] = [readable.L, top, readable.R, top + height]
