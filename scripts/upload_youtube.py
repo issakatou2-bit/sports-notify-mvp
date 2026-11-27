@@ -2338,6 +2338,8 @@ def main():
                         help="JSTの公開時刻 HH:MM またはタイムゾーン付きISO日時。指定すると予約投稿になる。"
                              "過ぎている場合はそのまま公開する")
     args = parser.parse_args()
+    import design_lock
+    design_lock.check()  # 旧い見た目の指定なら投稿しない（11/25・11/27 本人）
     narration_defaulted = args.narration is None
     if narration_defaulted:
         args.narration = default_narration
