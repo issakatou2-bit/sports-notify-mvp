@@ -23269,6 +23269,33 @@
       },
       "host_fallback_reason": null,
       "privacy": "public"
+    },
+    "season_insight_2026_663457_game_baseOnBalls": {
+      "video_id": "N-Y-eXBu9BI",
+      "url": "https://youtu.be/N-Y-eXBu9BI",
+      "title": "ヌートバー 1試合で最多4四球 #Shorts",
+      "published_at": "2026-11-27T06:13:49.337367+00:00",
+      "publish_at": "2026-11-27T13:00:00Z",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-27",
+        "enabled": true,
+        "assigned": "generic",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false,
+        "source": "post_common.lineup:daily_soccer",
+        "next_date": "2026-11-28",
+        "next_time": "19:30",
+        "next_name": "欧州サッカー"
+      },
+      "player_ids": [
+        "663457"
+      ],
+      "duration_seconds": 23.9,
+      "short_information_count": 3,
+      "short_content_policy": "short-content-20261027-v1",
+      "privacy": "public"
     }
   },
   "soccer_results": {
