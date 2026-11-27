@@ -343,16 +343,17 @@ class Screen:
             elif kind in ('derby','h2h'):rows.append(text)
         return rows[:3]
 
-    def national_facts(self, title, rows, spec, sub='親善試合'):
+    def national_facts(self, title, rows, spec, sub='親善試合', body_bottom=None):
         """代表番組の補足。focusと同じ字級・余白・字幕・胸上を継承する。"""
         self.title(title, sub)
+        limit=BODY_BOTTOM if body_bottom is None else body_bottom
         initial=72 if len(rows)==1 else 64
         for size in range(initial, 39, -4):
             heights=[76+len(c.lines(value,size,R-L-56))*(size+16) for _,value in rows]
             height=sum(heights)+16*(len(rows)-1)
-            if height<=BODY_BOTTOM-BODY_TOP:break
-        if height>BODY_BOTTOM-BODY_TOP:raise ValueError('代表番組の補足は次画面が必要です')
-        top=BODY_TOP+(BODY_BOTTOM-BODY_TOP-height)//2
+            if height<=limit-BODY_TOP:break
+        if height>limit-BODY_TOP:raise ValueError('代表番組の補足は次画面が必要です')
+        top=BODY_TOP+(limit-BODY_TOP-height)//2
         y=top;visible_bottom=top
         for index,((label, value),height) in enumerate(zip(rows,heights)):
             from short_renewal import row_state
@@ -361,10 +362,10 @@ class Screen:
             if not visible:
                 y=bottom+16
                 continue
-            if bottom>BODY_BOTTOM:
+            if bottom>limit:
                 raise ValueError('代表番組の補足は次画面が必要です')
             self.panel(y,bottom);visible_bottom=bottom
-            self.text(100,y+18,label,30,800,c.MUTED,role='supplement')
+            self.text(100,y+18,label,36 if body_bottom is not None else 30,800,c.MUTED,role='supplement')
             if numbers or not any(char.isdigit() for char in str(value)):self.lines(100,y+61,value,size,800,role='national_fact')
             y=bottom+16
         self.im.info['preview_body']=[L,top,R,visible_bottom if spec.get('progressive_rows') else y-16]
