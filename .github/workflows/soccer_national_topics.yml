@@ -170,7 +170,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: sample-soccer_national_topics-news
-          path: build/soccer_national_topics/
+          path: |
+            build/soccer_national_topics/
+            !build/**/portrait/**
           retention-days: 14
           if-no-files-found: error
       - name: Notify the completed preview

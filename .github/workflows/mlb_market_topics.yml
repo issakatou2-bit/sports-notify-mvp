@@ -171,7 +171,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: sample-mlb_market_topics-news
-          path: build/mlb_market_topics/
+          path: |
+            build/mlb_market_topics/
+            !build/**/portrait/**
           retention-days: 14
           if-no-files-found: error
       - name: Notify the completed preview
