@@ -1,0 +1,30 @@
+{
+  "publication_id": "mlb:mlb_market_topic:followup-taira-era-npb-mlb",
+  "domain": "mlb",
+  "kind": "mlb_market_topic",
+  "key_parts": {
+    "legacy_key": "followup-taira-era-npb-mlb"
+  },
+  "version": 1,
+  "history": [
+    {
+      "source": "published_videos/mlb_market_topic/followup-taira-era-npb-mlb",
+      "service": "youtube",
+      "video_id": "8cNKD7-QwhA",
+      "state": "scheduled",
+      "scheduled_at": "2026-11-27T01:45:17Z",
+      "event_day": null,
+      "material_day": null,
+      "edition_day": "2026-11-27",
+      "run_at": "2026-11-27T01:24:27.752425+00:00",
+      "details": {
+        "privacy": "public"
+      },
+      "run_id": "45921787318",
+      "attempt": "1",
+      "recorded_at": "2026-11-27T01:24:27.771390+00:00",
+      "fingerprint": "5f6946bf1a2fc66088db5f502f5c630216b0306e15567f27ebdd642e6499258e",
+      "event_id": "a18864b805c4bf2f786f1c868423dc88481dea5c6c74c5f1f122f21608f004a7"
+    }
+  ]
+}
