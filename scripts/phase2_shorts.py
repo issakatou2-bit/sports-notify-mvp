@@ -39,7 +39,7 @@ def season_narration(key):
         rows = [rows[0], [f'順位（{gate}以上）', f'{population}中{rank}'], rows[2]]
     elif key.endswith('_rare_whip'):
         options = (f'{name}、走者を出さない投球が光るのだ！', f'{name}は走者の少なさが際立つのだ！')
-        turn = '防御率とは違って、走者に注目する数字なのだ。'
+        turn = '失点が少ないうえに、走者まで少ないのが面白いのだ！'
         ending = ('投球の見え方が変わるのだ。',
                   'そうなの。山本由伸は走者の少なさでもトップクラスだったわ。')
     elif '_rare_' in key:

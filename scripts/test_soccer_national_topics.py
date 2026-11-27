@@ -577,13 +577,14 @@ class RenderV2(unittest.TestCase):
 
 
 class Workflow(unittest.TestCase):
-    def test_workflow_is_manual_only_and_publishes_only_when_asked(self):
+    def test_manual_and_watched_topics_are_preview_first(self):
         import yaml
         path = ROOT / '.github/workflows/soccer_national_topics.yml'
         text = path.read_text(encoding='utf-8')
         workflow = yaml.safe_load(text)
         triggers = workflow.get('on') or workflow.get(True)
-        self.assertEqual(list(triggers), ['workflow_dispatch'])
+        self.assertEqual(set(triggers), {'workflow_call', 'workflow_dispatch'})
+        self.assertFalse(triggers['workflow_call']['inputs']['publish']['default'])
         inputs = triggers['workflow_dispatch']['inputs']
         self.assertTrue(inputs['topic']['required'])
         self.assertFalse(inputs['publish']['default'])
@@ -591,6 +592,7 @@ class Workflow(unittest.TestCase):
         self.assertIn('publish_at', inputs)
         self.assertNotIn('schedule', text.split('jobs:')[0].replace('schedule なし', ''))
         self.assertIn('COLLESPO_STYLE: v2', text)
+        self.assertIn("vars.COLLESPO_SOCCER_NEWS_PUBLISH == 'true'", workflow['env']['PUBLISH'])
         upload = next(s for s in workflow['jobs']['build']['steps'] if s.get('name') == 'Upload to YouTube')
         self.assertEqual(upload['if'], "env.PUBLISH == 'true'")
         self.assertIn('--kind soccer_national_topic', upload['run'])

@@ -1,0 +1,87 @@
+name: 欧州5リーグ ニュース見張り
+
+on:
+  schedule:
+    - cron: '8,28,48 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: soccer-news-watch
+  cancel-in-progress: false
+
+env:
+  PYTHONUTF8: '1'
+  COLLESPO_SOCCER_NEWS_PUBLISH: ${{ vars.COLLESPO_SOCCER_NEWS_PUBLISH }}
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      topic: ${{ steps.watch.outputs.topic }}
+      publish: ${{ steps.watch.outputs.publish }}
+      material: ${{ steps.watch.outputs.material }}
+      issue: ${{ steps.issue.outputs.url }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: pip install -r scripts/requirements.txt
+      - name: Collect reports and prepare drafts
+        id: watch
+        run: |
+          python scripts/news_fast_watch.py soccer --out build/soccer_news_watch \
+            --state data/soccer_news_watch_news_state.json --preview-receipts data/soccer_news_watch_news_previews.json \
+            --github-output "$GITHUB_OUTPUT"
+      - name: Notify new reports
+        id: issue
+        if: steps.watch.outputs.notify == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TITLE="欧州5リーグ ニュース見張り"
+          if grep -q '^### 確認待ち ' build/soccer_news_watch/issues.md; then TITLE="確認待ち $TITLE"; fi
+          echo >> build/soccer_news_watch/issues.md
+          echo "下書きと照合記録はこの実行の artifact に保存します。" >> build/soccer_news_watch/issues.md
+          URL="$(gh issue create --title "$TITLE $(TZ=Asia/Tokyo date +'%m/%d %H:%M')" --body-file build/soccer_news_watch/issues.md)"
+          echo "url=$URL" >> "$GITHUB_OUTPUT"
+      - name: Save the seen state
+        run: |
+          bash scripts/commit_data.sh "soccer_news_watch: ${{ github.run_id }}" data/soccer_news_watch_news_state.json
+      - name: Save drafts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: soccer-news-watch-drafts
+          path: |
+            build/soccer_news_watch/
+            !build/**/portrait/**
+          retention-days: 14
+      - name: Keep unsaved data records
+        if: always() && hashFiles('build/data-save-recovery/**/FAILED') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: unsaved-data-watch-${{ github.run_attempt }}
+          path: |
+            build/data-save-recovery/
+            !build/**/portrait/**
+          retention-days: 14
+          if-no-files-found: error
+
+  topic:
+    needs: watch
+    if: needs.watch.outputs.topic != ''
+    uses: ./.github/workflows/soccer_national_topics.yml
+    with:
+      topic: ${{ needs.watch.outputs.topic }}
+      automatic_material: ${{ needs.watch.outputs.material }}
+      publish: ${{ needs.watch.outputs.publish == 'true' }}
+      news_issue: ${{ needs.watch.outputs.issue }}
+    secrets: inherit
