@@ -38,6 +38,20 @@ class StakeTest(unittest.TestCase):
         self.assertEqual(s['kind'], '残留争い')
         self.assertEqual(s['gap'], 2)
 
+    def test_tonight_games_with_japanese_names_match_the_english_table(self):
+        # 11/27 その夜の試合は日次が日本語名・jp_players（左右なし）で書く。順位表は英語名なので、毎晩0件だった。
+        t = table(POINTS)
+        t[16] = row(17, 'Brighton & Hove Albion FC', 9)
+        t[19] = row(20, 'Newcastle United FC', 7)
+        g = game('ブライトン', 'ニューカッスル')
+        del g['jp_by_side']
+        g['jp_players'] = ['三笘薫']
+        s = stake.stake(g, dict(code='PL', name_jp='プレミアリーグ', table=t))
+        self.assertEqual(s['kind'], '残留争い')
+        self.assertEqual(s['home']['team'], 'Brighton & Hove Albion FC')
+        self.assertEqual([p['name'] for p in s['jp']['home']], ['三笘薫'])
+        self.assertEqual(s['jp']['away'], [])
+
     def test_far_apart_without_line_is_skipped(self):
         # 1位と11位：差15、どちらも境目から遠い。
         self.assertIsNone(stake.stake(game('Team 1 FC', 'Team 11 FC'), self.comp()))
