@@ -1,8 +1,8 @@
-name: MLB 日本人選手と大型契約の移籍報道 見張り（下書きのみ）
+name: MLB 移籍・契約ニュース見張り
 
 on:
   schedule:
-    - cron: '*/15 * * * *'
+    - cron: '3,18,33,48 * * * *'
   workflow_dispatch:
 
 permissions:
@@ -15,51 +15,47 @@ concurrency:
 
 env:
   PYTHONUTF8: '1'
-
+  COLLESPO_MARKET_AUTO_PUBLISH: ${{ vars.COLLESPO_MARKET_AUTO_PUBLISH }}
 jobs:
   watch:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    outputs:
+      topic: ${{ steps.watch.outputs.topic }}
+      publish: ${{ steps.watch.outputs.publish }}
+      material: ${{ steps.watch.outputs.material }}
+      issue: ${{ steps.issue.outputs.url }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
       - name: Install dependencies
         run: pip install -r scripts/requirements.txt
-      - name: Collect public RSS and draft
+      - name: Collect reports and prepare drafts
         id: watch
-        shell: bash
         run: |
-          set -o pipefail
-          mkdir -p build
-          python scripts/market_watch.py --out build/market_watch --state data/market_watch_state.json --large-material data/mlb_large_contracts.json | tee build/market_watch_stdout.txt
-          python - <<'PY' >> "$GITHUB_OUTPUT"
-          import json
-          r = json.load(open('build/market_watch/market_watch_report.json', encoding='utf-8'))
-          print(f"new={r['stage1'] + r['stage2']}")
-          PY
-      # 15分ごとに記録を積まない。新しい話が出た時だけ保存する（11/25）。
-      - name: Save the seen-state
-        if: steps.watch.outputs.new != '0' && steps.watch.outputs.new != ''
-        run: |
-          bash scripts/commit_data.sh "market watch: ${{ github.run_id }}" data/market_watch_state.json data/mlb_large_contracts.json
-      # 新しい話は課題で知らせる（本人と Claude が見る）。公開はしない。確かめてから材料へ足す。
+          python scripts/news_fast_watch.py mlb --out build/market_watch \
+            --state data/market_watch_news_state.json --preview-receipts data/market_watch_news_previews.json \
+            --large-material data/mlb_large_contracts.json \
+            --github-output "$GITHUB_OUTPUT"
       - name: Notify new reports
-        if: steps.watch.outputs.new != '0' && steps.watch.outputs.new != ''
+        id: issue
+        if: steps.watch.outputs.notify == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          {
-            echo "移籍報道の見張りが新しい話を見つけました（run ${{ github.run_id }}）。"
-            echo
-            echo '```'
-            cat build/market_watch_stdout.txt
-            echo '```'
-            echo
-            echo "下書き：この run の artifact「market-watch-drafts」。日本人選手の話題は出典を開いて確かめてから data/mlb_market_followups.json へ足す。大型契約は段2の保存項目を確認し、followup- を付けた鍵で見本を作れる。"
-          } > build/market_watch_issue.md
-          gh issue create --title "移籍報道 $(TZ=Asia/Tokyo date +%m/%d\ %H:%M)" --body-file build/market_watch_issue.md
+          TITLE="MLB 移籍・契約ニュース見張り"
+          if grep -q '^### 確認待ち ' build/market_watch/issues.md; then TITLE="確認待ち $TITLE"; fi
+          echo >> build/market_watch/issues.md
+          echo "下書きと照合記録はこの実行の artifact に保存します。" >> build/market_watch/issues.md
+          URL="$(gh issue create --title "$TITLE $(TZ=Asia/Tokyo date +'%m/%d %H:%M')" --body-file build/market_watch/issues.md)"
+          echo "url=$URL" >> "$GITHUB_OUTPUT"
+      - name: Save the seen state
+        run: |
+          bash scripts/commit_data.sh "market_watch: ${{ github.run_id }}" data/market_watch_news_state.json data/mlb_large_contracts.json
       - name: Save drafts
         if: always()
         uses: actions/upload-artifact@v4
@@ -71,9 +67,18 @@ jobs:
         if: always() && hashFiles('build/data-save-recovery/**/FAILED') != ''
         uses: actions/upload-artifact@v4
         with:
-          name: unsaved-data-${{ github.job }}-${{ github.run_attempt }}
-          path: |
-            build/data-save-recovery/
-            !build/**/portrait/**
+          name: unsaved-data-watch-${{ github.run_attempt }}
+          path: build/data-save-recovery/
           retention-days: 14
           if-no-files-found: error
+
+  topic:
+    needs: watch
+    if: needs.watch.outputs.topic != ''
+    uses: ./.github/workflows/mlb_market_topics.yml
+    with:
+      topic: ${{ needs.watch.outputs.topic }}
+      automatic_material: ${{ needs.watch.outputs.material }}
+      publish: ${{ needs.watch.outputs.publish == 'true' }}
+      news_issue: ${{ needs.watch.outputs.issue }}
+    secrets: inherit

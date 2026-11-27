@@ -172,10 +172,10 @@ def cup_highlights(game):
                         f'ええ、{home}と{away}の試合ね。{name}が{minute}に{shape}を決めて、{lead}になったわ。',
                         shape, [[name, minute], ['得点直後', lead]]),
                        ('そのあと、どっちが勝ったのだ？',
-                        f'そうね。枠内シュートは{home}が{on["home"]}本、{away}が{on["away"]}本だったわ。'
-                        f'{closing}最終スコアは{score(game)}よ。{winner(game)}',
-                        '枠内シュートと試合結果', [[home, f'{on["home"]}本'], [away, f'{on["away"]}本'],
-                                             ['最終スコア', score(game)]])])
+                        f'そうね。{winner(game)}{closing}最終スコアは{score(game)}よ。'
+                        f'枠内シュートは{home}が{on["home"]}本、{away}が{on["away"]}本だったわ。',
+                        '試合結果と枠内シュート', [['最終スコア', score(game)], [home, f'{on["home"]}本'],
+                                             [away, f'{on["away"]}本']])])
 
 
 def market_highlights(row):

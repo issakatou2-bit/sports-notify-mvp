@@ -4,6 +4,7 @@ import copy
 from datetime import datetime, timedelta, timezone
 from decimal import Decimal
 import json
+import os
 from pathlib import Path
 import re
 
@@ -620,6 +621,16 @@ def available(summary, names=None, meetings=None):
 
 def check(doc):
     if doc.get('program') not in PROGRAMS:return []
+    if 'news_material' in doc:
+        try:
+            import news_fast_topic
+            sport = 'mlb' if doc['program'] == MLB_PROGRAM else 'soccer'
+            expected = news_fast_topic.narration(sport, doc['topic'], doc['news_material'])
+            if doc_as_json(expected) == doc_as_json(doc):
+                return []
+        except (AttributeError, KeyError, TypeError, ValueError):
+            pass
+        return ['ニュースの台本・数字・題が保存材料と一致しません']
     if doc['program']==MLB_PROGRAM:
         try:
             if doc_as_json(mlb_narration(doc['topic'])) == doc_as_json(doc):
@@ -647,6 +658,9 @@ def speech_readings(doc):
     import name_reading_guard as guard
     readings={}
     text='\n'.join(s['text'] for s in doc['segments'])
+    if 'news_material' in doc:
+        readings.update({name: ('player', reading) for name, reading in doc['news_material']['readings'].items()
+                         if name in text})
     for t in doc.get('topic_summary',{}).get('rosters',[]):
         for r in t['roster']:
             english=r['athlete']['displayName']
@@ -670,6 +684,9 @@ def speech_readings(doc):
 def information(doc):
     if check(doc):raise ValueError('材料が不一致')
     answers=[(i,s) for i,s in enumerate(doc['segments']) if s['speaker']==METAN and s['kind']!='outro' and not s['meta'].get('dialogue_ending')]
+    if 'news_material' in doc:
+        return [dict(subject=s['meta']['head'], fact='ニュースで確認した事実', value=s['meta']['rows'],
+                     source=' '.join(s['meta']['followup_sources']), segments=[i]) for i, s in answers]
     if doc.get('followup_material', {}).get('large_contract'):
         first, comparison = answers
         return [dict(subject=first[1]['meta']['head'], fact='報じられた契約', value=first[1]['meta']['rows'],
@@ -695,6 +712,8 @@ GLOSSARY={'枠内シュート':'枠内シュート：ゴールの枠の中に向
 
 def metadata(doc):
     if check(doc):raise ValueError('原稿が不一致')
+    if 'news_material' in doc:
+        return __import__('news_fast_topic').metadata(doc)
     said='\n'.join(s['text'] for s in doc['segments'] if s['speaker']==METAN and s['kind']!='outro')
     terms=[v for k,v in GLOSSARY.items() if k in said]
     source='出典: ESPN 試合ページ\n'+doc.get('source_url','')
@@ -733,13 +752,20 @@ def validate_upload(args, now=None):
     doc=national.read(args.narration)
     kind=getattr(args,'kind',PROGRAM)
     mlb=kind==MLB_PROGRAM
-    material_key='followup_material' if mlb else 'topic_summary'
+    news = doc.get('news_material')
+    material_key = 'news_material' if news else 'followup_material' if mlb else 'topic_summary'
     if doc.get('program')!=kind or check(doc) or doc[material_key]!=national.read(args.games):
         raise ValueError('原稿と材料が不一致')
     if mlb and args.sport!='mlb':raise ValueError('MLB移籍の公開には --sport mlb が必要です')
     flag='COLLESPO_MLB_MARKET_TOPIC_PUBLISH' if mlb else 'COLLESPO_NATIONAL_TOPIC_PUBLISH'
-    if __import__('os').getenv(flag)!='true':raise ValueError('話題の公開は手動指定が必要です')
-    if not mlb:
+    if news:
+        import news_fast_watch
+        sport = 'mlb' if mlb else 'soccer'
+        if args.sport != sport or not news_fast_watch.may_publish(sport, news, os.getenv(news_fast_watch.FLAG[sport], '')):
+            raise ValueError('ニュースの公開は指定変数が true の場合だけです')
+    elif os.getenv(flag) != 'true':
+        raise ValueError('話題の公開は手動指定が必要です')
+    if not mlb and not news:
         if doc['topic']=='rematch' and doc['previous_meetings']!=[r for r in meetings_for(Material(doc['topic_summary']).other) if r['date']<doc['date_jst']]:
             raise ValueError('過去の対戦が確認一覧と一致しません')
         if is_reactions(doc['topic']) and doc.get('reaction_material')!=reaction_material(doc['event_id'],doc['topic']):
@@ -748,19 +774,24 @@ def validate_upload(args, now=None):
             raise ValueError('話題の反応が確認済みの材料と一致しません')
     ledger=national.read(MLB_LEDGER if mlb else LEDGER)
     # 誤りの回を hold_video で非公開にして作り直す時だけ、旧動画のIDを COLLESPO_TOPIC_REPLACES で渡せば通す（11/25 サトテル・平良の差し替えが止まった）。
-    replaces=__import__('os').getenv('COLLESPO_TOPIC_REPLACES','').strip()
+    replaces=os.getenv('COLLESPO_TOPIC_REPLACES','').strip()
     if doc['topic_key'] in ledger and not (replaces and ledger[doc['topic_key']].get('video_id')==replaces):
         raise ValueError('同じ試合の同じ話題は予約・投稿済みです（差し替えは旧動画のIDを replaces に）')
     if not args.publish_at:raise ValueError('未来の予約時刻が必要です')
     at=national.instant(args.publish_at);now=now or datetime.now(timezone.utc)
     if at<=now:raise ValueError('未来の予約時刻が必要です')
-    if mlb:
+    if mlb and news:
+        import mlb_news_fast
+        reason = mlb_news_fast.publication_block(news, doc['topic_key'], ledger, at)
+        if reason:
+            raise ValueError(reason)
+    elif mlb:
         day = at.astimezone(national.JST).date()
         occupied = [key for key, row in ledger.items()
                     if key != doc['topic_key'] and row.get('publish_at')
                     and national.instant(row['publish_at']).astimezone(national.JST).date() == day]
-        if len(occupied) >= 2:
-            raise ValueError('MLB移籍のショートは日本時間で1日2本までです')
+        if len(occupied) >= 3:
+            raise ValueError('MLB移籍のショートは日本時間で1日3本までです')
     import short_content
     report=short_content.validate_upload(args.video)
     limit=MLB_LIMIT if mlb else LIMIT
@@ -777,6 +808,11 @@ def record_published(doc, vid, publish_at):
     ledger[doc['topic_key']]=dict(video_id=vid,
         publish_at=national.instant(publish_at).astimezone(national.JST).isoformat(),title=doc['title'])
     if before:ledger[doc['topic_key']]['replaced']=before.get('replaced',[])+[before.get('video_id')]
+    if doc['program'] == MLB_PROGRAM and doc.get('news_material'):
+        info = doc['news_material']['news']
+        ledger[doc['topic_key']].update(news_player=info['name'], news_first_seen=info['first_seen'],
+                                         news_official=info['official'], news_report_times=info['report_times'],
+                                         news_reserved_at=datetime.now(national.JST).isoformat())
     national.save(path,ledger)
 
 
@@ -786,8 +822,19 @@ def main(argv=None):
     ap.add_argument('--event',help='ESPN の event id（本番は実行時に summary を取る。既定 401916337）')
     ap.add_argument('--sport',choices=('soccer','mlb'),default='soccer')
     ap.add_argument('--out',type=Path)
+    ap.add_argument('--news-material', type=Path)
     ap.add_argument('--reservation',action='store_true')
     args=ap.parse_args(argv)
+    if args.news_material:
+        if not args.out or not args.topic:
+            ap.error('ニュースは --topic と --out が必要です')
+        import news_fast_topic
+        material = national.read(args.news_material)
+        doc = news_fast_topic.narration(args.sport, args.topic, material)
+        national.save(args.out/'narration.json', doc)
+        national.save(args.out/'material.json', material)
+        (args.out/'description.txt').write_text(metadata(doc)['snippet']['description'], encoding='utf-8')
+        return
     if args.sport=='mlb':
         if not args.topic or args.summary or args.event or args.list or args.reservation:
             ap.error('MLB移籍は --topic followup-<名前> を指定してください')

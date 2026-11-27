@@ -87,14 +87,16 @@ class MarketTopics(unittest.TestCase):
                                 capture_output=True, text=True, encoding='utf-8', timeout=60)
         self.assertEqual(result.returncode, 0, result.stderr)
 
-    def test_publish_is_manual_and_uses_own_ledger(self):
+    def test_manual_and_automatic_publish_use_the_same_ledger(self):
         import yaml
         workflow = topics.ROOT / '.github/workflows/mlb_market_topics.yml'
         config = yaml.safe_load(workflow.read_text(encoding='utf-8'))
         triggers = config[True]
-        self.assertEqual(set(triggers), {'workflow_dispatch'})
+        self.assertEqual(set(triggers), {'workflow_dispatch', 'workflow_call'})
         self.assertFalse(triggers['workflow_dispatch']['inputs']['publish']['default'])
+        self.assertFalse(triggers['workflow_call']['inputs']['publish']['default'])
         self.assertIn('inputs.publish && !inputs.sample_only', config['env']['PUBLISH'])
+        self.assertIn("vars.COLLESPO_MARKET_AUTO_PUBLISH == 'true'", config['env']['PUBLISH'])
         steps = {step.get('name'): step for step in config['jobs']['build']['steps']}
         self.assertEqual(steps['Upload to YouTube']['if'], "env.PUBLISH == 'true'")
         self.assertIn('--kind mlb_market_topic --sport mlb', steps['Upload to YouTube']['run'])
