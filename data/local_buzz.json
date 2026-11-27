@@ -1,28 +1,20 @@
 {
-  "updated_at": "2026-11-27T06:01:50.054492+00:00",
+  "updated_at": "2026-11-27T20:42:03.983487+00:00",
   "sources": [
     {
       "name": "MLB公式",
-      "items": 24
+      "items": 25
     }
   ],
-  "titles_count": 24,
+  "titles_count": 25,
   "teams": [
     {
-      "team_id": "141",
-      "name": "ブルージェイズ",
-      "name_en": "Toronto Blue Jays",
+      "team_id": "121",
+      "name": "メッツ",
+      "name_en": "New York Mets",
       "mentions": 2,
-      "tone": "話題",
-      "gist": "アロザレーナら移籍噂。大型補強も更なる大胆さ要"
-    },
-    {
-      "team_id": "110",
-      "name": "オリオールズ",
-      "name_en": "Baltimore Orioles",
-      "mentions": 2,
-      "tone": "話題",
-      "gist": "アロザレーナら移籍噂。ロバート1年契約で復帰"
+      "tone": "好調",
+      "gist": "Ewing、8年9500万ドルで延長合意"
     },
     {
       "team_id": "114",
@@ -30,15 +22,39 @@
       "name_en": "Cleveland Guardians",
       "mentions": 1,
       "tone": "好調",
-      "gist": "グリフィンと3年4800万ドルで再契約"
+      "gist": "Griffin、3年4800万ドルで復帰へ"
     },
     {
-      "team_id": "120",
-      "name": "ナショナルズ",
-      "name_en": "Washington Nationals",
+      "team_id": "141",
+      "name": "ブルージェイズ",
+      "name_en": "Toronto Blue Jays",
       "mentions": 1,
-      "tone": "好調",
-      "gist": "救援プクがナショナルズへ1年契約"
+      "tone": "話題",
+      "gist": "Arozarena、鈴木らの移籍噂"
+    },
+    {
+      "team_id": "109",
+      "name": "ダイヤモンドバックス",
+      "name_en": "Arizona Diamondbacks",
+      "mentions": 1,
+      "tone": "話題",
+      "gist": "Davis、DバックスへTawaはBucsへ"
+    },
+    {
+      "team_id": "110",
+      "name": "オリオールズ",
+      "name_en": "Baltimore Orioles",
+      "mentions": 1,
+      "tone": "話題",
+      "gist": "Arozarena、鈴木らの移籍噂"
+    },
+    {
+      "team_id": "111",
+      "name": "レッドソックス",
+      "name_en": "Boston Red Sox",
+      "mentions": 1,
+      "tone": "話題",
+      "gist": "レッドソックス先発陣に合う右腕は"
     },
     {
       "team_id": "115",
@@ -46,31 +62,15 @@
       "name_en": "Colorado Rockies",
       "mentions": 1,
       "tone": "好調",
-      "gist": "ピーターソン、サンドバル加入で先発強化"
+      "gist": "Peterson、Sandoval加え先発補強"
     },
     {
-      "team_id": "146",
-      "name": "マーリンズ",
-      "name_en": "Miami Marlins",
+      "team_id": "119",
+      "name": "ドジャース",
+      "name_en": "Los Angeles Dodgers",
       "mentions": 1,
       "tone": "好調",
-      "gist": "ベテラン捕手サンチェスと1年契約"
-    },
-    {
-      "team_id": "147",
-      "name": "ヤンキース",
-      "name_en": "New York Yankees",
-      "mentions": 1,
-      "tone": "話題",
-      "gist": "ブルペン問題がオフの大きな課題"
-    },
-    {
-      "team_id": "116",
-      "name": "タイガース",
-      "name_en": "Detroit Tigers",
-      "mentions": 1,
-      "tone": "好調",
-      "gist": "ベテラン右腕ガウスマンと1年契約"
+      "gist": "ドジャース有望株、新球種で好調"
     }
   ],
   "players": [
