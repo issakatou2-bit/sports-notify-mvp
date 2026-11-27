@@ -1,0 +1,152 @@
+{
+  "about": "欧州サッカーの分析ショートの材料（analysis-<名前>）。MLB の data/mlb_market_followups.json と同じ形。各段の事実は2つ以上の出典で確かめた物だけ。league は画面の見出し、team はクラブのバッジ（英語名、無くてもよい）。中身は Claude が一次資料で書く。",
+  "events": {
+    "palace-bottom-2026": {
+      "title": "最下位パレスは失点27がリーグ最多 残留圏の17位まで勝点2",
+      "league": "プレミアリーグ",
+      "team": "Crystal Palace",
+      "sub": "数字で読む",
+      "readings": {
+        "クリスタル・パレス": "クリスタルパレス",
+        "トーマス・フランク": "トーマスフランク"
+      },
+      "reading_sources": [
+        "https://www.cpfc.co.uk/news/first-team/thomas-frank-appointed-crystal-palace-manager/",
+        "https://www.espn.com/soccer/standings/_/league/eng.1"
+      ],
+      "hook": {
+        "score": "クリスタル・パレス",
+        "result": "最下位から抜け出せるか",
+        "subject": "今季の失点",
+        "big": "27",
+        "unit": "失点",
+        "note": "リーグで一番多い"
+      },
+      "opening": "パレスが最下位から抜け出せないのだ！",
+      "items": [
+        {
+          "ask": "いまの成績はどうなっているのだ？",
+          "text": "クリスタル・パレスは11試合で2勝1分8敗。勝点7で20位よ。",
+          "head": "プレミアリーグ 20位",
+          "rows": [
+            [
+              "試合",
+              "11"
+            ],
+            [
+              "勝ち・分け・負け",
+              "2勝1分8敗"
+            ],
+            [
+              "勝点",
+              "7"
+            ]
+          ],
+          "big": {
+            "label": "勝点",
+            "value": "7",
+            "unit": ""
+          },
+          "source_names": "ESPN・football-data.org",
+          "sources": [
+            "https://www.espn.com/soccer/standings/_/league/eng.1",
+            "https://api.football-data.org/v4/competitions/PL/standings"
+          ]
+        },
+        {
+          "ask": "何がいちばん苦しいのだ？",
+          "text": "失点よ。27失点はリーグで一番多いわ。次に多いマンチェスター・ユナイテッドでも23失点よ。",
+          "head": "失点の多いチーム",
+          "rows": [
+            [
+              "クリスタル・パレス",
+              "27"
+            ],
+            [
+              "マンチェスター・ユナイテッド",
+              "23"
+            ],
+            [
+              "イプスウィッチ",
+              "22"
+            ]
+          ],
+          "big": {
+            "label": "失点",
+            "value": "27",
+            "unit": "失点"
+          },
+          "source_names": "ESPN・football-data.org",
+          "sources": [
+            "https://www.espn.com/soccer/standings/_/league/eng.1",
+            "https://api.football-data.org/v4/competitions/PL/standings"
+          ]
+        },
+        {
+          "ask": "監督が代わってからはどうなのだ？",
+          "text": "10月11日のフォレスト戦に勝ってから5連敗よ。11月16日にトーマス・フランク監督が就任して、最初のコヴェントリー戦も2対3で負けたわ。",
+          "head": "最後の勝ちから5連敗",
+          "rows": [
+            [
+              "10月11日",
+              "3対1 フォレスト"
+            ],
+            [
+              "10月18日〜11月8日",
+              "4連敗"
+            ],
+            [
+              "11月21日",
+              "2対3 コヴェントリー"
+            ]
+          ],
+          "big": {
+            "label": "連敗",
+            "value": "5",
+            "unit": "連敗"
+          },
+          "source_names": "ESPN・football-data.org・パレス公式",
+          "sources": [
+            "https://www.cpfc.co.uk/news/first-team/thomas-frank-appointed-crystal-palace-manager/",
+            "https://www.espn.com/soccer/match/_/gameId/401879235",
+            "https://api.football-data.org/v4/competitions/PL/matches"
+          ]
+        },
+        {
+          "ask": "それでも、まだ望みはあるのだ。",
+          "text": "残留圏の17位フォレストは勝点9。差は2だけよ。",
+          "head": "残留圏との差",
+          "rows": [
+            [
+              "17位 フォレスト",
+              "勝点9"
+            ],
+            [
+              "20位 パレス",
+              "勝点7"
+            ],
+            [
+              "差",
+              "2"
+            ]
+          ],
+          "big": {
+            "label": "17位との差",
+            "value": "2",
+            "unit": ""
+          },
+          "source_names": "ESPN・football-data.org",
+          "sources": [
+            "https://www.espn.com/soccer/standings/_/league/eng.1",
+            "https://api.football-data.org/v4/competitions/PL/standings"
+          ]
+        }
+      ],
+      "ending": [
+        "監督が代わっても、まだ流れは変わっていないのだ…",
+        "そうね。でも残留圏までは勝点2よ。1つ勝てば、いまの17位を上回るわ。"
+      ],
+      "checked_on": "2026-11-27"
+    }
+  }
+}

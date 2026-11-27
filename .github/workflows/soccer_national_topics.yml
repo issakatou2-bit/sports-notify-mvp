@@ -42,6 +42,11 @@ on:
         type: boolean
         required: false
         default: false
+      replaces:
+        description: '差し替える旧動画のID（誤りで非公開にした回を作り直す時だけ）'
+        required: false
+        default: ''
+        type: string
 
 permissions:
   contents: write
@@ -143,18 +148,39 @@ jobs:
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
           COLLESPO_NATIONAL_TOPIC_PUBLISH: 'true'
+          TOPIC: ${{ inputs.topic }}
         run: |
+          case "$TOPIC" in
+            analysis-*) echo "欧州の分析の回は別の段で公開します"; exit 0 ;;
+          esac
           VIDEO_DAY=$(python -c "import json; print(json.load(open('build/soccer_national_topics/narration.json'))['date_jst'])")
           python scripts/upload_youtube.py --video build/soccer_national_topics/collespo_national_topic.mp4 --kind soccer_national_topic --sport soccer --games build/soccer_national_topics/material.json --narration build/soccer_national_topics/narration.json --thumbnail build/soccer_national_topics/short.png --video-date "$VIDEO_DAY" --publish-at "$PUBLISH_AT" --privacy public
+      - name: Upload analysis topic to YouTube
+        if: env.PUBLISH == 'true' && startsWith(inputs.topic, 'analysis-')
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+          COLLESPO_SOCCER_ANALYSIS_PUBLISH: 'true'
+          COLLESPO_TOPIC_REPLACES: ${{ inputs.replaces }}
+          KIND: soccer_analysis_topic
+        run: |
+          VIDEO_DAY=$(python -c "import json; print(json.load(open('build/soccer_national_topics/narration.json'))['date_jst'])")
+          python scripts/upload_youtube.py --video build/soccer_national_topics/collespo_national_topic.mp4 --kind "$KIND" --sport soccer --games build/soccer_national_topics/material.json --narration build/soccer_national_topics/narration.json --thumbnail build/soccer_national_topics/short.png --video-date "$VIDEO_DAY" --publish-at "$PUBLISH_AT" --privacy public
       - name: Commit publication record
         if: env.PUBLISH == 'true' && always()
         run: |
-          bash scripts/commit_data.sh "soccer national topic: ${{ github.run_id }}" data/published_videos.json data/soccer_national_topics_published.json
+          bash scripts/commit_data.sh "soccer national topic: ${{ github.run_id }}" data/published_videos.json data/soccer_national_topics_published.json data/soccer_analysis_topics_published.json
       - name: Confirm publication reservation
-        if: env.PUBLISH == 'true'
+        if: env.PUBLISH == 'true' && !startsWith(inputs.topic, 'analysis-')
         run: |
           TOPIC_KEY=$(python -c "import json; print(json.load(open('build/soccer_national_topics/narration.json'))['topic_key'])")
           python scripts/verify_published.py --kind soccer_national_topic --video-date "$TOPIC_KEY"
+      - name: Confirm analysis reservation
+        if: env.PUBLISH == 'true' && startsWith(inputs.topic, 'analysis-')
+        run: |
+          TOPIC_KEY=$(python -c "import json; print(json.load(open('build/soccer_national_topics/narration.json'))['topic_key'])")
+          python scripts/verify_published.py --kind soccer_analysis_topic --video-date "$TOPIC_KEY"
       - name: Save sanity gate records
         if: always()
         uses: actions/upload-artifact@v4

@@ -726,7 +726,7 @@ def record_kind(kind: str, morning_mode: str = "players",
 # 資産動画(asset)だけは日付ではなく話題で引くので、別の分岐が受け持つ。
 # --kind の選択肢と食い違っていないかは test_consistency が見る。
 DATED_KINDS = ("daily", "morning", "longform", "weekly", "verdict",
-               "soccer_race", "soccer_leaders", "soccer_week", "soccer_results", "soccer_voices", "soccer_national_topic", "soccer_club_topic", "mlb_market_topic", "soccer_national", "player_story", "soccer_weekly", "soccer_national_long", "soccer_stake", "soccer_cup_long", "mlb_market_long", "long_highlight")
+               "soccer_race", "soccer_leaders", "soccer_week", "soccer_results", "soccer_voices", "soccer_national_topic", "soccer_analysis_topic", "soccer_club_topic", "mlb_market_topic", "soccer_national", "player_story", "soccer_weekly", "soccer_national_long", "soccer_stake", "soccer_cup_long", "mlb_market_long", "long_highlight")
 
 
 def published_video(kind: str, date_key: str,
@@ -1502,7 +1502,7 @@ def build_metadata(games_path: str, date_label: str, kind: str = "daily",
                                                          pathlib.Path(narration_path).parent/'render_timeline.json')
     if kind == 'soccer_club_topic':
         return __import__('soccer_club_topics').metadata(_json_or_empty(narration_path))
-    if kind in ('soccer_national_topic', 'mlb_market_topic'):
+    if kind in ('soccer_national_topic', 'soccer_analysis_topic', 'mlb_market_topic'):
         return __import__('soccer_national_topics').metadata(_json_or_empty(narration_path))
     if kind == 'soccer_stake':
         return __import__('soccer_stake').metadata(_json_or_empty(narration_path))
@@ -2272,7 +2272,7 @@ def require_upload_gate(video, narration, description, kind):
             print(f'[error] 投稿前検査 [{kind}] {reason}', file=sys.stderr)
         raise SystemExit(1)
 
-TOPIC_KINDS = ('soccer_national_topic', 'soccer_club_topic', 'mlb_market_topic', 'soccer_stake')
+TOPIC_KINDS = ('soccer_national_topic', 'soccer_analysis_topic', 'soccer_club_topic', 'mlb_market_topic', 'soccer_stake')
 
 
 def replacing_held(kind, already):
@@ -2293,7 +2293,8 @@ def main():
     parser.add_argument("--kind", default="daily",
                         choices=["daily", "weekly", "asset", "verdict",
                                   "morning", "longform", "soccer_race", "soccer_leaders",
-                                  "soccer_week", "soccer_results", "soccer_voices", "soccer_national", "soccer_national_topic", "soccer_club_topic", "mlb_market_topic", "player_story", "soccer_weekly", "soccer_national_long", "soccer_stake", "soccer_cup_long", "mlb_market_long", "long_highlight"],
+                                   "soccer_week", "soccer_results", "soccer_voices", "soccer_national", "soccer_national_topic", "soccer_analysis_topic", "soccer_club_topic", "mlb_market_topic", "player_story", "soccer_weekly", "soccer_national_long", "soccer_stake", "soccer_cup_long", "mlb_market_long", "long_highlight"],
+
                         help="daily=ショート / weekly=週次まとめ / "
                              "asset=資産動画 / verdict=答え合わせ / "
                              "morning=夕方の5本 / longform=対話の通常動画 / "
@@ -2350,7 +2351,7 @@ def main():
         __import__('soccer_national_long').validate_upload(args)
     if args.kind == 'soccer_club_topic':
         __import__('soccer_club_topics').validate_upload(args)
-    if args.kind in ('soccer_national_topic', 'mlb_market_topic'):
+    if args.kind in ('soccer_national_topic', 'soccer_analysis_topic', 'mlb_market_topic'):
         __import__('soccer_national_topics').validate_upload(args)
     if args.kind == 'soccer_stake':
         __import__('soccer_stake').validate_upload(args)
@@ -2431,7 +2432,7 @@ def main():
     # 話題で引くので、上の分岐がそのまま受け持つ。
     date_key = material_date_key(args.kind, args.sport, _json_or_empty(args.games), args.video_date,
                                  _json_or_empty(args.recap) if args.kind == 'morning' else None)
-    if args.kind in ('soccer_national_topic', 'soccer_club_topic', 'mlb_market_topic', 'soccer_stake'):
+    if args.kind in ('soccer_national_topic', 'soccer_analysis_topic', 'soccer_club_topic', 'mlb_market_topic', 'soccer_stake'):
         date_key = _json_or_empty(args.narration)['topic_key']
     rec_kind = record_kind(args.kind, args.morning_mode, args.sport)
     if args.kind == 'morning' and args.publish_at and 'T' not in args.publish_at:
@@ -2714,7 +2715,7 @@ def main():
             if args.kind == 'soccer_club_topic':
                 __import__('soccer_club_topics').record_published(
                     _json_or_empty(args.narration), vid, args.publish_at)
-            if args.kind in ('soccer_national_topic', 'mlb_market_topic'):
+            if args.kind in ('soccer_national_topic', 'soccer_analysis_topic', 'mlb_market_topic'):
                 __import__('soccer_national_topics').record_published(
                     _json_or_empty(args.narration), vid, args.publish_at)
             if args.kind in ('soccer_cup_long', 'mlb_market_long'):

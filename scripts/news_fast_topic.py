@@ -24,14 +24,12 @@ def narration(sport, topic, material):
         if news['official'] and not news['transaction_id']:
             raise ValueError('MLBの取引記録IDがありません')
         first = f'{name}の移籍話が動いたのだ！'
-        closing = ('これからのプレーが楽しみなのだ。', 'そうね。新しい球団でのプレーに注目したいわ。')
-        if not news['official']:
-            closing = ('正式発表を待ちたいのだ。', 'そうね。いま分かっているのは、合意が報じられたことまでよ。')
+        closing = topic_dialogue.material_ending(material, kind='mlb')
         hook = material['hook'] if material['hook']['big'] else None
         options = dict(team_id=news.get('team_id'), baseball_average_voice=True)
     else:
         first = material['opening']
-        closing = ('ここからの試合も気になるのだ。', 'そうね。次の試合でチームの動きに注目したいわ。')
+        closing = topic_dialogue.material_ending(material, kind='soccer')
         hook = None
         from soccer_slots_v4 import clubs_for
         options = dict(clubs=clubs_for([news['context']['team']]))
