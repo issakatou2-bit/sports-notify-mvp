@@ -13,6 +13,7 @@ import news_fast_topic as topic
 import news_fast_watch as watch
 import soccer_national_topics as shared
 import soccer_news_fast as soccer
+import topic_dialogue
 
 NOW = datetime.fromisoformat('2026-11-25T15:05:00+09:00')
 FIXTURES = Path(__file__).parent / 'fixtures/marketwatch_1125'
@@ -181,6 +182,38 @@ def test_soccer_detects_a_player_manager_and_large_transfer_and_skips_speculatio
             os.environ, COLLESPO_SOCCER_NEWS_PUBLISH='', COLLESPO_NATIONAL_TOPIC_PUBLISH='true'):
         with pytest.raises(ValueError, match='指定変数'):
             shared.validate_upload(SimpleNamespace(kind=shared.PROGRAM, sport='soccer', narration='n', games='g'))
+
+
+def test_closing_uses_the_event_and_a_number_on_the_screen(replay):
+    cases = [row for row in replay.values() if row['material']]
+    assert cases
+    for row in cases:
+        doc = topic.narration('mlb', row['key'], row['material'])
+        zunda, metan = [s['text'] for s in doc['segments'][-3:-1]]
+        assert zunda.endswith('！') and not any(ch.isdigit() for ch in zunda)
+        assert any(ch.isdigit() for ch in metan)
+        assert topic_dialogue.problems(doc['segments']) == []
+    record = dict(id=32, date='2026-11-25', typeCode='SFA', toTeam={'id': 112},
+                  person={'id': 10, 'fullName': 'Teruaki Sato'},
+                  description='Chicago Cubs signed free agent 3B Teruaki Sato.')
+    def get(route, params):
+        return {'transactions': [record]} if route == '/transactions' else {}
+    rows, _, _ = watch.mlb_candidates([], dict(first_seen={}), NOW, get)
+    doc = topic.narration('mlb', rows[0]['key'], rows[0]['material'])
+    zunda, metan = [s['text'] for s in doc['segments'][-3:-1]]
+    assert zunda.endswith('！') and not any(ch.isdigit() for ch in zunda)
+    assert any(ch.isdigit() for ch in metan)
+    assert topic_dialogue.problems(doc['segments']) == []
+    now = datetime.fromisoformat('2026-11-27T09:00:00+09:00')
+    names = soccer.names(watch.load_data)
+    record = soccer.article_record(espn('Brighton appoint new manager', 'The club confirmed the appointment.'),
+                                   'eng.1', names, now)
+    material = soccer.material(record, soccer.context(record, watch.load_data))
+    doc = topic.narration('soccer', record['key'], material)
+    zunda, metan = [s['text'] for s in doc['segments'][-3:-1]]
+    assert '監督を代えて立て直し' in zunda and not any(ch.isdigit() for ch in zunda)
+    assert any(ch.isdigit() for ch in metan)
+    assert topic_dialogue.problems(doc['segments']) == []
 
 
 def test_january_transfer_window_tag_is_based_on_the_news_date():

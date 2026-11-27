@@ -20,6 +20,10 @@ REACTIONS = ROOT / 'data/soccer_national_reactions.json'
 FOLLOWUPS = ROOT / 'data/soccer_national_followups.json'
 PROGRAM = 'soccer_national_topic'
 MLB_PROGRAM = 'mlb_market_topic'
+ANALYSIS_PROGRAM = 'soccer_analysis_topic'
+ANALYSIS = ROOT / 'data/soccer_analysis_topics.json'
+ANALYSIS_LEDGER = ROOT / 'data/soccer_analysis_topics_published.json'
+ANALYSIS_FLAG = 'COLLESPO_SOCCER_ANALYSIS_PUBLISH'
 MLB_LEDGER = ROOT / 'data/mlb_market_topics_published.json'
 MLB_FOLLOWUPS = ROOT / 'data/mlb_market_followups.json'
 MLB_TEAMS = {'sato-cubs': '112', 'taira-bluejays': '141'}
@@ -546,7 +550,7 @@ def dialogue_segments(topic, panels, hook, *, ending=None):
 
 MARKET_TRANSITIONS = {
     '鈴木誠也との比べ': '同じカブスの鈴木誠也と比べると、年平均はどうなのだ？',
-    '2026年の成績': '契約の話を聞くと、移籍前のプレーも気になるのだ。',
+    '2026年の成績': '契約の話を聞くと、移籍前の数字を続けて見ておきたいのだ。',
     'NPBから移った2人の1年目': 'メジャーに渡った打者の数字も見ておきたいのだ。',
     '守る位置': '移籍先では、どこを守る見込みなのだ？',
     '契約を途中でやめる権利': '総額に加えて、契約の途中にも注目なのだ。',
@@ -607,6 +611,69 @@ def mlb_narration(topic):
     )))
 
 
+def is_analysis(topic):
+    """欧州サッカーの分析ショートは analysis-<名前> で指定する。"""
+    return str(topic).startswith('analysis-')
+
+
+def analysis_material(topic):
+    return ((national.read(ANALYSIS).get('events') or {}).get(str(topic)[len('analysis-'):]))
+
+
+def analysis_opening(data, key):
+    import topic_dialogue
+    if data.get('opening'):
+        return data['opening']
+    name = data['hook']['score']
+    return topic_dialogue.pick(key, f'{name}の数字が気になるのだ！',
+                               f'{name}の動きを見ておきたいのだ！', f'{name}の話を聞いてみたいのだ！')
+
+
+def analysis_panels(data, key):
+    import topic_dialogue
+    _, facts, _ = followup_panels(data, mlb=True)
+    panels = []
+    for i, (ask, answer, head, rows, meta) in enumerate(facts):
+        line = analysis_opening(data, key) if i == 0 else ask
+        meta = dict(meta, sub=data.get('sub') or '数字で読む')
+        # 問いにはそのまま答え、感想や言い切りにだけ受けの言葉を付ける。
+        if line.endswith('？'):
+            reply = re.sub(r'^(?:はい|ええ|そうね|そうなの)[。､、]\s*', '', answer, count=1)
+        else:
+            reply = topic_dialogue.receive(answer, ('ええ', 'そうね')[i % 2])
+        panels.append((line, reply, head, rows, meta))
+    return panels
+
+
+def analysis_clubs(data):
+    if not data.get('team'):
+        return {}
+    from soccer_slots_v4 import clubs_for
+    return clubs_for([data['team']])
+
+
+def analysis_narration(topic):
+    data = analysis_material(topic)
+    if not data:
+        raise Unavailable('欧州サッカーの分析材料がありません')
+    import topic_dialogue
+    _, _, hook = followup_panels(data, mlb=True)
+    if hook['score'] not in (data.get('readings') or {}):
+        raise Unavailable('冒頭の名前の読みが材料にありません')
+    panels = analysis_panels(data, topic)
+    if not panels:
+        raise Unavailable('分析の段がありません')
+    return tone_gate(short_common.prepare(dict(
+        program=PROGRAM, date_jst=data['checked_on'], title=data['title'] + ' #Shorts',
+        topic=topic, topic_key=topic, event_id=topic, screen_title=data['league'],
+        sub=data.get('sub') or '数字で読む', clubs=analysis_clubs(data),
+        segments=dialogue_segments(topic, panels, hook,
+                                   ending=topic_dialogue.material_ending(data, kind='analysis',
+                                                                         subject=hook['score'])),
+        analysis_material=data, duration_budget=dict(limit=MLB_LIMIT, grace=0),
+        sanity_materials=[dict(source='欧州サッカーの分析材料（確認済み）', sport='soccer', facts=data)])))
+
+
 def estimate(doc):
     """原稿の文字数からの見積もり（実音声の測定ではない）。既存の掛け合いと同じ式。"""
     return sum(len(s['text'])/7.5+.4 if s['kind']!='outro' else short_common.OUTRO_SECONDS for s in doc['segments'])
@@ -622,6 +689,14 @@ def available(summary, names=None, meetings=None):
 
 def check(doc):
     if doc.get('program') not in PROGRAMS:return []
+    if doc.get('analysis_material'):
+        try:
+            import topic_dialogue
+            expected = analysis_narration(doc['topic'])
+            if topic_dialogue.problems(doc['segments']):return ['締めが決まりと違います']
+            if doc_as_json(expected)==doc_as_json(doc):return []
+        except (ValueError, KeyError, TypeError, StopIteration):pass
+        return ['欧州サッカーの分析原稿が確認済みの材料と一致しません']
     if 'news_material' in doc:
         try:
             import news_fast_topic
@@ -676,6 +751,9 @@ def speech_readings(doc):
         # 試合に出ていない選手の読みは材料に書く（例 塩貝健人＝シオガイケント、JFA の名簿の表記）。
         for name,reading in (doc['followup_material'].get('readings') or {}).items():
             if name in text:readings[name]=('player',reading)
+    if is_analysis(doc['topic']):
+        for name,reading in (doc['analysis_material'].get('readings') or {}).items():
+            if name in text:readings[name]=('player',reading)
     for name,(_,reading) in readings.items():
         existing=guard.player_data().get('readings',{}).get(name)
         if existing and existing!=reading:raise ValueError('既存の読みと不一致: '+name)
@@ -695,6 +773,9 @@ def information(doc):
                 dict(subject=name, fact='比較する契約', value=value,
                      source=' '.join(comparison[1]['meta']['followup_sources']), segments=[comparison[0]])
                 for name, value in doc['followup_material']['items'][1]['comparison_rows']]
+    if is_analysis(doc['topic']):
+        return [dict(subject=s['meta']['head'],fact='確認済みの事実（欧州サッカーの分析）',value=s['meta']['rows']+([('要の数字',s['meta']['big']['label']+' '+str(s['meta']['big']['value'])+s['meta']['big']['unit'])] if s['meta'].get('big') else []),source=' '.join(s['meta']['followup_sources']),segments=[i])
+                for i,s in answers if not s['meta'].get('dialogue_ending')]
     if is_followup(doc['topic']):
         return [dict(subject=s['meta']['head'],fact='確認済みの事実（その後）',value=s['meta']['rows']+([('要の数字',s['meta']['big']['label']+' '+str(s['meta']['big']['value'])+s['meta']['big']['unit'])] if s['meta'].get('big') else []),source=' '.join(s['meta']['followup_sources']),segments=[i])
                 for i,s in answers]
@@ -713,9 +794,17 @@ GLOSSARY={'枠内シュート':'枠内シュート：ゴールの枠の中に向
 
 def metadata(doc):
     if check(doc):raise ValueError('原稿が不一致')
+    said='\n'.join(s['text'] for s in doc['segments'] if s['speaker']==METAN and s['kind']!='outro')
     if 'news_material' in doc:
         return __import__('news_fast_topic').metadata(doc)
-    said='\n'.join(s['text'] for s in doc['segments'] if s['speaker']==METAN and s['kind']!='outro')
+    if doc.get('analysis_material'):
+        data=doc['analysis_material']
+        tags=['欧州サッカー','サッカー',data['league'],data['hook']['score']]
+        hashtags=' '.join('#'+tag for tag in tags)+' #Shorts'
+        source='出典:\n'+'\n'.join(f"{f['head']}: {f['source_names']}\n"+'\n'.join(f['sources']) for f in data['items'])
+        return dict(snippet=dict(title=doc['title'],description=said+'\n\n'+source+
+            '\n\n役に立ったら高評価・チャンネル登録をお願いします。\n音声: VOICEVOX:ずんだもん・四国めたん\n'+hashtags,
+            tags=tags,categoryId='17',defaultLanguage='ja',defaultAudioLanguage='ja'))
     terms=[v for k,v in GLOSSARY.items() if k in said]
     source='出典: ESPN 試合ページ\n'+doc.get('source_url','')
     if doc['topic']=='rematch':
@@ -753,12 +842,17 @@ def validate_upload(args, now=None):
     doc=national.read(args.narration)
     kind=getattr(args,'kind',PROGRAM)
     mlb=kind==MLB_PROGRAM
+    analysis=kind==ANALYSIS_PROGRAM
     news = doc.get('news_material')
-    material_key = 'news_material' if news else 'followup_material' if mlb else 'topic_summary'
-    if doc.get('program')!=kind or check(doc) or doc[material_key]!=national.read(args.games):
+    if doc.get('analysis_material') and not analysis:raise ValueError('分析の原稿は soccer_analysis_topic で公開してください')
+    material_key = ('analysis_material' if analysis else 'news_material' if news
+                    else 'followup_material' if mlb else 'topic_summary')
+    if doc.get('program')!=(PROGRAM if analysis else kind) or check(doc) or doc[material_key]!=national.read(args.games):
         raise ValueError('原稿と材料が不一致')
     if mlb and args.sport!='mlb':raise ValueError('MLB移籍の公開には --sport mlb が必要です')
-    flag='COLLESPO_MLB_MARKET_TOPIC_PUBLISH' if mlb else 'COLLESPO_NATIONAL_TOPIC_PUBLISH'
+    if analysis and args.sport!='soccer':raise ValueError('欧州サッカーの分析公開には --sport soccer が必要です')
+    flag=(ANALYSIS_FLAG if analysis else 'COLLESPO_MLB_MARKET_TOPIC_PUBLISH' if mlb
+          else 'COLLESPO_NATIONAL_TOPIC_PUBLISH')
     if news:
         import news_fast_watch
         sport = 'mlb' if mlb else 'soccer'
@@ -766,14 +860,14 @@ def validate_upload(args, now=None):
             raise ValueError('ニュースの公開は指定変数が true の場合だけです')
     elif os.getenv(flag) != 'true':
         raise ValueError('話題の公開は手動指定が必要です')
-    if not mlb and not news:
+    if not mlb and not news and not analysis:
         if doc['topic']=='rematch' and doc['previous_meetings']!=[r for r in meetings_for(Material(doc['topic_summary']).other) if r['date']<doc['date_jst']]:
             raise ValueError('過去の対戦が確認一覧と一致しません')
         if is_reactions(doc['topic']) and doc.get('reaction_material')!=reaction_material(doc['event_id'],doc['topic']):
             raise ValueError('試合後の声が確認済みの材料と一致しません')
         if doc.get('topic_reaction')!=topic_reaction(doc['event_id'],doc['topic']):
             raise ValueError('話題の反応が確認済みの材料と一致しません')
-    ledger=national.read(MLB_LEDGER if mlb else LEDGER)
+    ledger=national.read(ANALYSIS_LEDGER if analysis else MLB_LEDGER if mlb else LEDGER)
     # 誤りの回を hold_video で非公開にして作り直す時だけ、旧動画のIDを COLLESPO_TOPIC_REPLACES で渡せば通す（11/25 サトテル・平良の差し替えが止まった）。
     replaces=os.getenv('COLLESPO_TOPIC_REPLACES','').strip()
     if doc['topic_key'] in ledger and not (replaces and ledger[doc['topic_key']].get('video_id')==replaces):
@@ -795,7 +889,7 @@ def validate_upload(args, now=None):
             raise ValueError('MLB移籍のショートは日本時間で1日3本までです')
     import short_content
     report=short_content.validate_upload(args.video)
-    limit=MLB_LIMIT if mlb else LIMIT
+    limit=MLB_LIMIT if (mlb or analysis) else LIMIT
     if report['actual_seconds']>limit:raise ValueError(f'話題ショートは{limit}秒までです')
     # 無音の見本は公開させない。実音声の記録（voice_manifest）が要る。
     if not (Path(args.narration).parent/'audio/voice_manifest.json').exists() and not (Path(args.video).parent/'voice_manifest.json').exists():
@@ -803,7 +897,8 @@ def validate_upload(args, now=None):
 
 
 def record_published(doc, vid, publish_at):
-    path=MLB_LEDGER if doc['program']==MLB_PROGRAM else LEDGER
+    path=(ANALYSIS_LEDGER if doc.get('analysis_material') else
+          MLB_LEDGER if doc['program']==MLB_PROGRAM else LEDGER)
     ledger=national.read(path)
     before=ledger.get(doc['topic_key'])
     ledger[doc['topic_key']]=dict(video_id=vid,
@@ -835,6 +930,14 @@ def main(argv=None):
         national.save(args.out/'narration.json', doc)
         national.save(args.out/'material.json', material)
         (args.out/'description.txt').write_text(metadata(doc)['snippet']['description'], encoding='utf-8')
+        return
+    if args.sport=='soccer' and args.topic and is_analysis(args.topic):
+        if args.summary or args.list or args.reservation:
+            ap.error('欧州の分析は --topic analysis-<名前> を指定してください')
+        out=args.out or ROOT/'build/soccer_analysis_topics'
+        doc=analysis_narration(args.topic)
+        national.save(out/'narration.json',doc)
+        national.save(out/'material.json',doc['analysis_material'])
         return
     if args.sport=='mlb':
         if not args.topic or args.summary or args.event or args.list or args.reservation:

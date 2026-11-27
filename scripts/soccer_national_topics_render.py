@@ -27,6 +27,9 @@ CTA = '高評価・チャンネル登録で応援を'
 
 def credit(doc, panel=None):
     """画面の出典。試合後の声は記事の媒体を先に出す（ESPN は試合結果だけ）。"""
+    if doc.get('analysis_material'):
+        voice = '音声: VOICEVOX:ずんだもん・四国めたん'
+        return voice if panel is None else voice + '　出典: ' + doc['analysis_material']['items'][panel]['source_names']
     if doc.get('news_material'):
         voice = '音声: VOICEVOX:ずんだもん・四国めたん'
         return voice if panel is None else voice + '　出典: ' + doc['news_material']['items'][panel]['source_names']
@@ -56,6 +59,8 @@ def credit(doc, panel=None):
 
 
 def clubs_for(doc):
+    if doc.get('analysis_material'):
+        return doc.get('clubs') or {}
     if doc.get('program') in (topics.MLB_PROGRAM, 'mlb_season_insight', 'long_highlight'):
         return {}
     if doc.get('clubs'):
