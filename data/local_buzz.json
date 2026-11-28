@@ -1,52 +1,36 @@
 {
-  "updated_at": "2026-11-27T20:42:03.983487+00:00",
+  "updated_at": "2026-11-28T06:01:50.998135+00:00",
   "sources": [
     {
       "name": "MLB公式",
-      "items": 25
+      "items": 23
     }
   ],
-  "titles_count": 25,
+  "titles_count": 23,
   "teams": [
     {
-      "team_id": "121",
-      "name": "メッツ",
-      "name_en": "New York Mets",
-      "mentions": 2,
-      "tone": "好調",
-      "gist": "Ewing、8年9500万ドルで延長合意"
-    },
-    {
-      "team_id": "114",
-      "name": "ガーディアンズ",
-      "name_en": "Cleveland Guardians",
-      "mentions": 1,
-      "tone": "好調",
-      "gist": "Griffin、3年4800万ドルで復帰へ"
+      "team_id": "112",
+      "name": "カブス",
+      "name_en": "Chicago Cubs",
+      "mentions": 5,
+      "tone": "話題",
+      "gist": "伊藤がカブスと合意、Yarbroughとも契約"
     },
     {
       "team_id": "141",
       "name": "ブルージェイズ",
       "name_en": "Toronto Blue Jays",
-      "mentions": 1,
+      "mentions": 2,
       "tone": "話題",
-      "gist": "Arozarena、鈴木らの移籍噂"
+      "gist": "ジャズと1年契約、チザムの適性に注目"
     },
     {
-      "team_id": "109",
-      "name": "ダイヤモンドバックス",
-      "name_en": "Arizona Diamondbacks",
+      "team_id": "138",
+      "name": "カージナルス",
+      "name_en": "St. Louis Cardinals",
       "mentions": 1,
       "tone": "話題",
-      "gist": "Davis、DバックスへTawaはBucsへ"
-    },
-    {
-      "team_id": "110",
-      "name": "オリオールズ",
-      "name_en": "Baltimore Orioles",
-      "mentions": 1,
-      "tone": "話題",
-      "gist": "Arozarena、鈴木らの移籍噂"
+      "gist": "今井・ビーバーらの移籍噂にカージナルス"
     },
     {
       "team_id": "111",
@@ -54,32 +38,44 @@
       "name_en": "Boston Red Sox",
       "mentions": 1,
       "tone": "話題",
-      "gist": "レッドソックス先発陣に合う右腕は"
+      "gist": "レッドソックスに合う右腕先発は誰か"
     },
     {
-      "team_id": "115",
-      "name": "ロッキーズ",
-      "name_en": "Colorado Rockies",
+      "team_id": "134",
+      "name": "パイレーツ",
+      "name_en": "Pittsburgh Pirates",
       "mentions": 1,
-      "tone": "好調",
-      "gist": "Peterson、Sandoval加え先発補強"
+      "tone": "話題",
+      "gist": "D-backsが2021年全体1位指名を獲得"
     },
     {
-      "team_id": "119",
-      "name": "ドジャース",
-      "name_en": "Los Angeles Dodgers",
+      "team_id": "140",
+      "name": "レンジャーズ",
+      "name_en": "Texas Rangers",
       "mentions": 1,
-      "tone": "好調",
-      "gist": "ドジャース有望株、新球種で好調"
+      "tone": "話題",
+      "gist": "ヒメネスがレンジャーズとマイナー契約"
+    },
+    {
+      "team_id": "147",
+      "name": "ヤンキース",
+      "name_en": "New York Yankees",
+      "mentions": 1,
+      "tone": "話題",
+      "gist": "投手は豊富だが課題が残るヤンキース"
+    },
+    {
+      "team_id": "135",
+      "name": "パドレス",
+      "name_en": "San Diego Padres",
+      "mentions": 1,
+      "tone": "話題",
+      "gist": "今井・ビーバーらの移籍噂にパドレス"
     }
   ],
   "players": [
     {
-      "name": "大谷翔平",
-      "mentions": 1
-    },
-    {
-      "name": "鈴木誠也",
+      "name": "今永昇太",
       "mentions": 1
     }
   ]
