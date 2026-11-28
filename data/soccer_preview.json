@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-28T06:07:15.550425+00:00",
+  "generated_at": "2026-11-28T13:04:57.333019+00:00",
   "competitions": [
     {
       "code": "PL",
@@ -14,7 +14,7 @@
       "preview_angle_context": {
         "finished": {
           "source": "https://api.football-data.org/v4/competitions/PL/matches",
-          "retrieved_at": "2026-11-28T06:05:00.170018+00:00",
+          "retrieved_at": "2026-11-28T13:02:39.136752+00:00",
           "payload": {
             "matches": [
               {
@@ -7348,7 +7348,7 @@
         },
         "standings": {
           "source": "https://api.football-data.org/v4/competitions/PL/standings",
-          "retrieved_at": "2026-11-28T06:05:00.605884+00:00",
+          "retrieved_at": "2026-11-28T13:02:39.624809+00:00",
           "payload": {
             "filters": {
               "season": "2026"
@@ -8613,7 +8613,7 @@
       "preview_angle_context": {
         "finished": {
           "source": "https://api.football-data.org/v4/competitions/PD/matches",
-          "retrieved_at": "2026-11-28T06:05:03.048534+00:00",
+          "retrieved_at": "2026-11-28T13:02:41.833393+00:00",
           "payload": {
             "matches": [
               {
@@ -17082,7 +17082,7 @@
         },
         "standings": {
           "source": "https://api.football-data.org/v4/competitions/PD/standings",
-          "retrieved_at": "2026-11-28T06:05:03.625574+00:00",
+          "retrieved_at": "2026-11-28T13:02:42.320552+00:00",
           "payload": {
             "filters": {
               "season": "2026"
@@ -17179,12 +17179,12 @@
                       "tla": "BET",
                       "crest": "https://crests.football-data.org/90.png"
                     },
-                    "playedGames": 13,
+                    "playedGames": 14,
                     "form": null,
                     "won": 8,
-                    "draw": 3,
+                    "draw": 4,
                     "lost": 2,
-                    "points": 27,
+                    "points": 28,
                     "goalsFor": 21,
                     "goalsAgainst": 16,
                     "goalDifference": 5
@@ -17382,6 +17382,25 @@
                   {
                     "position": 15,
                     "team": {
+                      "id": 87,
+                      "name": "Rayo Vallecano de Madrid",
+                      "shortName": "Rayo Vallecano",
+                      "tla": "RAY",
+                      "crest": "https://crests.football-data.org/87.png"
+                    },
+                    "playedGames": 13,
+                    "form": null,
+                    "won": 3,
+                    "draw": 4,
+                    "lost": 6,
+                    "points": 13,
+                    "goalsFor": 15,
+                    "goalsAgainst": 22,
+                    "goalDifference": -7
+                  },
+                  {
+                    "position": 16,
+                    "team": {
                       "id": 88,
                       "name": "Levante UD",
                       "shortName": "Levante",
@@ -17396,25 +17415,6 @@
                     "points": 12,
                     "goalsFor": 18,
                     "goalsAgainst": 25,
-                    "goalDifference": -7
-                  },
-                  {
-                    "position": 16,
-                    "team": {
-                      "id": 87,
-                      "name": "Rayo Vallecano de Madrid",
-                      "shortName": "Rayo Vallecano",
-                      "tla": "RAY",
-                      "crest": "https://crests.football-data.org/87.png"
-                    },
-                    "playedGames": 12,
-                    "form": null,
-                    "won": 3,
-                    "draw": 3,
-                    "lost": 6,
-                    "points": 12,
-                    "goalsFor": 15,
-                    "goalsAgainst": 22,
                     "goalDifference": -7
                   },
                   {
@@ -17860,11 +17860,11 @@
         {
           "position": 4,
           "team": "Real Betis Balompié",
-          "played": 13,
+          "played": 14,
           "won": 8,
-          "draw": 3,
+          "draw": 4,
           "lost": 2,
-          "points": 27,
+          "points": 28,
           "gf": 21,
           "ga": 16
         },
@@ -17980,6 +17980,17 @@
         },
         {
           "position": 15,
+          "team": "Rayo Vallecano de Madrid",
+          "played": 13,
+          "won": 3,
+          "draw": 4,
+          "lost": 6,
+          "points": 13,
+          "gf": 15,
+          "ga": 22
+        },
+        {
+          "position": 16,
           "team": "Levante UD",
           "played": 14,
           "won": 2,
@@ -17988,17 +17999,6 @@
           "points": 12,
           "gf": 18,
           "ga": 25
-        },
-        {
-          "position": 16,
-          "team": "Rayo Vallecano de Madrid",
-          "played": 12,
-          "won": 3,
-          "draw": 3,
-          "lost": 6,
-          "points": 12,
-          "gf": 15,
-          "ga": 22
         },
         {
           "position": 17,
@@ -18348,7 +18348,7 @@
       "preview_angle_context": {
         "finished": {
           "source": "https://api.football-data.org/v4/competitions/SA/matches",
-          "retrieved_at": "2026-11-28T06:05:06.447199+00:00",
+          "retrieved_at": "2026-11-28T13:02:45.424107+00:00",
           "payload": {
             "matches": [
               {
@@ -26342,7 +26342,7 @@
         },
         "standings": {
           "source": "https://api.football-data.org/v4/competitions/SA/standings",
-          "retrieved_at": "2026-11-28T06:05:07.976739+00:00",
+          "retrieved_at": "2026-11-28T13:02:46.918652+00:00",
           "payload": {
             "filters": {
               "season": "2026"
@@ -27604,7 +27604,7 @@
       "preview_angle_context": {
         "finished": {
           "source": "https://api.football-data.org/v4/competitions/BL1/matches",
-          "retrieved_at": "2026-11-28T06:06:09.630162+00:00",
+          "retrieved_at": "2026-11-28T13:03:49.291464+00:00",
           "payload": {
             "matches": [
               {
@@ -33630,7 +33630,7 @@
         },
         "standings": {
           "source": "https://api.football-data.org/v4/competitions/BL1/standings",
-          "retrieved_at": "2026-11-28T06:06:09.975549+00:00",
+          "retrieved_at": "2026-11-28T13:03:49.780807+00:00",
           "payload": {
             "filters": {
               "season": "2026"
@@ -34783,7 +34783,7 @@
       "preview_angle_context": {
         "finished": {
           "source": "https://api.football-data.org/v4/competitions/FL1/matches",
-          "retrieved_at": "2026-11-28T06:06:11.117275+00:00",
+          "retrieved_at": "2026-11-28T13:03:51.621336+00:00",
           "payload": {
             "matches": [
               {
@@ -41391,7 +41391,7 @@
         },
         "standings": {
           "source": "https://api.football-data.org/v4/competitions/FL1/standings",
-          "retrieved_at": "2026-11-28T06:06:11.445556+00:00",
+          "retrieved_at": "2026-11-28T13:03:52.109358+00:00",
           "payload": {
             "filters": {
               "season": "2026"
@@ -42536,14 +42536,14 @@
       "season": {
         "start": "2026-09-08",
         "end": "2027-01-27",
-        "matchday": 5,
+        "matchday": 6,
         "year": 2026
       },
       "stale": false,
       "preview_angle_context": {
         "finished": {
           "source": "https://api.football-data.org/v4/competitions/CL/matches",
-          "retrieved_at": "2026-11-28T06:06:14.576410+00:00",
+          "retrieved_at": "2026-11-28T13:03:55.814307+00:00",
           "payload": {
             "matches": [
               {
@@ -48491,7 +48491,7 @@
         },
         "standings": {
           "source": "https://api.football-data.org/v4/competitions/CL/standings",
-          "retrieved_at": "2026-11-28T06:07:15.189830+00:00",
+          "retrieved_at": "2026-11-28T13:04:56.820125+00:00",
           "payload": {
             "filters": {
               "season": "2026"
@@ -48513,7 +48513,7 @@
               "id": 2557,
               "startDate": "2026-09-08",
               "endDate": "2027-01-27",
-              "currentMatchday": 5,
+              "currentMatchday": 6,
               "winner": null
             },
             "standings": [
