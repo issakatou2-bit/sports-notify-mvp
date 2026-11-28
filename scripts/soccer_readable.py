@@ -65,6 +65,20 @@ def minimum_seconds(seg, data=None):
     return max(1,count)*4
 
 
+def compare_team_label(team, width=360, size=44, minimum=32):
+    """比べの列見出しのクラブ名。元の名→辞書の表示名→短い名の順に、幅に入る最初の物を返す。"""
+    import club_display_names
+    row=club_display_names.lookup(team) or {}
+    names=[team]+[n for n in (row.get('display'),row.get('short')) if n and n!=team]
+    for name in names:
+        try:
+            _,fitted,length,_=c.fit(name,size,width,minimum=minimum)
+        except ValueError:
+            continue
+        return name,fitted,length
+    raise ValueError('字が幅に入りません（描画停止）: '+team)
+
+
 class Screen:
     def __init__(self, clubs, t=3, label='欧州サッカー'):
         self.clubs, self.t = clubs, t
@@ -388,8 +402,10 @@ class Screen:
         top=BODY_TOP+(BODY_BOTTOM-BODY_TOP-height)//2
         cols=[L+(R-L)*27//100, L+(R-L)*73//100]
         for team,cx in zip(teams,cols):
-            width=c.measure(team,44)[1]
-            self.text(cx-width//2,top,team,44,360,c.MUTED,role='supplement')
+            # 「クリスタル・パレス」など長いクラブ名は、列の幅に入るまで字を小さくする（11/27 描画停止）。
+            # それでも入らなければ辞書の表示名→短い名（マンチェスター・ユナイテッド→マンチェスターU）。
+            team,team_size,width=compare_team_label(team)
+            self.text(cx-width//2,top,team,team_size,360,c.MUTED,role='supplement')
         y=top+header
         for (label,a,b),box,h in zip(rows,boxes,heights):
             self.panel(y,y+h)
