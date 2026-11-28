@@ -1,748 +1,396 @@
 {
-  "date_jst": "2026-11-26",
+  "date_jst": "2026-11-27",
   "matches": [
     {
-      "id": "401915504",
-      "league": "EL",
-      "league_jp": "ヨーロッパリーグ",
-      "date_jst": "2026-11-26",
+      "id": "401884720",
+      "league": "BL1",
+      "league_jp": "ブンデスリーガ",
+      "date_jst": "2026-11-27",
       "home": {
-        "id": "384",
-        "name_en": "Crystal Palace",
-        "name_jp": "クリスタル・パレス",
-        "abbr": "CRY"
+        "id": "137",
+        "name_en": "Werder Bremen",
+        "name_jp": "ブレーメン",
+        "abbr": "SVW"
       },
       "away": {
-        "id": "89",
-        "name_en": "Real Sociedad",
-        "name_jp": "レアル・ソシエダ",
-        "abbr": "RSO"
-      },
-      "score": {
-        "home": 2,
-        "away": 1
-      },
-      "players": [
-        {
-          "name": "鎌田大地",
-          "name_en": "Daichi Kamada",
-          "club": "クリスタル・パレス",
-          "side": "home",
-          "event_id": "401915504",
-          "athlete_id": "219362",
-          "status": "starter",
-          "goals": 0,
-          "assists": 0,
-          "yellow_cards": 0,
-          "red_cards": 0,
-          "plays": [],
-          "position": "MF",
-          "stats_source": "ESPN summary.rosters.roster.stats",
-          "shots": 0,
-          "on_target": 0,
-          "subbed_out": false,
-          "appearance_evidence": "ESPN starter/subbedIn"
-        }
-      ],
-      "goals": [
-        {
-          "side": "away",
-          "minute": "66",
-          "scorer": "355433",
-          "name": "Mamadou Sarr",
-          "assist": "406379",
-          "assist_name": "Job Ochieng"
-        },
-        {
-          "side": "home",
-          "minute": "73",
-          "scorer": "241187",
-          "name": "Jean-Philippe Mateta",
-          "assist": "",
-          "assist_name": ""
-        },
-        {
-          "side": "home",
-          "minute": "81",
-          "scorer": "273495",
-          "name": "Dwight McNeil",
-          "assist": "252747",
-          "assist_name": "Jørgen Strand Larsen"
-        }
-      ],
-      "stats": {
-        "home": {
-          "wonCorners": "2",
-          "saves": "6",
-          "possessionPct": "43.4",
-          "totalShots": "16",
-          "shotsOnTarget": "4"
-        },
-        "away": {
-          "wonCorners": "7",
-          "saves": "1",
-          "possessionPct": "56.6",
-          "totalShots": "19",
-          "shotsOnTarget": "7"
-        }
-      },
-      "notes": {
-        "234172": {
-          "saves": 6,
-          "shots": 0,
-          "target": 0,
-          "keeper": true
-        },
-        "272585": {
-          "saves": null,
-          "shots": 1,
-          "target": 0,
-          "keeper": false
-        },
-        "231718": {
-          "saves": null,
-          "shots": 0,
-          "target": 0,
-          "keeper": false
-        },
-        "225426": {
-          "saves": null,
-          "shots": 1,
-          "target": 0,
-          "keeper": false
-        },
-        "386252": {
-          "saves": null,
-          "shots": 0,
-          "target": 0,
-          "keeper": false
-        },
-        "168421": {
-          "saves": null,
-          "shots": 1,
-          "target": 0,
-          "keeper": false
-        },
-        "282230": {
-          "saves": null,
-          "shots": 1,
-          "target": 0,
-          "keeper": false
-        },
-        "219362": {
-          "saves": null,
-          "shots": 0,
-          "target": 0,
-          "keeper": false
-        },
-        "297370": {
-          "saves": null,
-          "shots": 4,
-          "target": 1,
-          "keeper": false
-        },
-        "259486": {
-          "saves": null,
-          "shots": 0,
-          "target": 0,
-          "keeper": false
-        },
-        "241187": {
-          "saves": null,
-          "shots": 2,
-          "target": 1,
-          "keeper": false
-        },
-        "195738": {
-          "saves": 0,
-          "shots": 0,
-          "target": 0,
-          "keeper": false
-        },
-        "409810": {
-          "saves": null,
-          "shots": 0,
-          "target": 0,
-          "keeper": false
-        },
-        "315668": {
-          "saves": null,
-          "shots": 0,
-          "target": 0,
-          "keeper": false,
-          "entry": "88"
-        },
-        "273495": {
-          "saves": null,
-          "shots": 3,
-          "target": 2,
-          "keeper": false,
-          "entry": "57"
-        },
-        "276546": {
-          "saves": null,
-          "shots": 0,
-          "target": 0,
-          "keeper": false
-        },
-        "332648": {
-          "saves": null,
-          "shots": 0,
-          "target": 0,
-          "keeper": false,
-          "entry": "79"
-        },
-        "388605": {
-          "saves": null,
-          "shots": 0,
-          "target": 0,
-          "keeper": false
-        },
-        "380963": {
-          "saves": null,
-          "shots": 0,
-          "target": 0,
-          "keeper": false
-        },
-        "400110": {
-          "saves": null,
-          "shots": 0,
-          "target": 0,
-          "keeper": false
-        },
-        "300853": {
-          "saves": null,
-          "shots": 0,
-          "target": 0,
-          "keeper": false,
-          "entry": "80"
-        },
-        "3114844": {
-          "saves": 0,
-          "shots": 0,
-          "target": 0,
-          "keeper": false
-        },
-        "252747": {
-          "saves": null,
-          "shots": 3,
-          "target": 0,
-          "keeper": false,
-          "entry": "79"
-        },
-        "312011": {
-          "saves": 1,
-          "shots": 0,
-          "target": 0,
-          "keeper": true
-        },
-        "355433": {
-          "saves": null,
-          "shots": 3,
-          "target": 1,
-          "keeper": false
-        },
-        "366885": {
-          "saves": null,
-          "shots": 1,
-          "target": 0,
-          "keeper": false
-        },
-        "283891": {
-          "saves": null,
-          "shots": 0,
-          "target": 0,
-          "keeper": false
-        },
-        "363039": {
-          "saves": null,
-          "shots": 1,
-          "target": 0,
-          "keeper": false
-        },
-        "388601": {
-          "saves": null,
-          "shots": 1,
-          "target": 1,
-          "keeper": false
-        },
-        "297371": {
-          "saves": null,
-          "shots": 2,
-          "target": 1,
-          "keeper": false
-        },
-        "213141": {
-          "saves": null,
-          "shots": 3,
-          "target": 2,
-          "keeper": false
-        },
-        "406379": {
-          "saves": null,
-          "shots": 1,
-          "target": 0,
-          "keeper": false
-        },
-        "307487": {
-          "saves": null,
-          "shots": 2,
-          "target": 0,
-          "keeper": false
-        },
-        "229018": {
-          "saves": null,
-          "shots": 3,
-          "target": 1,
-          "keeper": false
-        },
-        "341367": {
-          "saves": null,
-          "shots": 1,
-          "target": 1,
-          "keeper": false,
-          "entry": "68"
-        },
-        "265993": {
-          "saves": null,
-          "shots": 1,
-          "target": 0,
-          "keeper": false,
-          "entry": "76"
-        },
-        "235693": {
-          "saves": null,
-          "shots": 0,
-          "target": 0,
-          "keeper": false,
-          "entry": "76"
-        },
-        "366886": {
-          "saves": null,
-          "shots": 0,
-          "target": 0,
-          "keeper": false
-        },
-        "235072": {
-          "saves": null,
-          "shots": 0,
-          "target": 0,
-          "keeper": false,
-          "entry": "67"
-        },
-        "396607": {
-          "saves": null,
-          "shots": 0,
-          "target": 0,
-          "keeper": false
-        },
-        "326900": {
-          "saves": null,
-          "shots": 0,
-          "target": 0,
-          "keeper": false
-        },
-        "297359": {
-          "saves": null,
-          "shots": 0,
-          "target": 0,
-          "keeper": false
-        },
-        "387496": {
-          "saves": null,
-          "shots": 0,
-          "target": 0,
-          "keeper": false
-        },
-        "306263": {
-          "saves": null,
-          "shots": 0,
-          "target": 0,
-          "keeper": false,
-          "entry": "87"
-        },
-        "256587": {
-          "saves": null,
-          "shots": 0,
-          "target": 0,
-          "keeper": false
-        },
-        "217319": {
-          "saves": 0,
-          "shots": 0,
-          "target": 0,
-          "keeper": false
-        }
-      },
-      "previous": null
-    },
-    {
-      "id": "401915515",
-      "league": "EL",
-      "league_jp": "ヨーロッパリーグ",
-      "date_jst": "2026-11-26",
-      "home": {
-        "id": "7911",
-        "name_en": "TSG Hoffenheim",
-        "name_jp": "ホッフェンハイム",
-        "abbr": "TSG"
-      },
-      "away": {
-        "id": "3746",
-        "name_en": "SK Sturm Graz",
-        "name_jp": "シュツルム・グラーツ",
-        "abbr": "STG"
+        "id": "268",
+        "name_en": "Borussia Mönchengladbach",
+        "name_jp": "ボルシアMG",
+        "abbr": "BMG"
       },
       "score": {
         "home": 3,
-        "away": 1
+        "away": 3
       },
       "players": [
         {
-          "name": "町田浩樹",
-          "name_en": "Koki Machida",
-          "club": "ホッフェンハイム",
-          "side": "home",
-          "event_id": "401915515",
-          "athlete_id": "238025",
+          "name": "町野修斗",
+          "name_en": "Shuto Machino",
+          "club": "ボルシアMG",
+          "side": "away",
+          "event_id": "401884720",
+          "athlete_id": "271352",
           "status": "starter",
           "goals": 0,
           "assists": 0,
-          "yellow_cards": 0,
+          "yellow_cards": 1,
           "red_cards": 0,
           "plays": [],
-          "position": "DF",
+          "position": "FW",
           "stats_source": "ESPN summary.rosters.roster.stats",
           "shots": 1,
           "on_target": 0,
-          "subbed_out": false,
+          "subbed_out": true,
+          "minutes": 89,
+          "minutes_source": "ESPN keyEvents substitution",
+          "minutes_approx": true,
+          "appearance_evidence": "ESPN starter/subbedIn"
+        },
+        {
+          "name": "宇野禅斗",
+          "name_en": "Zento Uno",
+          "club": "ボルシアMG",
+          "side": "away",
+          "event_id": "401884720",
+          "athlete_id": "341707",
+          "status": "starter",
+          "goals": 0,
+          "assists": 1,
+          "yellow_cards": 0,
+          "red_cards": 0,
+          "plays": [
+            {
+              "minute": "46",
+              "goal": false,
+              "assist": true
+            }
+          ],
+          "position": "MF",
+          "stats_source": "ESPN summary.rosters.roster.stats",
+          "shots": 2,
+          "on_target": 2,
+          "subbed_out": true,
+          "minutes": 84,
+          "minutes_source": "ESPN keyEvents substitution",
+          "minutes_approx": true,
           "appearance_evidence": "ESPN starter/subbedIn"
         }
       ],
       "goals": [
         {
           "side": "away",
-          "minute": "43",
-          "scorer": "329483",
-          "name": "Oumar Diakité",
+          "minute": "27",
+          "scorer": "206863",
+          "name": "Kevin Diks",
           "assist": "",
           "assist_name": ""
         },
         {
           "side": "home",
-          "minute": "72",
-          "scorer": "292169",
-          "name": "Adam Hlozek",
+          "minute": "38",
+          "scorer": "312112",
+          "name": "Eren Dinkci",
+          "assist": "",
+          "assist_name": ""
+        },
+        {
+          "side": "away",
+          "minute": "46",
+          "scorer": "196029",
+          "name": "Franck Honorat",
+          "assist": "341707",
+          "assist_name": "Zento Uno"
+        },
+        {
+          "side": "away",
+          "minute": "78",
+          "scorer": "196029",
+          "name": "Franck Honorat",
+          "assist": "408539",
+          "assist_name": "Wael Mohya"
+        },
+        {
+          "side": "home",
+          "minute": "85",
+          "scorer": "312112",
+          "name": "Eren Dinkci",
           "assist": "",
           "assist_name": ""
         },
         {
           "side": "home",
-          "minute": "80",
-          "scorer": "336355",
-          "name": "Bambasé Conté",
-          "assist": "303792",
-          "assist_name": "Tim Lemperle"
-        },
-        {
-          "side": "home",
-          "minute": "90",
-          "scorer": "372035",
-          "name": "Max Moerstedt",
-          "assist": "139520",
-          "assist_name": "Andrej Kramaric"
+          "minute": "90+2",
+          "scorer": "170257",
+          "name": "Niclas Füllkrug",
+          "assist": "",
+          "assist_name": ""
         }
       ],
       "stats": {
         "home": {
-          "wonCorners": "10",
-          "saves": "5",
-          "possessionPct": "61.6",
-          "totalShots": "24",
-          "shotsOnTarget": "7"
+          "wonCorners": "7",
+          "saves": "3",
+          "possessionPct": "59.1",
+          "totalShots": "20",
+          "shotsOnTarget": "8"
         },
         "away": {
           "wonCorners": "4",
-          "saves": "4",
-          "possessionPct": "38.4",
-          "totalShots": "12",
+          "saves": "5",
+          "possessionPct": "40.9",
+          "totalShots": "20",
           "shotsOnTarget": "6"
         }
       },
       "notes": {
-        "403802": {
+        "282646": {
+          "saves": 3,
+          "shots": 0,
+          "target": 0,
+          "keeper": true
+        },
+        "232477": {
           "saves": null,
           "shots": 0,
           "target": 0,
           "keeper": false
         },
-        "364646": {
-          "saves": null,
-          "shots": 0,
-          "target": 0,
-          "keeper": false
-        },
-        "300095": {
+        "275844": {
           "saves": null,
           "shots": 1,
           "target": 1,
-          "keeper": false,
-          "entry": "60"
+          "keeper": false
         },
-        "372035": {
+        "282388": {
+          "saves": null,
+          "shots": 3,
+          "target": 0,
+          "keeper": false
+        },
+        "334374": {
+          "saves": null,
+          "shots": 0,
+          "target": 0,
+          "keeper": false
+        },
+        "371689": {
           "saves": null,
           "shots": 1,
           "target": 1,
-          "keeper": false,
-          "entry": "89"
+          "keeper": false
         },
-        "304795": {
+        "297292": {
           "saves": null,
           "shots": 0,
           "target": 0,
           "keeper": false
         },
-        "407682": {
-          "saves": null,
-          "shots": 0,
-          "target": 0,
-          "keeper": false
-        },
-        "303792": {
-          "saves": null,
-          "shots": 1,
-          "target": 0,
-          "keeper": false,
-          "entry": "32"
-        },
-        "336355": {
+        "261363": {
           "saves": null,
           "shots": 2,
-          "target": 2,
-          "keeper": false,
-          "entry": "61"
+          "target": 1,
+          "keeper": false
         },
-        "139520": {
+        "170257": {
+          "saves": null,
+          "shots": 5,
+          "target": 1,
+          "keeper": false
+        },
+        "3106924": {
+          "saves": null,
+          "shots": 1,
+          "target": 0,
+          "keeper": false
+        },
+        "312112": {
+          "saves": null,
+          "shots": 4,
+          "target": 2,
+          "keeper": false
+        },
+        "270389": {
+          "saves": null,
+          "shots": 0,
+          "target": 0,
+          "keeper": false,
+          "entry": "86"
+        },
+        "234153": {
+          "saves": null,
+          "shots": 1,
+          "target": 1,
+          "keeper": false,
+          "entry": "79"
+        },
+        "399747": {
+          "saves": null,
+          "shots": 0,
+          "target": 0,
+          "keeper": false
+        },
+        "159139": {
+          "saves": null,
+          "shots": 1,
+          "target": 1,
+          "keeper": false,
+          "entry": "72"
+        },
+        "186026": {
+          "saves": null,
+          "shots": 0,
+          "target": 0,
+          "keeper": false
+        },
+        "3100710": {
+          "saves": null,
+          "shots": 0,
+          "target": 0,
+          "keeper": false
+        },
+        "399865": {
           "saves": null,
           "shots": 1,
           "target": 0,
           "keeper": false,
-          "entry": "61"
+          "entry": "45"
         },
-        "218980": {
+        "305821": {
           "saves": null,
           "shots": 0,
           "target": 0,
           "keeper": false
         },
-        "3098291": {
-          "saves": null,
+        "195082": {
+          "saves": 0,
           "shots": 0,
           "target": 0,
           "keeper": false
         },
-        "418789": {
-          "saves": null,
-          "shots": 0,
-          "target": 0,
-          "keeper": false
-        },
-        "138213": {
+        "149297": {
           "saves": 5,
           "shots": 0,
           "target": 0,
           "keeper": true
         },
-        "238025": {
-          "saves": null,
-          "shots": 1,
-          "target": 0,
-          "keeper": false
-        },
-        "266565": {
+        "275805": {
           "saves": null,
           "shots": 2,
           "target": 0,
           "keeper": false
         },
-        "362590": {
+        "323061": {
           "saves": null,
           "shots": 0,
           "target": 0,
           "keeper": false
         },
-        "359744": {
-          "saves": null,
-          "shots": 0,
-          "target": 0,
-          "keeper": false
-        },
-        "191209": {
+        "206863": {
           "saves": null,
           "shots": 1,
-          "target": 0,
-          "keeper": false
-        },
-        "320939": {
-          "saves": null,
-          "shots": 2,
-          "target": 0,
-          "keeper": false
-        },
-        "338854": {
-          "saves": null,
-          "shots": 1,
-          "target": 0,
-          "keeper": false
-        },
-        "274860": {
-          "saves": null,
-          "shots": 1,
-          "target": 0,
-          "keeper": false
-        },
-        "331057": {
-          "saves": null,
-          "shots": 4,
           "target": 1,
           "keeper": false
         },
-        "292169": {
+        "238527": {
           "saves": null,
-          "shots": 6,
+          "shots": 2,
+          "target": 0,
+          "keeper": false
+        },
+        "341707": {
+          "saves": null,
+          "shots": 2,
           "target": 2,
           "keeper": false
         },
-        "329485": {
+        "304793": {
           "saves": null,
-          "shots": 0,
+          "shots": 3,
           "target": 0,
           "keeper": false
         },
-        "345652": {
-          "saves": null,
-          "shots": 0,
-          "target": 0,
-          "keeper": false
-        },
-        "366512": {
-          "saves": null,
-          "shots": 0,
-          "target": 0,
-          "keeper": false
-        },
-        "356949": {
-          "saves": null,
-          "shots": 0,
-          "target": 0,
-          "keeper": false,
-          "entry": "84"
-        },
-        "342523": {
-          "saves": null,
-          "shots": 0,
-          "target": 0,
-          "keeper": false,
-          "entry": "84"
-        },
-        "364541": {
+        "272135": {
           "saves": null,
           "shots": 1,
-          "target": 1,
-          "keeper": false,
-          "entry": "66"
-        },
-        "351280": {
-          "saves": null,
-          "shots": 0,
-          "target": 0,
-          "keeper": false,
-          "entry": "77"
-        },
-        "305677": {
-          "saves": null,
-          "shots": 0,
           "target": 0,
           "keeper": false
         },
-        "274948": {
+        "271352": {
           "saves": null,
           "shots": 1,
-          "target": 1,
-          "keeper": false,
-          "entry": "84"
-        },
-        "187877": {
-          "saves": null,
-          "shots": 0,
           "target": 0,
           "keeper": false
         },
-        "329479": {
-          "saves": 4,
-          "shots": 0,
-          "target": 0,
-          "keeper": true
-        },
-        "354014": {
-          "saves": null,
-          "shots": 0,
-          "target": 0,
-          "keeper": false
-        },
-        "274923": {
-          "saves": null,
-          "shots": 0,
-          "target": 0,
-          "keeper": false
-        },
-        "214012": {
-          "saves": null,
-          "shots": 2,
-          "target": 0,
-          "keeper": false
-        },
-        "362910": {
-          "saves": null,
-          "shots": 0,
-          "target": 0,
-          "keeper": false
-        },
-        "374533": {
-          "saves": null,
-          "shots": 0,
-          "target": 0,
-          "keeper": false
-        },
-        "388521": {
-          "saves": null,
-          "shots": 0,
-          "target": 0,
-          "keeper": false
-        },
-        "411273": {
-          "saves": null,
-          "shots": 2,
-          "target": 1,
-          "keeper": false
-        },
-        "370757": {
+        "408539": {
           "saves": null,
           "shots": 3,
           "target": 1,
           "keeper": false
         },
-        "303704": {
+        "196029": {
+          "saves": null,
+          "shots": 5,
+          "target": 2,
+          "keeper": false
+        },
+        "403898": {
+          "saves": null,
+          "shots": 0,
+          "target": 0,
+          "keeper": false,
+          "entry": "75"
+        },
+        "260262": {
           "saves": null,
           "shots": 0,
           "target": 0,
           "keeper": false
         },
-        "329483": {
+        "185906": {
           "saves": null,
-          "shots": 3,
-          "target": 2,
+          "shots": 0,
+          "target": 0,
+          "keeper": false,
+          "entry": "89"
+        },
+        "238536": {
+          "saves": 0,
+          "shots": 0,
+          "target": 0,
           "keeper": false
+        },
+        "238033": {
+          "saves": null,
+          "shots": 0,
+          "target": 0,
+          "keeper": false,
+          "entry": "84"
+        },
+        "175006": {
+          "saves": null,
+          "shots": 0,
+          "target": 0,
+          "keeper": false
+        },
+        "415726": {
+          "saves": null,
+          "shots": 0,
+          "target": 0,
+          "keeper": false,
+          "entry": "84"
+        },
+        "221690": {
+          "saves": null,
+          "shots": 0,
+          "target": 0,
+          "keeper": false
+        },
+        "345873": {
+          "saves": null,
+          "shots": 0,
+          "target": 0,
+          "keeper": false,
+          "entry": "75"
         }
       },
       "previous": null
@@ -791,6 +439,28 @@
       "score": {
         "home": 3,
         "away": 1
+      }
+    },
+    {
+      "id": "401884720",
+      "league": "BL1",
+      "league_jp": "ブンデスリーガ",
+      "date_jst": "2026-11-27",
+      "home": {
+        "id": "137",
+        "name_en": "Werder Bremen",
+        "name_jp": "ブレーメン",
+        "abbr": "SVW"
+      },
+      "away": {
+        "id": "268",
+        "name_en": "Borussia Mönchengladbach",
+        "name_jp": "ボルシアMG",
+        "abbr": "BMG"
+      },
+      "score": {
+        "home": 3,
+        "away": 3
       }
     }
   ]
