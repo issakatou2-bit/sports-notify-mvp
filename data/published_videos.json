@@ -23902,6 +23902,54 @@
       },
       "host_fallback_reason": null,
       "privacy": "public"
+    },
+    "2026-11-27": {
+      "video_id": "OxTktouVCRQ",
+      "url": "https://youtu.be/OxTktouVCRQ",
+      "title": "宇野禅斗が1アシスト｜ブレーメン対ボルシアMG 3-3 #Shorts",
+      "published_at": "2026-11-28T04:01:28.776467+00:00",
+      "publish_at": "2026-11-28T04:16:00Z",
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-28",
+        "enabled": true,
+        "assigned": "next",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false,
+        "source": "post_common.lineup:daily_soccer",
+        "next_date": "2026-11-29",
+        "next_time": "19:30",
+        "next_name": "欧州サッカー",
+        "speech": "次は11月29日19時30分の欧州サッカーよ。また見に来てね。",
+        "card": "次は11/29 19:30の欧州サッカー"
+      },
+      "event_ids": [
+        "401884720"
+      ],
+      "duration_seconds": 26.27,
+      "short_information_count": 4,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-11-28",
+        "kind": "soccer_results",
+        "phase": 1,
+        "planned_host": "metan",
+        "rule": "half-jst-week-v1",
+        "week": 46,
+        "weekday": 5
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-11-28T12:58:10.524313+09:00",
+        "comparison_eligible": true,
+        "planned_host": "metan",
+        "reason": null,
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
     }
   },
   "soccer_goal_short": {
