@@ -10023,6 +10023,55 @@
       },
       "host_fallback_reason": null,
       "privacy": "public"
+    },
+    "2026-11-28": {
+      "video_id": "fOXETB_h3VA",
+      "url": "https://youtu.be/fOXETB_h3VA",
+      "title": "【欧州サッカー】PSGが勝点10差の10位ロリアンと対戦 #Shorts",
+      "published_at": "2026-11-28T10:05:57.866573+00:00",
+      "publish_at": "2026-11-28T10:30:00Z",
+      "preview_binding": {
+        "material_sha256": "7bf7de71ae25033cc29868eea207a186f1357ee10a930141cc3ba69c104c5309",
+        "narration_sha256": "f11572332333d3cdec280f0ba81656be3df9bc69bec21a32fabcd629a754dfa1"
+      },
+      "outro_next": {
+        "test": "outro-next-20261101",
+        "day": "2026-11-28",
+        "enabled": true,
+        "assigned": "next",
+        "variant": "other",
+        "rule": "jst-ordinal-even-v1",
+        "eligible": false,
+        "source": "post_common.lineup:daily_soccer",
+        "next_date": "2026-11-29",
+        "next_time": "19:30",
+        "next_name": "欧州サッカー",
+        "speech": "次は11月29日19時30分の欧州サッカーよ。また見に来てね。",
+        "card": "次は11/29 19:30の欧州サッカー"
+      },
+      "duration_seconds": 27.5,
+      "short_information_count": 3,
+      "short_content_policy": "short-content-20261027-v1",
+      "host_assignment": {
+        "day": "2026-11-28",
+        "kind": "daily_soccer",
+        "phase": 1,
+        "planned_host": "metan",
+        "rule": "half-jst-week-v1",
+        "week": 46,
+        "weekday": 5
+      },
+      "planned_host": "metan",
+      "actual_host": "metan",
+      "host_delivery": {
+        "checked_at": "2026-11-28T19:03:16.642272+09:00",
+        "comparison_eligible": true,
+        "planned_host": "metan",
+        "reason": null,
+        "version": 1
+      },
+      "host_fallback_reason": null,
+      "privacy": "public"
     }
   },
   "weekly": {

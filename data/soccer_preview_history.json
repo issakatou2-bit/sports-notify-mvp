@@ -2804,5 +2804,118 @@
         }
       }
     ]
+  },
+  "2026-11-28": {
+    "day": "2026-11-28",
+    "video_id": "fOXETB_h3VA",
+    "title": "【欧州サッカー】PSGが勝点10差の10位ロリアンと対戦 #Shorts",
+    "published_at": "2026-11-28T10:05:57.866573+00:00",
+    "binding": {
+      "material_sha256": "7bf7de71ae25033cc29868eea207a186f1357ee10a930141cc3ba69c104c5309",
+      "narration_sha256": "f11572332333d3cdec280f0ba81656be3df9bc69bec21a32fabcd629a754dfa1"
+    },
+    "games": [
+      {
+        "game_id": "559614",
+        "espn_event_id": "401876387",
+        "league": "リーグ・アン",
+        "competition_code": "FL1",
+        "home": "パリ・サンジェルマン",
+        "away": "ロリアン",
+        "start_utc": "2026-11-29T04:45:00+09:00",
+        "reasons": [
+          {
+            "kind": "points",
+            "score": 100,
+            "text": "リーグ・アンではパリ・サンジェルマンは1位で勝点26、ロリアンは10位で勝点16で、両チームの勝点差は10です。",
+            "source": "https://site.api.espn.com/apis/v2/sports/soccer/fra.1/standings",
+            "retrieved_at": "2026-11-28T10:02:19.182251+00:00",
+            "values": {
+              "competition": "FL1",
+              "gap": 10,
+              "rows": {
+                "home": {
+                  "team_id": "160",
+                  "rank": 1,
+                  "points": 26,
+                  "played": 11,
+                  "tied": false
+                },
+                "away": {
+                  "team_id": "273",
+                  "rank": 10,
+                  "points": 16,
+                  "played": 11,
+                  "tied": false
+                }
+              },
+              "league": "リーグ・アン"
+            }
+          },
+          {
+            "kind": "form",
+            "score": 85,
+            "text": "パリ・サンジェルマンはリーグ・アンの直近5試合で5勝0分0敗です。",
+            "source": "https://api.football-data.org/v4/competitions/FL1/matches",
+            "retrieved_at": "2026-11-28T10:02:12.460980+00:00",
+            "values": {
+              "side": "home",
+              "form": [
+                "W",
+                "W",
+                "W",
+                "W",
+                "W"
+              ],
+              "match_ids": [
+                559628,
+                559635,
+                559644,
+                559648,
+                559662
+              ]
+            }
+          },
+          {
+            "kind": "h2h",
+            "score": 80,
+            "text": "前回の対戦は2026年5月2日のパリ・サンジェルマン対ロリアンで2対2でした。",
+            "source": "https://api.football-data.org/v4/matches/559614/head2head",
+            "retrieved_at": "2026-11-28T10:02:19.049038+00:00",
+            "values": {
+              "match_id": 542692,
+              "score": {
+                "home": 2,
+                "away": 2
+              }
+            }
+          }
+        ],
+        "expectation": null,
+        "spoken": "日本時間11月29日4時45分、パリ・サンジェルマン対ロリアン。リーグ・アンではパリ・サンジェルマンは1位で勝点26、ロリアンは10位で勝点16で、両チームの勝点差は10よ。パリ・サンジェルマンはリーグ・アンの直近5試合で5勝0分0敗よ。前回の対戦は2026年5月2日のパリ・サンジェルマン対ロリアンで2対2だったわ。",
+        "standings": {
+          "home": {
+            "team_id": "160",
+            "rank": 1,
+            "points": 26,
+            "played": 11,
+            "tied": false,
+            "as_of": "2026-11-28T09:53:48.828191+00:00",
+            "competition": "FL1",
+            "season": null
+          },
+          "away": {
+            "team_id": "273",
+            "rank": 10,
+            "points": 16,
+            "played": 11,
+            "tied": false,
+            "as_of": "2026-11-28T09:53:48.828191+00:00",
+            "competition": "FL1",
+            "season": null
+          }
+        }
+      }
+    ]
   }
 }
