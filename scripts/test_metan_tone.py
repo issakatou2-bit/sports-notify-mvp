@@ -77,3 +77,21 @@ class OutroRotation(unittest.TestCase):
             self.assertEqual(metan_tone.outro_index(), 0)
         with patch.dict(os.environ, {'GITHUB_ACTIONS': ''}):
             self.assertEqual(metan_tone.outro_index(), 0)
+
+
+class Liven(unittest.TestCase):
+    def test_reaction_once_after_big_number_and_only_with_room(self):
+        # 11/28 散歩のノリ：要の数字を聞いた直後に、ずんだもんの反応を1回だけ。尺に余裕が無ければ足さない。
+        import topic_dialogue as td
+        def segs():
+            return [dict(kind='list', text='どうなったのだ？', speaker=td.ZUNDA, meta={}),
+                    dict(kind='list', text='ええ。6年で総額1億ドルよ。', speaker=td.METAN, meta=dict(big=dict(value='1'))),
+                    dict(kind='list', text='ほかの選手はどうなのだ？', speaker=td.ZUNDA, meta={}),
+                    dict(kind='list', text='そうね。比べると大きいわ。', speaker=td.METAN, meta={})]
+        lively = td.liven(segs(), 'k')
+        words = [s['meta'].get('reaction_word') for s in lively if s['meta'].get('reaction_word')]
+        self.assertEqual(len(words), 1)
+        self.assertTrue(lively[2]['text'].startswith(words[0]))
+        self.assertFalse(td.NUMBER.search(words[0]))
+        self.assertEqual(td.liven(lively, 'k'), lively)
+        self.assertFalse(any(s['meta'].get('reaction_word') for s in td.liven(segs(), 'k', limit=8)))

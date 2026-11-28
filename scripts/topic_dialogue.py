@@ -126,3 +126,28 @@ def market_ending(data):
                 'ええ。年平均も契約の大きさを見る目安になるわ。')
     return ('契約の中身まで聞くと見え方が変わるのだ。',
             f'そうね。{data["hook"]["score"]}の契約は、いまのところ合意が報じられた段階よ。')
+
+
+# 散歩のノリ（S/動画/知恵の交換.md）：元を知らなくても通じる短い反応を、要の数字を聞いた直後に1回だけ。
+# 本人 11/28「さんぽの方のノリとか、チャンネルとしての個性」。数字は入れない。同じ材料なら毎回同じ言葉。
+REACTIONS = ('はあ？ヤバすぎなのだ！', 'ちょ、ちょっと待つのだ！', 'え、そこまでなのだ！？')
+
+
+def liven(segments, key, *, limit=45):
+    """要の数字（meta の big）を答えた直後のずんだもんの台詞の頭に、反応を1つ足す。
+    尺の見積もり（1字 1/7.5秒＋1台詞 0.4秒、締め2秒）が上限の3秒手前を越えるなら足さない。"""
+    if any(s.get('meta', {}).get('reaction_word') for s in segments):
+        return segments
+    word = pick(key, *REACTIONS)
+    seconds = sum(len(s['text']) / 7.5 + .4 for s in segments if s.get('kind') != 'outro') + 2
+    if seconds + len(word) / 7.5 > limit - 3:
+        return segments
+    for i, segment in enumerate(segments[:-1]):
+        nxt = segments[i + 1]
+        if (segment['speaker'] == METAN and segment.get('meta', {}).get('big')
+                and nxt['speaker'] == ZUNDA and nxt.get('kind') != 'outro'):
+            if not nxt['text'].startswith(word):
+                nxt['text'] = word + nxt['text']
+                nxt['meta'] = dict(nxt.get('meta') or {}, reaction_word=word)
+            break
+    return segments
