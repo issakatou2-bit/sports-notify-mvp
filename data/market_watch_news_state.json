@@ -2,11 +2,13 @@
   "noticed": {
     "news-mlb-teruaki-sato-official": "動画制作待ち",
     "news-mlb-seiya-suzuki-report": "球団・年数・総額が一致する独立した2報道、またはMLB公式記録を待つ",
-    "news-mlb-teruaki-sato-report": "球団・年数・総額が一致する独立した2報道、またはMLB公式記録を待つ"
+    "news-mlb-teruaki-sato-report": "球団・年数・総額が一致する独立した2報道、またはMLB公式記録を待つ",
+    "news-mlb-kaima-taira-official": "動画制作待ち"
   },
   "first_seen": {
     "teruaki-sato": "2026-11-27T18:29:18.704662+09:00",
-    "seiya-suzuki": "2026-11-27T18:29:18.704662+09:00"
+    "seiya-suzuki": "2026-11-27T18:29:18.704662+09:00",
+    "kaima-taira": "2026-11-28T11:00:09.443421+09:00"
   },
   "reports": {
     "https://www.mlbtraderumors.com/2026/11/seiya-suzuki-reportedly-asking-for-more-than-120mm.html": {
@@ -145,9 +147,27 @@
       "title": "Royals Designate Mitch Spence For Assignment",
       "reported_at": "2026-11-28T02:21:42+09:00",
       "opt_out": null
+    },
+    "https://www.mlbtraderumors.com/2026/11/blue-jays-to-sign-kaima-taira.html": {
+      "name_en": "Kaima Taira",
+      "name": "平良海馬",
+      "japanese": true,
+      "team_en": "Toronto Blue Jays",
+      "team": "ブルージェイズ",
+      "terms": null,
+      "agreement": true,
+      "conflict": false,
+      "origin": "New York Post",
+      "reporter": "Jon Heyman",
+      "outlet": "MLBTR",
+      "url": "https://www.mlbtraderumors.com/2026/11/blue-jays-to-sign-kaima-taira.html",
+      "title": "Blue Jays Sign Kaima Taira",
+      "reported_at": "2026-11-28T05:09:45+09:00",
+      "opt_out": null
     }
   },
   "official_seen": {
-    "news-mlb-teruaki-sato-official": "2026-11-27T18:29:18.704662+09:00"
+    "news-mlb-teruaki-sato-official": "2026-11-27T18:29:18.704662+09:00",
+    "news-mlb-kaima-taira-official": "2026-11-28T11:00:09.443421+09:00"
   }
 }
