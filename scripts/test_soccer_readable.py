@@ -54,6 +54,15 @@ class Readable(unittest.TestCase):
         self.assertGreaterEqual(checked,20)
         self.assertFalse(failures,failures)
 
+    def test_long_club_names_in_compare_header_fit_or_shorten(self):
+        # 11/27 クラブ戦の話題が「クリスタル・パレス」で描画停止。長い名は縮め、入らなければ辞書の短い名。
+        screen=layout.Screen({},3)
+        image=screen.national_compare('シュートの比べ',[('シュート','12本','8本')],
+                                      ['クリスタル・パレス','マンチェスター・ユナイテッド'],{})
+        heads=[e for e in image.info['v3_layout'] if e['role']=='supplement' and e['text'] not in ('親善試合',)][:2]
+        self.assertEqual([e['text'] for e in heads],['クリスタル・パレス','マンチェスターU'])
+        self.assertLess(heads[0]['box'][2]+24,heads[1]['box'][0])
+
     def test_long_club_name_with_ranks_stays_on_one_line(self):
         # 11/25 の毎日の回で「アトレティコ・マド／リード」と折れた。順位つきの幅でも1行に収める。
         import soccer_v5_cards as c
