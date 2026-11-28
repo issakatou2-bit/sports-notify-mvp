@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-11-27T10:03:03.159001+00:00",
+  "updated_at": "2026-11-28T10:07:19.535384+00:00",
   "sections": {
     "eng.1:goals": {
       "leader": "Erling Haaland",
@@ -71,7 +71,7 @@
           "team": "Chelsea",
           "team_jp": "チェルシー",
           "value": 5,
-          "matches": 11,
+          "matches": 12,
           "jp": false,
           "rank_size": 4
         },
@@ -121,7 +121,7 @@
         }
       ],
       "jp": [],
-      "snapshot_date": "2026-11-27"
+      "snapshot_date": "2026-11-28"
     },
     "esp.1:goals": {
       "leader": "Raphinha",
@@ -158,8 +158,8 @@
           "name_jp": "ヤシル・ザビリ",
           "team": "Racing Santander",
           "team_jp": "Racing Santander",
-          "value": 11,
-          "matches": 13,
+          "value": 12,
+          "matches": 14,
           "jp": false,
           "rank_size": 1
         },
@@ -242,14 +242,14 @@
         }
       ],
       "jp": [],
-      "snapshot_date": "2026-11-27"
+      "snapshot_date": "2026-11-28"
     },
     "ger.1:goals": {
       "leader": "Niclas Füllkrug",
       "leader_jp": "フュルクルク",
-      "leader_value": 10,
+      "leader_value": 11,
       "second_value": 9,
-      "gap": 1,
+      "gap": 2,
       "top": [
         {
           "rank": 1,
@@ -257,8 +257,8 @@
           "name_jp": "フュルクルク",
           "team": "Werder Bremen",
           "team_jp": "ブレーメン",
-          "value": 10,
-          "matches": 10,
+          "value": 11,
+          "matches": 11,
           "jp": false,
           "rank_size": 1
         },
@@ -363,7 +363,7 @@
         }
       ],
       "jp": [],
-      "snapshot_date": "2026-11-27"
+      "snapshot_date": "2026-11-28"
     },
     "ita.1:goals": {
       "leader": "Donyell Malen",
@@ -484,7 +484,7 @@
         }
       ],
       "jp": [],
-      "snapshot_date": "2026-11-27"
+      "snapshot_date": "2026-11-28"
     },
     "fra.1:goals": {
       "leader": "Lassine Sinayoko",
@@ -500,7 +500,7 @@
           "team": "Paris FC",
           "team_jp": "パリFC",
           "value": 9,
-          "matches": 10,
+          "matches": 11,
           "jp": false,
           "rank_size": 1
         },
@@ -566,7 +566,7 @@
           "team": "Brest",
           "team_jp": "Brest",
           "value": 5,
-          "matches": 11,
+          "matches": 12,
           "jp": false,
           "rank_size": 6
         },
@@ -605,7 +605,7 @@
         }
       ],
       "jp": [],
-      "snapshot_date": "2026-11-27"
+      "snapshot_date": "2026-11-28"
     },
     "eng.1:assists": {
       "leader": "Declan Rice",
@@ -693,6 +693,28 @@
         },
         {
           "rank": 8,
+          "name": "Cole Palmer",
+          "name_jp": null,
+          "team": "Chelsea",
+          "team_jp": "チェルシー",
+          "value": 3,
+          "matches": 12,
+          "jp": false,
+          "rank_size": 12
+        },
+        {
+          "rank": 8,
+          "name": "Morgan Gibbs-White",
+          "name_jp": null,
+          "team": "Nottingham Forest",
+          "team_jp": "ノッティンガム・フォレスト",
+          "value": 3,
+          "matches": 11,
+          "jp": false,
+          "rank_size": 12
+        },
+        {
+          "rank": 8,
           "name": "Daichi Kamada",
           "name_jp": "鎌田大地",
           "team": "Crystal Palace",
@@ -700,28 +722,6 @@
           "value": 3,
           "matches": 11,
           "jp": true,
-          "rank_size": 12
-        },
-        {
-          "rank": 8,
-          "name": "Cole Palmer",
-          "name_jp": null,
-          "team": "Chelsea",
-          "team_jp": "チェルシー",
-          "value": 3,
-          "matches": 11,
-          "jp": false,
-          "rank_size": 12
-        },
-        {
-          "rank": 8,
-          "name": "Maxim De Cuyper",
-          "name_jp": null,
-          "team": "Brighton & Hove Albion",
-          "team_jp": "ブライトン",
-          "value": 3,
-          "matches": 11,
-          "jp": false,
           "rank_size": 12
         }
       ],
@@ -734,7 +734,7 @@
           "value": 3
         }
       ],
-      "snapshot_date": "2026-11-27"
+      "snapshot_date": "2026-11-28"
     },
     "esp.1:assists": {
       "leader": "Lamine Yamal",
@@ -789,6 +789,17 @@
         },
         {
           "rank": 5,
+          "name": "Iñigo Vicente",
+          "name_jp": null,
+          "team": "Racing Santander",
+          "team_jp": "Racing Santander",
+          "value": 4,
+          "matches": 14,
+          "jp": false,
+          "rank_size": 7
+        },
+        {
+          "rank": 5,
           "name": "Álex Berenguer",
           "name_jp": "アレックス・ベレンゲル",
           "team": "Athletic Club",
@@ -796,7 +807,7 @@
           "value": 4,
           "matches": 13,
           "jp": false,
-          "rank_size": 6
+          "rank_size": 7
         },
         {
           "rank": 5,
@@ -807,7 +818,7 @@
           "value": 4,
           "matches": 13,
           "jp": false,
-          "rank_size": 6
+          "rank_size": 7
         },
         {
           "rank": 5,
@@ -818,7 +829,7 @@
           "value": 4,
           "matches": 13,
           "jp": false,
-          "rank_size": 6
+          "rank_size": 7
         },
         {
           "rank": 5,
@@ -829,7 +840,7 @@
           "value": 4,
           "matches": 12,
           "jp": false,
-          "rank_size": 6
+          "rank_size": 7
         },
         {
           "rank": 5,
@@ -840,22 +851,11 @@
           "value": 4,
           "matches": 12,
           "jp": false,
-          "rank_size": 6
-        },
-        {
-          "rank": 5,
-          "name": "Julián Álvarez",
-          "name_jp": null,
-          "team": "Atlético Madrid",
-          "team_jp": "アトレティコ・マドリード",
-          "value": 4,
-          "matches": 9,
-          "jp": false,
-          "rank_size": 6
+          "rank_size": 7
         }
       ],
       "jp": [],
-      "snapshot_date": "2026-11-27"
+      "snapshot_date": "2026-11-28"
     },
     "ger.1:assists": {
       "leader": "Harry Kane",
@@ -976,7 +976,7 @@
         }
       ],
       "jp": [],
-      "snapshot_date": "2026-11-27"
+      "snapshot_date": "2026-11-28"
     },
     "ita.1:assists": {
       "leader": "Adrien Rabiot",
@@ -1097,7 +1097,7 @@
         }
       ],
       "jp": [],
-      "snapshot_date": "2026-11-27"
+      "snapshot_date": "2026-11-28"
     },
     "fra.1:assists": {
       "leader": "Florian Thauvin",
@@ -1135,7 +1135,7 @@
           "team": "Paris FC",
           "team_jp": "パリFC",
           "value": 5,
-          "matches": 10,
+          "matches": 11,
           "jp": false,
           "rank_size": 1
         },
@@ -1152,6 +1152,17 @@
         },
         {
           "rank": 5,
+          "name": "Pablo Pagis",
+          "name_jp": null,
+          "team": "Paris FC",
+          "team_jp": "パリFC",
+          "value": 3,
+          "matches": 12,
+          "jp": false,
+          "rank_size": 16
+        },
+        {
+          "rank": 5,
           "name": "Zachary Athekame",
           "name_jp": "ザカリー・アテカメ",
           "team": "Lyon",
@@ -1159,7 +1170,7 @@
           "value": 3,
           "matches": 11,
           "jp": false,
-          "rank_size": 15
+          "rank_size": 16
         },
         {
           "rank": 5,
@@ -1170,7 +1181,7 @@
           "value": 3,
           "matches": 11,
           "jp": false,
-          "rank_size": 15
+          "rank_size": 16
         },
         {
           "rank": 5,
@@ -1181,18 +1192,18 @@
           "value": 3,
           "matches": 11,
           "jp": false,
-          "rank_size": 15
+          "rank_size": 16
         },
         {
           "rank": 5,
-          "name": "Pablo Pagis",
+          "name": "Kamory Doumbia",
           "name_jp": null,
-          "team": "Paris FC",
-          "team_jp": "パリFC",
+          "team": "Brest",
+          "team_jp": "Brest",
           "value": 3,
           "matches": 11,
           "jp": false,
-          "rank_size": 15
+          "rank_size": 16
         },
         {
           "rank": 5,
@@ -1203,22 +1214,11 @@
           "value": 3,
           "matches": 11,
           "jp": false,
-          "rank_size": 15
-        },
-        {
-          "rank": 5,
-          "name": "Romain Faivre",
-          "name_jp": null,
-          "team": "AJ Auxerre",
-          "team_jp": "オセール",
-          "value": 3,
-          "matches": 11,
-          "jp": false,
-          "rank_size": 15
+          "rank_size": 16
         }
       ],
       "jp": [],
-      "snapshot_date": "2026-11-27"
+      "snapshot_date": "2026-11-28"
     }
   }
 }

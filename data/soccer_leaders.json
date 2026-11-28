@@ -1,6 +1,6 @@
 {
-  "date_jst": "2026-11-27",
-  "updated_at": "2026-11-27T10:03:03.157546+00:00",
+  "date_jst": "2026-11-28",
+  "updated_at": "2026-11-28T10:07:19.532941+00:00",
   "sections": {
     "eng.1:goals": {
       "leader": "Erling Haaland",
@@ -71,7 +71,7 @@
           "team": "Chelsea",
           "team_jp": "チェルシー",
           "value": 5,
-          "matches": 11,
+          "matches": 12,
           "jp": false,
           "rank_size": 4
         },
@@ -157,8 +157,8 @@
           "name_jp": "ヤシル・ザビリ",
           "team": "Racing Santander",
           "team_jp": "Racing Santander",
-          "value": 11,
-          "matches": 13,
+          "value": 12,
+          "matches": 14,
           "jp": false,
           "rank_size": 1
         },
@@ -245,9 +245,9 @@
     "ger.1:goals": {
       "leader": "Niclas Füllkrug",
       "leader_jp": "フュルクルク",
-      "leader_value": 10,
+      "leader_value": 11,
       "second_value": 9,
-      "gap": 1,
+      "gap": 2,
       "top": [
         {
           "rank": 1,
@@ -255,8 +255,8 @@
           "name_jp": "フュルクルク",
           "team": "Werder Bremen",
           "team_jp": "ブレーメン",
-          "value": 10,
-          "matches": 10,
+          "value": 11,
+          "matches": 11,
           "jp": false,
           "rank_size": 1
         },
@@ -496,7 +496,7 @@
           "team": "Paris FC",
           "team_jp": "パリFC",
           "value": 9,
-          "matches": 10,
+          "matches": 11,
           "jp": false,
           "rank_size": 1
         },
@@ -562,7 +562,7 @@
           "team": "Brest",
           "team_jp": "Brest",
           "value": 5,
-          "matches": 11,
+          "matches": 12,
           "jp": false,
           "rank_size": 6
         },
@@ -688,6 +688,28 @@
         },
         {
           "rank": 8,
+          "name": "Cole Palmer",
+          "name_jp": null,
+          "team": "Chelsea",
+          "team_jp": "チェルシー",
+          "value": 3,
+          "matches": 12,
+          "jp": false,
+          "rank_size": 12
+        },
+        {
+          "rank": 8,
+          "name": "Morgan Gibbs-White",
+          "name_jp": null,
+          "team": "Nottingham Forest",
+          "team_jp": "ノッティンガム・フォレスト",
+          "value": 3,
+          "matches": 11,
+          "jp": false,
+          "rank_size": 12
+        },
+        {
+          "rank": 8,
           "name": "Daichi Kamada",
           "name_jp": "鎌田大地",
           "team": "Crystal Palace",
@@ -695,28 +717,6 @@
           "value": 3,
           "matches": 11,
           "jp": true,
-          "rank_size": 12
-        },
-        {
-          "rank": 8,
-          "name": "Cole Palmer",
-          "name_jp": null,
-          "team": "Chelsea",
-          "team_jp": "チェルシー",
-          "value": 3,
-          "matches": 11,
-          "jp": false,
-          "rank_size": 12
-        },
-        {
-          "rank": 8,
-          "name": "Maxim De Cuyper",
-          "name_jp": null,
-          "team": "Brighton & Hove Albion",
-          "team_jp": "ブライトン",
-          "value": 3,
-          "matches": 11,
-          "jp": false,
           "rank_size": 12
         }
       ],
@@ -783,6 +783,17 @@
         },
         {
           "rank": 5,
+          "name": "Iñigo Vicente",
+          "name_jp": null,
+          "team": "Racing Santander",
+          "team_jp": "Racing Santander",
+          "value": 4,
+          "matches": 14,
+          "jp": false,
+          "rank_size": 7
+        },
+        {
+          "rank": 5,
           "name": "Álex Berenguer",
           "name_jp": "アレックス・ベレンゲル",
           "team": "Athletic Club",
@@ -790,7 +801,7 @@
           "value": 4,
           "matches": 13,
           "jp": false,
-          "rank_size": 6
+          "rank_size": 7
         },
         {
           "rank": 5,
@@ -801,7 +812,7 @@
           "value": 4,
           "matches": 13,
           "jp": false,
-          "rank_size": 6
+          "rank_size": 7
         },
         {
           "rank": 5,
@@ -812,7 +823,7 @@
           "value": 4,
           "matches": 13,
           "jp": false,
-          "rank_size": 6
+          "rank_size": 7
         },
         {
           "rank": 5,
@@ -823,7 +834,7 @@
           "value": 4,
           "matches": 12,
           "jp": false,
-          "rank_size": 6
+          "rank_size": 7
         },
         {
           "rank": 5,
@@ -834,18 +845,7 @@
           "value": 4,
           "matches": 12,
           "jp": false,
-          "rank_size": 6
-        },
-        {
-          "rank": 5,
-          "name": "Julián Álvarez",
-          "name_jp": null,
-          "team": "Atlético Madrid",
-          "team_jp": "アトレティコ・マドリード",
-          "value": 4,
-          "matches": 9,
-          "jp": false,
-          "rank_size": 6
+          "rank_size": 7
         }
       ],
       "jp": []
@@ -1126,7 +1126,7 @@
           "team": "Paris FC",
           "team_jp": "パリFC",
           "value": 5,
-          "matches": 10,
+          "matches": 11,
           "jp": false,
           "rank_size": 1
         },
@@ -1143,6 +1143,17 @@
         },
         {
           "rank": 5,
+          "name": "Pablo Pagis",
+          "name_jp": null,
+          "team": "Paris FC",
+          "team_jp": "パリFC",
+          "value": 3,
+          "matches": 12,
+          "jp": false,
+          "rank_size": 16
+        },
+        {
+          "rank": 5,
           "name": "Zachary Athekame",
           "name_jp": "ザカリー・アテカメ",
           "team": "Lyon",
@@ -1150,7 +1161,7 @@
           "value": 3,
           "matches": 11,
           "jp": false,
-          "rank_size": 15
+          "rank_size": 16
         },
         {
           "rank": 5,
@@ -1161,7 +1172,7 @@
           "value": 3,
           "matches": 11,
           "jp": false,
-          "rank_size": 15
+          "rank_size": 16
         },
         {
           "rank": 5,
@@ -1172,18 +1183,18 @@
           "value": 3,
           "matches": 11,
           "jp": false,
-          "rank_size": 15
+          "rank_size": 16
         },
         {
           "rank": 5,
-          "name": "Pablo Pagis",
+          "name": "Kamory Doumbia",
           "name_jp": null,
-          "team": "Paris FC",
-          "team_jp": "パリFC",
+          "team": "Brest",
+          "team_jp": "Brest",
           "value": 3,
           "matches": 11,
           "jp": false,
-          "rank_size": 15
+          "rank_size": 16
         },
         {
           "rank": 5,
@@ -1194,26 +1205,301 @@
           "value": 3,
           "matches": 11,
           "jp": false,
-          "rank_size": 15
-        },
-        {
-          "rank": 5,
-          "name": "Romain Faivre",
-          "name_jp": null,
-          "team": "AJ Auxerre",
-          "team_jp": "オセール",
-          "value": 3,
-          "matches": 11,
-          "jp": false,
-          "rank_size": 15
+          "rank_size": 16
         }
       ],
       "jp": []
     }
   },
-  "movements": {},
-  "picked": [],
-  "story": null,
-  "title": "",
-  "race": {}
+  "movements": {
+    "ger.1:goals": [
+      {
+        "kind": "gap_opened",
+        "gap": 2
+      }
+    ]
+  },
+  "picked": [
+    "ger.1:goals"
+  ],
+  "story": {
+    "key": "ger.1:goals",
+    "league": "ger.1",
+    "code": "BL1",
+    "section": "goals",
+    "league_jp": "ブンデスリーガ",
+    "snap": {
+      "leader": "Niclas Füllkrug",
+      "leader_jp": "フュルクルク",
+      "leader_value": 11,
+      "second_value": 9,
+      "gap": 2,
+      "top": [
+        {
+          "rank": 1,
+          "name": "Niclas Füllkrug",
+          "name_jp": "フュルクルク",
+          "team": "Werder Bremen",
+          "team_jp": "ブレーメン",
+          "value": 11,
+          "matches": 11,
+          "jp": false,
+          "rank_size": 1
+        },
+        {
+          "rank": 2,
+          "name": "Patrik Schick",
+          "name_jp": "パトリック・シック",
+          "team": "Bayer Leverkusen",
+          "team_jp": "レバークーゼン",
+          "value": 9,
+          "matches": 10,
+          "jp": false,
+          "rank_size": 1
+        },
+        {
+          "rank": 3,
+          "name": "Michael Gregoritsch",
+          "name_jp": "グレゴリッチュ",
+          "team": "FC Augsburg",
+          "team_jp": "アウクスブルク",
+          "value": 7,
+          "matches": 9,
+          "jp": false,
+          "rank_size": 1
+        },
+        {
+          "rank": 4,
+          "name": "Phillip Tietz",
+          "name_jp": "フィリップ・ティーツ",
+          "team": "Mainz",
+          "team_jp": "マインツ",
+          "value": 6,
+          "matches": 10,
+          "jp": false,
+          "rank_size": 5
+        },
+        {
+          "rank": 4,
+          "name": "Michael Olise",
+          "name_jp": "マイケル・オリーズ",
+          "team": "Bayern Munich",
+          "team_jp": "バイエルン",
+          "value": 6,
+          "matches": 10,
+          "jp": false,
+          "rank_size": 5
+        },
+        {
+          "rank": 4,
+          "name": "Jonathan Burkardt",
+          "name_jp": null,
+          "team": "Eintracht Frankfurt",
+          "team_jp": "フランクフルト",
+          "value": 6,
+          "matches": 10,
+          "jp": false,
+          "rank_size": 5
+        },
+        {
+          "rank": 4,
+          "name": "Younes Ebnoutalib",
+          "name_jp": null,
+          "team": "Eintracht Frankfurt",
+          "team_jp": "フランクフルト",
+          "value": 6,
+          "matches": 10,
+          "jp": false,
+          "rank_size": 5
+        },
+        {
+          "rank": 4,
+          "name": "Rômulo",
+          "name_jp": null,
+          "team": "RB Leipzig",
+          "team_jp": "ライプツィヒ",
+          "value": 6,
+          "matches": 8,
+          "jp": false,
+          "rank_size": 5
+        },
+        {
+          "rank": 9,
+          "name": "Felix Nmecha",
+          "name_jp": null,
+          "team": "Borussia Dortmund",
+          "team_jp": "ドルトムント",
+          "value": 5,
+          "matches": 10,
+          "jp": false,
+          "rank_size": 6
+        },
+        {
+          "rank": 9,
+          "name": "Antonio Nusa",
+          "name_jp": "アントニオ・ヌサ",
+          "team": "RB Leipzig",
+          "team_jp": "ライプツィヒ",
+          "value": 5,
+          "matches": 10,
+          "jp": false,
+          "rank_size": 6
+        }
+      ],
+      "jp": []
+    },
+    "movements": [
+      {
+        "kind": "gap_opened",
+        "gap": 2
+      }
+    ],
+    "baseline_date": "2026-11-27",
+    "title": "ブンデスリーガ 得点王争い｜フュルクルクが11点で首位、2位と2点差"
+  },
+  "title": "ブンデスリーガ 得点王争い｜フュルクルクが11点で首位、2位と2点差",
+  "race": {
+    "date_jst": "2026-11-28",
+    "frame_label": "欧州サッカー　得点王・アシスト王争い",
+    "ticker_head": "ブンデスリーガ 得点王争い",
+    "picked": [
+      "BL1"
+    ],
+    "leaders": {
+      "key": "ger.1:goals",
+      "code": "BL1",
+      "section": "goals",
+      "section_jp": "得点王",
+      "unit": "点",
+      "league_jp": "ブンデスリーガ",
+      "baseline_date": "2026-11-27",
+      "movements": [
+        {
+          "kind": "gap_opened",
+          "gap": 2
+        }
+      ],
+      "title": "ブンデスリーガ 得点王争い｜フュルクルクが11点で首位、2位と2点差",
+      "top": [
+        {
+          "rank": 1,
+          "name": "Niclas Füllkrug",
+          "name_jp": "フュルクルク",
+          "team": "Werder Bremen",
+          "team_jp": "ブレーメン",
+          "value": 11,
+          "matches": 11,
+          "jp": false,
+          "rank_size": 1
+        },
+        {
+          "rank": 2,
+          "name": "Patrik Schick",
+          "name_jp": "パトリック・シック",
+          "team": "Bayer Leverkusen",
+          "team_jp": "レバークーゼン",
+          "value": 9,
+          "matches": 10,
+          "jp": false,
+          "rank_size": 1
+        },
+        {
+          "rank": 3,
+          "name": "Michael Gregoritsch",
+          "name_jp": "グレゴリッチュ",
+          "team": "FC Augsburg",
+          "team_jp": "アウクスブルク",
+          "value": 7,
+          "matches": 9,
+          "jp": false,
+          "rank_size": 1
+        },
+        {
+          "rank": 4,
+          "name": "Phillip Tietz",
+          "name_jp": "フィリップ・ティーツ",
+          "team": "Mainz",
+          "team_jp": "マインツ",
+          "value": 6,
+          "matches": 10,
+          "jp": false,
+          "rank_size": 5
+        },
+        {
+          "rank": 4,
+          "name": "Michael Olise",
+          "name_jp": "マイケル・オリーズ",
+          "team": "Bayern Munich",
+          "team_jp": "バイエルン",
+          "value": 6,
+          "matches": 10,
+          "jp": false,
+          "rank_size": 5
+        },
+        {
+          "rank": 4,
+          "name": "Jonathan Burkardt",
+          "name_jp": null,
+          "team": "Eintracht Frankfurt",
+          "team_jp": "フランクフルト",
+          "value": 6,
+          "matches": 10,
+          "jp": false,
+          "rank_size": 5
+        },
+        {
+          "rank": 4,
+          "name": "Younes Ebnoutalib",
+          "name_jp": null,
+          "team": "Eintracht Frankfurt",
+          "team_jp": "フランクフルト",
+          "value": 6,
+          "matches": 10,
+          "jp": false,
+          "rank_size": 5
+        },
+        {
+          "rank": 4,
+          "name": "Rômulo",
+          "name_jp": null,
+          "team": "RB Leipzig",
+          "team_jp": "ライプツィヒ",
+          "value": 6,
+          "matches": 8,
+          "jp": false,
+          "rank_size": 5
+        },
+        {
+          "rank": 9,
+          "name": "Felix Nmecha",
+          "name_jp": null,
+          "team": "Borussia Dortmund",
+          "team_jp": "ドルトムント",
+          "value": 5,
+          "matches": 10,
+          "jp": false,
+          "rank_size": 6
+        },
+        {
+          "rank": 9,
+          "name": "Antonio Nusa",
+          "name_jp": "アントニオ・ヌサ",
+          "team": "RB Leipzig",
+          "team_jp": "ライプツィヒ",
+          "value": 5,
+          "matches": 10,
+          "jp": false,
+          "rank_size": 6
+        }
+      ],
+      "shown": [
+        "Niclas Füllkrug",
+        "Patrik Schick",
+        "Michael Gregoritsch",
+        "Phillip Tietz"
+      ]
+    },
+    "source": "ESPN / statistics",
+    "retrieved_at": "2026-11-28T10:07:19.532941+00:00"
+  }
 }
