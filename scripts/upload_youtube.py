@@ -609,6 +609,7 @@ def build_asset_metadata(topic: str, narration=None) -> dict:
             meta = asset_meta_from_spec(spec)
     if not meta:
         raise ValueError(f"ASSET_META に未登録のトピックです: {topic}")
+    meta = __import__("asset_policy").season_title(topic, meta)
 
     lines = list(meta["lead"]) + [
         "",

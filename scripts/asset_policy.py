@@ -5,6 +5,45 @@ PAUSED_KINDS = frozenset({"venue", "season_team", "team"})
 PAUSE_NOTE = "球場・球団まとめは10/26の本人判断で新規制作を停止。本数の補充はしません。"
 
 
+# 11/28 本人「終わったシーズンの動画まだ上げてるの？」。オフに出した今季の数字の回のうち、
+# 1試合だけの記録・連続記録・対戦相手・連勝は 54〜202 再生（11/3〜11/27、early_views）。
+# 登板や本塁打とチームの勝敗・月の比べは 595〜1,021 再生。オフの間は伸びない型を選ばない。
+OFFSEASON_SKIP_KINDS = frozenset({
+    'season_best', 'season_streak', 'season_insight', 'season_vs', 'season_momentum', 'season_game'})
+
+
+def offseason_now(now=None):
+    """WS 決着後（公式の結果で確かめた時だけ True）。"""
+    import json
+    from datetime import datetime, timezone
+    from pathlib import Path
+    import ps_offseason
+    try:
+        snapshot = json.loads(Path('data/postseason.json').read_text(encoding='utf-8'))
+    except (OSError, ValueError):
+        return False
+    return ps_offseason.completed_before(snapshot, now or datetime.now(timezone.utc))
+
+
+def offseason_skip(key):
+    return season_kind(key) in OFFSEASON_SKIP_KINDS
+
+
+def season_title(topic, meta, offseason=None):
+    """オフに出す今季の数字の回は、題の頭に年を入れて振り返りだと分かるようにする。"""
+    import re
+    year = re.search(r'_(20\d\d)(?:_|$)', topic or '')
+    if not (topic or '').startswith('season_') or not year or year.group(1) in meta['title']:
+        return meta
+    if not (offseason_now() if offseason is None else offseason):
+        return meta
+    title = meta['title']
+    head = re.match(r'【([^】]+)】', title)
+    title = (f'【{year.group(1)}年・{head.group(1)}】{title[head.end():]}' if head
+             else f'【{year.group(1)}年】{title}')
+    return {**meta, 'title': title}
+
+
 def season_kind(key):
     """PS・RSに共通の型。同じ日に同じ型を重ねない。"""
     return '_'.join(key.split('_')[:2])

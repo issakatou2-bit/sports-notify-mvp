@@ -153,13 +153,17 @@ def test_next_asset_selects_two_distinct_players(tmp_path):
 
     stock = {row['key']: row for row in season_topics.saved_insights()}
     ledgers = ({'asset': {}}, {'assets': {}})
-    out = StringIO()
-    with patch.dict(gav.LIST_TOPICS, stock, clear=True), \
-            patch.object(player_publications, 'load', return_value=ledgers), redirect_stdout(out):
-        assert next_asset.pick_season(SimpleNamespace(published=str(tmp_path/'assets.json'), season=2)) == 0
-    picks = out.getvalue().split()
+    def pick(offseason):
+        out = StringIO()
+        with patch.dict(gav.LIST_TOPICS, stock, clear=True),                 patch.object(next_asset.asset_policy, 'offseason_now', return_value=offseason),                 patch.object(player_publications, 'load', return_value=ledgers), redirect_stdout(out):
+            assert next_asset.pick_season(SimpleNamespace(published=str(tmp_path/'assets.json'), season=2)) == 0
+        return out.getvalue().split()
+    # シーズン中の選び方（同じ選手を重ねない）。
+    picks = pick(False)
     assert len(picks) == 2
     assert len({stock[key]['player_id'] for key in picks}) == 2
+    # オフは1試合だけの記録の回を選ばない（11/28 本人「終わったシーズンの動画まだ上げてるの？」）。
+    assert pick(True) == []
 
 
 if __name__ == '__main__':
