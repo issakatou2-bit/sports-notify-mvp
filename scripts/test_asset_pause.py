@@ -77,6 +77,28 @@ class PauseTests(unittest.TestCase):
         source = (Path(__file__).resolve().parent.parent / '.github/workflows/asset_video.yml').read_text(encoding='utf8')
         self.assertLess(source.index('python scripts/asset_policy.py'), source.index('for t in $TOPICS'))
 
+    def test_offseason_title_names_the_year(self):
+        meta = {'title': 'ヌートバー 1試合で最多4四球 #Shorts'}
+        key = 'season_insight_2026_663457_game_baseOnBalls'
+        self.assertEqual(asset_policy.season_title(key, meta, offseason=True)['title'],
+                         '【2026年】ヌートバー 1試合で最多4四球 #Shorts')
+        self.assertEqual(asset_policy.season_title(key, meta, offseason=False), meta)
+        tagged = {'title': '【本塁打と勝敗】村上宗隆 本塁打を打った試合でチームは20勝12敗 #Shorts'}
+        self.assertTrue(asset_policy.season_title('season_win_2026_808959_hitting', tagged, offseason=True)['title']
+                        .startswith('【2026年・本塁打と勝敗】村上宗隆'))
+        named = {'title': '【MLB】大谷翔平｜2026年シーズンまとめ #Shorts'}
+        self.assertEqual(asset_policy.season_title('season_win_2026_660271_hitting', named, offseason=True), named)
+        market = {'title': '【MLB】佐藤輝明 カブスと合意と米報道 #Shorts'}
+        self.assertEqual(asset_policy.season_title('offseason_market_2026_x', market, offseason=True), market)
+
+    def test_offseason_skips_weak_kinds(self):
+        for key in ('season_insight_2026_1_game_hits', 'season_best_2026_1_hitting', 'season_streak_2026_1_pitching',
+                    'season_vs_2026_1_hitting', 'season_momentum_rs2026_1'):
+            self.assertTrue(asset_policy.offseason_skip(key), key)
+        for key in ('season_win_2026_1_pitching', 'season_month_2026_1_hitting', 'season_compare_2026_1_2',
+                    'season_player_1', 'season_league_103_hitting'):
+            self.assertFalse(asset_policy.offseason_skip(key), key)
+
 
 if __name__ == '__main__':
     unittest.main(argv=[sys.argv[0]])
