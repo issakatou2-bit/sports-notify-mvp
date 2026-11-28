@@ -3,12 +3,14 @@
     "news-mlb-teruaki-sato-official": "動画制作待ち",
     "news-mlb-seiya-suzuki-report": "球団・年数・総額が一致する独立した2報道、またはMLB公式記録を待つ",
     "news-mlb-teruaki-sato-report": "球団・年数・総額が一致する独立した2報道、またはMLB公式記録を待つ",
-    "news-mlb-kaima-taira-official": "動画制作待ち"
+    "news-mlb-kaima-taira-official": "動画制作待ち",
+    "news-mlb-hiromi-itoh-report": "球団・年数・総額が一致する独立した2報道、またはMLB公式記録を待つ"
   },
   "first_seen": {
     "teruaki-sato": "2026-11-27T18:29:18.704662+09:00",
     "seiya-suzuki": "2026-11-27T18:29:18.704662+09:00",
-    "kaima-taira": "2026-11-28T11:00:09.443421+09:00"
+    "kaima-taira": "2026-11-28T11:00:09.443421+09:00",
+    "hiromi-itoh": "2026-11-28T19:04:02.246604+09:00"
   },
   "reports": {
     "https://www.mlbtraderumors.com/2026/11/seiya-suzuki-reportedly-asking-for-more-than-120mm.html": {
@@ -29,86 +31,6 @@
       "url": "https://www.mlbtraderumors.com/2026/11/seiya-suzuki-reportedly-asking-for-more-than-120mm.html",
       "title": "Seiya Suzuki Reportedly Asking For More Than $120MM",
       "reported_at": "2026-11-27T14:25:11+09:00",
-      "opt_out": null
-    },
-    "https://www.espn.com/mlb/story/_/id/50599090/sources-free-agent-kevin-gausman-tigers-reach-deal": {
-      "name_en": "Kevin Gausman",
-      "name": "ケビン・ゴーズマン",
-      "japanese": false,
-      "team_en": "Detroit Tigers",
-      "team": "タイガース",
-      "terms": {
-        "years": 1,
-        "amount": 2500.0
-      },
-      "agreement": true,
-      "conflict": false,
-      "origin": "ESPN",
-      "reporter": "Jeff Passan",
-      "outlet": "ESPN",
-      "url": "https://www.espn.com/mlb/story/_/id/50599090/sources-free-agent-kevin-gausman-tigers-reach-deal",
-      "title": "Sources: Tigers stay busy, reach 1-year, $25M deal with RHP Gausman",
-      "reported_at": "2026-11-26T14:56:03+09:00",
-      "opt_out": null
-    },
-    "https://www.espn.com/mlb/story/_/id/50602024/twins-kevin-ginkel-agree-2-year-18-million-deal": {
-      "name_en": "Kevin Ginkel",
-      "name": "",
-      "japanese": false,
-      "team_en": "",
-      "team": "",
-      "terms": {
-        "years": 2,
-        "amount": 1800.0
-      },
-      "agreement": true,
-      "conflict": true,
-      "origin": "ESPN",
-      "reporter": "",
-      "outlet": "ESPN",
-      "url": "https://www.espn.com/mlb/story/_/id/50602024/twins-kevin-ginkel-agree-2-year-18-million-deal",
-      "title": "Sources: Twins, reliever Ginkel agree to 2-year, $18 million deal",
-      "reported_at": "2026-11-26T14:56:03+09:00",
-      "opt_out": null
-    },
-    "https://www.espn.com/mlb/story/_/id/50599469/sources-orioles-luis-robert-jr-agree-1-year-12m-deal": {
-      "name_en": "Luis Robert Jr.",
-      "name": "ルイス・ロベルト・ジュニア",
-      "japanese": false,
-      "team_en": "Baltimore Orioles",
-      "team": "オリオールズ",
-      "terms": {
-        "years": 1,
-        "amount": 1200.0
-      },
-      "agreement": true,
-      "conflict": false,
-      "origin": "ESPN",
-      "reporter": "",
-      "outlet": "ESPN",
-      "url": "https://www.espn.com/mlb/story/_/id/50599469/sources-orioles-luis-robert-jr-agree-1-year-12m-deal",
-      "title": "Sources: Orioles to bring OF Robert back on 1-year deal",
-      "reported_at": "2026-11-26T14:56:03+09:00",
-      "opt_out": null
-    },
-    "https://www.espn.com/mlb/story/_/id/50598771/source-marlins-agree-one-year-deal-gary-sanchez": {
-      "name_en": "Gary Sánchez",
-      "name": "",
-      "japanese": false,
-      "team_en": "Miami Marlins",
-      "team": "マーリンズ",
-      "terms": {
-        "years": 1,
-        "amount": 650.0
-      },
-      "agreement": true,
-      "conflict": false,
-      "origin": "",
-      "reporter": "",
-      "outlet": "ESPN",
-      "url": "https://www.espn.com/mlb/story/_/id/50598771/source-marlins-agree-one-year-deal-gary-sanchez",
-      "title": "Source: Marlins agree to 1-year deal with catcher Sanchez",
-      "reported_at": "2026-11-26T14:56:03+09:00",
       "opt_out": null
     },
     "https://www.mlbtraderumors.com/2026/11/cubs-to-sign-teruaki-sato.html": {
@@ -163,6 +85,23 @@
       "url": "https://www.mlbtraderumors.com/2026/11/blue-jays-to-sign-kaima-taira.html",
       "title": "Blue Jays Sign Kaima Taira",
       "reported_at": "2026-11-28T05:09:45+09:00",
+      "opt_out": null
+    },
+    "https://www.mlbtraderumors.com/2026/11/cubs-to-sign-hiromi-itoh.html": {
+      "name_en": "Hiromi Itoh",
+      "name": "伊藤大海",
+      "japanese": true,
+      "team_en": "Chicago Cubs",
+      "team": "カブス",
+      "terms": null,
+      "agreement": true,
+      "conflict": false,
+      "origin": "FanSided",
+      "reporter": "Robert Murray",
+      "outlet": "MLBTR",
+      "url": "https://www.mlbtraderumors.com/2026/11/cubs-to-sign-hiromi-itoh.html",
+      "title": "Cubs To Sign Hiromi Itoh",
+      "reported_at": "2026-11-28T13:55:40+09:00",
       "opt_out": null
     }
   },
