@@ -18,6 +18,12 @@ import player_publications as pp
 
 
 class JapaneseAssets(unittest.TestCase):
+    def setUp(self):
+        # シーズン中の選び方の試験。オフの型の絞り込みは test_asset_pause で見る。
+        off = patch.object(na.asset_policy, 'offseason_now', return_value=False)
+        off.start()
+        self.addCleanup(off.stop)
+
     @classmethod
     def setUpClass(cls):
         cls.topics = jp.build()['topics']

@@ -292,6 +292,9 @@ def pick_season(args) -> int:
     import jp_stock
     todo = [k for k in todo if jp_stock.rotation_available(k, gav.LIST_TOPICS[k], ledgers)]
     todo = [k for k in todo if season_material_ready(gav, k)]
+    offseason = asset_policy.offseason_now()
+    if offseason:
+        todo = [k for k in todo if not asset_policy.offseason_skip(k)]
     # 選手の間隔は雨衣の声の在庫より後の順位（在庫の優先を崩さない）。
     todo.sort(key=lambda k: jp_stock.rotation_priority(k, gav.LIST_TOPICS[k], ledgers))
     import ui_voice_stock
@@ -316,7 +319,8 @@ def pick_season(args) -> int:
         insight = k.startswith("season_insight_")
         if insight and insight_left <= 0:
             continue
-        is_stats = kind_of(k) == "season" and not insight
+        # オフは1試合の記録も今季の数字の回として週3本の上限に数える。
+        is_stats = kind_of(k) == "season" and (offseason or not insight)
         if is_stats and stats_left <= 0:
             continue
         players = jp_assets.ids(k, gav.LIST_TOPICS[k])
