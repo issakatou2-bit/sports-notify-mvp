@@ -26,6 +26,10 @@ on:
 permissions:
   contents: read
 
+# 試験は締めの台詞を日替わりにしない（日によって試験の答えが変わるため）。
+env:
+  COLLESPO_OUTRO_ROTATE: 'off'
+
 jobs:
   check_suite:
     runs-on: ubuntu-latest

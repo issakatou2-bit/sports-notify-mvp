@@ -11,8 +11,28 @@ GUIDANCE = (
     "話をつなぐだけの「見えてきたのだ」や答えの言い直しは使わない。"
     "意外な表情を指定するときは、次か次の次の台詞で理由を分かるようにする。"
 )
-SHORT_OUTRO = '高評価と登録、よろしくね。'
-POLITE_SHORT_OUTRO = '高評価と登録、お願いします。'
+# ショートの締め。理由つきの4種を日本時間の日付で日替わり（本人 11/28「登録や高評価への誘導も」）。
+# どれも実測3.2秒以内（めたん 1.8〜2.1秒、雨衣の敬語 1.95〜2.46秒、11/28 VOICEVOX 0.25.2）。
+# 1日の中では全部同じ文（台本の検査と画面が同じ文を前提にしているため）。
+OUTROS = (
+    ('高評価と登録、よろしくね。', '高評価と登録、お願いします。'),
+    ('明日の数字も見るなら、登録してね。', '明日の数字も見るなら、登録をお願いします。'),
+    ('なるほどと思ったら、高評価してね。', 'なるほどと思ったら、高評価をお願いします。'),
+    ('毎日の数字は、登録して追ってね。', '毎日の数字は、登録して追ってください。'),
+)
+
+
+def outro_index(day=None):
+    """本番（GitHub の流れ）だけ日替わり。手元と試験（COLLESPO_OUTRO_ROTATE=off）は最初の文。"""
+    if day is None:
+        if os.getenv('GITHUB_ACTIONS') != 'true' or os.getenv('COLLESPO_OUTRO_ROTATE', 'on') == 'off':
+            return 0
+        from datetime import datetime, timedelta, timezone
+        day = datetime.now(timezone(timedelta(hours=9))).date()
+    return day.toordinal() % len(OUTROS)
+
+
+SHORT_OUTRO, POLITE_SHORT_OUTRO = OUTROS[outro_index()]
 END = r"(?=[ \t]*(?:[。！？!?…\n]|$))"
 BAD = re.compile(
     r"(?:です(?:ね|よ|か)?|ます(?:ね|よ|か)?|でした(?:ね|よ|か)?|ました(?:ね|よ|か)?"

@@ -56,3 +56,24 @@ class MetanToneTest(unittest.TestCase):
         self.assertEqual(quote['text'], 'いい試合でした。')
         self.assertEqual(result['caption_units'], ['先制したわ。', '1得点よ。'])
         self.assertEqual(list(metan_tone.check([quote, result])), [])
+
+
+class OutroRotation(unittest.TestCase):
+    def test_four_outros_rotate_by_day_and_stay_in_tone(self):
+        # 11/28 締めを理由つきの4種に。続く4日は全部違う文、めたんの側は語尾の検査を通る。
+        from datetime import date, timedelta
+        import ui_tone
+        days = [metan_tone.outro_index(date(2026, 11, 28) + timedelta(days=i)) for i in range(4)]
+        self.assertEqual(sorted(days), [0, 1, 2, 3])
+        for casual, polite in metan_tone.OUTROS:
+            self.assertEqual(list(metan_tone.check([dict(kind='outro', text=casual, speaker=2)])), [], casual)
+            self.assertEqual(ui_tone.text(casual), polite)
+            self.assertTrue(any(word in casual for word in ('高評価', '登録')))
+
+    def test_tests_and_local_runs_keep_the_first_outro(self):
+        import os
+        from unittest.mock import patch
+        with patch.dict(os.environ, GITHUB_ACTIONS='true', COLLESPO_OUTRO_ROTATE='off'):
+            self.assertEqual(metan_tone.outro_index(), 0)
+        with patch.dict(os.environ, {'GITHUB_ACTIONS': ''}):
+            self.assertEqual(metan_tone.outro_index(), 0)

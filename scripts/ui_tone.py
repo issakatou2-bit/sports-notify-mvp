@@ -1,7 +1,7 @@
 """雨衣ソロだけの口調。引用・数字・名前・札には手を加えない。"""
 import copy
 import re
-from metan_tone import SHORT_OUTRO, POLITE_SHORT_OUTRO
+from metan_tone import OUTROS, SHORT_OUTRO, POLITE_SHORT_OUTRO
 
 # 本人10/13指定（apsc-video/docs/キャラの口調.md の雨衣節）。
 GUIDANCE = ('雨衣はやわらかい敬語（です・ますね・しましょう）。一人称は原則使わない。'
@@ -19,7 +19,7 @@ ENDINGS = (
     ('注目してね', '注目しましょう'), ('見てみよう', '見てみましょう'),
 )
 PHRASES = {'今日の勝利貢献順位です。': '今日の勝利貢献順位を見ていきましょう。',
-           SHORT_OUTRO: POLITE_SHORT_OUTRO,
+           **dict(OUTROS),
            '明日の試合の見どころを届けているわ': '明日の試合の見どころをお届けしています',
            'MLBの話題と欧州サッカーの見どころを届けているわ': 'MLBの話題と欧州サッカーの見どころをお届けしています',
            'また見に来てね。': 'また見に来てください。',

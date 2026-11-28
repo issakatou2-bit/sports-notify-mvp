@@ -23,7 +23,7 @@ MOVES = {'DFA': 'FAを宣言しました', 'SFA': 'FA契約を結びました',
          'TR': 'トレードが公式に記録されました'}
 OUTRO_TEXT = __import__('short_common').OUTRO_TEXT
 # 雨衣の回は ui_tone が「ね」を外して敬体にする（11/3 表彰の回がこの差で止まった）。
-OUTRO_TEXTS = {OUTRO_TEXT, __import__('ui_tone').text(OUTRO_TEXT)}
+OUTRO_TEXTS = {text for pair in __import__('metan_tone').OUTROS for text in pair} | {OUTRO_TEXT, __import__('ui_tone').text(OUTRO_TEXT)}
 
 
 def item_speech(head, body):
