@@ -33,6 +33,7 @@ LIMIT = 45
 # MLB の掛け合いは契約・成績・比べを並べる型なので上限90秒（11/25 本人「まかせます」）。
 # 上限であって目安ではない。原稿は短い方がよい（短い回の方が見られた割合が高い：DECISIONS 参照）。
 MLB_LIMIT = 90
+MLB_DRAW_LIMIT = 60  # 描画は60秒まで（#447）
 OPENING_SECONDS = 3.0
 DEFAULT_EVENT = '401916337'
 
@@ -533,7 +534,7 @@ def tone_gate(doc):
     return doc
 
 
-def dialogue_segments(topic, panels, hook, *, ending=None):
+def dialogue_segments(topic, panels, hook, *, ending=None, limit=None):
     segments=[]
     for i,(question,answer,head,rows,*extra) in enumerate(panels):
         meta=dict(duo=True,topic=topic,panel=i,head=head,rows=rows,**(extra[0] if extra else {}))
@@ -541,9 +542,12 @@ def dialogue_segments(topic, panels, hook, *, ending=None):
         if i==0 and hook:ask['hook']=hook
         segments += [dict(kind='list',text=question,speaker=ZUNDA,meta=ask),
                      dict(kind='list',text=answer,speaker=METAN,meta=dict(meta,who='四国めたん'))]
+    import topic_dialogue
     if ending:
-        import topic_dialogue
         segments = topic_dialogue.ending_segments(segments, ending)
+    # ノリの一言は尺に余裕がある時だけ（話題は45秒、MLB は描画の上限60秒。見積もりに締め2秒と3秒の余裕）。
+    segments = topic_dialogue.liven(segments, topic, limit=limit or LIMIT)
+    if ending:
         topic_dialogue.require(segments)
     return segments
 
@@ -604,7 +608,7 @@ def mlb_narration(topic):
     return tone_gate(short_common.prepare(dict(
         program=MLB_PROGRAM, date_jst=data['checked_on'], title=title+' #Shorts',
         topic=topic, event_id=event, topic_key=topic,
-        segments=dialogue_segments(topic, panels, hook, ending=topic_dialogue.market_ending(data)),
+        segments=dialogue_segments(topic, panels, hook, ending=topic_dialogue.market_ending(data), limit=MLB_DRAW_LIMIT),
         followup_material=data, team_id=team_id, screen_title='MLB',
         duration_budget=dict(limit=MLB_LIMIT,grace=0), baseball_average_voice=True,
         sanity_materials=[dict(source='MLB移籍報道（確認済み）',sport='mlb',facts=data)],
@@ -669,7 +673,8 @@ def analysis_narration(topic):
         sub=data.get('sub') or '数字で読む', clubs=analysis_clubs(data),
         segments=dialogue_segments(topic, panels, hook,
                                    ending=topic_dialogue.material_ending(data, kind='analysis',
-                                                                         subject=hook['score'])),
+                                                                         subject=hook['score']),
+                                   limit=MLB_DRAW_LIMIT),
         analysis_material=data, duration_budget=dict(limit=MLB_LIMIT, grace=0),
         sanity_materials=[dict(source='欧州サッカーの分析材料（確認済み）', sport='soccer', facts=data)])))
 

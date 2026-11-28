@@ -8,6 +8,10 @@ permissions:
 concurrency:
   group: weekly-report
   cancel-in-progress: false
+# 試験は締めの台詞を日替わりにしない（日によって試験の答えが変わるため）。
+env:
+  COLLESPO_OUTRO_ROTATE: 'off'
+
 jobs:
   report:
     runs-on: ubuntu-latest
